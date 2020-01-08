@@ -303,11 +303,11 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             if ($this->filterTracer) {
                 if (! $start) {
                     $this->filterTracer->setSkipCreationMessage(
-                            $this->_('track without a start date')
+                            $this->_('track without a startdate')
                             );
                 } else {
                     $this->filterTracer->setSkipCreationMessage(sprintf(
-                            $this->_('%d days since previous start date, %d required'),
+                            $this->_('%d days since previous startdate, %d required'),
                             $curr->diffDays($start)                            ,
                             $wait
                             ));

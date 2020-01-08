@@ -151,9 +151,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 }
 
                 if ($trackData['trackInfo']) {
-                    $li->append(sprintf($this->_(' [%s, starttime %s]'), $trackData['trackInfo'], $startDate));
+                    $li->append(sprintf($this->_(' [%s, startdate %s]'), $trackData['trackInfo'], $startDate));
                 } else {
-                    $li->append(sprintf($this->_(' [starttime %s]'), $startDate));
+                    $li->append(sprintf($this->_(' [startdate %s]'), $startDate));
                 }
                 $li->append(' ');
                 if ($this->tracer->executeChanges) {
@@ -175,7 +175,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 }
             }
         } else {
-            $seq->pInfo($this->_('No tracks to check'));
+            $seq->pInfo($this->_('No tracks to check.'));
         }
     }
 
@@ -272,7 +272,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 }
             }
         } else {
-            $seq->pInfo($this->_('No creation filters to check'));
+            $seq->pInfo($this->_('No creation filters to check.'));
         }
     }
 

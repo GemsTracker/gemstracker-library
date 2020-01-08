@@ -43,29 +43,30 @@ class ApplyFiltersInformation extends \MUtil_Snippets_SnippetAbstract
         $seq->br();
         $div = $seq->div(['class' => 'alert alert-info', 'role' => "alert"]);
 
-        $div->h2($this->_('Explanation of Appointment Filter Application'), ['style' => 'margin-top: 5px;']);
+        $div->h2($this->_('Explanation of Track field filter application'), ['style' => 'margin-top: 5px;']);
 
-        $p = $div->pInfo($this->_('Appointment filters are used to automatically assign appointments to filters.'));
-        $p->append(' ' . $this->_('The filters are applied in consecutive steps for application to existing tracks and to create new tracks.'));
+        $p = $div->pInfo($this->_('Track field filters are used to automatically assign appointments to track fields.'));
+        $p->append(' ' . $this->_('The track field filters are applied in consecutive steps to existing tracks and to create new tracks.'));
 
         $div->h3($this->_('Step 1: Application to existing tracks'));
 
         $ul = $div->ul();
-        $ul->li($this->_('The tracks that use a filter for the appointment are selected.'));
-        $ul->li($this->_('The tracks that use the appointment are added to the selection.'));
-        $ul->li($this->_('In the order of track creation all these tracks are checked.'));
-        $ul->li($this->_('During the check all the fields of the tracks wil be recalculated.'));
-        $ul->li($this->_('Field recalculation uses the filters to options to select the appointment.'));
-        $ul->li($this->_('The field definition can add additional date / time constraints to find the correct appointment.'));
+        $ul->li($this->_('The tracks are selected that use a track field filter that matches the appointment.'));
+        $ul->li($this->_('Other tracks that use the appointment are added to this selection.'));
+        $ul->li($this->_('In the order of track creation all selected tracks are checked.'));
+        $ul->li($this->_('During the check, all the track fields of the tracks wil be recalculated.'));
+        $ul->li($this->_('Field recalculation uses the track field filters to options to select an appointment.'));
+        $ul->li($this->_('The track field definition can add additional date / time constraints to find the correct appointment.'));
         $ul->li($this->_('If the track is open and valid the tokens are recalculated afterwards.'));
 
         $div->h3($this->_('Step 2: Creation of new tracks'));
 
         $ul = $div->ul();
-        $ul->li($this->_('The filters for the appointment are loaded in the (execution) order specified for the filters.'));
-        $ul->li($this->_('The filters are matched to the tracks fields using them, the lowest (field) order first. If those are equal then the older track is used first.'));
-        $ul->li($this->_('In this order the filters and fields are processed.'));
-        $ul->li($this->_("If the field 'does something' 'when not assigned' that method is checked."));
+        $ul->li($this->_('The track field filters for the appointment are loaded in the (execution) order specified for the filters.'));
+        $ul->li($this->_('The filters are linked to the tracks fields using them, the lowest (field) order first.'));
+        $ul->li($this->_('If those are equal then the older track is used first.'));
+        $ul->li($this->_('In this order the track field filters and track fields are processed.'));
+        $ul->li($this->_("If the track field 'does something' 'when not assigned' that method is checked."));
         $ul->li($this->_("When the 'when not assigned' options is fulfilled (optionally with a difference in days) a new track is created."));
 
         $div->pInfo($this->_('These checks are run automatically every time an appointment is created or changed.'));

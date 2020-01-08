@@ -226,7 +226,7 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      */
     public function getCheckTitle()
     {
-        return $this->_('Appointment filter check for specific appointment');
+        return $this->_('Track field filter check for this appointment');
     }
 
     /**

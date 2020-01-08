@@ -691,10 +691,10 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
             $title .= "\n" . $surveyName;
         }
         if (!empty($patientNr)) {
-            $title .= sprintf("\n" . $this->_('Respondent id: %s'), $patientNr);
+            $title .= sprintf("\n" . $this->_('%s: %s'), $this->_('Respondent nr'), $patientNr);
         }
         if ((!empty($result)) && $this->currentUser->hasPrivilege('pr.respondent.result')) {
-            $title .= sprintf("\n" . $this->_('Result: %s'), $result);
+            $title .= sprintf("\n" . $this->_('%s: %s'), $this->_('Result'), $result);
         }
 
         return $title;

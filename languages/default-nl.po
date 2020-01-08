@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 16:25+0100\n"
+"POT-Creation-Date: 2020-01-08 16:09+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -22,26 +22,24 @@ msgstr ""
 "X-Poedit-SearchPath-3: layouts\n"
 "X-Poedit-SearchPath-4: vendor/magnafacta/mutil/src/MUtil\n"
 
-#: classes/Gems/Agenda.php:385 classes/Gems/Agenda/Appointment.php:466
-#: classes/Gems/Agenda/AppointmentFilterModel.php:173
-#: classes/Gems/Agenda/AppointmentFilterModel.php:191
+#: classes/Gems/Agenda.php:384 classes/Gems/Agenda/Appointment.php:525
 #: classes/Gems/Agenda/EpisodeOfCare.php:160
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:91
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:875
 msgid "; "
 msgstr "; "
 
-#: classes/Gems/Agenda.php:510
+#: classes/Gems/Agenda.php:509
 msgid "DBC (Dutch Diagnosis Treatment Code)"
 msgstr "DBC (Diagnose Behandel Combinatie)"
 
-#: classes/Gems/Agenda.php:511
+#: classes/Gems/Agenda.php:510
 msgid "Manual (organization specific)"
 msgstr "Handmatig (organisatie specifiek)"
 
-#: classes/Gems/Agenda.php:565
-#: classes/Gems/Agenda/AppointmentFilterModel.php:100
-#: classes/Gems/Agenda/AppointmentFilterModel.php:163
+#: classes/Gems/Agenda.php:564
+#: classes/Gems/Agenda/AppointmentFilterModel.php:107
+#: classes/Gems/Agenda/AppointmentFilterModel.php:170
 #: classes/Gems/Default/AgendaActivityAction.php:138
 #: classes/Gems/Default/AgendaDiagnosisAction.php:132
 #: classes/Gems/Default/AgendaProcedureAction.php:138
@@ -63,32 +61,32 @@ msgstr "Handmatig (organisatie specifiek)"
 msgid "Active"
 msgstr "Actief"
 
-#: classes/Gems/Agenda.php:566 classes/Gems/Default/DatabaseAction.php:392
+#: classes/Gems/Agenda.php:565 classes/Gems/Default/DatabaseAction.php:392
 #: classes/Gems/Default/DatabaseAction.php:438
 msgid "Finished"
 msgstr "Afgerond"
 
-#: classes/Gems/Agenda.php:567
+#: classes/Gems/Agenda.php:566
 msgid "On hold"
 msgstr "Gepauzeerd"
 
-#: classes/Gems/Agenda.php:568
+#: classes/Gems/Agenda.php:567
 msgid "Planned"
 msgstr "Gepland"
 
-#: classes/Gems/Agenda.php:569
+#: classes/Gems/Agenda.php:568
 msgid "Waitlist"
 msgstr "Wachtlijst"
 
-#: classes/Gems/Agenda.php:585
+#: classes/Gems/Agenda.php:584
 msgid "Cancelled"
 msgstr "Afgezegd"
 
-#: classes/Gems/Agenda.php:586
+#: classes/Gems/Agenda.php:585
 msgid "Erroneous input"
 msgstr "Foutieve invoer"
 
-#: classes/Gems/Agenda.php:712
+#: classes/Gems/Agenda.php:711
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:81
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:102
 #: classes/Gems/Default/AgendaActivityAction.php:122
@@ -114,12 +112,12 @@ msgstr "Foutieve invoer"
 msgid "Organization"
 msgstr "Organisatie"
 
-#: classes/Gems/Agenda.php:718
+#: classes/Gems/Agenda.php:717
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:82
 msgid "Source of appointment"
 msgstr "Afspraken bron"
 
-#: classes/Gems/Agenda.php:721
+#: classes/Gems/Agenda.php:720
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
 #: classes/Gems/Model/AppointmentModel.php:205
 #: classes/Gems/Model/AppointmentModel.php:256
@@ -128,41 +126,41 @@ msgstr "Afspraken bron"
 msgid "With"
 msgstr "Met"
 
-#: classes/Gems/Agenda.php:727
+#: classes/Gems/Agenda.php:726
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:84
 #: classes/Gems/Model/AppointmentModel.php:258
 msgid "Referrer"
 msgstr "Verwijzer"
 
-#: classes/Gems/Agenda.php:733
+#: classes/Gems/Agenda.php:732
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:85
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:95
 #: classes/Gems/Default/AgendaActivityAction.php:116
 #: classes/Gems/Default/AgendaDiagnosisAction.php:118
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:468
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:467
 msgid "Activity"
 msgstr "Activiteit"
 
-#: classes/Gems/Agenda.php:739
+#: classes/Gems/Agenda.php:738
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
 #: classes/Gems/Default/AgendaProcedureAction.php:116
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
 msgid "Procedure"
 msgstr "Procedure"
 
-#: classes/Gems/Agenda.php:745
+#: classes/Gems/Agenda.php:744
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
 #: classes/Gems/Default/DatabaseAction.php:221
 #: classes/Gems/Default/LocationAction.php:129
 #: classes/Gems/Model/AppointmentModel.php:209
 #: classes/Gems/Model/AppointmentModel.php:262
 #: classes/Gems/Model/OrganizationModel.php:82
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
 msgid "Location"
 msgstr "Locatie"
 
-#: classes/Gems/Agenda.php:751
+#: classes/Gems/Agenda.php:750
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:88
 #: classes/Gems/Default/CommTemplateAction.php:146
 #: classes/Gems/Default/CommTemplateAction.php:151
@@ -175,96 +173,128 @@ msgstr "Locatie"
 msgid "Subject"
 msgstr "Onderwerp"
 
-#: classes/Gems/Agenda.php:929
+#: classes/Gems/Agenda.php:928
 msgid "Active appointment"
 msgstr "Actief"
 
-#: classes/Gems/Agenda.php:930
+#: classes/Gems/Agenda.php:929
 msgid "Completed appointment"
 msgstr "Afgerond"
 
-#: classes/Gems/Agenda.php:946
+#: classes/Gems/Agenda.php:945
 msgid "Aborted appointment"
 msgstr "Niet doorgegaan"
 
-#: classes/Gems/Agenda.php:947
+#: classes/Gems/Agenda.php:946
 msgid "Cancelled appointment"
 msgstr "Afgezegd"
 
-#: classes/Gems/Agenda.php:1016
-msgid "When track already assigned"
-msgstr "Als het traject al toegewezen is"
+#: classes/Gems/Agenda.php:1015
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:298
+msgid "When not assigned"
+msgstr "Indien niet toegewezen"
 
-#: classes/Gems/Agenda.php:1032
+#: classes/Gems/Agenda.php:1031
 msgid "Do nothing"
 msgstr "Doe niets"
 
-#: classes/Gems/Agenda.php:1033
+#: classes/Gems/Agenda.php:1032
 msgid "Create new on minimum start date difference"
 msgstr "Nieuwe aanmaken, indien minimum verschil op startdatum"
 
-#: classes/Gems/Agenda.php:1034
+#: classes/Gems/Agenda.php:1033
 msgid "Create always (unless the appointment already assigned)"
 msgstr "Altijd nieuwe aanmaken (behalve als de afspraak al toegewezen is)"
 
-#: classes/Gems/Agenda.php:1035
+#: classes/Gems/Agenda.php:1034
 msgid "Create new on minimum end date difference"
 msgstr "Nieuwe aanmaken, indien minimum verschil op einddatum"
 
-#: classes/Gems/Agenda.php:1036
+#: classes/Gems/Agenda.php:1035
 msgid "Create new when all surveys have been completed"
 msgstr "Nieuwe aanmaken als alle vragenlijsten afgerond zijn"
 
-#: classes/Gems/Agenda.php:1037
+#: classes/Gems/Agenda.php:1036
 msgid "Create new when all surveys have been completed and on minimum end date"
 msgstr ""
 "Nieuwe aanmaken als alle vragenlijsten afgerond zijn, met minimum verschil "
 "einddatum"
 
-#: classes/Gems/Agenda.php:1048
+#: classes/Gems/Agenda.php:1047
 msgid "Ambulatory"
 msgstr "Poliklinisch"
 
-#: classes/Gems/Agenda.php:1049
+#: classes/Gems/Agenda.php:1048
 msgid "Emergency"
 msgstr "Noodgeval"
 
-#: classes/Gems/Agenda.php:1050 classes/Gems/Mail/MailElements.php:274
+#: classes/Gems/Agenda.php:1049 classes/Gems/Mail/MailElements.php:274
 msgid "Field"
 msgstr "Veld"
 
-#: classes/Gems/Agenda.php:1051
+#: classes/Gems/Agenda.php:1050
 msgid "Home"
 msgstr "Thuis"
 
-#: classes/Gems/Agenda.php:1052
+#: classes/Gems/Agenda.php:1051
 msgid "Inpatient"
 msgstr "Patiënt"
 
-#: classes/Gems/Agenda.php:1053
+#: classes/Gems/Agenda.php:1052
 msgid "Short stay"
 msgstr "Kort verblijf"
 
-#: classes/Gems/Agenda.php:1054
+#: classes/Gems/Agenda.php:1053
 msgid "Virtual"
 msgstr "Virtueel"
 
-#: classes/Gems/Agenda/Appointment.php:97
+#: classes/Gems/Agenda/Appointment.php:103
 #, php-format
 msgid "Track created by %s filter"
 msgstr "Traject aangemaakt door %s filter"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:91
-#: classes/Gems/Agenda/AppointmentFilterModel.php:146
+#: classes/Gems/Agenda/Appointment.php:239
+msgid "track without an end date"
+msgstr "traject zonder einddatum"
+
+#: classes/Gems/Agenda/Appointment.php:243
+#, php-format
+msgid "%d days since previous end date, %d required"
+msgstr "%d dagen sinds de vorige einddatum, %d vereist"
+
+#: classes/Gems/Agenda/Appointment.php:306
+msgid "track without a startdate"
+msgstr "traject zonder startdatum"
+
+#: classes/Gems/Agenda/Appointment.php:310
+#, php-format
+msgid "%d days since previous startdate, %d required"
+msgstr "%d dagen sinds de vorige startdatum, %d vereist"
+
+#: classes/Gems/Agenda/Appointment.php:335
+msgid "never create a track"
+msgstr "filter maakt nooit traject aan"
+
+#: classes/Gems/Agenda/Appointment.php:357
+#: classes/Gems/Agenda/Appointment.php:408
+msgid "an open track exists"
+msgstr "er bestaat een open traject"
+
+#: classes/Gems/Agenda/Appointment.php:383
+msgid "appointment used in track"
+msgstr "afspraak gebruikt in traject"
+
+#: classes/Gems/Agenda/AppointmentFilterModel.php:98
+#: classes/Gems/Agenda/AppointmentFilterModel.php:153
 msgid "Filter type"
 msgstr "Soort filter"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:92
-#: classes/Gems/Agenda/AppointmentFilterModel.php:147
+#: classes/Gems/Agenda/AppointmentFilterModel.php:99
+#: classes/Gems/Agenda/AppointmentFilterModel.php:154
 msgid "Determines what is filtered how."
 msgstr "Bepaald wat op welke manier gefilterd wordt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:96
+#: classes/Gems/Agenda/AppointmentFilterModel.php:103
 #: classes/Gems/Default/AgendaStaffAction.php:117
 #: classes/Gems/Default/CommTemplateAction.php:123
 #: classes/Gems/Default/ComplianceAction.php:92
@@ -287,80 +317,80 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:101
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentFormSnippet.php:64
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:47
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:232
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:231
 #: classes/Gems/Tracker/Model/TrackModel.php:91
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:41
 msgid "Name"
 msgstr "Naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:97
-#: classes/Gems/Agenda/AppointmentFilterModel.php:153
+#: classes/Gems/Agenda/AppointmentFilterModel.php:104
+#: classes/Gems/Agenda/AppointmentFilterModel.php:160
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:220
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:872
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:233
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:232
 msgid "Order"
 msgstr "Volgorde"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:98
-#: classes/Gems/Agenda/AppointmentFilterModel.php:154
+#: classes/Gems/Agenda/AppointmentFilterModel.php:105
+#: classes/Gems/Agenda/AppointmentFilterModel.php:161
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr ""
 "Volgorde waarin de filters gecontroleerd worden, het laagste getal wordt als "
 "eerste eerste gecontroleerd."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:107
+#: classes/Gems/Agenda/AppointmentFilterModel.php:114
 #: classes/Gems/Agenda/AppointmentFilterModel.php:176
 msgid "Use in track fields"
 msgstr "Gebruik in trajectvelden"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:108
+#: classes/Gems/Agenda/AppointmentFilterModel.php:115
 msgid "The number of uses of this filter in track fields."
 msgstr "Het aantal keren dat dit filter in trajectvelden gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:123
-#: classes/Gems/Agenda/AppointmentFilterModel.php:194
+#: classes/Gems/Agenda/AppointmentFilterModel.php:130
+#: classes/Gems/Agenda/AppointmentFilterModel.php:184
 msgid "Use in filters"
 msgstr "Gebruik in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:124
+#: classes/Gems/Agenda/AppointmentFilterModel.php:131
 msgid "The number of uses of this filter in other filters."
 msgstr "Het aantal keren dat dit filter in andere filters gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:150
+#: classes/Gems/Agenda/AppointmentFilterModel.php:157
 msgid "Manual name"
 msgstr "Handmatige naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:151
+#: classes/Gems/Agenda/AppointmentFilterModel.php:158
 msgid "A name for this filter. The calculated name is used otherwise."
 msgstr "Een naam voor dit filter. Anders wordt de berekende naam gebruikt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:152
+#: classes/Gems/Agenda/AppointmentFilterModel.php:159
 msgid "Calculated name"
 msgstr "Berekende naam"
-
-#: classes/Gems/Agenda/AppointmentFilterModel.php:172
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
-msgid ": "
-msgstr ": "
-
-#: classes/Gems/Agenda/AppointmentFilterModel.php:174
-msgid "Not used in tracks"
-msgstr "Niet gebruikt in trajecten"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:177
 msgid "The use of this filter in track fields."
 msgstr "Gebruik van dit filter in trajectvelden."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:192
-msgid "Not used in filters"
-msgstr "Niet gebruikt in filters"
-
-#: classes/Gems/Agenda/AppointmentFilterModel.php:195
+#: classes/Gems/Agenda/AppointmentFilterModel.php:185
 msgid "The use of this filter in other filters."
 msgstr "Gebruik van dit filter in andere filters."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:92
+#: classes/Gems/Agenda/AppointmentFilterModel.php:326
+msgid "Not used in filters"
+msgstr "Niet gebruikt in filters"
+
+#: classes/Gems/Agenda/AppointmentFilterModel.php:356
+msgid "Not used in tracks"
+msgstr "Niet gebruikt in trajecten"
+
+#: classes/Gems/Agenda/AppointmentFilterModel.php:374
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
+msgid ": "
+msgstr ": "
+
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:91
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:69
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
@@ -369,41 +399,41 @@ msgstr "Gebruik van dit filter in andere filters."
 msgid "empty filter"
 msgstr "leeg filter"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:115
-msgid "deleted filter"
-msgstr "verwijdered filter"
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:114
+msgid "(inactive filter)"
+msgstr "(inactief filter)"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:184
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:145
 msgid "AND filter combination"
 msgstr "EN filter combinatie"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:194
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:155
 #: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
 #: classes/Gems/Condition/Round/AndCondition.php:104
 msgid " AND "
 msgstr " EN "
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:207
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:168
 msgid "Sub filter may not be the same as this filter."
 msgstr "Sub filter mag niet hetzelfde zijn als dit filter."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:208
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:169
 msgid "Filters may be chosen only once."
 msgstr "Filters kunnen maar één keer gekozen worden."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:213
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:174
 msgid "Filter 1"
 msgstr "Filter 1"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:221
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:182
 msgid "Filter 2"
 msgstr "Filter 2"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:229
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:190
 msgid "Filter 3"
 msgstr "Filter 3"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:239
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:200
 msgid "Filter 4"
 msgstr "Filter 4"
 
@@ -795,7 +825,7 @@ msgstr "Patiënt"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:70
 #: classes/Gems/Condition/Round/GenderCondition.php:110
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
 msgid "Relation"
 msgstr "Relatie"
 
@@ -960,7 +990,7 @@ msgstr "Ok"
 #: classes/Gems/Default/RespondentNewAction.php:835
 #: classes/Gems/Default/SourceAction.php:343
 #: classes/Gems/Default/UpgradeAction.php:212
-#: classes/Gems/Export/RespondentExport.php:496
+#: classes/Gems/Export/RespondentExport.php:497
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:229
 #: classes/Gems/Snippets/FormSnippetAbstract.php:214
@@ -1345,12 +1375,12 @@ msgid_plural "diagnoses"
 msgstr[0] "diagnose"
 msgstr[1] "diagnoses"
 
-#: classes/Gems/Default/AgendaFilterAction.php:112
+#: classes/Gems/Default/AgendaFilterAction.php:133
 #: classes/Gems/Menu/MenuAbstract.php:211
 msgid "Track field filters"
 msgstr "Trajectveldfilters"
 
-#: classes/Gems/Default/AgendaFilterAction.php:123
+#: classes/Gems/Default/AgendaFilterAction.php:144
 msgid "track field filter"
 msgid_plural "track field filters"
 msgstr[0] "trajectveldfilter"
@@ -1418,44 +1448,48 @@ msgid_plural "healthcare staff"
 msgstr[0] "zorgverlener"
 msgstr[1] "zorgverleners"
 
-#: classes/Gems/Default/AppointmentAction.php:195
+#: classes/Gems/Default/AppointmentAction.php:229
+msgid "Track field filter check for this appointment"
+msgstr "Trajectveldfilter controle voor deze afspraak"
+
+#: classes/Gems/Default/AppointmentAction.php:242
 #, php-format
 msgid "Appointments for respondent number %s"
 msgstr "Afspraken voor patiëntnummer %s"
 
-#: classes/Gems/Default/AppointmentAction.php:201
+#: classes/Gems/Default/AppointmentAction.php:248
 #, php-format
 msgid "Appointments for respondent number %s: %s"
 msgstr "Afspraken voor patiëntnummer %s: %s"
 
-#: classes/Gems/Default/AppointmentAction.php:213 classes/Gems/Menu.php:432
+#: classes/Gems/Default/AppointmentAction.php:260 classes/Gems/Menu.php:433
 #: classes/Gems/Model/EpisodeOfCareModel.php:154
 #: classes/Gems/Model/EpisodeOfCareModel.php:198
 msgid "Appointments"
 msgstr "Afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:230
+#: classes/Gems/Default/AppointmentAction.php:277
 #: classes/Gems/Default/CareEpisodeAction.php:166
 #: classes/Gems/Default/RespondentMailLogAction.php:163
 msgid "Unknown respondent."
 msgstr "Onbekende patiënt."
 
-#: classes/Gems/Default/AppointmentAction.php:250
+#: classes/Gems/Default/AppointmentAction.php:297
 msgid "appointment"
 msgid_plural "appointments"
 msgstr[0] "afspraak"
 msgstr[1] "afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:291
+#: classes/Gems/Default/AppointmentAction.php:338
 msgid "Requested agenda data not available!"
 msgstr "Verzochte afspraak gegevens niet gevonden!"
 
-#: classes/Gems/Default/AppointmentAction.php:300
+#: classes/Gems/Default/AppointmentAction.php:347
 #, php-format
 msgid "You have no access to %s appointments!"
 msgstr "U heeft geen toegang %s afspraken!"
 
-#: classes/Gems/Default/AppointmentAction.php:303
+#: classes/Gems/Default/AppointmentAction.php:350
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
@@ -1521,7 +1555,7 @@ msgstr ""
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 
-#: classes/Gems/Default/CalendarAction.php:153 classes/Gems/Menu.php:858
+#: classes/Gems/Default/CalendarAction.php:153 classes/Gems/Menu.php:860
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -1564,8 +1598,8 @@ msgstr[1] "behandelepisodes"
 #: classes/Gems/Default/ChartconfigAction.php:36
 #: classes/Gems/Default/CommJobAction.php:265
 #: classes/Gems/Default/ProjectTracksAction.php:99
-#: classes/Gems/Export/RespondentExport.php:339
-#: classes/Gems/Export/RespondentExport.php:351 classes/Gems/Menu.php:443
+#: classes/Gems/Export/RespondentExport.php:340
+#: classes/Gems/Export/RespondentExport.php:352 classes/Gems/Menu.php:445
 #: classes/Gems/Model/CommLogModel.php:143
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:117
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:42
@@ -1576,8 +1610,8 @@ msgstr[1] "behandelepisodes"
 #: classes/Gems/Snippets/Tracker/AvailableTracksSnippet.php:105
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:787
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:862
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:319
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:482
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:318
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:481
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:131
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:167
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:278
@@ -1631,14 +1665,14 @@ msgstr "Vragenlijstcode"
 #: classes/Gems/Default/ReceptionAction.php:67
 #: classes/Gems/Default/RoleAction.php:114
 #: classes/Gems/Default/UpgradeAction.php:204
-#: classes/Gems/Export/RespondentExport.php:340
+#: classes/Gems/Export/RespondentExport.php:341
 #: classes/Gems/Model/StaffModel.php:350
 #: classes/Gems/Model/SurveyMaintenanceModel.php:94
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:105
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:98
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:877
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:322
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:321
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:132
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:196
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:281
@@ -1923,6 +1957,7 @@ msgstr "Email sjabloon"
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:148
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:99
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:266
+#: classes/Gems/Util/TokenData.php:694
 msgid "Respondent nr"
 msgstr "Patiënt nr"
 
@@ -1959,6 +1994,7 @@ msgstr "Voortgang"
 #: classes/Gems/Default/ProjectTracksAction.php:148
 #: classes/Gems/Default/TrackAction.php:1035
 #: classes/Gems/Default/TrackMaintenanceAction.php:323
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:217
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:186
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:171
 msgid "track"
@@ -2096,7 +2132,7 @@ msgstr "GemsTracker is een %s open source project."
 msgid "More information about GemsTracker is available on the %s website."
 msgstr "Meer informatie over GemsTracker vindt u op de %s site."
 
-#: classes/Gems/Default/ContactAction.php:145 classes/Gems/Menu.php:882
+#: classes/Gems/Default/ContactAction.php:145 classes/Gems/Menu.php:884
 msgid "Contact"
 msgstr "Contact"
 
@@ -2196,7 +2232,7 @@ msgstr "Geen gegevens in %s."
 #: classes/Gems/Model/AppointmentModel.php:246
 #: classes/Gems/Model/ConditionModel.php:67
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:87
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:236
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:235
 msgid "Type"
 msgstr "Type"
 
@@ -2340,7 +2376,9 @@ msgid "Query"
 msgstr "Query"
 
 #: classes/Gems/Default/DatabaseAction.php:439
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:342
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:351
+#: classes/Gems/Util/TokenData.php:697
 #, php-format
 msgid "Result"
 msgstr "Resultaat"
@@ -2468,7 +2506,7 @@ msgstr[0] "trajectveld"
 msgstr[1] "trajectvelden"
 
 #: classes/Gems/Default/FieldReportAction.php:155
-#: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:497
+#: classes/Gems/Default/ReceptionAction.php:87 classes/Gems/Menu.php:499
 #: classes/Gems/Menu/MenuAbstract.php:688
 #: classes/Gems/Menu/MenuAbstract.php:870
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:261
@@ -2622,7 +2660,7 @@ msgstr "Medewerkers"
 
 #: classes/Gems/Default/GroupAction.php:168
 #: classes/Gems/Default/ReceptionAction.php:83
-#: classes/Gems/Default/RespondentNewAction.php:579 classes/Gems/Menu.php:855
+#: classes/Gems/Default/RespondentNewAction.php:579 classes/Gems/Menu.php:857
 #: classes/Gems/Model/OrganizationModel.php:123
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:255
 #: classes/Gems/Util/MailJobsUtil.php:267
@@ -3097,7 +3135,7 @@ msgid_plural "email servers"
 msgstr[0] "email server"
 msgstr[1] "email servers"
 
-#: classes/Gems/Default/OpenRosaFormAction.php:78 classes/Gems/Menu.php:597
+#: classes/Gems/Default/OpenRosaFormAction.php:78 classes/Gems/Menu.php:599
 msgid "Fill in"
 msgstr "Vul in"
 
@@ -4003,7 +4041,7 @@ msgid "]"
 msgstr "]"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:247
-#: classes/Gems/Menu.php:575 classes/Gems/Menu/MenuAbstract.php:695
+#: classes/Gems/Menu.php:577 classes/Gems/Menu/MenuAbstract.php:695
 #: classes/Gems/Menu/MenuAbstract.php:843
 #: classes/Gems/Tracker/Model/TrackModel.php:94
 msgid "Surveys"
@@ -4222,11 +4260,11 @@ msgstr "Herbereken de trajectvelden van alle trajecten van patiënt %s, %s."
 msgid "Recalculating fields for track '%s' of respondent %s, %s."
 msgstr "Herbereken de trajectvelden van traject '%s' van patiënt %s, %s."
 
-#: classes/Gems/Default/TrackFieldsAction.php:133
+#: classes/Gems/Default/TrackFieldsAction.php:146
 msgid "Do you want to delete this field?"
 msgstr "Weet u zeker dat dit veld verwijderd moet worden?"
 
-#: classes/Gems/Default/TrackFieldsAction.php:137
+#: classes/Gems/Default/TrackFieldsAction.php:150
 #, php-format
 msgid "This field will be deleted from %s assigned track."
 msgid_plural "This field will be deleted from %s assigned tracks."
@@ -4237,7 +4275,7 @@ msgstr[1] ""
 "Dit veld wordt bij %s toegewezen trajecten gebruikt en zal daar ook "
 "verwijderd worden."
 
-#: classes/Gems/Default/TrackFieldsAction.php:142
+#: classes/Gems/Default/TrackFieldsAction.php:155
 #, php-format
 msgid "Do you want to delete this field and the value stored for the field?"
 msgid_plural ""
@@ -4249,17 +4287,18 @@ msgstr[1] ""
 "Weet je zeker dat je dit veld en de %s waarden die ervoor opgeslagen zijn "
 "wil verwijderen?"
 
-#: classes/Gems/Default/TrackFieldsAction.php:155
+#: classes/Gems/Default/TrackFieldsAction.php:168
 #, php-format
 msgid "New field for %s track..."
 msgstr "Nieuw veld voor %s traject..."
 
-#: classes/Gems/Default/TrackFieldsAction.php:167
+#: classes/Gems/Default/TrackFieldsAction.php:180
 #, php-format
 msgid "Fields %s"
 msgstr "Velden %s"
 
-#: classes/Gems/Default/TrackFieldsAction.php:178
+#: classes/Gems/Default/TrackFieldsAction.php:191
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:227
 msgid "field"
 msgid_plural "fields"
 msgstr[0] "veld"
@@ -4487,7 +4526,7 @@ msgstr "Relatie ID"
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:105
 #: classes/Gems/Menu.php:403 classes/Gems/Model/RespondentModel.php:301
 #: classes/Gems/Model/RespondentModel.php:397
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
 msgid "Consent"
 msgstr "Toestemming"
 
@@ -4534,7 +4573,7 @@ msgstr "Laatste pagina"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:124
 #: classes/Gems/Export/RespondentExport.php:257 classes/Gems/Menu.php:313
-#: classes/Gems/Menu.php:467 classes/Gems/Menu.php:561
+#: classes/Gems/Menu.php:469 classes/Gems/Menu.php:563
 #: classes/Gems/Model/CommLogModel.php:141
 #: classes/Gems/Model/OrganizationModel.php:262
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
@@ -4627,13 +4666,13 @@ msgstr "Ontvangstcode van kenmerk toevoegen"
 msgid "Single Survey"
 msgstr "Losse vragenlijst"
 
-#: classes/Gems/Export/RespondentExport.php:341
+#: classes/Gems/Export/RespondentExport.php:342
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:133
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:130
 msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Beschrijf de redenen om dit aan deze patiënt toe te wijzen."
 
-#: classes/Gems/Export/RespondentExport.php:342
+#: classes/Gems/Export/RespondentExport.php:343
 #: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:115
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:84
 #: classes/Gems/Snippets/Track/TracksSnippet.php:95
@@ -4644,7 +4683,7 @@ msgstr "Beschrijf de redenen om dit aan deze patiënt toe te wijzen."
 msgid "Assigned by"
 msgstr "Toewijzer"
 
-#: classes/Gems/Export/RespondentExport.php:343
+#: classes/Gems/Export/RespondentExport.php:344
 #: classes/Gems/Snippets/Track/TracksSnippet.php:90
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:135
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:180
@@ -4652,7 +4691,7 @@ msgstr "Toewijzer"
 msgid "Start"
 msgstr "Aanvang"
 
-#: classes/Gems/Export/RespondentExport.php:347
+#: classes/Gems/Export/RespondentExport.php:348
 #: classes/Gems/Model/AppointmentModel.php:267
 #: classes/Gems/Model/EpisodeOfCareModel.php:196
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:143
@@ -4662,19 +4701,19 @@ msgstr "Aanvang"
 msgid "Comment"
 msgstr "Opmerkingen"
 
-#: classes/Gems/Export/RespondentExport.php:355
+#: classes/Gems/Export/RespondentExport.php:356
 msgid "Track information"
 msgstr "Traject informatie"
 
-#: classes/Gems/Export/RespondentExport.php:470
+#: classes/Gems/Export/RespondentExport.php:471
 msgid "Group surveys"
 msgstr "Groepeer vragenlijsten"
 
-#: classes/Gems/Export/RespondentExport.php:476
+#: classes/Gems/Export/RespondentExport.php:477
 msgid "Output format"
 msgstr "Uitvoerformaat"
 
-#: classes/Gems/Export/RespondentExport.php:490 classes/Gems/Menu.php:873
+#: classes/Gems/Export/RespondentExport.php:491 classes/Gems/Menu.php:875
 #: classes/Gems/Menu/MenuAbstract.php:881 classes/Gems/Menu/SubMenuItem.php:474
 #: classes/Gems/Snippets/Export/ExportFormSnippet.php:77
 #: classes/Gems/Snippets/Export/MultiSurveysSearchFormSnippet.php:74
@@ -5013,12 +5052,16 @@ msgstr "Bekijk vragenlijst"
 msgid "Episodes"
 msgstr "Episodes"
 
-#: classes/Gems/Menu.php:448 classes/Gems/Menu.php:502
+#: classes/Gems/Menu.php:441
+msgid "Filter Check"
+msgstr "Filter Controle"
+
+#: classes/Gems/Menu.php:450 classes/Gems/Menu.php:504
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:264
 msgid "Add"
 msgstr "Voeg toe"
 
-#: classes/Gems/Menu.php:454 classes/Gems/Menu.php:606
+#: classes/Gems/Menu.php:456 classes/Gems/Menu.php:608
 #: classes/Gems/Menu/MenuAbstract.php:318
 #: classes/Gems/Menu/MenuAbstract.php:680
 #: classes/Gems/Menu/MenuAbstract.php:692
@@ -5027,34 +5070,34 @@ msgstr "Voeg toe"
 msgid "Preview"
 msgstr "Preview"
 
-#: classes/Gems/Menu.php:460 classes/Gems/Menu.php:522
+#: classes/Gems/Menu.php:462 classes/Gems/Menu.php:524
 #: classes/Gems/Menu/SubMenuItem.php:448
 msgid "Edit"
 msgstr "Wijzig"
 
-#: classes/Gems/Menu.php:471 classes/Gems/Menu.php:512
+#: classes/Gems/Menu.php:473 classes/Gems/Menu.php:514
 msgid "Insert"
 msgstr "Invoegen"
 
-#: classes/Gems/Menu.php:476 classes/Gems/Menu.php:540
+#: classes/Gems/Menu.php:478 classes/Gems/Menu.php:542
 msgid "Check answers"
 msgstr "Controleer op antwoorden"
 
-#: classes/Gems/Menu.php:482 classes/Gems/Menu.php:544
+#: classes/Gems/Menu.php:484 classes/Gems/Menu.php:546
 #: classes/Gems/Menu/MenuAbstract.php:883
 msgid "Check rounds"
 msgstr "Controleer rondes"
 
-#: classes/Gems/Menu.php:488 classes/Gems/Menu.php:549
+#: classes/Gems/Menu.php:490 classes/Gems/Menu.php:551
 #: classes/Gems/Menu/MenuAbstract.php:886
 msgid "Recalculate fields"
 msgstr "Herbereken trajectvelden"
 
-#: classes/Gems/Menu.php:507
+#: classes/Gems/Menu.php:509
 msgid "Assignments"
 msgstr "Toewijzingen"
 
-#: classes/Gems/Menu.php:517
+#: classes/Gems/Menu.php:519
 #: classes/Gems/Snippets/Token/DeleteTrackTokenSnippet.php:133
 #: classes/Gems/Snippets/Token/EditTrackTokenSnippet.php:57
 #: classes/Gems/Snippets/Token/PlanRespondentSnippet.php:69
@@ -5065,92 +5108,92 @@ msgstr "Toewijzingen"
 msgid "Show track"
 msgstr "Toon traject"
 
-#: classes/Gems/Menu.php:528 classes/Gems/Menu/MenuAbstract.php:435
+#: classes/Gems/Menu.php:530 classes/Gems/Menu/MenuAbstract.php:435
 #: classes/Gems/Menu/SubMenuItem.php:422
 #: classes/Gems/Snippets/MonitorSnippet.php:77
 msgid "Delete"
 msgstr "Verwijder"
 
-#: classes/Gems/Menu.php:534 classes/Gems/Menu.php:593
-#: classes/Gems/Menu.php:645
+#: classes/Gems/Menu.php:536 classes/Gems/Menu.php:595
+#: classes/Gems/Menu.php:647
 msgid "Undelete!"
 msgstr "Herstel!"
 
-#: classes/Gems/Menu.php:555
+#: classes/Gems/Menu.php:557
 msgid "Export track"
 msgstr "Exporteer traject"
 
-#: classes/Gems/Menu.php:565
+#: classes/Gems/Menu.php:567
 msgid "Check all answers"
 msgstr "Controleer alles op antwoorden"
 
-#: classes/Gems/Menu.php:568 classes/Gems/Menu/MenuAbstract.php:922
+#: classes/Gems/Menu.php:570 classes/Gems/Menu/MenuAbstract.php:922
 msgid "Check all rounds"
 msgstr "Controleer alle rondes"
 
-#: classes/Gems/Menu.php:571 classes/Gems/Menu/MenuAbstract.php:923
+#: classes/Gems/Menu.php:573 classes/Gems/Menu/MenuAbstract.php:923
 msgid "Recalculate all fields"
 msgstr "Herbereken alle trajectvelden"
 
-#: classes/Gems/Menu.php:587
+#: classes/Gems/Menu.php:589
 msgid "Correct answers"
 msgstr "Wijzig antwoorden"
 
-#: classes/Gems/Menu.php:600
+#: classes/Gems/Menu.php:602
 msgid "Print PDF"
 msgstr "Print PDF"
 
-#: classes/Gems/Menu.php:603
+#: classes/Gems/Menu.php:605
 msgid "E-Mail now!"
 msgstr "Email nu!"
 
-#: classes/Gems/Menu.php:609 classes/Gems/Menu/MenuAbstract.php:493
+#: classes/Gems/Menu.php:611 classes/Gems/Menu/MenuAbstract.php:493
 #: classes/Gems/Model/SurveyCodeBookModel.php:69
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:776
 msgid "Answers"
 msgstr "Antwoorden"
 
-#: classes/Gems/Menu.php:613
+#: classes/Gems/Menu.php:615
 msgid "(Re)check answers"
 msgstr "(Her)controleer antwoorden"
 
-#: classes/Gems/Menu.php:616
+#: classes/Gems/Menu.php:618
 msgid "Export answers"
 msgstr "Exporteer antwoorden"
 
-#: classes/Gems/Menu.php:621
+#: classes/Gems/Menu.php:623
 msgid "Export archive"
 msgstr "Dossier export"
 
-#: classes/Gems/Menu.php:625 classes/Gems/Menu/MenuAbstract.php:334
+#: classes/Gems/Menu.php:627 classes/Gems/Menu/MenuAbstract.php:334
 msgid "Communication log"
 msgstr "Communicatie logboek"
 
-#: classes/Gems/Menu.php:632
+#: classes/Gems/Menu.php:634
 msgid "Activity log"
 msgstr "Activiteiten log"
 
-#: classes/Gems/Menu.php:652 classes/Gems/Util/MailJobsUtil.php:266
+#: classes/Gems/Menu.php:654 classes/Gems/Util/MailJobsUtil.php:266
 msgid "Relations"
 msgstr "Relaties"
 
-#: classes/Gems/Menu.php:861
+#: classes/Gems/Menu.php:863
 msgid "Overview"
 msgstr "Overzicht"
 
-#: classes/Gems/Menu.php:864 classes/Gems/Menu/MenuAbstract.php:609
+#: classes/Gems/Menu.php:866 classes/Gems/Menu/MenuAbstract.php:609
 msgid "Project"
 msgstr "Project"
 
-#: classes/Gems/Menu.php:867
+#: classes/Gems/Menu.php:869
 msgid "Setup"
 msgstr "Beheer"
 
-#: classes/Gems/Menu.php:870
+#: classes/Gems/Menu.php:872
 msgid "Track Builder"
 msgstr "Trajectbouwer"
 
-#: classes/Gems/Menu.php:876 classes/Gems/Menu/SubMenuItem.php:511
+#: classes/Gems/Menu.php:878 classes/Gems/Menu/SubMenuItem.php:511
 msgid "Import"
 msgstr "Importeer"
 
@@ -5461,7 +5504,7 @@ msgstr "Exporteer de huidige gegevens"
 #: classes/Gems/Model/AppointmentModel.php:193
 #: classes/Gems/Model/AppointmentModel.php:240
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:780
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:468
 msgid "Appointment"
 msgstr "Afspraak"
 
@@ -5624,7 +5667,7 @@ msgstr "(geen patiënt)"
 #: classes/Gems/Model/LogModel.php:102
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:77
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:202
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:472
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:477
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:715
 msgid "Date"
@@ -6585,6 +6628,251 @@ msgstr "meest langzame antwoord"
 msgid "Activated surveys"
 msgstr "Geactiveerde vragenlijsten"
 
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:46
+msgid "Explanation of Track field filter application"
+msgstr "Uitleg van Trajectveldfilter toepassing"
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:48
+msgid ""
+"Track field filters are used to automatically assign appointments to track "
+"fields."
+msgstr ""
+"Trajectveldfilters worden gebruikt om afspraken automatisch te koppelen aan "
+"trajectvelden."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:49
+msgid ""
+"The track field filters are applied in consecutive steps to existing tracks "
+"and to create new tracks."
+msgstr ""
+"De trajectveldfilters worden in twee stappen toegepast op bestaande "
+"trajecten alsmede om nieuwe trajecten aan te maken."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:51
+msgid "Step 1: Application to existing tracks"
+msgstr "Stap 1: Toepassing op bestaande trajecten"
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:54
+msgid ""
+"The tracks are selected that use a track field filter that matches the "
+"appointment."
+msgstr ""
+"De trajecten worden geselecteerd die een trajectveldfilter gebruiken waar de "
+"afspraak aan voldoet."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:55
+msgid "Other tracks that use the appointment are added to this selection."
+msgstr ""
+"Andere trajecten die de afspraak al gebruiken worden toegevoegd aan deze "
+"selectie."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:56
+msgid "In the order of track creation all selected tracks are checked."
+msgstr ""
+"De geselecteerde trajecten worden gecontroleerd in de volgorde van aanmaak."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:57
+msgid ""
+"During the check, all the track fields of the tracks wil be recalculated."
+msgstr "Gedruende de controle worden alle trajectvelden herberekend."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:58
+msgid ""
+"Field recalculation uses the track field filters to options to select an "
+"appointment."
+msgstr ""
+"De trajectveldfilters worden tijdens het herberekenen gebruikt om een "
+"afspraak te selecteren."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:59
+msgid ""
+"The track field definition can add additional date / time constraints to "
+"find the correct appointment."
+msgstr ""
+"De trajectveld definitie kan aanvullende datum / tijd beperkingen instellen "
+"voor de juiste afspraak."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:60
+msgid "If the track is open and valid the tokens are recalculated afterwards."
+msgstr ""
+"Als het trajecten open en geldig is worden de kenmerken na afloop "
+"herberekend."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:62
+msgid "Step 2: Creation of new tracks"
+msgstr "Stap 2: Het aanmaken van nieuwe trajecten"
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:65
+msgid ""
+"The track field filters for the appointment are loaded in the (execution) "
+"order specified for the filters."
+msgstr ""
+"De trajectveldfilters voor de afspraak worden geladen in de (uitvoerings) "
+"volgorde opgegeven bij de filters."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:66
+msgid ""
+"The filters are linked to the tracks fields using them, the lowest (field) "
+"order first."
+msgstr ""
+"De filters worden gekoppeld met de trajectvelden die ze gebruiken, met de "
+"laatste (veld) volgorde eerst."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:67
+msgid "If those are equal then the older track is used first."
+msgstr "Indien die gelijk zijn wordt de oudste als eerste gebruikt."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:68
+msgid "In this order the track field filters and track fields are processed."
+msgstr ""
+"In deze volgorde worden de trajectveldfilters en trajectvelden verwerkt."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:69
+msgid ""
+"If the track field 'does something' 'when not assigned' that method is "
+"checked."
+msgstr ""
+"Als het trajectveld 'iets doet' 'indien niet toegewezen', dan wordt daarop "
+"gecontroleerd."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:70
+msgid ""
+"When the 'when not assigned' options is fulfilled (optionally with a "
+"difference in days) a new track is created."
+msgstr ""
+"Wordt voldaan aan de 'indien niet toegewezen' instelling (mogelijk met een "
+"verschil in dagen) wordt een nieuw traject aangemaakt."
+
+#: classes/Gems/Snippets/Agenda/ApplyFiltersInformation.php:72
+msgid ""
+"These checks are run automatically every time an appointment is created or "
+"changed."
+msgstr ""
+"Deze controles worden automatisch uitgevoerd telkens na aanmaak of wijziging "
+"van een afspraak."
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:81
+msgid "Check mode:"
+msgstr "Controle modus:"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:82
+msgid "This option can change tracks!"
+msgstr "Deze keuze kan trajecten veranderen!"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:127
+msgid "Existing tracks check"
+msgstr "Controle bestaande trajecten"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:150
+msgid "startdate unknown"
+msgstr "startdatum onbekend"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:154
+#, php-format
+msgid " [%s, startdate %s]"
+msgstr " [%s, startdatum: %s]"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:156
+#, php-format
+msgid " [startdate %s]"
+msgstr " [startdatum: %s]"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:161
+msgid "fields were changed"
+msgstr "velden zijn veranderd"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:163
+msgid "no fields changed"
+msgstr "geen velden veranderd"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:168
+#: classes/Gems/Snippets/Agenda/AppointmentFormSnippet.php:66
+#, php-format
+msgid "%d token changed"
+msgid_plural "%d tokens changed"
+msgstr[0] "%d kenmerk veranderd"
+msgstr[1] "%d  kenmerken veranderd"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:171
+msgid "no tokens changed"
+msgstr "geen kenmerken veranderd"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:174
+msgid "no checks executed"
+msgstr "geen controles om uit te voeren"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:178
+msgid "No tracks to check."
+msgstr "Geen trajecten om te controleren."
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:188
+msgid "Creation by filter check"
+msgstr "Aanmaak door filter controle"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:208
+#, php-format
+msgid "%s: "
+msgstr "%s: "
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:208
+msgid "filter"
+msgstr "filter"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:217
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:227
+#, php-format
+msgid ", %s: "
+msgstr ", %s: "
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:249
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:252
+msgid "track was created!"
+msgstr "traject aangemaakt!"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:255
+msgid "track would be created!"
+msgstr "traject zou aangemaakt worden!"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:258
+msgid "track not created because: "
+msgstr "traject niet aangemaakt omdat: "
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:271
+msgid "track not created, reason unknown!"
+msgstr "traject niet aangemaakt, reden onbekend!"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:275
+msgid "No creation filters to check."
+msgstr "Geen aanmaak filters om te controleren."
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:285
+msgid "Creation by filter check skipped"
+msgstr "Aanmaak door filter controle overgeslagen"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:287
+msgid "Check skipped because the appointment is in the past."
+msgstr "Controle overgeslagen omdat de afspraak in het verleden is."
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:289
+msgid "Check skipped because the appointment is not active."
+msgstr "Controle overgeslagen omdat de afspraak niet actief is."
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:304
+#, php-format
+msgid ""
+"'%s' shows what will be checked, clicking on '%s' will perform actual "
+"changes!'"
+msgstr ""
+"'%s' toont wat gecontroleerd wordt, '%s' aanklikken voert veranderingen uit!'"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:372
+msgid "Just check"
+msgstr "Alleen controleren"
+
+#: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:373
+msgid "Check and apply"
+msgstr "Controleren en uitvoeren"
+
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:157
 #, php-format
 msgid "%d appointment deleted."
@@ -6614,13 +6902,6 @@ msgstr "Opruim filter uitgeschakeld!"
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:223
 msgid "No clean up possible."
 msgstr "Opruimen niet mogelijk."
-
-#: classes/Gems/Snippets/Agenda/AppointmentFormSnippet.php:66
-#, php-format
-msgid "%d token changed"
-msgid_plural "%d tokens changed"
-msgstr[0] "%d kenmerk veranderd"
-msgstr[1] "%d  kenmerken veranderd"
 
 #: classes/Gems/Snippets/Agenda/AppointmentTokensSnippet.php:43
 msgid "Tokens set by this appointment"
@@ -7541,7 +7822,7 @@ msgstr "Toestemmingswijzigingen voor patiënt %s, %s bij %s"
 
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:63
 msgid "No consent changes found"
-msgstr "Geen toestemmingswijzigingen gevonden."
+msgstr "Geen toestemmingswijzigingen gevonden"
 
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:89
 msgid "Previous consent"
@@ -8428,8 +8709,8 @@ msgid "Fields in %s track"
 msgstr "Velden in traject %s"
 
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:52
-msgid "(all active)"
-msgstr "(alle actieve)"
+msgid "(any active)"
+msgstr "(elke actief)"
 
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:58
 msgid "(not used in any track)"
@@ -9430,7 +9711,7 @@ msgid "Round code"
 msgstr "Ronde code"
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:896
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:246
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:245
 msgid "Optional code name to link the field to program code."
 msgstr "Optionele code naam om het veld aan programmacode te koppelen."
 
@@ -9453,12 +9734,12 @@ msgstr "Onbekend"
 msgid "Enter tokens as %s."
 msgstr "Kenmerk invoeren als %s."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:106
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:234
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:111
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:233
 msgid "The display and processing order of the fields."
 msgstr "De weergave en verwerkingsvolgorde van de velden."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:107
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:112
 msgid ""
 "When using automatic filters the fields are ALWAYS filled with appointments "
 "in ascending order."
@@ -9466,19 +9747,19 @@ msgstr ""
 "Bij het gebruik van automatische filters worden de velden ALTIJD in "
 "oplopende volgorde met afspraken gevuld."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:115
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:120
 msgid "Automatic link"
 msgstr "Automatische koppeling"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:116
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:121
 msgid "Automatically link an appointment when it passes this filter."
 msgstr "Koppel afspraken die aan dit filter voldoen automatisch aan dit veld."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:126
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:132
 msgid "Minimal time difference"
 msgstr "Minimum tijdsverschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:127
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:133
 msgid ""
 "Difference with the previous appointment or track start date, can be "
 "negative but not zero"
@@ -9486,64 +9767,64 @@ msgstr ""
 "Verschil met de vorige afspraak of traject startdatum, kan negatief zijn "
 "maar niet nul"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:132
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:138
 msgid "This value may not be zero!"
 msgstr "Deze warde mag niet nul zijn!"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:135
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:141
 msgid "Minimal difference unit"
 msgstr "Eenheid minimum tijdsverschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:140
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:146
 msgid "Set a maximum time difference"
 msgstr "Maximum tijdsverschil instellen"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:146
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:152
 msgid "Maximum time difference"
 msgstr "Maximum tijdsverschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:154
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:160
 msgid "Must be negative, just like the minimal difference."
 msgstr "Moet negatief zijn, net als het minimum tijdsverschil."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:159
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:165
 msgid "Must be positive, just like the minimal difference."
 msgstr "Moet positief zijn, net als het minimum tijdsverschil."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:164
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:170
 msgid "Maximum difference unit"
 msgstr "Eenheid maximum tijdsverschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:176
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:182
 msgid "Link unique"
 msgstr "Koppel uniek"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:177
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:183
 msgid "Can one appointment be used in multiple fields?"
 msgstr "Kan een afspraak gebruikt worden bij meerdere velden?"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:180
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:186
 msgid "No: repeatedly linked appointments are allowed."
 msgstr "Nee: één afspraak kan in meerdere velden gebruikt worden."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:181
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:187
 msgid "Track instances may link only once to an appointment."
 msgstr ""
 "In een toegewezen traject mag een afspraak aan maar één veld toegekend "
 "worden."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:182
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:188
 msgid "Tracks of this type may link only once to an appointment."
 msgstr ""
 "Over alle trajecten van dit type mag een afspraak maar één keer toegekend "
 "worden."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:194
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:198
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:200
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:204
 msgid "End date difference"
 msgstr "Einddatum verschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:195
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:201
 msgid ""
 "Any previous track must be closed and have an end date at least this many "
 "days in the past."
@@ -9551,18 +9832,18 @@ msgstr ""
 "Eerdere trajecten moeten gesloten zijn, met een minimum verschil op "
 "einddatum."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:199
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:205
 msgid ""
 "Any previous track must have an end date at least this many days in the past."
 msgstr ""
 "Als dit traject al bestaat moet de eind datum daarvan minstens zoveel dagen "
 "in het verleden liggen."
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:202
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:208
 msgid "Start date difference"
 msgstr "Startdatum verschil"
 
-#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:203
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:209
 msgid ""
 "Any previous track must have an start date at least this many days in the "
 "past."
@@ -9595,59 +9876,55 @@ msgid "Calculate from"
 msgstr "Berekenen met"
 
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:132
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:278
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:293
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:277
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:292
 msgid "Automatically calculate this field using other fields"
 msgstr "Vul dit veld automatisch vanuit een ander veld"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:245
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:244
 msgid "Field code"
 msgstr "Veldcode"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:251
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:250
 msgid "Field use"
 msgstr "Veld gebruik"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:253
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:252
 msgid "In description"
 msgstr "In omschrijving"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:254
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:253
 msgid "Add this field to the track description"
 msgstr "Voeg dit veld toe aan traject  omschrijving"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:258
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:257
 msgid "Add the name of this field to the track description"
 msgstr "Voeg ook de naam van dit veld aan de trajectomschrijving toe"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:261
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:736
 msgid "Required"
 msgstr "Verplicht"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:266
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:265
 msgid "Readonly"
 msgstr "Alleen lezen"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:267
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:266
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr ""
 "Vink aan als dit veld altijd vanuit de code ingesteld wordt, in plaats van "
 "door gebruikers."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:274
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:273
 msgid "Field calculation"
 msgstr "Veld berekening"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:292
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:291
 msgid "Calculate using"
 msgstr "Bereken met"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:299
-msgid "Create track"
-msgstr "Nieuw traject"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:300
 msgid ""
 "Create a track if the respondent does not have a track where this field is "
 "empty."
@@ -9655,50 +9932,50 @@ msgstr ""
 "Maak een nieuw traject als de patiënt geen openstaand traject heeft waar dit "
 "veld leeg is."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:323
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:322
 msgid "Optional extra description to show the user."
 msgstr "Optie: extra omschrijving om aan de gebruiker te tonen."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:325
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:324
 msgid "Add name to description"
 msgstr "Naam in omschrijving"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:469
 msgid "Boolean"
 msgstr "Ja/Nee/Nvt"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:471
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:470
 msgid "Caretaker"
 msgstr "Behandelaar"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:473
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:492
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:718
 msgid "Free text"
 msgstr "Vrije tekst"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:475
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:474
 msgid "Long free text"
 msgstr "Lange vrije tekst"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:477
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
 msgid "Moment in time"
 msgstr "Tijdstip"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
 msgid "Select one"
 msgstr "Kies één"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:481
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
 msgid "Select multiple"
 msgstr "Meerkeuze vraag"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:584
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:583
 #, php-format
 msgid "Non-existing filter %s"
 msgstr "Niet-bestaand filter %s"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:590
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:589
 #, php-format
 msgid "%d field"
 msgid_plural "%d fields"
@@ -10347,6 +10624,7 @@ msgstr "Vrije tekst (zeer lang)"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:737
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:847
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:905
+#: classes/Gems/Util/TokenData.php:694 classes/Gems/Util/TokenData.php:697
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
@@ -10959,16 +11237,6 @@ msgstr "Inspecteer kenmerk %s"
 #, php-format
 msgid "Token %s: %s"
 msgstr "Kenmerk %s: %s"
-
-#: classes/Gems/Util/TokenData.php:694
-#, php-format
-msgid "Respondent id: %s"
-msgstr "Patiënt id: %s"
-
-#: classes/Gems/Util/TokenData.php:697
-#, php-format
-msgid "Result: %s"
-msgstr "Resultaat: %s"
 
 #: classes/Gems/Util/TrackData.php:185
 msgid "Inactive"
@@ -11729,6 +11997,20 @@ msgstr "Er trad een fout op!"
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
 
+#~ msgid "deleted filter"
+#~ msgstr "verwijdered filter"
+
+#~ msgid "(all active)"
+#~ msgstr "(alle actieve)"
+
+#, php-format
+#~ msgid "Respondent id: %s"
+#~ msgstr "Patiënt id: %s"
+
+#, php-format
+#~ msgid "Result: %s"
+#~ msgstr "Resultaat: %s"
+
 #~ msgid "No example episodes found"
 #~ msgstr "Geen voorbeeld episode gevonden"
 
@@ -11782,9 +12064,6 @@ msgstr "Neem contact op met systeembeheer"
 
 #~ msgid "Never"
 #~ msgstr "Nooit"
-
-#~ msgid "When no open track exists"
-#~ msgstr "Wanneer er geen open traject bestaat"
 
 #~ msgid "Always"
 #~ msgstr "Altijd"
@@ -12269,9 +12548,6 @@ msgstr "Neem contact op met systeembeheer"
 #~ msgid "%s [start date: %s, %s]"
 #~ msgstr "%s [startdatum: %s, %s]"
 
-#~ msgid "%s [start date: %s]"
-#~ msgstr "%s [startdatum: %s]"
-
 #~ msgid "Show survey"
 #~ msgstr "Toon vragenlijst"
 
@@ -12358,12 +12634,6 @@ msgstr "Neem contact op met systeembeheer"
 
 #~ msgid "Overview of %s track for respondent %s: %s"
 #~ msgstr "Overzicht van het %s traject voor patiënt %s : %s"
-
-#~ msgid "Track deleted!"
-#~ msgstr "Traject verwijderd!"
-
-#~ msgid "Track was already deleted."
-#~ msgstr "Traject is al verwijderd"
 
 #~ msgid "Do you want to delete this track?"
 #~ msgstr "Weet u zeker dat dit traject verwijderd moet worden?"
@@ -12457,9 +12727,6 @@ msgstr "Neem contact op met systeembeheer"
 
 #~ msgid "Code Name"
 #~ msgstr "Code Naam"
-
-#~ msgid "The whole or partial content of the appointment subject."
-#~ msgstr "De hele of gedeeltelijk inhoud van het onderwerp van de afspraak."
 
 #~ msgid "Upload new PDF"
 #~ msgstr "Upload nieuwe PDF"
@@ -12871,12 +13138,6 @@ msgstr "Neem contact op met systeembeheer"
 #~ msgid "Check %s surveys"
 #~ msgstr "Controleer %s vragenlijsten"
 
-#~ msgid "No surveys to check."
-#~ msgstr "Geen vragenlijsten om te controleren."
-
-#~ msgid "No sources to check."
-#~ msgstr "Geen bronnen om te controleren."
-
 #~ msgid "No automatic mail jobs found..."
 #~ msgstr "Geen automatische mail opdrachten gevonden.."
 
@@ -13027,9 +13288,6 @@ msgstr "Neem contact op met systeembeheer"
 #~ msgid "Check track"
 #~ msgstr "Controleer traject"
 
-#~ msgid "Check all"
-#~ msgstr "Controleer alles"
-
 #~ msgid "Follow up"
 #~ msgstr "Opvolg datum"
 
@@ -13150,9 +13408,6 @@ msgstr "Neem contact op met systeembeheer"
 
 #~ msgid "Software Ontwikkeling"
 #~ msgstr "Software Ontwikkeling"
-
-#~ msgid "Diagnose changed"
-#~ msgstr "Diagnose veranderd"
 
 #~ msgid "Patient was incapacitated"
 #~ msgstr "Patiënt niet in staat tot meewerken"

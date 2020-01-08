@@ -49,7 +49,7 @@ class FilterSearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $elements = parent::getAutoSearchElements($data);
 
         $elements['gaf_class']  = $this->_createSelectElement('gaf_class',  $this->model, $this->_('(all types)'));
-        $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model, $this->_('(all active)'));
+        $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model, $this->_('(any active)'));
 
         $elements[] = \MUtil_Html::create('br');
         $elements[] = \MUtil_Html::create('strong', $this->_('Usage'));
