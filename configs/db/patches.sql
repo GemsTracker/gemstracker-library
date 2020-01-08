@@ -1570,3 +1570,8 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.c
 -- PATCH: Add cron job to respondent mail log
 ALTER TABLE `gems__log_respondent_communications`
     ADD `grco_id_job` bigint(20) unsigned NULL AFTER `grco_id_message`;
+
+-- PATCH: Add check appointment right
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.appointments.check')
+    WHERE grl_name IN ('super')
+        AND grl_privileges NOT LIKE '%,pr.appointments.check%';

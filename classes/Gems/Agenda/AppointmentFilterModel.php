@@ -7,10 +7,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentFilterModel.php $
  */
 
 namespace Gems\Agenda;
+
+use Gems\Tracker\Model\FieldMaintenanceModel;
 
 /**
  *
@@ -64,6 +65,12 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
     /**
      *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     *
      * @var \Gems_Util
      */
     protected $util;
@@ -84,7 +91,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     public function applyBrowseSettings()
     {
-        $this->loadFilterDependencies(false, true);
+        $this->loadFilterDependencies(false);
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
@@ -125,6 +132,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                 'elementClass', 'Exhibitor'
                 );
 
+        $this->addColumn(new \Zend_Db_Expr("CASE WHEN gaf_active =  1 THEN '' ELSE 'deleted' END"), 'row_class');
 
         return $this;
     }
@@ -132,12 +140,11 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param boolean $display True when in display mode, otherwise editing
      * @return \Gems_Agenda_AppointmentFilterModelAbstract
      */
-    public function applyDetailSettings($display = true)
+    public function applyDetailSettings()
     {
-        $this->loadFilterDependencies(true, $display);
+        $this->loadFilterDependencies(true);
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
@@ -164,37 +171,23 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                 'multiOptions', $yesNo
                 );
 
-        $this->addColumn(new \Zend_Db_Expr(sprintf(
-                "(SELECT COALESCE(GROUP_CONCAT(gtr_track_name, '%s', gtap_field_name
-                                    ORDER BY gtr_track_name, gtap_id_order SEPARATOR '%s'), '%s')
-                    FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
-                    WHERE gaf_id = gtap_filter_id)",
-                $this->_(': '),
-                $this->_('; '),
-                $this->_('Not used in tracks')
-                )), 'usetrack');
+        $this->addColumn(new \Zend_Db_Expr('NULL'), 'usetrack');
+        $this->setOnLoad('usetrack', [$this, 'loadTracks']);
         $this->set('usetrack', 'label', $this->_('Use in track fields'),
                 'description', $this->_('The use of this filter in track fields.'),
-                'elementClass', 'Exhibitor'
+                'elementClass', 'Exhibitor',
+                'formatFunction', [$this, 'showTracks']
                 );
-        $this->addColumn(new \Zend_Db_Expr(sprintf(
-                "(SELECT COALESCE(GROUP_CONCAT(gaf_calc_name ORDER BY gaf_id_order SEPARATOR '%s'), '%s')
-                    FROM gems__appointment_filters AS other
-                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter') AND
-                        (
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text4
-                        )
-                )",
-                $this->_('; '),
-                $this->_('Not used in filters')
-                )), 'usefilter');
+
+        $this->addColumn(new \Zend_Db_Expr('NULL'), 'usefilter');
+        $this->setOnLoad('usefilter', [$this, 'loadFilters']);
         $this->set('usefilter', 'label', $this->_('Use in filters'),
                 'description', $this->_('The use of this filter in other filters.'),
-                'elementClass', 'Exhibitor'
+                'elementClass', 'Exhibitor',
+                'formatFunction', [$this, 'showFilters']
                 );
+
+        $this->addColumn(new \Zend_Db_Expr("CASE WHEN gaf_active =  1 THEN '' ELSE 'deleted' END"), 'row_class');
 
         return $this;
     }
@@ -206,7 +199,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     public function applyEditSettings($create = false)
     {
-        $this->applyDetailSettings(false);
+        $this->applyDetailSettings();
 
         reset($this->filterOptions);
         $default = key($this->filterOptions);
@@ -231,10 +224,9 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      * Load filter dependencies into model and populate the filterOptions
      *
      * @param boolean $activateDependencies When true, adds dependecies to model
-     * @param boolean $displayOnly True when displaying, false when editing
      * @return array filterClassName => Label
      */
-    protected function loadFilterDependencies($activateDependencies = true, $displayOnly = true)
+    protected function loadFilterDependencies($activateDependencies = true)
     {
         if (! $this->filterOptions) {
             $maxLength = $this->get('gaf_calc_name', 'maxlength');
@@ -247,7 +239,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                     $this->filterOptions[$dependency->getFilterClass()] = $dependency->getFilterName();
 
                     if ($activateDependencies) {
-                        $dependency->setDisplayMode($displayOnly);
                         $dependency->setMaximumCalcLength($maxLength);
                         $this->addDependency($dependency);
                     }
@@ -257,5 +248,144 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         }
 
         return $this->filterOptions;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns an
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return array [filterId => filter name]
+     */
+    public function loadFilters($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($isNew || (! isset($context['gaf_id']))) {
+            return [];
+        }
+        $output = $this->db->fetchPairs(sprintf(
+                "SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) AS used_name
+                    FROM gems__appointment_filters
+                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyAppointmentFilter') AND
+                        (
+                            gaf_filter_text1 = %1\$s OR
+                            gaf_filter_text2 = %1\$s OR
+                            gaf_filter_text3 = %1\$s OR
+                            gaf_filter_text4 = %1\$s
+                        )",
+                intval($context['gaf_id'])));
+
+        if ($output) {
+            return $output;
+        }
+
+        return [];
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that a nested array containing the tracks and fields using
+     * this filter
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return array
+     */
+    public function loadTracks($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($isNew || (! isset($context['gaf_id']))) {
+            return [];
+        }
+        $output = $this->db->fetchAll(
+                "SELECT gtr_id_track, gtr_track_name, gtap_id_app_field, gtap_field_name
+                    FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
+                    WHERE gtap_filter_id = ?",
+                $context['gaf_id']);
+
+        if ($output) {
+            return $output;
+        }
+
+        return [];
+    }
+
+    /**
+     *
+     * @param array $value
+     * @return mixed
+     */
+    public function showFilters($value)
+    {
+        if (! ($value && is_array($value))) {
+            return \MUtil_Html::create('em', $this->_('Not used in filters'));
+        }
+
+        $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
+
+        $list = \MUtil_Html::create('ol');
+        foreach ($value as $id => $label) {
+            $li = $list->li();
+
+            if ($menuFilter) {
+                $li->em()->a(
+                        $menuFilter->toHRefAttribute([\MUtil_Model::REQUEST_ID => $id]),
+                        $label
+                        );
+            } else {
+                $li->em($label);
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     *
+     * @param array $value
+     * @return mixed
+     */
+    public function showTracks($value)
+    {
+        if (! ($value && is_array($value))) {
+            return \MUtil_Html::create('em', $this->_('Not used in tracks'));
+        }
+
+        $menuTrack  = $this->menu->findAllowedController('track-maintenance', 'show');
+        $menuField  = $this->menu->findAllowedController('track-fields', 'show');
+
+        $list = \MUtil_Html::create('ol');
+        foreach ($value as $row) {
+            $li = $list->li();
+
+            if ($menuTrack) {
+                $li->em()->a(
+                        $menuTrack->toHRefAttribute([\MUtil_Model::REQUEST_ID => $row['gtr_id_track']]),
+                        $row['gtr_track_name']
+                        );
+            } else {
+                $li->em($row['gtr_track_name']);
+            }
+            $li->append($this->_(': '));
+            if ($menuField) {
+                $li->em()->a(
+                        $menuField->toHRefAttribute([
+                            'gtf_id_track' => $row['gtr_id_track'],
+                            'gtf_id_field' => $row['gtap_id_app_field'],
+                             'sub' => FieldMaintenanceModel::APPOINTMENTS_NAME,
+                            ]),
+                        $row['gtap_field_name']
+                        );
+            } else {
+                $li->em($row['gtap_field_name']);
+            }
+        }
+
+        return $list;
     }
 }

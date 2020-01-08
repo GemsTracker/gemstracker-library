@@ -59,6 +59,32 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
     protected $createEditSnippets = 'Agenda_AppointmentFormSnippet';
 
     /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $checkParameters = [
+        'contentTitle' => 'getCheckTitle',
+    ];
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $checkSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'Agenda\\AppointmentShortSnippet',
+        'Agenda\\AppointmentCheckSnippet',
+        'Agenda\\ApplyFiltersInformation',
+        ];
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -87,9 +113,9 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = array(
+    protected $indexParameters = [
         'contentTitle' => 'getContentTitle',
-        );
+        ];
 
     /**
      * Organization ID of current request
@@ -120,6 +146,18 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         'Track\\TracksForAppointment',
         'Agenda\\AppointmentTokensSnippet',
         );
+
+    /**
+     * Perform checks on an Episode of care
+     */
+    public function checkAction()
+    {
+        if ($this->checkSnippets) {
+            $params = $this->_processParameters($this->checkParameters);
+
+            $this->addSnippets($this->checkSnippets, $params);
+        }
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -180,6 +218,15 @@ class Gems_Default_AppointmentAction extends \Gems_Default_RespondentChildAction
         }
 
         return $model;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getCheckTitle()
+    {
+        return $this->_('Appointment filter check for specific appointment');
     }
 
     /**

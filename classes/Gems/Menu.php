@@ -426,6 +426,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $epage = $epage->addShowAction()->setNamedParameters($epiParams);
         $epage->addEditAction()->setNamedParameters($epiParams);
         $epage->addDeleteAction()->setNamedParameters($epiParams);
+        // $epage->addAction($this->_('Check'), 'pr.episodes.check', 'check')->setNamedParameters($epiParams);
 
         // Add "appointments"
         $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
@@ -437,6 +438,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $apage = $apage->addShowAction()->setNamedParameters($appParams);
         $apage->addEditAction()->setNamedParameters($appParams);
         $apage->addDeleteAction()->setNamedParameters($appParams);
+        $apage->addAction($this->_('Filter Check'), 'pr.appointments.check', 'check')->setNamedParameters($appParams);
 
         if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 

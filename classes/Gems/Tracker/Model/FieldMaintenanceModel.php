@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: FieldMaintenanceModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 namespace Gems\Tracker\Model;
@@ -296,7 +295,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             $this->setOnLoad('calculation', array($this, 'loadCalculationSources'));
         }
 
-        $this->set('gtf_create_track', 'label', $this->_('Create track'),
+        $this->set('gtf_create_track', 'label', $this->_('When not assigned'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
                 'multiOptions', $yesNo
                 );

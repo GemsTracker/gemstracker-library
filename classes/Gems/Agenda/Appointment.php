@@ -10,8 +10,8 @@
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
-
 use Gems\Agenda\EpisodeOfCare;
+use Gems\Agenda\FilterTracer;
 
 /**
  *
@@ -59,6 +59,12 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * @var boolean
      */
     public $exists = true;
+
+    /**
+     *
+     * @var \Gems\Agenda\FilterTracer
+     */
+    protected $filterTracer;
 
     /**
      *
@@ -141,7 +147,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Check if a track should be created for any of the filters
      *
      * @param \Gems\Agenda\AppointmentFilterInterface[] $filters
-     * @param array $existingTracks
+     * @param array $existingTracks Of $trackId => [RespondentTrack objects]
      * @param \Gems_Tracker $tracker
      *
      * @return int Number of tokenchanges
@@ -172,6 +178,13 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                     break;  // Stop checking
                 }
             }
+            if ($this->filterTracer) {
+                $this->filterTracer->addFilter($filter, $createTrack, $respTrack);
+
+                if (! $this->filterTracer->executeChanges) {
+                    $createTrack = false;
+                }
+            }
 
             // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
             if ($createTrack) {
@@ -179,6 +192,9 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $existingTracks[$trackId][] = $respTrack;
 
                 $tokenChanges += $respTrack->getCount();
+                if ($this->filterTracer) {
+                    $this->filterTracer->addFilter($filter, $createTrack, $respTrack);
+                }
             }
         }
 
@@ -215,8 +231,21 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         $end         = $respTrack->getEndDate();
         $wait        = $filter->getWaitDays();
 
-        if ( (! $end) || ($curr->diffDays($end) <= $wait)) {
-                $createTrack = false;
+        if ((! $end) || ($curr->diffDays($end) <= $wait)) {
+            $createTrack = false;
+            if ($this->filterTracer) {
+                if (! $end) {
+                    $this->filterTracer->setSkipCreationMessage(
+                            $this->_('track without an end date')
+                            );
+                } else {
+                    $this->filterTracer->setSkipCreationMessage(sprintf(
+                            $this->_('%d days since previous end date, %d required'),
+                            $curr->diffDays($end)                            ,
+                            $wait
+                            ));
+                }
+            }
         }
 
         return $createTrack;
@@ -271,6 +300,19 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
         if ((! $start) || ($curr->diffDays($start) <= $wait)) {
             $createTrack = false;
+            if ($this->filterTracer) {
+                if (! $start) {
+                    $this->filterTracer->setSkipCreationMessage(
+                            $this->_('track without a start date')
+                            );
+                } else {
+                    $this->filterTracer->setSkipCreationMessage(sprintf(
+                            $this->_('%d days since previous start date, %d required'),
+                            $curr->diffDays($start)                            ,
+                            $wait
+                            ));
+                }
+            }
         }
 
         return $createTrack;
@@ -289,6 +331,9 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      */
     public function createNever()
     {
+        if ($this->filterTracer) {
+            $this->filterTracer->setSkipCreationMessage($this->_('never create a track'));
+        }
         return false;
     }
 
@@ -307,6 +352,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
         if ($createTrack) {
             $createTrack = $this->createWhenNotInThisTrack($filter, $respTrack);
+        } elseif ($this->filterTracer) {
+            $this->filterTracer->setSkipCreationMessage(
+                    $this->_('an open track exists')
+                    );
         }
 
         return $createTrack;
@@ -328,6 +377,12 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if (isset($data[$filter->getFieldId()]) &&
                 ($this->getId() == $data[$filter->getFieldId()])) {
             $createTrack = false;
+
+            if ($this->filterTracer) {
+                $this->filterTracer->setSkipCreationMessage(
+                        $this->_('appointment used in track')
+                        );
+            }
         }
 
         return $createTrack;
@@ -348,6 +403,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
         if ($createTrack) {
             $createTrack = $this->createAfterWaitDays($filter, $respTrack);
+        } elseif ($this->filterTracer) {
+            $this->filterTracer->setSkipCreationMessage(
+                    $this->_('an open track exists')
+                    );
         }
 
         if ($createTrack) {
@@ -701,6 +760,18 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @param AppointmentFilterTracer $tracer
+     * @return $this
+     */
+    public function setFilterTracer(FilterTracer $tracer)
+    {
+        $this->filterTracer = $tracer;
+
+        return $this;
+    }
+
+    /**
      * Recalculate all tracks that use this appointment
      *
      * @return int The number of tokens changed by this code
@@ -719,7 +790,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                         array('gr2t_id_track')
                         )
                 ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
-                ->distinct();
+                ->distinct()
+                ->order('gr2t_id_track');
 
         // AND find the filters for any new fields to fill
         $filters = $this->agenda->matchFilters($this);
@@ -751,7 +823,15 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
                 // Recalculate this track
                 $fieldsChanged = false;
-                $tokenChanges += $respTrack->recalculateFields($fieldsChanged);
+                if ((! $this->filterTracer) || $this->filterTracer->executeChanges) {
+                    $changed = $respTrack->recalculateFields($fieldsChanged);
+                } else {
+                    $changed = 0;
+                }
+                if ($this->filterTracer) {
+                    $this->filterTracer->addTrackChecked($respTrack, $fieldsChanged, $changed);
+                }
+                $tokenChanges += $changed;
 
                 // Store the track for creation checking
                 $existingTracks[$trackId][] = $respTrack;
@@ -761,6 +841,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         // Only check if we need to create when this appointment is active and today or later
         if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil_Date())) {
             $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
+        } else {
+            if ($this->filterTracer) {
+                $this->filterTracer->setSkippedFilterCheck();
+            }
         }
 
         return $tokenChanges;

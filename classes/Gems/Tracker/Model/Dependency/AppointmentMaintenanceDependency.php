@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentMaintenanceDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;
@@ -66,6 +65,12 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
 
     /**
      *
+     * @var \Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     *
      * @var \Gems_Util
      */
     protected $util;
@@ -112,11 +117,12 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             'elementClass' => 'Exhibitor',
         );
         $output['gtf_filter_id'] = array(
-            'label'        => $this->_('Automatic link'),
-            'description'  => $this->_('Automatically link an appointment when it passes this filter.'),
-            'elementClass' => 'Select',
-            'multiOptions' => $translated->getEmptyDropdownArray() + $filters,
-            'onchange'     => 'this.form.submit();',
+            'label'          => $this->_('Automatic link'),
+            'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
+            'elementClass'   => 'Select',
+            'formatFunction' => [$this, 'showFilter'],
+            'multiOptions'   => $translated->getEmptyDropdownArray() + $filters,
+            'onchange'       => 'this.form.submit();',
             );
 
         if ($context['gtf_filter_id']) {
@@ -220,4 +226,20 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
         return $output;
     }
 
+    /**
+     * Show filter as link
+     *
+     * @param string $value
+     * @param int $raw
+     */
+    public function showFilter($value, $raw)
+    {
+        $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
+
+        if (! $menuFilter) {
+            return $value;
+        }
+
+        return \MUtil_Html_AElement::a($menuFilter->toHRefAttribute([\MUtil_Model::REQUEST_ID => $raw]), $value);
+    }
 }

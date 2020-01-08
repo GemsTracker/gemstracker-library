@@ -7,7 +7,6 @@
  * @author     Michel Rooks <info@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
@@ -70,7 +69,10 @@ class Gems_Default_TrackFieldsAction extends \Gems_Default_TrackMaintenanceWithE
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Tracker\\Fields\\FieldEditSnippet';
+    protected $createEditSnippets = [
+        'Tracker\\Fields\\FieldEditSnippet',
+        'Agenda\\ApplyFiltersInformation',
+        ];
 
     /**
      * The snippets used for the delete action.
@@ -85,6 +87,17 @@ class Gems_Default_TrackFieldsAction extends \Gems_Default_TrackMaintenanceWithE
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Tracker\\Fields\\FieldsTitleSnippet', 'Tracker_Fields_FieldsAutosearchForm');
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Agenda\\ApplyFiltersInformation'
+        ];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

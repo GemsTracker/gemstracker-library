@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FilterModelDependencyAbstract.php $
  */
 
 namespace Gems\Agenda;
@@ -33,12 +32,6 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @var array Of name => name
      */
     protected $_dependentOn = array('gaf_class');
-
-    /**
-     *
-     * @var boolean Mode of usage, display is true, editing is dalse
-     */
-    protected $_displayMode;
 
     /**
      * The number of gaf_filter_textN fields/
@@ -140,19 +133,6 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
     abstract public function getTextSettings();
-
-    /**
-     * Set the maximum length of the calculated name field
-     *
-     * @param boolean $display True for display, false for editing
-     * @return \Gems\Agenda\FilterModelDependencyAbstract
-     */
-    public function setDisplayMode($display = true)
-    {
-        $this->_displayMode = (boolean) $display;
-        
-        return $this;
-    }
 
     /**
      * Set the maximum length of the calculated name field

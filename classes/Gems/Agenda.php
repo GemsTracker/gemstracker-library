@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Afenda.php$
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
@@ -1013,7 +1012,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         return [
             'elementClass' => 'Radio',
             'multiOptions' => $this->getTrackCreateOptions(),
-            'label'        => $this->_('When track already assigned'),
+            'label'        => $this->_('When not assigned'),
             'onclick'      => 'this.form.submit();',
             ];
     }
@@ -1130,7 +1129,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     gems__tracks ON gtap_id_track = gtr_id_track
                 WHERE gaf_active = 1 AND gtr_active = 1 AND gtr_date_start <= CURRENT_DATE AND
                     (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)
-                ORDER BY gaf_id_order, gtap_id_order");
+                ORDER BY gaf_id_order, gtap_id_order, gtap_id_track");
 
         $this->cache->save($this->_filters, $cacheId, array('appointment_filters', 'tracks'));
 

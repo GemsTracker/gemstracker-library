@@ -38,6 +38,16 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
     public $cacheTags = array('appointment_filters');
 
     /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = [
+        'ModelFormSnippetGeneric',
+        'Agenda\\ApplyFiltersInformation',
+        ];
+
+    /**
      * The default search data to use.
      *
      * @var array()
@@ -50,6 +60,16 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Tracker\\Fields\\FilterSearchFormSnippet'];
+
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = [
+        'Generic\\CurrentSiblingsButtonRowSnippet',
+        'Agenda\\ApplyFiltersInformation',
+        ];
 
     /**
      * The snippets used for the show action
@@ -72,6 +92,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
         'Agenda\\EpisodeTableSnippet',
         'Agenda_CalendarTableSnippet',
         'Agenda\\FilterSqlSnippet',
+        'Agenda\\ApplyFiltersInformation',
         );
 
     /**
