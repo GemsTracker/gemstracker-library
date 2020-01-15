@@ -94,14 +94,6 @@ class Gems_UtilTest extends \Gems_Test_TestAbstract
         $expected = 'do not use';
         $actual   = $this->object->getConsentRejected();
         $this->assertEquals($expected, $actual);
-
-        //Check for incorrect spelling used before 1.5.2
-        $project->concentRejected = 'test2';
-        try {
-            $actual   = $this->object->getConsentRejected();
-        } catch (Exception $e) {
-        }
-        $this->assertInstanceOf('Gems_Exception_Coding', $e, 'No failure on misspelled concentRejected in project.ini');
     }
 
     /**

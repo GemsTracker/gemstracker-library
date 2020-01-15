@@ -8949,7 +8949,7 @@ msgstr "Quick view traject %s"
 
 #: classes/Gems/Snippets/Unsubscribe/EmailUnsubscribeSnippet.php:64
 msgid "Your e-mail address has been unsubscribed"
-msgstr "Uw emailadres is ingeschreven"
+msgstr "Uw emailadres is uitgeschreven"
 
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:40
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:43
