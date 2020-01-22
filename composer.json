@@ -97,5 +97,8 @@
     ],
     "replace": {
         "zendframework/zendframework1": "1.*"
+    },
+    "suggest": {
+        "phpoffice/phpword": "Add v0.16.* to allow export to Word"
     }
 }
