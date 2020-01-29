@@ -2056,9 +2056,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             'gdr_created_by' => $userId,
         );
         $responses = $this->getRawAnswers();
-        unset($responses['token'], $responses['id'], $responses['lastpage'],
-                $responses['startlanguage'], $responses['submitdate'], $responses['startdate'],
-                $responses['datestamp']);
+
+        $source = $this->getSurvey()->getSource();
+        if ($source instanceof \Gems_Tracker_Source_SourceAbstract) {
+            $metaFields = $source::$metaFields;
+            foreach ($metaFields as $field) {
+                if (array_key_exists($field, $responses)) {
+                    unset($responses[$field]);
+                }
+            }
+        }
 
         // first read current responses to differentiate between insert and update
         $responseSelect = $responseDb->select()->from('gemsdata__responses', array('gdr_answer_id', 'gdr_response'))

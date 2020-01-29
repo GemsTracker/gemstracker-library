@@ -2,6 +2,9 @@
 
 class Gems_Tracker_Source_LimeSurvey3m00Database extends \Gems_Tracker_Source_LimeSurvey2m00Database
 {
+    /**
+     * @var array meta data fields that are included in a survey table
+     */
     public static $metaFields = [
         'id',
         'submitdate',

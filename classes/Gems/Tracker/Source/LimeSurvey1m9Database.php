@@ -34,6 +34,19 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
     const TOKEN_TABLE        = 'tokens_';
 
     /**
+     * @var array meta data fields that are included in a survey table
+     */
+    public static $metaFields = [
+        'id',
+        'submitdate',
+        'lastpage',
+        'startlanguage',
+        'token',
+        'datestamp',
+        'startdate',
+    ];
+
+    /**
      *
      * @var string The LS version dependent field name for anonymized surveys
      */

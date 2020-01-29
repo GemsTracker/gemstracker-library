@@ -22,6 +22,12 @@
 abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_TranslateableAbstract
     implements \Gems_Tracker_Source_SourceInterface
 {
+
+    /**
+     * @var array meta data fields that are included in a survey table
+     */
+    public static $metaFields = [];
+
     /**
      * Holds the current batch if there is any
      *
