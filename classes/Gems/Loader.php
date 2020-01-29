@@ -372,6 +372,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @return \Gems_SubscribeThrottleValidator
+     */
+    public function getSubscriptionThrottleValidator()
+    {
+        return $this->_loadClass('Validate_SubscriptionThrottleValidator', true);
+    }
+
+    /**
+     *
      * @param string $id
      * @param \MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
      * @return \Gems_Task_TaskRunnerBatch

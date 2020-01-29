@@ -34,6 +34,12 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+    
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
 
     /**
      * Add the elements to the form
@@ -42,12 +48,14 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
+//        \MUtil_Echo::track('EmailUnsubscribeSnippet');
         // Veld inlognaam
         $element = $form->createElement('text', 'email');
         $element->setLabel($this->_('Your E-Mail address'))
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail');
+                ->addValidator('SimpleEmail')
+                ->addValidator($this->loader->getSubscriptionThrottleValidator());
 
         $form->addElement($element);
 

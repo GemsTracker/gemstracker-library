@@ -66,12 +66,14 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
+//        \MUtil_Echo::track('EmailSubscribeSnippet');
         // Veld inlognaam
         $element = $form->createElement('text', 'email');
         $element->setLabel($this->_('Your E-Mail address'))
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail');
+                ->addValidator('SimpleEmail')
+                ->addValidator($this->loader->getSubscriptionThrottleValidator());
 
         $form->addElement($element);
 
