@@ -97,8 +97,10 @@ class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
             $respondent = $token->getRespondent();
             $values = array(
                 'gr2o_patient_nr'      => $respondent->getPatientNumber(),
+                'gr2o_id_user'         => $respondent->getId(),
                 'gr2o_id_organization' => $respondent->getOrganizationId(),
                 'gr2o_consent'         => $consentCode,
+                'old_gr2o_consent'     => $respondent->getConsent()->getDescription(),
             );
             $model = $respondent->getRespondentModel();
             $model->save($values);
