@@ -120,7 +120,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             'label'          => $this->_('Automatic link'),
             'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
             'elementClass'   => 'Select',
-            'formatFunction' => [$this, 'showFilter'],
+            'formatFunction' => [$this, 'showFilter', true],
             'multiOptions'   => $translated->getEmptyDropdownArray() + $filters,
             'onchange'       => 'this.form.submit();',
             );

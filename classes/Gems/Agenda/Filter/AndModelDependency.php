@@ -173,7 +173,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
             'gaf_filter_text1' => [
                 'label'          => $this->_('Filter 1'),
                 'elementClass'   => 'Select',
-                'formatFunction' => [$this, 'displayFilterLink'],
+                'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'required'       => true,
                 'validator'      => new \MUtil_Validate_NotEqualTo('gaf_id', $messages),
@@ -181,7 +181,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
             'gaf_filter_text2' => [
                 'label'          => $this->_('Filter 2'),
                 'elementClass'   => 'Select',
-                'formatFunction' => [$this, 'displayFilterLink'],
+                'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'required'       => true,
                 'validator'      => new \MUtil_Validate_NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
@@ -189,7 +189,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
             'gaf_filter_text3' => [
                 'label'          => $this->_('Filter 3'),
                 'elementClass'   => 'Select',
-                'formatFunction' => [$this, 'displayFilterLink'],
+                'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'validator'      => new \MUtil_Validate_NotEqualTo(
                         ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2'],
@@ -199,7 +199,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
             'gaf_filter_text4' => [
                 'label'          => $this->_('Filter 4'),
                 'elementClass'   => 'Select',
-                'formatFunction' => [$this, 'displayFilterLink'],
+                'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'validator'      => new \MUtil_Validate_NotEqualTo(
                         ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3'],
