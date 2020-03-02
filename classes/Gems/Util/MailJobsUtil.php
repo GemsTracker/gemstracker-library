@@ -37,11 +37,9 @@ class MailJobsUtil extends UtilAbstract
     protected function _addModeFilter(array &$filter, $mode, $daysBetween, $maxReminders)
     {
         switch ($mode) {
-            case 'B':   // Reminder or first mail before expiry
-                $filter[] = [
-                    'gto_mail_sent_date' => null,
-                    "gto_mail_sent_date < CURRENT_DATE() AND CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL $daysBetween DAY))",
-                    ];
+            case 'B':   // First mail before expiry
+                $filter['gto_mail_sent_date'] = null;
+                $filter[] = "CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL $daysBetween DAY))";
                 break;
 
             case 'E':   // Reminder before expiry
