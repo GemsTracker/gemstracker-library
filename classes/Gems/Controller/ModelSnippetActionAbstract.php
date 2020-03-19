@@ -82,7 +82,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'formTitle'     => 'getEditTitle',
         'topicCallable' => 'getTopicCallable',
         );
-    
+
     /**
      * Gems only parameters used for the export action. Can be overruled
      * by setting $this->editParameters
@@ -118,7 +118,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'formTitle'       => 'getReactivateTitle',
         'topicCallable'   => 'getTopicCallable',
         );
-    
+
     /**
      *
      * @var \Gems_AccessLog
@@ -152,8 +152,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public $escort;
 
+    /**
+     * The snippets used for the export action
+     *
+     * @var mixed String or array of snippets name
+     */
     protected $exportFormSnippets = 'Export\\ExportFormSnippet';
-    
+
     /**
      * The parameters used for the export actions.
      *
@@ -291,7 +296,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         $step = $this->request->getParam('step');
         $post = $this->request->getPost();
-        
+
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
         $model = $this->getExportModel();
@@ -304,7 +309,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
 
         $model->applyParameters($this->getSearchFilter(false), true);
-        
+
         if (!empty($post)) {
             $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
         }
@@ -339,7 +344,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 }
                 $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
                 $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles', $post);
-                
+
                 $export = $this->loader->getExport()->getExport($post['type']);
                 if ($snippet = $export->getHelpSnippet()) {
                     $this->addSnippet($snippet);
@@ -374,7 +379,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                     $url = $this->getExportReturnLink();
                     if ($url) {
                         $controller->html->pInfo()->a(
-                                $url,                            
+                                $url,
                                 array('class'=>'actionlink'),
                                 $this->_('Back')
                                 );
@@ -491,7 +496,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     {
         return sprintf($this->_('Edit %s'), $this->getTopic(1));
     }
-    
+
     public function getExportClasses()
     {
         return $this->loader->getExport()->getExportClasses();
@@ -510,10 +515,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         }
         return $model;
     }
-    
+
     /**
      * Get the return url
-     * 
+     *
      * @return array
      */
     protected function getExportReturnLink()

@@ -34,12 +34,32 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
-    
+
     /**
      *
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * Since this forms acts as if it was successful when a valid e-mail address was
+     * entered we need to store the real state for logging purposes here.
+     *
+     * @var boolean
+     */
+    protected $realChange = false;
+
+    /**
+     *
+     * @var string Optional project specific after unsubscribe message.
+     */
+    protected $unsubscribedMessage;
+
+    /**
+     *
+     * @var array of arrays, either null or respondent id and org id
+     */
+    protected $userData = [0 => []];
 
     /**
      * Add the elements to the form
@@ -63,36 +83,64 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
     }
 
     /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        // \MUtil_Echo::track($this->getMessenger()->getCurrentMessages(), $this->formData, $this->userData, $this->realChange);
+
+        foreach ($this->userData as $userData) {
+            $this->accesslog->logEntry(
+                    $this->request,
+                    $this->request->getControllerName() . '.' . $this->request->getActionName(),
+                    $this->realChange,
+                    $this->getMessenger()->getCurrentMessages(),
+                    $this->formData + $userData,
+                    isset($userData['gr2o_id_user']) ? $userData['gr2o_id_user'] : 0,
+                    true);
+        }
+    }
+
+    /**
      * Hook containing the actual save code.
      *
      * @return int The number of "row level" items changed
      */
     protected function saveData()
     {
-        $this->addMessage($this->_('Your e-mail address has been unsubscribed'));
+        $this->addMessage($this->unsubscribedMessage ?:
+                $this->_('If your E-email address is known, you have been unsubscribed.'));
 
         $sql = "SELECT gr2o_patient_nr, gr2o_id_organization, gr2o_id_user, gr2o_mailable FROM gems__respondent2org
             WHERE gr2o_email = ? AND gr2o_id_organization = ?";
 
-        $row = $this->db->fetchRow($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
-        if ($row) {
+        $rows = $this->db->fetchAll($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
+        // \MUtil_Echo::track($rows);
+        foreach ($rows as $id => $row) {
+            // Save respondent & ord id
+            $this->userData[$id]['gr2o_id_user']         = $row['gr2o_id_user'];
+            $this->userData[$id]['gr2o_id_organization'] = $this->currentOrganization->getId();
+
             if ($row['gr2o_mailable']) {
                 $row['gr2o_mailable'] = 0;
                 $row['gr2o_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
                 $row['gr2o_changed_by'] = $row['gr2o_id_user'];
 
                 $where = $this->db->quoteInto("gr2o_patient_nr = ?", $row['gr2o_patient_nr']) . " AND " .
-                        $this->db->quoteInto("gr2o_id_organization = ?", $row['gr2o_id_organization']);
+                    $this->db->quoteInto("gr2o_id_organization = ?", $row['gr2o_id_organization']);
 
                 $this->db->update('gems__respondent2org', $row, $where);
 
-                return 1;
-            } else {
-                return 0;
+                // Signal something has actually changed for logging purposes
+                $this->realChange = true;
             }
-        } else {
-            return 0;
         }
 
+        // Always act like something was saved when
+        return 1;
     }
 }

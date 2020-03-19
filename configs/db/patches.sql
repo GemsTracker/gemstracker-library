@@ -1575,3 +1575,19 @@ ALTER TABLE `gems__log_respondent_communications`
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.appointments.check')
     WHERE grl_name IN ('super')
         AND grl_privileges NOT LIKE '%,pr.appointments.check%';
+
+-- PATCH: Ensure logging of unsubscribe and subscribe
+INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_post, gls_on_change,
+        gls_changed, gls_changed_by, gls_created, gls_created_by)
+    VALUES
+        ('participate.subscribe',   0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('participate.unsubscribe', 0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+UPDATE gems__log_setup 
+    SET gls_when_no_user = 0, 
+        gls_on_action = 0, 
+        gls_on_post = 1, 
+        gls_on_change = 1,
+        gls_changed = CURRENT_TIMESTAMP, 
+        gls_changed_by = 1
+    WHERE gls_name IN ('participate.subscribe', 'participate.unsubscribe');

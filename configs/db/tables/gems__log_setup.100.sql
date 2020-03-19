@@ -37,6 +37,8 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('index.login',                         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.logoff',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('participate.subscribe',               0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('participate.unsubscribe',             0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('respondent.show',                     0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes',                   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),

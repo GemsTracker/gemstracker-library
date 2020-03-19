@@ -41,6 +41,44 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
     public $loader;
 
     /**
+     * The parameters used for the subscribe-thanks action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $subscribeThanksParameters = [];
+
+    /**
+     * The snippets used for the subscribe-thanks action, usually called after unsubscribe
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $subscribeThanksSnippets = ['Subscribe\\ThankYouForSubscribingSnippet'];
+
+    /**
+     * The parameters used for the unsubscribe-thanks action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $unsubscribeThanksParameters = [];
+
+    /**
+     * The snippets used for the unsubscribe-thanks action, usually called after unsubscribe
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $unsubscribeThanksSnippets = ['Unsubscribe\\UnsubscribedSnippet'];
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -60,6 +98,29 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
                 ->order('gor_name');
 
         return $this->db->fetchPairs($select);
+    }
+
+    /**
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function _processParameters(array $input)
+    {
+        $output = array();
+
+        foreach ($input as $key => $value) {
+            if (is_string($value) && method_exists($this, $value)) {
+                $value = $this->$value($key);
+
+                if (is_integer($key) || ($value === null)) {
+                    continue;
+                }
+            }
+            $output[$key] = $value;
+        }
+
+        return $output;
     }
 
     /**
@@ -110,7 +171,11 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
      */
     public function subscribeThanksAction()
     {
-        $this->addSnippets(['Subscribe\\ThankYouForSubscribingSnippet']);
+        if ($this->subscribeThanksSnippets) {
+            $params = $this->_processParameters($this->subscribeThanksParameters);
+
+            $this->addSnippets($this->subscribeThanksSnippets, $params);
+        }
     }
 
     /**
@@ -161,7 +226,11 @@ class Gems_Default_ParticipateAction extends \Gems_Controller_Action
      */
     public function unsubscribeThanksAction()
     {
-        $this->addSnippets(['Unsubscribe\\UnsubscribedSnippet']);
+        if ($this->unsubscribeThanksSnippets) {
+            $params = $this->_processParameters($this->unsubscribeThanksParameters);
+
+            $this->addSnippets($this->unsubscribeThanksSnippets, $params);
+        }
     }
 
     /**

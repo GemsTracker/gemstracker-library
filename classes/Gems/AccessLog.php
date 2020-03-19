@@ -453,9 +453,10 @@ class Gems_AccessLog
      * @param mixed $message
      * @param mixed $data
      * @param int $respondentId
+     * @param boolean $actAsActive Optional, when true, save even when not logged in while gls_when_no_user is false
      * @return boolean True when a log entry was stored
      */
-    public function logEntry(\Zend_Controller_Request_Abstract $request, $actionId, $changed, $message, $data, $respondentId)
+    public function logEntry(\Zend_Controller_Request_Abstract $request, $actionId, $changed, $message, $data, $respondentId, $actAsActive = false)
     {
         $action      = $this->getAction($actionId);
         $currentUser = $this->_loader->getCurrentUser();
@@ -465,7 +466,7 @@ class Gems_AccessLog
         }
 
         // Exit when the user is not logged in and we should only track for logged in users
-        if (! $currentUser->isActive()) {
+        if (! ($actAsActive || $currentUser->isActive())) {
             if (! $action['gls_when_no_user']) {
                 return false;
             }
