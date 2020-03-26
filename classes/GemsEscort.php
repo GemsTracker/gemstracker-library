@@ -422,6 +422,26 @@ class GemsEscort extends \MUtil_Application_Escort
                     $exists = true;
                 }
                 break;
+            case 'redis':
+
+                $redisDsn = $this->getResource('project')->getRedisDsn();
+
+                if ($redisDsn !== false) {
+                    $redisClient = \Symfony\Component\Cache\Adapter\RedisAdapter::createConnection(
+                        $redisDsn
+                    );
+
+                    $namespace = 'gems';
+
+                    $cache = new \Symfony\Component\Cache\Adapter\TagAwareAdapter(
+                        new \Symfony\Component\Cache\Adapter\RedisAdapter($redisClient, $namespace)
+                    );
+                    $cacheBackend = new \Gems\Cache\Backend\Psr6Cache($cache);
+                    $cacheBackendOptions = [];
+                    $exists = true;
+                }
+
+                break;
             case 'newApc':
 
                 if (!class_exists('\Symfony\Component\Cache\Adapter\ApcuAdapter')) {

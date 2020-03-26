@@ -966,6 +966,19 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Get a redis DSN
+     *
+     * @return string|false
+     */
+    public function getRedisDsn()
+    {
+        if ($this->offsetExists('redis') && isset($this->redis['dsn'])) {
+            return $this->redis['dsn'];
+        }
+        return false;
+    }
+
+    /**
      * The response database with a table with one row for each token answer.
      *
      * @return \Zend_Db_Adapter_Abstract
