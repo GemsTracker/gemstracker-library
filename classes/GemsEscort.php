@@ -387,14 +387,14 @@ class GemsEscort extends \MUtil_Application_Escort
                 }
                 break;
             case 'newZendFile':
-                if (!class_exists('\Zend\Cache\StorageFactory')) {
-                    error_log("Zend\Cache Filesystem cache not available!");
+                if (!class_exists('\Laminas\Cache\StorageFactory')) {
+                    error_log("Laminas\Cache Filesystem cache not available!");
                     break;
                 }
                 $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
                 $cacheBackendOptions = array('cache_dir' => $cacheDir, 'cache_file_perm' => 0660);
 
-                $storage = \Zend\Cache\StorageFactory::factory([
+                $storage = \Laminas\Cache\StorageFactory::factory([
                     'adapter' => [
                         'name' => 'filesystem',
                         'options' => [

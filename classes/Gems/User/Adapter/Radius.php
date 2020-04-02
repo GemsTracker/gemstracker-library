@@ -9,9 +9,9 @@
 
 include_once 'Radius/radius.class.php';
 
-use Zend\Authentication\Result;
-use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Authentication\Exception\RuntimeException;
+use Laminas\Authentication\Result;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Exception\RuntimeException;
 
 
 /**
@@ -194,7 +194,7 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
-	 * @throws \Zend\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
+	 * @throws Laminas\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
 	 * @return Zend\Authentication\Result
 	 */
 	public function authenticate()

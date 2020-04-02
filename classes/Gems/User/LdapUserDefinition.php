@@ -11,8 +11,8 @@
 
 namespace Gems\User;
 
-use Zend\Authentication\AuthenticationService;
-use Zend\Authentication\Adapter\Ldap as LdapAdapter;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Authentication\Adapter\Ldap as LdapAdapter;
 
 /**
  *

@@ -58,20 +58,20 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
         $authAdapter = $this->userDefinition->getAuthAdapter($user, $this->testPassword);
 
         // Test if auth adapter gets returned
-        $this->assertInstanceOf(Zend\Authentication\Adapter\AbstractAdapter::class, $authAdapter);
+        $this->assertInstanceOf(Laminas\Authentication\Adapter\AbstractAdapter::class, $authAdapter);
 
         // Add hashed password with current settings to the database
         $hashedPassword = $this->userDefinition->hashPassword($this->testPassword);
         $this->db->query(
             "UPDATE gems__user_passwords SET gup_password = '$hashedPassword'",
-            Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
+            Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
         );
-        
+
         $result = $authAdapter->authenticate();
 
         // Test if Result object is returned
-        $this->assertInstanceOf(Zend\Authentication\Result::class, $result);
-    
+        $this->assertInstanceOf(Laminas\Authentication\Result::class, $result);
+
         // Test if authentication is succesfull
         $this->assertTrue($result->isValid());
     }
@@ -94,20 +94,20 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
         $authAdapter = $this->userDefinition->getAuthAdapter($user, 'wrongPassword');
 
         // Test if auth adapter gets returned
-        $this->assertInstanceOf(Zend\Authentication\Adapter\AbstractAdapter::class, $authAdapter);
+        $this->assertInstanceOf(Laminas\Authentication\Adapter\AbstractAdapter::class, $authAdapter);
 
         // Add hashed password with current settings to the database
         $hashedPassword = $this->userDefinition->hashPassword($this->testPassword);
         $this->db->query(
             "UPDATE gems__user_passwords SET gup_password = '$hashedPassword'",
-            Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
+            Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
         );
-        
+
         $result = $authAdapter->authenticate();
 
         // Test if Result object is returned
-        $this->assertInstanceOf(Zend\Authentication\Result::class, $result);
-    
+        $this->assertInstanceOf(Laminas\Authentication\Result::class, $result);
+
         // Test if authentication is false
         $this->assertFalse($result->isValid());
     }

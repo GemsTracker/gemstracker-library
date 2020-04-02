@@ -7,8 +7,8 @@
  * @version    $Id$
  */
 
-use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Authentication\Result;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Result;
 
 /**
  * A wrapper to use any valid callback for authentication

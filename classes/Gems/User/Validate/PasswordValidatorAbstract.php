@@ -10,7 +10,7 @@
  * @version    $Id$
  */
 
-use Zend\Authentication\Result;
+use Laminas\Authentication\Result;
 
 /**
  * Performs replacement of standard login failure texts

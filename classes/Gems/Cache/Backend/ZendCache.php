@@ -8,9 +8,9 @@
 namespace Gems\Cache\Backend;
 
 
-use Zend\Cache\Storage\ClearByNamespaceInterface;
-use Zend\Cache\Storage\StorageInterface;
-use Zend\Cache\Storage\TaggableInterface;
+use Laminas\Cache\Storage\ClearByNamespaceInterface;
+use Laminas\Cache\Storage\StorageInterface;
+use Laminas\Cache\Storage\TaggableInterface;
 use Gems\Cache\Backend;
 
 class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface

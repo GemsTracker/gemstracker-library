@@ -29,7 +29,7 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
     protected $_connectionMock;
 
     /**
-     * @var Zend\Db\Adapter\Adapter
+     * @var Laminas\Db\Adapter\Adapter
      */
     protected $db = null;
 
@@ -72,7 +72,7 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
     protected function getConnection()
     {
         if($this->_connectionMock == null) {
-            $dbAdapter = new Zend\Db\Adapter\Adapter(
+            $dbAdapter = new Laminas\Db\Adapter\Adapter(
                 [
                     'driver' => 'Pdo_Sqlite',
                     'database' => ':memory:',

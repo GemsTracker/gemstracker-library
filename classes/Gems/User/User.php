@@ -11,8 +11,8 @@
 
 use Gems\User\Group;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
-use Zend\Authentication\Result;
-use Zend\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Result;
+use Laminas\Authentication\Adapter\AdapterInterface;
 
 /**
  * User object that mimmicks the old $this->session behaviour

@@ -10,11 +10,11 @@
  * @version    $Id$
  */
 
-use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
-use Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
+use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 
 /**
  * A standard, database stored user as of version 1.5.

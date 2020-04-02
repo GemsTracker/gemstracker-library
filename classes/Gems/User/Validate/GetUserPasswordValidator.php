@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-use Zend\Authentication\Result;
+use Laminas\Authentication\Result;
 
 /**
  *
