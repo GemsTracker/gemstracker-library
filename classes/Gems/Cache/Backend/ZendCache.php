@@ -117,9 +117,9 @@ class ZendCache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
                 try {
                     $namespace = $this->cache->getOptions()->getNamespace();
                     if ($this->cache instanceof ClearByNamespaceInterface && $namespace) {
-                        $cleared = $this->storage->clearByNamespace($namespace);
+                        $cleared = $this->cache->clearByNamespace($namespace);
                     } else {
-                        $cleared = $this->storage->flush();
+                        $cleared = $this->cache->flush();
                     }
                 } catch (Exception\ExceptionInterface $e) {
                     $cleared = false;
