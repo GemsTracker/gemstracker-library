@@ -1591,3 +1591,34 @@ UPDATE gems__log_setup
         gls_changed = CURRENT_TIMESTAMP, 
         gls_changed_by = 1
     WHERE gls_name IN ('participate.subscribe', 'participate.unsubscribe');
+
+-- PATCH: Extend system user setup
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_create_user tinyint(4) unsigned NOT NULL DEFAULT '0' AFTER gsus_secret_key;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_authentication varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_create_user;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_deferred_user_loader varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_authentication;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_deferred_user_group bigint(20) signed NULL AFTER gsus_deferred_user_loader;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_redirect varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_deferred_user_group;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_deferred_user_layout varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_redirect;
+
+UPDATE gems__systemuser_setup 
+    SET gsus_authentication = 'Gems\\User\\Embed\\Auth\\HourKeySha256' 
+    WHERE gsus_authentication IS NULL;
+
+UPDATE gems__systemuser_setup 
+    SET gsus_deferred_user_loader = 'Gems\User\Embed\DeferredUserLoader\StaffUser' 
+    WHERE gsus_deferred_user_loader IS NULL;
+
+UPDATE gems__systemuser_setup 
+    SET gsus_redirect = 'Gems\\User\\Embed\\Redirect\\RespondentShowPage'
+    WHERE gsus_redirect IS NULL;

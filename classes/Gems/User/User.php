@@ -10,6 +10,7 @@
  */
 
 use Gems\User\Group;
+use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Adapter\AdapterInterface;
@@ -643,6 +644,25 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * For embedded users only
+     *
+     * If the user deferred to does not exist, should it be created?
+     *
+     * @return boolean
+     */
+    public function canCreateUser()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('gsus_create_user')) {
+                $this->refreshEmbeddingData();
+            }
+
+            return (bool) $this->_getVar('create_user');
+        }
+        return false;
+    }
+
+    /**
      * True when the current url is one where this user is allowed to login.
      *
      * If the url is a fixed organization url and the user is not allowed to
@@ -970,6 +990,31 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if ($group) {
             return $group->getDefaultNewStaffGroup();
         }
+    }
+
+    /**
+     *
+     *
+     * @param \Gems_User_User $deferredLogin
+     * @return \Gems_User_User|null
+     */
+    public function getDeferredUser($deferredLogin)
+    {
+        if ($this->isEmbedded()) {
+
+            if (! $this->_hasVar('gsus_deferred_user_loader')) {
+                $this->refreshEmbeddingData();
+            }
+            $loaderClassName = $this->_getVar('gsus_deferred_user_loader');
+            if ($loaderClassName) {
+                $embedLoader     = $this->loader->getEmbedLoader();
+                $userLoader      = $embedLoader->loadDeferredUserLoader($loaderClassName);
+            }
+
+            return $userLoader->getDeferredUser($this, $deferredLogin);
+        }
+
+        return null;
     }
 
     /**
@@ -1310,11 +1355,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         if ($this->isEmbedded()) {
             if (! $this->_hasVar('secretKey')) {
-                $key = $this->db->fetchOne(
-                        "SELECT gsus_secret_key FROM gems__systemuser_setup WHERE gsus_id_user = ?",
-                        $this->getUserId()
-                        );
-
+                if (! $this->_hasVar('gsus_secret_key')) {
+                    $this->refreshEmbeddingData();
+                }
+                $key = $this->_getVar('gsus_secret_key');
                 $this->_setVar('secretKey', $key ? $this->project->decrypt($key) : null);
             }
             return $this->_getVar('secretKey', null);
@@ -1329,6 +1373,74 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getSurveyReturn()
     {
         return $this->_getVar('surveyReturn', array());
+    }
+
+    /**
+     *
+     * @return \Gems\User\Embed\EmbeddedAuthInterface|null
+     */
+    public function getSystemDeferredAuthenticator()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('gsus_authentication')) {
+                $this->refreshEmbeddingData();
+            }
+
+            $authenticationClassName = $this->_getVar('gsus_authentication');
+            $embedLoader = $this->loader->getEmbedLoader();
+            return $embedLoader->loadAuthenticator($authenticationClassName);
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return int Group id
+     */
+    public function getSystemDeferredUserGroupId()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('gsus_deferred_user_group')) {
+                $this->refreshEmbeddingData();
+            }
+
+            return $this->_getVar('gsus_deferred_user_group');
+        }
+    }
+
+    /**
+     *
+     * @return \Gems\User\Embed\RedirectInterface|null
+     */
+    public function getSystemDeferredRedirector()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('gsus_redirect')) {
+                $this->refreshEmbeddingData();
+            }
+
+            $redirectorClassName = $this->_getVar('gsus_redirect');
+            $embedLoader = $this->loader->getEmbedLoader();
+            return $embedLoader->loadRedirect($redirectorClassName);
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getSystemDeferredUserLayout()
+    {
+        if ($this->isEmbedded()) {
+            if (! $this->_hasVar('gsus_deferred_user_layout')) {
+                $this->refreshEmbeddingData();
+            }
+
+            return $this->_getVar('gsus_deferred_user_layout');
+        }
     }
 
     /**
@@ -1841,6 +1953,45 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Load and set the embedded user data. triggered only when
+     * embedded data is requested
+     *
+     * @return void
+     */
+    protected function refreshEmbeddingData()
+    {
+        if (! $this->isEmbedded()) {
+            return;
+        }
+
+        $data = $this->db->fetchRow(
+                "SELECT * FROM gems__systemuser_setup WHERE gsus_id_user = ?",
+                $this->getUserId()
+                );
+
+        if ($data) {
+            unset($data['gsus_id_user'], $data['gsus_changed'], $data['gsus_changed_by'],
+                    $data['gsus_created'], $data['gsus_created_by']);
+        } else {
+            // Load defaults
+            $data = [
+                'gsus_secret_key'           => null,
+                'gsus_create_user'          => 0,
+                'gsus_authentication'       => null,
+                'gsus_deferred_user_loader' => null,
+                'gsus_deferred_user_group'  => null,
+                'gsus_redirect'             => null,
+                'gsus_deferred_user_layout' => null,
+                ];
+        }
+
+        foreach ($data as $key => $value) {
+            // Using the full field name to prevent any future clash with a new or user specific field
+            $this->_setVar($key, $value);
+        }
+    }
+
+    /**
      * Check for password weakness.
      *
      * @param string $password Or null when you want a report on all the rules for this password.
@@ -1996,6 +2147,27 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * Set (for the whole session) the group of the current user.
+     *
+     * Different from switching, used for embedded login
+     *
+     * @param int $groupId
+     * @return self
+     */
+    public function setGroupSession($groupId)
+    {
+        if ($groupId == $this->_getVar('user_group')) {
+            $this->_unsetVar('current_user_group');
+            $this->_unsetVar('current_user_role');
+        } else {
+            $group = $this->userLoader->getGroup($groupId);
+
+            $this->_setVar('current_user_group', $groupId);
+            $this->_setVar('current_user_role',  $group->getRole());
+        }
     }
 
     /**

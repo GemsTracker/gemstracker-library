@@ -141,7 +141,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     {
         return $this->_getClass('agenda');
     }
-    
+
     /**
      *
      * @return \Gems\Conditions
@@ -160,6 +160,14 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
         $loader = $this->getUserLoader();
 
         return $loader->getCurrentUser();
+    }
+
+    /**
+     * @return \Gems\User\Embed\EmbedLoader
+     */
+    public function getEmbedLoader()
+    {
+        return $this->_getClass('User\\Embed\\EmbedLoader');
     }
 
     /**

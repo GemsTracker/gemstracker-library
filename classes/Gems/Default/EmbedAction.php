@@ -10,6 +10,11 @@
  * @license    New BSD License
  */
 
+use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\Embed\EmbeddedAuthInterface;
+use Gems\User\Embed\RedirectAbstract;
+use Gems\User\Embed\RedirectInterface;
+
 /**
  *
  * @package    Gems
@@ -81,45 +86,45 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      *
      * @param \Gems_User_User $embeddedUser
      * @param string $secretKey
+     * @param string $deferredLogin The actual user
+     * @param string $patientId The patient to show
+     * @param mixed $organisations (Array of) organization id's or objects
      * @return boolean
      */
-    protected function authenticateEmbedded(\Gems_User_User $embeddedUser, $secretKey)
+    protected function authenticateEmbedded(\Gems_User_User $embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)
     {
         if (! ($embeddedUser->isActive() && $embeddedUser->isEmbedded())) {
             return false;
         }
 
-        return in_array($secretKey, $this->getValidKeys($embeddedUser));
+        $authClass = $embeddedUser->getSystemDeferredAuthenticator();
+        if ($authClass instanceof EmbeddedAuthAbstract) {
+            $authClass->setDeferredLogin($deferredLogin);
+            $authClass->setPatientNumber($patientId);
+            $authClass->setOrganizations($organizations);
+        }
+
+        if ($authClass instanceof EmbeddedAuthInterface) {
+            return $authClass->authenticate($embeddedUser, $secretKey);
+        }
+
+        return false;
     }
 
     /**
      *
-     * @param string $key The input type
-     * @return string The encrypted result that should be retrieved
+     * @param \Gems_User_User $embeddedUser
+     * @param string $deferredLogin
+     * @return \Gems_User_User
      */
-    protected function encryptKey($key)
-    {
-        if ($this->encryptionAlgorithm) {
-            $input = hash($this->encryptionAlgorithm, $key, $this->encryptionRaw);
-        } else {
-            $input = $key;
-        }
-
-        if ($this->encryptionBase64) {
-            return base64_encode($input);
-        }
-
-        return $input;
-    }
-
-    public function getDefferedUser(\Gems_User_User $embeddedUser, $deferredLogin)
+    public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
     {
         $user = $this->getUser($deferredLogin, [
             $embeddedUser->getBaseOrganizationId(),
             $embeddedUser->getCurrentOrganizationId()
             ]);
 
-        if ($user->isActive()) {
+        if ($user && $user->isActive()) {
             return $user;
         }
 
@@ -141,60 +146,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     }
 
     /**
-     * Return the authentication string for the user
-     *
-     * @param \Gems_User_User $embeddedUser
-     * @return string Preferably containing %s
-     */
-    public function getKeysStart(\Gems_User_User $embeddedUser)
-    {
-        $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
-
-        if (! \MUtil_String::contains($key, '%s')) {
-            $key .= '%s';
-        }
-
-        return $key;
-    }
-
-    /**
-     * Generate the \DateInterval constructor
-     *
-     * @param int $i The "start" interval
-     * @return string
-     * @throws \Gems_Exception_Coding
-     */
-    public function getTimePeriodString($i = 1)
-    {
-        $timeChar = substr($this->keyTimeFormat, -1);
-
-        switch ($timeChar) {
-            case 'o':
-            case 'y':
-            case 'Y':
-                return "P{$i}Y";
-
-            case 'm':
-            case 'n':
-                return "P{$i}M";
-
-            case 'd':
-            case 'j':
-                return "P{$i}D";
-
-            case 'H':
-            case 'h':
-                return "PT{$i}H";
-
-            case 'i':
-                return "PT{$i}M";
-
-        }
-
-        throw new \Gems_Exception_Coding("Invalid last keyTimeFormat character '$timeChar' set.");
-    }
-
-    /**
      * Try to find / load an active user with this data
      *
      * @param string $userLogin
@@ -205,7 +156,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     {
         // \MUtil_Echo::track($userLogin, $organisations );
 
-        $user       = $this->currentUser;
         $userLoader = $this->loader->getUserLoader();
 
         // Set to current organization if not passed and no organization is allowed
@@ -223,39 +173,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             }
         }
 
-        return $user;
-    }
-
-    /**
-     * Return an array of valid key values for this user
-     *
-     * @param \Gems_User_User $embeddedUser
-     * @return array
-     */
-    public function getValidKeys(\Gems_User_User $embeddedUser)
-    {
-        $keyStart = $this->getKeysStart($embeddedUser);
-        // \MUtil_Echo::track($keyStart);
-
-        if (! \MUtil_String::contains($keyStart, '%s')) {
-            return [$keyStart];
-        }
-
-        $current = new \DateTime();
-        $current->sub(new \DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
-        $addDate = new \DateInterval($this->getTimePeriodString(1));
-        $keys    = [];
-
-        for ($i = -$this->keyTimeValidRange; $i <= $this->keyTimeValidRange; $i++) {
-            $keys[] = $this->encryptKey(sprintf($keyStart, $current->format($this->keyTimeFormat)));
-            $current->add($addDate);
-        }
-        if ('production' != APPLICATION_ENV) {
-            \MUtil_Echo::track(array_map('urlencode', $keys));
-        }
-        // \MUtil_Echo::track(hash_algos());
-
-        return $keys;
+        return null;
     }
 
     /**
@@ -296,34 +214,67 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      * @param string $secretKey Pass code
      * @param string $deferredLogin The actual user
      * @param string $patientId The patient to show
-     * @param mixed $organisations (Array of) organization id's or objects
+     * @param mixed $organizations  (Array of) organization id's or objects
      */
-    protected function loginEmbedded($epdUserLogin, $secretKey, $deferredLogin, $patientId, $organisations = null)
+    protected function loginEmbedded($epdUserLogin, $secretKey, $deferredLogin, $patientId, $organizations = null)
     {
-        $embeddedUser = $this->getUser($epdUserLogin, $organisations);
+        $embeddedUser = $this->getUser($epdUserLogin, $organizations);
 
-        if ($this->authenticateEmbedded($embeddedUser, $secretKey)) {
-            $deferredUser = $this->getDefferedUser($embeddedUser, $deferredLogin);
+        if ($embeddedUser &&
+                $this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
+            $deferredUser = $this->getDeferredUser($embeddedUser, $deferredLogin);
 
-            if ($deferredUser->isActive()) {
-                if ($deferredUser->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
-                    $deferredUser->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
-                }
-            }
-
-            $menuItem = $this->menu->findController('respondent', 'show');
-            if ($patientId && $menuItem) {
+            if (($deferredUser instanceof \Gems_User_User) && $deferredUser->isActive()) {
                 $deferredUser->setAsCurrentUser();
-                $url = [
-                    'controller'              => 'respondent',
-                    'action'                  => 'show',
-                    \MUtil_Model::REQUEST_ID1 => $patientId,
-                    \MUtil_Model::REQUEST_ID2 => $deferredUser->getCurrentOrganizationId(),
-                    ];
-                $this->_helper->redirector->gotoRoute($url, null, true);
+
+                $group = $embeddedUser->getSystemDeferredUserGroupId();
+                if ($group) {
+//                    $allowedGroups = $deferredUser->getAllowedGroups();
+//                    if (array_key_exists($group, $allowedGroups)) {
+                        $deferredUser->setGroupSession($group);
+//                    }
+                }
+                $this->redirectUser($embeddedUser, $deferredUser, $patientId, $organizations);
             }
         }
 
         throw new \Gems_Exception($this->_("Unable to authenticate"));
+    }
+
+    /**
+     * Redirect the user to a specific page
+     *
+     * @param Gems_User_User $embeddedUser
+     * @param Gems_User_User $deferredUser
+     * @param $patientId string $patientId The patient to show
+     * @param $organizations $organisations (Array of) organization id's or objects
+     */
+    protected function redirectUser(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
+    {
+        $redirector = $embeddedUser->getSystemDeferredRedirector();
+        if ($redirector instanceof RedirectAbstract) {
+            $redirector->answerRegistryRequest('request', $this->getRequest());
+        }
+
+        if ($redirector instanceof RedirectInterface) {
+            $url = $redirector->getRedirectRoute($embeddedUser, $deferredUser, $patientId, $organizations);
+        } else {
+            $url = null;
+        }
+
+        if (null === $url) {
+            // Back to start screen
+            $url = [
+                'controller' => 'index',
+                'action'     => 'index',
+            ];
+        }
+
+        $deferredUserLayout = $embeddedUser->getSystemDeferredUserLayout();
+        if ($deferredUserLayout) {
+            $this->session->currentLayout = $deferredUserLayout;
+        }
+
+        $this->_helper->redirector->gotoRoute($url, null, true);
     }
 }

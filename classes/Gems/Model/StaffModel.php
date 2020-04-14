@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Model\Dependency\ValueSwitchDependency;
+
 /**
  * Contains the staffModel
  *
@@ -339,11 +341,13 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
     public function applySystemUserSettings($detailed, $action)
     {
         $this->addLeftTable('gems__systemuser_setup', ['gsf_id_user' => 'gsus_id_user'], 'gsus');
+        $this->resetOrder();
 
-        $dbLookup   = $this->util->getDbLookup();
-        $editing    = ($action == 'edit') || ($action == 'create');
-        $translated = $this->util->getTranslated();
-        $yesNo      = $translated->getYesNo();
+        $dbLookup       = $this->util->getDbLookup();
+        $editing        = ($action == 'edit') || ($action == 'create');
+        $embeddedLoader = $this->loader->getEmbedLoader();
+        $translated     = $this->util->getTranslated();
+        $yesNo          = $translated->getYesNo();
 
         $this->_addLoginSettings($editing);
 
@@ -351,10 +355,24 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'description', $this->_('A description what this user is for.'),
                 'required', true);
 
-        $this->set('gsf_is_embedded',      'label', $this->_('Is embedder'),
-                'description', $this->_('An embedder is only allowed to act as a front login for other users.'),
+        $this->set('gul_can_login',        'label', $this->_('Can login'),
+                'default', 1,
+                'description', $this->_('System users can only be used when this box is checked.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
+                );
+        $this->set('gsf_is_embedded',      'label', $this->_('Type'),
+                'default', 1,
+                'description', $this->_('The type of system user.'),
+                'elementClass', 'Radio',
+                'multiOptions', $this->getSystemUserTypes(),
+                'separator', ' '
+                );
+
+        $this->set('gsf_id_primary_group', 'label', $this->_('Primary function'),
+                'default', $this->currentUser->getDefaultNewStaffGroup(),
+                'description', $this->_('The group of the system user.'),
+                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
 
         $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
@@ -368,15 +386,54 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                         )
                 );
 
-        $this->set('gul_can_login',        'label', $this->_('Can login'),
-                'default', 1,
-                'description', $this->_('System users can only be used when this box is checked.'),
+        // Set groups for both types of system users
+        $dbLookup = $this->util->getDbLookup();
+        $allowedRespondentGroups = $dbLookup->getAllowedRespondentGroups();
+        unset($allowedRespondentGroups['']);
+        $groups = [
+            '' => $this->_('(user primary group)'),
+            $this->_('Staff') => $dbLookup->getAllowedStaffGroups(),
+            $this->_('Respondent') => $allowedRespondentGroups,
+        ];
+
+        $this->set('gsus_deferred_user_group',
+                'label', $this->_('Used group'),
+                'description', $this->_('The group the deferred user should be changed to'),
+                'multiOptions', $groups
+                );
+
+        $this->set('gsus_create_user',
+                'label', $this->_('Can create users'),
+                'description', $this->_('If the asked for user does not exits, can this embedded user create that user? If it cannot the authentication will fail.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-        $this->set('gsf_id_primary_group', 'label', $this->_('Primary function'),
-                'default', $this->currentUser->getDefaultNewStaffGroup(),
-                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
+
+        $this->set('gsus_authentication',
+                'label', $this->_('Authentication'),
+                'default', 'Gems\\User\\Embed\\Auth\\HourKeySha256',
+                'description', $this->_('The authentication method used to authenticate the embedded user. Possibly adding characteristics of the deferred user as well.'),
+                'multiOptions', $embeddedLoader->listAuthenticators()
+                );
+
+        $this->set('gsus_deferred_user_loader',
+                'label', $this->_('Deferred user loader'),
+                'default', 'Gems\\User\\Embed\\DeferredUserLoader\\StaffUser',
+                'description', $this->_('The method a deferred user should be loaded.'),
+                'multiOptions', $embeddedLoader->listDeferredUserLoaders()
+                );
+
+        $this->set('gsus_redirect',
+                'label', $this->_('Redirect method'),
+                'default', 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
+                'description', $this->_('The method the user is redirected after successful login.'),
+                'multiOptions', $embeddedLoader->listRedirects()
+                );
+
+        $this->set('gsus_deferred_user_layout',
+                'label', $this->_('Layout'),
+                'description', $this->_('The layout the user should be changed to'),
+                'multiOptions', $embeddedLoader->listLayouts()
                 );
 
         $this->set('gsf_iso_lang',         'label', $this->_('Language'),
@@ -397,7 +454,46 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'multiOptions', $yesNo
                 );
 
+        $check  = ['elementClass' => 'Checkbox'];
+        $hidden = ['elementClass' => 'Hidden', 'label' => null];
+        $select = ['elementClass' => 'Select'];
+        $switch = new ValueSwitchDependency();
+        $switch->setDependsOn('gsf_is_embedded');
+        $switch->setSwitches([
+            0 => [
+                'gsf_logout_on_survey'      => $check,
+                'gsus_authentication'       => $hidden,
+                'gsus_create_user'          => $hidden,
+                'gsus_deferred_user_group'  => $hidden,
+                'gsus_deferred_user_loader' => $hidden,
+                'gsus_redirect'             => $hidden,
+                'gsus_deferred_user_layout' => $hidden,
+                ],
+            1 => [
+                'gsf_logout_on_survey'      => $hidden,
+                'gsus_authentication'       => $select,
+                'gsus_create_user'          => $check,
+                'gsus_deferred_user_group'  => $select,
+                'gsus_deferred_user_loader' => $select,
+                'gsus_redirect'             => $select,
+                'gsus_deferred_user_layout' => $select,
+                ],
+            ]);
+        $this->addDependency($switch);
+
         return $this;
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public function getSystemUserTypes()
+    {
+        return [
+            1 => $this->_('Embbedded (EPD) login user'),
+            0 => $this->_('Guest - for answering surveys at the hospital'),
+            ];
     }
 
     /**

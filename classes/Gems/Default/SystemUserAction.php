@@ -68,6 +68,31 @@ class Gems_Default_SystemUserAction extends \Gems_Default_StaffAction
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Staff\SystemUserSearchSnippet');
 
     /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = [
+        'selectedUser' => 'getSelectedUser',
+        ];
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'User\\EmbeddedUserTestUrlForm',
+        ];
+
+    /**
      * Snippets for mail
      *
      * @var mixed String or array of snippets name
