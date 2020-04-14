@@ -41,7 +41,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
 
     /**
      *
-     * @var Zend\Db\Adapter\Adapter
+     * @var Laminas\Db\Adapter\Adapter
      */
     protected $db2;
 
@@ -158,11 +158,11 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
+     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend\Authentication\Adapter\AdapterInterface
+     * @return Laminas\Authentication\Adapter\AdapterInterface
      */
     public function getAuthAdapter(\Gems_User_User $user, $password)
     {
@@ -213,8 +213,8 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Create a Zend DB 2 Adapter needed for the Zend\Authentication library
-     * @return Zend\Db\Adapter\Adapter Zend Db Adapter
+     * Create a Zend DB 2 Adapter needed for the Laminas\Authentication library
+     * @return Laminas\Db\Adapter\Adapter Zend Db Adapter
      */
     protected function getDb2()
     {
@@ -399,8 +399,8 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     }
 
     /**
-     * Set the Zend\Db\Adapter\Adapter manually
-     * @param Zend\Db\Adapter\Adapter $adapter [description]
+     * Set the Laminas\Db\Adapter\Adapter manually
+     * @param Laminas\Db\Adapter\Adapter $adapter [description]
      */
     public function setDb2(Adapter $adapter)
     {

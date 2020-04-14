@@ -33,7 +33,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var Zend\Authentication\Result
+     * @var Laminas\Authentication\Result
      */
     protected $_authResult;
 
@@ -308,7 +308,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Process everything after authentication.
      *
-     * @param Zend\Authentication\Result $result
+     * @param Laminas\Authentication\Result $result
      */
     protected function afterAuthorization(Result $result, $lastAuthorizer = null)
     {
@@ -483,7 +483,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      *
      * @param string $password The password to test
      * @param boolean $testPassword Set to false to test the non-password checks only
-     * @return Zend\Authentication\Result
+     * @return Laminas\Authentication\Result
      */
     public function authenticate($password, $testPassword = true)
     {
@@ -541,9 +541,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Checks if the user is allowed to login or is blocked
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend\Authenticate\Result.
+     * it is converted into a Laminas\Authenticate\Result.
      *
-     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
+     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeBlock()
     {
@@ -588,9 +588,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to the group he is in
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend\Authenticate\Result.
+     * it is converted into a Laminas\Authenticate\Result.
      *
-     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
+     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeIp()
     {
@@ -615,9 +615,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to his BASE organization
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Zend\Authenticate\Result.
+     * it is converted into a Laminas\Authenticate\Result.
      *
-     * @return mixed Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
+     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeOrgIp()
     {
@@ -1709,11 +1709,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Load the callables | results needed to authenticate/authorize this user
      *
      * A callable will be called, then an adapter authorizes and if the end result
-     * is boolean, string or array it is converted into a Zend\Authenticate\Result.
+     * is boolean, string or array it is converted into a Laminas\Authenticate\Result.
      *
      * @param string $password
      * @param boolean $testPassword Set to false to test on the non-password checks only
-     * @return array Of Callable|Zend\Authentication\Adapter\AdapterInterface|Zend\Authenticate\Result|boolean|string|array
+     * @return array Of Callable|Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function loadAuthorizers($password, $testPassword = true)
     {

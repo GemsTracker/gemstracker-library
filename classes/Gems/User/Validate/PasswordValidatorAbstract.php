@@ -25,7 +25,7 @@ abstract class Gems_User_Validate_PasswordValidatorAbstract implements \Zend_Val
 {
     /**
      *
-     * @var Zend\Authentication\Result
+     * @var Laminas\Authentication\Result
      */
     private $_authResult = null;
 
@@ -87,7 +87,7 @@ abstract class Gems_User_Validate_PasswordValidatorAbstract implements \Zend_Val
     /**
      * Set the result for this validator
      *
-     * @param Zend\Authentication\Result $result
+     * @param Laminas\Authentication\Result $result
      * @return boolean True when valid
      */
     protected function setAuthResult(Result $result)

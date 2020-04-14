@@ -189,13 +189,13 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	}
 
 	/**
-	 * authenticate() - defined by Zend\Authentication\Adapter\AdapterInterface.  This method is called to
+	 * authenticate() - defined by Laminas\Authentication\Adapter\AdapterInterface.  This method is called to
 	 * attempt an authenication.  Previous to this call, this adapter would have already
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
 	 * @throws Laminas\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
-	 * @return Zend\Authentication\Result
+	 * @return Laminas\Authentication\Result
 	 */
 	public function authenticate()
 	{
@@ -253,10 +253,10 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	}
 
 	/**
-	 * _authenticateCreateAuthResult() - This method creates a Zend\Authentication\Result object
+	 * _authenticateCreateAuthResult() - This method creates a Laminas\Authentication\Result object
 	 * from the information that has been collected during the authenticate() attempt.
 	 *
-	 * @return Zend\Authentication\Result
+	 * @return Laminas\Authentication\Result
 	 */
 	protected function _authenticateCreateAuthResult()
 	{

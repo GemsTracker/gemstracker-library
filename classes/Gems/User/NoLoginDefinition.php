@@ -22,11 +22,11 @@
 class Gems_User_NoLoginDefinition extends \Gems_User_UserDefinitionAbstract
 {
     /**
-     * Returns an initialized Zend\Authentication\Adapter\AdapterInterface
+     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
      *
      * @param \Gems_User_User $user
      * @param string $password
-     * @return Zend\Authentication\Adapter\AdapterInterface
+     * @return Laminas\Authentication\Adapter\AdapterInterface
      */
     public function getAuthAdapter(\Gems_User_User $user, $password)
     {
