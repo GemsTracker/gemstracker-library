@@ -117,6 +117,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     {
         $keys = $this->getValidKeys($user);
 
+        if (isset($keys[0])) {
+            return $keys[0];
+        }
         return \end($keys) ?: 'key';
     }
 
@@ -204,7 +207,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
         $keys    = [];
 
         for ($i = -$this->keyTimeValidRange; $i <= $this->keyTimeValidRange; $i++) {
-            $keys[] = $this->encryptKey(sprintf($keyStart, $current->format($this->keyTimeFormat)));
+            $keys[$i] = $this->encryptKey(sprintf($keyStart, $current->format($this->keyTimeFormat)));
             $current->add($addDate);
         }
 

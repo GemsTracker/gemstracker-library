@@ -11,6 +11,7 @@
 
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
+use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Adapter\AdapterInterface;
@@ -37,6 +38,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * @var Laminas\Authentication\Result
      */
     protected $_authResult;
+
+    /**
+     *
+     * @var Gems\User\Embed\EmbeddedUserData
+     */
+    protected $_embedderData;
 
     /**
      *
@@ -405,6 +412,40 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Function where the layout and style can be set, called in GemsEscort->prepareController()
+     *
+     * @param \GemsEscort $escort
+     * @return $this
+     */
+    public function applyLayoutSettings(\GemsEscort $escort)
+    {
+        if ($this->_hasVar('current_user_layout')) {
+            $layout     = $escort->layout;
+            $usedLayout = $this->_getVar('current_user_layout');
+
+            if ($usedLayout && $layout instanceof \Zend_Layout) {
+                $layout->setLayout($usedLayout);
+            }
+        }
+
+        if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+            if ($this->_hasVar('current_user_style')) {
+                $style = $this->_getVar('current_user_style');
+            } else {
+                $style = null;
+            }
+
+            if (! $style) {
+                $style = $this->getCurrentOrganization()->getStyle();
+            }
+
+            $escort->layoutSwitch($style);
+        }
+
+        return $this;
+    }
+
+    /**
      * Set menu parameters from this user
      *
      * @param \Gems_Menu_ParameterSource $source
@@ -641,25 +682,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         return $this->_('You are not allowed to login from this location.');
-    }
-
-    /**
-     * For embedded users only
-     *
-     * If the user deferred to does not exist, should it be created?
-     *
-     * @return boolean
-     */
-    public function canCreateUser()
-    {
-        if ($this->isEmbedded()) {
-            if (! $this->_hasVar('gsus_create_user')) {
-                $this->refreshEmbeddingData();
-            }
-
-            return (bool) $this->_getVar('create_user');
-        }
-        return false;
     }
 
     /**
@@ -993,31 +1015,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     *
-     *
-     * @param \Gems_User_User $deferredLogin
-     * @return \Gems_User_User|null
-     */
-    public function getDeferredUser($deferredLogin)
-    {
-        if ($this->isEmbedded()) {
-
-            if (! $this->_hasVar('gsus_deferred_user_loader')) {
-                $this->refreshEmbeddingData();
-            }
-            $loaderClassName = $this->_getVar('gsus_deferred_user_loader');
-            if ($loaderClassName) {
-                $embedLoader     = $this->loader->getEmbedLoader();
-                $userLoader      = $embedLoader->loadDeferredUserLoader($loaderClassName);
-            }
-
-            return $userLoader->getDeferredUser($this, $deferredLogin);
-        }
-
-        return null;
-    }
-
-    /**
      * Return true if this user has a password.
      *
      * @return string
@@ -1025,6 +1022,26 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getEmailAddress()
     {
         return $this->_getVar('user_email');
+    }
+
+    /**
+     * If this is an embedder, return the EmbedderUserData object
+     *
+     * @return Gems\User\Embed\EmbeddedUserData
+     */
+    public function getEmbedderData()
+    {
+        if (! $this->isEmbedded()) {
+            return null;
+        }
+
+        if ($this->_embedderData) {
+            return $this->_embedderData;
+        }
+
+        $this->_embedderData = new EmbeddedUserData($this->getUserId(), $this->db, $this->loader);
+
+        return $this->_embedderData;
     }
 
     /**
@@ -1373,74 +1390,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getSurveyReturn()
     {
         return $this->_getVar('surveyReturn', array());
-    }
-
-    /**
-     *
-     * @return \Gems\User\Embed\EmbeddedAuthInterface|null
-     */
-    public function getSystemDeferredAuthenticator()
-    {
-        if ($this->isEmbedded()) {
-            if (! $this->_hasVar('gsus_authentication')) {
-                $this->refreshEmbeddingData();
-            }
-
-            $authenticationClassName = $this->_getVar('gsus_authentication');
-            $embedLoader = $this->loader->getEmbedLoader();
-            return $embedLoader->loadAuthenticator($authenticationClassName);
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @return int Group id
-     */
-    public function getSystemDeferredUserGroupId()
-    {
-        if ($this->isEmbedded()) {
-            if (! $this->_hasVar('gsus_deferred_user_group')) {
-                $this->refreshEmbeddingData();
-            }
-
-            return $this->_getVar('gsus_deferred_user_group');
-        }
-    }
-
-    /**
-     *
-     * @return \Gems\User\Embed\RedirectInterface|null
-     */
-    public function getSystemDeferredRedirector()
-    {
-        if ($this->isEmbedded()) {
-            if (! $this->_hasVar('gsus_redirect')) {
-                $this->refreshEmbeddingData();
-            }
-
-            $redirectorClassName = $this->_getVar('gsus_redirect');
-            $embedLoader = $this->loader->getEmbedLoader();
-            return $embedLoader->loadRedirect($redirectorClassName);
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getSystemDeferredUserLayout()
-    {
-        if ($this->isEmbedded()) {
-            if (! $this->_hasVar('gsus_deferred_user_layout')) {
-                $this->refreshEmbeddingData();
-            }
-
-            return $this->_getVar('gsus_deferred_user_layout');
-        }
     }
 
     /**
@@ -2095,7 +2044,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
-        $this->getCurrentOrganization()->setAsCurrentOrganization();
+        $org = $this->getCurrentOrganization()->setAsCurrentOrganization();
 
         return $this;
     }
@@ -2168,6 +2117,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $this->_setVar('current_user_group', $groupId);
             $this->_setVar('current_user_role',  $group->getRole());
         }
+
+        return $this;
     }
 
     /**
@@ -2249,6 +2200,30 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $layout Name of a .[html layout file
+     * @return $this
+     */
+    public function setSessionMvcLayout($layout)
+    {
+        $this->_setVar('current_user_layout', $layout);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $style One of the escort->getStyle styles
+     * @return $this
+     */
+    public function setSessionStyle($style)
+    {
+        $this->_setVar('current_user_style', $style);
 
         return $this;
     }

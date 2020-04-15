@@ -19,7 +19,8 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:07:27
  */
-abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_TranslateableAbstract implements DeferredUserLoaderInterface
+abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_TranslateableAbstract
+        implements DeferredUserLoaderInterface
 {
     /**
      * @var \Gems_User_Organization
@@ -38,6 +39,27 @@ abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_Translateable
 
     /**
      *
+     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\Embed\EmbeddedUserData $embeddedUserData
+     * @param \Gems_User_User $user
+     */
+    protected function checkCurrentSettings(\Gems_User_User $embeddedUser, EmbeddedUserData $embeddedUserData, \Gems_User_User $user)
+    {
+        if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
+            $user->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
+        }
+
+        $groupId = $embeddedUserData->getUserGroupId();
+        if ($groupId && ($user->getGroupId() != $groupId)) {
+            $user->setGroupSession($groupId);
+        }
+
+        $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
+        $user->setSessionStyle($embeddedUserData->getUserStyle());
+    }
+
+    /**
+     *
      * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
      */
     // abstract public function getLabel();
@@ -50,7 +72,7 @@ abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_Translateable
      * @return \Gems_User_user|null
      */
     // abstract public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin);
-    
+
     /**
      * Try to find / load an active user with this data
      *

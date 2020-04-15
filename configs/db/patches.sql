@@ -1609,14 +1609,29 @@ ALTER TABLE gems__systemuser_setup
     ADD gsus_redirect varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_deferred_user_group;
 
 ALTER TABLE gems__systemuser_setup
-    ADD gsus_deferred_user_layout varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_redirect;
+    ADD gsus_deferred_mvc_layout varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_redirect;
+
+ALTER TABLE gems__systemuser_setup
+    ADD gsus_deferred_user_layout varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_deferred_mvc_layout;
+
+ALTER TABLE gems__systemuser_setup
+    CHANGE gsus_authentication gsus_authentication  varchar(200) COLLATE 'utf8_general_ci' NULL
+        default 'Gems\\User\\Embed\\Auth\\HourKeySha256';
+
+ALTER TABLE gems__systemuser_setup
+    CHANGE gsus_deferred_user_loader gsus_deferred_user_loader  varchar(200) COLLATE 'utf8_general_ci' NULL  
+        default 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser';
+
+ALTER TABLE gems__systemuser_setup
+    CHANGE gsus_redirect gsus_redirect varchar(200) COLLATE 'utf8_general_ci' NULL 
+        default 'Gems\\User\\Embed\\Redirect\\RespondentShowPage';
 
 UPDATE gems__systemuser_setup 
     SET gsus_authentication = 'Gems\\User\\Embed\\Auth\\HourKeySha256' 
     WHERE gsus_authentication IS NULL;
 
 UPDATE gems__systemuser_setup 
-    SET gsus_deferred_user_loader = 'Gems\User\Embed\DeferredUserLoader\StaffUser' 
+    SET gsus_deferred_user_loader = 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser' 
     WHERE gsus_deferred_user_loader IS NULL;
 
 UPDATE gems__systemuser_setup 

@@ -12,6 +12,7 @@
 namespace Gems\Snippets\User;
 
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Embed\EmbeddedUserData;
 
 /**
  *
@@ -24,6 +25,12 @@ use Gems\Snippets\FormSnippetAbstract;
 class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 {
     /**
+     *
+     * @var Gems\User\Embed\EmbeddedUserData
+     */
+    protected $_embedderData;
+
+    /**
      * Required
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -35,12 +42,6 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      * @var \Gems_Loader
      */
     protected $loader;
-
-    /**
-     *
-     * @var \Zend_Controller_Router_Route
-     */
-    protected $router;
 
     /**
      * The form Id used for the save button
@@ -107,8 +108,8 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $urlOptions = [
             'label'       => $this->_('Example url'),
             'cols'        => 80,
-            'description' => \MUtil_String::contains($this->formData['example_url'], '%7B') ?
-                $this->_('Replace {} / %7B %7D fields!') :
+            'description' => \MUtil_String::contains($this->formData['example_url'], '{') ?
+                $this->_('Replace {} fields!') :
                 $this->_('Please open in private mode or in other browser.'),
             'rows'        => 5,
             ];
@@ -123,8 +124,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      */
     public function buildExampleEmbedUrl()
     {
-
-        $auth = $this->selectedUser->getSystemDeferredAuthenticator();
+        $auth = $this->_embedderData->getAuthenticator();
 
         $url['epd'] = $this->selectedUser->getLoginName();
         $url['org'] = $this->formData['org_id'];
@@ -144,8 +144,9 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
             }
         }
 
-        $router = $this->getRouter();
-        return $this->util->getCurrentURI('embed/login') . $url_string;
+        // Return the {brackets} to not decoded as they should be changed by the user
+        // (and will usally work fine in an url anyway).
+        return $this->util->getCurrentURI('embed/login') . str_replace(['%7B', '%7D'], ['{', '}'], $url_string);
     }
 
     /**
@@ -197,20 +198,6 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 
     /**
      *
-     * @return \Zend_Controller_Router_Route
-     */
-    public function getRouter()
-    {
-        if (! $this->router) {
-            $front = \Zend_Controller_Front::getInstance();
-            $this->router = $front->getRouter();
-        }
-
-        return $this->router;
-    }
-
-    /**
-     *
      * @param int $orgId
      * @return array login_id => login_id
      */
@@ -254,9 +241,14 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if (($this->selectedUser instanceof \Gems_User_User) && $this->selectedUser->isEmbedded() && $this->selectedUser->isActive()) {
-            return parent::hasHtmlOutput();
+        if ($this->selectedUser instanceof \Gems_User_User) {
+            $this->_embedderData = $this->selectedUser->getEmbedderData();
+            if ($this->selectedUser->isActive() && $this->_embedderData instanceof EmbeddedUserData) {
+                return parent::hasHtmlOutput();
+            }
         }
+
+        return false;
     }
 
     /**

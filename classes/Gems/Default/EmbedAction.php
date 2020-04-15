@@ -12,6 +12,7 @@
 
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedAuthInterface;
+use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\Embed\RedirectInterface;
 
@@ -93,11 +94,12 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      */
     protected function authenticateEmbedded(\Gems_User_User $embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)
     {
-        if (! ($embeddedUser->isActive() && $embeddedUser->isEmbedded())) {
+        $embeddedUserData = $embeddedUser->getEmbedderData();
+        if (! ($embeddedUser->isActive() && $embeddedUserData instanceof EmbeddedUserData)) {
             return false;
         }
 
-        $authClass = $embeddedUser->getSystemDeferredAuthenticator();
+        $authClass = $embeddedUserData->getAuthenticator();
         if ($authClass instanceof EmbeddedAuthAbstract) {
             $authClass->setDeferredLogin($deferredLogin);
             $authClass->setPatientNumber($patientId);
@@ -109,40 +111,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
         }
 
         return false;
-    }
-
-    /**
-     *
-     * @param \Gems_User_User $embeddedUser
-     * @param string $deferredLogin
-     * @return \Gems_User_User
-     */
-    public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
-    {
-        $user = $this->getUser($deferredLogin, [
-            $embeddedUser->getBaseOrganizationId(),
-            $embeddedUser->getCurrentOrganizationId()
-            ]);
-
-        if ($user && $user->isActive()) {
-            return $user;
-        }
-
-        $model = $this->loader->getModels()->getStaffModel();
-        $data  = $model->loadNew();
-
-        $data['gsf_login']            = $deferredLogin;
-        $data['gsf_id_organization']  = $embeddedUser->getBaseOrganizationId();
-        $data['gsf_id_primary_group'] = $embeddedUser->getGroupId();
-        $data['gsf_last_name']        = ucfirst($deferredLogin);
-        $data['gsf_iso_lang']         = $embeddedUser->getLocale();
-        $data['gul_user_class']       = $embeddedUser->getUserDefinitionClass();
-        $data['gul_can_login']        = 1;
-        // \MUtil_Echo::track($data);
-
-        $model->save($data);
-
-        return $this->loader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
     }
 
     /**
@@ -220,21 +188,15 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     {
         $embeddedUser = $this->getUser($epdUserLogin, $organizations);
 
-        if ($embeddedUser &&
-                $this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
-            $deferredUser = $this->getDeferredUser($embeddedUser, $deferredLogin);
+        if ($this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
+            $embeddedUserData = $embeddedUser->getEmbedderData();
+            $deferredUser     = $embeddedUserData->getDeferredUser($embeddedUser, $deferredLogin);
 
             if (($deferredUser instanceof \Gems_User_User) && $deferredUser->isActive()) {
                 $deferredUser->setAsCurrentUser();
-
-                $group = $embeddedUser->getSystemDeferredUserGroupId();
-                if ($group) {
-//                    $allowedGroups = $deferredUser->getAllowedGroups();
-//                    if (array_key_exists($group, $allowedGroups)) {
-                        $deferredUser->setGroupSession($group);
-//                    }
-                }
                 $this->redirectUser($embeddedUser, $deferredUser, $patientId, $organizations);
+
+                return;
             }
         }
 
@@ -251,7 +213,9 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      */
     protected function redirectUser(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
     {
-        $redirector = $embeddedUser->getSystemDeferredRedirector();
+        $embeddedUserData = $embeddedUser->getEmbedderData();
+        $redirector       = $embeddedUserData->getRedirector();
+
         if ($redirector instanceof RedirectAbstract) {
             $redirector->answerRegistryRequest('request', $this->getRequest());
         }
@@ -268,11 +232,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
                 'controller' => 'index',
                 'action'     => 'index',
             ];
-        }
-
-        $deferredUserLayout = $embeddedUser->getSystemDeferredUserLayout();
-        if ($deferredUserLayout) {
-            $this->session->currentLayout = $deferredUserLayout;
         }
 
         $this->_helper->redirector->gotoRoute($url, null, true);

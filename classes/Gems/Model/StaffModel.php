@@ -392,7 +392,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         unset($allowedRespondentGroups['']);
         $groups = [
             '' => $this->_('(user primary group)'),
-            $this->_('Staff') => $dbLookup->getAllowedStaffGroups(),
+            $this->_('Staff') => $dbLookup->getActiveStaffGroups(),
             $this->_('Respondent') => $allowedRespondentGroups,
         ];
 
@@ -418,7 +418,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
         $this->set('gsus_deferred_user_loader',
                 'label', $this->_('Deferred user loader'),
-                'default', 'Gems\\User\\Embed\\DeferredUserLoader\\StaffUser',
+                'default', 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
                 'description', $this->_('The method a deferred user should be loaded.'),
                 'multiOptions', $embeddedLoader->listDeferredUserLoaders()
                 );
@@ -430,10 +430,16 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'multiOptions', $embeddedLoader->listRedirects()
                 );
 
-        $this->set('gsus_deferred_user_layout',
+        $this->set('gsus_deferred_mvc_layout',
                 'label', $this->_('Layout'),
-                'description', $this->_('The layout the user should be changed to'),
+                'description', $this->_('The layout frame used.'),
                 'multiOptions', $embeddedLoader->listLayouts()
+                );
+
+        $this->set('gsus_deferred_user_layout',
+                'label', $this->_('Style'),
+                'description', $this->_('The display style used.'),
+                'multiOptions', $embeddedLoader->listStyles()
                 );
 
         $this->set('gsf_iso_lang',         'label', $this->_('Language'),

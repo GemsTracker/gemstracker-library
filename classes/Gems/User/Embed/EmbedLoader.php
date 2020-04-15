@@ -89,6 +89,19 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     *
+     * @return type => dir
+     */
+    protected function _getLayoutDirs()
+    {
+        // Do NOT use $this->_dirs as that points to the class paths
+        return [
+            'Gems' => GEMS_LIBRARY_DIR . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
+            GEMS_PROJECT_NAME_UC => APPLICATION_PATH . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
+        ];
+    }
+
+    /**
      * Loads and initiates an embed class and returns the class
      *
      * @param string $helperName The class name of the individual embed helper to load
@@ -151,20 +164,17 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listLayouts()
     {
-        $paths = [
-            'gems' => GEMS_LIBRARY_DIR . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
-            GEMS_PROJECT_NAME => APPLICATION_PATH . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
-        ];
+        $paths = $this->_getLayoutDirs();
+
         $layouts = ['' => $this->_('Do not change layout')];
         $extension = '.phtml';
-        foreach($paths as $type=>$path) {
+        foreach($paths as $type => $path) {
             $globIter = new \GlobIterator($path . DIRECTORY_SEPARATOR . '*'.$extension);
-            $ucType = ucfirst($type);
 
             foreach($globIter as $fileInfo) {
                 $name = $fileInfo->getFilename();
                 $baseName = str_replace($extension, '', $name);
-                $layouts[$ucType][$baseName] = $baseName;
+                $layouts[$type][$baseName] = $baseName;
             }
         }
 
@@ -178,6 +188,24 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
     public function listRedirects()
     {
         return $this->_listClasses(self::REDIRECT);
+    }
+
+    /**
+     * Get an array of Escort styles
+     *
+     * @return array
+     */
+    public function listStyles()
+    {
+        $escort = \GemsEscort::getInstance();
+
+        if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+            $styles[GEMS_PROJECT_NAME_UC] = $escort->getStyles();
+        } else {
+            $styles = [];
+        }
+
+        return ['' => $this->_('Use organization style')] + $styles;
     }
 
     /**

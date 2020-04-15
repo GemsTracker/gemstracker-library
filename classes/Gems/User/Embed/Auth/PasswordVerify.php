@@ -33,7 +33,12 @@ class PasswordVerify extends EmbeddedAuthAbstract
      */
     public function authenticate(\Gems_User_User $user, $secretKey)
     {
-        $user = $user->getDeferredUser($this->deferredLogin);
+        $embeddedUserData = $embeddedUser->getEmbedderData();
+        if ($embeddedUserData) {
+            $user = $embeddedUserData->getDeferredUser($embeddedUser, $this->deferredLogin);
+        } else {
+            $user = null;
+        }
 
         if ($user) {
             $result = $user->authenticate($secretKey);

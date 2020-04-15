@@ -12,6 +12,7 @@
 namespace Gems\User\Embed\DeferredUserLoader;
 
 use Gems\User\Embed\DeferredUserLoaderAbstract;
+use Gems\User\Embed\EmbeddedUserData;
 
 /**
  *
@@ -21,20 +22,8 @@ use Gems\User\Embed\DeferredUserLoaderAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 02-Apr-2020 19:33:03
  */
-class StaffUser extends DeferredUserLoaderAbstract
+class DeferredStaffUser extends DeferredUserLoaderAbstract
 {
-    /**
-     *
-     * @param \Gems_User_User $embeddedUser
-     * @param \Gems_User_User $user
-     */
-    protected function checkCurrentOrganization(\Gems_User_User $embeddedUser, \Gems_User_User $user)
-    {
-        if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
-            $user->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
-        }
-    }
-
     /**
      * Get the deferred user
      *
@@ -44,17 +33,23 @@ class StaffUser extends DeferredUserLoaderAbstract
      */
     public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
     {
+        $embeddedUserData = $embeddedUser->getEmbedderData();
+        if (! ($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
+            return null;
+        }
+
         $user = $this->getUser($deferredLogin, [
             $embeddedUser->getBaseOrganizationId(),
             $embeddedUser->getCurrentOrganizationId(),
             ]);
 
         if ($user->isActive()) {
-            $this->checkCurrentOrganization($embeddedUser, $user);
+            $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
 
             return $user;
         }
-        if (! $embeddedUser->canCreateUser()) {
+
+        if (! $embeddedUserData->canCreateUser()) {
             return null;
         }
 
@@ -75,7 +70,7 @@ class StaffUser extends DeferredUserLoaderAbstract
         $user = $this->loader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
 
         if ($user->isActive()) {
-            $this->checkCurrentOrganization($embeddedUser, $user);
+            $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
 
             return $user;
         }
@@ -87,6 +82,6 @@ class StaffUser extends DeferredUserLoaderAbstract
      */
     public function getLabel()
     {
-        return $this->_('Load staff user in same group and organisation as system user');
+        return $this->_('Load a staff user');
     }
 }

@@ -2185,11 +2185,9 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     public function prepareController()
     {
-        // Do the layout switch here, when view is set the layout can still be changed, but
+        // Do the layout switching here, when view is set the layout can still be changed, but
         // Bootstrap can no longer be switched on/off
-        if ($this instanceof \Gems_Project_Layout_MultiLayoutInterface) {
-            $this->layoutSwitch();
-        }
+        $this->currentUser->applyLayoutSettings($this);
 
         if ($this->useBootstrap) {
             $bootstrap = \MUtil_Bootstrap::bootstrap(array('fontawesome' => true));
