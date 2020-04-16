@@ -245,11 +245,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      * @var array Mixed key => value array for snippet initialization
      */
     protected $showParameters = array(
-        'baseUrl'        => 'getItemUrlArray',
-        'forOtherOrgs'   => 'getOtherOrgs',
-        'onclick'        => 'getEditLink',
-        // 'respondentData' => 'getRespondentData',
-        '-run-once'      => 'openedRespondent',
+        'addCurrentParent' => true,
+        'baseUrl'          => 'getItemUrlArray',
+        'forOtherOrgs'     => 'getOtherOrgs',
+        'onclick'          => 'getEditLink',
+        // 'respondentData'   => 'getRespondentData',
+        '-run-once'        => 'openedRespondent',
     );
 
     /**

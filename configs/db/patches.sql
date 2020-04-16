@@ -1615,6 +1615,9 @@ ALTER TABLE gems__systemuser_setup
     ADD gsus_deferred_user_layout varchar(200) COLLATE 'utf8_general_ci' NULL AFTER gsus_deferred_mvc_layout;
 
 ALTER TABLE gems__systemuser_setup
+    ADD gsus_hide_breadcrumbs varchar(20) COLLATE 'utf8_general_ci' default '' AFTER gsus_deferred_user_layout;
+
+ALTER TABLE gems__systemuser_setup
     CHANGE gsus_authentication gsus_authentication  varchar(200) COLLATE 'utf8_general_ci' NULL
         default 'Gems\\User\\Embed\\Auth\\HourKeySha256';
 

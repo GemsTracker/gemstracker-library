@@ -81,6 +81,15 @@ class EmbeddedUserData extends \ArrayObject
     }
 
     /**
+     *
+     * @return string One of the EmbedLoader->listCrumbOptions() options
+     */
+    public function getCrumbOption()
+    {
+        return $this->offsetGet('gsus_hide_breadcrumbs');
+    }
+
+    /**
      * Shortcut function to get the deferred user
      *
      * @param \Gems_User_User $embeddedUser
@@ -90,7 +99,7 @@ class EmbeddedUserData extends \ArrayObject
     public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
     {
         $userLoader = $this->getUserLoader();
-        
+
         if ($userLoader instanceof DeferredUserLoaderInterface) {
             return $userLoader->getDeferredUser($embeddedUser, $deferredLogin);
         }

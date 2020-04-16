@@ -54,6 +54,7 @@ abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_Translateable
             $user->setGroupSession($groupId);
         }
 
+        $user->setSessionCrumbs($embeddedUserData->getCrumbOption());
         $user->setSessionMvcLayout($embeddedUserData->getMvcLayout());
         $user->setSessionStyle($embeddedUserData->getUserStyle());
     }

@@ -16,6 +16,7 @@ CREATE TABLE if not exists gems__systemuser_setup (
                                         default 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
         gsus_deferred_mvc_layout    varchar(200) COLLATE 'utf8_general_ci' NULL default null,
         gsus_deferred_user_layout   varchar(200) COLLATE 'utf8_general_ci' NULL default null,
+        gsus_hide_breadcrumbs       varchar(20) COLLATE 'utf8_general_ci' default '',
 
         gsus_changed                timestamp not null default current_timestamp on update current_timestamp,
         gsus_changed_by             bigint unsigned not null,

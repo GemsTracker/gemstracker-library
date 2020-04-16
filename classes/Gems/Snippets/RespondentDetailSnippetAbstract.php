@@ -32,7 +32,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      *
      * @var boolean
      */
-    protected $addCurrentParent = false;
+    protected $addCurrentParent = true;
 
     /**
      * Add the siblings of the current menu item
@@ -287,7 +287,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     /**
      *
      * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @return void
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
     {
@@ -296,6 +296,8 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
         if ($this->addCurrentParent) {
             $menuList->addCurrentParent($this->_('Cancel'));
+        } else {
+            unset($menuList['respondent.index']);
         }
         if ($this->addCurrentSiblings) {
             $menuList->addCurrentSiblings($this->anyParameterSiblings);

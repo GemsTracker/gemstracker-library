@@ -419,6 +419,20 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function applyLayoutSettings(\GemsEscort $escort)
     {
+        if ($this->_hasVar('current_user_crumbs')) {
+            // \MUtil_Echo::track($this->_getVar('current_user_crumbs'));
+            switch ($this->_getVar('current_user_crumbs')) {
+                case 'no_display':
+                    $this->project['layoutPrepare']['crumbs'] = null;
+                    break;
+
+                case 'no_top':
+                    $this->project['layoutPrepareArgs']['crumbs']['always' ] = 1;
+                    $this->project['layoutPrepareArgs']['crumbs']['hideTop' ] = 1;
+                    break;
+            }
+        }
+
         if ($this->_hasVar('current_user_layout')) {
             $layout     = $escort->layout;
             $usedLayout = $this->_getVar('current_user_layout');
@@ -1039,7 +1053,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return $this->_embedderData;
         }
 
-        $this->_embedderData = new EmbeddedUserData($this->getUserId(), $this->db, $this->loader);
+        $this->_embedderData = $this->loader->getEmbedDataObject($this->getUserId(), $this->db);
 
         return $this->_embedderData;
     }
@@ -2108,6 +2122,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function setGroupSession($groupId)
     {
+        $this->_group = null;
+
         if ($groupId == $this->_getVar('user_group')) {
             $this->_unsetVar('current_user_group');
             $this->_unsetVar('current_user_role');
@@ -2129,6 +2145,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function setGroupTemp($groupId)
     {
+        $this->_group = null;
+
         if ($groupId == $this->_getVar('user_group')) {
             $this->_unsetVar('current_user_group');
             $this->_unsetVar('current_user_role');
@@ -2200,6 +2218,18 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
         $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $option One of the EmbedLoader->listCrumbOptions() options
+     * @return $this
+     */
+    public function setSessionCrumbs($option)
+    {
+        $this->_setVar('current_user_crumbs', $option);
 
         return $this;
     }

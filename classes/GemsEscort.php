@@ -977,10 +977,13 @@ class GemsEscort extends \MUtil_Application_Escort
             $path = $this->menu->getActivePath($this->request);
             $last = array_pop($path);
 
+            if ($path && (isset($args['hideTop']) && $args['hideTop'])) {
+                array_shift($path);
+            }
             // Only display when there is a path of more than one step or always is on
             if ($path || (isset($args['always']) && $args['always'])) {
                 // Never needed from now on
-                unset($args['always']);
+                unset($args['always'], $args['hideTop']);
 
                 if (isset($args['tag'])) {
                     $tag = $args['tag'];

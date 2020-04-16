@@ -150,6 +150,19 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @return array
+     */
+    public function listCrumbOptions()
+    {
+        return [
+            '' => $this->_('(use project settings)'),
+            'no_display' => $this->_('Hide crumbs'),
+            'no_top' => $this->_('Hide topmost crumb'),
+            ];
+    }
+
+    /**
+     *
      * @return array helpername => string
      */
     public function listDeferredUserLoaders()

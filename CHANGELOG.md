@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.8.8]
+### Added
+- EPD login setup extended with new display, security and routing options (#551)
+
+### Fixed
+- The button to search all respondents could not be made invisible (#522)
+
 ## [1.8.7]
 [1.8.7]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.6...1.8.7
 ### Added

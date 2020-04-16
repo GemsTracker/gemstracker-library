@@ -388,13 +388,18 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
         // Set groups for both types of system users
         $dbLookup = $this->util->getDbLookup();
+        $activeStaffGroups       = $dbLookup->getActiveStaffGroups();
         $allowedRespondentGroups = $dbLookup->getAllowedRespondentGroups();
         unset($allowedRespondentGroups['']);
-        $groups = [
-            '' => $this->_('(user primary group)'),
-            $this->_('Staff') => $dbLookup->getActiveStaffGroups(),
-            $this->_('Respondent') => $allowedRespondentGroups,
-        ];
+
+        $groups  = ['' => $this->_('(user primary group)')];
+        if (('edit' == $action) || ('create' == $action)) {
+            $groups[$this->_('Staff')]      = $activeStaffGroups;
+            $groups[$this->_('Respondent')] = $allowedRespondentGroups;
+        } else {
+            $groups += $activeStaffGroups;
+            $groups += $allowedRespondentGroups;
+        }
 
         $this->set('gsus_deferred_user_group',
                 'label', $this->_('Used group'),
@@ -404,7 +409,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
         $this->set('gsus_create_user',
                 'label', $this->_('Can create users'),
-                'description', $this->_('If the asked for user does not exits, can this embedded user create that user? If it cannot the authentication will fail.'),
+                'description', $this->_('If the asked for user does not exist, can this embedded user create that user? If it cannot the authentication will fail.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
@@ -412,21 +417,21 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
         $this->set('gsus_authentication',
                 'label', $this->_('Authentication'),
                 'default', 'Gems\\User\\Embed\\Auth\\HourKeySha256',
-                'description', $this->_('The authentication method used to authenticate the embedded user. Possibly adding characteristics of the deferred user as well.'),
+                'description', $this->_('The authentication method used to authenticate the embedded user.'),
                 'multiOptions', $embeddedLoader->listAuthenticators()
                 );
 
         $this->set('gsus_deferred_user_loader',
                 'label', $this->_('Deferred user loader'),
                 'default', 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
-                'description', $this->_('The method a deferred user should be loaded.'),
+                'description', $this->_('The method used to load an embedded user.'),
                 'multiOptions', $embeddedLoader->listDeferredUserLoaders()
                 );
 
         $this->set('gsus_redirect',
                 'label', $this->_('Redirect method'),
                 'default', 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
-                'description', $this->_('The method the user is redirected after successful login.'),
+                'description', $this->_('The page the user is redirected to after successful login.'),
                 'multiOptions', $embeddedLoader->listRedirects()
                 );
 
@@ -440,6 +445,14 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'label', $this->_('Style'),
                 'description', $this->_('The display style used.'),
                 'multiOptions', $embeddedLoader->listStyles()
+                );
+        $this->set('gsus_hide_breadcrumbs',
+                'label', $this->_('Crumbs display'),
+                'default', '',
+                'description', $this->_('The display style used.'),
+                'elementClass', 'Radio',
+                'multiOptions', $embeddedLoader->listCrumbOptions(),
+                'separator', ' '
                 );
 
         $this->set('gsf_iso_lang',         'label', $this->_('Language'),
@@ -473,7 +486,9 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'gsus_deferred_user_group'  => $hidden,
                 'gsus_deferred_user_loader' => $hidden,
                 'gsus_redirect'             => $hidden,
+                'gsus_deferred_mvc_layout'  => $hidden,
                 'gsus_deferred_user_layout' => $hidden,
+                'gsus_hide_breadcrumbs'     => $hidden,
                 ],
             1 => [
                 'gsf_logout_on_survey'      => $hidden,
@@ -482,7 +497,9 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'gsus_deferred_user_group'  => $select,
                 'gsus_deferred_user_loader' => $select,
                 'gsus_redirect'             => $select,
+                'gsus_deferred_mvc_layout'  => $select,
                 'gsus_deferred_user_layout' => $select,
+                'gsus_hide_breadcrumbs'     => ['elementClass' => 'Radio'],
                 ],
             ]);
         $this->addDependency($switch);
@@ -497,7 +514,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
     public function getSystemUserTypes()
     {
         return [
-            1 => $this->_('Embbedded (EPD) login user'),
+            1 => $this->_('Embedded (EPD) login user'),
             0 => $this->_('Guest - for answering surveys at the hospital'),
             ];
     }

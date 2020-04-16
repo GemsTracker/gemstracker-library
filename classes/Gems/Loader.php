@@ -163,6 +163,17 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
+     *
+     * @param int $userId
+     * @param \Zend_Db_Adapter_Abstract $db
+     * @return \Gems\User\Embed\EmbedLoader
+     */
+    public function getEmbedDataObject($userId, \Zend_Db_Adapter_Abstract $db)
+    {
+        return $this->_loadClass('User\\Embed\\EmbeddedUserData', true, [$userId, $db, $this]);
+    }
+
+    /**
      * @return \Gems\User\Embed\EmbedLoader
      */
     public function getEmbedLoader()
