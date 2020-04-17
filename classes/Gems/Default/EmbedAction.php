@@ -39,45 +39,6 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     public $currentUser;
 
     /**
-     * Default key to use when no two factor key was set
-     *
-     * @var string
-     */
-    protected $defaultKey = 'test';
-
-    /**
-     *
-     * @var string Algorithm for the PHP hash(0 function
-     */
-    protected $encryptionAlgorithm = 'sha256';
-
-    /**
-     *
-     * @var boolean When true, apply base64 to encryption output
-     */
-    protected $encryptionBase64 = true;
-
-    /**
-     *
-     * @var boolean True when hash() encryption should return raw output
-     */
-    protected $encryptionRaw = false;
-
-    /**
-     * Format for date part of key function
-     *
-     * @var string
-     */
-    public $keyTimeFormat = 'YmdH';
-
-    /**
-     * The number of time periods on either side of the current that is allowed
-     *
-     * @var int
-     */
-    public $keyTimeValidRange = 1;
-
-    /**
      *
      * @var \Gems_Menu
      */

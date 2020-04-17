@@ -1640,3 +1640,6 @@ UPDATE gems__systemuser_setup
 UPDATE gems__systemuser_setup 
     SET gsus_redirect = 'Gems\\User\\Embed\\Redirect\\RespondentShowPage'
     WHERE gsus_redirect IS NULL;
+
+INSERT ignore INTO gems__systemuser_setup (gsus_id_user)
+    SELECT gsf_id_user FROM gems__staff WHERE gsf_is_embedded = 1 OR gsf_logout_on_survey = 1;

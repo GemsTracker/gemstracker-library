@@ -51,7 +51,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      *
      * @var boolean True when hash() encryption should return raw output
      */
-    protected $encryptionRaw = false;
+    protected $encryptionRaw = true;
 
     /**
      * @var bool Is the supplied hash uppercase? in PHP hash lowercase is always supplied

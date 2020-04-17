@@ -6158,7 +6158,7 @@ msgid ""
 "If the asked for user does not exist, can this embedded user create that "
 "user? If it cannot the authentication will fail."
 msgstr ""
-"Ald de gebruiker niet bestaat, mag een nieuwe gebruiker aangemaakt worden? "
+"Als de gebruiker niet bestaat, mag een nieuwe gebruiker aangemaakt worden? "
 "Zo niet dan mislukt de login."
 
 #: classes/Gems/Model/StaffModel.php:413
