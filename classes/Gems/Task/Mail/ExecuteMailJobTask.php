@@ -78,14 +78,18 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         // lowest round order should be used.
         $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
 
+        // Prevent out of memory errors, only load the tokenid
+        $model->trackUsage();
+        $model->set('gto_id_token');
+        
         $multipleTokensData = $model->load($filter);
         $errors             = 0;
         $mails              = 0;
         $updates            = 0;        
         $sentMailAddresses  = array();
-
+        
         foreach ($multipleTokensData as $tokenData) {
-            $mailer = $mailLoader->getMailer('token', $tokenData);
+            $mailer       = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
             /* @var $mailer \Gems_Mail_TokenMailer */
             $token  = $mailer->getToken();
 
