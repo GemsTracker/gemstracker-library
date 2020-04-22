@@ -11378,7 +11378,7 @@ msgstr "Über %d Tage"
 #: classes/Gems/Util/Translated.php:203
 #, php-format
 msgid "%d days ago"
-msgstr "vor %d Tage"
+msgstr "vor %d Tagen"
 
 #: classes/Gems/Util/Translated.php:231
 #, php-format
@@ -11720,7 +11720,7 @@ msgstr "Ungültige Eingabe, bitte Text oder Nummer eingeben"
 #: languages/FakeTranslations.php:99
 #, php-format
 msgid "Only %extension% files are accepted."
-msgstr "Es sind nur Dateien im Format %extension% zulässig."
+msgstr ""
 
 #: languages/FakeTranslations.php:102
 msgid "'%value%' is not greater than '%min%'"
