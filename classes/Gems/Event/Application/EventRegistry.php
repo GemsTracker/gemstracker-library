@@ -15,5 +15,7 @@ class EventRegistry
         SetFrontControllerDirectory::NAME => SetFrontControllerDirectory::class,
         // Get an array of available Track Field Types for the FieldMaintenanceModel
         'gems.tracker.fieldtypes.get' => TranslatableNamedArrayEvent::class,
+        // Get an array of available Track Field Dependencies for the FieldMaintenanceModel
+        'gems.tracker.fieldtypes.get' => NamedArrayEvent::class,
     ];
 }

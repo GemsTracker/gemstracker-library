@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Event\Application\NamedArrayEvent;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
 use Gems\Tracker\Engine\FieldsDefinition;
@@ -219,6 +220,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         parent::afterRegistry();
 
         $this->initTranslateable();
+        $this->setAdditionalDependencies();
     }
 
     /**
@@ -643,5 +645,12 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     {
         $args = func_get_args();
         return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
+    }
+
+    protected function setAdditionalDependencies()
+    {
+        $event = new NamedArrayEvent($this->dependencies);
+        $this->event->dispatch($event, 'gems.tracker.fielddependencies.get');
+        $this->dependencies = $event->getList();
     }
 }
