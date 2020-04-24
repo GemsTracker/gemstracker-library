@@ -49,6 +49,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
     private $_visible = true;
 
     /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    public $event;
+
+    /**
      * Set output echo on for debugging
      *
      * @var boolean
@@ -58,9 +63,15 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
     public function  __construct(\GemsEscort $escort)
     {
         parent::__construct($escort);
+        $this->event = $this->escort->event;
 
         //This loads the default menu
         $this->loadDefaultMenu();
+
+        $event = new \Gems\Event\Application\MenuAdd($this);
+        $event->setTranslatorAdapter($this->translateAdapter);
+        $this->event->dispatch($event, $event::NAME);
+
 
         //This is where you plugin your project menu settings
         $this->loadProjectMenu();
@@ -722,7 +733,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function findController($controller, $action = 'index')
     {
-        return $this->findItem(array('controller' => $controller, 'action' => $action), false);
+        return $this->findItem(array('controller' => $controller, 'action' => $action), true);
     }
 
     public function findFirst($request)
