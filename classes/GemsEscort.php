@@ -547,6 +547,13 @@ class GemsEscort extends \MUtil_Application_Escort
         return $db;
     }
 
+    protected function _initEvent()
+    {
+        $dispatcher = new \Gems\Event\EventDispatcher();
+
+        return $dispatcher;
+    }
+
     /**
      * Initialize the Project or Gems loader.
      *
