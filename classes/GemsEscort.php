@@ -161,7 +161,7 @@ class GemsEscort extends \MUtil_Application_Escort
         }
 
         $moduleSettings = $this->getModules();
-        if (count($moduleSettings)) {
+        if (is_array($moduleSettings)) {
             $moduleDirs = [];
             foreach($moduleSettings as $name=>$settings) {
                 if (method_exists($settings, 'getLoaderDir')) {
@@ -587,12 +587,14 @@ class GemsEscort extends \MUtil_Application_Escort
         $dispatcher = new \Gems\Event\EventDispatcher();
 
         $moduleSettings = $this->getModules();
-        foreach($moduleSettings as $name=>$settings) {
-            if (method_exists($settings, 'getEventSubscriber')) {
-                $subscriberClass = $settings::getEventSubscriber();
-                if ($subscriberClass) {
-                    $subscriber = new $subscriberClass;
-                    $dispatcher->addSubscriber($subscriber);
+        if ($moduleSettings) {
+            foreach ($moduleSettings as $name => $settings) {
+                if (method_exists($settings, 'getEventSubscriber')) {
+                    $subscriberClass = $settings::getEventSubscriber();
+                    if ($subscriberClass) {
+                        $subscriber = new $subscriberClass;
+                        $dispatcher->addSubscriber($subscriber);
+                    }
                 }
             }
         }
