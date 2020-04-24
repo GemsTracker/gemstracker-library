@@ -87,6 +87,24 @@ class GemsEscort extends \MUtil_Application_Escort
     ];
 
     /**
+     * List of Registered Gemstracker modules
+     * key: Module name
+     * value: classname of The settingsFile of the module, extending \Gems\Module\ModuleSettingsAbstract
+     * e.g. SampleModule => \SampleModule\ModuleSettings::class
+     *
+     * @var array
+     */
+    public static $modules;
+
+    /**
+     * @var array List of Registered Gemstracker modules that are also installed
+     * key: Module name
+     * value: classname of The settingsFile of the module, extending \Gems\Module\ModuleSettingsAbstract
+     * e.g. SampleModule => \SampleModule\ModuleSettings::class
+     */
+    protected $moduleSettings;
+
+    /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
      */
@@ -141,7 +159,24 @@ class GemsEscort extends \MUtil_Application_Escort
                 );
             }
         }
-        // \MUtil_Echo::track($dirs);
+
+        $moduleSettings = $this->getModules();
+        if (count($moduleSettings)) {
+            $moduleDirs = [];
+            foreach($moduleSettings as $name=>$settings) {
+                if (method_exists($settings, 'getLoaderDir')) {
+                    $loaderDir = $settings::getLoaderDir();
+                    if ($loaderDir) {
+                        $moduleDirs[$name] = $loaderDir;
+                    }
+                }
+            }
+
+            $dirs = array_slice($dirs, 0,1, true) + $moduleDirs + array_slice($dirs, 1, null, true);
+            //array_splice($dirs, 1,0, $moduleDirs);
+        }
+
+        //\MUtil_Echo::track($dirs);
         $this->_loaderDirs = array_reverse($dirs);
 
         foreach ($this->_loaderDirs as $prefix => $path) {
@@ -550,6 +585,17 @@ class GemsEscort extends \MUtil_Application_Escort
     protected function _initEvent()
     {
         $dispatcher = new \Gems\Event\EventDispatcher();
+
+        $moduleSettings = $this->getModules();
+        foreach($moduleSettings as $name=>$settings) {
+            if (method_exists($settings, 'getEventSubscriber')) {
+                $subscriberClass = $settings::getEventSubscriber();
+                if ($subscriberClass) {
+                    $subscriber = new $subscriberClass;
+                    $dispatcher->addSubscriber($subscriber);
+                }
+            }
+        }
 
         return $dispatcher;
     }
@@ -1740,6 +1786,8 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     public function getDatabasePaths()
     {
+        $paths = [];
+
         $path = APPLICATION_PATH . '/configs/db';
         if (file_exists($path)) {
             $paths[] = array(
@@ -1748,6 +1796,10 @@ class GemsEscort extends \MUtil_Application_Escort
                 'db'   => $this->db,
                 );
         }
+
+        $event = new \Gems\Event\Application\GetDatabasePaths($this->db, $paths);
+        $this->event->dispatch($event, $event::NAME);
+        $paths = $event->getPaths();
 
         $path = GEMS_LIBRARY_DIR . '/configs/db';
         if (file_exists($path)) {
@@ -1842,6 +1894,20 @@ class GemsEscort extends \MUtil_Application_Escort
             $this->view->messenger = $this->loader->getMessenger();
         }
         return $this->view->messenger;
+    }
+
+    public function getModules()
+    {
+        if (!$this->moduleSettings && static::$modules) {
+            $settings = [];
+            foreach(static::$modules as $name=>$settingsClass) {
+                if (class_exists($settingsClass)) {
+                    $settings[$name] = $settingsClass;
+                }
+            }
+            $this->moduleSettings = $settings;
+        }
+        return $this->moduleSettings;
     }
 
     /**
@@ -2505,11 +2571,20 @@ class GemsEscort extends \MUtil_Application_Escort
 
         // \MUtil_Echo::r(APPLICATION_PATH . '/controllers/' . $controllerFileName);
 
-        // Set to project path if that controller exists
-        // TODO: Dirs & modules combineren.
-        if (file_exists(APPLICATION_PATH . '/controllers/' . $controllerFileName)) {
-            $front->setControllerDirectory(APPLICATION_PATH . '/controllers', $module);
-        } else {
+        // Add the project controller path  as Highest priority
+        $applicationPath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'controllers';
+        $this->event->addListener(\Gems\Event\Application\SetFrontControllerDirectory::NAME,
+            function(\Symfony\Component\EventDispatcher\Event $event) use ($applicationPath) {
+                $event->setControllerDirIfControllerExists($applicationPath);
+            },
+            1000
+        );
+
+        $event = new \Gems\Event\Application\SetFrontControllerDirectory($front, $controllerFileName, $module);
+        $this->event->dispatch($event, \Gems\Event\Application\SetFrontControllerDirectory::NAME);
+
+        // If the event wasn't able to load the controller, fall back to the gemstracker one
+        if (!$event->isPropagationStopped()) {
             $front->setControllerDirectory(GEMS_LIBRARY_DIR . '/controllers', $module);
         }
     }

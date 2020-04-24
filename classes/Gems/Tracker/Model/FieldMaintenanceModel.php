@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Event\Application\TranslatableNamedArrayEvent;
+use Gems\Event\EventDispatcher;
 use Gems\Tracker\Engine\FieldsDefinition;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 
@@ -52,6 +54,11 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
 
     /**
      * The field types that have a dependency
@@ -463,7 +470,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      */
     public function getFieldTypes()
     {
-        $output = array(
+        $output = [
             'activity'    => $this->_('Activity'),
             'appointment' => $this->_('Appointment'),
             'boolean'     => $this->_('Boolean'),
@@ -479,7 +486,12 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             'select'      => $this->_('Select one'),
             'multiselect' => $this->_('Select multiple'),
             'track'       => $this->_('Track'),
-            );
+        ];
+
+        $event = new TranslatableNamedArrayEvent($output);
+        $event->setTranslatorAdapter($this->translateAdapter);
+        $this->event->dispatch($event, 'gems.tracker.fieldtypes.get');
+        $output = $event->getList();
 
         asort($output);
         return $output;
