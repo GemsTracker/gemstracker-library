@@ -32,15 +32,22 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      */
     protected $_subItems = array();
 
+    /**
+     *
+     * @var \MUtil_Acl
+     */
     public $acl;
-
-    public $escort;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems_User_User
      */
-    public $project;
+    protected $currentUser;
+
+    /**
+     * @var \GemsEscort
+     */
+    public $escort;
 
     /**
      *
@@ -51,9 +58,14 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems_Project_ProjectSettings
      */
-    protected $currentUser;
+    public $project;
+
+    /**
+     * @var \Gems_Util
+     */
+    public $util;
 
     public function __construct()
     {
@@ -773,9 +785,9 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     public function addSystemUserPage($label, array $other = array())
     {
         if ($this->user->hasPrivilege('pr.staff.edit.all')) {
-            $filter = array_keys($this->escort->getUtil()->getDbLookup()->getOrganizations());
+            $filter = array_keys($this->util->getDbLookup()->getOrganizations());
         } else {
-            $filter = array_keys($this->user->getAllowedOrganizations());
+            $filter = array_keys($this->currentUser->getAllowedOrganizations());
         }
 
         $page = $this->addPage($label, 'pr.systemuser', 'system-user', 'index', $other);
