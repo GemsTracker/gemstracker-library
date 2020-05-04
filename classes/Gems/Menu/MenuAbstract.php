@@ -784,7 +784,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      */
     public function addSystemUserPage($label, array $other = array())
     {
-        if ($this->user->hasPrivilege('pr.staff.edit.all')) {
+        if ($this->currentUser->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->util->getDbLookup()->getOrganizations());
         } else {
             $filter = array_keys($this->currentUser->getAllowedOrganizations());
