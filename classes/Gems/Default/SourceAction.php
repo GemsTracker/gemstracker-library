@@ -42,6 +42,11 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     public $currentUser;
 
     /**
+     * @var Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
      * Array of the actions that use a summarized version of the model.
      *
      * This determines the value of $detailed in createAction(). As it is usually

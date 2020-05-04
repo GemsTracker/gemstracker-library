@@ -20,6 +20,11 @@
 class Gems_Default_ContactAction extends \Gems_Controller_Action
 {
     /**
+     * @var \Gems_Menu
+     */
+    public $menu;
+
+    /**
      *
      * @var \Gems_Project_ProjectSettings
      */

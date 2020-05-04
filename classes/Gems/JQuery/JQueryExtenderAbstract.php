@@ -42,8 +42,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements \MUtil_Html_HtmlInt
     public function getBasePath()
     {
         if (null === $this->basepath) {
-            $front = \Zend_Controller_Front::getInstance();
-            $this->setBasePath($front->getRequest()->getBasePath());
+            $this->setBasePath(\MUtil\Controller\Front::getRequest()->getBasePath());
         }
 
         return $this->basepath;
