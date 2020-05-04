@@ -62,11 +62,6 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      */
     public $project;
 
-    /**
-     * @var \Gems_Util
-     */
-    public $util;
-
     public function __construct()
     {
         $this->initTranslateable();
@@ -785,7 +780,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     public function addSystemUserPage($label, array $other = array())
     {
         if ($this->currentUser->hasPrivilege('pr.staff.edit.all')) {
-            $filter = array_keys($this->util->getDbLookup()->getOrganizations());
+            $filter = array_keys($this->loader->getUtil()->getDbLookup()->getOrganizations());
         } else {
             $filter = array_keys($this->currentUser->getAllowedOrganizations());
         }
