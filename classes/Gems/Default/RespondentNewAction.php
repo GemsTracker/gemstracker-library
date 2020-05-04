@@ -531,6 +531,16 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     }
 
     /**
+     * Helper function to get the title for the create action.
+     *
+     * @return $string
+     */
+    public function getCreateTitle()
+    {
+        return $this->_('New respondent...');
+    }
+
+    /**
      * Get the link to edit respondent
      *
      * @return \MUtil_Html_HrefArrayAttribute
