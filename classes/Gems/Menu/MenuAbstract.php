@@ -64,7 +64,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 
     public function __construct()
     {
-        $this->initTranslateable();
+        $this->escort = \GemsEscort::getInstance();
     }
 
     /**
@@ -938,6 +938,12 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $page->addAction($this->_('Recalculate all fields'), 'pr.track-maintenance.check-all', 'recalc-all-fields');
 
         return $setup;
+    }
+
+    public function afterRegistry()
+    {
+        $this->initTranslateable();
+        parent::afterRegistry();
     }
 
     /**

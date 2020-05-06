@@ -222,8 +222,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $setup->addLogControllers();
 
         // OpenRosa
-        // Disabled for now
-        //$this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
+        $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
 
         return $setup;
     }
@@ -353,7 +352,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function addOpenRosaContainer($label, $parent = null)
     {
-        if ($this->escort->getOption('useOpenRosa')) {
+        if ($this->escort instanceof \GemsEscort && $this->escort->getOption('useOpenRosa')) {
             if (is_null($parent)) {
                 $parent = $this;
             }
