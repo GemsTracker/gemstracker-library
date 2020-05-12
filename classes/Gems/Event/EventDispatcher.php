@@ -26,7 +26,10 @@ class EventDispatcher
 
     public function dispatch(Event $event, $eventName = null)
     {
-        $eventName = $eventName ?? \get_class($event);
+        //$eventName = $eventName ?? \get_class($event);
+        if (is_null($eventName)) {
+            $eventName = \get_class($event);
+        }
 
         return $this->eventDispatcher->dispatch($eventName, $event);
     }
