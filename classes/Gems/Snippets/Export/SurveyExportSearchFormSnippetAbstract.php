@@ -61,7 +61,7 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems_Snippets_Auto
 
         $organizations = $this->currentUser->getRespondentOrganizations();
         if (count($organizations) > 1) {
-            $elements[] = $this->_createMultiCheckBoxElements('gto_id_organization', $organizations);
+            $elements['gto_id_organization'] = $this->_createMultiCheckBoxElements('gto_id_organization', $organizations);
 
             $elements[] = null;
         }
