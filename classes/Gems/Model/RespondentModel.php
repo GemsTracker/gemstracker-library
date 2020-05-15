@@ -457,6 +457,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
 
         $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
+        if (! $create) {
+            $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
+        }
         $this->setIfExists('gr2o_patient_nr',
                 'size', 15,
                 'minlength', 4,

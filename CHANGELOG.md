@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - The button to search all respondents could not be made invisible (#522)
+- During patient edit the organization can be changed (#566)
 
 ## [1.8.7]
 [1.8.7]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.6...1.8.7
