@@ -84,7 +84,7 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
         // Filter using the $this->filterRequestNames() callback
         return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
-    
+
     /**
      * Returns a list of selectable classes with an empty element as the first option.
      *
@@ -96,20 +96,17 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
     public function listClasses($classType, $paths, $nameMethod = 'getName')
     {
         $results   = array();
-        
+
         foreach ($paths as $prefix => $path) {
             $parts = explode('_', $prefix, 2);
-            if ($name = reset($parts)) {
-                $name = ' (' . $name . ')';
-            }
-            
+
             try {
                 $globIter = new \GlobIterator($path . DIRECTORY_SEPARATOR . '*.php');
             } catch (\RuntimeException $e) {
                 // We skip invalid dirs
                 continue;
             }
-            
+
             foreach($globIter as $fileinfo) {
                 $filename    = $fileinfo->getFilename();
                 $className   = $prefix . substr($filename, 0, -4);
@@ -119,7 +116,7 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
                 if (isset($results[$className])) {
                     continue;
                 }
-                
+
                 if (! (class_exists($className, false) || class_exists($classNsName, false))) {
                     include($path . DIRECTORY_SEPARATOR . $filename);
                 }
@@ -134,11 +131,11 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
                         $this->applySource($class);
                     }
 
-                    $results[$className] = trim($class->$nameMethod()) . $name;
+                    $results[$className] = trim($class->$nameMethod()) . ' (' . $className . ')';
                 }
                 // \MUtil_Echo::track($eventName);
             }
-            
+
         }
         natcasesort($results);
         return $results;

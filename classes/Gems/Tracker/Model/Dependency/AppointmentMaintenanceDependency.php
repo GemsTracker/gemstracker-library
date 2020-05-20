@@ -117,7 +117,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             'elementClass' => 'Exhibitor',
         );
         $output['gtf_filter_id'] = array(
-            'label'          => $this->_('Automatic link'),
+            'label'          => $this->_('Appointment filter'),
             'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
             'elementClass'   => 'Select',
             'formatFunction' => [$this, 'showFilter', true],

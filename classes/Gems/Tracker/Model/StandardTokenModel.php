@@ -294,7 +294,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         // Token, editable part
         $manual = $translated->getDateCalculationOptions();
         $this->set('gto_valid_from_manual',  'label', $this->_('Set valid from'),
-                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
+                'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
                 'multiOptions', $manual,
                 'separator', ' '
@@ -304,7 +304,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
         $this->set('gto_valid_until_manual', 'label', $this->_('Set valid until'),
-                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
+                'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
                 'multiOptions', $manual,
                 'separator', ' '

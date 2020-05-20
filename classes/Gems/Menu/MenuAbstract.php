@@ -223,7 +223,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $setup->addAgendaSetupPage($this->_('Diagnoses'),           'pr.agenda-diagnosis', 'agenda-diagnosis');
         $setup->addAgendaSetupPage($this->_('Locations'),           'pr.locations',        'location');
         $setup->addAgendaSetupPage($this->_('Healthcare staff'),    'pr.agenda-staff',     'agenda-staff');
-        $setup->addBrowsePage(     $this->_('Track field filters'), 'pr.agenda-filters',   'agenda-filter');
+        $setup->addBrowsePage(     $this->_('Appointment filters'), 'pr.agenda-filters',   'agenda-filter');
 
         return $setup;
     }

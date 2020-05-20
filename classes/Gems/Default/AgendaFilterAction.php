@@ -130,7 +130,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      */
     public function getIndexTitle()
     {
-        return $this->_('Track field filters');
+        return $this->_('Appointment filters');
     }
 
     /**
@@ -141,7 +141,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('track field filter', 'track field filters', $count);
+        return $this->plural('appointment filter', 'appointment filters', $count);
     }
 
     /**

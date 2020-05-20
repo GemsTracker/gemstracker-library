@@ -185,7 +185,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $trackEngine->addFieldsToModel($this, $edit);
 
         $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
-                'description', $this->_('Manually set dates are fixed an will never be (re)calculated.'),
+                'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
                 'multiOptions', $translated->getDateCalculationOptions(),
                 'separator', ' '
