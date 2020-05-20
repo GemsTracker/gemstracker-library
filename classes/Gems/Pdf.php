@@ -254,7 +254,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
 
         $filename   = $row['gsu_survey_pdf'];
         $surveyname = $row['gsu_survey_name'];
-        
+
         if (! $filename) {
             $filename = $surveyId . '.pdf';
         }
@@ -299,18 +299,14 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
 
         if ($subdir) {
             if (($subdir[0] == '/') || ($subdir[0] == '\\') || (substr($subdir, 1, 2) == ':\\')) {
-                $dir = rtrim($subdir, '\//');
+                $dir = $subdir;
             } else {
                 $dir .= DIRECTORY_SEPARATOR . rtrim($subdir, '\//');
             }
         }
 
         if (! is_dir($dir)) {
-            $oldmask = umask(0777);
-            if (! @mkdir($dir, 0777, true)) {
-                $this->throwLastError(sprintf($this->translate->_("Could not create '%s' directory."), $dir));
-            }
-            umask($oldmask);
+            \MUtil_File::ensureDir($dir);
         }
 
         return $dir;

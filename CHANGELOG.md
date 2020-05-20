@@ -27,13 +27,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Throttle the subscribe and unsubscribe screens (#537)
 
 ### Fixed
-- The button to search all respondents could not be made invisible (#522)
+- Automatically created directories get no permissions on linux (#546)
 - During patient edit the organization can be changed (#566)
 - It is impossible not to show the parent 'Cancel' button in respondent show (#552)
 - Mail filter 'before expiration' is not working (#543)
 - Mailing to fall-back email does not work (#522)
-- Mailjobs with round filter have incorrect cache tag (#513)
-- Notice in trackdata when no survey languages can be found (#523)
+- Mail jobs with round filter have incorrect cache tag (#513)
+- Notice in Trackdata when no survey languages can be found (#523)
+- The button to search all respondents could not be made invisible (#522)
 - Track fields get wrong dependencies (#517)
 
 
