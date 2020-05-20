@@ -4,12 +4,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.8.8]
-### Added
+### Added user functionality
+- Consent changes are logged and displayed automatically (#59)
 - EPD login setup extended with new display, security and routing options (#551)
+- Episodes of care can use appointment filters and changes can trigger track creation (#378)
+
+### Added technical options
+- PHP 5.6 incompatibility issue (#555)
+- Support for PHP versions higher than 7.3 (#506)
+- Use Redis for cache (#548)
+
+### Interface improvements
+- Adding environment version to header simplified (#524)
+- Allow text searches in Track compliance and summary overviews (#526)
+- Allow use of project level CHANGELOG.md files (#525)
+- Round Icon selection shows icon during selection (#45)
+- Show more round information in Track compliance (#527)
+
+## Subscribe & unsubscribe
+- Log respondent id during unsubscribe (#547)
+- Throttle the subscribe and unsubscribe screens (#537)
 
 ### Fixed
 - The button to search all respondents could not be made invisible (#522)
 - During patient edit the organization can be changed (#566)
+- It is impossible not to show the parent 'Cancel' button in respondent show (#552)
+- Mail filter 'before expiration' is not working (#543)
+- Mailing to fall-back email does not work (#522)
+- Mailjobs with round filter have incorrect cache tag (#513)
+- Notice in trackdata when no survey languages can be found (#523)
+- Track fields get wrong dependencies (#517)
+
 
 ## [1.8.7]
 [1.8.7]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.6...1.8.7
@@ -23,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Enable use of respondent data in track definitions (#469)
 - New condition to use answer from the track (#461)
 - Event to assign relations from survey answers (#458)
+- Unsubscribe option for participants (#386)
 
 ### Interface improvements
 - Allow to filter tracks on valid from/until dates (#459)
