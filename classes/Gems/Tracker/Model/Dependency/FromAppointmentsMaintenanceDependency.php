@@ -72,6 +72,16 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
     }
 
     /**
+     * Use this function for a default application of this dependency to the model
+     *
+     * @param \MUtil_Model_ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
+     */
+    public function applyToModel(\MUtil_Model_ModelAbstract $model)
+    {
+        $model->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
+    }
+
+    /**
      * This formatFunction is needed because the options are not set before the concatenated row
      *
      * @param string $value
