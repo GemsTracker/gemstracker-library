@@ -33,12 +33,15 @@ class MailJobsUtil extends UtilAbstract
      * @param string $mode
      * @param int $daysBetween
      * @param int $maxReminders
+     * @param boolean $forceSent Ignore previous sent mails
      */
-    protected function _addModeFilter(array &$filter, $mode, $daysBetween, $maxReminders)
+    protected function _addModeFilter(array &$filter, $mode, $daysBetween, $maxReminders, $forceSent = false)
     {
         switch ($mode) {
             case 'B':   // First mail before expiry
-                $filter['gto_mail_sent_date'] = null;
+                if (! $forceSent) {
+                    $filter['gto_mail_sent_date'] = null;
+                }
                 $filter[] = "CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL $daysBetween DAY))";
                 break;
 
@@ -54,7 +57,9 @@ class MailJobsUtil extends UtilAbstract
 
             case 'N':   // First email
             default:
-                $filter['gto_mail_sent_date'] = NULL;
+                if (! $forceSent) {
+                    $filter['gto_mail_sent_date'] = NULL;
+                }
                 break;
         }
     }
@@ -170,7 +175,7 @@ class MailJobsUtil extends UtilAbstract
             $sql     = "SELECT gro_id_round FROM gems__rounds WHERE gro_active = 1 AND gro_round_description = ?";
         }
         $binds[] = $roundDescription;
-        
+
         $cacheId .= '_' . \MUtil_String::toCacheId($roundDescription);
 
         return $this->_getSelectColCached($cacheId, $sql, $binds, ['round', 'rounds', 'track', 'tracks'], false);
@@ -273,9 +278,10 @@ class MailJobsUtil extends UtilAbstract
      * @param array $job
      * @param int $respondentId Optional, get for just one respondent
      * @param int $organizationId Optional, get for just one organization
+     * @param boolean $forceSent Ignore previous sent mails
      * @return array
      */
-    public function getJobFilter($job, $respondentId = null, $organizationId = null)
+    public function getJobFilter($job, $respondentId = null, $organizationId = null, $forceSent = false)
     {
         // Set up filter
         $filter = array(
@@ -313,7 +319,8 @@ class MailJobsUtil extends UtilAbstract
                 $filter,
                 $job['gcj_filter_mode'],
                 intval($job['gcj_filter_days_between']),
-                intval($job['gcj_filter_max_reminders']));
+                intval($job['gcj_filter_max_reminders']),
+                $forceSent);
 
         $this->_addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], $job['gcj_fallback_method']);
 

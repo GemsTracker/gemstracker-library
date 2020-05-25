@@ -50,8 +50,10 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      * @param array $job
      * @param $respondentId Optional, execute for just one respondent
      * @param $organizationId Optional, execute for just one organization
+     * @param boolean $preview Preview  mode active
+     * @param boolean $forceSent Ignore previous sent mails
      */
-    public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false)
+    public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false, $forceSent = false)
     {
         $this->currentUser->disableMask();
 
@@ -69,7 +71,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         $mailLoader = $this->loader->getMailLoader();
         $sendById   = $job['gcj_id_user_as'];
         $sendByMail = $this->getUserEmail($sendById);
-        $filter     = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job, $respondentId, $organizationId);
+        $filter     = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job, $respondentId, $organizationId, $forceSent);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
@@ -81,13 +83,15 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         // Prevent out of memory errors, only load the tokenid
         $model->trackUsage();
         $model->set('gto_id_token');
-        
+
+        $this->getBatch()->addToCounter('jobs_started', 1);
+
         $multipleTokensData = $model->load($filter);
         $errors             = 0;
         $mails              = 0;
-        $updates            = 0;        
+        $updates            = 0;
         $sentMailAddresses  = array();
-        
+
         foreach ($multipleTokensData as $tokenData) {
             $mailer       = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
             /* @var $mailer \Gems_Mail_TokenMailer */
@@ -104,7 +108,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 // Skip to the next token now
                 continue;
             }
-            
+
             // If the email is sent to a fall back address, we need to change it!
             if ($token->getEmail() !== $email) {
                 $mailer->setTo($email, $token->getRespondentName());
@@ -124,12 +128,12 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
             try {
                 switch ($job['gcj_process_method']) {
                     case 'M':   // Each token sends an email
-                        $mail   = true;
+                        $mail = true;
                         break;
 
                     case 'A':   // Only first token mailed and marked
                         if (!isset($sentMailAddresses[$respondentId][$email])) {  // When not mailed before
-                            $mail   = true;
+                            $mail = true;
                         }
                         break;
 
@@ -157,6 +161,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                         $mailer->setTemplate($job['gcj_id_message']);
                         $mailer->setMailjob($job['gcj_id_job']);
                         $mailer->send();
+                        $this->getBatch()->addToCounter('mails_sent', 1);
                     } else {
                         $this->getBatch()->addMessage(sprintf(
                                 $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
