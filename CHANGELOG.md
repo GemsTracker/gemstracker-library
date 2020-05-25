@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
 
 ### Added technical options
+- Allow included images to be used with an email template (#563)
 - Force sending of mails in batch and number of jobs and mails sent (#561)
 - PHP 5.6 incompatibility issue (#555)
 - Support for PHP versions higher than 7.3 (#506)

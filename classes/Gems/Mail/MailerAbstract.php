@@ -488,7 +488,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
             $this->setTemplateId($templateId);
         }
     }
-    
+
     /**
      * Use the Mail template code to select and set the template
      * @param string mail

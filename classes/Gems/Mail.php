@@ -25,6 +25,14 @@ class Gems_Mail extends \MUtil_Mail
     const MAIL_TLS = 2;
 
     /**
+     * Mail character set
+     *
+     * For Gems we use utf-8 as default instead op iso-8859-1
+     * @var string
+     */
+    protected $_charset = 'utf-8';
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -48,12 +56,10 @@ class Gems_Mail extends \MUtil_Mail
     protected $project;
 
     /**
-     * Mail character set
      *
-     * For Gems we use utf-8 as default instead op iso-8859-1
-     * @var string
+     * @var \Gems_Util
      */
-    protected $_charset = 'utf-8';
+    protected $util;
 
     protected static $mailServers = array();
 
@@ -168,6 +174,42 @@ class Gems_Mail extends \MUtil_Mail
         }
 
         return parent::getHtmlTemplate();
+    }
+
+    /**
+     * Set's a html template in which the message content is placed.
+     *
+     * @param string $template
+     * @return \MUtil_Mail \MUtil_Mail (continuation pattern)
+     */
+    public function setHtmlTemplate($template)
+    {
+        $matches = [];
+        preg_match_all('/src\\s?=\\s?[\'\"]([^\'\"]+)[\'\"]/', $template, $matches);
+
+        \MUtil_Echo::track($matches[1]);
+
+        // {replaceWithSiteUrl}
+        foreach (array_unique($matches[1]) as $url) {
+            $filename = str_replace(['{replaceWithSiteUrl}', $this->util->getCurrentURI()], GEMS_WEB_DIR, $url);
+            if (file_exists($filename)) {
+                $mp = $this->createAttachment(
+                        file_get_contents($filename),
+                        mime_content_type($filename),
+                        \Zend_Mime::DISPOSITION_ATTACHMENT,
+                        \Zend_Mime::ENCODING_BASE64,
+                        basename($filename)
+                        );
+
+                $cid = str_replace(['.', '-', '_'], '', basename($filename));
+                $src = 'cid:' . $cid; // .'@local';
+
+                $mp->id = $cid;
+
+                $template = str_replace($url, $src, $template);
+            }
+        }
+        return parent::setHtmlTemplate($template);
     }
 
     /**
