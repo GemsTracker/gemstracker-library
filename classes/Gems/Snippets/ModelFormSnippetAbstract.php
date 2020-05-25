@@ -259,9 +259,16 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                     $table->tf($links);
                 }
             } elseif($links = $this->getMenuList()) {
-                $element = $this->_form->createElement('html', 'menuLinks');
-                $element->setValue($links);
-                $element->setOrder(999);
+                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer[] = $links;
+
+                $element = $this->_form->createElement('html', 'formLinks');
+                $element->setValue($linkContainer)
+                        ->setOrder(999)
+                        ->removeDecorator('HtmlTag')
+                        ->removeDecorator('Label')
+                        ->removeDecorator('DtDdWrapper');
+
                 $this->_form->addElement($element);
             }
         }
