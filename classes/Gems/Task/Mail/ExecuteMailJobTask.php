@@ -124,7 +124,6 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
             $from = $this->getFromEmail($job, $sendByMail, $mailer);
             $mailer->setFrom($from);
             $mailer->setBy($sendById);
-            $mailer->setMailjob($jobId);
 
             try {
                 switch ($job['gcj_process_method']) {
