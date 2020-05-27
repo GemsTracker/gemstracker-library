@@ -210,6 +210,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         $logData['grco_sender']       = substr($this->from, 0, 120);
 
         $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
+        $logData['grco_id_job']       = $this->mailjob ? $this->mailjob : null;
 
         $logData['grco_changed']      = $changeDate;
         $logData['grco_changed_by']   = $this->by;

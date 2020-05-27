@@ -150,15 +150,20 @@ class CommLogModel extends \Gems_Model_JoinModel
             $this->set('gct_name', 'label', $this->_('Template'));
 
             if ($this->currentUser->hasPrivilege('pr.comm.job')) {
-                $this->set('grco_id_job', 'label', $this->_('Job'), 'formatFunction', [$this, 'formatJob']);
+                // $this->set('grco_id_job', 'label', $this->_('Job'), 'formatFunction', [$this, 'formatJob']);
+                $this->set('grco_id_job', 'label', $this->_('Job'),
+                        'formatFunction', [$this, 'formatJob', true],
+                        'multiOptions', $this->util->getMailJobsUtil()->getJobsOverview()
+                        );
             }
         }
 
         $this->refreshGroupSettings();
     }
 
-    public function formatJob($jobId)
+    public function formatJob($jobDescr, $jobId = null)
     {
+        \MUtil_Echo::track(func_get_args());
         if ($jobId) {
             $url = new \MUtil_Html_HrefArrayAttribute(array(
                 $this->request->getControllerKey() => 'comm-job',
@@ -167,8 +172,10 @@ class CommLogModel extends \Gems_Model_JoinModel
             ));
 
 
-            return \MUtil_Html::create('a', $url, $jobId);
+            return \MUtil_Html::create('a', $url, $jobDescr);
         }
+
+        return \MUtil_Html::create('em', $this->_('manual'));
     }
 
     public function displayToken($token)

@@ -182,6 +182,20 @@ class MailJobsUtil extends UtilAbstract
     }
 
     /**
+     * Get the active options for the model
+     *
+     * @return array
+     */
+    public function getActiveOptions()
+    {
+        return [
+            0 => $this->_('Disabled'),
+            1 => $this->_('Automatic'),
+            2 => $this->_('Manually')
+        ];
+    }
+
+    /**
      * The types of mail filters
      *
      * @return array
@@ -328,5 +342,34 @@ class MailJobsUtil extends UtilAbstract
         // \MUtil_Model::$verbose = true;
 
         return $filter;
+    }
+
+    /**
+     * Get the filter to use on the tokenmodel when working with a mailjob.
+     *
+     * @return array job_id => description
+     */
+    public function getJobsOverview()
+    {
+        $fMode = "CASE ";
+        foreach ($this->getBulkFilterOptions() as $key => $label) {
+            $fMode .= "WHEN gcj_filter_mode = '$key' THEN '$label' ";
+        }
+        $fMode .= "ELSE '' END";
+
+        $aMode = "CASE ";
+        foreach ($this->getActiveOptions() as $key => $label) {
+            $aMode .= "WHEN gcj_active = '$key' THEN '$label' ";
+        }
+        $aMode .= "ELSE '' END";
+
+        $sql = sprintf(
+                "SELECT gcj_id_job, CONCAT('%s', gcj_id_order, ' ', $fMode, ' ', $aMode)
+                    FROM gems__comm_jobs ORDER BY gcj_id_order",
+                $this->_('Order') . ' '
+                );
+
+        return $this->db->fetchPairs($sql);
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql);
     }
 }

@@ -1,4 +1,4 @@
--- GEMS VERSION: 1
+GEMS VERSION: 1
 -- PATCH: Test skip earlier patch levels
 
 SELECT NULL;
@@ -1570,6 +1570,10 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.c
 -- PATCH: Add cron job to respondent mail log
 ALTER TABLE `gems__log_respondent_communications`
     ADD `grco_id_job` bigint(20) unsigned NULL AFTER `grco_id_message`;
+
+UPDATE gems__log_respondent_communications 
+    SET grco_id_job = (SELECT MAX(gcj_id_job) FROM gems__comm_templates INNER JOIN gems__comm_jobs ON gct_id_template = gcj_id_message WHERE gct_id_template = grco_id_message)
+    WHERE grco_id_message IN (SELECT gcj_id_message FROM gems__comm_jobs GROUP BY gcj_id_message HAVING COUNT(grco_id_action) = 1);
 
 -- PATCH: Add check appointment right
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.appointments.check')

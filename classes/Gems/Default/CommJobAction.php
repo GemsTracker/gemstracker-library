@@ -138,13 +138,9 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     'value', $html
                     );
         }
-        $activeOptions = [
-            0 => $this->_('Disabled'),
-            1 => $this->_('Automatic'),
-            2 => $this->_('Manually')
-        ];
         $model->set('gcj_active',              'label', $this->_('Execution method'),
-                'multiOptions', $activeOptions, 'required', true,
+                'multiOptions', $mailUtil->getActiveOptions(),
+                'required', true,
                 'description', $this->_('Manual jobs run only manually, but not during automatic jobs. Disabled jobs not even then. ')
                 );
 
