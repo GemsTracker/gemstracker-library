@@ -20,13 +20,6 @@
  */
 class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
 {
-
-    /**
-     * @var User ID of user who sent the mail
-     */
-    protected $by;
-
-
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -44,6 +37,10 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
      */
 	protected $token;
 
+    /**
+     *
+     * @var string
+     */
 	protected $tokenIdentifier;
 
     /**
@@ -52,6 +49,10 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
      */
 	protected $translate;
 
+    /**
+     *
+     * @param string $tokenIdentifier
+     */
 	public function __construct($tokenIdentifier)
 	{
 		$this->tokenIdentifier = $tokenIdentifier;
@@ -218,15 +219,6 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         $logData['grco_created_by']   = $this->by;
 
         $this->db->insert('gems__log_respondent_communications', $logData);
-    }
-
-    /**
-     * Sets the ID of the user who sent the mail
-     * @param [type] $userId [description]
-     */
-    public function setBy($userId)
-    {
-        $this->by = $userId;
     }
 
 	/**

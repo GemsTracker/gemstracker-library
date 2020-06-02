@@ -20,12 +20,11 @@
  */
 class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 {
-
     /**
      * @var User ID of user who sent the mail
      */
     protected $by;
-    
+
     /**
      *
      * @var \Gems_User_User
@@ -175,6 +174,15 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $logData['grco_created_by']   = $this->by;
 
         $this->db->insert('gems__log_respondent_communications', $logData);
+    }
+
+    /**
+     * Sets the ID of the user who sent the mail
+     * @param [type] $userId [description]
+     */
+    public function setBy($userId)
+    {
+        $this->by = $userId;
     }
 
     /**
