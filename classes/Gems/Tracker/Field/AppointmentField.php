@@ -302,6 +302,15 @@ class AppointmentField extends FieldAbstract
     }
 
     /**
+     *
+     * @return boolean When this field can be calculated, but also set manually
+     */
+    public function hasManualSetOption()
+    {
+        return (! $this->isReadOnly()) && $this->_fieldDefinition['gtf_filter_id'];
+    }
+
+    /**
      * Dispaly an appoitment as text
      *
      * @param value $value

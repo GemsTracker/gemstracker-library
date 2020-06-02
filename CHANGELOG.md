@@ -9,13 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Consent changes are logged and displayed automatically (#59)
 - EPD login setup extended with new display, security and routing options (#551)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
-
-### Added technical options
-- Allow included images to be used with an email template (#563)
-- Force sending of mails in batch and number of jobs and mails sent (#561)
-- PHP 5.6 incompatibility issue (#555)
-- Support for PHP versions higher than 7.3 (#506)
-- Use Redis for cache (#548)
+- Manually block recalculation of track fields (#564)
 
 ### Interface improvements
 - Adding environment version to header simplified (#524)
@@ -25,6 +19,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Renamed Track field filter to Appointment filter (#558)
 - Round Icon selection shows icon during selection (#45)
 - Show more round information in Track compliance (#527)
+
+### Programmability
+- Allow included images to be used with an email template (#563)
+- Force sending of mails in batch and number of jobs and mails sent (#561)
+- PHP 5.6 incompatibility issue (#555)
+- Support for PHP versions higher than 7.3 (#506)
+- Use Redis for cache (#548)
 
 ## Subscribe & unsubscribe
 - Log respondent id during unsubscribe (#547)

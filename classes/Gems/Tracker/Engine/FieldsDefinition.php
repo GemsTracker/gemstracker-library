@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Tracker\Engine;
@@ -15,6 +14,7 @@ namespace Gems\Tracker\Engine;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Model\Dependency\FieldDataDependency;
 use Gems\Tracker\Model\FieldDataModel;
+use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
  *
@@ -224,18 +224,24 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get model dependency that changes model settings for each row when loaded
      *
-     * @return \MUtil\Model\Dependency\DependencyInterface or null
+     * @param \MUtil_Model_ModelAbstract $model
+     * @return array of \MUtil\Model\Dependency\DependencyInterface
      */
-    public function getDataModelDependency()
+    public function getDataModelDependencies(\MUtil_Model_ModelAbstract $model)
     {
         if (! $this->exists) {
             return null;
         }
 
+        $output     = [];
         $dependency = new FieldDataDependency();
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
+                if ($field->hasManualSetOption()) {
+                    $mkey = $field->getManualKey();
+                    $output[] = new OffOnElementsDependency($mkey, $key, 'readonly', $model);
+                }
                 $dependsOn = $field->getDataModelDependsOn();
 
                 if ($field->hasDataModelDependencies()) {
@@ -245,10 +251,10 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         }
 
         if ($dependency->getFieldCount()) {
-            return $dependency;
-        } else {
-            return null;
+            $output[] = $dependency;
         }
+
+        return $output;
     }
 
     /**
@@ -266,6 +272,11 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
+                if ($field->hasManualSetOption()) {
+                    $mkey = $field->getManualKey();
+                    $fieldSettings[$mkey] = $field->getManualModelSettings();
+                }
+
                 $fieldSettings[$key] = $field->getDataModelSettings();
             }
         }
@@ -346,13 +357,13 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      */
     public function getFieldCodes()
     {
-        $fields = array();
+        $output = [];
 
         foreach ($this->_trackFields as $key => $field) {
-            $fields[$key] = $field['gtf_field_code'];
+            $output[$key] = $field['gtf_field_code'];
         }
 
-        return $fields;
+        return $output;
     }
 
     /**
@@ -383,7 +394,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     public function getFieldNames()
     {
         $fields = array();
-        
+
         $this->_ensureTrackFields();
 
         foreach ($this->_trackFields as $key => $field) {
@@ -442,6 +453,10 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                 $key   = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
 
                 if (isset($this->_fields[$key]) && ($this->_fields[$key] instanceof FieldInterface)) {
+                    if ($this->_fields[$key]->hasManualSetOption()) {
+                        $output[$this->_fields[$key]->getManualKey()] = $row['gr2t2f_value_manual'];
+                    }
+
                     $value = $this->_fields[$key]->onFieldDataLoad($row['gr2t2f_value'], $output, $respTrackId);
                 } else {
                     $value = $row['gr2t2f_value']; // Should not occur
@@ -450,12 +465,11 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                 $output[$key] = $value;
             }
         }
-        // \MUtil_Echo::track($output);
 
         return $output;
     }
 
-     /**
+    /**
      * Returns an array name => $element of all the fields of the type specified
      *
      * @param string|array $fieldType One or more field types
@@ -522,6 +536,25 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $this->_maintenanceModels[$action] = $model;
 
         return $model;
+    }
+
+    /**
+     * Returns the manual fields names for the fields that can be set manually
+     *
+     * @return array manual_field_name => null
+     */
+    public function getManualFields()
+    {
+        $output = [];
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                if ($field->hasManualSetOption()) {
+                    $output[$field->getManualKey()] = null;
+                }
+            }
+        }
+
+        return $output;
     }
 
     /**
@@ -594,20 +627,31 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
-                $inVal  = isset($fieldData[$key]) ? $fieldData[$key] : null;
-                $outVal = $field->calculateFieldValue($inVal, $fieldData, $trackData);
-
-                if (is_array($outVal) || is_array($inVal)) {
-                   if (is_array($outVal) && is_array($inVal)) {
-                        $changedNow = ($outVal != $inVal);
-                    } else {
-                        $changedNow = true;
-                    }
+                if ($field->hasManualSetOption()) {
+                    $mkey          = $field->getManualKey();
+                    $manual        = isset($fieldData[$mkey ]) ? (boolean) $fieldData[$mkey] : false;
+                    $output[$mkey] = $manual ? 1 : 0;
                 } else {
-                    $changedNow = ((string) $inVal !== (string) $outVal);
+                    $manual = false;
                 }
-                $this->changed = $this->changed || $changedNow;
 
+                $inVal  = isset($fieldData[$key]) ? $fieldData[$key] : null;
+                if ($manual) {
+                    $outVal = $inVal;
+                } else {
+                    $outVal = $field->calculateFieldValue($inVal, $fieldData, $trackData);
+
+                    if (is_array($outVal) || is_array($inVal)) {
+                       if (is_array($outVal) && is_array($inVal)) {
+                            $changedNow = ($outVal != $inVal);
+                        } else {
+                            $changedNow = true;
+                        }
+                    } else {
+                        $changedNow = ((string) $inVal !== (string) $outVal);
+                    }
+                    $this->changed = $this->changed || $changedNow;
+                }
                 $fieldData[$key] = $outVal; // Make sure the new value is available to the next field
                 $output[$key]    = $outVal;
             }
@@ -629,6 +673,14 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
+                $manual = false;
+                if ($field->hasManualSetOption()) {
+                    $mkey = $field->getManualKey();
+                    if (array_key_exists($mkey, $fieldData)) {
+                        $manual = (boolean) $fieldData[$mkey];
+                    }
+                }
+
                 if (array_key_exists($key, $fieldData)) {
                     $inVal = $fieldData[$key];
                 } else {
@@ -643,6 +695,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     'gr2t2f_id_respondent_track' => $respTrackId,
                     'gr2t2f_id_field'            => $field->getFieldId(),
                     'gr2t2f_value'               => $saveVal,
+                    'gr2t2f_value_manual'        => $manual ? 1 : 0,
                 );
             }
         }

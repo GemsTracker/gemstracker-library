@@ -267,9 +267,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     protected function _mergeFieldValues(array $newFieldData, array $oldFieldData, \Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
     {
-        $fieldMap = $trackEngine->getFieldsDefinition()->getFieldCodes();
+        $fieldDef = $trackEngine->getFieldsDefinition();
+        $fieldMap = $fieldDef->getFieldCodes() + $fieldDef->getManualFields();
         $output   = array();
 
+        // \MUtil_Echo::track($fieldMap);
         foreach ($fieldMap as $key => $code) {
             if ($code) {
                 if (array_key_exists($code, $newFieldData)) {
@@ -1345,6 +1347,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             return $newFieldData;
         }
 
+        // \MUtil_Echo::track($newFieldData);
         $step1Data = $this->_mergeFieldValues($newFieldData, $this->getFieldData(), $trackEngine);
         $step2Data = $trackEngine->getFieldsDefinition()->processBeforeSave($step1Data, $this->_respTrackData);
         $step3Data = $this->handleBeforeFieldUpdate($this->_mergeFieldValues($step2Data, $step1Data, $trackEngine));

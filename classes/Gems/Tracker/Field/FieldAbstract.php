@@ -7,10 +7,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldAbstract.php $
  */
 
 namespace Gems\Tracker\Field;
+
+use Gems\Tracker\Engine\FieldsDefinition;
 
 /**
  *
@@ -59,6 +60,12 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      * @var int gems__tracks id for this field
      */
     protected $_trackId;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      *
@@ -253,16 +260,6 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @return int The field order
-     */
-    public function getOrder()
-    {
-        return $this->_fieldDefinition['gtf_id_order'];
-    }
-
-
-    /**
-     *
      * @return string The track field sub (model) value
      */
     public function getFieldSub()
@@ -281,11 +278,64 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
+     * @return string The track field key for the manual setting
+     */
+    public function getManualKey()
+    {
+        return $this->getFieldKey() . FieldsDefinition::FIELD_KEY_SEPARATOR . 'manual';
+    }
+
+    /**
+     *
+     * @return array Of settings to add to a model if this is a manual check field
+     */
+    public function getManualModelSettings()
+    {
+        if ($this->hasManualSetOption()) {
+            return [
+                'label'        => sprintf($this->_('Set %s'), strtolower($this->getLabel())),
+                'description'  => $this->_('Manually set fields will never be (re)calculated.'),
+                'elementClass' => 'Radio',
+                'multiOptions' => $this->util->getTranslated()->getDateCalculationOptions(),
+                'separator'    => ' ',
+                ];
+        }
+    }
+
+    /**
+     *
+     * @return int The field order
+     */
+    public function getOrder()
+    {
+        return $this->_fieldDefinition['gtf_id_order'];
+    }
+
+    /**
+     *
+     * @return boolean True when this field can be calculated
+     */
+    public function hasCalculation()
+    {
+        return (boolean) $this->_fieldDefinition['gtf_calculate_using'];
+    }
+
+    /**
+     *
      * @return boolean When this field has dependencies
      */
     public function hasDataModelDependencies()
     {
         return (boolean) $this->_dependsOn && $this->_effecteds;
+    }
+
+    /**
+     *
+     * @return boolean When this field can be calculated, but also set manually
+     */
+    public function hasManualSetOption()
+    {
+        return (! $this->isReadOnly()) && $this->hasCalculation();
     }
 
     /**

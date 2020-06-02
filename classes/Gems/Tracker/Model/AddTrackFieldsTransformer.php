@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Tracker\Model;
@@ -138,7 +137,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * @return array Row array containing (optionally) transformed data
      */
     public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
-    {       
+    {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
             if (! $this->tracker) {
                 $this->tracker = $this->loader->getTracker();
@@ -157,7 +156,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
             $after  = $respTrack->setFieldData($row);
             $row = $after + $row;
             $changed = ($before !== $after);
-            
+
             if ($changed && (! $model->getChanged())) {
                 $model->addChanged(1);
             }

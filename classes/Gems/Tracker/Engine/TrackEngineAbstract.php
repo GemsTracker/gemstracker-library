@@ -208,10 +208,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             $model->addTransformer($transformer);
 
             if ($addDependency) {
-                $dependency = $this->_fieldsDefinition->getDataModelDependency();
+                $dependencies = $this->_fieldsDefinition->getDataModelDependencies($model);
 
-                if ($dependency instanceof DependencyInterface) {
-                    $model->addDependency($dependency);
+                foreach ($dependencies as $dependency) {
+                    if ($dependency instanceof DependencyInterface) {
+                        $model->addDependency($dependency);
+                    }
                 }
             }
         }

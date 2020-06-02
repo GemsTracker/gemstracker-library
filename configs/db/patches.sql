@@ -1647,3 +1647,10 @@ UPDATE gems__systemuser_setup
 
 INSERT ignore INTO gems__systemuser_setup (gsus_id_user)
     SELECT gsf_id_user FROM gems__staff WHERE gsf_is_embedded = 1 OR gsf_logout_on_survey = 1;
+
+-- PATCH: Manually fix track field values
+ALTER TABLE gems__respondent2track2field
+    ADD gr2t2f_value_manual boolean not null default 0 AFTER gr2t2f_value;
+
+ALTER TABLE gems__respondent2track2appointment
+    ADD gr2t2a_value_manual boolean not null default 0 AFTER gr2t2a_id_appointment;

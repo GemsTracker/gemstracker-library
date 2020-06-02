@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldInterface.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -144,12 +143,24 @@ interface FieldInterface
      * @return string The field type
      */
     public function getFieldType();
-    
+
     /**
      *
      * @return string The field label
      */
     public function getLabel();
+
+    /**
+     *
+     * @return string The track field key for the manual setting
+     */
+    public function getManualKey();
+
+    /**
+     *
+     * @return array Of settings to add to a model if this is a manual check field
+     */
+    public function getManualModelSettings();
 
     /**
      * Setting function for activity select
@@ -175,6 +186,12 @@ interface FieldInterface
      * /
     public function getTrackMaintenanceSettings($values, $respondentId, $organizationId, $patientNr = null, $edit = true);
     // */
+
+    /**
+     *
+     * @return boolean When this field can be calculated, but also set manually
+     */
+    public function hasManualSetOption();
 
     /**
      * Should the label be included in the track information?
