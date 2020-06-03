@@ -231,6 +231,12 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         parent::loadFormData();
         // \MUtil_Echo::track($this->formData);
 
+        if ($this->request->isPost()) {
+            if (! $this->request->getParam('grl_parents')) {
+                $this->formData['grl_parents'] = [];
+            }
+        }
+
         // Sometimes these settings sneek in when changing the parents of a role
         foreach(['pr.nologin', 'pr.islogin'] as $val) {
             $key = array_search($val, $this->formData['grl_privileges']);
