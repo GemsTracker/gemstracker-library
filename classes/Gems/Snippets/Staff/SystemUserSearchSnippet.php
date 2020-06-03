@@ -42,7 +42,7 @@ class SystemUserSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         if ($elements) {
             $optionsG = $this->util->getDbLookup()->getGroups();
-            $elementG = $this->_createSelectElement('gsf_id_primary_group', $optionsG, $this->_('(all functions)'));
+            $elementG = $this->_createSelectElement('gsf_id_primary_group', $optionsG, $this->_('(all groups)'));
             $elements[] = $elementG;
 
             $user     = $this->loader->getCurrentUser();

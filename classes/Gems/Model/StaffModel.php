@@ -256,7 +256,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 );
 
 
-        $this->set('gsf_id_primary_group',     'label', $this->_('Primary function'),
+        $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
                 'default', $this->currentUser->getDefaultNewStaffGroup(),
                 'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
                 );
@@ -369,7 +369,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'separator', ' '
                 );
 
-        $this->set('gsf_id_primary_group', 'label', $this->_('Primary function'),
+        $this->set('gsf_id_primary_group', 'label', $this->_('Primary group'),
                 'default', $this->currentUser->getDefaultNewStaffGroup(),
                 'description', $this->_('The group of the system user.'),
                 'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
