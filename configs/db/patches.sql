@@ -1657,3 +1657,10 @@ ALTER TABLE gems__respondent2track2appointment
 
 -- PATCH: XAND and XOR appointment filters
 UPDATE gems__appointment_filters SET gaf_class = 'XandAppointmentFilter' WHERE gaf_class = 'NotAnyAppointmentFilter';
+
+-- PATCH: Allow not in activity app. filter
+UPDATE gems__appointment_filters SET gaf_class = 'ActProcAppointmentFilter',
+        gaf_filter_text4 = gaf_filter_text3,
+        gaf_filter_text3 = gaf_filter_text2,
+        gaf_filter_text2 = null
+    WHERE gaf_class = 'SqlLikeAppointmentFilter';

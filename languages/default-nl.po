@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-04 16:10+0200\n"
+"POT-Creation-Date: 2020-06-04 17:26+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -87,7 +87,7 @@ msgid "Erroneous input"
 msgstr "Foutieve invoer"
 
 #: classes/Gems/Agenda.php:711
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:81
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:80
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:102
 #: classes/Gems/Default/AgendaActivityAction.php:122
 #: classes/Gems/Default/AgendaProcedureAction.php:122
@@ -114,12 +114,12 @@ msgid "Organization"
 msgstr "Organisatie"
 
 #: classes/Gems/Agenda.php:717
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:82
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:81
 msgid "Source of appointment"
 msgstr "Afspraken bron"
 
 #: classes/Gems/Agenda.php:720
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:82
 #: classes/Gems/Model/AppointmentModel.php:205
 #: classes/Gems/Model/AppointmentModel.php:256
 #: classes/Gems/Model/EpisodeOfCareModel.php:192
@@ -128,14 +128,14 @@ msgid "With"
 msgstr "Met"
 
 #: classes/Gems/Agenda.php:726
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:84
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:83
 #: classes/Gems/Model/AppointmentModel.php:258
 msgid "Referrer"
 msgstr "Verwijzer"
 
 #: classes/Gems/Agenda.php:732
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:85
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:95
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:97
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:84
 #: classes/Gems/Default/AgendaActivityAction.php:116
 #: classes/Gems/Default/AgendaDiagnosisAction.php:118
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:476
@@ -143,15 +143,15 @@ msgid "Activity"
 msgstr "Activiteit"
 
 #: classes/Gems/Agenda.php:738
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:100
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:106
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:85
 #: classes/Gems/Default/AgendaProcedureAction.php:116
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:486
 msgid "Procedure"
 msgstr "Procedure"
 
 #: classes/Gems/Agenda.php:744
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:86
 #: classes/Gems/Default/DatabaseAction.php:221
 #: classes/Gems/Default/LocationAction.php:129
 #: classes/Gems/Model/AppointmentModel.php:209
@@ -162,7 +162,7 @@ msgid "Location"
 msgstr "Locatie"
 
 #: classes/Gems/Agenda.php:750
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:88
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
 #: classes/Gems/Default/CommTemplateAction.php:146
 #: classes/Gems/Default/CommTemplateAction.php:151
 #: classes/Gems/Model/AppointmentModel.php:211
@@ -392,14 +392,82 @@ msgstr "Niet gebruikt in trajecten"
 msgid ": "
 msgstr ": "
 
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:43
+#, php-format
+msgid "Activity \"%s\""
+msgstr "Activiteit \"%s\""
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:46
+#, php-format
+msgid "but activity not \"%s\""
+msgstr "maar activiteit niet \"%s\""
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:49
+#, php-format
+msgid "procedure \"%s\""
+msgstr "procedure \"%s\""
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:52
+#, php-format
+msgid "but procedure not \"%s\""
+msgstr "maar procedure niet \"%s\""
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:56
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:66
+#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
+#: classes/Gems/Model/SurveyMaintenanceModel.php:203
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:915
+#: classes/Gems/Tracker/Model/TrackModel.php:143
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:572
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
+msgid ", "
+msgstr ", "
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:58
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:83
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:69
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:68
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
 #: classes/Gems/Agenda/Filter/WithModelDependency.php:45
 #: classes/Gems/Agenda/Filter/XandModelDependency.php:42
 msgid "empty filter"
 msgstr "leeg filter"
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:79
+msgid "Activity search filter"
+msgstr "Activiteit zoek filter"
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:92
+#: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:78
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:126
+#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:94
+#: classes/Gems/Agenda/Filter/LocationModelDependency.php:79
+#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:78
+#: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:78
+#: classes/Gems/Agenda/Filter/WithModelDependency.php:79
+#, php-format
+msgid ""
+"Use the %%-sign to search for zero or more random characters and an _ for a "
+"single random character."
+msgstr ""
+"Gebruik het %%-teken om op nul of meer willekeurige tekens te zoeken en _ "
+"voor een enkel willekeurig teken."
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:102
+msgid "But not when activity"
+msgstr "Maar niet als activiteit"
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:103
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:111
+#, php-format
+msgid "But skip when this text is found - use %%-sign as well."
+msgstr ""
+"Maar overslaan als deze tekst gevonden wordt - ook hier kan je het %%-teken "
+"gebruiken."
+
+#: classes/Gems/Agenda/Filter/ActProcModelDependency.php:110
+msgid "But not when procedure"
+msgstr "Maar niet als procedure"
 
 #: classes/Gems/Agenda/Filter/AndModelDependency.php:132
 msgid "(inactive filter)"
@@ -451,22 +519,6 @@ msgstr "Episode diagnose ontbreekt"
 msgid "Episode diagnosis match"
 msgstr "Filter op diagnose overeenkomst"
 
-#: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:78
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:127
-#: classes/Gems/Agenda/Filter/JsonDiagnosisDependency.php:94
-#: classes/Gems/Agenda/Filter/LocationModelDependency.php:79
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:90
-#: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:78
-#: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:78
-#: classes/Gems/Agenda/Filter/WithModelDependency.php:79
-#, php-format
-msgid ""
-"Use the %%-sign to search for zero or more random characters and an _ for a "
-"single random character."
-msgstr ""
-"Gebruik het %%-teken om op nul of meer willekeurige tekens te zoeken en _ "
-"voor een enkel willekeurig teken."
-
 #: classes/Gems/Agenda/Filter/DiagnosisEpisodeModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:80
 #: classes/Gems/Agenda/Filter/SubjectEpisodeModelDependency.php:80
@@ -478,45 +530,33 @@ msgstr "Leeglaten om te filteren op het ontbreken van inhoud."
 msgid "Episode diagnosis"
 msgstr "Episode diagnose"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:59
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:63
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:58
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:62
 #, php-format
 msgid "%s like \"%s\""
 msgstr "%s like \"%s\""
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:67
-#: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:54
-#: classes/Gems/Model/SurveyMaintenanceModel.php:203
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:915
-#: classes/Gems/Tracker/Model/TrackModel.php:143
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:572
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:847
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:1005
-msgid ", "
-msgstr ", "
-
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:113
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:112
 msgid "Field match filter"
 msgstr "Veld overeenkomst filter"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:132
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:131
 msgid "Field 1"
 msgstr "Veld 1"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:137
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:136
 msgid "Search text 1"
 msgstr "Zoek tekst 1"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:142
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:141
 msgid "Field 2"
 msgstr "Veld 2"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:146
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:145
 msgid "Search text 2"
 msgstr "Zoek tekst 2"
 
-#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:147
+#: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:146
 #, php-format
 msgid "Required when filled - use %%-sign as well."
 msgstr "Verplicht indien gevuld - gebruik ook hier het %%-teken."
@@ -591,36 +631,6 @@ msgstr "Een van: %s"
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:85
 msgid "Organization filter"
 msgstr "Organisatie filter"
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:44
-#, php-format
-msgid "Activity \"%s\""
-msgstr "Activiteit \"%s\""
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:47
-#, php-format
-msgid "procedure \"%s\""
-msgstr "procedure \"%s\""
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:50
-#, php-format
-msgid "but not \"%s\""
-msgstr "maar niet \"%s\""
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:77
-msgid "Activity search filter"
-msgstr "Activiteit zoek filter"
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:104
-msgid "But not when"
-msgstr "Maar niet als"
-
-#: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:105
-#, php-format
-msgid "But skip when this text is found - use %%-sign as well."
-msgstr ""
-"Maar overslaan als deze tekst gevonden wordt - ook hier kan je het %%-teken "
-"gebruiken."
 
 #: classes/Gems/Agenda/Filter/SubjectAppointmentModelDependency.php:42
 #, php-format

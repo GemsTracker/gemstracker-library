@@ -92,7 +92,6 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
                 if ($filter instanceof AppointmentFilterInterface) {
                     $filterId = $filter->getFilterId();
                     $resultsAppFilters[$appointmentId][] = $filterId;
-
                     if (! $testFilters[$filterId] instanceof AppointmentFilterInterface) {
                         if (0 == $testFilters[$filterId]) {
                             $this->fail(sprintf(
@@ -275,6 +274,41 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
+     * Test SQL Like filters
+     */
+    public function testActProcFilters()
+    {
+        $this->performFilterTests(
+                [
+                    1 => [1, 2, 3, 7, 8],
+                    2 => [1],
+                    3 => [1, 2, 7],
+                    4 => [1],
+                    5 => [4, 7, 8],
+                    6 => [4, 5, 6],
+                    7 => [4, 5, 7],
+                    8 => [4],
+                    9 => [1, 2, 3, 4, 7, 8],
+                    10 => [1, 4, 5, 6],
+                    11 => [1, 2, 4, 5, 7],
+                    12 => [1, 4],
+                    13 => [7, 8],
+                    14 => [],
+                    15 => [7],
+                    16 => [],
+                    17 => [7, 8],
+                    18 => [],
+                    19 => [7],
+                    20 => [],
+                    21 => [1],
+                    22 => [4],
+                    23 => [1, 4],
+                    24 => [],
+                    25 => [],
+                ], 'Activity, procedure');
+    }
+
+    /**
      * Test subject filters
      */
     public function testAppSubjectFilters()
@@ -345,40 +379,5 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
             3 => [1, 2],
             4 => [],
             ], 'Locations');
-    }
-
-    /**
-     * Test SQL Like filters
-     */
-    public function testSqlLikeFilters()
-    {
-        $this->performFilterTests(
-                [
-                    1 => [1, 2, 3, 7, 8],
-                    2 => [1],
-                    3 => [1, 2, 7],
-                    4 => [1],
-                    5 => [4, 7, 8],
-                    6 => [4, 5, 6],
-                    7 => [4, 5, 7],
-                    8 => [4],
-                    9 => [1, 2, 3, 4, 7, 8],
-                    10 => [1, 4, 5, 6],
-                    11 => [1, 2, 4, 5, 7],
-                    12 => [1, 4],
-                    13 => [7, 8],
-                    14 => [],
-                    15 => [7],
-                    16 => [],
-                    17 => [7, 8],
-                    18 => [],
-                    19 => [7],
-                    20 => [],
-                    21 => [1],
-                    22 => [4],
-                    23 => [1, 4],
-                    24 => [],
-                    25 => [],
-                ], 'SQL Like');
     }
 }

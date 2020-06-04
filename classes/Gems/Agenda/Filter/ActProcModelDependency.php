@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SqlLikeModelDependency.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -23,7 +22,7 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 18:05:13
  */
-class SqlLikeModelDependency extends FilterModelDependencyAbstract
+class ActProcModelDependency extends FilterModelDependencyAbstract
 {
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -44,10 +43,13 @@ class SqlLikeModelDependency extends FilterModelDependencyAbstract
             $output[] = sprintf($this->_('Activity "%s"'), $context['gaf_filter_text1']);
         }
         if (isset($context['gaf_filter_text2']) && $context['gaf_filter_text2']) {
-            $output[] = sprintf($this->_('procedure "%s"'), $context['gaf_filter_text2']);
+            $output[] = sprintf($this->_('but activity not "%s"'), $context['gaf_filter_text2']);
         }
         if (isset($context['gaf_filter_text3']) && $context['gaf_filter_text3']) {
-            $output[] = sprintf($this->_('but not "%s"'), $context['gaf_filter_text3']);
+            $output[] = sprintf($this->_('procedure "%s"'), $context['gaf_filter_text3']);
+        }
+        if (isset($context['gaf_filter_text4']) && $context['gaf_filter_text4']) {
+            $output[] = sprintf($this->_('but procedure not "%s"'), $context['gaf_filter_text4']);
         }
 
         if ($output) {
@@ -64,7 +66,7 @@ class SqlLikeModelDependency extends FilterModelDependencyAbstract
      */
     public function getFilterClass()
     {
-        return 'SqlLikeAppointmentFilter';
+        return 'ActProcAppointmentFilter';
     }
 
     /**
@@ -97,11 +99,15 @@ class SqlLikeModelDependency extends FilterModelDependencyAbstract
                 'required'    => true,
                 ),
             'gaf_filter_text2' => array(
+                'label'       => $this->_('But not when activity'),
+                'description' => sprintf($this->_("But skip when this text is found - use %%-sign as well.")),
+                ),
+            'gaf_filter_text3' => array(
                 'label'       => $this->_('Procedure'),
                 'description' => $description,
                 ),
-            'gaf_filter_text3' => array(
-                'label'       => $this->_('But not when'),
+            'gaf_filter_text4' => array(
+                'label'       => $this->_('But not when procedure'),
                 'description' => sprintf($this->_("But skip when this text is found - use %%-sign as well.")),
                 ),
             );

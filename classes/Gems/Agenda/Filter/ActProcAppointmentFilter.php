@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SqlLikeAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -23,7 +22,7 @@ use Gems\Agenda\AppointmentFilterAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:01:38
  */
-class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
+class ActProcAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
      * The activities that this filter matches or true when not matching against activities
@@ -62,36 +61,46 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
                 $this->db instanceof \Zend_Db_Adapter_Abstract &&
                 !($this->_activities || $this->_procedures)) {
 
-            if ($this->_data['gaf_filter_text1']) {
+            if ($this->_data['gaf_filter_text1'] || $this->_data['gaf_filter_text2']) {
                 $sqlActivites = "SELECT gaa_id_activity, gaa_id_activity
                     FROM gems__agenda_activities
-                    WHERE gaa_active = 1 AND gaa_name LIKE '%s'
-                    ORDER BY gaa_id_activity";
+                    WHERE gaa_active = 1 ";
 
-                $this->_activities = $this->db->fetchPairs(sprintf(
-                        $sqlActivites,
-                        addslashes($this->_data['gaf_filter_text1']))
-                        );
+                if ($this->_data['gaf_filter_text1']) {
+                    $sqlActivites .= sprintf(
+                            " AND gaa_name LIKE '%s' ",
+                             addslashes($this->_data['gaf_filter_text1'])
+                            );
+                }
+                if ($this->_data['gaf_filter_text2']) {
+                    $sqlActivites .= sprintf(
+                            " AND gaa_name NOT LIKE '%s' ",
+                             addslashes($this->_data['gaf_filter_text2'])
+                            );
+                }
+                $sqlActivites .= "ORDER BY gaa_id_activity";
+
+                $this->_activities = $this->db->fetchPairs($sqlActivites);
             } else {
                 $this->_activities = true;
             }
 
-            if ($this->_data['gaf_filter_text2'] || $this->_data['gaf_filter_text3']) {
+            if ($this->_data['gaf_filter_text3'] || $this->_data['gaf_filter_text4']) {
                 $sqlProcedures = "SELECT gapr_id_procedure, gapr_id_procedure
                     FROM gems__agenda_procedures
                     WHERE gapr_active = 1 ";
 
 
-                if ($this->_data['gaf_filter_text2']) {
-                    $sqlProcedures .= sprintf(
-                            " AND gapr_name LIKE '%s' ",
-                             addslashes($this->_data['gaf_filter_text2'])
-                            );
-                }
                 if ($this->_data['gaf_filter_text3']) {
                     $sqlProcedures .= sprintf(
-                            " AND gapr_name NOT LIKE '%s' ",
+                            " AND gapr_name LIKE '%s' ",
                              addslashes($this->_data['gaf_filter_text3'])
+                            );
+                }
+                if ($this->_data['gaf_filter_text4']) {
+                    $sqlProcedures .= sprintf(
+                            " AND gapr_name NOT LIKE '%s' ",
+                             addslashes($this->_data['gaf_filter_text4'])
                             );
                 }
 

@@ -42,6 +42,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      * @var array (dependencyClassName)
      */
     protected $filterDependencies = [
+        'ActProcModelDependency',
         'AndModelDependency',
         'DiagnosisEpisodeModelDependency',
         'FieldLikeModelDependency',
@@ -49,7 +50,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         'LocationModelDependency',
         'OrganizationModelDependency',
         'OrModelDependency',
-        'SqlLikeModelDependency',
         'SubjectAppointmentModelDependency',
         'SubjectEpisodeModelDependency',
         'WithModelDependency',

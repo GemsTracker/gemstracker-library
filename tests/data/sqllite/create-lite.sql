@@ -593,6 +593,7 @@ CREATE TABLE gems__log_respondent_communications (
         grco_comments     varchar(120),
 
         grco_id_message   INTEGER,
+        grco_id_job       INTEGER,
 
         grco_changed      TEXT not null default current_timestamp,
         grco_changed_by   INTEGER not null,
@@ -658,6 +659,8 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('index.login',                         0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.logoff',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('index.resetpassword',                 1, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('participate.subscribe',               0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('participate.unsubscribe',             0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('project-information.maintenance',     1, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('respondent.show',                     0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.attributes',                   0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -817,7 +820,7 @@ CREATE TABLE gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (67, CURRENT_TIMESTAMP);
+   (66, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -929,7 +932,9 @@ CREATE TABLE gems__respondent2track (
 CREATE TABLE gems__respondent2track2appointment (
         gr2t2a_id_respondent_track  INTEGER not null,
         gr2t2a_id_app_field         INTEGER not null,
+
         gr2t2a_id_appointment       INTEGER,
+        gr2t2a_value_manual         TINYINT(1) not null default 0,
 
         gr2t2a_changed              TEXT not null default current_timestamp,
         gr2t2a_changed_by           INTEGER not null,
@@ -942,15 +947,16 @@ CREATE TABLE gems__respondent2track2appointment (
 
 
 CREATE TABLE gems__respondent2track2field (
-        gr2t2f_id_respondent_track INTEGER not null,
-        gr2t2f_id_field INTEGER not null,
+        gr2t2f_id_respondent_track  INTEGER not null,
+        gr2t2f_id_field INTEGER      not null,
 
-        gr2t2f_value text,
+        gr2t2f_value                text,
+        gr2t2f_value_manual         TINYINT(1) not null default 0,
 
-        gr2t2f_changed TEXT not null default current_timestamp,
-        gr2t2f_changed_by INTEGER not null,
-        gr2t2f_created TEXT not null,
-        gr2t2f_created_by INTEGER not null,
+        gr2t2f_changed              TEXT not null default current_timestamp,
+        gr2t2f_changed_by           INTEGER not null,
+        gr2t2f_created              TEXT not null,
+        gr2t2f_created_by           INTEGER not null,
 
         PRIMARY KEY(gr2t2f_id_respondent_track,gr2t2f_id_field)
     )
@@ -1361,6 +1367,19 @@ CREATE TABLE gems__staff (
     ;
 
 
+CREATE TABLE gems__subscription_attempts (
+        gsa_id_attempt      INTEGER not null ,
+        gsa_type_attempt    varchar(16) not null,
+        gsa_ip_address      varchar(64) not null,
+        gsa_datetime        TEXT not null default current_timestamp,
+        gsa_activated       TINYINT(1) default 0,
+
+
+        PRIMARY KEY (gsa_id_attempt)
+    )
+    ;
+
+
 CREATE TABLE gems__surveys (
         gsu_id_survey               INTEGER not null ,
         gsu_survey_name             varchar(100) not null,
@@ -1451,6 +1470,19 @@ CREATE TABLE gems__systemuser_setup (
         gsus_id_user				INTEGER not null,
 
         gsus_secret_key             varchar(400),
+        gsus_create_user            tinyint(4) NOT NULL DEFAULT '0',
+        gsus_authentication         varchar(200) 
+                                        default 'Gems\\User\\Embed\\Auth\\HourKeySha256',
+        gsus_deferred_user_loader   varchar(200) 
+                                        default 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
+
+        -- This group can contain negative values for other options than groups
+        gsus_deferred_user_group    bigint(20),
+        gsus_redirect               varchar(200) 
+                                        default 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
+        gsus_deferred_mvc_layout    varchar(200),
+        gsus_deferred_user_layout   varchar(200),
+        gsus_hide_breadcrumbs       varchar(20) default '',
 
         gsus_changed                TEXT not null default current_timestamp,
         gsus_changed_by             INTEGER not null,
@@ -1603,7 +1635,7 @@ CREATE TABLE gems__track_appointments (
         gtap_uniqueness         tinyint not null default 0,
 
         gtap_create_track       INTEGER not null default 0,
-        gtap_create_wait_days   INTEGER signed not null default 182,
+        gtap_create_wait_days   INTEGER not null default 182,
 
         gtap_changed            TEXT not null default current_timestamp,
         gtap_changed_by         INTEGER not null,

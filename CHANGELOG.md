@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.8.8]
 ### Added user functionality
 - Add Mailjob id to mail log (#512)
+- Added NOT ANY en NOT ALL agenda filters (#557)
+- Allow activity / procedure agenda filter to select on NOT activity (#567)
 - Consent changes are logged and displayed automatically (#59)
 - EPD login setup extended with new display, security and routing options (#551)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
