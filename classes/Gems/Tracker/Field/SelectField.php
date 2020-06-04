@@ -43,9 +43,11 @@ class SelectField extends FieldAbstract
             $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         }
 
+        $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
         $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
 
+
         $settings['elementClass'] = 'Select';
-        $settings['multiOptions'] = $empty + array_combine($multi, $multi);
+        $settings['multiOptions'] = $empty + array_combine($multiKeys, $multi);
     }
 }

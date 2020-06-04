@@ -39,11 +39,12 @@ class MultiselectField extends FieldAbstract
     protected function addModelSettings(array &$settings)
     {
         $concatter = new \MUtil_Model_Type_ConcatenatedRow(parent::FIELD_SEP, ' ', false);
+        $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
         $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
-        $settings['multiOptions'] = array_combine($multi, $multi);
+        $settings['multiOptions'] = array_combine($multiKeys, $multi);
     }
 
     /**

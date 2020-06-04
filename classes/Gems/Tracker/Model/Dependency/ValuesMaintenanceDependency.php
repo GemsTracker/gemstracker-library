@@ -102,6 +102,16 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                 'rows'           => 4,
                 'required'       => true,
                 ),
+            'translations_gtf_field_values' => array(
+                'model' => [
+                    'gtrs_translation' => [
+                            'elementClass'   => 'Textarea',
+                            'formatFunction' => array($this, 'formatValues'),
+                            'minlength'      => 3,// At least two single chars and a separator
+                            'rows'           => 4,
+                    ]
+                ]
+            ),
             'gtf_field_default' => array(
                 'label'        => $this->_('Default'),
                 'description'  => $this->_('Choose the default value'),

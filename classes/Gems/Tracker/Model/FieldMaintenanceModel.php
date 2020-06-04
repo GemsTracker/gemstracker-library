@@ -121,6 +121,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         parent::__construct($modelName, $modelField);
 
         $model = new \MUtil_Model_TableModel('gems__track_fields');
+        $model->addColumn(new \Zend_Db_Expr('gtf_field_values'), 'gtf_field_value_keys');
         \Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
@@ -203,6 +204,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_value_keys');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_default');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
     }
@@ -310,6 +312,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
         $this->set('gtf_create_wait_days'); // Set order
 
+        $this->loader->getModels()->addDatabaseTranslations($this);
+
         return $this;
     }
 
@@ -367,7 +371,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'size', '30',
                 'minlength', 2,
                 'required', true,
-                'validator', $this->createUniqueValidator(array('gtf_field_name', 'gtf_id_track'))
+                'validator', $this->createUniqueValidator(array('gtf_field_name', 'gtf_id_track')),
+                'translate', true
                 );
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
@@ -377,8 +382,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
 
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
-        $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30);
-        $this->set('gtf_field_values',      'elementClass', 'Hidden');
+        $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30, 'translate', true);
+        $this->set('gtf_field_values',      'elementClass', 'Hidden', 'translate', true);
         $this->set('gtf_field_default',     'elementClass', 'Hidden');
 
         $this->set('gtf_to_track_info',     'elementClass', 'Checkbox',
@@ -403,6 +408,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $class      = 'Model\\Dependency\\FieldTypeChangeableDependency';
         $dependency = $this->tracker->createTrackClass($class, $this->_modelField);
         $this->addDependency($dependency);
+
+        $this->loader->getModels()->addDatabaseTranslationEditFields($this);
     }
 
     /**
