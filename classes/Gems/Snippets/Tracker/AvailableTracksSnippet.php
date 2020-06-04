@@ -113,6 +113,8 @@ class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
                 'tdClass', 'date'
                 );
 
+        $this->loader->getModels()->addDatabaseTranslations($model);
+
         return $model;
     }
 }

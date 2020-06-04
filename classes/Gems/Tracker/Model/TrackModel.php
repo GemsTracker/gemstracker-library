@@ -28,7 +28,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
      * @var array
      */
     protected $_trackData = array();
-    
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -88,7 +88,10 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
         $this->resetOrder();
 
-        $this->set('gtr_track_name',    'label', $translator->_('Name'));
+        $this->set('gtr_track_name',
+            'label', $translator->_('Name'),
+            'translate', true
+        );
         $this->set('gtr_track_class',   'label', $translator->_('Track Engine'),
                 'multiOptions', $this->tracker->getTrackEngineList($detailed));
         $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));
@@ -104,6 +107,10 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
                 'size', 10,
                 'description', $translator->_('Optional code name to link the track to program code.'));
+
+        $translateTransformer = new \Gems\Model\Transform\TranslateFieldEditor();
+        $this->loader->applySource($translateTransformer);
+        $this->addTransformer($translateTransformer);
 
         if ($detailed) {
             $events = $this->loader->getEvents();
@@ -167,10 +174,10 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
     {
         return $this->tracker && $this->translate && $this->util;
     }
-    
+
     /**
      * Delete items from the model
-     * 
+     *
      * This method also takes care of cascading to track fields and rounds
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -193,11 +200,11 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                         $trackEngine = $this->tracker->getTrackEngine($trackId);
                         $roundModel  = $trackEngine->getRoundModel(true, 'index');
                         $roundModel->delete(['gro_id_track' => $trackId]);
-                        
+
                         // Delete trackfields
                         $trackFieldModel = $trackEngine->getFieldsMaintenanceModel(false, 'index');
                         $trackFieldModel->delete(['gtf_id_track' => $trackId]);
-                        
+
                         // Delete assigned but unused tracks
                         $this->db->delete('gems__respondent2track',  $this->db->quoteInto('gr2t_id_track = ?', $trackId));
                     } else {
@@ -209,7 +216,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                 }
             }
         }
-        
+
         return $this->getChanged();
     }
 
@@ -248,7 +255,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
         return $defaultFields;
     }
-    
+
     /**
      * Get the number of times someone started answering a round in this track.
      *
@@ -283,7 +290,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
         return $this->translate;
     }
-    
+
     /**
      * Can this track be deleted as is?
      *

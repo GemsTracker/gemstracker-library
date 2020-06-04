@@ -662,6 +662,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         if (! isset($this->_tokenModels[$modelClass])) {
             $this->_tokenModels[$modelClass] = $this->_loadClass('Model_' . $modelClass, true);
             $this->_tokenModels[$modelClass]->applyFormatting();
+            $this->loader->getModels()->addDatabaseTranslations($this->_tokenModels[$modelClass]);
         }
 
         return $this->_tokenModels[$modelClass];

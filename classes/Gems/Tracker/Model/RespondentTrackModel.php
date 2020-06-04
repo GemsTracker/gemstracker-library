@@ -43,6 +43,11 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     protected $hideWhollyMasked = true;
 
     /**
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
      *
      * @var \Gems_Util
      */
@@ -145,6 +150,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
         $this->set('progress', 'label', $this->_('Progress'));
 
+        $this->loader->getModels()->addDatabaseTranslations($this);
+
         return $this;
     }
 
@@ -235,6 +242,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 'cols', 80,
                 'rows', 5
                 );
+
+        $this->loader->getModels()->addDatabaseTranslations($this);
 
         return $this;
     }
