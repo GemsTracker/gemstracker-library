@@ -28,6 +28,8 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
      */
     public $project;
 
+    protected $tableKeys = [];
+
     protected $translateTables = [];
 
     protected $translations;
