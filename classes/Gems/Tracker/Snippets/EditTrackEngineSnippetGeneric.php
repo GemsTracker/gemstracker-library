@@ -72,8 +72,11 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
     {
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
+            $bridge->addHidden('table_keys');
         }
         $bridge->addText('gtr_track_name');
+        $bridge->addFormTable('translations_gtr_track_name');
+
 
         // gtr_track_class
         if ($this->trackEngine) {
