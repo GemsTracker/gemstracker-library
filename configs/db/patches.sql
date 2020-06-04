@@ -1654,3 +1654,6 @@ ALTER TABLE gems__respondent2track2field
 
 ALTER TABLE gems__respondent2track2appointment
     ADD gr2t2a_value_manual boolean not null default 0 AFTER gr2t2a_id_appointment;
+
+-- PATCH: XAND and XOR appointment filters
+UPDATE gems__appointment_filters SET gaf_class = 'XandAppointmentFilter' WHERE gaf_class = 'NotAnyAppointmentFilter';

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 14:18+0200\n"
+"POT-Creation-Date: 2020-06-04 16:09+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -37,8 +37,8 @@ msgid "Manual (organization specific)"
 msgstr "Manual (organization specific)"
 
 #: classes/Gems/Agenda.php:564
-#: classes/Gems/Agenda/AppointmentFilterModel.php:107
-#: classes/Gems/Agenda/AppointmentFilterModel.php:170
+#: classes/Gems/Agenda/AppointmentFilterModel.php:115
+#: classes/Gems/Agenda/AppointmentFilterModel.php:167
 #: classes/Gems/Default/AgendaActivityAction.php:138
 #: classes/Gems/Default/AgendaDiagnosisAction.php:132
 #: classes/Gems/Default/AgendaProcedureAction.php:138
@@ -283,17 +283,17 @@ msgstr "an open track exists"
 msgid "appointment used in track"
 msgstr "appointment used in track"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:98
-#: classes/Gems/Agenda/AppointmentFilterModel.php:153
+#: classes/Gems/Agenda/AppointmentFilterModel.php:106
+#: classes/Gems/Agenda/AppointmentFilterModel.php:150
 msgid "Filter type"
 msgstr "Filter type"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:99
-#: classes/Gems/Agenda/AppointmentFilterModel.php:154
+#: classes/Gems/Agenda/AppointmentFilterModel.php:107
+#: classes/Gems/Agenda/AppointmentFilterModel.php:151
 msgid "Determines what is filtered how."
 msgstr "Determines what is filtered how."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:103
+#: classes/Gems/Agenda/AppointmentFilterModel.php:111
 #: classes/Gems/Default/AgendaStaffAction.php:117
 #: classes/Gems/Default/CommTemplateAction.php:123
 #: classes/Gems/Default/ComplianceAction.php:92
@@ -322,8 +322,8 @@ msgstr "Determines what is filtered how."
 msgid "Name"
 msgstr "Name"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:104
-#: classes/Gems/Agenda/AppointmentFilterModel.php:160
+#: classes/Gems/Agenda/AppointmentFilterModel.php:112
+#: classes/Gems/Agenda/AppointmentFilterModel.php:157
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:220
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:874
@@ -332,106 +332,105 @@ msgstr "Name"
 msgid "Order"
 msgstr "Order"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:105
-#: classes/Gems/Agenda/AppointmentFilterModel.php:161
+#: classes/Gems/Agenda/AppointmentFilterModel.php:113
+#: classes/Gems/Agenda/AppointmentFilterModel.php:158
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr "Execution order of the filters, lower numbers are executed first."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:114
-#: classes/Gems/Agenda/AppointmentFilterModel.php:176
+#: classes/Gems/Agenda/AppointmentFilterModel.php:122
+#: classes/Gems/Agenda/AppointmentFilterModel.php:173
 msgid "Use in track fields"
 msgstr "Use in track fields"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:115
+#: classes/Gems/Agenda/AppointmentFilterModel.php:123
 msgid "The number of uses of this filter in track fields."
 msgstr "The number of uses of this filter in track fields."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:130
-#: classes/Gems/Agenda/AppointmentFilterModel.php:184
+#: classes/Gems/Agenda/AppointmentFilterModel.php:127
+#: classes/Gems/Agenda/AppointmentFilterModel.php:181
 msgid "Use in filters"
 msgstr "Use in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:131
+#: classes/Gems/Agenda/AppointmentFilterModel.php:128
 msgid "The number of uses of this filter in other filters."
 msgstr "The number of uses of this filter in other filters."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:157
+#: classes/Gems/Agenda/AppointmentFilterModel.php:154
 msgid "Manual name"
 msgstr "Manual name"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:158
+#: classes/Gems/Agenda/AppointmentFilterModel.php:155
 msgid "A name for this filter. The calculated name is used otherwise."
 msgstr "A name for this filter. The calculated name is used otherwise."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:159
+#: classes/Gems/Agenda/AppointmentFilterModel.php:156
 msgid "Calculated name"
 msgstr "Calculated name"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:177
+#: classes/Gems/Agenda/AppointmentFilterModel.php:174
 msgid "The use of this filter in track fields."
 msgstr "The use of this filter in track fields."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:185
+#: classes/Gems/Agenda/AppointmentFilterModel.php:182
 msgid "The use of this filter in other filters."
 msgstr "The use of this filter in other filters."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:326
+#: classes/Gems/Agenda/AppointmentFilterModel.php:377
 msgid "Not used in filters"
 msgstr "Not used in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:356
+#: classes/Gems/Agenda/AppointmentFilterModel.php:407
 msgid "Not used in tracks"
 msgstr "Not used in tracks"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:374
+#: classes/Gems/Agenda/AppointmentFilterModel.php:425
 #: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
 msgid ": "
 msgstr ": "
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:91
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:83
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:69
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
 #: classes/Gems/Agenda/Filter/WithModelDependency.php:45
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:42
 msgid "empty filter"
 msgstr "empty filter"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:114
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:132
 msgid "(inactive filter)"
 msgstr "(inactive filter)"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:145
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:163
 msgid "AND filter combination"
 msgstr "AND filter combination"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:155
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:173
 #: classes/Gems/Condition/Round/AndCondition.php:104
 msgid " AND "
 msgstr " AND "
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:168
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:186
 msgid "Sub filter may not be the same as this filter."
 msgstr "Sub filter may not be the same as this filter."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:169
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:187
 msgid "Filters may be chosen only once."
 msgstr "Filters may be chosen only once."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:174
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:192
 msgid "Filter 1"
 msgstr "Filter 1"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:182
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:200
 msgid "Filter 2"
 msgstr "Filter 2"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:190
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:208
 msgid "Filter 3"
 msgstr "Filter 3"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:200
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:218
 msgid "Filter 4"
 msgstr "Filter 4"
 
@@ -566,15 +565,12 @@ msgstr "Location match"
 msgid "Appointment location"
 msgstr "Appointment location"
 
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:72
-msgid "NOT ANY filter combination"
-msgstr "NOT ANY filter combination"
-
-#: classes/Gems/Agenda/Filter/OrModelDependency.php:63
+#: classes/Gems/Agenda/Filter/OrModelDependency.php:44
 msgid "OR combination filter"
 msgstr "OR combination filter"
 
-#: classes/Gems/Agenda/Filter/OrModelDependency.php:73
+#: classes/Gems/Agenda/Filter/OrModelDependency.php:54
+#: classes/Gems/Agenda/Filter/XorModelDependency.php:51
 #: classes/Gems/Condition/Round/OrCondition.php:46
 msgid " OR "
 msgstr " OR "
@@ -666,6 +662,22 @@ msgstr "Attended by / with match"
 #: classes/Gems/Agenda/Filter/WithModelDependency.php:84
 msgid "Appointment is with"
 msgstr "Appointment is with"
+
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:40
+#, php-format
+#| msgid " (%s)"
+msgid "NOT (%s)"
+msgstr "NOT (%s)"
+
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:63
+#| msgid "OR combination filter"
+msgid "NOT ALL (XAND) combination filter"
+msgstr "NOT ALL (XAND) combination filter"
+
+#: classes/Gems/Agenda/Filter/XorModelDependency.php:41
+#| msgid "OR combination filter"
+msgid "NOT ANY (XOR) combination filter"
+msgstr "NOT ANY (XOR) combination filter"
 
 #: classes/Gems/Condition/Comparator/Between.php:26
 #, php-format
@@ -1371,12 +1383,12 @@ msgid_plural "diagnoses"
 msgstr[0] "diagnosis"
 msgstr[1] "diagnoses"
 
-#: classes/Gems/Default/AgendaFilterAction.php:133
+#: classes/Gems/Default/AgendaFilterAction.php:135
 #: classes/Gems/Menu/MenuAbstract.php:226
 msgid "Appointment filters"
 msgstr "Appointment filters"
 
-#: classes/Gems/Default/AgendaFilterAction.php:144
+#: classes/Gems/Default/AgendaFilterAction.php:146
 msgid "appointment filter"
 msgid_plural "appointment filters"
 msgstr[0] "appointment filter"
@@ -5481,7 +5493,6 @@ msgid "Job"
 msgstr "Job"
 
 #: classes/Gems/Model/CommLogModel.php:178
-#| msgid "Manual"
 msgid "manual"
 msgstr "manual"
 
@@ -5989,7 +6000,6 @@ msgid "Login Name"
 msgstr "Login Name"
 
 #: classes/Gems/Model/StaffModel.php:259 classes/Gems/Model/StaffModel.php:372
-#| msgid "(user primary group)"
 msgid "Primary group"
 msgstr "Primary group"
 
@@ -12063,6 +12073,9 @@ msgstr "An error occurred!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Please contact system administration"
+
+#~ msgid "NOT ANY filter combination"
+#~ msgstr "NOT ANY filter combination"
 
 #~ msgid "Primary function"
 #~ msgstr "Primary function"

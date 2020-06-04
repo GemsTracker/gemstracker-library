@@ -94,6 +94,34 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
     }
 
     /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    public function getSqlAppointmentsWhere()
+    {
+        return $this->getSqlWhereBoth(true);
+    }
+
+    /**
+     * Generate a where statement to filter an episode model
+     *
+     * @return string
+     */
+    public function getSqlEpisodeWhere()
+    {
+        return $this->getSqlWhereBoth(false);
+    }
+
+    /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @param boolean $toApps Whether to return appointment or episode SQL
+     * @return string
+     */
+    abstract public function getSqlWhereBoth($toApps);
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment

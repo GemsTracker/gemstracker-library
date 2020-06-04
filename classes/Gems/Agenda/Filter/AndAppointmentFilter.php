@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AndAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -89,26 +88,6 @@ class AndAppointmentFilter extends AppointmentSubFilterAbstract
         } else {
             return parent::MATCH_ALL_SQL;
         }
-    }
-
-    /**
-     * Generate a where statement to filter the appointment model
-     *
-     * @return string
-     */
-    public function getSqlAppointmentsWhere()
-    {
-        return $this->getSqlWhereBoth(true);
-    }
-
-    /**
-     * Generate a where statement to filter an episode model
-     *
-     * @return string
-     */
-    public function getSqlEpisodeWhere()
-    {
-        return $this->getSqlWhereBoth(false);
     }
 
     /**

@@ -5,23 +5,21 @@
  * @package    Gems
  * @subpackage Agenda\Filter
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
+ * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
  */
 
 namespace Gems\Agenda\Filter;
 
-use Gems\Agenda\EpisodeOfCare;
-
 /**
  *
  * @package    Gems
  * @subpackage Agenda\Filter
- * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
+ * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
- * @since      Class available since version 1.8.2 Nov 20, 2016 7:17:07 PM
+ * @since      Class available since version 1.8.8 03-Jun-2020 16:10:43
  */
-class NotAnyAppointmentFilter extends AndAppointmentFilter
+class XandAppointmentFilter extends AndAppointmentFilter
 {
     /**
      * Standard where processing

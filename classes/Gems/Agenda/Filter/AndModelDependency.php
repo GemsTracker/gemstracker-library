@@ -12,6 +12,7 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
+use Gems\Agenda\SubFilterDependencyInterface;
 
 /**
  *
@@ -22,7 +23,7 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 16:56:22
  */
-class AndModelDependency extends FilterModelDependencyAbstract
+class AndModelDependency extends FilterModelDependencyAbstract implements SubFilterDependencyInterface
 {
     /**
      *
@@ -62,8 +63,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
+     * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
      *
      * @see \MUtil_Model_ModelAbstract
      *
@@ -75,6 +75,28 @@ class AndModelDependency extends FilterModelDependencyAbstract
      */
     public function calcultateName($value, $isNew = false, $name = null, array $context = array())
     {
+        $output = $this->calcultateNameOutput($value, $isNew, $name, $context);
+
+        if ($output) {
+            return ucfirst(implode($this->getGlue(), $output));
+        } else {
+            return $this->_('empty filter');
+        }
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string
+     */
+    protected function calcultateNameOutput($value, $isNew, $name, $context)
+    {
         $output = array();
 
         // Check all the fields
@@ -85,11 +107,7 @@ class AndModelDependency extends FilterModelDependencyAbstract
             }
         }
 
-        if ($output) {
-            return ucfirst(implode($this->getGlue(), $output));
-        } else {
-            return $this->_('empty filter');
-        }
+        return $output;
     }
 
     /**

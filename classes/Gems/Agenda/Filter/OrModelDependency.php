@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OrModelDependency.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -25,24 +24,6 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  */
 class OrModelDependency extends AndModelDependency
 {
-    /**
-     *
-     * @var array filter_id => label
-     */
-    protected $_filters;
-
-    /**
-     *
-     * @var \Gems_Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Gems_Util
-     */
-    protected $util;
-
     /**
      * Get the class name for the filters, the part after *_Agenda_Filter_
      *
@@ -62,7 +43,7 @@ class OrModelDependency extends AndModelDependency
     {
         return $this->_('OR combination filter');
     }
-    
+
     /**
      * Get the translated glue for the calculated name
      *

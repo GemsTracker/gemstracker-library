@@ -41,20 +41,21 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      *
      * @var array (dependencyClassName)
      */
-    protected $filterDependencies = array(
+    protected $filterDependencies = [
         'AndModelDependency',
         'DiagnosisEpisodeModelDependency',
         'FieldLikeModelDependency',
         'JsonDiagnosisDependency',
         'LocationModelDependency',
-        'NotAnyModelDependency',
         'OrganizationModelDependency',
         'OrModelDependency',
         'SqlLikeModelDependency',
         'SubjectAppointmentModelDependency',
         'SubjectEpisodeModelDependency',
         'WithModelDependency',
-    );
+        'XandModelDependency',
+        'XorModelDependency',
+        ];
 
     /**
      * The filter class names, loaded by loodFilterDependencies()
@@ -68,6 +69,13 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      * @var \Gems_Menu
      */
     protected $menu;
+
+    /**
+     * The sub filter dependency class names, needed separately for
+     *
+     * @var array dependencyClassName => description
+     */
+    protected $subFilters = [];
 
     /**
      *
@@ -115,18 +123,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                 'description', $this->_('The number of uses of this filter in track fields.'),
                 'elementClass', 'Exhibitor'
                 );
-        $this->addColumn(new \Zend_Db_Expr(
-                "(SELECT COUNT(*)
-                    FROM gems__appointment_filters AS other
-                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyModelDependency') AND
-                        (
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
-                            gems__appointment_filters.gaf_id = other.gaf_filter_text4
-                        )
-                )"
-                ), 'usefilter');
+        $this->addColumn(new \Zend_Db_Expr($this->getSubFilterSql('COUNT(*)')), 'usefilter');
         $this->set('usefilter', 'label', $this->_('Use in filters'),
                 'description', $this->_('The number of uses of this filter in other filters.'),
                 'elementClass', 'Exhibitor'
@@ -221,6 +218,63 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     }
 
     /**
+     * Get an SQL query for the filters using a specific other filter
+     *
+     * @param int $filterId
+     * @param string $cols Columns to select
+     * @return string
+     */
+    public function getSubFilterIdSql($filterId, $cols = 'other.gaf_id')
+    {
+        $dependencies = implode("', '", array_keys($this->getSubFilters()));
+        $id           = intval($filterId);
+
+        return "SELECT $cols
+                    FROM gems__appointment_filters AS other
+                    WHERE other.gaf_class IN ('$dependencies') AND
+                        (
+                            other.gaf_filter_text1 = $id OR
+                            other.gaf_filter_text2 = $id OR
+                            other.gaf_filter_text3 = $id OR
+                            other.gaf_filter_text4 = $id
+                        )";
+    }
+
+    /**
+     * Get an SQL query for the filters using another filter
+     *
+     * @param string $cols Columns to select
+     * @param string $parentTable Table name used in main query
+     * @return string
+     */
+    public function getSubFilterSql($cols = '*', $parentTable = 'gems__appointment_filters')
+    {
+        $dependencies = implode("', '", array_keys($this->getSubFilters()));
+        return "(SELECT $cols
+                    FROM gems__appointment_filters AS other
+                    WHERE other.gaf_class IN ('$dependencies') AND
+                        (
+                            $parentTable.gaf_id = other.gaf_filter_text1 OR
+                            $parentTable.gaf_id = other.gaf_filter_text2 OR
+                            $parentTable.gaf_id = other.gaf_filter_text3 OR
+                            $parentTable.gaf_id = other.gaf_filter_text4
+                        )
+                )";
+    }
+
+    /**
+     * The sub filter dependency class names, needed separately for
+     *
+     * @return array dependencyClassName => description
+     */
+    public function getSubFilters()
+    {
+        $this->loadFilterDependencies(true);
+
+        return $this->subFilters;
+    }
+
+    /**
      * Load filter dependencies into model and populate the filterOptions
      *
      * @param boolean $activateDependencies When true, adds dependecies to model
@@ -238,6 +292,10 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
                     $this->filterOptions[$dependency->getFilterClass()] = $dependency->getFilterName();
 
+                    if ($dependency instanceof SubFilterDependencyInterface) {
+                        $this->subFilters[$dependency->getFilterClass()] = $dependency->getFilterName();
+                    }
+
                     if ($activateDependencies) {
                         $dependency->setMaximumCalcLength($maxLength);
                         $this->addDependency($dependency);
@@ -251,7 +309,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns an
+     * A ModelAbstract->setOnSave() function that returns an paired array of filters
      *
      * @see \MUtil_Model_ModelAbstract
      *
@@ -266,17 +324,10 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         if ($isNew || (! isset($context['gaf_id']))) {
             return [];
         }
-        $output = $this->db->fetchPairs(sprintf(
-                "SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) AS used_name
-                    FROM gems__appointment_filters
-                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyAppointmentFilter') AND
-                        (
-                            gaf_filter_text1 = %1\$s OR
-                            gaf_filter_text2 = %1\$s OR
-                            gaf_filter_text3 = %1\$s OR
-                            gaf_filter_text4 = %1\$s
-                        )",
-                intval($context['gaf_id'])));
+        $output       = $this->db->fetchPairs($this->getSubFilterIdSql(
+                $context['gaf_id'],
+                "gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) AS used_name"
+                ));
 
         if ($output) {
             return $output;

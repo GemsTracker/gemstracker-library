@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 14:18+0200\n"
+"POT-Creation-Date: 2020-06-04 16:10+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -38,8 +38,8 @@ msgid "Manual (organization specific)"
 msgstr "Handmatig (organisatie specifiek)"
 
 #: classes/Gems/Agenda.php:564
-#: classes/Gems/Agenda/AppointmentFilterModel.php:107
-#: classes/Gems/Agenda/AppointmentFilterModel.php:170
+#: classes/Gems/Agenda/AppointmentFilterModel.php:115
+#: classes/Gems/Agenda/AppointmentFilterModel.php:167
 #: classes/Gems/Default/AgendaActivityAction.php:138
 #: classes/Gems/Default/AgendaDiagnosisAction.php:132
 #: classes/Gems/Default/AgendaProcedureAction.php:138
@@ -285,17 +285,17 @@ msgstr "er bestaat een open traject"
 msgid "appointment used in track"
 msgstr "afspraak gebruikt in traject"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:98
-#: classes/Gems/Agenda/AppointmentFilterModel.php:153
+#: classes/Gems/Agenda/AppointmentFilterModel.php:106
+#: classes/Gems/Agenda/AppointmentFilterModel.php:150
 msgid "Filter type"
 msgstr "Soort filter"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:99
-#: classes/Gems/Agenda/AppointmentFilterModel.php:154
+#: classes/Gems/Agenda/AppointmentFilterModel.php:107
+#: classes/Gems/Agenda/AppointmentFilterModel.php:151
 msgid "Determines what is filtered how."
 msgstr "Bepaald wat op welke manier gefilterd wordt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:103
+#: classes/Gems/Agenda/AppointmentFilterModel.php:111
 #: classes/Gems/Default/AgendaStaffAction.php:117
 #: classes/Gems/Default/CommTemplateAction.php:123
 #: classes/Gems/Default/ComplianceAction.php:92
@@ -324,8 +324,8 @@ msgstr "Bepaald wat op welke manier gefilterd wordt."
 msgid "Name"
 msgstr "Naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:104
-#: classes/Gems/Agenda/AppointmentFilterModel.php:160
+#: classes/Gems/Agenda/AppointmentFilterModel.php:112
+#: classes/Gems/Agenda/AppointmentFilterModel.php:157
 #: classes/Gems/Default/ConsentAction.php:56
 #: classes/Gems/Default/DatabaseAction.php:220
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:874
@@ -334,108 +334,107 @@ msgstr "Naam"
 msgid "Order"
 msgstr "Volgorde"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:105
-#: classes/Gems/Agenda/AppointmentFilterModel.php:161
+#: classes/Gems/Agenda/AppointmentFilterModel.php:113
+#: classes/Gems/Agenda/AppointmentFilterModel.php:158
 msgid "Execution order of the filters, lower numbers are executed first."
 msgstr ""
 "Volgorde waarin de filters gecontroleerd worden, het laagste getal wordt als "
 "eerste eerste gecontroleerd."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:114
-#: classes/Gems/Agenda/AppointmentFilterModel.php:176
+#: classes/Gems/Agenda/AppointmentFilterModel.php:122
+#: classes/Gems/Agenda/AppointmentFilterModel.php:173
 msgid "Use in track fields"
 msgstr "Gebruik in trajectvelden"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:115
+#: classes/Gems/Agenda/AppointmentFilterModel.php:123
 msgid "The number of uses of this filter in track fields."
 msgstr "Het aantal keren dat dit filter in trajectvelden gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:130
-#: classes/Gems/Agenda/AppointmentFilterModel.php:184
+#: classes/Gems/Agenda/AppointmentFilterModel.php:127
+#: classes/Gems/Agenda/AppointmentFilterModel.php:181
 msgid "Use in filters"
 msgstr "Gebruik in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:131
+#: classes/Gems/Agenda/AppointmentFilterModel.php:128
 msgid "The number of uses of this filter in other filters."
 msgstr "Het aantal keren dat dit filter in andere filters gebruikt is."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:157
+#: classes/Gems/Agenda/AppointmentFilterModel.php:154
 msgid "Manual name"
 msgstr "Handmatige naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:158
+#: classes/Gems/Agenda/AppointmentFilterModel.php:155
 msgid "A name for this filter. The calculated name is used otherwise."
 msgstr "Een naam voor dit filter. Anders wordt de berekende naam gebruikt."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:159
+#: classes/Gems/Agenda/AppointmentFilterModel.php:156
 msgid "Calculated name"
 msgstr "Berekende naam"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:177
+#: classes/Gems/Agenda/AppointmentFilterModel.php:174
 msgid "The use of this filter in track fields."
 msgstr "Gebruik van dit filter in trajectvelden."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:185
+#: classes/Gems/Agenda/AppointmentFilterModel.php:182
 msgid "The use of this filter in other filters."
 msgstr "Gebruik van dit filter in andere filters."
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:326
+#: classes/Gems/Agenda/AppointmentFilterModel.php:377
 msgid "Not used in filters"
 msgstr "Niet gebruikt in filters"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:356
+#: classes/Gems/Agenda/AppointmentFilterModel.php:407
 msgid "Not used in tracks"
 msgstr "Niet gebruikt in trajecten"
 
-#: classes/Gems/Agenda/AppointmentFilterModel.php:374
+#: classes/Gems/Agenda/AppointmentFilterModel.php:425
 #: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
 msgid ": "
 msgstr ": "
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:91
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:83
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:69
 #: classes/Gems/Agenda/Filter/LocationModelDependency.php:45
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:51
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:56
 #: classes/Gems/Agenda/Filter/WithModelDependency.php:45
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:42
 msgid "empty filter"
 msgstr "leeg filter"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:114
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:132
 msgid "(inactive filter)"
 msgstr "(inactief filter)"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:145
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:163
 msgid "AND filter combination"
 msgstr "EN filter combinatie"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:155
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:49
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:173
 #: classes/Gems/Condition/Round/AndCondition.php:104
 msgid " AND "
 msgstr " EN "
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:168
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:186
 msgid "Sub filter may not be the same as this filter."
 msgstr "Sub filter mag niet hetzelfde zijn als dit filter."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:169
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:187
 msgid "Filters may be chosen only once."
 msgstr "Filters kunnen maar één keer gekozen worden."
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:174
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:192
 msgid "Filter 1"
 msgstr "Filter 1"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:182
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:200
 msgid "Filter 2"
 msgstr "Filter 2"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:190
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:208
 msgid "Filter 3"
 msgstr "Filter 3"
 
-#: classes/Gems/Agenda/Filter/AndModelDependency.php:200
+#: classes/Gems/Agenda/Filter/AndModelDependency.php:218
 msgid "Filter 4"
 msgstr "Filter 4"
 
@@ -570,15 +569,12 @@ msgstr "Vestigings filter"
 msgid "Appointment location"
 msgstr "Afspraak vestiging"
 
-#: classes/Gems/Agenda/Filter/NotAnyModelDependency.php:72
-msgid "NOT ANY filter combination"
-msgstr "NIET filter combinatie"
-
-#: classes/Gems/Agenda/Filter/OrModelDependency.php:63
+#: classes/Gems/Agenda/Filter/OrModelDependency.php:44
 msgid "OR combination filter"
 msgstr "OF combinatie filter"
 
-#: classes/Gems/Agenda/Filter/OrModelDependency.php:73
+#: classes/Gems/Agenda/Filter/OrModelDependency.php:54
+#: classes/Gems/Agenda/Filter/XorModelDependency.php:51
 #: classes/Gems/Condition/Round/OrCondition.php:46
 msgid " OR "
 msgstr " OF "
@@ -672,6 +668,19 @@ msgstr "Afspreek door / met filter"
 #: classes/Gems/Agenda/Filter/WithModelDependency.php:84
 msgid "Appointment is with"
 msgstr "Afspraak is met"
+
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:40
+#, php-format
+msgid "NOT (%s)"
+msgstr "NIET (%s)"
+
+#: classes/Gems/Agenda/Filter/XandModelDependency.php:63
+msgid "NOT ALL (XAND) combination filter"
+msgstr "NIET ELKE (NIET EN) combinatie filter"
+
+#: classes/Gems/Agenda/Filter/XorModelDependency.php:41
+msgid "NOT ANY (XOR) combination filter"
+msgstr "GEEN (NIET OF) combinatie filter"
 
 #: classes/Gems/Condition/Comparator/Between.php:26
 #, php-format
@@ -1385,12 +1394,12 @@ msgid_plural "diagnoses"
 msgstr[0] "diagnose"
 msgstr[1] "diagnoses"
 
-#: classes/Gems/Default/AgendaFilterAction.php:133
+#: classes/Gems/Default/AgendaFilterAction.php:135
 #: classes/Gems/Menu/MenuAbstract.php:226
 msgid "Appointment filters"
 msgstr "Afspraakfilters"
 
-#: classes/Gems/Default/AgendaFilterAction.php:144
+#: classes/Gems/Default/AgendaFilterAction.php:146
 msgid "appointment filter"
 msgid_plural "appointment filters"
 msgstr[0] "afspraakfilter"
@@ -12193,6 +12202,9 @@ msgstr "Er trad een fout op!"
 #: views/scripts/error/error.phtml:37
 msgid "Please contact system administration"
 msgstr "Neem contact op met systeembeheer"
+
+#~ msgid "NOT ANY filter combination"
+#~ msgstr "NIET filter combinatie"
 
 #~ msgid "Primary function"
 #~ msgstr "Primaire functie"

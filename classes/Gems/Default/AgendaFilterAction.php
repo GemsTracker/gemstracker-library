@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\Agenda\AppointmentFilterModel;
+
 /**
  *
  *
@@ -193,43 +195,25 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
         }
 
         if (isset($filter['used_in_filter'])) {
+            $model = $this->getModel();
             switch ($filter['used_in_filter']) {
                 case -1:
-                    $filter[] = "NOT EXISTS (SELECT * FROM gems__appointment_filters AS other
-                        WHERE other.gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyModelDependency') AND (
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text4
-                            ))";
+                    $sub      = $model->getSubFilterSql('*');
+                    $filter[] = "NOT EXISTS $sub";
                     break;
                 case -2:
-
-                    $filter[] = "EXISTS (SELECT * FROM gems__appointment_filters AS other
-                        WHERE other.gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter', 'NotAnyModelDependency') AND (
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
-                                gems__appointment_filters.gaf_id = other.gaf_filter_text4
-                            ))";
+                    $sub      = $model->getSubFilterSql('*');
+                    $filter[] = "EXISTS $sub";
                     break;
 
                 default:
-                    $filter[] = sprintf(
-                            'gaf_id IN (SELECT other.gaf_id FROM gems__appointment_filters AS other
-                                WHERE other.gaf_class IN (\'AndAppointmentFilter\', \'OrAppointmentFilter\', \'NotAnyModelDependency\') AND (
-                                    other.gaf_filter_text1 = %1$s OR
-                                    other.gaf_filter_text2 = %1$s OR
-                                    other.gaf_filter_text3 = %1$s OR
-                                    other.gaf_filter_text4 = %1$s
-                                ))',
-                                intval($filter['used_in_filter'])
-                                );
+                    $sub      = $model->getSubFilterIdSql($filter['used_in_filter'], "other.gaf_id");
+                    $filter[] = "gaf_id IN ($sub)";
                     break;
             }
+            \MUtil_Model::$verbose = true;
             unset($filter['used_in_filter']);
         }
-        // \MUtil_Echo::track($filter);
 
         return $filter;
     }
