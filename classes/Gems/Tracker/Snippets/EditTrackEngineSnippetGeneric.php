@@ -41,6 +41,11 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
     protected $loader;
 
     /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * Optional, required when creating or $trackId should be set
      *
      * @var \Gems_Tracker_Engine_TrackEngineInterface
@@ -75,7 +80,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
             $bridge->addHidden('table_keys');
         }
         $bridge->addText('gtr_track_name');
-        $bridge->addFormTable('translations_gtr_track_name');
+        if ($this->project->translateDatabaseFields()) {
+            $bridge->addFormTable('translations_gtr_track_name');
+        }
 
 
         // gtr_track_class

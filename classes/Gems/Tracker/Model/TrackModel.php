@@ -108,9 +108,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                 'size', 10,
                 'description', $translator->_('Optional code name to link the track to program code.'));
 
-        $translateTransformer = new \Gems\Model\Transform\TranslateFieldEditor();
-        $this->loader->applySource($translateTransformer);
-        $this->addTransformer($translateTransformer);
+        $this->loader->getModels()->addDatabaseTranslationEditFields($this);
 
         if ($detailed) {
             $events = $this->loader->getEvents();
