@@ -87,6 +87,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     protected $loader;
 
     /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * Field name in respondent model containing the login id.
      *
      * @var string
@@ -109,6 +114,32 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * @var \Gems_Util
      */
     protected $util;
+
+    /**
+     * Add database translations to a model
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    public function addDatabaseTranslations(\MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->project->translateDatabaseFields()) {
+            $transformer = $this->_loadClass('Transform\\TranslateDatabaseFields', true);
+            $model->addTransformer($transformer);
+        }
+    }
+
+    /**
+     * Add database translation edit to model
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    public function addDatabaseTranslationEditFields(\MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->project->translateDatabaseFields()) {
+            $transformer = $this->_loadClass('Transform\\TranslateFieldEditor', true);
+            $model->addTransformer($transformer);
+        }
+    }
 
     /**
      * Link the model to the user_logins table.
@@ -368,7 +399,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
-    
+
     /**
      * Get the respondent relation model
      *
@@ -431,7 +462,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
         if (! $userid && self::$currentUserId) {
             $userid = self::$currentUserId;
         }
-        
+
         if (! $userid) {
             $escort = \GemsEscort::getInstance();
 

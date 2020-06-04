@@ -1326,4 +1326,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         }
         return true;
     }
+
+    public function translateDatabaseFields()
+    {
+        if (isset($this['translate'], $this['translate']['databasefields']) && 1 == $this['translate']['databasefields']) {
+            return true;
+        }
+
+        return false;
+    }
 }
