@@ -40,6 +40,11 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
      */
     protected $project;
 
+    /**
+     * @var \Gems_Util
+     */
+    protected $util;
+
     public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
         $items = $model->getColNames('translate');
@@ -117,13 +122,28 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
                 );
             }
 
+
+
+            //$model->set($translationName, 'label');
             $model->set($translationName,
                 'model', $translationModel,
                 'elementClass', 'FormTable',
-                'decorators', ['InputGroupForm', 'Label', 'BootstrapRow'],
+                'decorators', [
+                    'InputGroupForm',
+                    'Label',
+                    'BootstrapRow',
+                    'TabbedTranslations' => [
+                        'decorator' => 'TabbedTranslations',
+                        'options' => [
+                            'locales' => $this->util->getLocalized()->getLanguages(),
+                            'defaultLocale' => $this->project->getLocaleDefault(),
+                        ]
+                    ]
+                ],
                 'type', \MUtil_Model::TYPE_CHILD_MODEL,
                 'order', $model->getOrder($itemName)+1
             );
+
         }
 
         return parent::getFieldInfo($model);
@@ -236,7 +256,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     {
         if (!isset($row['table_keys'])) {
             $tableKeys = $model->getKeys();
-            $keyValues = [];
+            $keyValues;
             foreach($tableKeys as $keyName => $column) {
                 if (isset($row[$column])) {
                     $keyValues[] = $row[$column];

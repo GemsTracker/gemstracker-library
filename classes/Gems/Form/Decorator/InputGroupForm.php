@@ -26,6 +26,7 @@ class Gems_Form_Decorator_InputGroupForm extends \Zend_Form_Decorator_ViewHelper
     public function render($content)
     {
         $element = $this->getElement();
+        $elementId = $element->getId();
 
         if ($element instanceof \MUtil_Form_Element_Table) {
             $subforms = $element->getSubForms();
@@ -34,7 +35,15 @@ class Gems_Form_Decorator_InputGroupForm extends \Zend_Form_Decorator_ViewHelper
             $subforms = [$element];
         }
 
-        $subformContainer = \MUtil_Html::create()->div(['class' => 'element-container']);
+        $elementOptions = [
+            'class' => 'element-container',
+        ];
+
+        if ($elementId) {
+            $elementOptions['id'] = $elementId;
+        }
+
+        $subformContainer = \MUtil_Html::create()->div($elementOptions);
         $hidden = [];
 
         if ($subforms) {
