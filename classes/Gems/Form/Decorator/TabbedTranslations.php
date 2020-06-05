@@ -27,9 +27,14 @@ class Gems_Form_Decorator_TabbedTranslations extends \Zend_Form_Decorator_Abstra
         $locales = $this->getOption('locales');
         $defaultLocale = $this->getOption('defaultLocale');
 
+        $defaultLabel = $this->getOption('defaultLabel');
+
         $tabs = '<ul class="translate-tabs nav nav-tabs">';
         if (isset($locales[$defaultLocale])) {
             $defaultLocaleName = $locales[$defaultLocale];
+            if ($defaultLabel) {
+                $defaultLocaleName = sprintf($defaultLabel, $defaultLocaleName);
+            }
             unset($locales[$defaultLocale]);
             $tabs .= "<li data-target=\"none\" class=\"active\"><a>$defaultLocaleName</a>";
         }
@@ -39,7 +44,13 @@ class Gems_Form_Decorator_TabbedTranslations extends \Zend_Form_Decorator_Abstra
         foreach($locales as $isoLang=>$translatedName) {
             $tabs .= "<li data-target=\"{$isoLang}\"><a>{$translatedName}</a>";
         }
-        $tabs .= "<li data-target=\"all\"><a>All</a>";
+
+        $allLabel = $this->getOption('allLabel');
+        if (!$allLabel) {
+            $allLabel = 'all';
+        }
+
+        $tabs .= "<li data-target=\"all\"><a>$allLabel</a>";
         $tabs .= '</ul>';
 
         $js = "

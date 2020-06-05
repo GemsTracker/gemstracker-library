@@ -6,10 +6,12 @@ namespace Gems\Model\Transform;
 
 use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Registry\TargetTrait;
+use MUtil\Translate\TranslateableTrait;
 
 class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer implements \MUtil_Registry_TargetInterface
 {
     use TargetTrait;
+    use TranslateableTrait;
 
     protected $copyParentFieldSettings = [
         'elementClass',
@@ -137,6 +139,8 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
                         'options' => [
                             'locales' => $this->util->getLocalized()->getLanguages(),
                             'defaultLocale' => $this->project->getLocaleDefault(),
+                            'defaultLabel' => $this->_('%s (default language)'),
+                            'allLabel' => $this->_('All'),
                         ]
                     ]
                 ],
