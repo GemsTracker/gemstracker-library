@@ -163,6 +163,14 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
+     * @return \Gems\Db\DbTranslations
+     */
+    public function getDbTranslations($config=null)
+    {
+        return $this->_loadClass('Db\\DbTranslations', true, ['config' => $config]);
+    }
+
+    /**
      *
      * @param int $userId
      * @param \Zend_Db_Adapter_Abstract $db
