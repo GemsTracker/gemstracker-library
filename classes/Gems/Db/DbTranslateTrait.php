@@ -24,7 +24,7 @@ trait DbTranslateTrait
     /**
      * @var array list of tables that have translations
      */
-    protected $translateTables;
+    protected $translateTables = [];
 
     /**
      * @var array list of tables as keys and the fields that have translated
