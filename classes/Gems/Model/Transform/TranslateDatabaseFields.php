@@ -2,16 +2,13 @@
 
 namespace Gems\Model\Transform;
 
+use Gems\Db\DbTranslateTrait;
 use MUtil\Registry\TargetTrait;
 
 class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract implements \MUtil_Registry_TargetInterface
 {
     use TargetTrait;
-
-    /**
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
+    use DbTranslateTrait;
 
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -29,10 +26,6 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
     public $project;
 
     protected $tableKeys = [];
-
-    protected $translateTables = [];
-
-    protected $translations;
 
     public function __construct($config=null)
     {
@@ -123,7 +116,7 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
                             foreach($tableKeys as $tableKey) {
                                 $keyValues[] = $row[$tableKey];
                             }
-                            $keyname = $tableName . '_' . $field . '_' .  join('_', $keyValues);
+                            $keyname = $this->getKey($tableName, $field, $keyValues);
                             if (isset($translations[$keyname])) {
                                 $data[$key][$field] = $translations[$keyname];
                             }
@@ -136,62 +129,6 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
         return $data;
     }
 
-    protected function getTablesWithTranslations()
-    {
-        $cacheId = 'dataBaseTablesWithTranslations';
-
-        $tables = $this->cache->load($cacheId);
-        if ($tables) {
-            return $tables;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__translations', ['gtrs_table', 'gtrs_field'])
-            ->group(['gtrs_table', 'gtrs_field']);
-
-        $rows = $this->db->fetchAll($select);
-
-        $tables = [];
-        foreach($rows as $row) {
-            $tables[$row['gtrs_table']][] = $row['gtrs_field'];
-        }
-
-        $this->cache->save($tables, $cacheId, ['database_translations']);
-
-        return $tables;
-    }
-
-    protected function getTranslations()
-    {
-        if (!$this->translations) {
-
-            $cacheId = 'dataBaseTranslations' . '_' . $this->locale->getLanguage();
-
-            $translations = $this->cache->load($cacheId);
-            if ($translations) {
-                return $translations;
-            }
-
-            $select = $this->db->select();
-            $select->from('gems__translations', [])
-                ->columns(
-                    [
-                        'key' => new \Zend_Db_Expr("CONCAT(gtrs_table, '_', gtrs_field, '_', gtrs_keys)"),
-                        'gtrs_translation'
-                    ]
-                )
-                ->where('gtrs_iso_lang = ?', $this->locale->getLanguage());
-
-            $this->translations = $this->db->fetchPairs($select);
-
-            $this->cache->save($this->translations, $cacheId, ['database_translations']);
-        }
-
-        return $this->translations;
-    }
-
-
-
     public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         if (!($model instanceof \MUtil_Model_DatabaseModelAbstract || $model instanceof \MUtil_Model_UnionModel)) {
@@ -203,14 +140,6 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
         if ($language == $this->project->getLocaleDefault()) {
             return $data;
         }
-
-        /*if ($model instanceof \MUtil_Model_JoinModel) {
-            $tables = array_keys($model->getTableNames());
-        } elseif ($model instanceof \MUtil_Model_TableModel) {
-            $tables = $model->getTableName();
-        } elseif ($model instanceof \MUtil_Model_SelectModel) {
-            $select = $model->getSelect();
-        }*/
 
         $translatedData = $this->translateData($model, $data);
 

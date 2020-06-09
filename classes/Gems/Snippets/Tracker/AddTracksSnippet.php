@@ -39,10 +39,25 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
     public $db;
 
     /**
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
+     * @var \Zend_Locale
+     */
+    public $locale;
+
+    /**
      *
      * @var \Gems_Menu
      */
     protected $menu;
+
+    /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      * Optional: $request or $tokenData must be set
@@ -101,45 +116,58 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         }
         $orgId   = intval($this->request->getParam(\MUtil_Model::REQUEST_ID2));
         $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
+        if ($this->project->translateDatabaseFields() && $this->project->getLocaleDefault() != $this->locale->getLanguage()) {
+            $cacheId .= '_' . $this->locale->getLanguage();
+        }
+
         $tracks  = $this->cache->load($cacheId);
 
         if (! $tracks) {
             switch ($trackType) {
                 case 'tracks':
-                    $sql = "SELECT gtr_id_track, gtr_track_name
-                        FROM gems__tracks
-                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                            gtr_active = 1 AND
-                            gtr_organizations LIKE '%|$orgId|%'
-                         ORDER BY gtr_track_name";
+                    $select = $this->db->select();
+                    $select->from('gems__tracks', ['gtr_id_track', 'gtr_track_name'])
+                        ->where(new \Zend_Db_Expr('gtr_date_start < CURRENT_TIMESTAMP'))
+                        ->where(new \Zend_Db_Expr('(gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP)'))
+                        ->where('gtr_active = 1')
+                        ->where('gtr_organizations LIKE \'%|'.$orgId.'|%\'')
+                        ->order('gtr_track_name');
+
                     break;
 
                 case 'respondents':
-                    $sql = "SELECT gsu_id_survey, gsu_survey_name
-                        FROM gems__surveys INNER JOIN gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE gsu_surveyor_active = 1 AND
-                            gsu_active = 1 AND
-                            ggp_group_active = 1 AND
-                            ggp_respondent_members = 1 AND
-                            gsu_insertable = 1 AND
-                            gsu_insert_organizations LIKE '%|$orgId|%'
-                        ORDER BY gsu_survey_name";
+                    $select = $this->db->select();
+                    $select->from('gems__surveys')
+                        ->join('gems__groups', 'gsu_id_primary_group = ggp_id_group', [])
+                        ->where('gsu_surveyor_active = 1')
+                        ->where('gsu_active = 1')
+                        ->where('ggp_group_active = 1')
+                        ->where('ggp_respondent_members = 1')
+                        ->where('gsu_insertable = 1')
+                        ->where('gsu_insert_organizations LIKE \'%|'.$orgId.'|%\'')
+                        ->order('gsu_survey_name');
                     break;
 
                 case 'staff':
-                    $sql = "SELECT gsu_id_survey, gsu_survey_name
-                        FROM gems__surveys INNER JOIN gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE gsu_surveyor_active = 1 AND
-                            gsu_active = 1 AND
-                            ggp_group_active = 1 AND
-                            ggp_staff_members = 1 AND
-                            gsu_insertable = 1 AND
-                            gsu_insert_organizations LIKE '%|$orgId|%'
-                        ORDER BY gsu_survey_name";
+                    $select = $this->db->select();
+                    $select->from('gems__surveys')
+                        ->join('gems__groups', 'gsu_id_primary_group = ggp_id_group', [])
+                        ->where('gsu_surveyor_active = 1')
+                        ->where('gsu_active = 1')
+                        ->where('ggp_group_active = 1')
+                        ->where('ggp_staff_members = 1')
+                        ->where('gsu_insertable = 1')
+                        ->where('gsu_insert_organizations LIKE \'%|'.$orgId.'|%\'')
+                        ->order('gsu_survey_name');
                     break;
             }
-            $tracks = $this->db->fetchPairs($sql);
+
+            if ($this->project->translateDatabaseFields()) {
+                $dbTranslations = $this->loader->getDbTranslations();
+                $tracks = $dbTranslations->translatePairsFromSelect($select);
+            } else {
+                $tracks = $this->db->fetchPairs($select);
+            }
 
             $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
         }
@@ -294,7 +322,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         if ($this->showForRespondents || $this->showForStaff) {
             $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
             $div->button($this->_('Surveys for'), array('class' => 'toolanchor btn', 'type' => 'button'));
-            
+
             if ($this->showForRespondents) {
                 $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
                 if ($dropdown) {
@@ -311,7 +339,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             }
             $addToLists[] = $div;
         }
-        
+
         if ($output) {
             return $addToLists;
         }

@@ -55,6 +55,11 @@ class Gems_Util_TrackData extends UtilAbstract
     protected $loader;
 
     /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      *
      * @var \Zend_Translate
      */
@@ -321,9 +326,9 @@ class Gems_Util_TrackData extends UtilAbstract
         $sql = "SELECT DISTINCT gsu_survey_languages
                     FROM gems__surveys
                     ORDER BY gsu_survey_languages";
-        
+
         $result = $this->db->fetchCol($sql);
-        
+
         foreach ($result as $value) {
             if (strpos($value, ', ') !== false) {
                 $results = explode(', ', $value);
@@ -334,10 +339,10 @@ class Gems_Util_TrackData extends UtilAbstract
                 $return[$value] = $value;
             }
         }
-        
+
         return $return;
     }
-    
+
     /**
      * Get the Rounds that use this survey
      *
@@ -475,11 +480,16 @@ class Gems_Util_TrackData extends UtilAbstract
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($orgs)) .
                 "|') > 0)";
 
-        $select = "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks
-                    WHERE gtr_track_class != 'SingleSurveyEngine' AND
-                        $orgWhere
-                    ORDER BY gtr_track_name";
+        $select = $this->db->select();
+        $select->from('gems__tracks', ['gtr_id_track', 'gtr_track_name'])
+            ->where('gtr_track_class != ?', 'SingleSurveyEngine')
+            ->where(new \Zend_Db_Expr($orgWhere))
+            ->order('gtr_track_name');
+
+        if ($this->project->translateDatabaseFields()) {
+            $dbTranslations = $this->loader->getDbTranslations();
+            return $dbTranslations->translatePairsFromSelect($select);
+        }
 
         return $this->db->fetchPairs($select);
     }
