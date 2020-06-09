@@ -74,9 +74,11 @@ trait DbTranslateTrait
             }
 
             $this->cache->save($tables, $cacheId, ['database_translations']);
+
+            $this->translateTables = $tables;
         }
 
-        return $tables;
+        return $this->translateTables;
     }
 
 
