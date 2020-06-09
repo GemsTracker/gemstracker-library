@@ -11,14 +11,9 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
     use DbTranslateTrait;
 
     /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
      * @var \Zend_Locale
      */
-    public $locale;
+    protected $locale;
 
     /**
      * @var \Gems_Project_ProjectSettings
