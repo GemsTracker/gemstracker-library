@@ -120,6 +120,10 @@ class MoveanswersTask extends \MUtil_Task_TaskAbstract
             $newToken->getSurvey()->copyTokenToSource($newToken, ''); // Take no language, so we get the default
             $newToken->setRawAnswers($convertedAnswers);
             
+            // Set the completion time, so it will also be set in the answer table
+            // When this is skipped LimeSurvey won't see the completed answers
+            $newToken->setCompletionTime($token->getCompletionTime(), $userId);
+            
             $batch->addToCounter('moved');
             
         } else {
