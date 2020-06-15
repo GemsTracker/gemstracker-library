@@ -1664,3 +1664,7 @@ UPDATE gems__appointment_filters SET gaf_class = 'ActProcAppointmentFilter',
         gaf_filter_text3 = gaf_filter_text2,
         gaf_filter_text2 = null
     WHERE gaf_class = 'SqlLikeAppointmentFilter';
+
+-- PATCH: Mailjob group filter
+ALTER TABLE `gems__comm_jobs`
+    ADD gcj_target_group varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gcj_target`;

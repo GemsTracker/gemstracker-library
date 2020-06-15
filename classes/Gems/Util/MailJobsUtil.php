@@ -194,6 +194,80 @@ class MailJobsUtil extends UtilAbstract
             2 => $this->_('Manually')
         ];
     }
+    
+    /**
+     * Returns array (id => name) of all fillers (groups + relations) in all tracks, sorted by name
+     * 
+     * @param $trackId TrajectId to filter
+     * @param $target  -1 = Staff/Respondent/Relation, 0 = Respondent/Relation, 1 = Relation, 2 = Respondent, 3 = Staff
+     *
+     * @return array
+     */
+    public function getAllGroups($trackId = null, $target = -1)
+    {
+        if(is_null($trackId)) {
+            $trackId = -1;
+        }
+        $trackId = (int) $trackId;
+        
+        $cacheId = str_replace(__CLASS__ . '_' . __FUNCTION__ . '_' . $trackId . 'x' . $target, '-', 'z');
+        
+        // When not only relation we include groups
+        if ($target <> 1) {
+            $sqlGroups = "SELECT DISTINCT ggp_name
+                            FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                                INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                                INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                            WHERE ggp_group_active = 1 AND
+                                gro_active=1 AND
+                                gtr_active=1";
+            if ($trackId > -1) {
+                $sqlGroups .= $this->db->quoteInto(" AND gtr_id_track = ?", $trackId);
+            }
+
+            if ($target == 3) {
+                // Only staff
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_staff_members = 1");
+            } elseif ($target == 2) {
+                // Only respondents
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_respondent_members = 1");
+            }
+        }
+
+        // When relations included, load relation fields
+        if ($target < 2) {
+            $sqlRelations = "SELECT DISTINCT gtf_field_name as ggp_name
+                            FROM gems__track_fields
+                            WHERE gtf_field_type = 'relation'";
+            if ($trackId > -1) {
+                $sqlRelations .= $this->db->quoteInto(" AND gtf_id_track = ?", $trackId);
+            }
+        }
+
+        switch ($target) {
+            case -1:
+            case 0:
+                $sql = "SELECT ggp_name, ggp_name as label FROM ("
+                . $sqlGroups .
+                " UNION ALL " .
+                $sqlRelations . "
+                ) AS tmpTable";
+                break;
+        
+            case 1:
+                $sql = $sqlRelations;
+                break;
+                
+            case 2:
+            case 3:
+                $sql = $sqlGroups;
+                break;
+        }
+        
+        $sql = $sql . " ORDER BY ggp_name";
+        
+        return $this->_getSelectPairsCached($cacheId, $sql, array(), 'tracks');
+    }
 
     /**
      * The types of mail filters
@@ -337,6 +411,10 @@ class MailJobsUtil extends UtilAbstract
                 $forceSent);
 
         $this->_addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], $job['gcj_fallback_method']);
+        
+        if (array_key_exists('gcj_target_group', $job) && $job['gcj_target_group']) {
+            $filter[] = $this->db->quoteinto('(ggp_name = ? AND gto_id_relationfield IS NULL) or gtf_field_name = ?', $job['gcj_target_group']);
+        }
 
         // \MUtil_Echo::track($filter);
         // \MUtil_Model::$verbose = true;

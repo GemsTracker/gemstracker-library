@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - EPD login setup extended with new display, security and routing options (#551)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
 - Manually block recalculation of track fields (#564)
+- Allow filtering in mailjobs on a specific relation (#572)
 
 ### Interface improvements
 - Adding environment version to header simplified (#524)

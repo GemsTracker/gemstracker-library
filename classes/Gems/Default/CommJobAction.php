@@ -245,6 +245,14 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
             $model->addDependency('CommJob\\Senderdependency');
         }
+        
+        if ($model->has('gcj_target_group')) {
+            $anyGroup[''] = $this->_('(all groups)');
+            $model->set('gcj_target_group', 'label', $this->_('Group'),
+                    'multiOptions', $anyGroup + $mailUtil->getAllGroups(),
+                    'onchange', 'this.form.submit();'
+                    );
+        }
 
         // SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION SURVEY SELECTION
         if ($detailed) {
