@@ -137,7 +137,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
                 case 'respondents':
                     $select = $this->db->select();
-                    $select->from('gems__surveys')
+                    $select->from('gems__surveys', ['gsu_id_survey', 'gsu_survey_name'])
                         ->join('gems__groups', 'gsu_id_primary_group = ggp_id_group', [])
                         ->where('gsu_surveyor_active = 1')
                         ->where('gsu_active = 1')
@@ -150,7 +150,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
                 case 'staff':
                     $select = $this->db->select();
-                    $select->from('gems__surveys')
+                    $select->from('gems__surveys', ['gsu_id_survey', 'gsu_survey_name'])
                         ->join('gems__groups', 'gsu_id_primary_group = ggp_id_group', [])
                         ->where('gsu_surveyor_active = 1')
                         ->where('gsu_active = 1')
