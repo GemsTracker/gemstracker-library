@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
 - Manually block recalculation of track fields (#564)
 - Allow filtering in mailjobs on a specific relation (#572)
+- LimeSurvey source usable by different installations (#574)
 
 ### Interface improvements
 - Adding environment version to header simplified (#524)
@@ -46,6 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Notice in Trackdata when no survey languages can be found (#523)
 - The button to search all respondents could not be made invisible (#522)
 - Track fields get wrong dependencies (#517)
+- Expired surveys in LimeSurvey should not be imported (#573)
 
 
 ## [1.8.7]
