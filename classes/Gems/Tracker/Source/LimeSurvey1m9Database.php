@@ -504,7 +504,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
             $select = $lsDb->select();
             // 'alloweditaftercompletion' ?
-            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', $this->_anonymizedField))
+            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'language', 'additional_languages', 'autoredirect', 'alloweditaftercompletion', 'allowregister', 'listpublic', 'tokenanswerspersistence', 'expires', $this->_anonymizedField))
                     ->joinInner(
                             $this->_getSurveyLanguagesTableName(),
                             'sid = surveyls_survey_id AND language = surveyls_language',
@@ -670,17 +670,21 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 }
 
             } else { // New record
-                $values['gsu_survey_name']        = $surveyor_title;
-                $values['gsu_survey_description'] = $surveyor_description;
-                $values['gsu_survey_languages']   = $surveyor_languages;
-                $values['gsu_survey_warnings']    = $surveyor_warnings ? $surveyor_warnings : 'OK';
-                $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
-                $values['gsu_active']             = 0;
-                $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
-                $values['gsu_surveyor_id']        = $sourceSurveyId;
-                $values['gsu_id_source']          = $this->getId();
+                if (is_null($lsSurvey['expires'])) {
+                    $values['gsu_survey_name']        = $surveyor_title;
+                    $values['gsu_survey_description'] = $surveyor_description;
+                    $values['gsu_survey_languages']   = $surveyor_languages;
+                    $values['gsu_survey_warnings']    = $surveyor_warnings ? $surveyor_warnings : 'OK';
+                    $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
+                    $values['gsu_active']             = 0;
+                    $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
+                    $values['gsu_surveyor_id']        = $sourceSurveyId;
+                    $values['gsu_id_source']          = $this->getId();
 
-                $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
+                    $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
+                } else {
+                    $messages[] = sprintf($this->_('Skipped the \'%s\' survey because it has an expiry date.'), $surveyor_title);
+                }
             }
             $survey->saveSurvey($values, $userId);
 
