@@ -57,11 +57,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     protected $db;
 
     /**
-     * @var EventDispatcher
-     */
-    protected $event;
-
-    /**
      * The field types that have a dependency
      *
      * @var array fieldType => dependency class name (without path elements)
@@ -80,6 +75,11 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         'textarea'    => 'DefaultTextDependency',
         'procedure'   => 'FromAppointmentsMaintenanceDependency',
         );
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
 
     /**
      *

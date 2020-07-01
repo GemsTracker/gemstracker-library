@@ -582,6 +582,9 @@ class GemsEscort extends \MUtil_Application_Escort
         return $db;
     }
 
+    /**
+     * @return \Gems\Event\EventDispatcher
+     */
     protected function _initEvent()
     {
         $dispatcher = new \Gems\Event\EventDispatcher();

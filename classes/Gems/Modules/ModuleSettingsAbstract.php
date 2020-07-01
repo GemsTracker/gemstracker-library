@@ -11,6 +11,9 @@ abstract class ModuleSettingsAbstract
 
     public static $eventSubscriber;
 
+    /**
+     * @return string
+     */
     protected static function getCurrentDir()
     {
         $reflection = new \ReflectionClass(static::class);

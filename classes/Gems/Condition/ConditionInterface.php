@@ -75,5 +75,4 @@ interface ConditionInterface
      * @return bool
      */
     public function isValid($value, $context);
-
 }

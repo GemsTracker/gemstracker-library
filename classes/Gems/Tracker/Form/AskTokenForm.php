@@ -34,6 +34,16 @@ class Gems_Tracker_Form_AskTokenForm extends \Gems_Form_AutoLoadFormAbstract
      */
     protected $tracker;
 
+    public function __construct($options = null)
+    {
+        if (isset($options['class'])) {
+            $options['class'] .= ' ask-token-form';
+        } else {
+            $options['class'] = 'ask-token-form';
+        }
+        parent::__construct($options);
+    }
+
     /**
      * Returns/sets a password element.
      *

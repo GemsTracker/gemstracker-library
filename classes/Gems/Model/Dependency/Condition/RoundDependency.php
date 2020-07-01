@@ -50,7 +50,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      */
     protected $_effecteds = [
         'condition_display' => ['value', 'elementClass'],
-        'gro_condition'    => ['validator']
+        'gro_condition'     => ['validator'],
         ];
 
     /**
@@ -122,5 +122,4 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
             ]
         ];
     }
-
 }
