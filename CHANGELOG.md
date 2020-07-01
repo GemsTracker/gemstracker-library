@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - LimeSurvey source usable by different installations (#574)
 
 ### Interface improvements
+- Added max and min answer time to survey Duration calculated (#576)
 - Adding environment version to header simplified (#524)
 - Allow text searches in Track compliance and summary overviews (#526)
 - Allow use of project level CHANGELOG.md files (#525)

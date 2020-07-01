@@ -329,6 +329,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         $fields['cnt'] = 'COUNT(DISTINCT gto_id_token)';
         $fields['avg'] = 'AVG(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
         $fields['std'] = 'STDDEV_POP(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
+        $fields['min'] = 'MIN(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
+        $fields['max'] = 'MAX(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
 
         $select = $this->loader->getTracker()->getTokenSelect($fields);
         $select->forSurveyId($surveyId)
@@ -342,13 +344,21 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
 
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
-                    $this->_('Average answer time: %s.'),
-                    $row['cnt'] ? $trs->formatTimeUnknown($row['avg']) : $this->_('n/a')
-                    );
+                $this->_('Average answer time: %s.'),
+                $row['cnt'] ? $trs->formatTimeUnknown($row['avg']) : $this->_('n/a')
+            );
             $seq->sprintf(
-                    $this->_('Standard deviation: %s.'),
-                    $row['cnt'] ? $trs->formatTimeUnknown($row['std']) : $this->_('n/a')
-                    );
+                $this->_('Standard deviation: %s.'),
+                $row['cnt'] ? $trs->formatTimeUnknown($row['std']) : $this->_('n/a')
+            );
+            $seq->sprintf(
+                $this->_('Minimum time: %s.'),
+                $row['cnt'] ? $trs->formatTimeUnknown($row['min']) : $this->_('n/a')
+            );
+            $seq->sprintf(
+                $this->_('Maximum time: %s.'),
+                $row['cnt'] ? $trs->formatTimeUnknown($row['max']) : $this->_('n/a')
+            );
 
             if ($row['cnt']) {
                 // Picked solution from http://stackoverflow.com/questions/1291152/simple-way-to-calculate-median-with-mysql
