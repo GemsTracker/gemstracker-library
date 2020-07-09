@@ -187,7 +187,7 @@ class Gems_Mail extends \MUtil_Mail
         $matches = [];
         preg_match_all('/src\\s?=\\s?[\'\"]([^\'\"]+)[\'\"]/', $template, $matches);
 
-        \MUtil_Echo::track($matches[1]);
+        // \MUtil_Echo::track($matches[1]);
 
         // {replaceWithSiteUrl}
         foreach (array_unique($matches[1]) as $url) {

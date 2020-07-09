@@ -873,6 +873,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         $model->set('gro_icon_file',         'label', $this->_('Icon'));
         $model->set('gro_id_order',          'label', $this->_('Order'),
                 'default', 10,
+                'filters[digits]', 'Digits',
                 'required', true,
                 'validators[uni]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track'))
                 );

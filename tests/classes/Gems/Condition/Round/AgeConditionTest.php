@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Gems\Condition;
+namespace Gems\Condition\Round;
 
 /**
  * Description of AgeConditionTest

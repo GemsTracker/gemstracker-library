@@ -11,6 +11,8 @@
 
 namespace Gems\Model\Dependency\Condition;
 
+use Gems\Condition\ConditonLoadException;
+
 /**
  *
  * @package    Gems
@@ -100,12 +102,17 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
         $conditions = $this->loader->getConditions();
 
         if (isset($context['gcon_type'],$context['gcon_class']) && !empty($context['gcon_class'])) {
-            $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
-            
-            $changes = [
-                'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
-            ] + $condition->getModelFields($context, $new);
-            
+            try {
+                $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
+                $changes = [
+                        'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
+                    ] + $condition->getModelFields($context, $new);
+            } catch (ConditonLoadException $cle) {
+                $changes = [
+                    'condition_help' => ['value' => $this->_('Switched type')],
+                ];
+            }
+
             return $changes;
         }
         

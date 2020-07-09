@@ -205,6 +205,8 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         // gaf_id is not needed for some validators
         $this->set('gaf_id',            'elementClass', 'Hidden');
 
+        $this->set('gaf_id_order','filters[digits]', 'Digits');
+
         $this->set('gaf_calc_name',     'elementClass', 'Exhibitor');
         $this->setOnSave('gaf_calc_name', array($this, 'calcultateName'));
         $this->set('gaf_active',        'elementClass', 'Checkbox');

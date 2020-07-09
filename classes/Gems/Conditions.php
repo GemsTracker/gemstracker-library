@@ -12,7 +12,10 @@
 namespace Gems;
 
 use Gems\Condition\ConditionInterface;
+use Gems\Condition\ConditonLoadException;
 use Gems\Condition\RoundConditionInterface;
+use Gems\Event\Application\TranslatableNamedArrayEvent;
+use Gems\Event\EventDispatcher;
 use Gems_Exception_Coding;
 use Gems_Loader;
 use Gems_Loader_TargetLoaderAbstract;
@@ -43,6 +46,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     const COMPARATOR_NOT       = 'NotEquals';
 
     const ROUND_CONDITION  = 'Round';
+    const TRACK_CONDITION  = 'Track';
 
     /**
      * Each condition type must implement a condition class or interface derived
@@ -53,17 +57,16 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
      * @var array containing eventType => eventClass for all condition classes
      */
     protected $_conditionClasses = array(
-        self::COMPARATOR      => 'Gems\\Condition\\Comparator\\ComparatorInterface',
-        self::ROUND_CONDITION => 'Gems\\Condition\\RoundConditionInterface',
+        self::COMPARATOR           => 'Gems\\Condition\\Comparator\\ComparatorInterface',
+        self::ROUND_CONDITION      => 'Gems\\Condition\\RoundConditionInterface',
+        self::TRACK_CONDITION      => 'Gems\\Condition\\TrackConditionInterface',
     );
 
     /**
      *
-     * @var array containing conditionType => name for all condition classes
+     * @var array containing conditionType => label for all condition classes
      */
-    protected $_conditionTypes = array(
-        self::ROUND_CONDITION => 'Round',
-    );
+    protected $_conditionTypes;
 
     /**
      * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
@@ -71,6 +74,11 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected $cascade = 'Condition';
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
 
     /**
      *
@@ -157,7 +165,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $condition = new $conditionName();
 
         if (! $condition instanceof $conditionClass) {
-            throw new Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
+            throw new ConditonLoadException("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
         }
 
         if ($condition instanceof MUtil_Registry_TargetInterface) {
@@ -199,6 +207,14 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 
     public function getConditionTypes()
     {
+        if (! $this->_conditionTypes) {
+            $this->_conditionTypes = [
+                self::ROUND_CONDITION => $this->_('Round'),
+                self::TRACK_CONDITION => $this->_('Track'),
+                ];
+
+            asort($this->_conditionTypes);
+        }
         return $this->_conditionTypes;
     }
 
@@ -271,5 +287,15 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     public function loadRoundCondition($conditionName)
     {
         return $this->_loadCondition($conditionName, self::ROUND_CONDITION);
+    }
+
+    /**
+     *
+     * @param string $conditionName
+     * @return TrackConditionInterface
+     */
+    public function loadTrackCondition($conditionName)
+    {
+        return $this->_loadCondition($conditionName, self::TRACK_CONDITION);
     }
 }

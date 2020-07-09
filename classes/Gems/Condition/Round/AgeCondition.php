@@ -24,6 +24,9 @@ use Gems\Condition\RoundConditionAbstract;
  */
 class AgeCondition extends RoundConditionAbstract
 {
+    /**
+     * @inheritDoc
+     */
     public function getHelp()
     {
         return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");

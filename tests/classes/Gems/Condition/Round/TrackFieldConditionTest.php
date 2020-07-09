@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\Condition;
+namespace Gems\Condition\Round;
 
 /**
  *

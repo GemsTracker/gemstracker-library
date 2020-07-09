@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.8.8]
 ### Added user functionality
+- Add track level conditions (#569)
 - Add Mailjob id to mail log (#512)
 - Added NOT ANY en NOT ALL agenda filters (#557)
 - Allow activity / procedure agenda filter to select on NOT activity (#567)

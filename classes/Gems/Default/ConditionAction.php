@@ -36,7 +36,17 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      * @var array
      */
     public $cacheTags = array('conditions');
-    
+
+    /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
     protected $deleteParameters = array(
         'conditionId' => '_getIdParam'
     );
@@ -47,6 +57,13 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      * @var mixed String or array of snippets name
      */
     protected $deleteSnippets = 'ConditionDeleteSnippet';
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Condition\\ConditionSearchFormSnippet'];
 
     /**
      * The snippets used for the show action

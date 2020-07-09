@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use Gems\Conditions;
+
 /**
  *
  * @package    Gems
@@ -60,7 +62,6 @@ class ConditionModel extends \Gems_Model_JoinModel
 
         $yesNo = $this->util->getTranslated()->getYesNo();
 
-
         $types = $conditions->getConditionTypes();
         reset($types);
         $default = key($types);
@@ -70,8 +71,14 @@ class ConditionModel extends \Gems_Model_JoinModel
                 'default', $default
                 );
 
+        $conditionsClasses = [];
+        if ($addCount) { // Are we in a browse mode
+            foreach ($types as $type => $val) {
+                $conditionsClasses += $conditions->listConditionsForType($type);
+            }
+        }
         $this->set('gcon_class', 'label', $this->_('Condition'),
-                'multiOptions', []
+                'multiOptions', $conditionsClasses
                 );
 
         $this->set('gcon_name', 'label', $this->_('Name'));
@@ -108,7 +115,9 @@ class ConditionModel extends \Gems_Model_JoinModel
                 'elementClass', 'Exhibitor'
                 );
         }
-        $this->addDependency('Condition\\TypeDependency');
+        if (! $addCount) {
+            $this->addDependency('Condition\\TypeDependency');
+        }
 
         return $this;
     }
@@ -155,6 +164,8 @@ class ConditionModel extends \Gems_Model_JoinModel
     public function applyEditSettings($create = false)
     {
         $this->applyDetailSettings();
+
+        $this->set('gcon_type', 'default', Conditions::ROUND_CONDITION);
 
         // gcon_id is not needed for some validators
         $this->set('gcon_id',            'elementClass', 'Hidden');

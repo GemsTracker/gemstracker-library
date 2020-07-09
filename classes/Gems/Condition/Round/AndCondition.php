@@ -56,7 +56,7 @@ class AndCondition extends RoundConditionAbstract
 
     public function getModelFields($context, $new)
     {
-        $conditions  = $this->loader->getConditions()->getConditionsFor(\Gems\Conditions::ROUND_CONDITION);
+        $conditions = $this->loader->getConditions()->getConditionsFor(\Gems\Conditions::ROUND_CONDITION);
         $messages   = [
             'gcon_id' => $this->_('The condition can not reference itself.'),
             $this->_('Conditions may be chosen only once.')
