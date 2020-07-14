@@ -348,8 +348,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      * Add a one-off survey to the existing track.
      *
-     * @param type $surveyId    the gsu_id of the survey to add
-     * @param type $surveyData
+     * @param int $surveyId    the gsu_id of the survey to add
+     * @param array $surveyData
      * @param int $userId
      * @param boolean $checkTrack Should the track be checked? Set to false when adding more then one and check manually
      * @return \Gems_Tracker_Token

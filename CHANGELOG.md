@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Automatically created directories get no permissions on linux (#546)
 - Clearing parent role does not work in role editor (#565)
 - During patient edit the organization can be changed (#566)
+- Expired surveys in LimeSurvey should not be imported (#573)
 - It is impossible not to show the parent 'Cancel' button in respondent show (#552)
 - Mail filter 'before expiration' is not working (#543)
 - Mailing to fall-back email does not work (#522)
@@ -51,7 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Notice in Trackdata when no survey languages can be found (#523)
 - The button to search all respondents could not be made invisible (#522)
 - Track fields get wrong dependencies (#517)
-- Expired surveys in LimeSurvey should not be imported (#573)
+- When inserting survey a manually set end date is not stored (#577)
 
 
 ## [1.8.7]

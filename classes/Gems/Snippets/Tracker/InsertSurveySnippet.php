@@ -386,7 +386,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     }
     
     protected function initTracks()
-    {
+    {66666
         $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
         $patientId      = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
         $respTracks     = $this->tracker->getRespondentTracks(
@@ -499,7 +499,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->formData['ggp_name'] = $groups[$groupId];
             }
 
-            $this->formData['gto_valid_until'] = $this->survey->getInsertDateUntil($this->formData['gto_valid_from']);
+            if (!(isset($this->formData['gto_valid_until_manual']) && $this->formData['gto_valid_until_manual'])) {
+                $this->formData['gto_valid_until'] = $this->survey->getInsertDateUntil($this->formData['gto_valid_from']);
+            }
         }
     }
 

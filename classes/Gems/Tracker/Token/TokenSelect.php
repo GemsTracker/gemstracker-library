@@ -41,7 +41,7 @@ class Gems_Tracker_Token_TokenSelect
     /**
      *
      * @param \Zend_Db_Adapter_Abstract $db Adapter to use
-     * @param type $fields Optional select fieldlist
+     * @param string|array $fields Optional select fieldlist
      */
     public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*", \Gems_Util $util)
     {
