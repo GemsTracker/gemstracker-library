@@ -59,6 +59,7 @@ trait DbTranslateTrait
         if (!$this->translateTables) {
             $tables = $this->cache->load($cacheId);
             if ($tables) {
+                $this->translateTables = $tables;
                 return $tables;
             }
 

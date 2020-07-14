@@ -37,31 +37,23 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
         if ($model instanceof \MUtil_Model_UnionModel) {
             $tableKeys = $model->getKeys();
             $table = null;
-            foreach($tableKeys as $columnName) {
-                $item = $model->get($columnName);
+            $tables = [];
+            //$this->translateTables = array_intersect_key($tablesWithTranslations, $tables);
 
-                if (isset($item['table']) && !in_array($item['table'], $this->translateTables) && isset($tablesWithTranslations[$item['table']])) {
-                    $this->translateTables[] = $item['table'];
-                    $table = $item['table'];
-                }
-
-            }
             if ($table !== null) {
                 $this->tableKeys[$table] = $tableKeys;
             }
             $itemNames = $model->getColNames('table');
             foreach ($itemNames as $itemName) {
                 $item = $model->get($itemName);
-                if (!isset($item['table']) || !$item['table'] || !isset($tablesWithTranslations[$item['table']])) {
+                if (!isset($item['table']) || !$item['table'] || !isset($this->translateTables[$item['table']])) {
                     continue;
-                }
-                if (!in_array($item['table'], $this->translateTables)) {
-                    $this->translateTables[] = $item['table'];
                 }
                 if (!isset($this->tableKeys[$item['table']])) {
                     $this->tableKeys[$item['table']] = $tableKeys;
                 }
             }
+            $this->translateTables = array_intersect_key($tablesWithTranslations, $this->tableKeys);
         }
 
         if ($model instanceof \MUtil_Model_DatabaseModelAbstract) {
@@ -70,9 +62,6 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
                 $item = $model->get($itemName);
                 if (!isset($item['table']) || !$item['table'] || !isset($tablesWithTranslations[$item['table']])) {
                     continue;
-                }
-                if (!in_array($item['table'], $this->translateTables)) {
-                    $this->translateTables[] = $item['table'];
                 }
                 if (isset($item['key']) && $item['key'] && (!isset($tableKeys[$item['table']]) || !in_array($item['key'], $tableKeys[$item['table']]))) {
                     $this->tableKeys[$item['table']][] = $itemName;
@@ -99,22 +88,19 @@ class TranslateDatabaseFields extends \MUtil_Model_ModelTransformerAbstract impl
 
     protected function translateData(\MUtil_Model_ModelAbstract $model, $data)
     {
-        $tablesWithTranslations = $this->getTablesWithTranslations();
         $translations = $this->getTranslations();
-        foreach($this->translateTables as $tableName) {
-            if (isset($tablesWithTranslations[$tableName])) {
-                foreach($tablesWithTranslations[$tableName] as $field) {
-                    foreach($data as $key=>$row) {
-                        if (isset($row[$field])) {
-                            $tableKeys = $this->tableKeys[$tableName];
-                            $keyValues = [];
-                            foreach($tableKeys as $tableKey) {
-                                $keyValues[] = $row[$tableKey];
-                            }
-                            $keyname = $this->getKey($tableName, $field, $keyValues);
-                            if (isset($translations[$keyname])) {
-                                $data[$key][$field] = $translations[$keyname];
-                            }
+        foreach($this->translateTables as $tableName=>$fields) {
+            foreach($fields as $field) {
+                foreach ($data as $key => $row) {
+                    if (isset($row[$field])) {
+                        $tableKeys = $this->tableKeys[$tableName];
+                        $keyValues = [];
+                        foreach ($tableKeys as $tableKey) {
+                            $keyValues[] = $row[$tableKey];
+                        }
+                        $keyname = $this->getKey($tableName, $field, $keyValues);
+                        if (isset($translations[$keyname])) {
+                            $data[$key][$field] = $translations[$keyname];
                         }
                     }
                 }

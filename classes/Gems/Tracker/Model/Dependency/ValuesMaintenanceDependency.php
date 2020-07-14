@@ -109,7 +109,10 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                             'formatFunction' => array($this, 'formatValues'),
                             'minlength'      => 3,// At least two single chars and a separator
                             'rows'           => 4,
-                    ]
+                    ],
+                    'gtrs_iso_lang' => [
+                        'elementClass' => 'Exhibitor',
+                    ],
                 ]
             ),
             'gtf_field_default' => array(
