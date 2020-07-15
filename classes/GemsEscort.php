@@ -589,6 +589,11 @@ class GemsEscort extends \MUtil_Application_Escort
     {
         $dispatcher = new \Gems\Event\EventDispatcher();
 
+        // Add Gems general Event subscriber.
+        // Projects should use their own Event subscriber (or add themselves as module).
+        $dispatcher->addSubscriber(new \Gems\EventSubscriber());
+
+        // Add Module Event subscribers.
         $moduleSettings = $this->getModules();
         if ($moduleSettings) {
             foreach ($moduleSettings as $name => $settings) {
