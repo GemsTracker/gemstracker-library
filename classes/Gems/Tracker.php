@@ -53,6 +53,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
         'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
         'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB',
+        'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
         );
 
     /**
