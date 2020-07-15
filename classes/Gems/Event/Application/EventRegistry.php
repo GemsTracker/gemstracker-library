@@ -23,7 +23,8 @@ class EventRegistry
         // Set the correct directory for the current Controller
         SetFrontControllerDirectory::NAME => SetFrontControllerDirectory::class,
 
-        'gems.tracker.conditions.get' => TranslatableNamedArrayEvent::class,
+        // Generic model create event marker, must be implemented per model to work
+        'gems.model.create.*' => ModelCreateEvent::class,
 
         // Get an array of available Track Field Types for the FieldMaintenanceModel
         'gems.tracker.fieldtypes.get' => TranslatableNamedArrayEvent::class,

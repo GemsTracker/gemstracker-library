@@ -59,6 +59,11 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
     protected $deleteSnippets = 'ConditionDeleteSnippet';
 
     /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    public $event;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -110,6 +115,9 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
         } else {
             $model->applyBrowseSettings();
         }
+
+        $event = new \Gems\Event\Application\ModelCreateEvent($model, $detailed, $action);
+        $this->event->dispatch($event, $event->name);
 
         return $model;
     }
