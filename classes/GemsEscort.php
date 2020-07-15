@@ -2492,6 +2492,20 @@ class GemsEscort extends \MUtil_Application_Escort
 
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
+                if ($menuItem) {
+                    $alternative = $menuItem->get('allowed-alternative');
+                    if ($alternative && \MUtil_String::contains($alternative, '/')) {
+                        list($controller, $action) = explode('/', $alternative);
+                        $altItem = $menu->findAllowedController($controller, $action);
+                        if ($altItem) {
+                            $request->setControllerName($controller);
+                            $request->setActionName($action);
+                            $redirector = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                            $redirector->gotoRoute($altItem->toRouteUrl($request), null, true);
+                        }
+                    }
+                }
+
                 // When logged in
                 if ($user->getUserId()) {
                     $this->setError(
