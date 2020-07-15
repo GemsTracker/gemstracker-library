@@ -25,7 +25,7 @@ interface RoundConditionInterface extends ConditionInterface
      * Returns a short text to show in the track definition about this condition
      * 
      * Example:
-     * AgeCondition, parameters 10 and 12 could result in
+     * AgeConditionAbstract, parameters 10 and 12 could result in
      * "Respondent between 10 year and 12 year"
      */
     public function getRoundDisplay($trackId, $roundId);

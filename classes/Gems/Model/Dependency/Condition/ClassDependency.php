@@ -11,7 +11,7 @@
 
 namespace Gems\Model\Dependency\Condition;
 
-use Gems\Condition\ConditonLoadException;
+use Gems\Condition\ConditionLoadException;
 
 /**
  *
@@ -107,7 +107,7 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
                 $changes = [
                         'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
                     ] + $condition->getModelFields($context, $new);
-            } catch (ConditonLoadException $cle) {
+            } catch (ConditionLoadException $cle) {
                 $changes = [
                     'condition_help' => ['value' => $this->_('Switched type')],
                 ];

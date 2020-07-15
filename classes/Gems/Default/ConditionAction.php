@@ -38,6 +38,11 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
     public $cacheTags = array('conditions');
 
     /**
+     * @var \Gems\Condition\ConditionInterface
+     */
+    protected $condition;
+
+    /**
      * The parameters used for the delete action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -74,9 +79,9 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
-     * /
+     */
     protected $showParameters = array(
-        'bridgeMode'      => \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW,
+        'condition' => 'getCondition',
         );
 
     /**
@@ -90,6 +95,34 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         'ConditionAndOrTableSnippet',
         );
+
+    /**
+     * This script disables the onchange that is fired just before the click on the submit button fires.
+     * The onchange submits the form, changes the csrf token and then the submit button fires with the old
+     * csrf that is invalid. This could prevent a needed (fake)submit to change values, but for now it
+     * does not seem like a problem.
+     */
+    protected function addScript()
+    {
+        $view = $this->view;
+        \MUtil_JQuery::enableView($view);
+
+        $jquery = $view->jQuery();
+        $jquery->enable();  //Just to make sure
+
+        $handler = \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
+
+        $script = "$('input[type=\"submit\"]').mousedown(function(e) {
+     e.preventDefault(); // prevents blur() to be called when clicking submit
+});";
+        $fields = array(
+            'jQuery'  => $handler,
+        );
+
+        $js = str_replace(array_keys($fields), $fields, $script);
+
+        $jquery->addOnLoad($js);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -120,6 +153,21 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
         $this->event->dispatch($event, $event->name);
 
         return $model;
+    }
+
+    /**
+     * @return \Gems\Condition\ConditionInterface
+     * @throws \Gems_Exception_Coding
+     */
+    public function getCondition()
+    {
+        $id = $this->getParam(\MUtil_Model::REQUEST_ID);
+
+        if ($id && (!$this->condition)) {
+            $this->condition = $this->loader->getConditions()->loadCondition($id);
+        }
+
+        return $this->condition;
     }
 
     /**
@@ -156,31 +204,15 @@ class Gems_Default_ConditionAction extends \Gems_Controller_ModelSnippetActionAb
     }
     
     /**
-     * This script disables the onchange that is fired just before the click on the submit button fires.
-     * The onchange submits the form, changes the csrf token and then the submit button fires with the old
-     * csrf that is invalid. This could prevent a needed (fake)submit to change values, but for now it
-     * does not seem like a problem.
+     * Action for showing an item page with title
      */
-    protected function addScript() 
+    public function showAction()
     {
-        $view = $this->view;
-        \MUtil_JQuery::enableView($view);
+        $model = $this->getModel();
+        if ($model->hasMeta('ConditionShowSnippets')) {
+            $this->showSnippets = array_merge($this->showSnippets, (array) $model->getMeta('ConditionShowSnippets'));
+        }
 
-        $jquery = $view->jQuery();
-        $jquery->enable();  //Just to make sure
-
-        $handler = \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
-
-        $script = "$('input[type=\"submit\"]').mousedown(function(e) {
-     e.preventDefault(); // prevents blur() to be called when clicking submit
-});";
-        $fields = array(
-            'jQuery'  => $handler,
-        );
-
-        $js = str_replace(array_keys($fields), $fields, $script);
-
-        $jquery->addOnLoad($js);
+        parent::showAction();
     }
-
 }

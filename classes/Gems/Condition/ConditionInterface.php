@@ -27,7 +27,14 @@ interface ConditionInterface
      * @param array $data
      */
     public function exchangeArray(array $data);
-               
+
+    /**
+     * Get the condition id for this condition
+     *
+     * @return int
+     */
+    public function getConditionId();
+
     /**
      * Return a help text for this filter.
      * 
@@ -40,6 +47,8 @@ interface ConditionInterface
     /**
      * Get the settings for the gcon_condition_textN fields 
      *
+     * @param array $context
+     * @param boolean $new
      * @return array textN => array(modelFieldName => fieldValue)
      */
     public function getModelFields($context, $new);    

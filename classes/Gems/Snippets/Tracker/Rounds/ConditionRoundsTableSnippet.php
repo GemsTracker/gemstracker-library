@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Condition\RoundConditionInterface;
 use Gems\Tracker\Model\RoundModel;
 
 /**
@@ -47,6 +48,11 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
      * @var int
      */
     protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+
+    /**
+     * @var \Gems\Condition\ConditionInterface
+     */
+    protected $condition;
 
     /**
      * Required
@@ -118,13 +124,37 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
     }
 
     /**
+     * The place to check if the data set in the snippet is valid
+     * to generate the snippet.
+     *
+     * When invalid data should result in an error, you can throw it
+     * here but you can also perform the check in the
+     * checkRegistryRequestsAnswers() function from the
+     * {@see \MUtil_Registry_TargetInterface}.
+     *
+     * @return boolean
+     */
+    public function hasHtmlOutput()
+    {
+        if ($this->condition instanceof RoundConditionInterface) {
+            return true;
+        }
+
+        return ! $this->condition;
+    }
+
+    /**
      * Overrule to implement snippet specific filtering and sorting.
      *
      * @param \MUtil_Model_ModelAbstract $model
      */
     protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
-        $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        if ($this->condition) {
+            $conditionId = $this->condition->getConditionId();
+        } else {
+            $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        }
 
         //\MUtil_Model::$verbose = true;
         if ($conditionId) {

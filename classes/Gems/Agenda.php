@@ -86,6 +86,11 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     protected $translateAdapter;
 
     /**
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
      *
      * @param type $container A container acting as source for \MUtil_Registry_Source
      * @param array $dirs The directories where to look for requested classes
@@ -837,7 +842,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns an array with identical key => value pairs containing care provision locations.
      *
-     * @param int $orgId Optional to slect for single organization
+     * @param int $orgId Optional to select for single organization
      * @return array
      */
     public function getLocations($orgId = null)
@@ -867,6 +872,49 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         return $results;
     }
 
+    /**
+     * Returns an array with identical key => value pairs containing care provision locations with organiation names
+     *
+     * @return array loId => label
+     */
+    public function getLocationsWithOrganization()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__locations', array('glo_id_location', 'glo_name', 'glo_organizations'))
+               ->order('glo_name');
+
+        $orgList   = $this->util->getDbLookup()->getOrganizations();
+        $locations = $this->db->fetchAll($select);
+        $results   = [];
+        if ($locations) {
+            foreach ($locations as $location) {
+                $orgs = array_filter(explode(':', trim($location['glo_organizations'], ':')));
+
+                if ($orgs) {
+                    $orgNames = [];
+                    foreach ($orgs as $orgId) {
+                        if (isset($orgList[$orgId])) {
+                            $orgNames[$orgId] = $orgList[$orgId];
+                        }
+                    }
+
+                    $orgLabel = sprintf($this->_(' (%s)'), implode($this->_(', '), $orgNames));
+                } else {
+                    $orgLabel = '';
+                }
+                $results[$location['glo_id_location']] = $location['glo_name'] . $orgLabel;
+            }
+        }
+
+        $this->cache->save($results, $cacheId, array('locations'));
+        return $results;
+    }
 
     /**
      *

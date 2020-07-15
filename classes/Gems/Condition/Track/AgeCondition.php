@@ -12,6 +12,8 @@
 namespace Gems\Condition\Track;
 
 use Gems\Conditions;
+use Gems\Condition\ConditionAbstract;
+use Gems\Condition\TrackConditionInterface;
 
 /**
  *
@@ -20,7 +22,7 @@ use Gems\Conditions;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class AgeCondition extends \Gems\Condition\ConditionAbstract implements \Gems\Condition\TrackConditionInterface
+class AgeCondition extends ConditionAbstract implements TrackConditionInterface
 {
     /**
      *

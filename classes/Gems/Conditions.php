@@ -12,7 +12,7 @@
 namespace Gems;
 
 use Gems\Condition\ConditionInterface;
-use Gems\Condition\ConditonLoadException;
+use Gems\Condition\ConditionLoadException;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
@@ -165,7 +165,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $condition = new $conditionName();
 
         if (! $condition instanceof $conditionClass) {
-            throw new ConditonLoadException("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
+            throw new ConditionLoadException("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
         }
 
         if ($condition instanceof MUtil_Registry_TargetInterface) {

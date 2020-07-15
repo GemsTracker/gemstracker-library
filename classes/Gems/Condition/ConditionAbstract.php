@@ -32,9 +32,30 @@ abstract class ConditionAbstract extends \MUtil_Translate_TranslateableAbstract 
      */
     protected $loader;
 
+    /**
+     * @inheritDoc
+     * /
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+    }
+
+    /**
+     * @param array $data
+     */
     public function exchangeArray(array $data)
     {
         $this->_data = $data;
+    }
+
+    /**
+     * Get the condition id for this condition
+     *
+     * @return int
+     */
+    public function getConditionId()
+    {
+        return $this->_data['gcon_id'];
     }
 
     /**

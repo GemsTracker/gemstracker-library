@@ -25,14 +25,6 @@ use Gems\Condition\RoundConditionAbstract;
 class AgeCondition extends RoundConditionAbstract
 {
     /**
-     * @inheritDoc
-     */
-    public function getHelp()
-    {
-        return $this->_("Round will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
-    }
-
-    /**
      *
      * @return \Gems\Condition\Comparator\ComparatorInterface
      */
@@ -52,6 +44,17 @@ class AgeCondition extends RoundConditionAbstract
         return $comparator;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getHelp()
+    {
+        return $this->_("Track will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getModelFields($context, $new)
     {
         $ageUnits = [
@@ -74,17 +77,26 @@ class AgeCondition extends RoundConditionAbstract
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName()
     {
         return $this->_('Respondent age');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getNotValidReason($conditionId, $context)
     {
         // Always available
         return '';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getRoundDisplay($trackId, $roundId)
     {
         $comparator = $this->getActiveComparator();
@@ -96,6 +108,9 @@ class AgeCondition extends RoundConditionAbstract
         return $comparator->getDescription($this->_('Respondent age')) . $unitHelp;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isRoundValid(\Gems_Tracker_Token $token)
     {
         $minAge  = $this->_data['gcon_condition_text1'];
@@ -117,6 +132,9 @@ class AgeCondition extends RoundConditionAbstract
         return true;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isValid($conditionId, $context)
     {
         // Always available
