@@ -3,6 +3,7 @@
 namespace Gems\Event;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Wrapper around the 3.4 Symfony Event, that changes the order of Dispatch parameters,
@@ -10,6 +11,13 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * Class EventDispatcher
  * @package Gems\Event
+ * @method void addListener(string $eventName, callable $listener, int $priority=0) Adds an event listener that listens on the specified events.
+ * @method void addSubscriber(EventSubscriberInterface $subscriber) Adds an event subscriber.
+ * @method void removeListener(string $eventName, callable $listener) Adds an event listener that listens on the specified events.
+ * @method void removeSubscriber(EventSubscriberInterface $subscriber) Adds an event subscriber.
+ * @method array getListeners(string|null $eventName) Gets the listeners of a specific event or all listeners sorted by descending priority.
+ * @method int|null getListenerPriority(string $eventName, callable $listener) Gets the listener priority for a specific event.
+ * @method boolean hasListeners(string|null $eventName) Checks whether an event has any registered listeners.
  */
 
 class EventDispatcher
