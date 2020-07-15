@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Manually block recalculation of track fields (#564)
 - Allow filtering in mailjobs on a specific relation (#572)
 - LimeSurvey source usable by different installations (#574)
+- Add translations of database fields for Track name and track fields (#568)
 
 ### Interface improvements
 - Added max and min answer time to survey Duration calculated (#576)
@@ -35,6 +36,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - PHP 5.6 incompatibility issue (#555)
 - Support for PHP versions higher than 7.3 (#506)
 - Use Redis for cache (#548)
+- Use Events in Gemstracker (#553)
+- Allow the creation of external modules for Gemstracker (#553)
+- Create relational submodels (#559) 
 
 ## Subscribe & unsubscribe
 - Log respondent id during unsubscribe (#547)
