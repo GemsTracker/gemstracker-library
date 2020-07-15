@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use \Gems\Event\Application\AnswerFilterEvent;
+
 /**
  * Displays answers to a survey.
  *
@@ -55,6 +57,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      * @var string Format used for displaying dates.
      */
     protected $dateFormat = \Zend_Date::DATE_MEDIUM;
+
+    /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    protected $event;
 
     /**
      * Required
@@ -169,9 +176,27 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
 
         // Apply filter on the answers displayed
         $answerNames = $model->getItemsOrdered();
+
+        $eventName = 'gems.survey.answers.display-filter';
+
         if ($this->answerFilter instanceof \Gems_Tracker_Snippets_AnswerNameFilterInterface) {
-            $answerNames = $this->answerFilter->filterAnswers($bridge, $model, $answerNames);
+
+            $answerFilter = $this->answerFilter;
+            $eventFunction = function (AnswerFilterEvent $event) use ($answerFilter) {
+                $bridge = $event->getBridge();
+                $model = $event->getModel();
+                $answerNames = $event->getCurrentNames();
+
+                $answerNames = $answerFilter->filterAnswers($bridge, $model, $answerNames);
+
+                $event->setCurrentNames($answerNames);
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
         }
+
+        $answerFilterEvent = new AnswerFilterEvent($bridge, $model, $answerNames);
+        $this->event->dispatch($answerFilterEvent, $eventName);
+        $answerNames = $answerFilterEvent->getCurrentNames();
 
         foreach($answerNames as $name) {
             $label = $model->get($name, 'label');
