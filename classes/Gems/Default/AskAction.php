@@ -53,6 +53,25 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     public $locale;
 
     /**
+     * The parameters used for the lost action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $lostParameters = [];
+
+    /**
+     * The snippets used for the lost action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $lostSnippets = 'Token\\TokenForgottenSnippet';
+
+    /**
      * Snippets displayed when maintenance mode is on
      *
      * @var array
@@ -183,6 +202,12 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             $this->_('A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive.'), ' ',
             $this->_('The number zero and the letter O are treated as the same; the same goes for the number one and the letter L.')
             );
+
+        $p = $this->html->p();
+        $lostItem = $this->menu->findAllowedController('ask', 'lost');
+        if ($lostItem) {
+            $p->append($lostItem->toActionLink($this->request), ' ');
+        }
     }
 
     /**
@@ -286,6 +311,14 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     }
 
     /**
+     * Show lost token screen for respondents
+     */
+    public function lostAction()
+    {
+        $this->addSnippet($this->lostSnippets, $this->lostParameters);
+    }
+
+    /**
      * The action where survey sources should return to after survey completion
      */
     public function returnAction()
@@ -311,7 +344,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
 
         // No return? Check for old style user based return
         if (! $this->currentUser->isActive()) {
-            $this->_forward('forward');
+            $this->forward('forward');
             return;
         }
 
@@ -336,7 +369,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     public function takeAction()
     {
-        $this->_forward('to-survey');
+        $this->forward('to-survey');
     }
 
     /**
@@ -344,7 +377,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     public function tokenAction()
     {
-        $this->_forward('index');
+        $this->forward('index');
     }
 
     /**
@@ -354,7 +387,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     {
         if (! $this->_initToken()) {
             // Default option
-            $this->_forward('index');
+            $this->forward('index');
             return;
         }
 
@@ -384,7 +417,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
                     ));
 
             // Default option
-            $this->_forward('index');
+            $this->forward('index');
         }
     }
 }

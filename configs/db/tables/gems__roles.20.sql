@@ -28,7 +28,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (800, 'nologin', 'nologin', null,
-    'pr.contact.bugs,pr.contact.support,pr.cron.job,pr.nologin',
+    'pr.contact.bugs,pr.contact.support,pr.cron.job,pr.nologin,pr.respondent.ask,pr.respondent.lost',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -36,7 +36,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (801, 'guest', 'guest', null,
-    'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent',
+    'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent,pr.respondent.ask',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,

@@ -1668,3 +1668,8 @@ UPDATE gems__appointment_filters SET gaf_class = 'ActProcAppointmentFilter',
 -- PATCH: Mailjob group filter
 ALTER TABLE `gems__comm_jobs`
     ADD gcj_target_group varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gcj_target`;
+
+-- PATCH: Seperate rights for ask controller
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.ask')
+WHERE grl_name IN ('nologin', 'guest')
+  AND grl_privileges NOT LIKE '%,pr.respondent.ask%';

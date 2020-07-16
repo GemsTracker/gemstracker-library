@@ -29,5 +29,6 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (21, 'No open tokens', 'respondent', 'nothingToSend', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 

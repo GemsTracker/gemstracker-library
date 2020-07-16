@@ -100,7 +100,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
      */
     public function addAskPage($label)
     {
-        $page = $this->addPage($label, null, 'ask');
+        $page = $this->addPage($label, 'pr.respondent.ask', 'ask');
+        $page->addAction($this->_('Token lost?'), 'pr.respondent.lost', 'lost');
 
         // Routes for token controller
         $page->addAction(null, null, 'forward');
