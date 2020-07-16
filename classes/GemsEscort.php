@@ -831,6 +831,11 @@ class GemsEscort extends \MUtil_Application_Escort
             $translate = \MUtil_Translate_Adapter_Potemkin::create();
         }
 
+        // Add other languages through Event (e.g. Modules)
+        $event = new \Gems\Event\Application\ZendTranslateEvent($translate, $language);
+        $this->event->dispatch($event, $event::NAME);
+        $translate = $event->getTranslate();
+
         //Now if we have a project specific language file, add it
         $projectLanguageDir = APPLICATION_PATH . '/languages/';
         if (file_exists($projectLanguageDir)) {

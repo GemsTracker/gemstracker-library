@@ -19,9 +19,12 @@ class EventRegistry
         //Get an array with database config paths
         GetDatabasePaths::NAME => GetDatabasePaths::class,
         // Add or change menu items after creation, but before project settings
-        MenuAdd::Name => MenuAdd::class,
+        MenuAdd::NAME => MenuAdd::class,
         // Set the correct directory for the current Controller
         SetFrontControllerDirectory::NAME => SetFrontControllerDirectory::class,
+
+        // Add translation files to the translation object
+        ZendTranslateEvent::NAME => ZendTranslateEvent::class,
 
         // Generic model create event marker, must be implemented per model to work
         'gems.model.create.*' => ModelCreateEvent::class,
