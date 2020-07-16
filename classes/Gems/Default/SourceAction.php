@@ -307,10 +307,15 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
 
         try {
             if ($source->checkSourceActive($this->currentUser->getUserId())) {
+                $message = $this->_('This installation is active.');
+                $status  = 'success';
                 $this->addMessage($this->_('This installation is active.'), 'success');
             } else {
-                $this->addMessage($this->_('Inactive installation.'), 'warning');
+                $message = $this->_('Inactive installation.');
+                $status  = 'warning';
             }
+            $this->accesslog->logChange($this->getRequest(), $message, $status);
+            $this->addMessage($message, $status);
         } catch (\Exception $e) {
             $this->addMessage($this->_('Installation error!'), 'danger');
             $this->addMessage($e->getMessage(), 'danger');
