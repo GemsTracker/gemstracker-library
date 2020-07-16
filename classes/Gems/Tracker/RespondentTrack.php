@@ -95,6 +95,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected $db;
 
     /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    protected $event;
+
+    /**
      *
      * @var \Gems_Loader
      */
@@ -1179,8 +1184,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
         $beforeFieldUpdateEvent = $trackEngine->getFieldBeforeUpdateEvent();
 
-        $output = $event->prepareFieldUpdate($fieldData, $this);
-
         $eventName = 'gems.track.before-field-update';
 
         if (! $beforeFieldUpdateEvent && !$this->event->hasListeners($eventName)) {
@@ -1213,11 +1216,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         $respondentTrackFieldEvent = new RespondentTrackFieldEvent($this, $this->currentUser->getUserId());
+        $respondentTrackFieldEvent->setFieldData($fieldData);
         $this->event->dispatch($respondentTrackFieldEvent, $eventName);
 
         unset($running[$this->_respTrackId]);
 
-        return $output;
+        return $respondentTrackFieldEvent->getChanged();
     }
 
     /**
