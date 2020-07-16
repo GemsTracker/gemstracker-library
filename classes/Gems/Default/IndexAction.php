@@ -475,7 +475,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             }
         }
 
-        if ($request->isPost() && $form->isValid($request->getPost())) {
+        if ($request->isPost() && $form->isValid($request->getPost(), false)) {
 
             if ($form instanceof \Gems_User_Form_ResetRequestForm) {
                 $user = $form->getUser();

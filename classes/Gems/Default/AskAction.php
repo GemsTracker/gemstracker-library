@@ -301,8 +301,8 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             'labelWidthFactor' => 0.8
             ));
 
-        if ($request->isPost() && $form->isValid($request->getParams())) {
-            $this->_forward('forward');
+        if ($request->isPost() && $form->isValid($request->getParams(), false)) {
+            $this->forward('forward');
             return;
         }
 
