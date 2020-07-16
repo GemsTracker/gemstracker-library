@@ -9,7 +9,9 @@
  * @license    New BSD License
  */
 
+use Gems\Event\Application\TokenEvent;
 use MUtil\Translate\TranslateableTrait;
+
 
 /**
  * Object class for checking and changing tokens.
@@ -107,6 +109,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    protected $event;
 
     /**
      * True when the token does exist.
@@ -1571,29 +1578,48 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function handleAfterCompletion()
     {
         $survey = $this->getSurvey();
-        $event  = $survey->getSurveyCompletedEvent();
+        $completedEvent = $survey->getSurveyCompletedEvent();
 
-        if (!$event) {
+        $eventName = 'gems.survey.completed';
+
+        if (! $completedEvent && !$this->event->hasListeners($eventName)) {
             return;
         }
 
+        if ($completedEvent) {
+            $eventFunction = function (TokenEvent $event) use ($completedEvent) {
+                $token = $event->getToken();
+                try {
+                    $changed = $completedEvent->processTokenData($token);
+                    if (is_array($changed)) {
+                        $event->addChanged($changed);
+                    }
+                } catch (\Exception $e) {
+                    throw new \Exception('Event: ' . $completedEvent->getEventName() . '. ' . $e->getMessage());
+                }
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
+        }
+
+        $tokenEvent = new TokenEvent($this);
         try {
-            $changed = $event->processTokenData($this);
-            if ($changed && is_array($changed)) {
-
-                $this->setRawAnswers($changed);
-
-                return $changed;
-            }
+            $this->event->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
             $this->logger->log(sprintf(
-                    "After completion event error for token %s on survey '%s' using event '%s': %s",
-                    $this->_tokenId,
-                    $this->getSurveyName(),
-                    $event->getEventName(),
-                    $e->getMessage()
-                    ), \Zend_Log::ERR);
+                "After completion event error for token %s on survey '%s': %s",
+                $this->_tokenId,
+                $this->getSurveyName(),
+                $e->getMessage()
+            ), \Zend_Log::ERR);
         }
+
+        $changed = $tokenEvent->getChanged();
+        if ($changed && is_array($changed)) {
+
+            $this->setRawAnswers($changed);
+        }
+
+        return $changed;
     }
 
     /**
@@ -1606,33 +1632,53 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function handleBeforeAnswering()
     {
         $survey = $this->getSurvey();
-        $event  = $survey->getSurveyBeforeAnsweringEvent();
+        $beforeAnswerEvent  = $survey->getSurveyBeforeAnsweringEvent();
 
-        if (!$event) {
+        $eventName = 'gems.survey.before-answering';
+
+        if (! $beforeAnswerEvent && !$this->event->hasListeners($eventName)) {
             return;
         }
 
-        try {
-            $changed = $event->processTokenInsertion($this);
-            if ($changed && is_array($changed)) {
-
-                $this->setRawAnswers($changed);
-
-                if (\Gems_Tracker::$verbose) {
-                    \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+        if ($beforeAnswerEvent) {
+            $eventFunction = function (TokenEvent $event) use ($beforeAnswerEvent) {
+                $token = $event->getToken();
+                try {
+                    $changed = $beforeAnswerEvent->processTokenInsertion($token);
+                    if (is_array($changed)) {
+                        $event->addChanged($changed);
+                    }
+                } catch (\Exception $e) {
+                    throw new \Exception('Event: ' . $beforeAnswerEvent->getEventName() . '. ' . $e->getMessage());
                 }
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
+        }
 
-                return $changed;
-            }
+        $tokenEvent = new TokenEvent($this);
+
+        try {
+            $this->event->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
             $this->logger->log(sprintf(
-                    "Before answering event error for token %s on survey '%s' using event '%s': %s",
-                    $this->_tokenId,
-                    $this->getSurveyName(),
-                    $event->getEventName(),
-                    $e->getMessage()
-                    ), \Zend_Log::ERR);
+                "Before answering before event error for token %s on survey '%s': %s",
+                $this->_tokenId,
+                $this->getSurveyName(),
+                $e->getMessage()
+            ), \Zend_Log::ERR);
         }
+
+        $changed = $tokenEvent->getChanged();
+        if ($changed && is_array($changed)) {
+
+            $this->setRawAnswers($changed);
+
+            if (\Gems_Tracker::$verbose) {
+                \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+            }
+        }
+
+        return $changed;
     }
 
     /**
@@ -1776,7 +1822,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $filler = $this->getRespondent();
         }
         $mailable = !empty($email) && $this->getRespondentTrack()->isMailable() && $filler->isMailable();
-        
+
         return $mailable;
     }
 

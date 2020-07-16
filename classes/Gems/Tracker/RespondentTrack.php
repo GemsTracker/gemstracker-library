@@ -10,6 +10,11 @@
  */
 
 use \Gems\Tracker\Model\FieldMaintenanceModel;
+use \Gems\Event\Application\TokenEvent;
+use \Gems\Event\Application\RespondentTrackEvent;
+use \Gems\Event\Application\RespondentTrackFieldEvent;
+
+
 
 /**
  * Object representing a track assignment to a respondent.
@@ -88,6 +93,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * @var \Gems\Event\EventDispatcher
+     */
+    protected $event;
 
     /**
      *
@@ -1172,25 +1182,46 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             return array();
         }
 
-        $event = $trackEngine->getFieldBeforeUpdateEvent();
+        $beforeFieldUpdateEvent = $trackEngine->getFieldBeforeUpdateEvent();
 
-        if (! $event) {
-            return array();
+        $eventName = 'gems.track.before-field-update';
+
+        if (! $beforeFieldUpdateEvent && !$this->event->hasListeners($eventName)) {
+            return [];
         }
 
         if (isset($running[$this->_respTrackId])) {
             throw new \Gems_Exception(sprintf(
-                    "Nested calls to '%s' track before field update event are not allowed.",
-                    $trackEngine->getName()
-                    ));
+                "Nested calls to '%s' track before field update event are not allowed.",
+                $trackEngine->getName()
+            ));
         }
         $running[$this->_respTrackId] = true;
 
-        $output = $event->prepareFieldUpdate($fieldData, $this);
+        if ($beforeFieldUpdateEvent) {
+            $eventFunction = function (RespondentTrackFieldEvent $event) use ($beforeFieldUpdateEvent) {
+                $respondentTrack = $event->getRespondentTrack();
+                $fieldData = $event->getFieldData();
+
+                try {
+                    $changed = $beforeFieldUpdateEvent->prepareFieldUpdate($fieldData, $respondentTrack);
+                    $event->addChanged($changed);
+                    $fieldData = $changed + $fieldData;
+                    $event->setFieldData($fieldData);
+                } catch (\Exception $e) {
+                    throw new \Exception('Event: ' . $beforeFieldUpdateEvent->getEventName() . '. ' . $e->getMessage());
+                }
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
+        }
+
+        $respondentTrackFieldEvent = new RespondentTrackFieldEvent($this, $this->currentUser->getUserId());
+        $respondentTrackFieldEvent->setFieldData($fieldData);
+        $this->event->dispatch($respondentTrackFieldEvent, $eventName);
 
         unset($running[$this->_respTrackId]);
 
-        return $output;
+        return $respondentTrackFieldEvent->getChanged();
     }
 
     /**
@@ -1209,9 +1240,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             return;
         }
 
-        $event = $trackEngine->getFieldUpdateEvent();
+        $fieldUpdateEvent = $trackEngine->getFieldUpdateEvent();
 
-        if (! $event) {
+        $eventName = 'gems.track.field-update';
+
+        if (! $fieldUpdateEvent && !$this->event->hasListeners($eventName)) {
             return;
         }
 
@@ -1223,7 +1256,22 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
         $running[$this->_respTrackId] = true;
 
-        $event->processFieldUpdate($this, $this->currentUser->getUserId());
+        if ($fieldUpdateEvent) {
+            $eventFunction = function (RespondentTrackEvent $event) use ($fieldUpdateEvent) {
+                $respondentTrack = $event->getRespondentTrack();
+                $userId = $event->getUserId();
+
+                try {
+                    $fieldUpdateEvent->processFieldUpdate($respondentTrack, $userId);
+                } catch (\Exception $e) {
+                    throw new \Exception('Event: ' . $fieldUpdateEvent->getEventName() . '. ' . $e->getMessage());
+                }
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
+        }
+
+        $respondentTrackEvent = new RespondentTrackEvent($this, $this->currentUser->getUserId());
+        $this->event->dispatch($respondentTrackEvent, $eventName);
 
         unset($running[$this->_respTrackId]);
     }
@@ -1251,9 +1299,35 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_checkStart = $token;
         }
 
+        $eventName = 'gems.round.changed';
+
         // Process any events
-        if ($event = $this->getTrackEngine()->getRoundChangedEvent($token->getRoundId())) {
-            return $event->processChangedRound($token, $this, $userId);
+        if ($roundChangedEvent = $this->getTrackEngine()->getRoundChangedEvent($token->getRoundId())) {
+            $eventFunction = function (TokenEvent $event) use ($roundChangedEvent, $userId) {
+                $token = $event->getToken();
+                $respondentTrack = $token->getRespondentTrack();
+                try {
+                    $changed = $roundChangedEvent->processChangedRound($token, $respondentTrack, $userId);
+                    if (is_array($changed)) {
+                        $event->addChanged($changed);
+                    }
+                } catch (\Exception $e) {
+                    throw new \Exception('Event: ' . $roundChangedEvent->getEventName() . '. ' . $e->getMessage());
+                }
+            };
+            $this->event->addListener($eventName, $eventFunction, 100);
+        }
+
+        $tokenEvent = new TokenEvent($token);
+        try {
+            $this->event->dispatch($tokenEvent, $eventName);
+        } catch (\Exception $e) {
+            $this->logger->log(sprintf(
+                "Round changed after event error for token %s on survey '%s': %s",
+                $token->getTokenId(),
+                $token->getSurveyName(),
+                $e->getMessage()
+            ), \Zend_Log::ERR);
         }
 
         return 0;
