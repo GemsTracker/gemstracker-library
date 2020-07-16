@@ -53,6 +53,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - During patient edit the organization can be changed (#566)
 - Expired surveys in LimeSurvey should not be imported (#573)
 - Form errors are sometimes not translated (#532)
+- Incorrect translation item in automatic mailjob configuration #536
 - It is impossible not to show the parent 'Cancel' button in respondent show (#552)
 - Mail filter 'before expiration' is not working (#543)
 - Mailing to fall-back email does not work (#522)
