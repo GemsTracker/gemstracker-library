@@ -145,14 +145,14 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         $currentUserId                = $this->loader->getCurrentUser()->getUserId();
         $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
 
-        $logData['grco_id_to']        = $this->respondent->getId();
+        $logData['grco_id_to']        = $this->respondent->getId() ?: 0;
 
         if (! is_int($this->by)) {
             $this->by = $currentUserId;
         }
 
         $logData['grco_id_by']        = $this->by;
-        $logData['grco_organization'] = $this->organizationId;
+        $logData['grco_organization'] = $this->organizationId ?: 0;
 
         $logData['grco_method']       = 'email';
         $logData['grco_topic']        = substr($this->applyFields($this->subject), 0, 120);

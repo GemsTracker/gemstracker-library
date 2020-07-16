@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Automatically created directories get no permissions on linux (#546)
 - Clearing parent role does not work in role editor (#565)
 - During patient edit the organization can be changed (#566)
+- Error when sending mail from template editor (#279)
 - Expired surveys in LimeSurvey should not be imported (#573)
 - Form errors are sometimes not translated (#532)
 - Incorrect translation item in automatic mailjob configuration #536
