@@ -386,7 +386,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     }
     
     protected function initTracks()
-    {66666
+    {
         $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
         $patientId      = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
         $respTracks     = $this->tracker->getRespondentTracks(
