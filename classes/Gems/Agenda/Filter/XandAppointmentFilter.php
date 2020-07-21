@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\EpisodeOfCare;
+
 /**
  *
  * @package    Gems
