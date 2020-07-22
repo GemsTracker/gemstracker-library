@@ -167,6 +167,8 @@ class ConditionModel extends \Gems_Model_JoinModel
 
         $this->set('gcon_type', 'default', Conditions::ROUND_CONDITION);
 
+        $this->set('gcon_name', 'validators[unique]', $this->createUniqueValidator(['gcon_name', 'gcon_type'], ['gcon_id']));
+
         // gcon_id is not needed for some validators
         $this->set('gcon_id',            'elementClass', 'Hidden');
 

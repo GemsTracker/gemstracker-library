@@ -182,14 +182,19 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $this->initTranslateable();
     }
 
-    public function getConditionsFor($conditionType)
+    /**
+     * @param string $conditionType A condition constant
+     * @param bool $activeOnly
+     * @return array condId => Name
+     */
+    public function getConditionsFor($conditionType, $activeOnly = true)
     {
         $model = $this->loader->getModels()->getConditionModel();
 
-        $filter = [
-            'gcon_type' => $conditionType,
-            'gcon_active' => 1
-            ];
+        $filter['gcon_type'] = $conditionType;
+        if ($activeOnly) {
+            $filter['gcon_active'] = 1;
+        }
 
         $model->trackUsage();
         $model->get('gcon_id');
