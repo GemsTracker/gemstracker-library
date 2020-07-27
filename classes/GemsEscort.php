@@ -832,22 +832,15 @@ class GemsEscort extends \MUtil_Application_Escort
         }
 
         // Add other languages through Event (e.g. Modules)
-        $event = new \Gems\Event\Application\ZendTranslateEvent($translate, $language);
+        $event = new \Gems\Event\Application\ZendTranslateEvent($translate, $language, $options);
         $this->event->dispatch($event, $event::NAME);
-        $translate = $event->getTranslate();
 
         //Now if we have a project specific language file, add it
         $projectLanguageDir = APPLICATION_PATH . '/languages/';
         if (file_exists($projectLanguageDir)) {
-            $options['content']        = $projectLanguageDir;
-            $options['disableNotices'] = true;
-            $projectTranslations       = new \Zend_Translate($options);
-            //But only when it has the requested language
-            if ($projectTranslations->isAvailable($language)) {
-                $translate->addTranslation(array('content' => $projectTranslations));
-            }
-            unset($projectTranslations);  //Save some memory
+            $event->addTranslationByDirectory($projectLanguageDir);
         }
+        $translate = $event->getTranslate();
 
         $translate->setLocale($language);
         \Zend_Registry::set('Zend_Translate', $translate);

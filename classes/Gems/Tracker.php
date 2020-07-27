@@ -158,7 +158,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $events = $container->loader->getEvents();
 
         // Make sure the tracker is known
-        $this->addRegistryContainer(array('tracker' => $this, 'events' => $events));
+        $this->addRegistryContainer(array('tracker' => $this, 'events' => $events), 'tracker');
     }
 
     /**
