@@ -619,7 +619,13 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _initLoader()
     {
+        $this->bootstrap(array('event'));
+
         $loader = $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+
+        // Add other languages through Event (e.g. Modules)
+        $event = new \Gems\Event\Application\LoaderInitEvent($loader, $this->getContainer());
+        $this->event->dispatch($event, $event::NAME);
 
         \MUtil_Model::setSource($loader, true);
 
@@ -835,7 +841,7 @@ class GemsEscort extends \MUtil_Application_Escort
         $event = new \Gems\Event\Application\ZendTranslateEvent($translate, $language, $options);
         $this->event->dispatch($event, $event::NAME);
 
-        //Now if we have a project specific language file, add it
+        //Now if we have a project specific language file, add it to the event
         $projectLanguageDir = APPLICATION_PATH . '/languages/';
         if (file_exists($projectLanguageDir)) {
             $event->addTranslationByDirectory($projectLanguageDir);

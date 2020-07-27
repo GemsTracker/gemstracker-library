@@ -18,8 +18,13 @@ class EventRegistry
     public static $events = [
         //Get an array with database config paths
         GetDatabasePaths::NAME => GetDatabasePaths::class,
+
+        // Add a source to the loader
+        LoaderInitEvent::NAME => LoaderInitEvent::class,
+
         // Add or change menu items after creation, but before project settings
         MenuAdd::NAME => MenuAdd::class,
+
         // Set the correct directory for the current Controller
         SetFrontControllerDirectory::NAME => SetFrontControllerDirectory::class,
 
