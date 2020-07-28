@@ -47,6 +47,7 @@ class TrackFieldExportTask extends TrackExportAbstract
         if ($data) {
             unset($data['sub'], $data['gtf_id_field'], $data['gtf_id_track'],
                     $data['gtf_filter_id'], // TODO: Export track filters
+                    $data['gtf_field_value_keys'],
                     $data['gtf_changed'], $data['gtf_changed_by'], $data['gtf_created'], $data['gtf_created_by'],
                     $data['calculation'], $data['htmlUse'], $data['htmlCalc']);
 

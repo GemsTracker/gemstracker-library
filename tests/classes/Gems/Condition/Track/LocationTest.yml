@@ -1,0 +1,151 @@
+gems__tracks:
+  -
+    gtr_id_track: '1'
+    gtr_track_class: AnyStepEngine
+    gtr_track_name: 'Test code field'
+    gtr_code: 'test'
+    gtr_active: 1
+    gtr_date_start: '2000-01-01 00:00:00'
+    gtr_changed_by: '1'
+    gtr_created: '2012-09-07'
+    gtr_created_by: '1'
+  -
+    gtr_id_track: '2'
+    gtr_track_class: AnyStepEngine
+    gtr_track_name: 'Test no code filed'
+    gtr_code: 'test'
+    gtr_active: 1
+    gtr_date_start: '2000-01-01 00:00:00'
+    gtr_changed_by: '1'
+    gtr_created: '2012-09-07'
+    gtr_created_by: '1'
+gems__track_fields:
+  -
+    gtf_id_field: '1'
+    gtf_id_track: '1'
+    gtf_field_name: Name
+    gtf_field_code: code
+    gtf_field_type: location
+    gtf_field_default: null
+    gtf_to_track_info: '0'
+    gtf_changed_by: '1'
+    gtf_created: '2012-09-07'
+    gtf_created_by: '1'
+  -
+    gtf_id_field: '2'
+    gtf_id_track: '2'
+    gtf_field_name: Name
+    gtf_field_code:
+    gtf_field_type: location
+    gtf_field_default: null
+    gtf_to_track_info: '0'
+    gtf_changed_by: '1'
+    gtf_created: '2012-09-07'
+    gtf_created_by: '1'
+gems__reception_codes:
+  -
+    grc_id_reception_code: OK
+    grc_description: 'Ok code'
+    grc_success: '1'
+    grc_for_surveys: '1'
+    grc_redo_survey: '0'
+    grc_for_tracks: '1'
+    grc_for_respondents: '1'
+    grc_overwrite_answers: '0'
+    grc_active: '1'
+    grc_changed_by: '1'
+    grc_created: '2012-09-07'
+    grc_created_by: '1'
+  -
+    grc_id_reception_code: skip
+    grc_description: 'skip code'
+    grc_success: '0'
+    grc_for_surveys: '1'
+    grc_redo_survey: '0'
+    grc_for_tracks: '0'
+    grc_for_respondents: '0'
+    grc_overwrite_answers: '0'
+    grc_active: '1'
+    grc_changed_by: '1'
+    grc_created: '2012-09-07'
+    grc_created_by: '1'
+gems__consents:
+  -
+    gco_description: 'consent given'
+    gco_changed_by: '1'
+    gco_created: '2012-09-07'
+    gco_created_by: '1'
+gems__groups:
+  -
+    ggp_id_group: '222'
+    ggp_name: TestGroup
+    ggp_description: TestDescription
+    ggp_role: '111'
+    ggp_may_set_groups: ',110,'
+    ggp_default_group: '110'
+    ggp_group_active: '1'
+    ggp_staff_members: '1'
+    ggp_respondent_members: '0'
+    ggp_changed: '2017-08-09'
+    ggp_changed_by: '1'
+    ggp_created: '2017-08-09'
+    ggp_created_by: '1'
+gems__organizations:
+  -
+    gor_id_organization: '1'
+    gor_name: testorg
+    gor_changed_by: '1'
+    gor_created_by: '1'
+    gor_accessible_by: '::'
+    gor_created: '2017-08-09'
+gems__respondent2track:
+  -
+    gr2t_track_info: ''
+    gr2t_id_respondent_track: '1'
+    gr2t_id_track: '1'
+    gr2t_id_user: '1234'
+    gr2t_id_organization: '1'
+    gr2t_changed_by: '1'
+    gr2t_created: '2012-09-07'
+    gr2t_created_by: '1'
+  -
+    gr2t_track_info: ''
+    gr2t_id_respondent_track: '2'
+    gr2t_id_track: '2'
+    gr2t_id_user: '1234'
+    gr2t_id_organization: '1'
+    gr2t_changed_by: '1'
+    gr2t_created: '2012-09-07'
+    gr2t_created_by: '1'
+gems__respondent2track2field:
+  -
+    gr2t2f_id_respondent_track: '1'
+    gr2t2f_id_field: '1'
+    gr2t2f_value: '1'
+    gr2t2f_changed_by: '1'
+    gr2t2f_created: '2012-09-07'
+    gr2t2f_created_by: '1'
+  -
+    gr2t2f_id_respondent_track: '2'
+    gr2t2f_id_field: '2'
+    gr2t2f_value: '1'
+    gr2t2f_changed_by: '1'
+    gr2t2f_created: '2012-09-07'
+    gr2t2f_created_by: '1'
+gems__respondents:
+  -
+    grs_id_user: '1234'
+    grs_changed_by: '1'
+    grs_created: '2012-09-07'
+    grs_created_by: '1'
+gems__respondent2org:
+  -
+    gr2o_id_user: '1234'
+    gr2o_id_organization: '1'
+    gr2o_consent: ok
+    gr2o_patient_nr: abc
+    gr2o_opened_by: '1'
+    gr2o_changed: '2012-09-07'
+    gr2o_changed_by: '1'
+    gr2o_created: '2012-09-07'
+    gr2o_created_by: '1'

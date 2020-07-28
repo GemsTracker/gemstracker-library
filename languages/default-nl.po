@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 2.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -161,7 +161,7 @@ msgstr "Procedure"
 #: classes/Gems/Model/OrganizationModel.php:82
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:491
 msgid "Location"
-msgstr "Locatie"
+msgstr "Vestiging"
 
 #: classes/Gems/Agenda.php:755
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:87
@@ -1033,7 +1033,7 @@ msgstr ""
 #: classes/Gems/Condition/Track/LocationCondition.php:83
 #, php-format
 msgid "Location %d"
-msgstr "Locatie %d"
+msgstr "Vestiging %d"
 
 #: classes/Gems/Condition/Track/LocationCondition.php:90
 msgid "Track field code"
@@ -3013,7 +3013,7 @@ msgstr ""
 
 #: classes/Gems/Default/LocationAction.php:146
 msgid "Location code"
-msgstr "Locatiecode"
+msgstr "Vestigingscode"
 
 #: classes/Gems/Default/LocationAction.php:148
 msgid "Optional code name to link the location to program code."

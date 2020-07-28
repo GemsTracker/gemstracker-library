@@ -7,25 +7,7 @@ class SpssExportTest extends \Gems_Test_DbTestAbstract
 
     protected function setUp()
     {
-        // \Zend_Application: loads the autoloader
-        require_once 'Zend/Application.php';
-
-        // Create application, bootstrap, and run
-        $application = new \Zend_Application(
-                APPLICATION_ENV, GEMS_ROOT_DIR . '/configs/application.example.ini'
-        );
-
-        $this->bootstrap = $application;
-
         parent::setUp();
-
-        $this->bootstrap->bootstrap('db');
-        $this->bootstrap->getBootstrap()->getContainer()->db = $this->db;
-
-        $this->bootstrap->bootstrap();
-
-        \Zend_Registry::set('db', $this->db);
-        \Zend_Db_Table::setDefaultAdapter($this->db);
 
         $sourceSurveyId = 1;
         $language       = 'en';

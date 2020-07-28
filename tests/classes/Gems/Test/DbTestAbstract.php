@@ -29,6 +29,11 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
     protected $_connectionMock;
 
     /**
+     * @var \Zend_Application
+     */
+    protected $bootstrap;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db = null;
@@ -37,33 +42,6 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
      * @var \Gems_Loader
      */
     protected $loader = null;
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->db = $this->getConnection()->getConnection();
-        $connection = $this->getConnection()->getConnection()->getConnection();
-
-        // Now add some utility functions that sqlite does not have. Copied from
-        // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
-        /* @var $connection \PDO */
-        $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
-        $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
-
-        \Zend_Registry::set('db', $this->db);
-        \Zend_Db_Table::setDefaultAdapter($this->db);
-
-        $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
-        $sa = $settings->toArray();
-        $this->loader  = new \Gems_Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
-
-        \Zend_Registry::set('loader', $this->loader);
-    }
 
     /**
      * Returns the test database connection.
@@ -81,7 +59,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
                     $statements = explode(';', $sql);
                     foreach($statements as $sql) {
                         if (!strpos(strtoupper($sql), 'INSERT INTO') && !strpos(strtoupper($sql), 'INSERT IGNORE')
-                                && !strpos(strtoupper($sql), 'UPDATE ')) {
+                            && !strpos(strtoupper($sql), 'UPDATE ')) {
                             $stmt = $connection->query($sql);
                         }
                     }
@@ -102,6 +80,93 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
 
         // For successful testing of the complete tokens class, we need more tables
         return array($path . 'sqllite/create-lite.sql');
+    }
+
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp()
+    {
+        $this->setUpApplication();
+
+        parent::setUp();
+
+        $this->db   = $this->getConnection()->getConnection();
+        $connection = $this->db->getConnection();
+
+        // Now add some utility functions that sqlite does not have. Copied from
+        // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
+        /* @var $connection \PDO */
+        $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
+        $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
+
+        $container = $this->bootstrap->getBootstrap()->getContainer();
+
+        // Pre init db, then set this connection to SQLite db, as well as the registry
+        $this->bootstrap->bootstrap('db');
+        $container->db = $this->db;
+        \Zend_Registry::set('db', $this->db);
+        \Zend_Db_Table::setDefaultAdapter($this->db);
+
+        // Run bootstrap
+        $this->bootstrap->bootstrap();
+
+        // Removing caching as this screws up tests
+        $this->bootstrap->bootstrap('cache');
+        $this->bootstrap->getBootstrap()->getContainer()->cache = \Zend_Cache::factory(
+            'Core',
+            'Static',
+            ['caching' => false],
+            ['disable_caching' => true]
+        );
+
+        $this->loader = $container->loader;
+
+        // Now set some defaults
+        $dateFormOptions['dateFormat']   = 'dd-MM-yyyy';
+        $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
+        $timeFormOptions['dateFormat']   = 'HH:mm';
+
+        \MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
+                                                            'date'     => $dateFormOptions,
+                                                            'datetime' => $datetimeFormOptions,
+                                                            'time'     => $timeFormOptions,
+                                                        ));
+    }
+
+    protected function setUpApplication()
+    {
+        // \Zend_Application: loads the autoloader
+        require_once 'Zend/Application.php';
+
+        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
+
+        if (!file_exists($iniFile)) {
+            $iniFile = APPLICATION_PATH . '/configs/application.ini';
+        }
+
+        // Use a database, can be empty but this speeds up testing a lot
+        $config = new \Zend_Config_Ini($iniFile, 'testing', true);
+        $config->merge(new \Zend_Config([
+                                            'resources' => [
+                                                'db' => [
+                                                    'adapter' => 'Pdo_Sqlite',
+                                                    'params'  => [
+                                                        'dbname'   => ':memory:',
+                                                        'username' => 'test'
+                                                    ]
+                                                ]
+                                            ]
+                                        ]));
+
+        // Add our test loader dirs
+        $dirs               = $config->loaderDirs->toArray();
+        $config->loaderDirs = [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
+            $dirs;
+
+        // Create application, bootstrap, and run
+        $this->bootstrap  = new \Zend_Application(APPLICATION_ENV, $config);
     }
 
     /**

@@ -13,14 +13,8 @@ namespace Gems\Export;
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class TrackExportTest extends \Gems_Test_DbTestAbstract {
-    
-    /**
-     *
-     * @var \Zend_Application
-     */
-    protected $application;
-    
+class TrackExportTest extends \Gems_Test_DbTestAbstract
+{
     protected function fixUser()
     {
         // Fix user
@@ -42,7 +36,7 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
     
     /**
      * For now mostly copied from ImportTrackSnippetAbstract
-     * @param type $filename
+     * @param string $filename
      * @return type
      */
     protected function loadImportData($filename)
@@ -128,43 +122,9 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract {
         $translate = new \MUtil_Translate_Adapter_Potemkin();
         \Zend_Registry::getInstance()->set('translate', $translate);
         
-        $cache      = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
-        \Zend_Registry::getInstance()->set('cache', $cache);
-        
         \Zend_Controller_Front::getInstance()->setRequest(new \Zend_Controller_Request_HttpTestCase());
     }    
 
-    protected function setUpApplication()
-    {
-        $iniFile = APPLICATION_PATH . '/configs/application.example.ini';
-
-        if (!file_exists($iniFile)) {
-            $iniFile = APPLICATION_PATH . '/configs/application.ini';
-        }
-
-        // Use a database, can be empty but this speeds up testing a lot
-        $config = new \Zend_Config_Ini($iniFile, 'testing', true);
-        $config->merge(new \Zend_Config([
-            'resources' => [
-                'db' => [
-                    'adapter' => 'Pdo_Sqlite',
-                    'params'  => [
-                        'dbname'   => ':memory:',
-                        'username' => 'test'
-                    ]
-                ]
-            ]
-        ]));
-
-        // Add our test loader dirs
-        $dirs               = $config->loaderDirs->toArray();
-        $config->loaderDirs = [GEMS_PROJECT_NAME_UC => GEMS_TEST_DIR . "/classes/" . GEMS_PROJECT_NAME_UC] +
-                $dirs;
-
-        // Create application, bootstrap, and run
-        $this->application = new \Zend_Application(APPLICATION_ENV, $config);
-    }
-    
     /**
      * @see \Gems\Tracker\Snippets\ExportTrackSnippetAbstract::getExportBatch()
      */
