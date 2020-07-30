@@ -2256,7 +2256,13 @@ class GemsEscort extends \MUtil_Application_Escort
 
             // fake POST
             if ($staticSession->previousRequestMode == 'POST') {
-                $this->addMessage($this->_('Take note: your session has expired, your inputs were not saved. Please check the input data and try again'));
+                if (isset($staticSession->previousRequestMessage)) {
+                    $this->addMessage($staticSession->previousRequestMessage);
+                } else {
+                    $this->addMessage($this->_(
+                        'Take note: your session has expired, your inputs were not saved. Please check the input data and try again'
+                    ));
+                }
                 $_POST = $previousRequestParameters;
                 $_SERVER['REQUEST_METHOD'] = $staticSession->previousRequestMode;
                 $staticSession->previousRequestMode = null;

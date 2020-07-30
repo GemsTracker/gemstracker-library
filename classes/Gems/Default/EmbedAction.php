@@ -27,6 +27,13 @@ use Gems\User\Embed\RedirectInterface;
 class Gems_Default_EmbedAction extends \Gems_Controller_Action
 {
     /**
+     * Embed specific log
+     * 
+     * @var \Gems_Log
+     */
+    protected $activityLog;
+    
+    /**
      *
      * @var \Gems_User_Organization
      */
@@ -106,7 +113,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     }
 
     /**
-     * Example Hix Login
+     * Example Hix Login example
      * /
     public function hixLogin()
     {
@@ -119,6 +126,31 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
                 $request->getParam('pid'),
                 array_keys($this->util->getDbLookup()->getOrganizationsByCode('hix'))
                 );
+    }
+
+    /**
+     * @param  string   $message   Message to log
+     * @param  integer  $priority  Priority of message
+     */
+    public function logActivity($message, $priority)
+    {
+        try {
+            if (! $this->activityLog) {
+                $this->activityLog = new \Zend_Log();
+
+                $logPath = GEMS_ROOT_DIR . '/var/logs';
+                $writer = new \Zend_Log_Writer_Stream($logPath . '/embed-login.log');
+                if ('production' == APPLICATION_ENV) {
+                    $writer->addFilter(new \Zend_Log_Filter_Priority(\Zend_Log::NOTICE));
+                }
+                $this->activityLog->addWriter($writer);
+            }
+
+            $this->activityLog->log($message, $priority);
+        } catch(\Exception $e) {
+            error_log($e->getMessage());
+            error_log($logInfo);
+        }
     }
 
     /**
@@ -147,6 +179,10 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      */
     protected function loginEmbedded($epdUserLogin, $secretKey, $deferredLogin, $patientId, $organizations = null)
     {
+        $this->logActivity(
+            "Login user: $epdUserLogin, end user: $deferredLogin, patient: $patientId, key: $secretKey",
+            \Zend_log::NOTICE
+        );
         $embeddedUser = $this->getUser($epdUserLogin, $organizations);
 
         if ($this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
@@ -160,6 +196,10 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
                 return;
             }
         }
+        $this->logActivity(
+            "Failed EPD authentication: login user: $epdUserLogin, end user: $deferredLogin, patient: $patientId, key: $secretKey",
+            \Zend_log::WARN
+        );
 
         throw new \Gems_Exception($this->_("Unable to authenticate"));
     }
@@ -195,6 +235,10 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             ];
         }
 
+        $this->logActivity(
+            sprintf("Rerouting EPD Login to %s", implode('/', $url)),
+            \Zend_log::DEBUG
+        );
         $this->_helper->redirector->gotoRoute($url, null, true);
     }
 }

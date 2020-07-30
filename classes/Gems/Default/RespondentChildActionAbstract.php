@@ -63,6 +63,16 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
     protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'AutosearchInRespondentSnippet');
 
     /**
+     * Retrieve the error message when a respondent does not exist
+     *
+     * @return string Use %s to place respondentnumber
+     */
+    public function getMissingRespondentMessage()
+    {
+        return $this->_('Respondent %s is not participating at the moment.');
+    }
+    
+    /**
      * Get the respondent object
      *
      * @return \Gems_Tracker_Respondent
@@ -76,7 +86,7 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
             $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
             if ((! $this->_respondent->exists) && $patientNumber && $organizationId) {
-                throw new \Gems_Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
+                throw new \Gems_Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber));
             }
 
             $this->_respondent->applyToMenuSource($this->menu->getParameterSource());

@@ -76,18 +76,35 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      * Authenticate embedded user
      *
      * @param \Gems_User_User $user
-     * @param $secretKey
+     * @param string $secretKey
      * @return bool
      */
     public function authenticate(\Gems_User_User $user, $secretKey)
     {
+        return in_array(
+            $this->checkKey($secretKey), 
+            $this->getValidKeys($user)
+        );
+    }
+
+    /**
+     * @param string $secretKey
+     * @return string
+     */
+    protected function checkKey($secretKey)
+    {
+        if ($this->encryptionBase64) {
+            // Sometimes the plus sign is translated to a space.
+            // Using base64 means there should not be a space in the key 
+            $secretKey = strtr($secretKey, ' ', '+');
+        }
         if ($this->encryptionUppercase) {
             $secretKey = strtolower($secretKey);
         }
-
-        return in_array($secretKey, $this->getValidKeys($user));
+        
+        return $secretKey;
     }
-
+    
     /**
      *
      * @param string $key The input type

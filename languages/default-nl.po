@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 17:05+0200\n"
+"POT-Creation-Date: 2020-07-30 17:45+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -186,6 +186,7 @@ msgstr " (%s)"
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:56
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:66
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
+#: classes/Gems/Condition/Track/LocationCondition.php:172
 #: classes/Gems/Model/SurveyMaintenanceModel.php:203
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:916
 #: classes/Gems/Tracker/Model/TrackModel.php:148
@@ -409,7 +410,7 @@ msgid "Not used in tracks"
 msgstr "Niet gebruikt in trajecten"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:427
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:455
 msgid ": "
 msgstr ": "
 
@@ -1040,8 +1041,29 @@ msgid "Track field code"
 msgstr "Traject veld code"
 
 #: classes/Gems/Condition/Track/LocationCondition.php:91
-msgid "Optional field name"
+msgid "Optional field code"
 msgstr "Optionele veldcode"
+
+#: classes/Gems/Condition/Track/LocationCondition.php:155
+#, php-format
+msgid "A location field with code %s set to: "
+msgstr "Een vestigingsveld met veldcode %s voor: "
+
+#: classes/Gems/Condition/Track/LocationCondition.php:158
+msgid "A location field set to: "
+msgstr "Een vestigingsveld voor: "
+
+#: classes/Gems/Condition/Track/LocationCondition.php:169
+#: classes/Gems/Model/SurveyMaintenanceModel.php:348
+#: classes/Gems/Model/SurveyMaintenanceModel.php:352
+#: classes/Gems/Model/SurveyMaintenanceModel.php:356
+#: classes/Gems/Model/SurveyMaintenanceModel.php:360
+#: classes/Gems/Model/SurveyMaintenanceModel.php:382
+#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:631
+#: classes/Gems/Util/Translated.php:117
+msgid "n/a"
+msgstr "n.v.t."
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:40
 msgid ""
@@ -1072,7 +1094,7 @@ msgstr "Organisatie is %s"
 msgid "Organization one of %s"
 msgstr "Organisatie is één van %s"
 
-#: classes/Gems/Conditions.php:212
+#: classes/Gems/Conditions.php:217
 #: classes/Gems/Default/ChartconfigAction.php:37
 #: classes/Gems/Default/CommJobAction.php:276
 #: classes/Gems/Default/SummaryAction.php:88
@@ -1089,7 +1111,7 @@ msgstr "Organisatie is één van %s"
 msgid "Round"
 msgstr "Ronde"
 
-#: classes/Gems/Conditions.php:213
+#: classes/Gems/Conditions.php:218
 #: classes/Gems/Default/ChartconfigAction.php:36
 #: classes/Gems/Default/CommJobAction.php:269
 #: classes/Gems/Default/ProjectTracksAction.php:99
@@ -1153,7 +1175,7 @@ msgstr "Ok"
 #: classes/Gems/Default/DatabaseAction.php:155
 #: classes/Gems/Default/DatabaseAction.php:623
 #: classes/Gems/Default/RespondentNewAction.php:846
-#: classes/Gems/Default/SourceAction.php:348
+#: classes/Gems/Default/SourceAction.php:353
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:497
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
@@ -2604,7 +2626,7 @@ msgstr "Exporteer data"
 msgid "Database backup completed. File can be found in %s"
 msgstr "Database backup afgerond. Het bestand staat in %s"
 
-#: classes/Gems/Default/EmbedAction.php:164
+#: classes/Gems/Default/EmbedAction.php:204
 msgid "Unable to authenticate"
 msgstr "Authenticatie mislukt"
 
@@ -2744,11 +2766,11 @@ msgstr "Bestanden die klaarstaan om te importeren"
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/StaffAction.php:196
 #: classes/Gems/Default/StaffAction.php:210
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2522
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2527
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2524
+#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2529
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige groep is: %s."
@@ -3745,12 +3767,10 @@ msgid_plural "reception codes"
 msgstr[0] "ontvangstcode"
 msgstr[1] "ontvangstcodes"
 
-#: classes/Gems/Default/RespondentChildActionAbstract.php:79
-#: classes/Gems/Default/RespondentLogAction.php:52
-#: classes/Gems/Default/TokenAction.php:82
+#: classes/Gems/Default/RespondentChildActionAbstract.php:72
 #, php-format
-msgid "Unknown respondent %s."
-msgstr "Onbekende patiënt %s."
+msgid "Respondent %s is not participating at the moment."
+msgstr "Patiënt %s is op dit moment geen deelnemer."
 
 #: classes/Gems/Default/RespondentExportAction.php:30
 msgid "Respondent numbers"
@@ -3770,6 +3790,12 @@ msgstr "Exporteer patiëntdossier"
 #: classes/Gems/Default/RespondentExportAction.php:51
 msgid "Please select at least one respondent"
 msgstr "Kies minstens één respondent"
+
+#: classes/Gems/Default/RespondentLogAction.php:52
+#: classes/Gems/Default/TokenAction.php:82
+#, php-format
+msgid "Unknown respondent %s."
+msgstr "Onbekende patiënt %s."
 
 #: classes/Gems/Default/RespondentMailLogAction.php:130
 #, php-format
@@ -4041,23 +4067,24 @@ msgstr[0] "bron"
 msgstr[1] "bronnen"
 
 #: classes/Gems/Default/SourceAction.php:310
+#: classes/Gems/Default/SourceAction.php:312
 msgid "This installation is active."
 msgstr "Deze installatie is actief."
 
-#: classes/Gems/Default/SourceAction.php:312
+#: classes/Gems/Default/SourceAction.php:314
 msgid "Inactive installation."
 msgstr "Deze installatie is inactief."
 
-#: classes/Gems/Default/SourceAction.php:315
+#: classes/Gems/Default/SourceAction.php:320
 msgid "Installation error!"
 msgstr "Installatie fout!"
 
-#: classes/Gems/Default/SourceAction.php:330
+#: classes/Gems/Default/SourceAction.php:335
 #, php-format
 msgid "Synchronize the %s source."
 msgstr "Synchroniseer de %s bron."
 
-#: classes/Gems/Default/SourceAction.php:345
+#: classes/Gems/Default/SourceAction.php:350
 msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
 
@@ -5169,7 +5196,7 @@ msgstr "Uw wachtwoord"
 msgid "Participate"
 msgstr "Deelnemen"
 
-#: classes/Gems/Menu.php:329 classes/GemsEscort.php:1277
+#: classes/Gems/Menu.php:329 classes/GemsEscort.php:1276
 msgid "Logoff"
 msgstr "Uitloggen"
 
@@ -5648,7 +5675,7 @@ msgstr "Afspraak"
 
 #: classes/Gems/Model/AppointmentModel.php:196
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1682
+#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1681
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-jjjj uu:mm"
 
@@ -5785,7 +5812,7 @@ msgstr "Voorwaarde met ID %s kon niet geladen worden"
 #: classes/Gems/Model/EpisodeOfCareModel.php:146
 #: classes/Gems/Model/EpisodeOfCareModel.php:149
 #: classes/Gems/Model/EpisodeOfCareModel.php:187
-#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1663
+#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1662
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-jjjj"
 
@@ -6486,17 +6513,6 @@ msgstr "Beantwoorde vragenlijsten: %d."
 msgid "Average answer time: %s."
 msgstr "Gemiddelde antwoordtijd: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:348
-#: classes/Gems/Model/SurveyMaintenanceModel.php:352
-#: classes/Gems/Model/SurveyMaintenanceModel.php:356
-#: classes/Gems/Model/SurveyMaintenanceModel.php:360
-#: classes/Gems/Model/SurveyMaintenanceModel.php:382
-#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:631
-#: classes/Gems/Util/Translated.php:117
-msgid "n/a"
-msgstr "n.v.t."
-
 #: classes/Gems/Model/SurveyMaintenanceModel.php:351
 #, php-format
 msgid "Standard deviation: %s."
@@ -6504,13 +6520,11 @@ msgstr "Standaarddeviatie: %s."
 
 #: classes/Gems/Model/SurveyMaintenanceModel.php:355
 #, php-format
-#| msgid "Minimum age"
 msgid "Minimum time: %s."
 msgstr "Minimum tijd: %s."
 
 #: classes/Gems/Model/SurveyMaintenanceModel.php:359
 #, php-format
-#| msgid "Maximum time difference"
 msgid "Maximum time: %s."
 msgstr "Maximum tijd: %s."
 
@@ -7209,7 +7223,7 @@ msgid "Appointment SQL"
 msgstr "Afspraak SQL"
 
 #: classes/Gems/Snippets/Ask/MaintenanceModeAskSnippet.php:42
-#: classes/GemsEscort.php:2472 classes/GemsEscort.php:2483
+#: classes/GemsEscort.php:2477 classes/GemsEscort.php:2488
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
@@ -7407,6 +7421,11 @@ msgstr "Toggle"
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:51
 msgid "(all types)"
 msgstr "(alle types)"
+
+#: classes/Gems/Snippets/Condition/ConditionSearchFormSnippet.php:45
+#: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:52
+msgid "(any active)"
+msgstr "(elke actief)"
 
 #: classes/Gems/Snippets/ConditionAndOrTableSnippet.php:82
 msgid "Conditions with this condition"
@@ -8967,10 +8986,6 @@ msgstr "Traject verwijderd."
 msgid "Fields in %s track"
 msgstr "Velden in traject %s"
 
-#: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:52
-msgid "(any active)"
-msgstr "(elke actief)"
-
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:58
 msgid "(not used in any track)"
 msgstr "(in geen enkel traject gebruikt)"
@@ -9563,7 +9578,7 @@ msgstr "Trajectgegevens geëxporteerd met organisaties."
 msgid "Trackdata exported without organizations."
 msgstr "Trajectgegevens geëxporteerd zonder organisaties."
 
-#: classes/Gems/Task/Tracker/Export/TrackFieldExportTask.php:71
+#: classes/Gems/Task/Tracker/Export/TrackFieldExportTask.php:72
 #, php-format
 msgid "%d field exported"
 msgid_plural "%d fields exported"
@@ -11032,7 +11047,7 @@ msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 msgid "Less safe: Daily valid valid key with %s"
 msgstr "Minder veilig: dag geldige %s sleutel"
 
-#: classes/Gems/User/Embed/Auth/HourKeySha256.php:149
+#: classes/Gems/User/Embed/Auth/HourKeySha256.php:166
 #, php-format
 msgid "Hour valid key with %s"
 msgstr "Een uur geldige %s sleutel"
@@ -11072,6 +11087,15 @@ msgstr "Gebruik organisatiestijl"
 #: classes/Gems/User/Embed/Redirect/RespondentSearchPage.php:32
 msgid "Respondent search page"
 msgstr "Patiënt zoek pagina"
+
+#: classes/Gems/User/Embed/Redirect/RespondentShowCreatePage.php:34
+msgid "Respondent show or create a new respondent"
+msgstr "Toon patiënt pagina of voer een nieuwe patiënt in"
+
+#: classes/Gems/User/Embed/Redirect/RespondentShowCreatePage.php:57
+#, php-format
+msgid "Respondent %s does not yet exist, please enter the respondent data now!"
+msgstr "Patiënt %s is nog geen deelnemer, u kan nu de patiënt aanmaken!"
 
 #: classes/Gems/User/Embed/Redirect/RespondentShowPage.php:32
 msgid "Respondent show page"
@@ -11747,33 +11771,33 @@ msgstr "Ongeldig parameter waarde met de tekst \"%s\" na een %s teken."
 msgid "Path %s not writable"
 msgstr "Pad %s niet schrijfbaar"
 
-#: classes/GemsEscort.php:1080
+#: classes/GemsEscort.php:1079
 msgid " > "
 msgstr " | "
 
-#: classes/GemsEscort.php:1275
+#: classes/GemsEscort.php:1274
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: classes/GemsEscort.php:1281
+#: classes/GemsEscort.php:1280
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:1509
+#: classes/GemsEscort.php:1508
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:1540
+#: classes/GemsEscort.php:1539
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1694
+#: classes/GemsEscort.php:1693
 msgid "hh:mm"
 msgstr "uu:mm"
 
-#: classes/GemsEscort.php:2260
+#: classes/GemsEscort.php:2263
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -11781,27 +11805,27 @@ msgstr ""
 "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw "
 "gegevens en probeer a.u.b. opnieuw"
 
-#: classes/GemsEscort.php:2478
+#: classes/GemsEscort.php:2483
 msgid "The page you requested is currently inaccessible."
 msgstr "De door u gevraagde pagina is momenteel ontoegankelijk."
 
-#: classes/GemsEscort.php:2479
+#: classes/GemsEscort.php:2484
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:2492
+#: classes/GemsEscort.php:2497
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:2494 classes/GemsEscort.php:2567
+#: classes/GemsEscort.php:2499 classes/GemsEscort.php:2572
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:2549 classes/GemsEscort.php:2565
+#: classes/GemsEscort.php:2554 classes/GemsEscort.php:2570
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:2550
+#: classes/GemsEscort.php:2555
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
@@ -12133,12 +12157,12 @@ msgstr ""
 msgid "No field overlap between source and target"
 msgstr "Bron en doel velden komen niet overeen"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:421
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:448
 #, php-format
 msgid "Row %s"
 msgstr "Rij %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:426
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:453
 #, php-format
 msgid " field %s"
 msgstr " veld %s"

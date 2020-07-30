@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 17:03+0200\n"
+"POT-Creation-Date: 2020-07-30 17:44+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 2.4\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -185,6 +185,7 @@ msgstr " (%s)"
 #: classes/Gems/Agenda/Filter/ActProcModelDependency.php:56
 #: classes/Gems/Agenda/Filter/FieldLikeModelDependency.php:66
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
+#: classes/Gems/Condition/Track/LocationCondition.php:172
 #: classes/Gems/Model/SurveyMaintenanceModel.php:203
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:916
 #: classes/Gems/Tracker/Model/TrackModel.php:148
@@ -405,7 +406,7 @@ msgid "Not used in tracks"
 msgstr "Not used in tracks"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:427
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:455
 msgid ": "
 msgstr ": "
 
@@ -745,10 +746,6 @@ msgid "%s does not equal %s"
 msgstr "%s does not equal %s"
 
 #: classes/Gems/Condition/Round/AgeCondition.php:52
-#| msgid ""
-#| "Round will be valid when respondent is:\n"
-#| " - At least minimum age\n"
-#| " - But no older than maximum age"
 msgid ""
 "Track will be valid when respondent is:\n"
 " - At least minimum age\n"
@@ -987,10 +984,6 @@ msgid "Field `%s`"
 msgstr "Field `%s`"
 
 #: classes/Gems/Condition/Track/AgeCondition.php:52
-#| msgid ""
-#| "Round will be valid when respondent is:\n"
-#| " - At least minimum age\n"
-#| " - But no older than maximum age"
 msgid ""
 "Track condition will be true when respondent is:\n"
 " - At least minimum age\n"
@@ -1005,7 +998,6 @@ msgid "Now (actual current time)"
 msgstr "Now (actual current time)"
 
 #: classes/Gems/Condition/Track/AgeCondition.php:62
-#| msgid "Track start"
 msgid "At track start data"
 msgstr "At track start data"
 
@@ -1014,12 +1006,10 @@ msgid "Compare when"
 msgstr "Compare when"
 
 #: classes/Gems/Condition/Track/AgeCondition.php:125
-#| msgid "Date calculation"
 msgid "Age at calculation"
 msgstr "Age at calculation"
 
 #: classes/Gems/Condition/Track/AgeCondition.php:128
-#| msgid "Track start"
 msgid "Age at track start"
 msgstr "Age at track start"
 
@@ -1037,21 +1027,39 @@ msgstr ""
 
 #: classes/Gems/Condition/Track/LocationCondition.php:83
 #, php-format
-#| msgid "Location"
 msgid "Location %d"
 msgstr "Location %d"
 
 #: classes/Gems/Condition/Track/LocationCondition.php:90
-#| msgid "Track field"
 msgid "Track field code"
 msgstr "Track field code"
 
 #: classes/Gems/Condition/Track/LocationCondition.php:91
-msgid "Optional field name"
-msgstr "Optional field name"
+msgid "Optional field code"
+msgstr "Optional field code"
+
+#: classes/Gems/Condition/Track/LocationCondition.php:155
+#, php-format
+msgid "A location field with code %s set to: "
+msgstr "A location field with code %s set to: "
+
+#: classes/Gems/Condition/Track/LocationCondition.php:158
+msgid "A location field set to: "
+msgstr "A location field set to: "
+
+#: classes/Gems/Condition/Track/LocationCondition.php:169
+#: classes/Gems/Model/SurveyMaintenanceModel.php:348
+#: classes/Gems/Model/SurveyMaintenanceModel.php:352
+#: classes/Gems/Model/SurveyMaintenanceModel.php:356
+#: classes/Gems/Model/SurveyMaintenanceModel.php:360
+#: classes/Gems/Model/SurveyMaintenanceModel.php:382
+#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
+#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:631
+#: classes/Gems/Util/Translated.php:117
+msgid "n/a"
+msgstr "n/a"
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:40
-#| msgid "Can new respondents be added to the organization?"
 msgid ""
 "Track condition will be valid when respondent is in one of the organizations"
 msgstr ""
@@ -1059,33 +1067,28 @@ msgstr ""
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:54
 #, php-format
-#| msgid "Organization"
 msgid "Organization %d"
 msgstr "Organization %d"
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:68
-#| msgid "Respondent explanation"
 msgid "Respondent organization"
 msgstr "Patient organization"
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:110
-#| msgid "track per organization"
 msgid "Track not in an organization"
 msgstr "Track not in an organization"
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:112
 #, php-format
-#| msgid "Organizations"
 msgid "Organization is %s"
 msgstr "Organization is %s"
 
 #: classes/Gems/Condition/Track/OrganizationCondition.php:114
 #, php-format
-#| msgid "Organization code"
 msgid "Organization one of %s"
 msgstr "Organization one of %s"
 
-#: classes/Gems/Conditions.php:212
+#: classes/Gems/Conditions.php:217
 #: classes/Gems/Default/ChartconfigAction.php:37
 #: classes/Gems/Default/CommJobAction.php:276
 #: classes/Gems/Default/SummaryAction.php:88
@@ -1102,7 +1105,7 @@ msgstr "Organization one of %s"
 msgid "Round"
 msgstr "Round"
 
-#: classes/Gems/Conditions.php:213
+#: classes/Gems/Conditions.php:218
 #: classes/Gems/Default/ChartconfigAction.php:36
 #: classes/Gems/Default/CommJobAction.php:269
 #: classes/Gems/Default/ProjectTracksAction.php:99
@@ -1166,7 +1169,7 @@ msgstr "Ok"
 #: classes/Gems/Default/DatabaseAction.php:155
 #: classes/Gems/Default/DatabaseAction.php:623
 #: classes/Gems/Default/RespondentNewAction.php:846
-#: classes/Gems/Default/SourceAction.php:348
+#: classes/Gems/Default/SourceAction.php:353
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:497
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
@@ -2602,7 +2605,7 @@ msgstr "Export data"
 msgid "Database backup completed. File can be found in %s"
 msgstr "Database backup completed. File can be found in %s"
 
-#: classes/Gems/Default/EmbedAction.php:164
+#: classes/Gems/Default/EmbedAction.php:204
 msgid "Unable to authenticate"
 msgstr "Unable to authenticate"
 
@@ -2742,11 +2745,11 @@ msgstr "Files ready for import"
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/StaffAction.php:196
 #: classes/Gems/Default/StaffAction.php:210
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2522
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2527
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2524
+#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2529
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "Access to the %s/%s page is not allowed for your current group: %s."
@@ -3735,12 +3738,10 @@ msgid_plural "reception codes"
 msgstr[0] "reception code"
 msgstr[1] "reception codes"
 
-#: classes/Gems/Default/RespondentChildActionAbstract.php:79
-#: classes/Gems/Default/RespondentLogAction.php:52
-#: classes/Gems/Default/TokenAction.php:82
+#: classes/Gems/Default/RespondentChildActionAbstract.php:72
 #, php-format
-msgid "Unknown respondent %s."
-msgstr "Unknown  %s."
+msgid "Respondent %s is not participating at the moment."
+msgstr "Patient %s is not participating at the moment."
 
 #: classes/Gems/Default/RespondentExportAction.php:30
 msgid "Respondent numbers"
@@ -3757,7 +3758,13 @@ msgstr "Export patient archive"
 
 #: classes/Gems/Default/RespondentExportAction.php:51
 msgid "Please select at least one respondent"
-msgstr "Please select at least one patient"
+msgstr "Please select at least one respondent"
+
+#: classes/Gems/Default/RespondentLogAction.php:52
+#: classes/Gems/Default/TokenAction.php:82
+#, php-format
+msgid "Unknown respondent %s."
+msgstr "Unknown  %s."
 
 #: classes/Gems/Default/RespondentMailLogAction.php:130
 #, php-format
@@ -3776,7 +3783,7 @@ msgstr "Delete or stop patient"
 
 #: classes/Gems/Default/RespondentNewAction.php:540
 msgid "New respondent..."
-msgstr "New respondent..."
+msgstr "New patient..."
 
 #: classes/Gems/Default/RespondentNewAction.php:572
 #, php-format
@@ -4025,23 +4032,24 @@ msgstr[0] "source"
 msgstr[1] "sources"
 
 #: classes/Gems/Default/SourceAction.php:310
+#: classes/Gems/Default/SourceAction.php:312
 msgid "This installation is active."
 msgstr "This installation is active."
 
-#: classes/Gems/Default/SourceAction.php:312
+#: classes/Gems/Default/SourceAction.php:314
 msgid "Inactive installation."
 msgstr "Inactive installation."
 
-#: classes/Gems/Default/SourceAction.php:315
+#: classes/Gems/Default/SourceAction.php:320
 msgid "Installation error!"
 msgstr "Installation error!"
 
-#: classes/Gems/Default/SourceAction.php:330
+#: classes/Gems/Default/SourceAction.php:335
 #, php-format
 msgid "Synchronize the %s source."
 msgstr "Synchronize the %s source."
 
-#: classes/Gems/Default/SourceAction.php:345
+#: classes/Gems/Default/SourceAction.php:350
 msgid "Synchronize all sources."
 msgstr "Synchronize all sources."
 
@@ -4939,7 +4947,6 @@ msgstr "yourself"
 
 #: classes/Gems/Menu.php:104
 #: classes/Gems/Snippets/Token/TokenForgottenSnippet.php:217
-#| msgid "Tokens"
 msgid "Token lost?"
 msgstr "Token lost?"
 
@@ -5120,7 +5127,7 @@ msgstr "Change password"
 msgid "Participate"
 msgstr "Participate"
 
-#: classes/Gems/Menu.php:329 classes/GemsEscort.php:1277
+#: classes/Gems/Menu.php:329 classes/GemsEscort.php:1276
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -5599,7 +5606,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:196
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1682
+#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1681
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -5725,7 +5732,6 @@ msgid "Fallback other"
 msgstr "Fallback other"
 
 #: classes/Gems/Model/Dependency/Condition/ClassDependency.php:112
-#| msgid "Filter type"
 msgid "Switched type"
 msgstr "Switched type"
 
@@ -5737,7 +5743,7 @@ msgstr "Unable to load condition with ID %s"
 #: classes/Gems/Model/EpisodeOfCareModel.php:146
 #: classes/Gems/Model/EpisodeOfCareModel.php:149
 #: classes/Gems/Model/EpisodeOfCareModel.php:187
-#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1663
+#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1662
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
@@ -6432,17 +6438,6 @@ msgstr "Answered surveys: %d."
 msgid "Average answer time: %s."
 msgstr "Average answer time: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:348
-#: classes/Gems/Model/SurveyMaintenanceModel.php:352
-#: classes/Gems/Model/SurveyMaintenanceModel.php:356
-#: classes/Gems/Model/SurveyMaintenanceModel.php:360
-#: classes/Gems/Model/SurveyMaintenanceModel.php:382
-#: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
-#: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:631
-#: classes/Gems/Util/Translated.php:117
-msgid "n/a"
-msgstr "n/a"
-
 #: classes/Gems/Model/SurveyMaintenanceModel.php:351
 #, php-format
 msgid "Standard deviation: %s."
@@ -6450,13 +6445,11 @@ msgstr "Standard deviation: %s."
 
 #: classes/Gems/Model/SurveyMaintenanceModel.php:355
 #, php-format
-#| msgid "Minimum age"
 msgid "Minimum time: %s."
 msgstr "Minimum time: %s."
 
 #: classes/Gems/Model/SurveyMaintenanceModel.php:359
 #, php-format
-#| msgid "Maximum time difference"
 msgid "Maximum time: %s."
 msgstr "Maximum time: %s."
 
@@ -6667,7 +6660,7 @@ msgstr "Timeline show patient"
 
 #: classes/Gems/Screens/Respondent/Show/HixTimelineShow.php:43
 msgid "Timeline show respondent for HiX"
-msgstr "Timeline show respondent for HiX"
+msgstr "Timeline show paitent for HiX"
 
 #: classes/Gems/Screens/Respondent/Subscribe/EmailOnlySubscribe.php:71
 msgid "Subscribe using e-mail address only"
@@ -7151,7 +7144,7 @@ msgid "Appointment SQL"
 msgstr "Appointment SQL"
 
 #: classes/Gems/Snippets/Ask/MaintenanceModeAskSnippet.php:42
-#: classes/GemsEscort.php:2472 classes/GemsEscort.php:2483
+#: classes/GemsEscort.php:2477 classes/GemsEscort.php:2488
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
@@ -7349,6 +7342,11 @@ msgstr "Toggle"
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:51
 msgid "(all types)"
 msgstr "(all types)"
+
+#: classes/Gems/Snippets/Condition/ConditionSearchFormSnippet.php:45
+#: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:52
+msgid "(any active)"
+msgstr "(any active)"
 
 #: classes/Gems/Snippets/ConditionAndOrTableSnippet.php:82
 msgid "Conditions with this condition"
@@ -8653,12 +8651,10 @@ msgid "The email address you use with this organization."
 msgstr "The email address you use with this organization."
 
 #: classes/Gems/Snippets/Token/TokenForgottenSnippet.php:152
-#| msgid "Your E-Mail address"
 msgid "Enter your E-Mail address"
 msgstr "Enter your E-Mail address"
 
 #: classes/Gems/Snippets/Token/TokenForgottenSnippet.php:207
-#| msgid "E-Mailed on"
 msgid "E-Mail the token"
 msgstr "E-Mail the token"
 
@@ -8895,10 +8891,6 @@ msgstr "Track deleted."
 #, php-format
 msgid "Fields in %s track"
 msgstr "Fields in %s track"
-
-#: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:52
-msgid "(any active)"
-msgstr "(any active)"
 
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:58
 msgid "(not used in any track)"
@@ -9482,7 +9474,7 @@ msgstr "Trackdata exported with organizations."
 msgid "Trackdata exported without organizations."
 msgstr "Trackdata exported without organizations."
 
-#: classes/Gems/Task/Tracker/Export/TrackFieldExportTask.php:71
+#: classes/Gems/Task/Tracker/Export/TrackFieldExportTask.php:72
 #, php-format
 msgid "%d field exported"
 msgid_plural "%d fields exported"
@@ -10942,7 +10934,7 @@ msgstr "Trying upgrade for %s to level %s: %s"
 msgid "Less safe: Daily valid valid key with %s"
 msgstr "Less safe: Daily valid valid key with %s"
 
-#: classes/Gems/User/Embed/Auth/HourKeySha256.php:149
+#: classes/Gems/User/Embed/Auth/HourKeySha256.php:166
 #, php-format
 msgid "Hour valid key with %s"
 msgstr "Hour valid key with %s"
@@ -10982,6 +10974,15 @@ msgstr "Use organization style"
 #: classes/Gems/User/Embed/Redirect/RespondentSearchPage.php:32
 msgid "Respondent search page"
 msgstr "Patient search page"
+
+#: classes/Gems/User/Embed/Redirect/RespondentShowCreatePage.php:34
+msgid "Respondent show or create a new respondent"
+msgstr "Patient show or create a new patient"
+
+#: classes/Gems/User/Embed/Redirect/RespondentShowCreatePage.php:57
+#, php-format
+msgid "Respondent %s does not yet exist, please enter the respondent data now!"
+msgstr "Patient %s does not yet exist, please enter the patient's data now!"
 
 #: classes/Gems/User/Embed/Redirect/RespondentShowPage.php:32
 msgid "Respondent show page"
@@ -11647,33 +11648,33 @@ msgstr ""
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:1080
+#: classes/GemsEscort.php:1079
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:1275
+#: classes/GemsEscort.php:1274
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:1281
+#: classes/GemsEscort.php:1280
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1509
+#: classes/GemsEscort.php:1508
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1540
+#: classes/GemsEscort.php:1539
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1694
+#: classes/GemsEscort.php:1693
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:2260
+#: classes/GemsEscort.php:2263
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -11681,27 +11682,27 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:2478
+#: classes/GemsEscort.php:2483
 msgid "The page you requested is currently inaccessible."
 msgstr "The page you requested is currently inaccessible."
 
-#: classes/GemsEscort.php:2479
+#: classes/GemsEscort.php:2484
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:2492
+#: classes/GemsEscort.php:2497
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:2494 classes/GemsEscort.php:2567
+#: classes/GemsEscort.php:2499 classes/GemsEscort.php:2572
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:2549 classes/GemsEscort.php:2565
+#: classes/GemsEscort.php:2554 classes/GemsEscort.php:2570
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:2550
+#: classes/GemsEscort.php:2555
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -12026,12 +12027,12 @@ msgstr "Unsupported file extension: %s. Import not possible."
 msgid "No field overlap between source and target"
 msgstr "No field overlap between source and target"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:421
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:448
 #, php-format
 msgid "Row %s"
 msgstr "Row %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:426
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:453
 #, php-format
 msgid " field %s"
 msgstr " field %s"

@@ -37,11 +37,13 @@ class RespondentShowPage extends RedirectAbstract
      */
     public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
     {
+        $orgId = $deferredUser->getCurrentOrganizationId();
+
         return [
             $this->request->getControllerKey()  => 'respondent',
             $this->request->getActionKey()      => 'show',
             \MUtil_Model::REQUEST_ID1           => $patientId,
-            \MUtil_Model::REQUEST_ID2           => $deferredUser->getCurrentOrganizationId(),
+            \MUtil_Model::REQUEST_ID2           => $orgId,
         ];
     }
 }
