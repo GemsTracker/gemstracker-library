@@ -211,7 +211,7 @@ class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActio
                     $filter[] = "gaf_id IN ($sub)";
                     break;
             }
-            \MUtil_Model::$verbose = true;
+            // \MUtil_Model::$verbose = true;
             unset($filter['used_in_filter']);
         }
 
