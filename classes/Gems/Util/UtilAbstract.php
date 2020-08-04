@@ -160,7 +160,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param string $cacheId The class is prepended to this id
      * @param mixed $sql string or \Zend_Db_Select
      * @param array $binds sql paramters
-     * @param mixed $tags atring or array of strings
+     * @param mixed $tags a string or array of strings
      * @param string Optional function to sort on, only known functions will do
      * @return array
      */

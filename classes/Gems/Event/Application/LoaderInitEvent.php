@@ -42,6 +42,10 @@ class LoaderInitEvent extends \Symfony\Component\EventDispatcher\Event
     {
         $this->loader    = $loader;
         $this->container = $container;
+
+        if (! isset($this->container->source)) {
+            $this->container->source = $loader;
+        }
     }
 
     /**
