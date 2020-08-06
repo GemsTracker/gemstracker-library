@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Episodes of care can use appointment filters and changes can trigger track creation (#378)
 - LimeSurvey source usable by different installations (#574)
 - Log changes in field values (#583)
+- Log out on answering survey (#223)
 - Manually block recalculation of track fields (#564)
 
 ### Interface improvements
