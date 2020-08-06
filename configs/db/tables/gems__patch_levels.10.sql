@@ -9,6 +9,8 @@ CREATE TABLE if not exists gems__patch_levels (
    ENGINE=InnoDB
    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
+-- First level should be equal to Versions::getBuild()
+-- this ensures new patches at this level will be run 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
    (66, CURRENT_TIMESTAMP);

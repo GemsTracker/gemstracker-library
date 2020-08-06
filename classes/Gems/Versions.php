@@ -29,7 +29,7 @@ class Gems_Versions
          * DO NOT FORGET !!! to update GEMS__PATCH_LEVELS:
          *
          * For new installations the initial patch level should
-         * be THIS LEVEL plus one.
+         * be THIS LEVEL
          *
          * This means that future patches for will be loaded,
          * but that previous patches are ignored.
@@ -44,7 +44,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.8.8';
+        return '1.9.0';
     }
 
     /**
