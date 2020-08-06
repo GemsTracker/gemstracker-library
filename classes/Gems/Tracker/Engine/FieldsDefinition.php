@@ -49,9 +49,9 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * The storage model for field data
      *
-     * @var array
+     * @var \Gems\Tracker\Model\FieldDataModel
      */
-    protected $_dataModel = array();
+    protected $_dataModel;
 
     /**
      * Array of Fieldobjects Can be an empty array.
@@ -66,6 +66,11 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      * @var boolean
      */
     private $_hasAppointmentFields = null;
+
+    /**
+     * @var \Gems\Tracker\Model\LogFieldDataModel
+     */
+    protected $_logModel;
 
     /**
      * Stores the models for each action
@@ -490,6 +495,20 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get the storage model for field values
+     *
+     * @return \Gems\Tracker\Model\LogFieldDataModel
+     */
+    public function getLogStorageModel()
+    {
+        if (! $this->_logModel instanceof LogFieldDataModel) {
+            $this->_logModel = $this->tracker->createTrackClass('Model\\LogFieldDataModel');
+        }
+
+        return $this->_logModel;
+    }
+    
+    /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
@@ -669,15 +688,22 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      */
     public function saveFields($respTrackId, array $fieldData)
     {
-        $saves = array();
+        $saves  = [];
+        $logs   = [];
+        
+        $oldFieldData = $this->getFieldsDataFor($respTrackId);
+        // \MUtil_Echo::track($fieldData, $oldFieldData);
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
-                $manual = false;
+                $manual = $oldManual = false;
                 if ($field->hasManualSetOption()) {
                     $mkey = $field->getManualKey();
                     if (array_key_exists($mkey, $fieldData)) {
                         $manual = (boolean) $fieldData[$mkey];
+                    }
+                    if (array_key_exists($mkey, $oldFieldData)) {
+                        $oldManual = (boolean)$oldFieldData[$mkey];
                     }
                 }
 
@@ -697,11 +723,29 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     'gr2t2f_value'               => $saveVal,
                     'gr2t2f_value_manual'        => $manual ? 1 : 0,
                 );
+                
+                // \MUtil_Echo::track(array_key_exists($key, $oldFieldData), $saveVal, $oldFieldData[$key], $manual, $oldManual);
+                if ((! array_key_exists($key, $oldFieldData)) || ($saveVal != $oldFieldData[$key])  || ($manual != $oldManual)) {
+                    $logs[] = [
+                        'glrtf_id_respondent_track' => $respTrackId,
+                        'glrtf_id_sub'              => $field->getFieldSub(),
+                        'glrtf_id_field'            => $field->getFieldId(),
+                        'glrtf_old_value'           => isset($oldFieldData[$key]) ? $oldFieldData[$key] : null,
+                        'glrtf_old_value_manual'    => $oldManual ? 1 : 0,
+                        'glrtf_new_value'           => $saveVal,
+                        'glrtf_new_value_manual'    => $manual ? 1 : 0,
+                        ];
+                }
             }
         }
 
         $model = $this->getDataStorageModel();
         $model->saveAll($saves);
+        
+        if ($logs) {
+            // \MUtil_Echo::track($logs);
+            $this->getLogStorageModel()->saveAll($logs);
+        }
 
         return $model->getChanged();
     }

@@ -157,6 +157,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
                 $validFrom = new \MUtil_Date();
                 break;
             case 'TS':
+            default:
                 $validFrom = $respTrack->getStartDate();
                 break;
         }
