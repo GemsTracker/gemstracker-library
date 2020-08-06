@@ -2,8 +2,8 @@
 
 /**
  *
- * @package    KZI
- * @subpackage SubscriptionThrottleValidator
+ * @package    Gems
+ * @subpackage Validate\SubscriptionThrottleValidator
  * @author     Andries Bezem <abezem@magnafacta.nl>
  * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    No free license, do not copy
@@ -11,8 +11,8 @@
 
 /**
  *
- * @package    KZI
- * @subpackage SubscriptionThrottleValidator
+ * @package    Gems
+ * @subpackage Validate\SubscriptionThrottleValidator
  * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8 Jan 9, 2020 1:05:35 PM
@@ -136,9 +136,9 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
 
-             //\MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
+             // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
             
-            if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
+            if ($attemptData['attempts'] >= $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->logger->log("Possible subscription brute force attack, throttling for $remainingDelay seconds", \Zend_Log::ERR);
 
                 $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');

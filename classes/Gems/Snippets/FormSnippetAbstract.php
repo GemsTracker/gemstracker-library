@@ -150,7 +150,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
         $links = $this->getMenuList();
         if (\MUtil_Bootstrap::enabled()) {
             if ($links) {
-                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer = \MUtil_Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
