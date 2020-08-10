@@ -152,7 +152,12 @@ class CsvExport extends ExportAbstract
         if (is_array($input)) {
             $input = join(', ', $input);
         }
-        $output = strip_tags($input);
+        if (('<=' == $input) || ('<' == $input)) {
+            // Keeps < and <= values
+            $output = $input;
+        } else {
+            $output = strip_tags($input);
+        }
         $output = str_replace(array("\r", "\n"), array(' ', ' '), $output);
         
         $output = $this->filterCsvInjection($output);

@@ -245,6 +245,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $result;
     }
 
+    /**
+     * @param \Gems_Menu_ParameterCollector $source
+     * @return array|null
+     */
     protected function _toRouteArray(\Gems_Menu_ParameterCollector $source)
     {
         if ($this->get('allowed')) {
@@ -1046,6 +1050,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition);
     }
 
+    /**
+     * @param null $parameterSourcesArgs
+     * @return array|null
+     */
     public function toRouteUrl($parameterSourcesArgs = null)
     {
         $parameterSources = func_get_args();
@@ -1053,6 +1061,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $this->_toRouteArray(new \Gems_Menu_ParameterCollector($parameterSources));
     }
 
+    /**
+     * @param null $actionController
+     * @return \MUtil_Html_ListElement|null
+     */
     public function toUl($actionController = null)
     {
         if (!$this->isVisible() || !$this->hasChildren()) {
