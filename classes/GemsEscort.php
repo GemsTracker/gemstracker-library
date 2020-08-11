@@ -825,10 +825,13 @@ class GemsEscort extends \MUtil_Application_Escort
          * Scan for files with -<languagecode> and disable notices when the requested
          * language is not found
          */
-        $options = array( 'adapter'         => 'gettext',
-                          'content'         => GEMS_LIBRARY_DIR . '/languages/',
-                          'disableNotices'  => true,
-                          'scan'            => \Zend_Translate::LOCALE_FILENAME);
+        $options = [
+            'adapter'         => 'gettext',
+            'content'         => GEMS_LIBRARY_DIR . '/languages/',
+            'disableNotices'  => true,
+            'locale'          => $language,
+            'scan'            => \Zend_Translate::LOCALE_FILENAME
+        ];
 
         $translate = new \Zend_Translate($options);
 
