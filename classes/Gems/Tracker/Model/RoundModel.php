@@ -69,6 +69,26 @@ class RoundModel extends \Gems_Model_JoinModel
     }
 
     /**
+     * Get the number of times a round is used in other rounds
+     *
+     * @param int $roundId
+     * @return int
+     */
+    public function getRefCount($roundId)
+    {
+        if (! $roundId) {
+            return 0;
+        }
+
+        $sql = "SELECT COUNT(*) FROM gems__rounds 
+                    WHERE gro_id_round != ? AND (
+                        (gro_valid_after_id = ? AND gro_valid_after_source IN ('tok', 'ans')) OR 
+                        (gro_valid_for_id = ? AND gro_valid_for_source IN ('tok', 'ans'))
+                        )";
+        return $this->db->fetchOne($sql, [$roundId, $roundId, $roundId]);
+    }
+    
+    /**
      * Get the number of times someone started answering this round.
      *
      * @param int $roundId
@@ -83,7 +103,7 @@ class RoundModel extends \Gems_Model_JoinModel
         $sql = "SELECT COUNT(*) FROM gems__tokens WHERE gto_id_round = ? AND gto_start_time IS NOT NULL";
         return $this->db->fetchOne($sql, $roundId);
     }
-
+    
     /**
      * Can this round be deleted as is?
      *
@@ -95,7 +115,6 @@ class RoundModel extends \Gems_Model_JoinModel
         if (! $roundId) {
             return true;
         }
-        $sql = "SELECT gto_id_token FROM gems__tokens WHERE gto_id_round = ? AND gto_start_time IS NOT NULL";
-        return (boolean) ! $this->db->fetchOne($sql, $roundId);
+        return ! ($this->getRefCount($roundId) + $this->getStartCount($roundId));
     }
 }

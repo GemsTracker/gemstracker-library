@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RoundDeleteSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker\Rounds;
@@ -105,15 +104,26 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($model instanceof RoundModel) {
+            $refCount = $model->getRefCount($this->roundId);
+            if ($refCount) {
+                $this->addMessage(sprintf($this->plural(
+                    'This round is used %s time in another round.', 'This round is used %s times in other rounds.',
+                    $refCount
+                ), $refCount));
+            }
+            
             $this->useCount = $model->getStartCount($this->roundId);
-
+            
             if ($this->useCount) {
                 $this->addMessage(sprintf($this->plural(
-                        'This round has been completed %s time.', 'This round has been completed %s times.',
-                        $this->useCount
-                        ), $this->useCount));
-                $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
+                    'This round has been completed %s time.', 'This round has been completed %s times.',
+                    $this->useCount
+                ), $this->useCount));
+            }
 
+            \MUtil_Echo::track($refCount, $this->useCount);
+            if ($refCount || $this->useCount) {
+                $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
                 $this->deleteQuestion = $this->_('Do you want to deactivate this round?');
                 $this->displayTitle   = $this->_('Deactivate round');
             }
