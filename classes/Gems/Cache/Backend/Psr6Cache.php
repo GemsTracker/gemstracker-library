@@ -14,15 +14,38 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
 {
     protected $cache;
 
+    protected $reservedCharacters = [
+        '{',
+        '}',
+        '(',
+        ')',
+        '/',
+        '\\',
+        '@',
+        ':',
+    ];
+
     public function __construct(CacheItemPoolInterface $cache)
     {
         $this->cache = $cache;
     }
 
     /**
+     * PSR-6 has reserved the characters {}()/\@:
+     * Zend uses these characters by default. We will replace them with an underscore
+     *
+     * @param $id
+     * @return string|string[]
+     */
+    protected function filterReservedCharacters($id)
+    {
+        return str_replace($this->reservedCharacters, '_', $id);
+    }
+
+    /**
      * Get the cache storage adapter
      *
-     * @return CacheInterface
+     * @return CacheItemPoolInterface
      */
     public function getCache()
     {
@@ -40,6 +63,7 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function load($id, $doNotTestCacheValidity = false)
     {
+        $id = $this->filterReservedCharacters($id);
         $item = $this->cache->getItem($id);
         return $item->get();
     }
@@ -52,6 +76,7 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function test($id)
     {
+        $id = $this->filterReservedCharacters($id);
         $this->cache->hasItem($id);
     }
 
@@ -69,6 +94,7 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function save($data, $id, $tags = array(), $specificLifetime = false)
     {
+        $id = $this->filterReservedCharacters($id);
         $item = $this->cache->getItem($id);
         $item->set($data);
         if ($specificLifetime !== false) {
@@ -92,6 +118,7 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function remove($id)
     {
+        $id = $this->filterReservedCharacters($id);
         $this->cache->deleteItem($id);
     }
 
@@ -232,6 +259,7 @@ class Psr6Cache extends Backend implements \Zend_Cache_Backend_ExtendedInterface
      */
     public function touch($id, $extraLifetime)
     {
+        $id = $this->filterReservedCharacters($id);
         $item = $this->cache->getItem($id);
         $item->expiresAfter($extraLifetime);
         $this->cache->save($item);

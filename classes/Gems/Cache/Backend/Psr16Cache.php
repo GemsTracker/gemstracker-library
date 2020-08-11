@@ -17,9 +17,35 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
      */
     protected $cache;
 
+    /**
+     * @var string[] List of reserved characters for caching keys
+     */
+    protected $reservedCharacters = [
+        '{',
+        '}',
+        '(',
+        ')',
+        '/',
+        '\\',
+        '@',
+        ':',
+    ];
+
     public function __construct(CacheInterface $cache)
     {
         $this->cache = $cache;
+    }
+
+    /**
+     * PSR-6 has reserved the characters {}()/\@:
+     * Zend uses these characters by default. We will replace them with an underscore
+     *
+     * @param $id
+     * @return string|string[]
+     */
+    protected function filterReservedCharacters($id)
+    {
+        return str_replace($this->reservedCharacters, '_', $id);
     }
 
     /**
@@ -43,6 +69,7 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
      */
     public function load($id, $doNotTestCacheValidity = false)
     {
+        $id = $this->filterReservedCharacters($id);
         return $this->cache->get($id, false);
     }
 
@@ -54,6 +81,7 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
      */
     public function test($id)
     {
+        $id = $this->filterReservedCharacters($id);
         return $this->cache->has($id);
     }
 
@@ -77,7 +105,7 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
         if ($specificLifetime === false) {
             $specificLifetime = null;
         }
-
+        $id = $this->filterReservedCharacters($id);
         return $this->cache->set($id, $data, $specificLifetime);
     }
 
@@ -89,6 +117,7 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
      */
     public function remove($id)
     {
+        $id = $this->filterReservedCharacters($id);
         $this->cache->delete($id);
     }
 
@@ -111,7 +140,6 @@ class Psr16Cache extends Backend implements \Zend_Cache_Backend_Interface
      */
     public function clean($mode = \Zend_Cache::CLEANING_MODE_ALL, $tags = array())
     {
-        \MUtil_Echo::track($mode);
         switch ($mode) {
             case \Zend_Cache::CLEANING_MODE_ALL:
                 $this->cache->clear();
