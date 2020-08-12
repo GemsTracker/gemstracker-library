@@ -202,8 +202,19 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                     $newComment .= "\n";
                     $newComment .= $this->formData['gto_comment'];
                 }
+                
+                // Fixing #582: autoextend the date
+                $now = new \MUtil_Date();
+                if ($this->token->getValidUntil() && $this->token->getValidUntil()->isEarlier($now)) {
+                    $otherValues = [
+                        'gto_valid_until' => $now->addDay(7),
+                        'gto_valid_until_manual' => 1,
+                        ];
+                } else {
+                    $otherValues = [];
+                }
 
-                $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId);
+                $this->_replacementTokenId = $this->token->createReplacement($newComment, $userId, $otherValues);
 
                 // Create a link for the old token
                 $oldToken = strtoupper($this->token->getTokenId());
