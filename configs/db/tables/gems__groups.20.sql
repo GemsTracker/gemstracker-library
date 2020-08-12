@@ -43,4 +43,5 @@ INSERT ignore INTO gems__groups
     (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
     (902, 'Local Admins', 'Local Administrators', 807, '903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
     (903, 'Staff', 'Health care staff', 804, null, null, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
-    (904, 'Respondents', 'Respondents', 802, null, null, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0);
+    (904, 'Respondents', 'Respondents', 802, null, null, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0),
+    (905, 'Security', 'Security', 803, null, null, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0);
