@@ -729,7 +729,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
            }
 
 
-           throw new \Gems_Exception_Coding("Requested non existing previous round id for round $roundId.");
+           throw new \Gems_Exception(sprintf($this->_('Requested non existing round with id %d.'), $roundId));
 
        } elseif ($this->_rounds) {
             end($this->_rounds);
