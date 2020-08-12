@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.8.8]
+## [1.9.0]
+This is a sub-major version upgrade because of the introduction of modules 
 ### Added user functionality
 - Add Mailjob id to mail log (#512)
 - Add respondent export to Word as an option (#528)
@@ -27,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Adding environment version to header simplified (#524)
 - Allow text searches in Track compliance and summary overviews (#526)
 - Allow use of project level CHANGELOG.md files (#525)
+- Combine multiple excel export files as sheets in one excel file (#515)
 - Form menu / cancel buttons display aligned with submit buttons (#562)
 - Guide users to change password page when they use the back button to the reset password page (#578)
 - Mailjob stepper (next, previous) like rounds have (#518)
