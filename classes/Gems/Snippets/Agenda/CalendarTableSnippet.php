@@ -28,6 +28,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
      */
     protected $calSearchFilter;
 
+    
     /**
      *
      * @var \Gems_Loader
@@ -107,7 +108,9 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         parent::afterRegistry();
 
         if (null !== $this->calSearchFilter) {
-            $this->caption = $this->_('Example appointments');
+            $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+            $this->caption    = $this->_('Example appointments');
+            
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
                     \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
@@ -116,13 +119,15 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
                     ];
                 // \MUtil_Echo::track($this->calSearchFilter->getSqlAppointmentsWhere());
 
-                $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
                 $this->onEmpty = $this->_('No example appointments found');
             } elseif (false === $this->calSearchFilter) {
                 $this->onEmpty = $this->_('Filter is inactive');
                 $this->searchFilter = ['1=0'];
+            } elseif (is_array($this->calSearchFilter)) {
+                $this->searchFilter = $this->calSearchFilter;
             }
         }
+        // \MUtil_Echo::track($this->calSearchFilter);
     }
 
     /**
