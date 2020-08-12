@@ -545,7 +545,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                     );
                     
                     if (! isset($this->formData['gto_id_relationfield'])) {
-                        $this->formData['gto_id_relationfield'] = reset($relations);
+                        reset($relations);
+                        $this->formData['gto_id_relationfield'] = key($relations);
                     }
                 }
             }
