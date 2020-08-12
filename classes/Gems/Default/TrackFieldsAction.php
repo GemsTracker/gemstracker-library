@@ -95,7 +95,7 @@ class Gems_Default_TrackFieldsAction extends \Gems_Default_TrackMaintenanceWithE
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'Tracker\\Fields\\FieldShowSnippet',
         'Agenda\\ApplyFiltersInformation'
         ];
 

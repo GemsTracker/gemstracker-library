@@ -70,6 +70,13 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     protected $roundDescQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
 
     /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'Mail\\CommJobShowSnippet'];
+    
+    /**
      * The automatically filtered result
      *
      * @param $resetMvc When true only the filtered resulsts
@@ -461,6 +468,9 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         echo json_encode($rounds);
     }
 
+    /**
+     * Action for showing an item page with title
+     */
     public function showAction()
     {
         parent::showAction();
