@@ -384,7 +384,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             }
         }
     }
-    
+
+    /**
+     * @throws \Gems_Exception
+     */
     protected function initTracks()
     {
         $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
@@ -536,8 +539,14 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                     $empty = array('-1' => $this->_('Patient'));
                     $relations = $empty + $engine->getRespondentRelationFields();
                     $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
-                        'multiOptions', $relations, 'elementClass', 'Select',
-                    'required', true);
+                        'elementClass', (1 == count($relations) ? 'Exhibitor' : 'Select'),
+                        'multiOptions', $relations,
+                        'required', true
+                    );
+                    
+                    if (! isset($this->formData['gto_id_relationfield'])) {
+                        $this->formData['gto_id_relationfield'] = reset($relations);
+                    }
                 }
             }
         }

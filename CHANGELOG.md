@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Renamed Track field filter to Appointment filter (#558)
 - Round Icon selection shows icon during selection (#45)
 - Show more round information in Track compliance (#527)
+- Simplify the display of the InsertSurveySnippet (#584)
 
 ### Programmability
 - Allow included images to be used with an email template (#563)
