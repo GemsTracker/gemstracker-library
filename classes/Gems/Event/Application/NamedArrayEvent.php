@@ -10,7 +10,7 @@ class NamedArrayEvent extends Event
 {
     use NamedArrayEventTrait;
 
-    protected $list;
+    //protected $list;
 
     public function __construct($list = [])
     {
