@@ -77,7 +77,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
             // Inherit parent settings
             $parentSettings = $model->get($itemName, ...$this->copyParentFieldSettings);
             $translationModel->set('gtrs_translation', $parentSettings);
-            if ($parentSettings['elementClass'] == 'Hidden') {
+            if (isset($parentSettings['elementClass']) && $parentSettings['elementClass'] == 'Hidden') {
                 $translationModel->set('gtrs_iso_lang', ['elementClass' => 'Hidden']);
             }
 
