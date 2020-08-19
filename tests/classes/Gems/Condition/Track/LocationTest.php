@@ -67,15 +67,15 @@ class LocationTest extends \Gems_Test_DbTestAbstract
         $this->tracker    = $this->loader->getTracker();
     }
 
-    public function isValid($config, $trackId)
+    public function isValid($config, $trackId, array $fieldData = null)
     {
         $this->condition->exchangeArray($config);
 
         $respTrack = $this->tracker->getRespondentTrack($trackId);
-        return $this->condition->isTrackValid($respTrack);
+        return $this->condition->isTrackValid($respTrack, $fieldData);
     }
 
-    public function providerTesInLoc()
+    public function providerTestInLoc()
     {
         return [
             '1 at 1' => [1, 1, '', '', ''],
@@ -87,7 +87,7 @@ class LocationTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
-     * @dataProvider providerTesInLoc
+     * @dataProvider providerTestInLoc
      */
     public function testInLoc($trackId, $loc1, $loc2, $loc3, $code)
     {
@@ -101,7 +101,32 @@ class LocationTest extends \Gems_Test_DbTestAbstract
         $this->assertTrue($this->isValid($config, $trackId));
     }
 
-    public function providerTesNotInLoc()
+    public function providerTestInLocWithData()
+    {
+        return [
+            '1 at 2' => [1, 2, '', '', '', ['f__1' => 2]],
+            '1 at 2 code' => [1, 2,'', '', 'code', ['f__1' => 2]],
+            '2 at 1' => [2, 1, '', '', '', ['f__2' => 1]],
+            '2 at 3' => [2, 3, '', '', '', ['f__2' => 3]],
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestInLocWithData
+     */
+    public function testInLocWithData($trackId, $loc1, $loc2, $loc3, $code, $fieldData)
+    {
+        $config = [
+            'gcon_condition_text1' => $loc1,
+            'gcon_condition_text2' => $loc2,
+            'gcon_condition_text3' => $loc3,
+            'gcon_condition_text4' => $code,
+        ];
+
+        $this->assertTrue($this->isValid($config, $trackId, $fieldData));
+    }
+    
+    public function providerTestNotInLoc()
     {
         return [
             '1 at 2' => [1, 2, 3, 4, ''],
@@ -114,7 +139,7 @@ class LocationTest extends \Gems_Test_DbTestAbstract
     }
 
     /**
-     * @dataProvider providerTesNotInLoc
+     * @dataProvider providerTestNotInLoc
      */
     public function testNotInLoc($trackId, $loc1, $loc2, $loc3, $code)
     {
@@ -126,5 +151,32 @@ class LocationTest extends \Gems_Test_DbTestAbstract
         ];
 
         $this->assertFalse($this->isValid($config, $trackId));
+    }
+    
+    public function providerTestNotInLocWithData()
+    {
+        return [
+            '1 at 2' => [1, 1, 3, 4, '', ['f__1' => 2]],
+            '1 at 2 no code' => [1, 1, 2, 3, 'no code', ['f__1' => 2]],
+            '2 at 1 code' => [2, 4, 2, 3, 'code', ['f__2' => 1]],
+            '2 at 1' => [2, 2, 3, 4, '', ['f__2' => 1]],
+            '2 at 1' => [2, '', 3, '', '', ['f__2' => 1]],
+            '1 at none' => [1, '', '', '', '', ['f__1' => '']],
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestNotInLocWithData
+     */
+    public function testNotInLocWithData($trackId, $loc1, $loc2, $loc3, $code, $fieldData)
+    {
+        $config = [
+            'gcon_condition_text1' => $loc1,
+            'gcon_condition_text2' => $loc2,
+            'gcon_condition_text3' => $loc3,
+            'gcon_condition_text4' => $code,
+        ];
+
+        $this->assertFalse($this->isValid($config, $trackId, $fieldData));
     }
 }

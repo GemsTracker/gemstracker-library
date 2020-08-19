@@ -52,7 +52,7 @@ class EventRegistry
         'gems.survey.answers.display-filter' => AnswerFilterEvent::class,
 
         // Change respondent track or fields when field gets updated (Track builder event has priority 100)
-        'gems.track.field-update' => RespondentTrackEvent::class,
+        'gems.track.field-update' => RespondentTrackFieldUpdateEvent::class,
 
         // Change respondent track or fields before field gets updated (Track builder event has priority 100)
         'gems.track.before-field-update' => RespondentTrackFieldEvent::class,

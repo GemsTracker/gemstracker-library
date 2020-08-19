@@ -119,6 +119,32 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getTrackDisplay($trackId)
+    {
+        if ($this->_data['gcon_condition_text4']) {
+            $start = sprintf($this->_('A location field with code %s set to: '),
+                             $this->_data['gcon_condition_text4']);
+        } else {
+            $start = $this->_('A location field set to: ');
+        }
+
+        $locations = $this->loader->getAgenda()->getLocations();
+        $output    = [];
+        foreach ($this->getUsedLocations() as $locId) {
+            if (isset($locations[$locId])) {
+                $output[] = $locations[$locId];
+            }
+        }
+        if (! $output) {
+            $output[] = $this->_('n/a');
+        }
+
+        return $start . implode($this->_(', '), $output);
+    }
+
+    /**
      * @return array code => code
      */
     protected function getTrackFields()
@@ -137,48 +163,14 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     }
 
     /**
-     * @inheritDoc
-     */
-    public function isValid($value, $context)
-    {
-        // \MUtil_Echo::track($value, $context);
-        // Not used at the moment
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTrackDisplay($trackId)
-    {
-        if ($this->_data['gcon_condition_text4']) {
-            $start = sprintf($this->_('A location field with code %s set to: '),
-                              $this->_data['gcon_condition_text4']);
-        } else {
-            $start = $this->_('A location field set to: ');
-        }
-
-        $locations = $this->loader->getAgenda()->getLocations();
-        $output    = [];
-        foreach ($this->getUsedLocations() as $locId) {
-            if (isset($locations[$locId])) {
-                $output[] = $locations[$locId];
-            }
-        }
-        if (! $output) {
-            $output[] = $this->_('n/a');    
-        }
-        
-        return $start . implode($this->_(', '), $output);
-    }
-
-    /**
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return array fieldKey => value
      */
-    protected function getUsedFieldsValues(\Gems_Tracker_RespondentTrack $respTrack)
+    protected function getUsedFieldsValues(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
     {
         $defs      = $respTrack->getTrackEngine()->getFieldsDefinition();
-        $fields    = $respTrack->getFieldData();
+        $fields    = $fieldData ? $fieldData : $respTrack->getFieldData();
         $forCode   = $this->_data['gcon_condition_text4'];
         $output    = [];
 
@@ -189,32 +181,48 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
                 }
             }
         }
-        
+
         return $output;
     }
-    
+
     /**
      * @return array locId => locId
      */
     protected function getUsedLocations()
     {
         $output = array_filter([
-            $this->_data['gcon_condition_text1'],
-            $this->_data['gcon_condition_text2'],
-            $this->_data['gcon_condition_text3'],
-            ]);
-        
+                                   $this->_data['gcon_condition_text1'],
+                                   $this->_data['gcon_condition_text2'],
+                                   $this->_data['gcon_condition_text3'],
+                               ]);
+
         return array_combine($output, $output);
     }
-    
+
     /**
      * @inheritDoc
      */
-    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack)
+    public function isValid($value, $context)
+    {
+        // \MUtil_Echo::track($value, $context);
+        // Not used at the moment
+        return true;
+    }
+
+    /**
+     * Is the condition for this round (token) valid or not
+     *
+     * This is the actual implementation of the condition
+     *
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @return bool
+     */
+    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
     {
         $locations = $this->getUsedLocations();
 
-        foreach ($this->getUsedFieldsValues($respTrack) as $key => $value) {
+        foreach ($this->getUsedFieldsValues($respTrack, $fieldData) as $key => $value) {
             if (isset($locations[$value])) {
                 return true;
             }

@@ -353,7 +353,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 $batch->autoStart = true;
             }
 
-            if (MUtil_Console::isConsole()) {
+            if (\MUtil_Console::isConsole()) {
                 // This is for unit tests, if we want to be able to really export from
                 // cli we need to place the exported file somewhere.
                 // This is out of scope for now.
@@ -387,21 +387,25 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 }
             }
         } elseif ($step == 'download') {
-            $this->view->layout()->disableLayout();
-            $this->_helper->viewRenderer->setNoRender(true);
             $batch = $this->loader->getTaskRunnerBatch('export_data');
-            $file = $batch->getSessionVariable('file');
-            foreach($file['headers'] as $header) {
-                header($header);
+            $file  = $batch->getSessionVariable('file');
+            if ($file && is_array($file) && is_array($file['headers'])) {
+                $this->view->layout()->disableLayout();
+                $this->_helper->viewRenderer->setNoRender(true);
+                
+                foreach($file['headers'] as $header) {
+                    header($header);
+                }
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
+                readfile($file['file']);
+                // Now clean up the file
+                unlink($file['file']);
+    
+                exit;
             }
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
-            readfile($file['file']);
-            // Now clean up the file
-            unlink($file['file']);
-
-            exit;
+            $this->addMessage($this->_('Download no longer available.'), 'warning');
         }
     }
 
