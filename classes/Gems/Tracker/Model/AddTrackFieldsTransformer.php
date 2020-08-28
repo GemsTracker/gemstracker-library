@@ -89,6 +89,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
 
         $settings = $this->fieldsDefinition->getDataModelSettings();
         foreach ($settings as $field => &$setting) {
+            $setting['noSort'] = true;
             $setting['no_text_search'] = true;
         }
         
