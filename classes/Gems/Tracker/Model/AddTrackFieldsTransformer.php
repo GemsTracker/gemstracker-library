@@ -87,7 +87,12 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         // Many definitions use load transformers
         $model->setMeta(\MUtil_Model_ModelAbstract::LOAD_TRANSFORMER, true);
 
-        return $this->fieldsDefinition->getDataModelSettings();
+        $settings = $this->fieldsDefinition->getDataModelSettings();
+        foreach ($settings as $field => &$setting) {
+            $setting['no_text_search'] = true;
+        }
+        
+        return $settings;
     }
 
     /**
@@ -105,7 +110,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         if ($isPostData) {
             return $data;
         }
-
+        
         $empty = false;
 
         foreach ($data as $key => $row) {
