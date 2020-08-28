@@ -103,11 +103,11 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page = $this->addPage($label, 'pr.respondent.ask', 'ask');
         $page->addAction($this->_('Token lost?'), 'pr.respondent.lost', 'lost');
 
-        // Routes for token controller
-        $page->addAction(null, null, 'forward');
-        $page->addAction(null, null, 'return');
-        $page->addAction(null, null, 'to-survey')->setModelParameters(1);
-        $page->addAction(null, null, 'token');
+        // Routes for token controller return
+        $this->addPage(null, true, 'ask', 'forward');
+        $this->addPage(null, true, 'ask', 'return');
+        $this->addPage(null, true, 'ask', 'to-survey')->setModelParameters(1);
+        $this->addPage(null, true, 'ask', 'token');
 
         return $page;
     }

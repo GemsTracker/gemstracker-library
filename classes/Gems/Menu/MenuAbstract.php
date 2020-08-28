@@ -189,7 +189,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         // Process parameters.
         $args = \MUtil_Ra::args(func_get_args(), 0,
             array('visible' => true,    // All menu items are initally visible unless stated otherwise
-                'allowed' => true,      // Same as with visible, need this for t_oNavigationArray()
+                'allowed' => true,      // Same as with visible, need this for _toNavigationArray()
                 ));
 
         if (! isset($args['label'])) {
@@ -961,7 +961,9 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             $allowed = $item->get('allowed', true);
 
             if ($allowed && ($privilege = $item->get('privilege'))) {
-                $allowed = $acl->isAllowed($userRole, null, $privilege);
+                if (true !== $privilege) {
+                    $allowed = $acl->isAllowed($userRole, null, $privilege);
+                }
             }
 
             if ($allowed) {
