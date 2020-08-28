@@ -11,7 +11,7 @@
 
 use \Gems\Tracker\Model\FieldMaintenanceModel;
 use \Gems\Event\Application\TokenEvent;
-use \Gems\Event\Application\RespondentTrackEvent;
+use \Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use \Gems\Event\Application\RespondentTrackFieldEvent;
 
 
@@ -1227,9 +1227,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     /**
      * Find out if there are field update events and delegate to the event if needed
      *
+     * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return void
      */
-    public function handleFieldUpdate()
+    public function handleFieldUpdate(array $oldFieldData = null)
     {
         static $running = array();
 
@@ -1257,7 +1258,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $running[$this->_respTrackId] = true;
 
         if ($fieldUpdateEvent) {
-            $eventFunction = function (RespondentTrackEvent $event) use ($fieldUpdateEvent) {
+            $eventFunction = function (RespondentTrackFieldUpdateEvent $event) use ($fieldUpdateEvent) {
                 $respondentTrack = $event->getRespondentTrack();
                 $userId = $event->getUserId();
 
@@ -1270,7 +1271,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->event->addListener($eventName, $eventFunction, 100);
         }
 
-        $respondentTrackEvent = new RespondentTrackEvent($this, $this->currentUser->getUserId());
+        $respondentTrackEvent = new RespondentTrackFieldUpdateEvent($this, $this->currentUser->getUserId(), $oldFieldData);
         $this->event->dispatch($respondentTrackEvent, $eventName);
 
         unset($running[$this->_respTrackId]);
@@ -1444,13 +1445,14 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
 
         $this->_ensureFieldData();
-        $this->_fieldData = $this->processFieldsBeforeSave($this->_fieldData, $this->_respTrackData);
+        $oldFieldData     = $this->_fieldData;
+        $this->_fieldData = $this->processFieldsBeforeSave($this->_fieldData);
         $fieldsChanged    = $fieldDef->changed;
 
         $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
 
-        $this->handleFieldUpdate();
+        $this->handleFieldUpdate($oldFieldData);
 
         $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
         if ($info != $this->_respTrackData['gr2t_track_info']) {
@@ -1534,7 +1536,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         }
 
         //\MUtil_Echo::track($fieldData);
-        $this->_fieldData = $this->_mergeFieldValues($fieldData, $this->getFieldData(), $trackEngine);
+        $oldFieldData     = $this->getFieldData();
+        $this->_fieldData = $this->_mergeFieldValues($fieldData, $oldFieldData, $trackEngine);
 
         $changed = $trackEngine->getFieldsDefinition()->saveFields($this->_respTrackId, $this->_fieldData);
 
@@ -1542,7 +1545,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_ensureFieldData(true);
         }
 
-        $this->handleFieldUpdate();
+        $this->handleFieldUpdate($oldFieldData);
 
         return $changed;
     }

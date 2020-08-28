@@ -139,9 +139,15 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     }
 
     /**
-     * @inheritDoc
+     * Is the condition for this round (token) valid or not
+     *
+     * This is the actual implementation of the condition
+     *
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param array $fieldData Optional field data to use instead of data currently stored at object
+     * @return bool
      */
-    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack)
+    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
     {
         $minAge  = $this->_data['gcon_condition_text2'];
         $ageUnit = $this->_data['gcon_condition_text3'];
