@@ -310,11 +310,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $token->setReceptionCode($newCode,
                     sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
                     $userId);
-
+            /* Since tokens skipped by conditions now get calculated we don't need this anymore
             if ($newStatus == true) {
                 // Token was made valid, now calc the dates
                 $this->checkTokenDates($token, $round, $userId, $respTrack);
             }
+            */
         }
 
         return $changed;
@@ -331,10 +332,18 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
      */
     protected function checkTokenDates($token, $round, $userId, \Gems_Tracker_RespondentTrack $respTrack)
     {
+        $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
+
         // Change only not-completed tokens with a positive successcode where at least one date
         // is not set by user input
         if ($token->isCompleted() || !$token->getReceptionCode()->isSuccess() || ($token->isValidFromManual() && $token->isValidUntilManual())) {
-            return 0;
+            // When a token has a skipcode, due to age being out of limits, changing the date might change the condition
+            // For this reason we recalculate the date when it was skipped due to a condition
+            if ($token->getReceptionCode()->getCode() == $skipCode && !empty($round['gro_condition'])) {
+                // Just continue, code was split for readabitily
+            } else {
+                return 0;
+            }
         }
 
         if ($token->isValidFromManual()) {
