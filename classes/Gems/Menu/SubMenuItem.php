@@ -770,6 +770,16 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $default;
     }
 
+    /**
+     * Get the organization id of the org parameter that can remain hidden.
+     *
+     * @param int Current hidden org id
+     */
+    public function getHiddenOrgId()
+    {
+        return $this->_hiddenOrgId;
+    }
+    
     public function getParameters()
     {
         return $this->_requiredParameters;
