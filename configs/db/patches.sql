@@ -1673,3 +1673,5 @@ ALTER TABLE `gems__comm_jobs`
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.ask')
 WHERE grl_name IN ('nologin', 'guest')
   AND grl_privileges NOT LIKE '%,pr.respondent.ask%';
+
+-- GEMS VERSION: 67

@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1]
+[1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
+### Fixed
+- Error message WHERE token = 'xxx' (#595)
+
 ## [1.9.0]
+[1.9.0]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.7...1.9.0
 This is a sub-major version upgrade because of the introduction of modules 
 ### Added user functionality
 - Add Mailjob id to mail log (#512)

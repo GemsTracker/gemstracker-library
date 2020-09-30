@@ -1645,7 +1645,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $token = $event->getToken();
                 try {
                     $changed = $beforeAnswerEvent->processTokenInsertion($token);
-                    if (is_array($changed)) {
+                    if (is_array($changed) && $changed) {
                         $event->addChanged($changed);
                     }
                 } catch (\Exception $e) {

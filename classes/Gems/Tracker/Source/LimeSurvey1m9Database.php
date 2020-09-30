@@ -1456,7 +1456,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
         if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);
-            return $lsDb->update($lsTab, $answers, $where);
+            if ($answers) {
+                return $lsDb->update($lsTab, $answers, $where);
+            }
         } else {
             $current = new \MUtil_Db_Expr_CurrentTimestamp();
 
