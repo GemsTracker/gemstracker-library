@@ -649,6 +649,22 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     }
 
     /**
+     * Creates an empty form. Allows overruling in sub-classes.
+     *
+     * @param mixed $options
+     * @return \Zend_Form
+     */
+    protected function createForm($options = null)
+    {
+        $form = new \Gems_Form($options);
+        if (\MUtil_Bootstrap::enabled()) {
+            $form->activateBootstrap();
+        }
+
+        return $form;
+    }
+
+    /**
      * Creates the model
      *
      * @return \MUtil_Model_ModelAbstract
