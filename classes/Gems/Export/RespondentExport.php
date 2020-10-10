@@ -39,6 +39,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     protected $_word;
 
     /**
+     * @var boolean Use word to generate PDFs
+     */
+    protected $_wordPdf = false;
+
+    /**
      *
      * @var string
      */
@@ -441,9 +446,12 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     {
         parent::afterRegistry();
 
-        $this->_pdf    = $this->loader->getPdf();
-        if (class_exists('\PhpOffice\PhpWord\PhpWord')) {
-            $this->_word   = new \PhpOffice\PhpWord\PhpWord();
+        $this->_pdf = $this->loader->getPdf();
+        if (class_exists('\\PhpOffice\\PhpWord\\PhpWord')) {
+            $this->_word = new \PhpOffice\PhpWord\PhpWord();
+            if (class_exists('\\Dompdf\\Dompdf')) {
+                $this->_wordPdf = true;
+            }
         }
         $this->escort  = \GemsEscort::getInstance();
         $this->html    = new \MUtil_Html_Sequence();
@@ -476,7 +484,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $element = new \Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
         $outputFormats = array('html' => 'HTML');
-        if ($this->_pdf->hasPdfExport()) {
+        if ($this->_pdf->hasPdfExport() || $this->_wordPdf) {
             $outputFormats['pdf'] = 'PDF';
             $element->setValue('pdf');
         }
@@ -610,18 +618,17 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         $content = $this->view->layout->render();
 
-        if ($format == 'pdf') {
+        if (($format == 'pdf') && (! $this->_wordPdf)) {
             if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
                 $respondentId = $respondentId['gr2o_patient_nr'];
             }
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
             $content = $this->_pdf->convertFromHtml($content);
             $this->_pdf->echoPdfContent($content, $filename, true);
-        } elseif ($format == 'word') {
+        } elseif (($format == 'word') || ($format == 'pdf')) {
             if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
                 $respondentId = $respondentId['gr2o_patient_nr'];
             }
-            $filename = 'respondent-export-' . strtolower($respondentId) . '.docx';
             
             $content = $this->prepareWordExport($content);
             
@@ -629,9 +636,24 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
             \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
 
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment;filename="' . $filename . '"');
-            $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'Word2007');
+            if ($format == 'pdf') {
+                PhpOffice\PhpWord\Settings::setPdfRenderer(PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');  
+                $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
+
+                header("Content-Type: application/pdf");
+                header('Content-Disposition: inline; filename="'.$filename.'"');
+                header('Cache-Control: private, max-age=0, must-revalidate');
+                header('Pragma: public');
+                $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'PDF');
+                
+            } else {
+                $filename = 'respondent-export-' . strtolower($respondentId) . '.docx';
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment;filename="' . $filename . '"');
+                header('Cache-Control: private, max-age=0, must-revalidate');
+                header('Pragma: public');
+                $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'Word2007');
+            }
             $xmlWriter->save("php://output");
             die();
         } else {
