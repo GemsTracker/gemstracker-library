@@ -637,7 +637,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             \PhpOffice\PhpWord\Shared\Html::addHtml($section, $content, false, false);
 
             if ($format == 'pdf') {
-                PhpOffice\PhpWord\Settings::setPdfRenderer(PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');  
+                \PhpOffice\PhpWord\Settings::setPdfRenderer(\PhpOffice\PhpWord\Settings::PDF_RENDERER_DOMPDF, VENDOR_DIR . '/dompdf/dompdf');  
                 $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
 
                 header("Content-Type: application/pdf");
