@@ -512,14 +512,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     ->where('sid = ?', $sourceSurveyId);
             $lsSurvey = $lsDb->fetchRow($select);
 
-            $surveyor_title = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
-            $surveyor_description = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
+            $surveyor_title = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
+            $surveyor_description = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 10);
             $surveyor_status = '';
             $surveyor_warnings = '';
             
             // AVAILABLE LANGUAGES
-            $surveyor_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
-            $surveyor_additional_languages = substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
+            $surveyor_languages = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
+            $surveyor_additional_languages = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
             if ($surveyor_additional_languages) {
                 $array = explode(' ', $surveyor_additional_languages);
                 foreach ($array as $value) {
@@ -634,9 +634,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $messages[] = sprintf($this->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
                 }
 
-                if (substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
+                if (mb_substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
                     if ($surveyor_status) {
-                        $values['gsu_status'] = substr($surveyor_status,  0,  127);
+                        $values['gsu_status'] = mb_substr($surveyor_status,  0,  127);
                         $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } elseif ($survey->getStatus() != 'OK') {
                         $values['gsu_status'] = 'OK';
