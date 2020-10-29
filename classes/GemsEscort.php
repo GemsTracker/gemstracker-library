@@ -817,7 +817,7 @@ class GemsEscort extends \MUtil_Application_Escort
      */
     protected function _initTranslate()
     {
-        $this->bootstrap('locale');
+        $this->bootstrap(['event', 'locale']);
 
         $language = $this->locale->getLanguage();
 
