@@ -52,7 +52,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      *
      * @param \Gems_Loader; $loader
      * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
-     * @param $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
+     * @param mixed $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
     public function __construct(\Gems_Loader $loader, FieldsDefinition $fieldsDefinition, $respTrackIdField = false)
     {
@@ -74,13 +74,13 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
     }
 
     /**
-     * If the transformer add's fields, these should be returned here.
+     * If the transformer adds fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
      * know which fields to add by then (optionally using the model
      * for that).
      *
      * @param \MUtil_Model_ModelAbstract $model The parent model
-     * @return array Of filedname => set() values
+     * @return array Of field name => set() values
      */
     public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
@@ -96,6 +96,40 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         return $settings;
     }
 
+    /**
+     * This transform function checks the filter for
+     * a) retrieving filters to be applied to the transforming data,
+     * b) adding filters that are needed
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param array $filter
+     * @return array The (optionally changed) filter
+     * /
+    public function transformFilter(\MUtil_Model_ModelAbstract $model, array $filter)
+    {
+        $textSearch = isset($filter[$model->getTextFilter()]) ? $filter[$model->getTextFilter()] : false;
+        $fieldModel = $this->fieldsDefinition->getDataStorageModel();
+        
+        if ($textSearch && $fieldModel instanceof \MUtil_Model_UnionModel) {
+            foreach ($this->fieldsDefinition->getFieldNames() as $key => $label) {
+                $defs = FieldsDefinition::splitKey($key);
+
+                $subFilter = [
+                    'sub' => $defs['sub'],
+                    'gr2t2f_id_field' => $defs['gtf_id_field'],
+                    'gr2t2f_value' => $textSearch,
+                    ];
+
+                // SHIT! Only filters on key values!               
+                \MUtil_Echo::track($fieldModel->load($subFilter));
+            }
+        }
+        // \MUtil_Echo::track($model->getTextFilter(), $this->fieldsDefinition->getFieldNames(), array_keys($this->fieldsDefinition->getDataStorageModel()->getUnionModels()), $filter);
+        
+        // No changes
+        return $filter;
+    }
+    
     /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.

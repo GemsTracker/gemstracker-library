@@ -24,7 +24,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (12, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
@@ -38,7 +38,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (13, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
@@ -54,7 +54,7 @@ To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/
 
 Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
@@ -72,7 +72,7 @@ To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
@@ -86,9 +86,9 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 {organization_signature}'),
     (15, 'nl', 'Vragen over de behandeling van {relation_about} bij {organization}', 'Beste {greeting},
 
-Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
+Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandeling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (16, 'en', 'Reminder: treatment of {relation_about} at {organization}', 'Dear {greeting},
@@ -102,7 +102,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor de behandeling van {relation_about} bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
