@@ -2325,8 +2325,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function switchLocale($locale = null)
     {
+        $setCookie = true;
         if (null === $locale) {
             $locale = $this->getLocale();
+            $setCookie = false;
         } elseif ($this->getLocale() != $locale) {
             $this->setLocale($locale);
         }
@@ -2334,7 +2336,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $this->locale->setLocale($locale);
         $this->translateAdapter->setLocale($locale);
 
-        return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
+        if ($setCookie) {
+            return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
+        }
+        return true;
     }
 
     /**

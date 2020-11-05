@@ -168,10 +168,12 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
 
         if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
+            $cookieLocale = Gems_Cookies::getLocale($this->getRequest());
             // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
-            if ($tokenLang !== $this->locale->getLanguage() && $this->locale->getLanguage() === $this->project->getLocaleDefault()) {
+            if ($cookieLocale === null && $tokenLang !== $this->locale->getLanguage()) {
                 $this->currentUser->switchLocale($tokenLang);
             }
+
 
             $currentOrg = $this->loader->getOrganization();
             $tokenOrgId = $this->token->getOrganizationId();
