@@ -79,6 +79,11 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     protected $maintenanceModeSnippets = ['Ask\\MaintenanceModeAskSnippet'];
 
     /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    public $project;
+
+    /**
      * The current token ID
      *
      * set by _initToken()
@@ -116,14 +121,14 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      * @var boolean $useHtmlView
      */
     public $useHtmlView = true;
-    
+
     /**
      * Leave on top, so we won't miss this
      */
     public function init()
     {
         parent::init();
-        
+
         /**
          * If not in the index action, add the following to the head section
          *      <meta name="robots" content="noindex">
@@ -164,7 +169,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
         if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
             // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
-            if ($tokenLang != $this->locale->getLanguage()) {
+            if ($tokenLang !== $this->locale->getLanguage() && $this->locale->getLanguage() === $this->project->getLocaleDefault()) {
                 $this->currentUser->switchLocale($tokenLang);
             }
 
