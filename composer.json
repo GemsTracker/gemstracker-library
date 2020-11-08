@@ -69,7 +69,8 @@
         "erusev/parsedown": "~1.7",
         "ifsnop/mysqldump-php": "^2.6",
         "symfony/cache": "^3.4.36",
-        "symfony/event-dispatcher": "^3.4"
+        "symfony/event-dispatcher": "^3.4",
+        "magnafacta/zalt-loader": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
@@ -94,6 +95,10 @@
         {
             "type": "git",
             "url": "https://github.com/GemsTracker/MUtil.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/MagnaFacta/zalt-loader.git"
         }
     ],
     "replace": {

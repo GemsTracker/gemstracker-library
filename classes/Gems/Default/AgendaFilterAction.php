@@ -23,7 +23,7 @@ use Gems\Agenda\AppointmentFilterModel;
 class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-* The snippets used for the autofilter action.
+     * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
