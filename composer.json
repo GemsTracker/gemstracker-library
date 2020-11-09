@@ -61,7 +61,6 @@
         "lib-openssl": "*",
         "lib-libxml": "*",
         "magnafacta/mutil": "dev-master",
-        "magnafacta/zalt-loader": "dev-master",
         "mlocati/ip-lib": "1.*",
         "box/spout": "^2.7.1",
         "laminas/laminas-authentication": "^2.5",

@@ -622,6 +622,18 @@ class GemsEscort extends \MUtil_Application_Escort
         $this->bootstrap(array('event'));
 
         $loader = $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
+        
+        if (class_exists('\\Zalt\\Loader\\ProjectOverloader')) {
+            $config['abstract_factories'][] = new Zalt\Loader\ServiceManager\Factory\ZendRegistryFactory($this->getContainer());
+            
+            $overLoader = new \Zalt\Loader\ProjectOverloader(array_keys($this->_loaderDirs), true);
+            $overLoader->legacyClasses = true;
+            $overLoader->createServiceManager([], $config);
+            $overLoader->setSource($loader);
+
+            $this->overLoader = $overLoader;
+
+        }
 
         // Add other languages through Event (e.g. Modules)
         $event = new \Gems\Event\Application\LoaderInitEvent($loader, $this->getContainer());

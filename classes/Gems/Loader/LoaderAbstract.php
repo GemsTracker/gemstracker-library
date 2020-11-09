@@ -3,11 +3,10 @@
 /**
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Loader
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -27,7 +26,7 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Loader
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.2
@@ -83,6 +82,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             if ($this->cascade) {
                 $this->_loader = $this->_loader->createSubFolderOverloader($this->cascade);
             }
+            $this->_loader->setSource($this);
         } else {
             $this->_loader = new \MUtil_Loader_PluginLoader($this->_dirs);
         }
@@ -197,8 +197,6 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             return new \MUtil_Lazy_StaticCall($className);
         }
 
-
-
         if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
             $mergedArguments = array_merge(['className' => $className], $arguments);
             $obj = call_user_func_array([$this->_loader, 'create'], $mergedArguments);
@@ -211,8 +209,6 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
                 }
             }
         }
-
-
 
         return $obj;
     }
@@ -240,8 +236,12 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
         } else {
             $this->_dirs[$newPrefix] = $newPath;
         }
-
-        $this->_loader->addPrefixPath($newPrefix, $newPath, $prepend);
+        
+        if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
+            $this->_loader->addOverloaders([$newPrefix]);
+        } else {
+            $this->_loader->addPrefixPath($newPrefix, $newPath, $prepend);
+        }
 
         if (\MUtil_Registry_Source::$verbose) {
             \MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
