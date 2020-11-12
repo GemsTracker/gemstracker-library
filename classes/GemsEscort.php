@@ -631,6 +631,7 @@ class GemsEscort extends \MUtil_Application_Escort
             $overLoader->legacyClasses = true;
             $overLoader->createServiceManager([], $config);
             $overLoader->setSource($loader);
+            // \Zalt\Loader\ProjectOverloader::$verbose = true;
 
             $this->getContainer()->overLoader = $overLoader;
             

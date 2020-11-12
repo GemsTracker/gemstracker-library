@@ -319,6 +319,47 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * @param string  $dir The (start) directory
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string  $mask An optional regex file mask, use of / for directory seperator required
+     * @param boolean $recursive When true the directory is searched recursively
+     * @param boolean $followSymlinks When true symlinks are folloed
+     * @return \MUtil_Model_FolderModel
+     */
+    public function getFileModel($dir, $detailed = true, $mask = null, $recursive = false, $followSymlinks = false)
+    {
+        $model = new \MUtil_Model_FolderModel($dir, $mask, $recursive, $followSymlinks);
+
+        if ($recursive) {
+            $model->set('relpath',  'label', $this->translate->_('File (local)'),
+                        'maxlength', 255,
+                        'size', 40,
+                        'validators', array('File_Path', 'File_IsRelativePath')
+            );
+            $model->set('filename', 'elementClass', 'Exhibitor');
+        }
+        if ($detailed || (! $recursive)) {
+            $model->set('filename',  'label', $this->translate->_('Filename'), 'size', 30, 'maxlength', 255);
+        }
+        if ($detailed) {
+            $model->set('path',      'label', $this->translate->_('Path'), 'elementClass', 'Exhibitor');
+            $model->set('fullpath',  'label', $this->translate->_('Full name'), 'elementClass', 'Exhibitor');
+            $model->set('extension', 'label', $this->translate->_('Type'), 'elementClass', 'Exhibitor');
+            $model->set('content',   'label', $this->translate->_('Content'),
+                        'formatFunction', array(\MUtil_Html::create(), 'pre'),
+                        'elementClass', 'TextArea');
+        }
+        $model->set('size',      'label', $this->translate->_('Size'),
+                    'formatFunction', array('MUtil_File', 'getByteSized'),
+                    'elementClass', 'Exhibitor');
+        $model->set('changed',   'label', $this->translate->_('Changed on'),
+                    'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
+                    'elementClass', 'Exhibitor');
+
+        return $model;
+    }
+
+    /**
      * Returns the OpenRosaFormModel
      *
      * It is special since it can show how many responses each table has

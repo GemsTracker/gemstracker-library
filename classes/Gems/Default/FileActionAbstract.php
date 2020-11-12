@@ -89,39 +89,13 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
      */
     public function createModel($detailed, $action)
     {
-        $model = new \MUtil_Model_FolderModel(
-                $this->getPath($detailed, $action),
-                $this->getMask($detailed, $action),
-                $this->recursive
-                );
-
-        if ($this->recursive) {
-            $model->set('relpath',  'label', $this->_('File (local)'),
-                    'maxlength', 255,
-                    'size', 40,
-                    'validators', array('File_Path', 'File_IsRelativePath')
-                    );
-            $model->set('filename', 'elementClass', 'Exhibitor');
-        }
-        if ($detailed || (! $this->recursive)) {
-            $model->set('filename',  'label', $this->_('Filename'), 'size', 30, 'maxlength', 255);
-        }
-        if ($detailed) {
-            $model->set('path',      'label', $this->_('Path'), 'elementClass', 'Exhibitor');
-            $model->set('fullpath',  'label', $this->_('Full name'), 'elementClass', 'Exhibitor');
-            $model->set('extension', 'label', $this->_('Type'), 'elementClass', 'Exhibitor');
-            $model->set('content',   'label', $this->_('Content'),
-                    'formatFunction', array(\MUtil_Html::create(), 'pre'),
-                    'elementClass', 'TextArea');
-        }
-        $model->set('size',      'label', $this->_('Size'),
-                'formatFunction', array('MUtil_File', 'getByteSized'),
-                'elementClass', 'Exhibitor');
-        $model->set('changed',   'label', $this->_('Changed on'),
-                'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
-                'elementClass', 'Exhibitor');
-
-        return $model;
+        return $this->loader->getModels()->getFileModel(
+            $this->getPath($detailed, $action),
+            $detailed,
+            $this->getMask($detailed, $action),
+            $this->recursive,
+            false
+        );
     }
 
     /**
