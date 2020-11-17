@@ -239,8 +239,9 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
 
         if ($orgId) {
             $sql      = "SELECT gr2o_id_user, gr2o_patient_nr FROM gems__respondent2org
-                WHERE gr2o_email = ? AND gr2o_id_organization = ?";
-            $userData = $this->db->fetchRow($sql, [$this->formData['email'], $orgId]);
+                            WHERE (gr2o_email = ? OR gr2o_id_user in (SELECT grr_id_respondent FROM gems__respondent_relations WHERE grr_email = ?)) 
+                                 AND gr2o_id_organization = ?";
+            $userData = $this->db->fetchRow($sql, [$this->formData['email'], $this->formData['email'], $orgId]);
 
             if ($userData) {
                 $sent       = 0;
@@ -254,7 +255,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
                     $batch->runAll();
 
                     $sent = $batch->getCounter('mails_sent');
-                    // \MUtil_Echo::track($sent, $batch->getCounter('jobs_started'));
+                    // \MUtil_Echo::track($sent, $batch->getCounter('jobs_started'), $userData);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail

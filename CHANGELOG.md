@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
+### Added user functionality
+- Allow relation to ask for a token mail resend (#601)
+
 ### Programmability
 - Enable PDF export using PHP Office #597
 
