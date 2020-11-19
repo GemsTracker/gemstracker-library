@@ -142,7 +142,7 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
                         'formatFunction', array($this, 'formatInherited'));
                 $model->setOnLoad('inherited', array(\Gems_Roles::getInstance(), 'translateToRoleNames'));
 
-                // Concatenated field, we can not use onload so handle transaltion to rolenames in the formatFunction
+                // Concatenated field, we can not use onload so handle translation to role names in the formatFunction
                 $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
                 $model->set('not_allowed',
                         'label', $this->_('Not allowed'),
