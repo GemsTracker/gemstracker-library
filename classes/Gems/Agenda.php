@@ -1263,7 +1263,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 }
             }
         } else {
-            throw new \Gems_Coding_Exception('The $to paramater must be either an appointment or an episode object.');
+            throw new \Gems_Exception_Coding('The $to paramater must be either an appointment or an episode object.');
         }
 
         return $output;
