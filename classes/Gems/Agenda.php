@@ -783,7 +783,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get the filters from the database
      *
-     * @param $sql SQL statement
+     * @param $sql string|\Zend_Db_Select SQL statement
      * @return AppointmentFilterInterface[]
      */
     public function getFilters($sql)
