@@ -1582,6 +1582,17 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         $eventName = 'gems.survey.completed';
 
+        if ($this->event->hasListeners($eventName)) {
+            // Remove previous gems survey completed events if set
+            $listeners = $this->event->getListeners($eventName);
+            foreach($listeners as $listener) {
+                $order = $this->event->getListenerPriority($eventName, $listener);
+                if ($order === 100) {
+                    $this->event->removeListener($eventName, $listener);
+                }
+            }
+        }
+
         if (! $completedEvent && !$this->event->hasListeners($eventName)) {
             return;
         }
