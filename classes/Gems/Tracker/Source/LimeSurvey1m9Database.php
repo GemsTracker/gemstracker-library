@@ -513,7 +513,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $lsSurvey = $lsDb->fetchRow($select);
 
             $surveyor_title = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_title'])), 0, 100);
-            $surveyor_description = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 10);
+            $surveyor_description = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
             $surveyor_status = '';
             $surveyor_warnings = '';
             
