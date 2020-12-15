@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Fixed
 - Error message WHERE token = 'xxx' (#595)
 - Make synchronize LS surveys multibyte save (#598)
+- The default roles no longer show the ask screen (#604)
 
 ## [1.9.0]
 [1.9.0]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.7...1.9.0

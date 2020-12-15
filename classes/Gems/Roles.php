@@ -281,7 +281,7 @@ class Gems_Roles
         $this->_acl->addPrivilege(
                 'nologin',
                 'pr.contact.bugs', 'pr.contact.support',
-                'pr.nologin'
+                'pr.nologin', 'pr.respondent.ask'
                 );
     }
 
