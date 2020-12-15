@@ -321,14 +321,14 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * @param string  $dir The (start) directory
      * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string  $mask An optional regex file mask, use of / for directory seperator required
+     * @param mixed   $extensionsOrMask An optional array of extensions or a regex file mask, use of / for directory separator required
      * @param boolean $recursive When true the directory is searched recursively
      * @param boolean $followSymlinks When true symlinks are folloed
      * @return \MUtil_Model_FolderModel
      */
-    public function getFileModel($dir, $detailed = true, $mask = null, $recursive = false, $followSymlinks = false)
+    public function getFileModel($dir, $detailed = true, $extensionsOrMask = null, $recursive = false, $followSymlinks = false)
     {
-        $model = new \MUtil_Model_FolderModel($dir, $mask, $recursive, $followSymlinks);
+        $model = new \MUtil_Model_FolderModel($dir, $extensionsOrMask, $recursive, $followSymlinks);
 
         if ($recursive) {
             $model->set('relpath',  'label', $this->translate->_('File (local)'),

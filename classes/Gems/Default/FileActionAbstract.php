@@ -44,6 +44,32 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**
+     * The parameters used for the createFolder action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createFolderParameters = [];
+
+    /**
+     * The snippets used for the createFolder action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createFolderSnippets = [];
+
+    /**
+     * When true also follows symlinks. Only works when recursive is true
+     *
+     * @var boolean
+     */
+    protected $followSymlinks = false;
+    
+    /**
      * The snippets used for the import action
      *
      * @var mixed String or array of snippets name
@@ -77,6 +103,41 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
     protected $showParameters = array('addOnclickEdit' => false);
 
     /**
+     * The parameters used for the upload action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $uploadParameters = [
+        'currentDir' => 'getCurrentDir',
+        'extensions' => 'getCurrentExtensions',
+        'formTitle'  => 'getUploadTitle',
+        ];
+
+    /**
+     * The snippets used for the upload action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $uploadSnippets = ['File\\UploadFormSnippet'];
+
+    /**
+     * Upload a folder in the current folder
+     */
+    public function createFolderAction()
+    {
+        if ($this->createFolderSnippets) {
+            $params = $this->_processParameters($this->createFolderParameters);
+
+            $this->addSnippets($this->createFolderSnippets, $params);
+        }
+    }
+    
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -94,7 +155,7 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
             $detailed,
             $this->getMask($detailed, $action),
             $this->recursive,
-            false
+            $this->followSymlinks
         );
     }
 
@@ -133,6 +194,23 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
 
         echo $fileData['content'];
         exit();
+    }
+
+    /**
+     * @return string Get the directory to upload to
+     */
+    public function getCurrentDir()
+    {
+        return $this->getPath(true, 'create');
+        return $this->getModel()->getCurrentDir();
+    }
+
+    /**
+     * @return string Get the directory to upload to
+     */
+    public function getCurrentExtensions()
+    {
+        return $this->getModel()->getExtensions();
     }
 
     /**
@@ -218,6 +296,16 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
     }
 
     /**
+     * Helper function to get the title for the upload action.
+     *
+     * @return $string
+     */
+    public function getUploadTitle()
+    {
+        return sprintf($this->_('Upload file to %s'), $this->getCurrentDir());
+    }
+    
+    /**
      * Import the file
      */
     public function importAction()
@@ -249,5 +337,17 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
         $this->html->pInfo($this->_('Checks this file for validity and then performs an import.'));
 
         // \MUtil_Echo::track($data);
+    }
+
+    /**
+     * Upload a file to the current folder
+     */
+    public function uploadAction()
+    {
+        if ($this->uploadSnippets) {
+            $params = $this->_processParameters($this->uploadParameters);
+
+            $this->addSnippets($this->uploadSnippets, $params);
+        }
     }
 }

@@ -441,6 +441,8 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     {
         $page = $this->addPage($label, $privilege, $controller, 'index', $other);
         $page->addAutofilterAction();
+        $page->addAction($this->_('Create folder'), $privilege . '.createdir', 'create-folder');
+        $page->addAction($this->_('Upload'), $privilege . '.upload', 'upload');
         // $page->addCreateAction();
         $page = $page->addShowAction();
         $page->addEditAction();
