@@ -25,6 +25,11 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
      */
     protected $loader;
 
+    /**
+     * @var \Gems_Util
+     */
+    protected $util;
+
     public function __construct($name = null, $startTable = null, $fieldPrefix = null, $saveable = null) {
         parent::__construct('respondent_relation', 'gems__respondent_relations', 'grr');
 
@@ -50,7 +55,7 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
         $this->set('grr_last_name', 'label', $this->_('Last name'));
         $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM, 'elementClass', 'Date');
         $this->set('grr_email', 'label', $this->_('E-Mail'));
-        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $translated->getYesNo());
+        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->util->getDbLookup()->getRespondentMailCodes());
     }
 
     public function applyDetailSettings()

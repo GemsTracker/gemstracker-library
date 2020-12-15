@@ -12,7 +12,7 @@ CREATE TABLE if not exists gems__respondent2track (
 
         gr2t_id_organization        bigint unsigned not null references gems__organizations (gor_id_organization),
 
-        gr2t_mailable               boolean not null default 1,
+        gr2t_mailable               tinyint not null default 1 references gems__mail_codes (gmc_id),
         gr2t_active                 boolean not null default 1,
         gr2t_count                  int unsigned not null default 0,
         gr2t_completed              int unsigned not null default 0,

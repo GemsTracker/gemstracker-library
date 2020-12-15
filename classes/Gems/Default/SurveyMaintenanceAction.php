@@ -231,7 +231,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description', $br, 'gsu_survey_languages');
         $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
             \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings');
-        $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group');
+        $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_mail_code', \MUtil_Html::raw(', '), 'gsu_insertable', $br, 'gsu_id_primary_group');
         $output[40] = array('gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code');
 
         return $output;

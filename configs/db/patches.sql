@@ -1669,9 +1669,18 @@ UPDATE gems__appointment_filters SET gaf_class = 'ActProcAppointmentFilter',
 ALTER TABLE `gems__comm_jobs`
     ADD gcj_target_group varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gcj_target`;
 
--- PATCH: Seperate rights for ask controller
+-- PATCH: Separate rights for ask controller
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.ask')
 WHERE grl_name IN ('nologin', 'guest')
   AND grl_privileges NOT LIKE '%,pr.respondent.ask%';
 
 -- GEMS VERSION: 67
+-- PATCH: Mailable priority levels
+ALTER TABLE gems__respondent2org CHANGE gr2o_mailable gr2o_mailable tinyint not null default 100;
+ALTER TABLE gems__respondent_relations CHANGE grr_mailable grr_mailable tinyint not null default 100;
+ALTER TABLE gems__respondent2track CHANGE gr2t_mailable gr2t_mailable tinyint not null default 100;
+ALTER TABLE gems__surveys ADD gsu_mail_code tinyint not null default 100 AFTER gsu_id_primary_group;
+
+UPDATE gems__respondent2org SET gr2o_mailable = 100 WHERE gr2o_mailable = 1;
+UPDATE gems__respondent_relations SET grr_mailable = 100 WHERE grr_mailable = 1;
+UPDATE gems__respondent2track SET gr2t_mailable = 100 WHERE gr2t_mailable = 1;

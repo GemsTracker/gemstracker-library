@@ -461,6 +461,34 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
+     * @return array mailId => descr
+     */
+    public function getRespondentMailCodes()
+    {
+        $sql = "SELECT gmc_id, gmc_mail_to_target
+                    FROM gems__mail_codes
+                    WHERE gmc_for_respondents = 1 AND gmc_active = 1
+                    ORDER BY gmc_id";
+        // \MUtil_Echo::track($sql);
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+    }
+
+    /**
+     * @return array mailId => descr
+     */
+    public function getRespondentTrackMailCodes()
+    {
+        $sql = "SELECT gmc_id, gmc_mail_to_target
+                    FROM gems__mail_codes
+                    WHERE gmc_for_tracks = 1 AND gmc_active = 1
+                    ORDER BY gmc_id";
+        // \MUtil_Echo::track($sql);
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+    }
+
+    /**
      * Returns the roles in the acl
      *
      * @return array roleId => ucfirst(roleId)
@@ -546,6 +574,19 @@ class Gems_Util_DbLookup extends UtilAbstract
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'sources');
     }
 
+    /**
+     * @return array mailId => descr
+     */
+    public function getSurveyMailCodes()
+    {
+        $sql = "SELECT gmc_id, gmc_mail_cause_target
+                    FROM gems__mail_codes
+                    WHERE gmc_for_surveys = 1 AND gmc_active = 1
+                    ORDER BY gmc_id";
+
+        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+    }
+    
     /**
      * Return key/value pairs of all staff members, currently active or not
      *

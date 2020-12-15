@@ -282,7 +282,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('gr2o_email',       'label', $this->_('E-Mail'));
         $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $dbLookup->getRespondentMailCodes()
                 );
 
         $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
@@ -369,7 +369,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_mailable',   'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
                 'separator', ' ',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $dbLookup->getRespondentMailCodes()
                 );
 
         $this->setIfExists('gr2o_treatment',  'label', $this->_('Treatment'));
@@ -492,7 +492,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->set('gr2o_mailable',
                 'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
-                'multiOptions', $translated->getYesNo(),
+                'multiOptions', $this->util->getDbLookup()->getRespondentMailCodes(),
                 'separator', ' '
                 );
 

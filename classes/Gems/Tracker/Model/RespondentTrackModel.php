@@ -177,10 +177,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
                 'separator', ' ',
-                'multiOptions', array(
-                        '1' => $this->_('Yes'),
-                        '0' => $this->_('No'),
-                    )
+                'multiOptions', $this->util->getDbLookup()->getRespondentTrackMailCodes()
                 );
 
         $this->set('assigned_by',          'label', $this->_('Assigned by'));

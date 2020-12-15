@@ -182,6 +182,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $cont = $setup->addContainer($this->_('Codes'));
         $cont->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
         $cont->addBrowsePage($this->_('Consents'), 'pr.consent', 'consent');
+        $cont->addBrowsePage($this->_('Mail codes'), 'pr.mailcode', 'mail-code');
 
         // ACCESS LEVEL
         $cont = $setup->addContainer($this->_('Access'));

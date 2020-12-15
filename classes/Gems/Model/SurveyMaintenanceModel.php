@@ -121,7 +121,11 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         $this->set('gsu_id_primary_group',   'label', $this->_('Group'),
                 'description', $this->_('If empty, survey will never show up!'),
                 'multiOptions', $dbLookup->getGroups()
-                );        
+                );
+        $this->set('gsu_mail_code',   'label', $this->_('Mail code'),
+                   'description', $this->_('When mails are sent for this survey'),
+                   'multiOptions', $dbLookup->getSurveyMailCodes()
+        );
 
         $this->set('gsu_insertable',         'label', $this->_('Insertable'),
                 'description', $this->_('Can this survey be manually inserted into a track?'),
@@ -174,6 +178,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
             'gsu_survey_warnings',
             'gsu_active',
             'gsu_id_primary_group',
+            'gsu_mail_code',
             'gsu_insertable'            
             ]);
                 

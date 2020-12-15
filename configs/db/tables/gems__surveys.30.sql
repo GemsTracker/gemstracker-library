@@ -19,6 +19,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_survey_warnings         varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_id_primary_group        bigint unsigned null references gems__groups (ggp_id_group),
+        gsu_mail_code               tinyint not null default 1 references gems__mail_codes (gmc_id),
 
         gsu_insertable              boolean not null default 0,
         gsu_valid_for_unit          char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',

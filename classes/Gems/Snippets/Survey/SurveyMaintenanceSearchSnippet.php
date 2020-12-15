@@ -61,6 +61,8 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
         
+        $elements[] = \MUtil_Html::create('br');
+
         $warnings     = array(
             'withwarning'              => $this->_('(with warnings)'),
             'nowarning'                => $this->_('(without warnings)'),
@@ -70,9 +72,8 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
             'listpublic'               => 'Public access is enabled',
         );
         $elements[] = $this->_createSelectElement('survey_warnings', $warnings, $this->_('(every warning state)'));
-
-        $elements[] = \MUtil_Html::create('br');
-
+        $elements[] = $this->_createSelectElement('gsu_mail_code', $this->util->getDbLookup()->getSurveyMailCodes(), $this->_('(all mail codes)'));
+        
         $yesNo      = $this->util->getTranslated()->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));
 
