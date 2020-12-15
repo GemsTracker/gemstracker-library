@@ -163,7 +163,6 @@ class CommLogModel extends \Gems_Model_JoinModel
 
     public function formatJob($jobDescr, $jobId = null)
     {
-        \MUtil_Echo::track(func_get_args());
         if ($jobId) {
             $url = new \MUtil_Html_HrefArrayAttribute(array(
                 $this->request->getControllerKey() => 'comm-job',
