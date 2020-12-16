@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Gems\Translation;
+namespace Gems\Translate;
 
 
 use Gems\Event\EventDispatcher;

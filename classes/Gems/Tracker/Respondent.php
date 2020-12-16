@@ -20,7 +20,7 @@
  */
 class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 {
-    use \Gems\Util\GenderTranslation;
+    use \Gems\Translate\GenderTranslation;
 
     /**
      *
