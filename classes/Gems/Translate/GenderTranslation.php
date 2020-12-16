@@ -63,14 +63,12 @@ trait GenderTranslation
      */
     protected function initTranslateable()
     {
-        \MUtil_Echo::track(1);
         if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
             // OK
             $this->initGenderTranslations();
             return;
         }
 
-        \MUtil_Echo::track(2);
         if ($this->translate instanceof \Zend_Translate) {
             // Just one step
             $this->translateAdapter = $this->translate->getAdapter();
@@ -78,7 +76,6 @@ trait GenderTranslation
             return;
         }
 
-        \MUtil_Echo::track(3);
         if ($this->translate instanceof \Zend_Translate_Adapter) {
             // It does happen and if it is all we have
             $this->translateAdapter = $this->translate;
@@ -119,8 +116,6 @@ trait GenderTranslation
             'F' => $this->getGenderAdapter('female'),
             'M' => $this->getGenderAdapter('male'),
         ];
-
-        \MUtil_Echo::track(array_keys($this->genderTranslates));
     }
 
     protected function getGenderAdapter($gender)
