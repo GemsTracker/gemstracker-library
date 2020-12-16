@@ -21,7 +21,7 @@
 class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 {
     /**
-     * @var User ID of user who sent the mail
+     * @var int User ID of user who sent the mail
      */
     protected $by;
 
@@ -105,6 +105,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
             $result['first_name']   = $this->respondent->getFirstName();
             $result['full_name']    = $this->respondent->getFullName();
             $result['greeting']     = $this->respondent->getGreeting();
+            $result['salutation']   = $this->respondent->getSalutation();
             $result['last_name']    = $this->respondent->getLastName();
             $result['name']         = $this->respondent->getName();
         } else {

@@ -20,6 +20,8 @@
  */
 class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 {
+    use \Gems\Util\GenderTranslation;
+
     /**
      *
      * @var array The gems respondent and respondent to org data
@@ -125,6 +127,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         if ($this->addLoginCheck) {
             $this->model->addLoginCheck();
         }
+        $this->initTranslateable();
         // Load the data
         $this->refresh();
     }
@@ -436,6 +439,15 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getRespondentModel()
     {
         return $this->model;
+    }
+
+    /**
+     * Get the propper salutation of respondent
+     * @return string
+     */
+    public function getSalutation()
+    {
+        return sprintf($this->_('Dear %s', null, $this->getGender()), $this->getGreeting());
     }
 
     /**
