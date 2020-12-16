@@ -76,12 +76,12 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
         $model->set('gmc_for_respondents',   'label', $this->_('Respondents'),
                     'elementClass', 'CheckBox',
                     'description', $this->_('This mail code can be assigned to a respondent.'),
-                    'multiOptions', $yesNo,
+                    'multiOptions', $yesNo
                     );
         $model->set('gmc_for_tracks',        'label', $this->_('Tracks'),
                     'elementClass', 'CheckBox',
                     'description', $this->_('This mail code can be assigned to a track.'),
-                    'multiOptions', $yesNo,
+                    'multiOptions', $yesNo
                     );
         
         \Gems_Model::setChangeFieldsByPrefix($model, 'gmc');
