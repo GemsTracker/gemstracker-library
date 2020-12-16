@@ -71,7 +71,7 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
         $model->set('gmc_for_surveys',       'label', $this->_('Surveys'),
                     'elementClass', 'CheckBox',
                     'description', $this->_('This mail code can be assigned to a survey.'),
-                    'multiOptions', $yesNo,
+                    'multiOptions', $yesNo
                     );
         $model->set('gmc_for_respondents',   'label', $this->_('Respondents'),
                     'elementClass', 'CheckBox',
