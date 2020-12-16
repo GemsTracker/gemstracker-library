@@ -89,7 +89,7 @@ class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstract
         $fileName = $this->_fileElement->getFileName();
         if ($fileName) {
             $filePath = \MUtil_String::stripStringLeft($fileName, $this->currentDir);
-            return parent::setAfterSaveRoute([\MUtil_Model::REQUEST_ID => ltrim(str_replace(['\\', '/', '.'], ['|', '|', '%2E'], $filePath), '|'));
+            return parent::setAfterSaveRoute([\MUtil_Model::REQUEST_ID => ltrim(str_replace(['\\', '/', '.'], ['|', '|', '%2E'], $filePath), '|')]);
         }   
     }
 }
