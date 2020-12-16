@@ -56,6 +56,11 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
     protected $unsubscribedMessage;
 
     /**
+     * @var int The value to assign while unsubscribing
+     */
+    protected $unsubscribedValue = 0;
+
+    /**
      *
      * @var array of arrays, either null or respondent id and org id
      */
@@ -82,6 +87,20 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
         return $element;
     }
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+        
+        // Csrf may be set by project setting in parent
+        $this->useCsrf = false;
+    }
+    
     /**
      * Hook that allows actions when data was saved
      *
@@ -126,12 +145,13 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
             $this->userData[$id]['gr2o_id_organization'] = $this->currentOrganization->getId();
 
             if ($row['gr2o_mailable']) {
-                $row['gr2o_mailable'] = 0;
+                $row['gr2o_mailable'] = $this->unsubscribedValue;
                 $row['gr2o_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
                 $row['gr2o_changed_by'] = $row['gr2o_id_user'];
 
                 $where = $this->db->quoteInto("gr2o_patient_nr = ?", $row['gr2o_patient_nr']) . " AND " .
-                    $this->db->quoteInto("gr2o_id_organization = ?", $row['gr2o_id_organization']);
+                    $this->db->quoteInto("gr2o_id_organization = ?", $row['gr2o_id_organization']) . " AND " .
+                    $this->db->quoteInto("gr2o_mailable > ?", $this->unsubscribedValue);
 
                 $this->db->update('gems__respondent2org', $row, $where);
 
