@@ -1684,3 +1684,6 @@ ALTER TABLE gems__surveys ADD gsu_mail_code tinyint not null default 100 AFTER g
 UPDATE gems__respondent2org SET gr2o_mailable = 100 WHERE gr2o_mailable = 1;
 UPDATE gems__respondent_relations SET grr_mailable = 100 WHERE grr_mailable = 1;
 UPDATE gems__respondent2track SET gr2t_mailable = 100 WHERE gr2t_mailable = 1;
+
+-- PATCH: extend size of ip address field
+ALTER TABLE gems__log_activity CHANGE gla_remote_ip gla_remote_ip varchar(64) character set 'utf8' collate 'utf8_general_ci' not null;
