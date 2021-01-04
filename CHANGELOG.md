@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Error message WHERE token = 'xxx' (#595)
 - Extend length if log IP address storage (#606)
 - Make synchronize LS surveys multibyte save (#598)
+- Prevent the wrong patient being show during embedded login (#607) 
 - The default roles no longer show the ask screen (#604)
 
 ## [1.9.0]

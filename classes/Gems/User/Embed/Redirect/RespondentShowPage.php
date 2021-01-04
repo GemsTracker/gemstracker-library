@@ -38,6 +38,8 @@ class RespondentShowPage extends RedirectAbstract
     public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
     {
         $orgId = $deferredUser->getCurrentOrganizationId();
+        
+        $deferredUser->setSessionPatientNr($patientId, $orgId);
 
         return [
             $this->request->getControllerKey()  => 'respondent',

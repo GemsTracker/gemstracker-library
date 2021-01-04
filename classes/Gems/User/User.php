@@ -1397,6 +1397,22 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * @return int or null
+     */
+    public function getSessionOrganizionId()
+    {
+        return $this->_getVar('current_user_orgId', null);
+    }
+
+    /**
+     * @return string or null
+     */
+    public function getSessionPatientNr()
+    {
+        return $this->_getVar('current_user_patNr', null);
+    }
+    
+    /**
      * get the parameters where the survey should return to
      *
      * @return array
@@ -2246,6 +2262,19 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         return $this;
     }
 
+    /**
+     * @param $patientNr
+     * @param $orgId
+     * @return $this
+     */
+    public function setSessionPatientNr($patientNr, $orgId)
+    {
+        $this->_setVar('current_user_patNr', $patientNr);
+        $this->_setVar('current_user_orgId', $orgId);
+
+        return $this;
+    }
+    
     /**
      *
      * @param string $style One of the escort->getStyle styles

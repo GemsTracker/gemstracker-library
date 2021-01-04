@@ -57,9 +57,9 @@ class RespondentShowCreatePage extends RespondentShowPage
             $this->_('Respondent %s does not yet exist, please enter the respondent data now!'),
             $patientId
         );
-            
-            
-            
+
+        $deferredUser->setSessionPatientNr($patientId, $orgId);
+
         return [
             $this->request->getControllerKey()  => 'respondent',
             $this->request->getActionKey()      => 'create',

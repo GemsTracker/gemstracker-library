@@ -160,7 +160,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         }
 
         if ($this->_hiddenOrgId && $raiseConditions) {
-            // Remove org paramter that should remain hidden when conditions have been raised.
+            // Remove org parameter that should remain hidden when conditions have been raised.
             if (isset($parameters[\MUtil_Model::REQUEST_ID1], $parameters[\MUtil_Model::REQUEST_ID2]) &&
                     ($parameters[\MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
                 $parameters[\MUtil_Model::REQUEST_ID] = $parameters[\MUtil_Model::REQUEST_ID1];
@@ -645,9 +645,14 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             $request->setParam($key, $value);
             $source[$key] = $value;
         }
-        if ($this->_hiddenOrgId && $patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
-            $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);
-            $request->setParam(\MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
+        if ($this->_hiddenOrgId) {
+            if ($this->currentUser->getSessionPatientNr() && $this->currentUser->getSessionOrganizionId()) {
+                $request->setParam(\MUtil_Model::REQUEST_ID1, $this->currentUser->getSessionPatientNr());
+                $request->setParam(\MUtil_Model::REQUEST_ID2, $this->currentUser->getSessionOrganizionId());
+            } elseif ($patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
+                $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);
+                $request->setParam(\MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
+            }
             $request->setParam(\MUtil_Model::REQUEST_ID,  null);
         }
 
