@@ -40,6 +40,13 @@ interface TwoFactorAuthenticatorInterface
     public function createSecret();
 
     /**
+     * The description that should be shown with the Enter code form element
+     *
+     * @return string
+     */
+    public function getCodeInputDescription();
+
+    /**
      * Check if the code is correct. This will accept codes starting from $discrepancy*30sec ago to $discrepancy*30sec from now.
      *
      * @param string   $secret

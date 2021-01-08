@@ -549,7 +549,14 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getTwoFactorAuthenticator($className)
     {
-        $object = $this->_loadClass('TwoFactor_' . $className, true);
+        $settings = $this->project->getTwoFactorMethodSettings();
+
+        $authenticatorSettings = null;
+        if (isset($settings[$className]) && $settings[$className] != 1) {
+            $authenticatorSettings = $settings[$className];
+        }
+
+        $object = $this->_loadClass('TwoFactor_' . $className, true, [$authenticatorSettings]);
 
         if (! $object instanceof TwoFactorAuthenticatorInterface) {
             throw new \Gems_Exception_Coding(sprintf(

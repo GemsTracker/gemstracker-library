@@ -88,7 +88,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      * @var \Zend_View
      */
     protected $view;
-    
+
     /**
      * Hook that allows actions when data was saved
      *
@@ -153,11 +153,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         }
         return $rcLib->getUnansweredTokenDeletionCodes();
     }
-    
+
     protected function loadForm()
     {
         parent::loadForm();
-        
+
         if ($this->fixedReceptionCode == 'redo' && $this->token->isExpired()) {
             $messenger = $this->getMessenger();
             $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), 'danger');
@@ -202,7 +202,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                     $newComment .= "\n";
                     $newComment .= $this->formData['gto_comment'];
                 }
-                
+
                 // Fixing #582: autoextend the date
                 $now = new \MUtil_Date();
                 if ($this->token->getValidUntil() && $this->token->getValidUntil()->isEarlier($now)) {

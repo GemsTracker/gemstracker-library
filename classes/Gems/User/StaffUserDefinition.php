@@ -48,7 +48,9 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
         $select->from('gems__user_logins', array(
                     'user_login_id' => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
-                    'user_enable_2factor' => 'gul_enable_2factor'
+                    'user_enable_2factor' => 'gul_enable_2factor',
+                    'user_otp_count'      =>'gul_otp_count',
+                    'user_otp_requested'  =>'gul_otp_requested',
                     ))
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
                     'user_id'             => 'gsf_id_user',
@@ -63,6 +65,7 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
                     'user_embedded'       => 'gsf_is_embedded',
+                    'user_phonenumber'    => $this->getMobilePhoneField(),
                     ))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
                    'user_role'=>'ggp_role',
@@ -84,5 +87,10 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
         // \MUtil_Echo::track($select->__toString());
 
         return $select;
+    }
+
+    protected function getMobilePhoneField()
+    {
+        return 'gsf_phone_1';
     }
 }

@@ -45,6 +45,8 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
                     'user_enable_2factor' => 'gul_enable_2factor',
+                    'user_otp_count'      =>'gul_otp_count',
+                    'user_otp_requested'  =>'gul_otp_requested',
                     'user_active'         => 'gul_can_login',
                     ))
                 ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
@@ -61,6 +63,7 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                     'user_locale'         => 'grs_iso_lang',
                     'user_birthday'       => 'grs_birthday',
                     'user_zip'            => 'grs_zipcode',
+                    'user_phonenumber'    => $this->getMobilePhoneField(),
                     ))
                ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', array(
                     'user_group' => 'gor_respondent_group',
@@ -83,6 +86,11 @@ class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbst
                ->limit(1);
 
         return $select;
+    }
+
+    protected function getMobilePhoneField()
+    {
+        return 'grs_phone_1';
     }
 
     /**

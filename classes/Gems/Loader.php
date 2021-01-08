@@ -144,6 +144,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @return \Gems\Communication\CommunicationLoader
+     */
+    public function getCommunicationLoader()
+    {
+        return $this->_getClass('communicationLoader', 'Communication\\CommunicationLoader');
+    }
+
+    /**
+     *
      * @return \Gems\Conditions
      */
     public function getConditions()
