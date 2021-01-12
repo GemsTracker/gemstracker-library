@@ -63,6 +63,12 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      * @var string  Email From field
      */
     protected $from;
+
+    /**
+     * @var \Zend_Mail
+     */
+    protected $mail;
+
     protected $language;
     protected $layout;
 
@@ -235,6 +241,14 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         }
     }
 
+    public function getMail()
+    {
+        if (!$this->mail) {
+            $this->mail = $this->loader->getMail();
+        }
+        return $this->mail;
+    }
+
     /**
      * Get Flash message
      * @return Array
@@ -387,7 +401,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function send()
     {
-        $mail = $this->loader->getMail();
+        $mail = $this->getMail();
 
         $mail->setFrom($this->from);
         $mail->addTo($this->to, '', $this->bounceCheck());
