@@ -229,7 +229,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Add a browse / ceate / edit / show / / sleanup etc.. menu item
+     * Add a browse / create / edit / show / / sleanup etc.. menu item
      *
      * @param string $label
      * @param string $privilege

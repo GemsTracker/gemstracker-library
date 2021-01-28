@@ -628,6 +628,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('gto_in_source', 1, \Gems_Model::ID_TYPE, 'token')
                 ->set('target', \MUtil_Model::REQUEST_ID);
+        $tkPage->addAction($this->_('Token check'), 'pr.token.check', 'check-token')
+               ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+               ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
         $tkPage->addAction($this->_('(Re)check answers'), 'pr.token.answers', 'check-token-answers')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');

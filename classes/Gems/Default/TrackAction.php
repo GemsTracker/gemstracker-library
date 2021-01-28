@@ -79,7 +79,29 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         );
 
     /**
-     * The parameters used for the insert action.
+     * The parameters used for the check token action. The $defaultTokenParameters are added to these parameters
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $checkTokenParameters = [];
+
+    /**
+     * Snippets for the check token actions
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $checkTokenSnippets = [
+        'Token\\CheckTokenEvents',
+        'Survey\\SurveyQuestionsSnippet'
+        ];
+
+    /**
+     * The parameters used for the correct action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -487,6 +509,18 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Check the survey level actions for this token
+     */
+    public function checkTokenAction()
+    {
+        if ($this->checkTokenSnippets) {
+            $params = $this->_processParameters($this->checkTokenParameters + $this->defaultTokenParameters);
+
+            $this->addSnippets($this->checkTokenSnippets, $params);
+        }
+    }
+
+    /**
      * Check the tokens for a single token
      */
     public function checkTokenAnswersAction()
@@ -494,21 +528,21 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         $token       = $this->getToken();
         $where       = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
         $batch = $this->loader->getTracker()->recalculateTokens(
-                'answersCheckToken__' . $token->getTokenId(),
-                $this->currentUser->getUserId(),
-                $where
-                );
+            'answersCheckToken__' . $token->getTokenId(),
+            $this->currentUser->getUserId(),
+            $where
+        );
         $batch->autoStart = true;
 
         $title = sprintf(
-                $this->_("Checking the token %s for answers."),
-                $token->getTokenId()
-                );
+            $this->_("Checking the token %s for answers."),
+            $token->getTokenId()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks one token for answers.')
-                );
+                          'itemDescription', $this->_('This task checks one token for answers.')
+        );
     }
 
     /**
@@ -748,58 +782,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
-     * Get the title describing the track
-     *
-     * @return string
-     */
-    protected function getTrackTitle()
-    {
-        $respondent  = $this->getRespondent();
-        $respTrack   = $this->getRespondentTrack();
-        if ($respTrack) {
-            $trackEngine = $respTrack->getTrackEngine();
-
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
-                // Set params
-                return sprintf(
-                        $this->_('%s track for respondent nr %s'),
-                        $trackEngine->getTrackName(),
-                        $respondent->getPatientNumber()
-                        );
-            }
-
-            // Set params
-            return sprintf(
-                    $this->_('%s track for respondent nr %s: %s'),
-                    $trackEngine->getTrackName(),
-                    $respondent->getPatientNumber(),
-                    $respondent->getName()
-                    );
-        }
-    }
-
-    /**
-     * Get the title describing the token
-     *
-     * @return string
-     */
-    protected function getTokenTitle()
-    {
-        $token      = $this->getToken();
-        $respondent = $token->getRespondent();
-
-        // Set params
-        return sprintf(
-                $this->_('Token %s in round "%s" in track "%s" for respondent nr %s: %s'),
-                $token->getTokenId(),
-                $token->getRoundDescription(),
-                $token->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getName()
-                );
-    }
-
-    /**
      * Get the title for editing a track
      *
      * @return string
@@ -1005,6 +987,27 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
     }
 
     /**
+     * Get the title describing the token
+     *
+     * @return string
+     */
+    protected function getTokenTitle()
+    {
+        $token      = $this->getToken();
+        $respondent = $token->getRespondent();
+
+        // Set params
+        return sprintf(
+            $this->_('Token %s in round "%s" in track "%s" for respondent nr %s: %s'),
+            $token->getTokenId(),
+            $token->getRoundDescription(),
+            $token->getTrackName(),
+            $respondent->getPatientNumber(),
+            $respondent->getName()
+        );
+    }
+
+    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
@@ -1089,6 +1092,37 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         $trackEngine = $this->getTrackEngine();
         if ($trackEngine) {
             return $trackEngine->getTrackId();
+        }
+    }
+
+    /**
+     * Get the title describing the track
+     *
+     * @return string
+     */
+    protected function getTrackTitle()
+    {
+        $respondent  = $this->getRespondent();
+        $respTrack   = $this->getRespondentTrack();
+        if ($respTrack) {
+            $trackEngine = $respTrack->getTrackEngine();
+
+            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+                // Set params
+                return sprintf(
+                    $this->_('%s track for respondent nr %s'),
+                    $trackEngine->getTrackName(),
+                    $respondent->getPatientNumber()
+                );
+            }
+
+            // Set params
+            return sprintf(
+                $this->_('%s track for respondent nr %s: %s'),
+                $trackEngine->getTrackName(),
+                $respondent->getPatientNumber(),
+                $respondent->getName()
+            );
         }
     }
 

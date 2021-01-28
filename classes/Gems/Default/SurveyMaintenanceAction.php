@@ -330,13 +330,44 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         }
         
         if (array_key_exists('survey_languages', $filter)) {
-            $filter[] = "(gsu_survey_languages IS NOT NULL AND gsu_survey_languages LIKE '%" . $filter['survey_languages'] . "%')";
+            $lang = trim($this->db->quote($filter['survey_languages']), "'");
+            $filter[] = "(gsu_survey_languages IS NOT NULL AND gsu_survey_languages LIKE '%$lang%')";
             
-            // default:
-
             unset($filter['survey_languages']);
         }
 
+        if (array_key_exists('events', $filter)) {
+            
+            switch ($filter['events']) {
+                case '!Gems_Event_Survey':
+                    $filter[] = "(gsu_beforeanswering_event IS NOT NULL OR gsu_completed_event IS NOT NULL OR gsu_display_event IS NOT NULL)";
+                    break;
+                case '!Gems_Event_SurveyBeforeAnsweringEventInterface':
+                    $filter[] = "gsu_beforeanswering_event IS NOT NULL";
+                    break;
+                case '!Gems_Event_SurveyCompletedEventInterface':
+                    $filter[] = "gsu_completed_event IS NOT NULL";
+                    break;
+                case '!Gems_Event_SurveyDisplayEventInterface':
+                    $filter[] = "gsu_display_event IS NOT NULL";
+                    break;
+                default:
+                    $class = $filter['events'];
+                    if (class_exists($class, true)) {
+                        if (is_subclass_of($class, 'Gems_Event_SurveyBeforeAnsweringEventInterface', true)) {
+                            $filter['gsu_beforeanswering_event'] = $class;
+                        } elseif (is_subclass_of($class, 'Gems_Event_SurveyCompletedEventInterface', true)) {
+                            $filter['gsu_completed_event'] = $class;
+                        } elseif (is_subclass_of($class, 'Gems_Event_SurveyDisplayEventInterface', true)) {
+                            $filter['gsu_display_event'] = $class;
+                        }
+                    }
+                    break;
+            }
+            unset($filter['events']);
+        }
+        
+        // \MUtil_Echo::track($filter);
         return $filter;
     }
 

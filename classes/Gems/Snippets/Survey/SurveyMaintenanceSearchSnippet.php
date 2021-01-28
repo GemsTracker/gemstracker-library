@@ -24,6 +24,11 @@ namespace Gems\Snippets\Survey;
 class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
+     * @var \Gems_Loader
+     */
+    protected $loader;
+    
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -76,6 +81,16 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         
         $yesNo      = $this->util->getTranslated()->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));
+        
+        $events = $this->loader->getEvents();
+        $eList['!Gems_Event_Survey'] = $this->_('(any event)');
+        $eList['!Gems_Event_SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
+        $eList += $events->listSurveyBeforeAnsweringEvents();
+        $eList['!Gems_Event_SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
+        $eList += $events->listSurveyCompletionEvents();
+        $eList['!Gems_Event_SurveyDisplayEventInterface'] = $this->_('(any display event)');
+        $eList += $events->listSurveyDisplayEvents();
+        $elements[] = $this->_createSelectElement('events', $eList, $this->_('(any survey)'));
 
         return $elements;
     }
