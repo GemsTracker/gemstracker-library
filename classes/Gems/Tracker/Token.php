@@ -1623,6 +1623,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $e->getMessage()
             ), \Zend_Log::ERR);
         }
+        if ($completedEvent) {
+            // Remove this event to prevent double triggering
+            $this->event->removeListener($eventName, $eventFunction);
+        }
 
         $changed = $tokenEvent->getChanged();
         if ($changed && is_array($changed)) {
@@ -1677,6 +1681,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $this->getSurveyName(),
                 $e->getMessage()
             ), \Zend_Log::ERR);
+        }
+        if ($beforeAnswerEvent) {
+            // Remove this event to prevent double triggering
+            $this->event->removeListener($eventName, $eventFunction);
         }
 
         $changed = $tokenEvent->getChanged();
