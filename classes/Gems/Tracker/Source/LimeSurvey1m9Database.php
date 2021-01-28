@@ -1376,7 +1376,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         $tokenUntil = $token->getValidUntil();
         // Always set a date, so LimeSurvey will check the token
         $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $tokenFrom;
-        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
+        if (!is_null($tokenUntil) && $tokenUntil->isLater($now)) {
             $lsUntil = $tokenUntil;
         } elseif (!is_null($tokenFrom)) {
             // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
