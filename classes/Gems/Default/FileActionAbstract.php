@@ -220,7 +220,7 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
      */
     public function getEditTitle()
     {
-        return sprintf($this->_('Edit file %s'), $this->_getIdParam());
+        return sprintf($this->_('Edit file %s'), str_replace(['|', '%2E'], ['/', '.'], $this->_getIdParam()));
     }
 
     /**
@@ -281,7 +281,7 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
      */
     public function getShowTitle()
     {
-        return sprintf($this->_('Showing file %s'), $this->_getIdParam());
+        return sprintf($this->_('Showing file %s'), str_replace(['|', '%2E'], ['/', '.'], $this->_getIdParam()));
     }
 
     /**
