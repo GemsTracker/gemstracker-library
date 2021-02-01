@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Allow relation to ask for a token mail resend (#601)
 - Debug options for survey events (#613)
 
+### Interface improvements
+- Feedback bij niet verstuurde reset mail (#278)
+
 ### Programmability
 - Enable PDF export using PHP Office #597
 

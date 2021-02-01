@@ -321,7 +321,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
     }
 
     /**
-     * Dummy: always rerouted by GemsEscort
+     * Dummy: always rerouted by \GemsEscort
      */
     public function indexAction() { }
 
@@ -480,7 +480,7 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
             if ($form instanceof \Gems_User_Form_ResetRequestForm) {
                 $user = $form->getUser();
 
-                $validator = new Gems_User_Validate_ResetRequestValidator($form, $this->translate);
+                $validator = new \Gems_User_Validate_ResetRequestValidator($form, $this->translate);
                 $validUser = $validator->isValid(null, $request->getPost());
                 $errors = null;
 
