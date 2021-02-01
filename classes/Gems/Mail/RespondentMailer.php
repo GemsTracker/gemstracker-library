@@ -86,7 +86,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         if ($this->respondent) {
             return true;
         } else {
-            $this->addMessage($this->translate->_('Respondent data not found'));
+            $this->addMessage($this->_('Respondent data not found'));
             return false;
         }
     }
@@ -99,7 +99,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
     {
         if ($this->respondent) {
             $result = array();
-            $result['bcc']          = $this->mailFields['project_bcc'];
+            // $result['bcc']          = $this->mailFields['project_bcc'];
             $result['email']        = $this->respondent->getEmailAddress();
             $result['from']         = '';
             $result['first_name']   = $this->respondent->getFirstName();

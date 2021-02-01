@@ -1230,7 +1230,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $orgResults  = $org->getMailFields();
         $projResults = $this->project->getMailFields();
 
-        $result['bcc']            = $projResults['project_bcc'];
+        // $result['bcc']            = $projResults['project_bcc'];
         $result['email']          = $this->getEmailAddress();
         $result['first_name']     = $this->_getVar('user_first_name');
         $result['from']           = $this->getFrom();

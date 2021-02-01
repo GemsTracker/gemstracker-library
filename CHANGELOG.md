@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Interface improvements
 - Feedback bij niet verstuurde reset mail (#278)
+- Improve mail template form use with multiple languages (#614)
 
 ### Programmability
 - Enable PDF export using PHP Office #597

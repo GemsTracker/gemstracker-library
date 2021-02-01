@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  *
  *
@@ -20,6 +22,8 @@
  */
 abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 {
+    use TranslateableTrait;
+    
     /**
      * @var string  Message body in BBcode
      */
@@ -69,7 +73,11 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     protected $mail;
 
+    /**
+     * @var string
+     */
     protected $language;
+    
     protected $layout;
 
     /**
@@ -159,6 +167,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function afterRegistry()
     {
+        $this->initTranslateable();
         $this->loadOrganization();
         $this->loadMailFields();
     }
@@ -451,12 +460,17 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Set the languange in which the mail should be sent.
+     * Set the language in which the mail should be sent.
      * @param string $language language code
+     * @param false $reloadFields 
      */
-    public function setLanguage($language)
+    public function setLanguage($language, $reloadFields = false)
     {
         $this->language = $language;
+        if ($reloadFields) {
+            $this->loadMailFields();
+            $this->markedMailFields = null;
+        }
     }
 
     /**

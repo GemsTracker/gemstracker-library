@@ -450,8 +450,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         $this->formData['preview_html'] = $htmlView;
         $this->formData['preview_text'] = $textView;
 
-
-
         $this->formData = array_merge($this->formData, $presetTargetData);
     }
 

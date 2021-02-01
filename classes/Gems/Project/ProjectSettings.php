@@ -823,7 +823,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     public function getMailFields()
     {
         $result['project']              = $this->getName();
-        $result['project_bcc']          = $this->getEmailBcc();
+        // $result['project_bcc']          = $this->getEmailBcc();
         $result['project_description']  = $this->getDescription();
         $result['project_from']         = $this->getFrom();
 

@@ -71,33 +71,6 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
     }
 
     /**
-     *
-     * @param array $subValuesArray
-     * @return string
-     */
-    public function displayMultipleSubjects($subValuesArray)
-    {
-        $html = \MUtil_Html::create()->div();
-        $output = '';
-
-        $multi = false;
-        if (count($subValuesArray) > 1) {
-            $multi = true;
-        }
-        foreach($subValuesArray as $subitem) {
-            if (!empty($subitem['gctt_subject'])) {
-                $paragraph = $html->p();
-                if ($multi) {
-                    $paragraph->strong()->append($subitem['gctt_lang'].':');
-                    $paragraph->br();
-                }
-                $paragraph[] = $subitem['gctt_subject'];
-            }
-        }
-        return $html;
-    }
-
-    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -184,6 +157,33 @@ class Gems_Default_CommTemplateAction extends \Gems_Controller_ModelSnippetActio
         $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
 
         return $model;
+    }
+
+    /**
+     *
+     * @param array $subValuesArray
+     * @return string
+     */
+    public function displayMultipleSubjects($subValuesArray)
+    {
+        $html = \MUtil_Html::create()->div();
+        $output = '';
+
+        $multi = false;
+        if (count($subValuesArray) > 1) {
+            $multi = true;
+        }
+        foreach($subValuesArray as $subitem) {
+            if (!empty($subitem['gctt_subject'])) {
+                $paragraph = $html->p();
+                if ($multi) {
+                    $paragraph->strong()->append($subitem['gctt_lang'].':');
+                    $paragraph->br();
+                }
+                $paragraph[] = $subitem['gctt_subject'];
+            }
+        }
+        return $html;
     }
 
     public function getCreateTitle()
