@@ -250,6 +250,25 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the propper Dear mr./mrs/ greeting of respondent
+     * @return string
+     */
+    public function getDearGreeting()
+    {
+
+        $genderDears = $this->util->getTranslated()->getGenderDear();
+
+        $gender = $this->getGender();
+        if (isset($genderDears[$gender])) {
+            $greeting = $genderDears[$gender] . ' ';
+        } else {
+            $greeting = '';
+        }
+
+        return $greeting . $this->getLastName();
+    }
+
+    /**
      * Get Email address of respondent
      *
      * @return string
@@ -292,7 +311,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get the propper greeting of respondent
+     * Get the proper greeting of respondent
      * @return string
      */
     public function getGreeting()
@@ -302,12 +321,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
         $gender = $this->getGender();
         if (isset($genderGreetings[$gender])) {
-            $greeting = $genderGreetings[$this->getGender()] . ' ';
+            $greeting = $genderGreetings[$gender] . ' ';
         } else {
             $greeting = '';
         }
 
-        return $greeting . ' ' . $this->getLastName();
+        return $greeting . $this->getLastName();
     }
 
     /**

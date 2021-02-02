@@ -87,7 +87,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
         $beforeEvent = $checkSurvey->getSurveyBeforeAnsweringEvent();
         $html->h2($this->_('Before answering'), ['style' => 'clear: both;']);
         if ($beforeEvent) {
-            $html->pInfo($this->_('This token has the before answering event: '))
+            $html->pInfo($this->_('This token has this before answering event: '))
                 ->strong($beforeEvent->getEventName());
             
             $answers = $checkToken->getRawAnswers();

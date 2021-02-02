@@ -100,6 +100,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
         if ($this->respondent) {
             $result = array();
             // $result['bcc']          = $this->mailFields['project_bcc'];
+            $result['dear']         = $this->respondent->getDearGreeting();
             $result['email']        = $this->respondent->getEmailAddress();
             $result['from']         = '';
             $result['first_name']   = $this->respondent->getFirstName();

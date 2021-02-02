@@ -1015,6 +1015,25 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get the propper Dear mr./mrs/ greeting of respondent
+     * @return string
+     */
+    public function getDearGreeting()
+    {
+
+        $genderDears = $this->util->getTranslated()->getGenderDear();
+
+        $gender = $this->_getVar('user_gender');
+        if (isset($genderDears[$gender])) {
+            $greeting = $genderDears[$gender] . ' ';
+        } else {
+            $greeting = '';
+        }
+
+        return $greeting . $this->getLastName();
+    }
+    
+    /**
      * Return default new use group, if it exists
      *
      * @return string
@@ -1200,6 +1219,31 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Returns the user last name (prefix, last).
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        if (! $this->_getVar('last_name')) {
+            $name = ltrim($this->_getVar('user_surname_prefix') . ' ') .
+                $this->_getVar('user_last_name');
+
+            if (! $name) {
+                // Use obfuscated login name
+                $name = $this->getLoginName();
+                $name = substr($name, 0, 3) . str_repeat('*', max(5, strlen($name) - 2));
+            }
+
+            $this->_setVar('last_name', $name);
+
+            // \MUtil_Echo::track($name);
+        }
+
+        return $this->_getVar('last_name');
+    }
+
+    /**
      * The locale set for this user.
      *
      * @return string
@@ -1231,6 +1275,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $projResults = $this->project->getMailFields();
 
         // $result['bcc']            = $projResults['project_bcc'];
+        $result['dear']           = $this->getDearGreeting();
         $result['email']          = $this->getEmailAddress();
         $result['first_name']     = $this->_getVar('user_first_name');
         $result['from']           = $this->getFrom();

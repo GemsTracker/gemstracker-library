@@ -286,6 +286,19 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Returns the gender for use in dear mr./mrs. display
+     *
+     * In practice: starts uppercase
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
+    public function getGenderDear($locale = null)
+    {
+        return array('M' => $this->_('Dear mr.', $locale), 'F' => $this->_('Dear mrs.', $locale), 'U' => $this->_('Dear mr./mrs.', $locale));
+    }
+
+    /**
      * Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs
      *
      * In practice: starts lowercase

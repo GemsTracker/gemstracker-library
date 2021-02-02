@@ -90,7 +90,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         $eList += $events->listSurveyCompletionEvents();
         $eList['!Gems_Event_SurveyDisplayEventInterface'] = $this->_('(any display event)');
         $eList += $events->listSurveyDisplayEvents();
-        $elements[] = $this->_createSelectElement('events', $eList, $this->_('(any survey)'));
+        $elements[] = $this->_createSelectElement('events', $eList, $this->_('(all surveys)'));
 
         return $elements;
     }

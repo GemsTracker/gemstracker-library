@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Improve mail template form use with multiple languages (#614)
 
 ### Programmability
-- Enable PDF export using PHP Office #597
+- Enable PDF export using PHP Office (#597)
 
 ### Fixed
 - Error message WHERE token = 'xxx' (#595)

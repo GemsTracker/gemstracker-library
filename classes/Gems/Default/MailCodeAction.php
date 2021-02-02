@@ -56,15 +56,15 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
                     'validators[unique]', $model->createUniqueValidator('gmc_id'));
 
         $model->set('gmc_mail_to_target', 'label', $this->_('Respondent description'),
-                    'description', $this->_('Value at the respondent / track level.'),
+                    'description', $this->_('Description at the respondent / track level.'),
                     'required', true,
                     'size', '20');
         $model->set('gmc_mail_cause_target', 'label', $this->_('Survey description'),
-                    'description', $this->_('Value at the survey level.'),
+                    'description', $this->_('Description at the survey level.'),
                     'required', true,
                     'size', '20');
         
-        $model->set('gmc_code',        'label', $this->_('Mailcode'),
+        $model->set('gmc_code',        'label', $this->_('Mail code code-field'),
                     'description', $this->_('Optional code name to link the survey to program code.').
                     'size', 10);
 
