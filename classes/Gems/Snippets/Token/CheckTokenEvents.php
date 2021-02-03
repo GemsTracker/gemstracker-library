@@ -96,6 +96,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
             $currentAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
             $currentLog     = $checkToken->getMockChanges('log');
 
+            // \MUtil_Echo::track($checkToken->getMockChanges());
             if ($currentAnswers) {
                 $html->div($this->showArrayTable($currentAnswers, $this->_('Data changed by this event')), ['class' => 'leftFloat']);
             } else {
@@ -110,7 +111,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
             $checkToken->getUrl($this->locale, $this->currentUser->getUserId());
             $emptyAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
             if ($emptyAnswers && ($emptyAnswers != $currentAnswers)) {
-                $html->div($this->showArrayTable($emptyAnswers, $this->_('Data that would be changed if empty')), ['class' => 'leftFloat']);
+                $html->div($this->showArrayTable($emptyAnswers, $this->_('Data that would be changed if empty')), ['class' => 'leftFloat', 'style' => 'clear: both;']);
                 $emptyLog = $checkToken->getMockChanges('log');
                 if ($emptyLog) {
                     $div = $html->div(['class' => 'leftFloat']);

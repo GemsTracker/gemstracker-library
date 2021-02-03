@@ -124,7 +124,7 @@ class TokenReadonly extends \Gems_Tracker_Token
     /**
      * @param null $function Optional function name
      * @param null $param Optional paramter name
-     * @return array|mixed|null
+     * @return array
      */
     public function getMockChanges($function = null, $param = null)
     {
@@ -132,13 +132,13 @@ class TokenReadonly extends \Gems_Tracker_Token
             if (isset($this->_changes[$function][$param])) {
                 return $this->_changes[$function][$param];
             }
-            return null;
+            return [];
         }
         if ($function) {
             if (isset($this->_changes[$function])) {
                 return $this->_changes[$function];
             }
-            return null;
+            return [];
         }
         return $this->_changes;
     }
