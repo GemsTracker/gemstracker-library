@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Improve mail template form use with multiple languages (#614)
 
 ### Programmability
+- Add translation of specific database fields, like Track name, survey name (#568)
 - Enable PDF export using PHP Office (#597)
 
 ### Fixed

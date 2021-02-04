@@ -64,7 +64,7 @@ class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAb
         $model->copyKeys(); // The user can edit the keys.
 
         $model->set('grc_id_reception_code', 'label', $this->_('Code'), 'size', '10');
-        $model->set('grc_description',       'label', $this->_('Description'), 'size', '30');
+        $model->set('grc_description',       'label', $this->_('Description'), 'size', '30', 'translate', true);
 
         $model->set('grc_success',           'label', $this->_('Is success code'),
             'multiOptions', $yesNo ,
@@ -110,8 +110,9 @@ class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAb
             $model->set('grc_description',       'validator', $model->createUniqueValidator('grc_description'));
         }
 
-        if ($this->project->multiLocale) {
-            $model->set('grc_description',       'description', 'ENGLISH please! Use translation file to translate.');
+        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslations($model);
+            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
         }
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'grc');

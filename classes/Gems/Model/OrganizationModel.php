@@ -78,12 +78,12 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $yesNo       = $this->util->getTranslated()->getYesNo();
 
         $this->resetOrder();
-        $this->set('gor_name',                  'label', $this->_('Name'), 'tab', $this->_('General'));
-        $this->set('gor_location',              'label', $this->_('Location'));
+        $this->set('gor_name',                  'label', $this->_('Name'), 'tab', $this->_('General'), 'translate', true);
+        $this->set('gor_location',              'label', $this->_('Location'), 'translate', true);
         $this->set('gor_task',                  'label', $this->_('Task'),
-                'description', sprintf($this->_('Task in %s project'), $projectName)
+                'description', sprintf($this->_('Task in %s project'), $projectName), 'translate', true
                 );
-        $this->set('gor_url',                   'label', $this->_('Company url'));
+        $this->set('gor_url',                   'label', $this->_('Company url'), 'translate', true);
         $this->setIfExists('gor_url_base',      'label', $this->_("Login url's"),
                 'description', sprintf(
                         $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first url is used for mails."),
@@ -102,12 +102,12 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'multiOptions', $yesNo
                 );
 
-        $this->set('gor_contact_name',          'label', $this->_('Contact name'));
+        $this->set('gor_contact_name',          'label', $this->_('Contact name'), 'translate', true);
         $this->set('gor_contact_email',         'label', $this->_('Contact email'));
 
         // Determine order for details, but do not show in browse
-        $this->set('gor_welcome');
-        $this->set('gor_signature');
+        $this->set('gor_welcome', 'translate', true);
+        $this->set('gor_signature', 'translate', true);
         $this->set('gor_create_account_template');
         $this->set('gor_reset_pass_template');
 
@@ -212,9 +212,9 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25')
             );
 
-        if ($this->project->multiLocale) {
-            $this->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
-            $this->set('gor_url',  'description', 'ENGLISH link preferred. Use translation file to translate.');
+        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslations($this);
+            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
         }
 
         return $this;
@@ -348,9 +348,15 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'order', $this->getOrder('gor_user_class') + 1010,
                 'default', $this->project->getLocaleDefault()
                 );
+        
         if ($this->_styles) {
             $this->setIfExists('gor_style');
         }
+        
+        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+        }
+
         return $this;
     }
 

@@ -58,11 +58,13 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
         $model->set('gmc_mail_to_target', 'label', $this->_('Respondent description'),
                     'description', $this->_('Description at the respondent / track level.'),
                     'required', true,
-                    'size', '20');
+                    'size', '20', 
+                    'translate', true);
         $model->set('gmc_mail_cause_target', 'label', $this->_('Survey description'),
                     'description', $this->_('Description at the survey level.'),
                     'required', true,
-                    'size', '20');
+                    'size', '20', 
+                    'translate', true);
         
         $model->set('gmc_code',        'label', $this->_('Mail code code-field'),
                     'description', $this->_('Optional code name to link the survey to program code.').
@@ -86,6 +88,11 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
         
         \Gems_Model::setChangeFieldsByPrefix($model, 'gmc');
 
+        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslations($model);
+            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+        }
+        
         return $model;
     }
     

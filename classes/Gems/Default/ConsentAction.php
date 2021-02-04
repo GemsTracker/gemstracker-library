@@ -51,7 +51,7 @@ class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbst
         $model = new \MUtil_Model_TableModel('gems__consents');
         $model->copyKeys(); // The user can edit the keys.
 
-        $model->set('gco_description', 'label', $this->_('Description'), 'size', '10');
+        $model->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
         $model->set('gco_order',       'label', $this->_('Order'), 'size', '10',
             'description', $this->_('Determines order of presentation in interface.'),
@@ -64,8 +64,9 @@ class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbst
             $model->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
         }
 
-        if ($this->project->multiLocale) {
-            $model->set('gco_description', 'description', 'ENGLISH please! Use translation file to translate.');
+        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslations($model);
+            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
         }
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'gco');
