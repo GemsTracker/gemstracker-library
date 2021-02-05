@@ -23,12 +23,6 @@ class MailJobsUtil extends UtilAbstract
 {
     /**
      *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
      * @param array $filter
      * @param string $mode
      * @param int $daysBetween

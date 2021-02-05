@@ -1315,6 +1315,16 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * @return bool True when there are multiple locales and translate.databasefields is set to 1
+     */
+    public function translateDatabaseFields()
+    {
+        return isset($this['multiLocale'], $this['translate'], $this['translate']['databasefields']) &&
+            $this['multiLocale'] &&
+            (1 == $this['translate']['databasefields']);
+    }
+    
+    /**
      * Does this project use Csrf checks
      *
      * @return boolean
@@ -1325,14 +1335,5 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             return false;
         }
         return true;
-    }
-
-    public function translateDatabaseFields()
-    {
-        if (isset($this['translate'], $this['translate']['databasefields']) && 1 == $this['translate']['databasefields']) {
-            return true;
-        }
-
-        return false;
     }
 }

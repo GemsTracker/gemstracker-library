@@ -181,15 +181,20 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             $this->setIfExists('gor_style',     'label', $this->_('Style'), 'multiOptions', $this->_styles);
         }
 
+        if ($this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslations($this);
+        }
+
         return $this;
     }
 
     /**
      * Set those settings needed for the detailed display
      *
+     * @param bool $noEdit When false, the model will be edited
      * @return \Gems_Model_OrganizationModel
      */
-    public function applyDetailSettings()
+    public function applyDetailSettings($noEdit = true)
     {
         $commUtil = $this->util->getCommTemplateUtil();
 
@@ -212,9 +217,8 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25')
             );
 
-        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+        if ($noEdit && $this->project->translateDatabaseFields()) {
             $this->loader->getModels()->addDatabaseTranslations($this);
-            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
         }
 
         return $this;
@@ -227,7 +231,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
      */
     public function applyEditSettings()
     {
-        $this->applyDetailSettings();
+        $this->applyDetailSettings(false);
         $this->resetOrder();
 
         $yesNo = $this->util->getTranslated()->getYesNo();
@@ -353,7 +357,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             $this->setIfExists('gor_style');
         }
         
-        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
+        if ($this->project->translateDatabaseFields()) {
             $this->loader->getModels()->addDatabaseTranslationEditFields($this);
         }
 

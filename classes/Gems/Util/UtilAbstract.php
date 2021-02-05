@@ -35,6 +35,17 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     protected $db;
 
     /**
+     * @var \Zend_Locale
+     */
+    protected $locale;
+    
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      *
      * @var \MUtil_Registry_Source
      */
@@ -302,6 +313,83 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         }
     }
 
+    /**
+     * Utility function for loading a translated paired from cache
+     *
+     * @return array
+     */
+    /**
+     * @param       $table
+     * @param       $key
+     * @param       $label
+     * @param mixed $tags a string or array of strings
+     * @param       $where Input for $select->where()
+     * @param string Optional function to sort on, only known functions will do
+     */
+    protected function _getTranslatedPairsCached($table, $key, $label, $tags = array(), $where = null, $sort = null)
+    {
+        $lang      = $this->locale->getLanguage();
+        $cacheId   = $this->cleanupForCacheId("__trans $table $key $label $where ");
+        $cacheLang = $cacheId . $this->cleanupForCacheId($lang . "_");
+
+        // \MUtil_Echo::track($cacheId, $cacheLang);
+        
+        $result = $this->cache->load($cacheLang);
+        if ($result) {
+            return $result;
+        }
+
+        $result = $this->cache->load($cacheId);
+        if (! $result) {
+            $select = $this->db->select();
+            $select->from($table, [$key, $label]);
+            
+            if ($where) {
+                $select->where($where);
+            }
+            try {
+                $result = $this->db->fetchPairs($select);
+        
+                $this->cache->save($result, $cacheId, (array) $tags);
+                
+            } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+                // Do not save on an exception
+                return [];
+            }
+        }
+        
+        if ($result && $this->project->translateDatabaseFields() && ($lang != $this->project->getLocaleDefault())) {
+            $tSelect = $this->db->select();
+            $tSelect->from('gems__translations', ['gtrs_keys', 'gtrs_translation'])
+                ->where('gtrs_table = ?', $table)
+                ->where('gtrs_field = ?', $label)
+                ->where('gtrs_iso_lang = ?', $lang)
+                ->where('LENGTH(gtrs_translation) > 0');
+                
+            $translations = $this->db->fetchPairs($tSelect);
+            // \MUtil_Echo::track($tSelect->__toString(), $translations);
+            
+            if ($translations) {
+                foreach ($result as $item => $value) {
+                    if (isset($translations[$item])) {
+                        // Set value to the translation
+                        $result[$item] = $translations[$item];
+                    }
+                }
+            }
+        }
+
+        if ($result && $sort) {
+            $this->_sortResult($result, $sort);
+        }
+        // \MUtil_Echo::track($result);
+
+        // Save the translated version
+        $this->cache->save($result, $cacheLang, (array) $tags);
+        
+        return $result;
+    }
+    
     /**
      * Cleans up everything to a save cacheId
      *

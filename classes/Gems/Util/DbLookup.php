@@ -465,13 +465,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getRespondentMailCodes()
     {
-        $sql = "SELECT gmc_id, gmc_mail_to_target
-                    FROM gems__mail_codes
-                    WHERE gmc_for_respondents = 1 AND gmc_active = 1
-                    ORDER BY gmc_id";
-        // \MUtil_Echo::track($sql);
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+        return $this->_getTranslatedPairsCached(
+            'gems__mail_codes',
+            'gmc_id',
+            'gmc_mail_to_target',
+            'mailcodes',
+            'gmc_for_respondents = 1 AND gmc_active = 1',
+            'ksort'
+            );
     }
 
     /**
@@ -479,13 +480,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getRespondentTrackMailCodes()
     {
-        $sql = "SELECT gmc_id, gmc_mail_to_target
-                    FROM gems__mail_codes
-                    WHERE gmc_for_tracks = 1 AND gmc_active = 1
-                    ORDER BY gmc_id";
-        // \MUtil_Echo::track($sql);
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+        return $this->_getTranslatedPairsCached(
+            'gems__mail_codes',
+            'gmc_id',
+            'gmc_mail_to_target',
+            'mailcodes',
+            'gmc_for_tracks = 1 AND gmc_active = 1',
+            'ksort'
+        );
     }
 
     /**
@@ -579,12 +581,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getSurveyMailCodes()
     {
-        $sql = "SELECT gmc_id, gmc_mail_cause_target
-                    FROM gems__mail_codes
-                    WHERE gmc_for_surveys = 1 AND gmc_active = 1
-                    ORDER BY gmc_id";
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'mailcodes');
+        return $this->_getTranslatedPairsCached(
+            'gems__mail_codes',
+            'gmc_id',
+            'gmc_mail_cause_target',
+            'mailcodes',
+            'gmc_for_surveys = 1 AND gmc_active = 1',
+            'ksort'
+        );
     }
     
     /**

@@ -49,8 +49,9 @@ class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbst
     public function createModel($detailed, $action)
     {
         $model = new \MUtil_Model_TableModel('gems__consents');
-        $model->copyKeys(); // The user can edit the keys.
-
+        // $model->copyKeys(); // The user can edit the keys.
+        $model->addColumn('gco_description', 'origKey');
+        
         $model->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
         $model->set('gco_order',       'label', $this->_('Order'), 'size', '10',
@@ -64,9 +65,13 @@ class Gems_Default_ConsentAction extends \Gems_Controller_ModelSnippetActionAbst
             $model->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
         }
 
-        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslations($model);
-            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+        if ($this->project->translateDatabaseFields()) {
+            if ('create' == $action || 'edit' == $action) {
+                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+            } else {
+                $this->loader->getModels()->addDatabaseTranslations($model);
+                $model->setKeys(['origKey']);
+            }
         }
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'gco');

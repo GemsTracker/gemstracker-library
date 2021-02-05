@@ -110,9 +110,12 @@ class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAb
             $model->set('grc_description',       'validator', $model->createUniqueValidator('grc_description'));
         }
 
-        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslations($model);
-            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+        if ($this->project->translateDatabaseFields()) {
+            if ('create' == $action || 'edit' == $action) {
+                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+            } else {
+                $this->loader->getModels()->addDatabaseTranslations($model);
+            }
         }
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'grc');

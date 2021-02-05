@@ -88,9 +88,12 @@ class Gems_Default_MailCodeAction extends \Gems_Controller_ModelSnippetActionAbs
         
         \Gems_Model::setChangeFieldsByPrefix($model, 'gmc');
 
-        if ($this->project->multiLocale && $this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslations($model);
-            $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+        if ($this->project->translateDatabaseFields()) {
+            if ('create' == $action || 'edit' == $action) {
+                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+            } else {
+                $this->loader->getModels()->addDatabaseTranslations($model);
+            }
         }
         
         return $model;
