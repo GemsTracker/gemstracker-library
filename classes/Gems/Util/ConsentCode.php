@@ -31,12 +31,6 @@ class ConsentCode extends \Gems_Registry_CachedArrayTargetAbstract
     protected $_cacheTags = array('consent');
 
     /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * Return false on checkRegistryRequestsAnswers when the anser is not an array
      *
      * @var boolean
@@ -44,11 +38,19 @@ class ConsentCode extends \Gems_Registry_CachedArrayTargetAbstract
     protected $requireArray = false;
 
     /**
+     * Set in child classes
+     *
+     * @var string Name of table used in gtrs_table
+     */
+    protected $translationTable = 'gems__consents';
+
+
+    /**
      *
      * @var \Gems_Util
      */
     protected $util;
-
+    
     /**
      * Compatibility mode, for use with logical operators returns this->getCode()
      *

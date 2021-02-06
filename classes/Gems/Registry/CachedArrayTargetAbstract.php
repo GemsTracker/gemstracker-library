@@ -49,11 +49,28 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     protected $cache;
 
     /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
      * Does this data item exist?
      *
      * @var boolean
      */
     public $exists = false;
+
+    /**
+     * @var \Zend_Locale
+     */
+    protected $locale;
+
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      * Return false on checkRegistryRequestsAnswers when the anser is not an array
@@ -62,6 +79,20 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      */
     protected $requireArray = true;
 
+    /**
+     * Set in child classes 
+     * 
+     * @var striong The name of the key field, works only for single keys
+     */
+    protected $translationKey;
+
+    /**
+     * Set in child classes
+     *
+     * @var string Name of table used in gtrs_table 
+     */
+    protected $translationTable;
+    
     /**
      * Creates the object.
      *
@@ -134,9 +165,12 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      */
     public function checkRegistryRequestsAnswers()
     {
+        $lang = $this->locale->getLanguage();
+        
         if ($this->cache) {
-            $cacheId = $this->_getCacheId();
-            $this->_data = $this->cache->load($cacheId);
+            $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
+            $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $lang); 
+            $this->_data = $this->cache->load($cacheLang);
         } else {
             $cacheId = false;
         }
@@ -146,6 +180,31 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
 
             if ($cacheId) {
                 $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
+                
+                if (($lang != $this->project->getLocaleDefault()) && $this->translationTable && $this->project->translateDatabaseFields()) {
+                    
+                    $tSelect = $this->db->select();
+                    $tSelect->from('gems__translations', ['gtrs_field', 'gtrs_translation'])
+                            ->where('gtrs_table = ?', $this->translationTable)
+                            ->where('gtrs_keys = ?', $this->_id)
+                            ->where('gtrs_iso_lang = ?', $lang)
+                            ->where('LENGTH(gtrs_translation) > 0');
+
+                    $translations = $this->db->fetchPairs($tSelect);
+                    // \MUtil_Echo::track($tSelect->__toString(), $translations);
+
+                    if ($translations) {
+                        foreach ($this->_data as $item => $value) {
+                            if (isset($translations[$item])) {
+                                // Set value to the translation
+                                $this->_data[$item] = $translations[$item];
+                            }
+                        }
+                    }
+                }
+
+
+                $this->cache->save($this->_data, $cacheLang, $this->_cacheTags);
             }
         }
         // \MUtil_Echo::track($this->_data);
@@ -153,6 +212,17 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
         $this->exists = is_array($this->_data);
 
         return ($this->exists || (! $this->requireArray)) && parent::checkRegistryRequestsAnswers();
+    }
+
+    /**
+     * Cleans up everything to a save cacheId
+     *
+     * @param string $cacheId
+     * @return string
+     */
+    public static function cleanupForCacheId($cacheId)
+    {
+        return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
     }
 
     /**

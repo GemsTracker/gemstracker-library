@@ -316,15 +316,14 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     /**
      * Utility function for loading a translated paired from cache
      *
-     * @return array
-     */
-    /**
-     * @param       $table
-     * @param       $key
-     * @param       $label
+     * @param string $table
+     * @param string $key
+     * @param string $label
      * @param mixed $tags a string or array of strings
-     * @param       $where Input for $select->where()
+     * @param string $where Input for $select->where()
      * @param string Optional function to sort on, only known functions will do
+     * @return array
+     * @throws \Zend_Cache_Exception
      */
     protected function _getTranslatedPairsCached($table, $key, $label, $tags = array(), $where = null, $sort = null)
     {
@@ -387,7 +386,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         // Save the translated version
         $this->cache->save($result, $cacheLang, (array) $tags);
         
-        return $result;
+        return $result ?: [];
     }
     
     /**

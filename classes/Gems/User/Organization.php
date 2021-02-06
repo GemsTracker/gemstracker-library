@@ -89,21 +89,16 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
      * @var \Gems_Loader
      */
     protected $loader;
 
     /**
+     * Set in child classes
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var string Name of table used in gtrs_table
      */
-    protected $project;
+    protected $translationTable = 'gems__organizations';
 
     /**
      *
@@ -565,21 +560,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         }
 
         if ($data) {
-            try {
-                $dbOrgId = $this->db->quote($id, \Zend_Db::INT_TYPE);
-                $sql = "SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE gor_active = 1 AND
-                        (
-                          gor_id_organization = $dbOrgId OR
-                          gor_accessible_by LIKE '%:$dbOrgId:%'
-                        )
-                    ORDER BY gor_name";
-                $data['can_access'] = $this->db->fetchPairs($sql);
-                natsort($data['can_access']);
-            } catch (\Exception $e) {
-                $data['can_access'] = array();
-            }
+            $data['can_access'] = $this->util->getDbLookup()->getAllowedOrganizationsFor($id);
 
             // \MUtil_Echo::track($sql, $data['can_access']);
 

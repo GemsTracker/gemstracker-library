@@ -28,6 +28,11 @@ class Gems_Util_DbLookup extends UtilAbstract
     protected $acl;
 
     /**
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      *
      * @var \Gems_Loader
      */
@@ -46,16 +51,41 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getActiveOrganizations()
     {
-        $sql = "SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE (gor_active = 1 AND
-                            gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
-                        gor_id_organization = ?
-                    ORDER BY gor_name";
+        $where = $this->db->quoteInto('(gor_active = 1 AND gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
+                        gor_id_organization = ?', $this->currentUser->getCurrentOrganizationId());
+        
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            $where,
+            'natsort'
+        );
+    }
 
-        $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+    /**
+     * Return all organizations this arganization is allowed acces to 
+     * 
+     * @param int $orgId
+     * @return array
+     */
+    public function getAllowedOrganizationsFor($orgId)
+    {
+        $dbOrgId = $this->db->quote($orgId, \Zend_Db::INT_TYPE);
+        $where = "gor_active = 1 AND (
+                    gor_id_organization = $dbOrgId OR
+                    gor_accessible_by LIKE '%:$dbOrgId:%'
+                  )";
 
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $orgId, $sql, $orgId, 'organizations', 'natsort');
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            $where,
+            'natsort'
+        );
     }
 
     /**
@@ -299,19 +329,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizations()
     {
-        $sql = "SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE gor_active = 1
-                    ORDER BY gor_name";
-
-        try {
-            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
-        } catch (\Exception $exc) {
-            // Intentional fallthrough when no db present
-            $organizations = array();
-        }
-
-        return $organizations;
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            'gor_active = 1',
+            'natsort'
+            );
     }
 
     /**
@@ -328,11 +353,14 @@ class Gems_Util_DbLookup extends UtilAbstract
             return $this->getOrganizations();
         }
 
-        $sql = "SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE gor_active = 1 and gor_code = ?
-                    ORDER BY gor_name";
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . $code, $sql, $code, 'organizations', 'natsort');
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            $this->db->quoteInto('gor_active = 1 AND (gor_has_respondents = 1 OR and gor_code = ?)', $code),
+            'natsort'
+        );
     }
 
     /**
@@ -342,19 +370,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizationsForLogin()
     {
-        $sql = "SELECT gor_id_organization, gor_name
-            FROM gems__organizations
-            WHERE gor_active = 1 AND gor_has_login = 1
-            ORDER BY gor_name";
-
-        try {
-            $organizations = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
-        } catch (\Exception $exc) {
-            // Intentional fallthrough when no db present
-            $organizations = array();
-        }
-
-        return $organizations;
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            'gor_active = 1 AND gor_has_login = 1',
+            'natsort'
+            );
     }
 
     /**
@@ -364,12 +387,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizationsWithRespondents()
     {
-        $sql = "SELECT gor_id_organization, gor_name
-                        FROM gems__organizations
-                        WHERE gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)
-                        ORDER BY gor_name";
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'organizations', 'natsort');
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            'gor_active = 1 AND (gor_has_respondents = 1 OR gor_add_respondents = 1)',
+            'natsort'
+            );
     }
 
     /**

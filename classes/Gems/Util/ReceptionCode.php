@@ -32,10 +32,12 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
     protected $_cacheTags = array('receptionCode');
 
     /**
+     * Set in child classes
      *
-     * @var \Zend_Db_Adapter_Abstract
+     * @var string Name of table used in gtrs_table
      */
-    protected $db;
+    protected $translationTable = 'gems__reception_codes';
+
 
     /**
      * Compatibility mode, for use with logical operators returns this->getCode()
