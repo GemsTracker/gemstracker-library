@@ -30,11 +30,27 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
     const REDO_COPY = 2;
 
     /**
+     * @var string Language name or null if we DON'T USE the language
+     */
+    protected $_lang = null;
+    
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
+    /**
+     * @var \Zend_locale
+     */
+    protected $locale;
+    
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
+    
     /**
      *
      * @return \Zend_Db_Select for a fetchPairs
@@ -42,10 +58,10 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
     protected function _getDeletionCodeSelect()
     {
         $select = $this->db->select();
-        $select->from('gems__reception_codes', array('grc_id_reception_code', 'grc_description'))
-                ->where('grc_success = 0')
-                ->where('grc_active = 1')
-                ->order('grc_description');
+        $select->from('gems__reception_codes', array('grc_id_reception_code', 'grc_description'));
+        $select->where('grc_success = 0')
+            ->where('grc_active = 1')
+            ->order('grc_description');
 
         return $select;
     }
@@ -81,11 +97,49 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
      */
     protected function _translateAndSort(array $pairs)
     {
-        $translations = array_map([$this->translateAdapter, '_'], $pairs);
+        static $translations;
 
-        asort($translations);
+        if ($this->_lang) {
+            if (! $translations) {
+                $tSelect = $this->db->select();
+                $tSelect->from('gems__translations', ['gtrs_keys', 'gtrs_translation'])
+                        ->where('gtrs_table = ?', 'gems__reception_codes')
+                        ->where('gtrs_field = ?', 'grc_description')
+                        ->where('gtrs_iso_lang = ?', $this->_lang)
+                        ->where('LENGTH(gtrs_translation) > 0');
 
-        return $translations;
+                $translations = $this->db->fetchPairs($tSelect);
+            }
+        
+            foreach ($pairs as $code => $description) {
+                if (isset($translations[$code])) {
+                    $pairs[$code] = $translations[$code];
+                }
+            }
+        }
+
+        asort($pairs);
+
+        return $pairs;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry(); 
+        
+        $lang = $this->locale->getLanguage();
+        
+        if ($this->project->translateDatabaseFields() && ($lang != $this->project->getLocaleDefault())) {
+            $this->_lang = $lang;
+        }
     }
 
     /**

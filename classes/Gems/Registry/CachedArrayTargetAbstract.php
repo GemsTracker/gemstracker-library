@@ -80,13 +80,6 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     protected $requireArray = true;
 
     /**
-     * Set in child classes 
-     * 
-     * @var striong The name of the key field, works only for single keys
-     */
-    protected $translationKey;
-
-    /**
      * Set in child classes
      *
      * @var string Name of table used in gtrs_table 

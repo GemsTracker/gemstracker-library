@@ -133,11 +133,13 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
 
         $model->set('ggp_name', 'label', $this->_('Name'),
                 'minlength', 4,
-                'size', 15,
+                'size', 15, 
+                'translate', true,
                 'validator', $model->createUniqueValidator('ggp_name')
                 );
         $model->set('ggp_description', 'label', $this->_('Description'),
-                'size', 40
+                'size', 40,
+                'translate', true
                 );
         $model->set('ggp_role', 'label', $this->_('Role'),
                 'multiOptions', $dbLookup->getRoles()
@@ -230,6 +232,14 @@ class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstra
             $maskStore = $this->loader->getUserMaskStore();
 
             $maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
+        }
+
+        if ($this->project->translateDatabaseFields()) {
+            if ('create' == $action || 'edit' == $action) {
+                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+            } else {
+                $this->loader->getModels()->addDatabaseTranslations($model);
+            }
         }
 
         \Gems_Model::setChangeFieldsByPrefix($model, 'ggp');

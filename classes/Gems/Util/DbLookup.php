@@ -116,13 +116,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getActiveStaffGroups()
     {
-        $sql = "SELECT ggp_id_group, ggp_name
-            FROM gems__groups
-            WHERE ggp_group_active = 1 AND ggp_staff_members = 1
-            ORDER BY ggp_name";
-
         try {
-            $staffGroups = $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+            $staffGroups = $this->_getTranslatedPairsCached(
+                'gems__groups', 
+                'ggp_id_group', 
+                'ggp_name', 
+                'groups', 
+                'ggp_group_active = 1 AND ggp_staff_members = 1', 
+                'natsort');
         } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
             $staffGroups = array();
@@ -154,13 +155,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getAllowedRespondentGroups()
     {
-        $sql = "SELECT ggp_id_group, ggp_name
-            FROM gems__groups
-            WHERE ggp_group_active = 1 AND ggp_respondent_members = 1
-            ORDER BY ggp_name";
-
         return $this->util->getTranslated()->getEmptyDropdownArray() +
-                $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+            $this->_getTranslatedPairsCached(
+                'gems__groups',
+                'ggp_id_group',
+                'ggp_name',
+                'groups',
+                'ggp_group_active = 1 AND ggp_respondent_members = 1',
+                'natsort');
     }
 
     /**
@@ -313,13 +315,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getGroups()
     {
-        $sql = "SELECT ggp_id_group, ggp_name
-            FROM gems__groups
-            WHERE ggp_group_active = 1
-            ORDER BY ggp_name";
-
         return $this->util->getTranslated()->getEmptyDropdownArray() +
-                $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+            $this->_getTranslatedPairsCached(
+                'gems__groups', 
+                'ggp_id_group', 
+                'ggp_name', 
+                'groups', 
+                'ggp_group_active = 1', 
+                'natsort');
     }
 
     /**
@@ -646,12 +649,13 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getStaffGroups()
     {
-        $sql = "SELECT ggp_id_group, ggp_name
-            FROM gems__groups
-            WHERE ggp_staff_members = 1
-            ORDER BY ggp_name";
-
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
+        return $this->_getTranslatedPairsCached(
+            'gems__groups',
+            'ggp_id_group',
+            'ggp_name',
+            'groups',
+            'ggp_staff_members = 1',
+            'natsort');
     }
 
     /**

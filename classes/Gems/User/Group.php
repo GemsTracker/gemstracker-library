@@ -124,6 +124,13 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     protected $maskStore;
 
     /**
+     * Set in child classes
+     *
+     * @var string Name of table used in gtrs_table
+     */
+    protected $translationTable = 'gems__groups';
+    
+    /**
      *
      * @var \Gems_Util
      */
