@@ -49,7 +49,7 @@ class Gems_Log extends \Zend_Log
 
     /**
      * Helper method to log exception and (optional) request information
-     * @param \Exception                        $exception
+     * @param \Exception|\Error                        $exception
      * @param \Zend_Controller_Request_Abstract $request
      */
     public function logError($exception, \Zend_Controller_Request_Abstract $request = null)
