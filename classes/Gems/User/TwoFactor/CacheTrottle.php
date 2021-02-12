@@ -56,7 +56,6 @@ trait CacheTrottle
         if ($this->rateLimiter->tooManyAttempts($key, $this->maxSendTimesOfSameOtp)) {
             throw new \Gems_Exception_Security($this->_('OTP already sent.'));
         }
-        \Mutil_Echo::track($maxKey, $this->maxSendOtpAttempts);
         if ($this->rateLimiter->tooManyAttempts($maxKey, $this->maxSendOtpAttempts)) {
             throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
         }
