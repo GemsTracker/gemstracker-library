@@ -40,7 +40,6 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
 
     public function getNewCode($secret)
     {
-        \MUtil_Echo::track($this->userOtpCount);
         if ($this->userOtpCount === null) {
             throw new \Gems_Exception('No otp count set');
         }
@@ -54,7 +53,6 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
 
     protected function saveNewCount($count)
     {
-        \MUtil_Echo::track($count);
         if ($this->userId === null) {
             throw new \Gems_Exception('No user ID set');
         }
@@ -78,7 +76,6 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
 
     public function setUserOtpCount($count)
     {
-        \MUtil_Echo::track($count);
         $this->userOtpCount = $count;
     }
 

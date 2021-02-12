@@ -184,29 +184,20 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
     protected function getRetryMessage()
     {
-        $menuItem = $this->menu->findAllowedController('index', 'login');
-
-        if ($menuItem) {
-            $paramSource['resend'] = 1;
-
-            $href = $menuItem->toHRefAttribute($paramSource);
-            $href2 = [
-                'controller' => 'index',
-                'action' => 'login',
-                'resend' => 1,
-            ];
-            \MUtil_Echo::track($href, $href2);
-            if ($href) {
-                $link = \MUtil_Html::create('a', $href2, 'Click here');
+        $href = [
+            $this->request->getControllerKey() => $this->request->getControllerName(),
+            $this->request->getActionKey() => $this->request->getActionName(),
+            'resend' => 1,
+        ];
+        if ($href) {
+            $link = \MUtil_Html::create('a', $href, 'Click here');
 
 
-                $clickLink = $link->setView($this->view);
-                return new \MUtil_Html_Raw(sprintf(
-                    $this->_('%s to retry sending the message'),
-                    $clickLink
-                ));
-            }
-
+            $clickLink = $link->setView($this->view);
+            return new \MUtil_Html_Raw(sprintf(
+                $this->_('%s to retry sending the message'),
+                $clickLink
+            ));
         }
     }
 
@@ -292,10 +283,8 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      */
     protected function processForm()
     {
-        \MUtil_Echo::track('HI!!', 1);
         if ($this->request->getParam('resend') == '1') {
             $authenticator = $this->user->getTwoFactorAuthenticator();
-            \MUtil_Echo::track('HI!!', 2);
             if ($authenticator instanceof SendTwoFactorCodeInterface) {
                 try {
                     $authenticator->enableRetrySendCode($this->user);
