@@ -1676,5 +1676,5 @@ WHERE grl_name IN ('nologin', 'guest')
 
 -- PATCH: Add otp fields to user login
 ALTER TABLE `gems__user_logins`
-    ADD `gul_otp_count` bigint unsigned NULL AFTER `gul_enable_2factor`,
+    ADD `gul_otp_count` bigint unsigned NOT NULL DEFAULT '0' AFTER `gul_enable_2factor`,
     ADD `gul_otp_requested` timestamp NULL AFTER `gul_otp_count`;
