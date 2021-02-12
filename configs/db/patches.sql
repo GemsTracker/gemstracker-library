@@ -1674,6 +1674,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.a
 WHERE grl_name IN ('nologin', 'guest')
   AND grl_privileges NOT LIKE '%,pr.respondent.ask%';
 
+-- GEMS VERSION: 67
 -- PATCH: Add otp fields to user login
 ALTER TABLE `gems__user_logins`
     ADD `gul_otp_count` bigint unsigned NOT NULL DEFAULT '0' AFTER `gul_enable_2factor`,

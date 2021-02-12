@@ -337,6 +337,10 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
                 // Can be removed when all projects have been patched to 1.6.2
                 $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
 
+                // New user login fields in 1.9.1
+                $sql = str_replace(['gul_otp_count', 'gul_otp_requested'], 'gul_changed', $sql);
+
+
                 // Last try
                 $result = $this->db->fetchRow($sql, array($login_name, $organization), \Zend_Db::FETCH_ASSOC);
             }
