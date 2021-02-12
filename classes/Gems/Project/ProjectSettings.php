@@ -1150,6 +1150,41 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Return an array with TwoFactor Methods, corresponding to the classnames in User\TwoFactor
+     *
+     * @return string[]
+     */
+    public function getTwoFactorMethods()
+    {
+        if (isset($this['twoFactor'], $this['twoFactor']['methods'])) {
+            $methods = [];
+            foreach($this['twoFactor']['methods'] as $authenticator=>$authSettings) {
+                // filter specifically disabled methods
+                if ($authSettings != 0) {
+                    $methods[] = $authenticator;
+                }
+            }
+
+            return $methods;
+        }
+
+        // Return GoogleAuthenticator as default when nothing is set
+        return ['GoogleAuthenticator'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getTwoFactorMethodSettings()
+    {
+        if (isset($this['twoFactor'], $this['twoFactor']['methods'])) {
+            return $this['twoFactor']['methods'];
+        }
+
+        return [];
+    }
+
+    /**
      * Returns a salted hash optionally using the specified hash algorithm
      *
      * @param string $value The value to hash

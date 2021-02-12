@@ -1297,6 +1297,25 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get the HOTP count
+     */
+    public function getOtpCount()
+    {
+        return $this->_getVar('user_otp_count');
+    }
+
+    /**
+     * Get the HOTP requested time
+     */
+    public function getOtpRequested()
+    {
+        return \MUtil_Date::ifDate(
+            $this->_getVar('user_otp_requested'),
+            [\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601]
+        );
+    }
+
+    /**
      * Return the number of days since last change of password
      *
      * @return int
@@ -1322,6 +1341,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getPasswordResetKey()
     {
         return $this->definition->getPasswordResetKey($this);
+    }
+
+    /**
+     * Return the (unfiltered) phonenumber if the user has one
+     *
+     * @return string|null
+     */
+    public function getPhonenumber()
+    {
+        return $this->_getVar('user_phonenumber');
     }
 
     /**
@@ -1485,6 +1514,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
 
             $this->_authenticator = $this->userLoader->getTwoFactorAuthenticator($authClass);
+            if ($this->_authenticator instanceof \Gems\User\TwoFactor\UserOtpInterface) {
+                $this->_authenticator->setUserId($this->getUserLoginId());
+                $this->_authenticator->setUserOtpCount($this->getOtpCount());
+                $this->_authenticator->setUserOtpRequested($this->getOtpRequested());
+            }
         }
 
         return $this->_authenticator;
@@ -2399,10 +2433,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function switchLocale($locale = null)
     {
-        $setCookie = true;
         if (null === $locale) {
             $locale = $this->getLocale();
-            $setCookie = false;
         } elseif ($this->getLocale() != $locale) {
             $this->setLocale($locale);
         }
@@ -2410,10 +2442,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $this->locale->setLocale($locale);
         $this->translateAdapter->setLocale($locale);
 
-        if ($setCookie) {
-            return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
-        }
-        return true;
+        return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
     }
 
     /**

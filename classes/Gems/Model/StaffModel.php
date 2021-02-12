@@ -197,6 +197,8 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'elementClass', 'Radio',
                 'separator', ''
                 );
+        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
+
         $this->set('gsf_iso_lang',       'label', $this->_('Language'),
                 'multiOptions', $this->util->getLocalized()->getLanguages()
                 );

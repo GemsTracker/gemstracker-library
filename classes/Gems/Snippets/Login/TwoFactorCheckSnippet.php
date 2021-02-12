@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Login;
 
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\TwoFactor\SendTwoFactorCodeInterface;
 use Gems\User\Validate\TwoFactorAuthenticateValidator;
 
 /**
@@ -36,6 +37,8 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      */
     protected $loginStatusTracker;
 
+    protected $redirectRoute;
+
     /**
      * A parameter that if true resets the queue
      *
@@ -48,6 +51,11 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      * @var \Gems_User_User
      */
     protected $user;
+
+    /**
+     * @var \Zend_View
+     */
+    protected $view;
 
     /**
      *
@@ -95,11 +103,31 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
             return;
         }
 
+        $authenticator = $this->user->getTwoFactorAuthenticator();
+        if ($authenticator instanceof SendTwoFactorCodeInterface && (!isset($this->formData['TwoFactor']) || empty($this->formData['TwoFactor']))) {
+            try {
+                $authenticator->sendCode($this->user);
+                $this->addMessage($authenticator->getSentMessage($this->user));
+            } catch (\Gems_Exception $e) {
+                $this->addMessage($e->getMessage());
+            }
+            if ($authenticator instanceof SendTwoFactorCodeInterface) {
+                try {
+                     if ($authenticator->canRetry($this->user)) {
+                        $this->addMessage($this->getRetryMessage());
+                    }
+                } catch(\Gems_Exception $e) {
+                }
+            }
+        }
+
         $this->saveLabel = $this->_('Check code');
+
+        $description = $authenticator->getCodeInputDescription();
 
         $options = [
             'label'       => $this->_('Enter authenticator code'),
-            'description' => $this->_('From the Google app on your phone.'),
+            'description' => $description,
             'maxlength'   => 6,
             'minlength'   => 6,
             'required'    => true,
@@ -108,7 +136,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
         $element = $form->createElement('Text', 'TwoFactor', $options);
         $element->addValidator(new TwoFactorAuthenticateValidator(
-                $this->user->getTwoFactorAuthenticator(),
+                $authenticator,
                 $this->user->getTwoFactorKey(),
                 $this->translate
                 ));
@@ -146,6 +174,39 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
         if ($this->loginStatusTracker->hasUser()) {
             $this->user = $this->loginStatusTracker->getUser();
+        }
+    }
+
+    public function getRedirectRoute()
+    {
+        return $this->redirectRoute;
+    }
+
+    protected function getRetryMessage()
+    {
+        $menuItem = $this->menu->findAllowedController('index', 'login');
+
+        if ($menuItem) {
+            $paramSource['resend'] = 1;
+
+            $href = $menuItem->toHRefAttribute($paramSource);
+            $href2 = [
+                'controller' => 'index',
+                'action' => 'login',
+                'resend' => 1,
+            ];
+            \MUtil_Echo::track($href, $href2);
+            if ($href) {
+                $link = \MUtil_Html::create('a', $href2, 'Click here');
+
+
+                $clickLink = $link->setView($this->view);
+                return new \MUtil_Html_Raw(sprintf(
+                    $this->_('%s to retry sending the message'),
+                    $clickLink
+                ));
+            }
+
         }
     }
 
@@ -203,7 +264,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
         return false;
     }
-    
+
     /**
      * Hook that allows actions when the input is invalid
      *
@@ -219,6 +280,36 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
                 $this->addMessage($this->_('The form was open for too long or was opened in multiple windows.'));
             }
         }
+    }
+
+    /**
+     * Step by step form processing
+     *
+     * Returns false when $this->afterSaveRouteUrl is set during the
+     * processing, which happens by default when the data is saved.
+     *
+     * @return boolean True when the form should be displayed
+     */
+    protected function processForm()
+    {
+        \MUtil_Echo::track('HI!!', 1);
+        if ($this->request->getParam('resend') == '1') {
+            $authenticator = $this->user->getTwoFactorAuthenticator();
+            \MUtil_Echo::track('HI!!', 2);
+            if ($authenticator instanceof SendTwoFactorCodeInterface) {
+                try {
+                    $authenticator->enableRetrySendCode($this->user);
+                } catch (\Gems_Exception $e) {
+
+                }
+                /*$this->redirectRoute = [
+                    $this->request->getControllerKey()  => $this->request->getControllerName(),
+                    $this->request->getActionKey()      => $this->request->getActionName(),
+                ];
+                $this->redirectRoute();*/
+            }
+        }
+        parent::processForm();
     }
 
     /**

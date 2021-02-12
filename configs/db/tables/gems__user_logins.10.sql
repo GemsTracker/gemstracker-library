@@ -13,6 +13,9 @@ CREATE TABLE if not exists gems__user_logins (
         gul_two_factor_key   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
         gul_enable_2factor   boolean not null default 1,
 
+        gul_otp_count        bigint unsigned NULL,
+        gul_otp_requested    timestamp NULL,
+
         gul_changed          timestamp not null default current_timestamp on update current_timestamp,
         gul_changed_by       bigint unsigned not null,
         gul_created          timestamp not null,

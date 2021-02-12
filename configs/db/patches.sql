@@ -1571,7 +1571,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.c
 ALTER TABLE `gems__log_respondent_communications`
     ADD `grco_id_job` bigint(20) unsigned NULL AFTER `grco_id_message`;
 
-UPDATE gems__log_respondent_communications 
+UPDATE gems__log_respondent_communications
     SET grco_id_job = (SELECT MAX(gcj_id_job) FROM gems__comm_templates INNER JOIN gems__comm_jobs ON gct_id_template = gcj_id_message WHERE gct_id_template = grco_id_message)
     WHERE grco_id_message IN (SELECT gcj_id_message FROM gems__comm_jobs GROUP BY gcj_id_message HAVING COUNT(grco_id_action) = 1);
 
@@ -1587,12 +1587,12 @@ INSERT ignore INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, g
         ('participate.subscribe',   0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('participate.unsubscribe', 0, 0, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
-UPDATE gems__log_setup 
-    SET gls_when_no_user = 0, 
-        gls_on_action = 0, 
-        gls_on_post = 1, 
+UPDATE gems__log_setup
+    SET gls_when_no_user = 0,
+        gls_on_action = 0,
+        gls_on_post = 1,
         gls_on_change = 1,
-        gls_changed = CURRENT_TIMESTAMP, 
+        gls_changed = CURRENT_TIMESTAMP,
         gls_changed_by = 1
     WHERE gls_name IN ('participate.subscribe', 'participate.unsubscribe');
 
@@ -1626,22 +1626,22 @@ ALTER TABLE gems__systemuser_setup
         default 'Gems\\User\\Embed\\Auth\\HourKeySha256';
 
 ALTER TABLE gems__systemuser_setup
-    CHANGE gsus_deferred_user_loader gsus_deferred_user_loader  varchar(200) COLLATE 'utf8_general_ci' NULL  
+    CHANGE gsus_deferred_user_loader gsus_deferred_user_loader  varchar(200) COLLATE 'utf8_general_ci' NULL
         default 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser';
 
 ALTER TABLE gems__systemuser_setup
-    CHANGE gsus_redirect gsus_redirect varchar(200) COLLATE 'utf8_general_ci' NULL 
+    CHANGE gsus_redirect gsus_redirect varchar(200) COLLATE 'utf8_general_ci' NULL
         default 'Gems\\User\\Embed\\Redirect\\RespondentShowPage';
 
-UPDATE gems__systemuser_setup 
-    SET gsus_authentication = 'Gems\\User\\Embed\\Auth\\HourKeySha256' 
+UPDATE gems__systemuser_setup
+    SET gsus_authentication = 'Gems\\User\\Embed\\Auth\\HourKeySha256'
     WHERE gsus_authentication IS NULL;
 
-UPDATE gems__systemuser_setup 
-    SET gsus_deferred_user_loader = 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser' 
+UPDATE gems__systemuser_setup
+    SET gsus_deferred_user_loader = 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser'
     WHERE gsus_deferred_user_loader IS NULL;
 
-UPDATE gems__systemuser_setup 
+UPDATE gems__systemuser_setup
     SET gsus_redirect = 'Gems\\User\\Embed\\Redirect\\RespondentShowPage'
     WHERE gsus_redirect IS NULL;
 
@@ -1669,21 +1669,12 @@ UPDATE gems__appointment_filters SET gaf_class = 'ActProcAppointmentFilter',
 ALTER TABLE `gems__comm_jobs`
     ADD gcj_target_group varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gcj_target`;
 
--- PATCH: Separate rights for ask controller
+-- PATCH: Seperate rights for ask controller
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.ask')
 WHERE grl_name IN ('nologin', 'guest')
   AND grl_privileges NOT LIKE '%,pr.respondent.ask%';
 
--- GEMS VERSION: 67
--- PATCH: Mailable priority levels
-ALTER TABLE gems__respondent2org CHANGE gr2o_mailable gr2o_mailable tinyint not null default 100;
-ALTER TABLE gems__respondent_relations CHANGE grr_mailable grr_mailable tinyint not null default 100;
-ALTER TABLE gems__respondent2track CHANGE gr2t_mailable gr2t_mailable tinyint not null default 100;
-ALTER TABLE gems__surveys ADD gsu_mail_code tinyint not null default 100 AFTER gsu_id_primary_group;
-
-UPDATE gems__respondent2org SET gr2o_mailable = 100 WHERE gr2o_mailable = 1;
-UPDATE gems__respondent_relations SET grr_mailable = 100 WHERE grr_mailable = 1;
-UPDATE gems__respondent2track SET gr2t_mailable = 100 WHERE gr2t_mailable = 1;
-
--- PATCH: extend size of ip address field
-ALTER TABLE gems__log_activity CHANGE gla_remote_ip gla_remote_ip varchar(64) character set 'utf8' collate 'utf8_general_ci' not null;
+-- PATCH: Add otp fields to user login
+ALTER TABLE `gems__user_logins`
+    ADD `gul_otp_count` bigint unsigned NULL AFTER `gul_enable_2factor`,
+    ADD `gul_otp_requested` timestamp NULL AFTER `gul_otp_count`;
