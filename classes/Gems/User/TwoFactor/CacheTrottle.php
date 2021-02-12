@@ -58,7 +58,7 @@ trait CacheTrottle
         }
         \Mutil_Echo::track($maxKey, $this->maxSendOtpAttempts);
         if ($this->rateLimiter->tooManyAttempts($maxKey, $this->maxSendOtpAttempts)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached1'));
+            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
         }
         return true;
     }
@@ -68,10 +68,10 @@ trait CacheTrottle
         $key = $this->getRetryOtpKey($user);
         $maxKey = $this->getMaxSendOtpKey($user);
         if ($this->rateLimiter->tooManyAttempts($key, $this->maxRetries)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached2'));
+            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
         }
         if ($this->rateLimiter->tooManyAttempts($maxKey, $this->maxSendOtpAttempts)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached3'));
+            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
         }
         return true;
     }
@@ -138,7 +138,11 @@ trait CacheTrottle
     {
         $key = $this->getSendOtpKey($user);
         $maxKey = $this->getMaxSendOtpKey($user);
-        $this->rateLimiter->hit($key, $this->getOtpTimeLeft());
+
+        // Only limit the number of same sents on TOTP
+        if ($this instanceof TwoFactorTotpAbstract) {
+            $this->rateLimiter->hit($key, $this->getOtpTimeLeft());
+        }
         $this->rateLimiter->hit($maxKey, $this->maxSendOtpAttemptsPeriod);
     }
 
