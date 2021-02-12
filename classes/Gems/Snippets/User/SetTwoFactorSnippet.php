@@ -148,8 +148,10 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
 
         $registeredMethods = [
             'MailTotp' => $this->_('Mail'),
+            'MailHotp' => $this->_('Mail'),
             'GoogleAuthenticator' => $this->_('Google Authenticator'),
             'SmsTotp' => $this->_('SMS'),
+            'SmsHotp' => $this->_('SMS'),
         ];
 
         return array_intersect_key($registeredMethods, array_flip($enabledMethods));
@@ -187,14 +189,15 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
             // Set on save
             $output['twoFactorEnabled'] = 1;
         } else {*/
-            $output['twoFactorEnabled'] = 0;
-            if ($this->user->getTwoFactorAuthenticator() == $this->authenticator && $this->user->isTwoFactorEnabled()) {
-                $output['twoFactorEnabled'] = 1;
-            }
 
-            if (! $output['twoFactorEnabled']) {
-                $this->addMessage($this->_('Two factor authentication not active!'));
-            }
+        $output['twoFactorEnabled'] = 0;
+        if ($this->user->getTwoFactorAuthenticator() && $this->user->isTwoFactorEnabled()) {
+            $output['twoFactorEnabled'] = 1;
+        }
+
+        if (! $output['twoFactorEnabled']) {
+            $this->addMessage($this->_('Two factor authentication not active!'));
+        }
         // }
         $output['twoFactorKey']     = $authKey;
 
@@ -237,14 +240,12 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
     {
         if (! ($this->user->hasTwoFactor() || $this->user->canSaveTwoFactorKey())) {
             $this->addMessage(sprintf(
-                    $this->_('A two factor key cannot be set for %s.'),
-                    $this->user->getFullName()
-                    ));
+                $this->_('A two factor key cannot be set for %s.'),
+                $this->user->getFullName()
+            ));
             return false;
         }
-        if (parent::hasHtmlOutput()) {
-            return $this->processForm();
-        }
+        return parent::hasHtmlOutput();
     }
 
     protected function loadFormData()
