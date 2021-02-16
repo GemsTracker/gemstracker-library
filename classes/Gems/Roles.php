@@ -52,6 +52,11 @@ class Gems_Roles
     private static $_instanceOfSelf;
 
     /**
+     * @var \Gems_Log
+     */
+    protected $_logger;
+
+    /**
      * Needed for being able to store role id's instead of role names in the db
      *
      * @var array role_id => role_name
@@ -76,11 +81,17 @@ class Gems_Roles
      *
      * @param mixed $cache \Zend_Cache_Core or \GemsEscort
      */
-    public function __construct($cache = null)
+    public function __construct($cache = null, $logger = null)
     {
         self::$_instanceOfSelf = $this;
 
         $this->setCache($cache);
+
+        if ($logger instanceof \Gems_Log) {
+            $this->setLogger($logger);
+        } elseif ($cache instanceof \GemsEscort) {
+            $this->setLogger($cache->logger);
+        }
 
         $this->load();
     }
@@ -181,9 +192,9 @@ class Gems_Roles
     {
         if ($this->_cache instanceof \Zend_Cache_Core) {
             if (! (
-                    $this->_cache->save($this->_acl, $this->_cacheid, array('roles'), null) &&
-                    $this->_cache->save($this->_roleTranslations, $this->_cacheid . 'trans', array('roles'), null)
-                    )) {
+                $this->_cache->save($this->_acl, $this->_cacheid, array('roles'), null) &&
+                $this->_cache->save($this->_roleTranslations, $this->_cacheid . 'trans', array('roles'), null)
+            )) {
                 throw new \Gems_Exception('Failed to save acl to cache');
             }
         }
@@ -198,7 +209,13 @@ class Gems_Roles
     {
         $this->_deleteCache();
         $this->_initAcl();
-        $this->_save();
+        try {
+            $this->_save();
+        } catch (\Gems_Exception $e) {
+            if ($this->_logger instanceof \Gems_Log) {
+                $this->_logger->err($e->getMessage());
+            }
+        }
     }
 
     /**
@@ -279,10 +296,10 @@ class Gems_Roles
          * Only add the nologin role, as the others should come from the database when it is initialized
          */
         $this->_acl->addPrivilege(
-                'nologin',
-                'pr.contact.bugs', 'pr.contact.support',
-                'pr.nologin', 'pr.respondent.ask'
-                );
+            'nologin',
+            'pr.contact.bugs', 'pr.contact.support',
+            'pr.nologin'
+        );
     }
 
     public function loadDefaultRoles()
@@ -304,6 +321,14 @@ class Gems_Roles
         } elseif ($cache instanceof \GemsEscort) {
             $this->_cache = $cache->cache;
         }
+    }
+
+    /**
+     * @param Gems_Log $logger
+     */
+    public function setLogger(\Gems_Log $logger)
+    {
+        $this->_logger = $logger;
     }
 
     /**
