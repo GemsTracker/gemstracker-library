@@ -25,7 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Prevent the wrong patient being show during embedded login (#607)
 - Remove token events from the listener after use (#611)
 - The default roles no longer show the ask screen (#604)
-
+- Token 'Assigned by' shows Track assigner (#616)
+  
 ## [1.9.0]
 [1.9.0]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.7...1.9.0
 This is a sub-major version upgrade because of the introduction of modules 

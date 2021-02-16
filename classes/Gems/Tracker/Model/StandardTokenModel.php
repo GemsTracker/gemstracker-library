@@ -80,7 +80,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->addTable(    'gems__organizations',        array('gto_id_organization' => 'gor_id_organization'));
         $this->addTable(    'gems__reception_codes',      array('gto_reception_code' => 'grc_id_reception_code'));
         $this->addTable(    'gems__rounds',               array('gto_id_round' => 'gro_id_round'));
-        $this->addLeftTable('gems__staff',                array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
+        $this->addLeftTable('gems__staff',                array('gto_created_by' => 'gems__staff.gsf_id_user'));
         $this->addLeftTable('gems__track_fields',         array('gto_id_relationfield' => 'gtf_id_field', 'gtf_field_type = "relation"'));       // Add relation fields
         $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent')); // Add relation
 
