@@ -122,16 +122,22 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'description', $this->_('If empty, survey will never show up!'),
                 'multiOptions', $dbLookup->getGroups()
                 );
-        $this->set('gsu_mail_code',   'label', $this->_('Mail code'),
-                   'description', $this->_('When mails are sent for this survey'),
-                   'multiOptions', $dbLookup->getSurveyMailCodes()
-        );
+        
+        $mailCodes = $dbLookup->getSurveyMailCodes();
+        if (count($mailCodes) > 1) {
+            $this->set('gsu_mail_code', 'label', $this->_('Mail code'),
+                       'description', $this->_('When mails are sent for this survey'),
+                       'multiOptions', $mailCodes
+            );
+        } elseif (1 == count($mailCodes)) {
+            reset($mailCodes);
+            $this->set('gsu_mail_code', 'default', key($mailCodes));
+        } 
 
         $this->set('gsu_insertable',         'label', $this->_('Insertable'),
                 'description', $this->_('Can this survey be manually inserted into a track?'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $yesNo,
-                'onclick', 'this.form.submit()'
+                'multiOptions', $yesNo
                 );
         
         if ($addCount) {

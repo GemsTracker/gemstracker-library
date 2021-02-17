@@ -77,7 +77,11 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
             'listpublic'               => 'Public access is enabled',
         );
         $elements[] = $this->_createSelectElement('survey_warnings', $warnings, $this->_('(every warning state)'));
-        $elements[] = $this->_createSelectElement('gsu_mail_code', $this->util->getDbLookup()->getSurveyMailCodes(), $this->_('(all mail codes)'));
+        
+        $mailCodes = $this->util->getDbLookup()->getSurveyMailCodes();
+        if (count($mailCodes) > 1) {
+            $elements[] = $this->_createSelectElement('gsu_mail_code', $mailCodes, $this->_('(all mail codes)'));
+        }
         
         $yesNo      = $this->util->getTranslated()->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));

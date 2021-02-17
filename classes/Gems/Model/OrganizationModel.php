@@ -24,7 +24,6 @@
 class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
 {
     /**
-     *
      * @var array
      */
     protected $_styles;
@@ -65,7 +64,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
         $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
-        \Gems_Model::setChangeFieldsByPrefix($this, 'gor');
+        // \Gems_Model::setChangeFieldsByPrefix($this, 'gor');
     }
 
     /**
