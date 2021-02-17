@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Interface improvements
 - Feedback bij niet verstuurde reset mail (#278)
 - Improve mail template form use with multiple languages (#614)
+- Track builder: filter survey list (#362)
 
 ### Programmability
 - Add translation of specific database fields, like Track name, survey name (#568)
@@ -21,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Error message WHERE token = 'xxx' (#595)
 - Extend length if log IP address storage (#606)
 - Incorrect valid until date set when putting a token in LimeSurvey (#612)
+- Make email test language a choice (#61)  
 - Make synchronize LS surveys multibyte save (#598)
 - Prevent the wrong patient being show during embedded login (#607)
 - Remove token events from the listener after use (#611)
