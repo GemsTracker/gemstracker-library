@@ -561,9 +561,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             ELSE MAX(COALESCE(gto_completion_time, gto_valid_until))
             END as enddate";
 
-        $tokenSelect = $this->tracker->getTokenSelect(array(new \Zend_Db_Expr($maxExpression)));
-        $tokenSelect->andReceptionCodes(array())
-                ->andRounds(array())
+        $tokenSelect = $this->tracker->getTokenSelect([new \Zend_Db_Expr($maxExpression)]);
+        $tokenSelect->andReceptionCodes([], false)
+                ->andRounds([])
                 ->forRespondentTrack($this->_respTrackId)
                 ->onlySucces();
 

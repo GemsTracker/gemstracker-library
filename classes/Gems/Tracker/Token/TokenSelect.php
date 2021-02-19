@@ -79,22 +79,26 @@ class Gems_Tracker_Token_TokenSelect
      * Add reception codes and token status calculation
      *
      * @param string|array $fields
+     * @param bool   $addStatus When true the token status column is added (default)
      * @return \Gems_Tracker_Token_TokenSelect
+     * @throws \Zend_Db_Select_Exception
      */
-    public function andReceptionCodes($fields = '*')
+    public function andReceptionCodes($fields = '*', $addStatus = true)
     {
         $this->sql_select->join('gems__reception_codes',
                                 'gems__tokens.gto_reception_code = grc_id_reception_code',
                                 $fields);
 
-        // Some queries use multiple token tables
-        $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
+        if ($addStatus) {
+            // Some queries use multiple token tables
+            $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
 
-        $this->sql_select->columns(
+            $this->sql_select->columns(
                 ['token_status' => new \Zend_Db_Expr($expr)],
                 'gems__tokens'
-                );
-
+            );
+        }
+        
         return $this;
     }
 
