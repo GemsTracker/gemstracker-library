@@ -372,7 +372,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      */
     public function getRoles(\GemsEscort $escort)
     {
-        return $this->_getClass('roles', null, array($escort));
+        return $this->_getClass('roles', null, array($escort, $escort->logger));
     }
 
     /**

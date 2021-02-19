@@ -89,7 +89,7 @@ class Gems_Roles
 
         if ($logger instanceof \Gems_Log) {
             $this->setLogger($logger);
-        } elseif ($cache instanceof \GemsEscort) {
+        } elseif (($cache instanceof \GemsEscort) && ($cache->logger instanceof \Gems_Log)) {
             $this->setLogger($cache->logger);
         }
 
