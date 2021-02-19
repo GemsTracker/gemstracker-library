@@ -228,7 +228,7 @@ class Gems_Default_SummaryAction extends \Gems_Controller_ModelSnippetActionAbst
                         array('gsu_survey_name'))
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
                 ->joinLeft('gems__track_fields', 'gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
-                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'filler'));
+                ->group(array('gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', 'filler'));
 
         $filter = $this->getSearchFilter();
         if (array_key_exists('fillerfilter', $filter)) {
