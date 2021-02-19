@@ -424,6 +424,16 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the organization model
+     *
+     * @return \Gems\Model\SiteModel
+     */
+    public function getSiteModel(array $styles = [])
+    {
+        return $this->_loadClass('SiteModel', true);
+    }
+
+    /**
      * Load the staffmodel
      *
      * @param boolean $addLogin Add the login tables to the model

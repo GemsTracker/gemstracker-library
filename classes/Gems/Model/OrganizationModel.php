@@ -87,13 +87,20 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->set('gor_task',                  'label', $this->_('Task'),
                 'description', sprintf($this->_('Task in %s project'), $projectName), 'translate', true
                 );
-        $this->set('gor_url',                   'label', $this->_('Company url'), 'translate', true);
-        $this->setIfExists('gor_url_base',      'label', $this->_("Login url's"),
-                'description', sprintf(
-                        $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first url is used for mails."),
-                        $projectName
-                        )
-                );
+        $this->set('gor_url',                   'label', $this->_('Company url'),
+                   'description', $this->_('The website of the organization, for information purposes.'),
+                   'translate', true);
+//        $this->setIfExists('gor_url_base',      'label', $this->_("Login url's"),
+//                'description', sprintf(
+//                        $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first url is used for mails."),
+//                        $projectName
+//                        )
+//                );
+
+        $this->addColumn('gor_id_organization', 'pref_url');
+        $this->set('pref_url', 'label', $this->_("Preferred url"), 'elementClass', 'Exhibitor');
+        $this->setOnLoad('pref_url', [$this->util->getSites(), 'getOrganizationPreferredUrl']);
+        
         $this->setIfExists('gor_code',             'label', $this->_('Organization code'),
                 'description', $this->_('Optional code name to link the organization to program code.')
                 );
@@ -255,10 +262,10 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->set('gor_url',
                 'size', 50
                 );
-        $this->setIfExists('gor_url_base',
-                'size', 50,
-                'filter', 'TrailingSlash'
-                );
+//        $this->setIfExists('gor_url_base',
+//                'size', 50,
+//                'filter', 'TrailingSlash'
+//                );
         $this->setIfExists('gor_code',
                 'size', 10
                 );

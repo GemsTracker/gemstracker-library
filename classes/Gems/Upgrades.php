@@ -31,19 +31,19 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         //Now set the context
         $this->setContext('gems');
         //And add our patches
-        $this->register('Upgrade143to150', 'Upgrade from 1.4.3 to 1.5.0');
-        $this->register('Upgrade150to151', 'Upgrade from 1.5.0 to 1.5.1');
-        $this->register('Upgrade151to152', 'Upgrade from 1.5.1 to 1.5.2');
-        $this->register('Upgrade152to153', 'Upgrade from 1.5.2 to 1.5.3');
-        $this->register('Upgrade153to154', 'Upgrade from 1.5.3 to 1.5.4');
-        $this->register('Upgrade154to155', 'Upgrade from 1.5.4 to 1.5.5');
-        $this->register('Upgrade155to156', 'Upgrade from 1.5.5 to 1.5.6');
-        $this->register('Upgrade156to157', 'Upgrade from 1.5.6 to 1.5.7');
-        $this->register('Upgrade157to16',  'Upgrade from 1.5.7 to 1.6');
-        $this->register('Upgrade16to161',  'Upgrade from 1.6.0 to 1.6.1');
-        $this->register('Upgrade161to162', 'Upgrade from 1.6.1 to 1.6.2');
-        $this->register('Upgrade162to163', 'Upgrade from 1.6.2 to 1.6.3');
-        $this->register('Upgrade163to164', 'Upgrade from 1.6.3 to 1.6.4');
+//        $this->register('Upgrade143to150', 'Upgrade from 1.4.3 to 1.5.0');
+//        $this->register('Upgrade150to151', 'Upgrade from 1.5.0 to 1.5.1');
+//        $this->register('Upgrade151to152', 'Upgrade from 1.5.1 to 1.5.2');
+//        $this->register('Upgrade152to153', 'Upgrade from 1.5.2 to 1.5.3');
+//        $this->register('Upgrade153to154', 'Upgrade from 1.5.3 to 1.5.4');
+//        $this->register('Upgrade154to155', 'Upgrade from 1.5.4 to 1.5.5');
+//        $this->register('Upgrade155to156', 'Upgrade from 1.5.5 to 1.5.6');
+//        $this->register('Upgrade156to157', 'Upgrade from 1.5.6 to 1.5.7');
+//        $this->register('Upgrade157to16',  'Upgrade from 1.5.7 to 1.6');
+//        $this->register('Upgrade16to161',  'Upgrade from 1.6.0 to 1.6.1');
+//        $this->register('Upgrade161to162', 'Upgrade from 1.6.1 to 1.6.2');
+//        $this->register('Upgrade162to163', 'Upgrade from 1.6.2 to 1.6.3');
+//        $this->register('Upgrade163to164', 'Upgrade from 1.6.3 to 1.6.4');
         $this->register('Upgrade164to170', 'Upgrade from 1.6.4 to 1.7.0');
         $this->register('Upgrade170to171', 'Upgrade from 1.7.0 to 1.7.1');
         $this->register('Upgrade171to172', 'Upgrade from 1.7.1 to 1.7.2');
@@ -54,7 +54,8 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->register('Upgrade184to185', 'Upgrade from 1.8.4 to 1.8.5');
         $this->register('Upgrade185to186', 'Upgrade from 1.8.5 to 1.8.6');
         $this->register('Upgrade186to187', 'Upgrade from 1.8.6 to 1.8.7');
-        $this->register('Upgrade187to188', 'Upgrade from 1.8.7 to 1.9.0');
+        $this->register('Upgrade187to190', 'Upgrade from 1.8.7 to 1.9.0');
+        $this->register('Upgrade190to191', 'Upgrade from 1.9.0 to 1.9.1');
         /**
          * To have the new_project updated to the highest level, update
          *
@@ -70,7 +71,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      * To upgrade from 143 to 15 we need to do some work:
      * 1. execute db patches 42 and 43
      * 2. create new tables
-     */
+     * /
     public function Upgrade143to150()
     {
         $this->_batch->addTask('Db_AddPatches', 42);
@@ -93,7 +94,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.1 just execute patchlevel 44
-     */
+     * /
     public function Upgrade150to151()
     {
         $this->_batch->addTask('Db_AddPatches', 44);
@@ -103,7 +104,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.2 just execute patchlevel 45
-     */
+     * /
     public function Upgrade151to152()
     {
         $this->_batch->addTask('Db_AddPatches', 45);
@@ -113,7 +114,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.2 just execute patchlevel 46
-     */
+     * /
     public function Upgrade152to153()
     {
         $this->_batch->addTask('Db_AddPatches', 46);
@@ -123,7 +124,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.4 just execute patchlevel 47
-     */
+     * /
     public function Upgrade153to154()
     {
         $this->_batch->addTask('Db_AddPatches', 47);
@@ -133,7 +134,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.5 just execute patchlevel 48
-     */
+     * /
     public function Upgrade154to155()
     {
         $this->_batch->addTask('Db_AddPatches', 48);
@@ -145,7 +146,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.6 just execute patchlevel 49
-     */
+     * /
     public function Upgrade155to156()
     {
         $this->_batch->addTask('Db_AddPatches', 49);
@@ -157,7 +158,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.5.7 just execute patchlevel 50
-     */
+     * /
     public function Upgrade156to157()
     {
         $this->_batch->addTask('Db_AddPatches', 50);
@@ -167,7 +168,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.6 just execute patchlevel 51
-     */
+     * /
     public function Upgrade157to16()
     {
         $this->_batch->addTask('Db_AddPatches', 51);
@@ -179,7 +180,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.6.1 just execute patchlevel 52
-     */
+     * /
     public function Upgrade16to161()
     {
         $this->_batch->addTask('Db_AddPatches', 52);
@@ -191,7 +192,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.6.2 just execute patchlevel 53
-     */
+     * /
     public function Upgrade161to162()
     {
         $this->_batch->addTask('Db_CreateNewTables');
@@ -204,7 +205,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.6.3 just execute patchlevel 54
-     */
+     * /
     public function Upgrade162to163()
     {
         $this->_batch->addTask('Db_CreateNewTables');
@@ -218,7 +219,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
     /**
      * To upgrade to 1.6.4 just execute patchlevel 55
-     */
+     * /
     public function Upgrade163to164()
     {
         $this->_batch->addTask('Db_CreateNewTables');
@@ -386,11 +387,28 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
     /**
      * To upgrade to 1.8.8
      */
-    public function Upgrade187to188()
+    public function Upgrade187to190()
     {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 66);
 
+        // Use AddTask task to execute after patches
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+
+        return true;
+    }
+    
+    /**
+     * To upgrade to 1.9.1
+     */
+    public function Upgrade190to191()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 67);
+
+        $this->_batch->addTask('Sites\\SiteUpgradeFromOrgAndProject');
+        
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));

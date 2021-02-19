@@ -1792,26 +1792,6 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     *
-     * @return int The current active organization id or 0 when not known
-     * @deprecated Since 1.7.2 Replaced by $this->currentOrganization->getId();
-     */
-    public function getCurrentOrganization()
-    {
-        return $this->currentOrganization->getId();
-    }
-
-    /**
-     *
-     * @return int The current user id or 0 when not known.
-     * @deprecated Since 1.7.2 Replaced by $this->currentUser->getUserId();
-     */
-    public function getCurrentUserId()
-    {
-        return $this->currentUser->getUserId();
-    }
-
-    /**
      * Return the directories where the Database Administrator Model (DbaModel)
      * should look for sql creation files.
      *
@@ -2002,20 +1982,6 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     * Returns true if the given role or role of the current user has the given privilege
-     *
-     * @param string $privilege
-     * @param string $role
-     * @return bool
-     * @deprecated Since 1.7.2 Replaced by $this->currentUser->hasPrivilege();
-     */
-    public function hasPrivilege($privilege, $role = null)
-    {
-        if (is_null($role)) $role = $this->session->user_role;
-        return (! $this->acl) || $this->acl->isAllowed($role, null, $privilege);
-    }
-
-    /**
      * Searches and loads ini, xml, php or inc file
      *
      * When no extension is specified the system looks for a file with the right extension,
@@ -2074,47 +2040,34 @@ class GemsEscort extends \MUtil_Application_Escort
      *
      * @param string $fullHost
      * @return boolean
+     * @deprecated since version 1.9.1 replaced by SiteUrl->isPostFromAllowedHost
      */
     public function isAllowedHost($fullHost)
     {
-        $host = \MUtil_String::stripToHost($fullHost);
-        $request = $this->request;
-        if ($request instanceof \Zend_Controller_Request_Http) {
-            if ($host == \MUtil_String::stripToHost($request->getServer('HTTP_HOST'))) {
-                return true;
-            }
-        }
-        if (isset($this->project)) {
-            foreach ($this->project->getAllowedHosts() as $allowedHost) {
-                if ($host == \MUtil_String::stripToHost($allowedHost)) {
-                    return true;
-                }
-            }
-        }
-        $loader = $this->getLoader();
-        foreach ($loader->getUserLoader()->getOrganizationUrls() as $url => $orgId) {
-            if ($host == \MUtil_String::stripToHost($url)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Return a hashed version of the input value.
-     *
-     * @deprecated Since 1.5
-     *
-     * @param string $value The value to hash.
-     * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
-     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
-     * @param array $context Optional, the other values being saved
-     * @return string The salted hash as a 32-character hexadecimal number.
-     */
-    public function passwordHash($value, $isNew = false, $name = null, array $context = array())
-    {
-        return $this->project->getValueHash($value);
+        return true;
+        
+//        $host = \MUtil_String::stripToHost($fullHost);
+//        $request = $this->request;
+//        if ($request instanceof \Zend_Controller_Request_Http) {
+//            if ($host == \MUtil_String::stripToHost($request->getServer('HTTP_HOST'))) {
+//                return true;
+//            }
+//        }
+//        if (isset($this->project)) {
+//            foreach ($this->project->getAllowedHosts() as $allowedHost) {
+//                if ($host == \MUtil_String::stripToHost($allowedHost)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        $loader = $this->getLoader();
+//        foreach ($loader->getUserLoader()->getOrganizationUrls() as $url => $orgId) {
+//            if ($host == \MUtil_String::stripToHost($url)) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
     }
 
     /**
@@ -2600,17 +2553,12 @@ class GemsEscort extends \MUtil_Application_Escort
             $menuItem->applyHiddenParameters($request, $source);
             $menu->setCurrent($menuItem);
         }
-        if ($request instanceof \Zend_Controller_Request_Http) {
-            if ($request->isPost()) {
-                $incoming = $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', false));
-                if ($incoming) {
-                    if (! $this->isAllowedHost($incoming)) {
-                        throw new \Gems_Exception(
-                            sprintf("Invalid source host, possible CSRF attack. Used host: %s", $incoming),
-                            403
-                        );
-                    }
-                }
+        if (($request instanceof \Zend_Controller_Request_Http) && $request->isPost()) {
+            if (! $this->util->getSites()->isPostFromAllowedHost($request)) {
+                throw new \Gems_Exception(
+                    sprintf("Invalid source host, possible CSRF attack. Used host: %s", $incoming),
+                    403
+                );
             }
         }
     }

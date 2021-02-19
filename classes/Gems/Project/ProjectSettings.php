@@ -352,6 +352,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Array of hosts allowed to post data to this project
      *
      * @return array
+     * @deprecated since version 1.9.1, is stored in gems__sites
      */
     public function getAllowedHosts()
     {
@@ -474,6 +475,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * The site url during command line actions
      *
      * @return string
+     * @deprecated since version 1.9.1, is stored in gems__sites               
      */
     public function getConsoleUrl()
     {

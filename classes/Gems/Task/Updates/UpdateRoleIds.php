@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $id: UpdateRoles.php 203 2014-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -18,6 +17,7 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3  19-feb-2014 20:42:40
+ * @deprecated since version 1.9.1 After cleanup of old version upgrades            
  */
 class Gems_Task_Updates_UpdateRoleIds extends \MUtil_Task_TaskAbstract
 {

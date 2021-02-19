@@ -421,6 +421,20 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * get the parameters where the survey should return to
+     *
+     * @return array
+     */
+    public function getPreferredSiteUrl()
+    {
+        if (! $this->_has('preferredSite')) {
+            $this->_set('preferredSite', $this->util->getSites()->getOrganizationPreferredUrl($this->_id));
+        }
+
+        return $this->_get('preferredSite');
+    }
+
+    /**
      * Get the template id for the reset password mail
      *
      * @return  integer Template ID

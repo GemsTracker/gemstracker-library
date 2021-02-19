@@ -324,11 +324,17 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
     /**
      * Get the return URI to return from LimeSurvey to GemsTracker
      *
+     * @param \Gems_User_Organization|null $organization
      * @return string
      */
-    protected function _getReturnURI()
+    protected function _getReturnURI(\Gems_User_Organization $organization = null)
     {
-        return $this->util->getCurrentURI('ask/return/' . \MUtil_Model::REQUEST_ID . '/{TOKEN}');
+        if ($organization) {
+            $currentUrl = $organization->getPreferredSiteUrl();
+        } else {
+            $currentUrl = $this->util->getCurrentURI();
+        }
+        return $currentUrl . 'ask/return/' . \MUtil_Model::REQUEST_ID . '/{TOKEN}';
     }
 
     /**
@@ -742,7 +748,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
          *****************************/
 
         if (!\MUtil_Console::isConsole()) {
-            $newUrl = $this->_getReturnURI();
+            // For optimal use, this assumes that most organizations using a survey use the same url.
+            // If not, then this url might change regularly, but things will remain working as the
+            // final url shown is dependent by the token level return url stored in the token table.  
+            $newUrl = $this->_getReturnURI($token->getOrganization());
 
             // Make sure the url is set correctly in surveyor.
             if ($currentUrl != $newUrl) {
@@ -779,7 +788,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
         $result = 0;
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
-
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
                 if (\Gems_Tracker::$verbose) {
                     $echo = '';

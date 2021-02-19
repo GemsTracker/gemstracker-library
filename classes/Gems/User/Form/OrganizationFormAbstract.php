@@ -21,13 +21,6 @@
 abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLoadFormAbstract implements \Gems_User_Validate_GetUserInterface
 {
     /**
-     * When true the organization was derived from the the url
-     *
-     * @var boolean
-     */
-    protected $_organizationFromUrl = false;
-
-    /**
      *
      * @var \Gems_User_User
      */
@@ -94,20 +87,12 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
      */
     public function getCurrentOrganizationId()
     {
-        $userLoader = $this->loader->getUserLoader();
-
-        // Url determines organization first.
-        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
-            $this->_organizationFromUrl = true;
-            $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
-            return $orgId;
-        }
-
-        $request = $this->getRequest();
+        $request    = $this->getRequest();
         if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
             return $orgId;
         }
 
+        $userLoader = $this->loader->getUserLoader();
         return $userLoader->getCurrentUser()->getCurrentOrganizationId();
     }
 
@@ -118,7 +103,9 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
      */
     public function getLoginOrganizations()
     {
-        return $this->util->getDbLookup()->getOrganizationsForLogin();
+        $site = $this->util->getSites()->getSiteForCurrentUrl();
+        
+        return $site->getUrlOrganizations();
     }
 
 

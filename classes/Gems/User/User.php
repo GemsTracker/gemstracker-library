@@ -709,12 +709,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function canLoginHere()
     {
         if (! $this->_hasVar('can_login_here')) {
-            $this->_setVar('can_login_here', true);
-            if ($orgId = $this->userLoader->getOrganizationIdByUrl()) {
-                if (! $this->isAllowedOrganization($orgId)) {
-                    $this->_setVar('can_login_here', false);;
-                }
-            }
+            $site = $this->util->getSites()->getSiteForCurrentUrl();
+            
+            $this->_setVar('can_login_here', $site->hasUrlOrganizationsId($this->getCurrentOrganizationId()));
         }
         return $this->_getVar('can_login_here');
     }
@@ -1485,7 +1482,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         return $this->_getVar('current_user_patNr', null);
     }
-    
+
     /**
      * get the parameters where the survey should return to
      *

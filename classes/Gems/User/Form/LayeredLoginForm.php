@@ -104,24 +104,12 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      */
     public function getCurrentOrganizationId()
     {
-        $userLoader = $this->loader->getUserLoader();
-
-        if ($this->getElement($this->organizationFieldName) instanceof \Zend_Form_Element_Hidden) {
-            // Url determines organization first when there is only one organization
-            // and thus the element is of class hidden
-            if ($orgId = $userLoader->getOrganizationIdByUrl()) {
-                $this->_organizationFromUrl = true;
-                $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
-                return $orgId;
-            }
-        }
-
         $request = $this->getRequest();
         if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
             return $orgId;
         }
 
-        $curOrg = $userLoader->getCurrentUser()->getCurrentOrganizationId();
+        $curOrg = $this->loader->getCurrentUser()->getCurrentOrganizationId();
         $orgs   = $this->getChildOrganizations($this->getCurrentTopOrganizationId());
         if (isset($orgs[$curOrg])) {
             return $curOrg;
@@ -139,14 +127,6 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      */
     public function getCurrentTopOrganizationId()
     {
-        $userLoader = $this->loader->getUserLoader();
-
-        // Url determines organization first.
-        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
-            $this->_organizationFromUrl = true;
-            return ' ';
-        }
-
         $request = $this->getRequest();
         if ($request->isPost() && ($orgId = $request->getParam($this->topOrganizationFieldName))) {
             \Gems_Cookies::set('gems_toporganization', $orgId);
@@ -206,12 +186,6 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
 
     public function getParentId()
     {
-        if ($this->_organizationFromUrl) {
-            $userLoader = $this->loader->getUserLoader();
-
-            return $userLoader->getOrganizationIdByUrl();
-        }
-
         return $this->getElement($this->topOrganizationFieldName)->getValue();
     }
 

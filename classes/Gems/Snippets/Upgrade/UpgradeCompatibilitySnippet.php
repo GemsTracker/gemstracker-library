@@ -187,7 +187,10 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $obsFunctions = array(
-            'Gems\Agenda\Filter\FieldLikeAppointmentFilter' => [
+            'GemsEscort' => [
+                'isAllowedHost' => 'SiteUtil->isPostFromAllowedHost',
+                ],
+            'Gems\\Agenda\\Filter\\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 ],
             'Gems_Tracker_Source' => [
@@ -196,11 +199,21 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Gems_Mail_MailLoader' => [
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
                 ],
+            'Gems_Project_ProjectSettings' => [
+                'getAllowedHosts' => 'SiteUtil->isPostFromAllowedHost',
+                'getConsoleUrl' => 'Gems_User_Organization->getPreferredSiteUrl',
+                'hasAnySupportUrl' => null,
+                'hasBugsUrl' => null,
+            ],
             'Gems_User_User' => [
-                'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
+                // 'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ],
+            'Gems_User_UserLoader' => [
+                'getOrganizationIdByUrl' => null,
+                'getOrganizationUrls'    => 'SiteUrl->getSiteForCurrentUrl', 
+            ],
             'Gems_User_LoginStatusTracker' => [
                 'getUsedOrganisationId'     => 'getUsedOrganizationId',
                 ],
@@ -233,6 +246,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $obsVariables = array(
             '$this->respondentData' => '$this->respondent->getArrayCopy()',
             '$this->session' => '$this->currentUser',
+            '$this->_organizationFromUrl' => null,
         );
         foreach ($obsVariables as $varName => $replacement) {
             if (preg_match(sprintf('/%s/', preg_quote($varName)), $content)) {
@@ -704,6 +718,15 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $this->html->pInfo('No OpenSSL cipher methods defined in security.methods.');
             $issues = true;
         }
+        if ($this->project->offsetExists('allowedSourceHosts')) {
+            $this->html->pInfo('allowedSourceHosts are replaced by Setup->Access->Sites. You can remove allowedSourceHosts after the update has been executed.');
+            $issues = true;
+        }
+        if (isset($this->project['console']['url'])) {
+            $this->html->pInfo('console.url is replaced by Setup->Access->Sites. You can remove console.url after the update has been executed.');
+            $issues = true;
+        }
+
 
         if ($issues) {
             $h3->append('Project.ini issues found');

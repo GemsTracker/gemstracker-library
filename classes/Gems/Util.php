@@ -87,6 +87,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var \Gems\Util\SiteUtil
+     */
+    protected $sites;
+    
+    /**
+     *
      * @var \Gems_Util_TokenData
      */
     protected $tokenData;
@@ -199,7 +205,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
             $uri = (\MUtil_Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
 
             $uri .= '://';
-            $uri .= isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $this->project->getConsoleUrl();
+            if (isset($_SERVER['SERVER_NAME'])) {
+                $uri .= $_SERVER['SERVER_NAME'];
+            } else {
+                // I did not want to add loader to util, can no longer tell why
+                $uri = \GemsEscort::getInstance()->currentOrganization->getPreferredSiteUrl();
+            }
             $uri .= $this->basepath->getBasePath();
         }
         if ($subpath && ($subpath[0] != '/')) {
@@ -339,6 +350,15 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     public function getRequestCache($sourceAction = null, $readonly = false)
     {
         return $this->_getClass('requestCache', null, array($sourceAction, $readonly));
+    }
+
+    /**
+     *
+     * @return \Gems\Util\SiteUtil
+     */
+    public function getSites()
+    {
+        return $this->_getClass('siteUtil');
     }
 
     /**

@@ -301,7 +301,6 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
                         exit;
                     }
 
-
                     $request = \Zend_Controller_Front::getInstance()->getRequest();
 
                     if (($request instanceof \MUtil_Controller_Request_Cli) && $request->hasUserLogin()) {
@@ -433,14 +432,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         if (null === $organizationId) {
             $user = $this->getCurrentUser();
 
-            if (! $user->isActive()) {
-                // Check url only when not logged im
-                $organizationId = $this->getOrganizationIdByUrl();
-            }
-
-            if (! $organizationId) {
-                $organizationId = intval($user->getCurrentOrganizationId());
-            }
+            $organizationId = intval($user->getCurrentOrganizationId());
         }
 
         if (! isset($organizations[$organizationId])) {
@@ -458,15 +450,11 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      * Returns the current organization according to the current site url.
      *
      * @return int An organization id or null
+     * @deprecated since version 1.9.1
      */
     public function getOrganizationIdByUrl()
     {
-        $urls    = $this->getOrganizationUrls();
-        $current = $this->util->getCurrentURI();
-
-        if (isset($urls[$current])) {
-            return $urls[$current];
-        }
+        return null;
     }
 
     /**
@@ -474,49 +462,51 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @static array $urls An array of url => orgId values
      * @return array url => orgId
+     * @deprecated since version 1.9.1
      */
     public function getOrganizationUrls()
     {
-        static $urls;
-
-        if (! is_array($urls)) {
-            if ($this->cache) {
-                $cacheId = GEMS_PROJECT_NAME . '__' . strtr(get_class($this), '\\/', '__') . '__organizations_url';
-                $urls = $this->cache->load($cacheId);
-            } else {
-                $cacheId = false;
-            }
-
-            // When we don't use cache or cache reports 'false' for a miss or expiration
-            // then try to reload the data
-            if ($cacheId === false || $urls === false) {
-                $urls = array();
-                try {
-                    $data = $this->db->fetchPairs(
-                            "SELECT gor_id_organization, gor_url_base
-                                FROM gems__organizations
-                                WHERE gor_active=1 AND gor_url_base IS NOT NULL"
-                            );
-                } catch (\Zend_Db_Exception $zde) {
-                    // Table might not be filled
-                    $data = array();
-                }
-                foreach ($data as $orgId => $urlsBase) {
-                    foreach (explode(' ', $urlsBase) as $url) {
-                        if ($url) {
-                            $urls[$url] = $orgId;
-                        }
-                    }
-                }
-
-                if ($cacheId) {
-                    $this->cache->save($urls, $cacheId, array('organization', 'organizations'));
-                }
-            }
-            // \MUtil_Echo::track($urls);
-        }
-
-        return $urls;
+        return [];
+//        static $urls;
+//
+//        if (! is_array($urls)) {
+//            if ($this->cache) {
+//                $cacheId = GEMS_PROJECT_NAME . '__' . strtr(get_class($this), '\\/', '__') . '__organizations_url';
+//                $urls = $this->cache->load($cacheId);
+//            } else {
+//                $cacheId = false;
+//            }
+//
+//            // When we don't use cache or cache reports 'false' for a miss or expiration
+//            // then try to reload the data
+//            if ($cacheId === false || $urls === false) {
+//                $urls = array();
+//                try {
+//                    $data = $this->db->fetchPairs(
+//                            "SELECT gor_id_organization, gor_url_base
+//                                FROM gems__organizations
+//                                WHERE gor_active=1 AND gor_url_base IS NOT NULL"
+//                            );
+//                } catch (\Zend_Db_Exception $zde) {
+//                    // Table might not be filled
+//                    $data = array();
+//                }
+//                foreach ($data as $orgId => $urlsBase) {
+//                    foreach (explode(' ', $urlsBase) as $url) {
+//                        if ($url) {
+//                            $urls[$url] = $orgId;
+//                        }
+//                    }
+//                }
+//
+//                if ($cacheId) {
+//                    $this->cache->save($urls, $cacheId, array('organization', 'organizations'));
+//                }
+//            }
+//            // \MUtil_Echo::track($urls);
+//        }
+//
+//        return $urls;
     }
 
     /**

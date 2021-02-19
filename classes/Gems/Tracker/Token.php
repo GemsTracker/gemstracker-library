@@ -440,7 +440,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function calculateReturnUrl()
     {
-        $currentUri = $this->util->getCurrentURI();
+        $currentUri = $this->getOrganization()->getPreferredSiteUrl(); 
 
         /*
         // Referrer would be powerful when someone is usng multiple windows, but
@@ -467,7 +467,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // \MUtil_Echo::track($currentUri, \MUtil_Html::urlString($surveyReturn));
             return $currentUri . \MUtil_Html::urlString($surveyReturn);
         }
-
+        
         // Ultimate backup solution for return
         return $currentUri . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
     }

@@ -209,11 +209,14 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setModelParameters(1);
 
         // STAFF CONTROLLER
-        $page = $cont->addStaffPage($this->_('Staff'));
+        $cont->addStaffPage($this->_('Staff'));
 
-        // SYSTEM USET CONTROLLER
-        $page = $cont->addSystemUserPage($this->_('System users'));
+        // SYSTEM USER CONTROLLER
+        $cont->addSystemUserPage($this->_('System users'));
 
+        // SITE MAINTENANCE CONTROLLER
+        $cont->addBrowsePage($this->_('Sites'), 'pr.site-maint', 'site-maintenance');
+        
         // AGENDA CONTAINER
         $setup->addAgendaSetupMenu($this->_('Agenda'));
 
