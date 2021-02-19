@@ -97,28 +97,37 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
             $currentLog     = $checkToken->getMockChanges('log');
 
             // \MUtil_Echo::track($checkToken->getMockChanges());
+            $html->h3($this->_('Data changed by this event'));
             if ($currentAnswers) {
-                $html->div($this->showArrayTable($currentAnswers, $this->_('Data changed by this event')), ['class' => 'leftFloat']);
+                $html->div($this->showArrayTable($currentAnswers), ['class' => 'leftFloat']);
             } else {
-                $html->pInfo($this->_('This event currently does not change any data for this token.'), ['class' => 'leftFloat']);
+                if ($checkToken->isCompleted()) {
+                    $html->pInfo($this->_('This event has been completed and this function would currently not change any data for this token.'));
+                } else {
+                    $html->pInfo($this->_('This event currently does not change any data for this token.'));
+                }
             }
             if ($currentLog) {
                 $div = $html->div(['class' => 'leftFloat']);
                 $div->pInfo($this->_('Actions currently taken by this event:'));
                 $div->ol($currentLog);
             }
+            // \MUtil_Echo::track($checkToken->getMockChanges());
+            
             $checkToken->unsetRawAnswers();
             $checkToken->getUrl($this->locale, $this->currentUser->getUserId());
             $emptyAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
-            if ($emptyAnswers && ($emptyAnswers != $currentAnswers)) {
-                $html->div($this->showArrayTable($emptyAnswers, $this->_('Data that would be changed if empty')), ['class' => 'leftFloat', 'style' => 'clear: both;']);
-                $emptyLog = $checkToken->getMockChanges('log');
+            $emptyLog     = $checkToken->getMockChanges('log');
+            if (($emptyAnswers && ($emptyAnswers != $currentAnswers)) || ($emptyLog && ($emptyLog != $currentLog))) {
+                $html->h3($this->_('Data that would be changed if empty'), ['style' => 'clear: both;']);
+                $html->div($this->showArrayTable($emptyAnswers), ['class' => 'leftFloat']);
                 if ($emptyLog) {
                     $div = $html->div(['class' => 'leftFloat']);
                     $div->pInfo($this->_('Actions taken by this event while empty:'));
                     $div->ol($emptyLog);
                 }
             }
+            // \MUtil_Echo::track($checkToken->getMockChanges());
             
         } else {
             $html->pInfo($this->_('This token has no before answering event.'));
@@ -130,12 +139,16 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
         return $html;
     }
     
-    protected function showArrayTable(array $data, $caption)
+    protected function showArrayTable(array $data, $caption = false)
     {
         $table = new \MUtil_Html_TableElement();
         $table->class = 'displayer table table-condensed table-bordered';
-        $tr = $table->thead()->tr();
-        $tr->td(['colspan' => 2])->strong($caption);
+        
+        if ($caption) {
+            $tr = $table->thead()->tr();
+            $tr->td(['colspan' => 2])->strong($caption);
+        }
+        
         $tr = $table->thead()->tr();
         $tr->th($this->_('Field'));
         $tr->th($this->_('Value'));

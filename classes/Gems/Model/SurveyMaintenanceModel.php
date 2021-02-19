@@ -208,7 +208,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         $this->set('gsu_insert_organizations', 'label', $this->_('Insert organizations'),
                 'description', $this->_('The organizations where the survey may be inserted.'),
                 'elementClass', 'MultiCheckbox',
-                'multiOptions', $dbLookup->getOrganizations(),
+                'multiOptions', $dbLookup->getOrganizationsWithRespondents(),
                 'required', true
                 );
         $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));

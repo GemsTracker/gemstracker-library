@@ -26,10 +26,9 @@ class TokenReadonly extends \Gems_Tracker_Token
     protected $_changes;
 
     /**
-     *
      * @var array The local current answers
      */
-    private $_localDataRaw;
+    private $_localDataRaw = null;
     
     /**
      * @var \Gems_Tracker_Token
@@ -155,7 +154,6 @@ class TokenReadonly extends \Gems_Tracker_Token
         if (! is_array($this->_localDataRaw)) {
             $this->_localDataRaw = parent::getRawAnswers();
         }
-        // \MUtil_Echo::track($this->_localDataRaw);
         return $this->_localDataRaw;
     }
 
@@ -294,14 +292,10 @@ class TokenReadonly extends \Gems_Tracker_Token
      */
     public function unsetRawAnswers()
     {
-        $answers = $this->_parentToken->getRawAnswers();
-        $this->_localDataRaw = array_fill_keys(array_keys($answers), null);
-        foreach (['id', 'token', 'startlanguage', 'startdate'] as $key) {
-            if (isset($answers[$key])) {
-                $this->_localDataRaw[$key] = $answers[$key];
-            }
-        }
-        // \MUtil_Echo::track($this->_localDataRaw);
-        $this->_changes = [];
+        $this->_localDataRaw                    = [];
+        $this->_changes                         = [];
+        $this->_gemsData['gto_in_source']       = 0;
+        $this->_gemsData['gto_completion_time'] = null;
+        $this->_gemsData['gto_reception_code']  = \GemsEscort::RECEPTION_OK;
     }
 }
