@@ -229,6 +229,7 @@ CREATE TABLE gems__comm_jobs (
         -- 2 -> respondent
         -- 3 -> staff
         gcj_target                  tinyint(1) NOT NULL DEFAULT '0',
+        gcj_target_group            varchar(100),
         gcj_id_organization         INTEGER,
         gcj_id_track                INTEGER,
         gcj_round_description       varchar(100),
@@ -271,7 +272,8 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (20, 'Continue later', 'token', 'continue', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (21, 'No open tokens', 'respondent', 'nothingToSend', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 
 CREATE TABLE gems__comm_template_translations (
@@ -298,7 +300,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (12, 'en', 'Reminder: your treatment at {organization}', 'Dear {greeting},
@@ -312,7 +314,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (13, 'en', 'Questions for your treatment at {organization}', 'Dear {greeting},
@@ -328,7 +330,7 @@ To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/
 
 Recent was u op bezoek bij [b]{organization}[/b] voor een behandeling. Om u goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
@@ -346,7 +348,7 @@ To unsubscribe from these mails [url={organization_unsubscribe_url}]click here[/
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor uw behandeling bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}
 
@@ -360,9 +362,9 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 {organization_signature}'),
     (15, 'nl', 'Vragen over de behandeling van {relation_about} bij {organization}', 'Beste {greeting},
 
-Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
+Recent was u met {relation_about} op bezoek bij [b]{organization}[/b] voor een behandeling. Om goed te kunnen behandelen verzoeken wij u enkele vragen te beantwoorden.
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (16, 'en', 'Reminder: treatment of {relation_about} at {organization}', 'Dear {greeting},
@@ -376,7 +378,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 
 Wij herinneren u eraan dat u nog enkele vragen moet beantwoorden voor de behandeling van {relation_about} bij [b]{organization}[/b].
 
-Klik op [url={token_url}]deze link[/url] op te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
+Klik op [url={token_url}]deze link[/url] om te beginnen of ga naar [url]{site_ask_url}[/url] en voer het kenmerk "{token}" in.
 
 {organization_signature}'),
     (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
@@ -390,7 +392,9 @@ To log in with your organization account {login_name} please click on this link:
     (19, 'nl', 'Nieuw account aangemaakt', 'Er is voor u een nieuw account aangemaakt voor de [b]{organization}[/b] website [b]{project}[/b].
 Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande link:\r\n{login_url}'),
     (20, 'en', 'Continue later', 'Dear {greeting},\n\nClick on [url={token_url}]this link[/url] to continue filling out surveys or go to [url]{site_ask_url}[/url] and enter this token: [b]{token}[/b]\n\n{organization_signature}'),
-    (20, 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}');
+    (20, 'nl', 'Later doorgaan', 'Beste {greeting},\n\nKlik op [url={token_url}]deze link[/url] om verder te gaan met invullen van vragenlijsten of ga naar [url]{site_ask_url}[/url] en voer dit kenmerk in: [b]{token}[/b]\n\n{organization_signature}'),
+    (21, 'en', 'There is no survey waiting for your input at the moment', 'Dear {greeting},\n\nThere is no survey waiting for your input at the moment.\nIf you expected there to be survey, please reply to this mail.\n\n{organization_signature}'),
+    (21, 'nl', 'Er staan op dit moment geen vragenlijsten voor u klaar', 'Beste {greeting},\n\nEr staan op dit moment geen vragenlijsten voor u klaar.\nIndien u toch vragenlijsten verwacht had, reageer dan s.v.p. gewoon op deze mail.\n\n{organization_signature}');
 
 CREATE TABLE gems__conditions (
         gcon_id                  INTEGER not null,
@@ -516,7 +520,8 @@ INSERT ignore INTO gems__groups
     (901, 'Site Admins', 'Site Administrators', 808, '901,902,903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
     (902, 'Local Admins', 'Local Administrators', 807, '903', 903, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
     (903, 'Staff', 'Health care staff', 804,,, '127.0.0.1', 1, 1, 0, 0, current_timestamp, 0),
-    (904, 'Respondents', 'Respondents', 802,,, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0);
+    (904, 'Respondents', 'Respondents', 802,,, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0),
+    (905, 'Security', 'Security', 803,,, '127.0.0.1', 1, 0, 1, 0, current_timestamp, 0);
 
 CREATE TABLE gems__locations (
         glo_id_location     INTEGER not null ,
@@ -568,7 +573,7 @@ CREATE TABLE gems__log_activity (
         gla_message         text,
         gla_data            text,
         gla_method          varchar(10) not null,
-        gla_remote_ip       varchar(20) not null,
+        gla_remote_ip       varchar(64) not null,
 
         gla_created         TEXT not null default current_timestamp,
 
@@ -576,6 +581,26 @@ CREATE TABLE gems__log_activity (
    )
    ;
 
+
+CREATE TABLE gems__log_respondent2track2field (
+        glrtf_id                    INTEGER not null ,
+
+        glrtf_id_respondent_track   INTEGER not null,
+        glrtf_id_sub                varchar(8) ,
+        glrtf_id_field              INTEGER not null,
+
+        glrtf_old_value             text,
+        glrtf_old_value_manual      TINYINT(1) not null default 0,
+        
+        glrtf_new_value             text,
+        glrtf_new_value_manual      TINYINT(1) not null default 0,
+        
+        glrtf_created               TEXT not null,
+        glrtf_created_by            INTEGER not null,
+
+        PRIMARY KEY (glrtf_id)
+    )
+    ;
 
 CREATE TABLE gems__log_respondent_communications (
         grco_id_action    INTEGER not null ,
@@ -667,6 +692,7 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('source.attributes-all',               0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.check',                        0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.check-all',                    0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+        ('source.ping',                         0, 1, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.synchronize',                  0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('source.synchronize-all',              0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('survey-maintenance.check',            0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
@@ -693,6 +719,34 @@ INSERT INTO gems__log_setup (gls_name, gls_when_no_user, gls_on_action, gls_on_p
         ('upgrade.execute-last',                0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('upgrade.execute-one',                 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
         ('upgrade.execute-to',                  0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+
+CREATE TABLE gems__mail_codes (
+        gmc_id                      tinyint not null,
+        gmc_mail_to_target          varchar(40) not null,
+        gmc_mail_cause_target       varchar(40) not null,
+
+        gmc_code                    varchar(40),
+
+        gmc_for_surveys             TINYINT(1) not null default 1,
+        gmc_for_tracks              TINYINT(1) not null default 1,
+        gmc_for_respondents         TINYINT(1) not null default 1,
+        gmc_active                  TINYINT(1) not null default 1,
+    
+        gmc_changed                 TEXT not null default current_timestamp,
+        gmc_changed_by              INTEGER not null,
+        gmc_created                 TEXT not null,
+        gmc_created_by              INTEGER not null,
+
+        PRIMARY KEY (gmc_id)
+    )
+    ;
+
+INSERT INTO gems__mail_codes
+    (gmc_id, gmc_mail_to_target, gmc_mail_cause_target, gmc_for_surveys, gmc_changed, gmc_changed_by, gmc_created, gmc_created_by)
+VALUES
+    (0, 'No', 'Never mail', 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (100, 'Yes', 'Mail', 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__mail_servers (
         gms_from       varchar(100) not null,
@@ -739,7 +793,11 @@ CREATE TABLE gems__organizations (
         gor_user_class              varchar(30)   not null default 'StaffUser',
         gor_location                varchar(255),
         gor_url                     varchar(127),
+        
+        -- deprecated as of 1.9.1
         gor_url_base                varchar(1270),
+        -- end deprecated 
+        
         gor_task                    varchar(50),
 
         gor_provider_id             varchar(10),
@@ -818,9 +876,11 @@ CREATE TABLE gems__patch_levels (
    )
    ;
 
+-- First level should be equal to Versions::getBuild()
+-- this ensures new patches at this level will be run 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (66, CURRENT_TIMESTAMP);
+   (67, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -879,8 +939,8 @@ CREATE TABLE gems__respondent2org (
         -- gr2o_id_physician       INTEGER,
 
         -- gr2o_treatment          varchar(200),
-        gr2o_email               varchar(100),
-        gr2o_mailable           TINYINT(1) not null default 1,
+        gr2o_email              varchar(100),
+        gr2o_mailable           tinyint not null default 1,
         gr2o_comments           text,
 
         gr2o_consent            varchar(20) not null default 'Unknown',
@@ -912,7 +972,7 @@ CREATE TABLE gems__respondent2track (
 
         gr2t_id_organization        INTEGER not null,
 
-        gr2t_mailable               TINYINT(1) not null default 1,
+        gr2t_mailable               tinyint not null default 100,
         gr2t_active                 TINYINT(1) not null default 1,
         gr2t_count                  INTEGER not null default 0,
         gr2t_completed              INTEGER not null default 0,
@@ -948,7 +1008,7 @@ CREATE TABLE gems__respondent2track2appointment (
 
 CREATE TABLE gems__respondent2track2field (
         gr2t2f_id_respondent_track  INTEGER not null,
-        gr2t2f_id_field INTEGER      not null,
+        gr2t2f_id_field             INTEGER not null,
 
         gr2t2f_value                text,
         gr2t2f_value_manual         TINYINT(1) not null default 0,
@@ -1012,7 +1072,7 @@ CREATE TABLE gems__respondent_relations (
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100),
-        grr_mailable                TINYINT(1) not null default 1,
+        grr_mailable                tinyint not null default 100,
         -- grs_initials_name           varchar(30) ,
         grr_first_name              varchar(30) ,
         -- grs_surname_prefix          varchar(10) ,
@@ -1062,7 +1122,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (800, 'nologin', 'nologin',,
-    'pr.contact.bugs,pr.contact.support,pr.cron.job,pr.nologin',
+    'pr.contact.bugs,pr.contact.support,pr.cron.job,pr.nologin,pr.respondent.ask,pr.respondent.lost',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -1070,7 +1130,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (801, 'guest', 'guest',,
-    'pr.ask,pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent',
+    'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent,pr.respondent.ask',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -1284,6 +1344,34 @@ INSERT ignore INTO gems__rounds (gro_id_track, gro_id_order, gro_id_survey, gro_
 UPDATE ignore gems__rounds SET gro_id_round = 0 WHERE gro_survey_name = 'Dummy for inserted surveys';
 
 DELETE FROM gems__rounds WHERE gro_id_round != 0 AND gro_survey_name = 'Dummy for inserted surveys';
+
+CREATE TABLE gems__sites (
+    gsi_id                      INTEGER not null ,
+
+    gsi_url                     varchar(256) not null,
+    gsi_order                   INTEGER not null default 100,
+
+    gsi_select_organizations    TINYINT(1) not null default 0,
+    gsi_organizations           varchar(250) not null default '||',
+
+    gsi_style                   varchar(15)  not null default 'gems',
+    gsi_style_fixed             TINYINT(1) not null default 0,
+
+    gsi_iso_lang                char(2) not null default 'en',
+    
+    gsi_active                  TINYINT(1) not null default 1,
+    gsi_blocked                 TINYINT(1) not null default 0,
+
+    gsi_changed                 TEXT not null default current_timestamp,
+    gsi_changed_by              INTEGER not null,
+    gsi_created                 TEXT not null,
+    gsi_created_by              INTEGER not null,
+
+    PRIMARY KEY (gsi_id),
+    UNIQUE (gsi_url)        
+)
+;
+
 CREATE TABLE gems__sources (
         gso_id_source       int(10) NOT NULL ,
         gso_source_name     varchar(40) NOT NULL,
@@ -1400,6 +1488,7 @@ CREATE TABLE gems__surveys (
         gsu_survey_warnings         varchar(250) ,
 
         gsu_id_primary_group        INTEGER,
+        gsu_mail_code               tinyint not null default 1,
 
         gsu_insertable              TINYINT(1) not null default 0,
         gsu_valid_for_unit          char(1) not null default 'M',
@@ -1678,6 +1767,22 @@ CREATE TABLE gems__track_fields (
     ;
 
 
+CREATE TABLE "gems__translations" (
+      gtrs_id               bigint(20) NOT NULL ,
+      gtrs_table            varchar(128) NOT NULL,
+      gtrs_field            varchar(128) NOT NULL,
+      gtrs_keys             varchar(128) NOT NULL,
+      gtrs_iso_lang         varchar(6) NOT NULL,
+      gtrs_translation      text,
+      gtrs_changed          TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
+      gtrs_changed_by       bigint(20) NOT NULL,
+      gtrs_created          TEXT NOT NULL DEFAULT '0000-00-00 00:00:00',
+      gtrs_created_by       bigint(20) NOT NULL,
+      
+      PRIMARY KEY (gtrs_id)
+    ) 
+    ;
+
 -- Support table for generating unique staff/respondent id's
 --
 CREATE TABLE gems__user_ids (
@@ -1703,6 +1808,9 @@ CREATE TABLE gems__user_logins (
         gul_two_factor_key   varchar(100),
         gul_enable_2factor   TINYINT(1) not null default 1,
 
+        gul_otp_count        INTEGER NOT NULL DEFAULT 0,
+        gul_otp_requested    TEXT,
+
         gul_changed          TEXT not null default current_timestamp,
         gul_changed_by       INTEGER not null,
         gul_created          TEXT not null,
@@ -1712,6 +1820,7 @@ CREATE TABLE gems__user_logins (
         UNIQUE (gul_login, gul_id_organization)
     )
     ;
+
 
 
 -- Table for keeping track of failed login attempts
