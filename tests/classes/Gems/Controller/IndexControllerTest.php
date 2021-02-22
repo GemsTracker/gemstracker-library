@@ -42,7 +42,7 @@ class IndexControllerTest extends \ControllerTestAbstract
     {
         $this->_fixSetup();
         $postVars = array(
-            'organization' => '10',
+            'organization' => '70',
             'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in newproject
             'password'     => 'superadmin',
             'button'       => 'Login'           // Submit button / label come from Gems_User_Form_LoginForm

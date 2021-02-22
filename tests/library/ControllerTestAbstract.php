@@ -12,7 +12,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
      *
      * @var int
      */
-    public $userIdNr = 70;
+    public $organizationIdNr = 70;
 
     protected function _fixUser()
     {
@@ -22,7 +22,7 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
         $defName    = \Gems_User_UserLoader::USER_CONSOLE;
         $definition = $userLoader->getUserDefinition($defName);
 
-        $values = $definition->getUserData('unittest', $this->userIdNr);
+        $values = $definition->getUserData('unittest', $this->organizationIdNr);
         $values['user_locale'] = 'en';
 
         $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);

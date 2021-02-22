@@ -207,9 +207,15 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
             $uri .= '://';
             if (isset($_SERVER['SERVER_NAME'])) {
                 $uri .= $_SERVER['SERVER_NAME'];
-            } else {
+            } else {                
                 // I did not want to add loader to util, can no longer tell why
-                $uri = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization()->getPreferredSiteUrl();
+                $org = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
+                
+                if ($org instanceof \Gems_User_Organization) {
+                    $uri = $org->getPreferredSiteUrl();
+                } else {
+                    $uri .= 'localhost'; // Should only happen in tests 
+                }
             }
             $uri .= $this->basepath->getBasePath();
         }

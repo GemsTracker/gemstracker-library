@@ -77,7 +77,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
-     * @return boolean Is  this organization id allowed for this site 
+     * @return boolean Is this organization id allowed for this site 
      */
     public function hasUrlOrganizationsId($orgId)
     {

@@ -60,12 +60,15 @@ class Gems_User_ConsoleUserDefinition extends \Gems_User_UserDefinitionAbstract
             natsort($orgs);
         } catch (\Zend_Db_Exception $zde) {
         }
-        if ($orgs) {
-            if (! $organization) {
+        if (! $organization) {
+            if ($orgs) {
                 // Set to first made active organization
                 $organization = min(array_keys($orgs));
+            } else {
+                $organization = 0;
             }
-        } else {
+        }
+        if (! $orgs) {
             // Table might not exist or be empty, so do something failsafe
             $orgs = array($organization => 'create db first');
         }

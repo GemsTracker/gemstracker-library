@@ -26,6 +26,14 @@ class SiteConsole extends SiteUrl
     protected $project;
 
     /**
+     * @return boolean Is this organization id allowed for this site
+     */
+    public function hasUrlOrganizationsId($orgId)
+    {
+        return true;
+    }
+    
+    /**
      * @inheritDoc
      */
     protected function loadData($id)

@@ -28,7 +28,7 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
      */
     protected $object;
     
-    public $userIdNr = 1;
+    public $organizationIdNr = 1;
 
     public function setUp() {
         $this->setPath(GEMS_TEST_DIR . '/data/model');

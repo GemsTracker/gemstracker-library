@@ -15,7 +15,7 @@ use ControllerTestAbstract;
  *
  * @author mdekk
  */
-class TrackControllerTest extends ControllerTestAbstract
+class TrackControllerTest extends \ControllerTestAbstract
 {
     public $tempDir;
 
@@ -23,7 +23,7 @@ class TrackControllerTest extends ControllerTestAbstract
      *
      * @var int
      */
-    public $userIdNr = 1;
+    public $organizationIdNr = 1;
 
     public function setUp()
     {
@@ -67,6 +67,7 @@ class TrackControllerTest extends ControllerTestAbstract
 
         $this->resetResponse();
 
+        print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__organizations"));
         // Now submit the form
         $req->setPost('no_csrf', $csrf);
         $req->setMethod('post');
@@ -74,7 +75,7 @@ class TrackControllerTest extends ControllerTestAbstract
         // echo $this->getResponse()->getBody();
         $loader   = \GemsEscort::getInstance()->getLoader();
 
-        // print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__mail_codes"));
+        // print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__respondent2track"));
         $actual   = $loader->getTracker()->getRespondentTrack(2)->getFieldData();
         $expected = [
             'f__1'     => 'default',
