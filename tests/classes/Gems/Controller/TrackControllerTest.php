@@ -67,7 +67,6 @@ class TrackControllerTest extends \ControllerTestAbstract
 
         $this->resetResponse();
 
-        print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__organizations"));
         // Now submit the form
         $req->setPost('no_csrf', $csrf);
         $req->setMethod('post');
