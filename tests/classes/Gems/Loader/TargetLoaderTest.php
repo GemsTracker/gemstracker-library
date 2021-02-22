@@ -36,7 +36,7 @@ class TargetLoaderTest extends \PHPUnit_Framework_TestCase {
         
         $result = $this->loader->listClasses($classType, $paths);
         
-        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'name (Test)'], $result);
+        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'name (\\Test\\Condition\\TestCondition)'], $result);
     }
     
     public function testListClassesIllegalDir()
@@ -50,7 +50,7 @@ class TargetLoaderTest extends \PHPUnit_Framework_TestCase {
         
         $result = $this->loader->listClasses($classType, $paths);
         
-        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'name (Test)'], $result);
+        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'name (\\Test\\Condition\\TestCondition)'], $result);
     }
     
     public function testListClassesNameMethod() {
@@ -64,6 +64,6 @@ class TargetLoaderTest extends \PHPUnit_Framework_TestCase {
         
         $result = $this->loader->listClasses($classType, $paths, $nameMethod);
         
-        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'help (Test)'], $result);
+        $this->assertEquals(['\\Test\\Condition\\TestCondition' => 'help (\\Test\\Condition\\TestCondition)'], $result);
     }
 }

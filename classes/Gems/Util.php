@@ -209,7 +209,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
                 $uri .= $_SERVER['SERVER_NAME'];
             } else {
                 // I did not want to add loader to util, can no longer tell why
-                $uri = \GemsEscort::getInstance()->currentOrganization->getPreferredSiteUrl();
+                $uri = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization()->getPreferredSiteUrl();
             }
             $uri .= $this->basepath->getBasePath();
         }

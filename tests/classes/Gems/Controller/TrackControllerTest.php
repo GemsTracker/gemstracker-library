@@ -71,8 +71,10 @@ class TrackControllerTest extends ControllerTestAbstract
         $req->setPost('no_csrf', $csrf);
         $req->setMethod('post');
         $this->dispatch('/track/create');
-
+        // echo $this->getResponse()->getBody();
         $loader   = \GemsEscort::getInstance()->getLoader();
+
+        // print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__mail_codes"));
         $actual   = $loader->getTracker()->getRespondentTrack(2)->getFieldData();
         $expected = [
             'f__1'     => 'default',
@@ -81,7 +83,7 @@ class TrackControllerTest extends ControllerTestAbstract
             'datecode' => null,
         ];
         $this->assertEquals($expected, $actual);
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil_Batch_BatchAbstract::unload('tmp-track-2');  // Make sure there are no leftovers
     }
 
     /*public function testCorrect() {

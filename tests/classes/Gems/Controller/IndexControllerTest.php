@@ -42,14 +42,16 @@ class IndexControllerTest extends \ControllerTestAbstract
     {
         $this->_fixSetup();
         $postVars = array(
-            'organization' => '0',
+            'organization' => '10',
             'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in newproject
             'password'     => 'superadmin',
             'button'       => 'Login'           // Submit button / label come from Gems_User_Form_LoginForm
             );
         $this->getRequest()->setMethod('POST')->setPost($postVars);
-
         $this->dispatch('/index/login');
+        
+        // echo $this->getResponse()->getBody();
+        
         $response = $this->getResponse();
         $this->assertRedirect('Valid project login not accepted');
     }
@@ -58,7 +60,7 @@ class IndexControllerTest extends \ControllerTestAbstract
     {
         $this->_fixSetup();
         $postVars = array(
-            'organization'=>'',
+            'organization'=>'10',
             'userlogin'=>'superadmin',
             'password'=>'superpassword', //This is wrong
             'submit'=>'Login'

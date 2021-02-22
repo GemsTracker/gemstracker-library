@@ -16,7 +16,7 @@ date_default_timezone_set(GEMS_TIMEZONE);
  */
 define('APPLICATION_ENV', 'testing');
 define('GEMS_PROJECT_NAME', 'Test');
-define('GEMS_PROJECT_NAME_UC',  'Test');
+define('GEMS_PROJECT_NAME_UC', 'Test');
 
 define('GEMS_TEST_DIR', __DIR__);
 define('GEMS_ROOT_DIR', dirname(GEMS_TEST_DIR));

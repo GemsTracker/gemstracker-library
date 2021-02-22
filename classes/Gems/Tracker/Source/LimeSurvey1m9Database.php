@@ -1382,18 +1382,34 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         // For extra protection, we add valid from/to dates as needed instead of leaving them in GemsTracker only
         $tokenFrom  = $token->getValidFrom();
         $tokenUntil = $token->getValidUntil();
-        // Always set a date, so LimeSurvey will check the token
-        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $tokenFrom;
-        if (!is_null($tokenUntil) && $tokenUntil->isLater($now)) {
-            $lsUntil = $tokenUntil;
-        } elseif (!is_null($tokenFrom)) {
-            // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
-            $lsUntil = clone $now;
-            $lsUntil->setTimeToDayEnd();
+        
+        // Always set all dated, so LimeSurvey will check the token
+        if ($tokenFrom) {
+            $lsFrom = $tokenFrom;
+            if ($tokenUntil) {
+                $lsUntil = $tokenUntil;
+            } else {
+                // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
+                $lsUntil = clone $tokenFrom;
+                $lsUntil->setTimeToDayEnd();
+            }
         } else {
-            // No valid from date, use same date as until
+            // No start date, use save date in the past to block access
+            $lsFrom  = new \MUtil_Date('1900-01-01');
             $lsUntil = $lsFrom;
         }
+        
+//        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $tokenFrom;
+//        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
+//            $lsUntil = $tokenUntil;
+//        } elseif (!is_null($tokenFrom)) {
+//            // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
+//            $lsUntil = clone $now;
+//            $lsUntil->setTimeToDayEnd();
+//        } else {
+//            // No valid from date, use same date as until
+//            $lsUntil = $lsFrom;
+//        }
 
         $values = [
             'validfrom'  => $lsFrom->toString(self::LS_DB_DATETIME_FORMAT),

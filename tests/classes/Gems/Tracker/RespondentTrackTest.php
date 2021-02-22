@@ -170,6 +170,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $expected = $respondentTrack->getFieldData();
         $expected['a__1'] = 1;
         $expected['f__6'] = new \MUtil_Date('2017-10-01', 'yyyy-MM-dd');
+        $expected['f__6__manual'] = 0;
         $actual   = $respondentTrack->setFieldData(array('a__1' => 1));
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
@@ -302,7 +303,8 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'f__3' => 'newvalue',
             'f__4' => '',
             'f__6' => '',
-            'a__1' => ''
+            'a__1' => '',
+            'f__6__manual' => '0',
             );
         $actual = $respondentTrack->setFieldData(array('f__3' => 'newvalue', 'f__4' => null));
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);

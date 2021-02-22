@@ -85,6 +85,11 @@ class SiteUtil extends UtilAbstract
      */
     public function getSiteForUrl($url, $blockOnCreation = false)
     {
+        if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
+            $this->_sites[$url] = new SiteConsole($url, $blockOnCreation);
+            $this->source->applySource($this->_sites[$url]);
+        }        
+        
         if (! isset($this->_sites[$url])) {
             $this->_sites[$url] = new SiteUrl($url, $blockOnCreation);
             $this->source->applySource($this->_sites[$url]);
@@ -99,6 +104,10 @@ class SiteUtil extends UtilAbstract
      */
     public function isPostFromAllowedHost(\Zend_Controller_Request_Abstract $request)
     {
+        if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
+            return true;
+        }
+        
         if (! $request instanceof \Zend_Controller_Request_Http) {
             // Should not really occur, but now the code knows the type
             return true;

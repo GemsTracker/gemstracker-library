@@ -42,15 +42,6 @@ class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
      */
     public function testValidDates($fromDate, $untilDate, $expected)
     {
-        $a = [
-            'key_a'=>'value',
-            'hey_b'=>'value',
-            'keya'=>'value',
-            ];
-        $b = $this->filterKeys($a);
-        
-        
-        
         $token = $this->getMockBuilder('Gems_Tracker_Token')
                 ->disableOriginalConstructor()
                 ->getMock();
@@ -83,29 +74,32 @@ class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
         $lastWeek->subDay(7);
         $tomorrow = clone $now;
         $tomorrow->addDay(1);
+
+        $nextWeekUntil = clone $nextWeek;
+        $nextWeekUntil->setTimeToDayEnd();
         return [            
             'futureOpen' => [
                 $nextWeek, 
                 null,
                 [
                     'validfrom'  => $nextWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $now->toString('yyyy-MM-dd 23:59:59'),
+                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
                 ]                                
             ],
             'futureClosed' => [
                 $tomorrow,
-                $nextWeek,
+                $nextWeekUntil,
                 [
                     'validfrom'  => $tomorrow->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $now->toString('yyyy-MM-dd 23:59:59'),
+                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
                 ]                                
             ],
             'open' => [
                 $lastWeek,
-                $nextWeek,
+                $nextWeekUntil,
                 [
                     'validfrom'  => $lastWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $now->toString('yyyy-MM-dd 23:59:59'),
+                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
                 ]                                
             ],
             'unknown' => [
