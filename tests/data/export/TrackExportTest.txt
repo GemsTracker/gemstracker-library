@@ -15,7 +15,7 @@ gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_value
 gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_field_values	gtf_field_default	gtf_calculate_using	gtf_field_type	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly
 30	Relation	rel					relation	0	0	0	0
 gtf_id_order	gtf_field_name	gtf_field_code	gtf_field_description	gtf_to_track_info	gtf_track_info_label	gtf_required	gtf_readonly	gtf_after_next	gtf_min_diff_length	gtf_min_diff_unit	gtf_max_diff_exists	gtf_max_diff_length	gtf_max_diff_unit	gtf_uniqueness	gtf_create_track	gtf_create_wait_days	gtf_field_type	gtf_field_values	gtf_field_default	gtf_calculate_using
-40	Appointemnt	app1		0	0	0	0	1	1	D	0	0	D	0	0	182	appointment			
+40	Appointment	app1		0	0	0	0	1	1	D	0	0	D	0	0	182	appointment			
 
 surveys
 gsu_export_code	gsu_survey_name	gsu_survey_description	gsu_surveyor_id

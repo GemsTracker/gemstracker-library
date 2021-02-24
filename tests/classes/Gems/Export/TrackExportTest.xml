@@ -11,7 +11,7 @@
     <gems__track_fields gtf_id_field = "2" gtf_id_order = "20" gtf_id_track="1" gtf_field_name="DateName" gtf_field_code="datecode" gtf_field_type="date" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     <gems__track_fields gtf_id_field = "3" gtf_id_order = "30" gtf_id_track="1" gtf_field_name="Relation" gtf_field_code="rel" gtf_field_type="relation" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     
-    <gems__track_appointments gtap_id_app_field = "4" gtap_id_order = "40" gtap_id_track="1" gtap_field_name="Appointemnt" gtap_field_code="app1" gtap_to_track_info="0" gtap_changed_by="1" gtap_created="2012-09-07" gtap_created_by="1"/>
+    <gems__track_appointments gtap_id_app_field = "4" gtap_id_order = "40" gtap_id_track="1" gtap_field_name="Appointment" gtap_field_code="app1" gtap_to_track_info="0" gtap_changed_by="1" gtap_created="2012-09-07" gtap_created_by="1"/>
     
     <gems__conditions gcon_id="1000" gcon_type="Round" gcon_class="\Gems\Condition\Round\AgeCondition" gcon_name="AgeCondition test" gcon_condition_text1="5" gcon_condition_text2="Y" gcon_condition_text3="50" gcon_condition_text4="" gcon_active="1" gcon_changed_by="1" gcon_created="2012-03-29 10:55:55" gcon_created_by="1"/>
     <gems__conditions gcon_id="1001" gcon_type="Round" gcon_class="\Gems\Condition\Round\AgeCondition" gcon_name="AgeCondition test2" gcon_condition_text1="52" gcon_condition_text2="Y" gcon_condition_text3="60" gcon_condition_text4="" gcon_active="1" gcon_changed_by="1" gcon_created="2012-03-29 10:55:55" gcon_created_by="1"/>

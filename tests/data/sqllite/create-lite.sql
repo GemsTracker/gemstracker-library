@@ -835,7 +835,7 @@ CREATE TABLE gems__organizations (
         gor_created                 TEXT not null,
         gor_created_by              INTEGER not null,
 
-        PRIMARY KEY(gor_id_organization)
+        PRIMARY KEY (gor_id_organization)
     )
     ;
 
@@ -1707,10 +1707,10 @@ CREATE TABLE gems__track_appointments (
         gtap_field_code         varchar(20),
         gtap_field_description  varchar(200),
 
-        gtap_to_track_info      TINYINT(1) not null default true,
-        gtap_track_info_label   TINYINT(1) not null default false,
-        gtap_required           TINYINT(1) not null default false,
-        gtap_readonly           TINYINT(1) not null default false,
+        gtap_to_track_info      TINYINT(1) not null default 1,
+        gtap_track_info_label   TINYINT(1) not null default 0,
+        gtap_required           TINYINT(1) not null default 0,
+        gtap_readonly           TINYINT(1) not null default 0,
 
         gtap_filter_id          INTEGER,
         -- deprecated
@@ -1752,10 +1752,10 @@ CREATE TABLE gems__track_fields (
 
         gtf_field_type          varchar(20) not null,
 
-        gtf_to_track_info       TINYINT(1) not null default true,
-        gtf_track_info_label    TINYINT(1) not null default false,
-        gtf_required            TINYINT(1) not null default false,
-        gtf_readonly            TINYINT(1) not null default false,
+        gtf_to_track_info       TINYINT(1) not null default 1,
+        gtf_track_info_label    TINYINT(1) not null default 0,
+        gtf_required            TINYINT(1) not null default 0,
+        gtf_readonly            TINYINT(1) not null default 0,
 
         gtf_changed             TEXT not null default current_timestamp,
         gtf_changed_by          INTEGER not null,

@@ -58,6 +58,8 @@
                     <regexp pattern="UNSIGNED\s*" replace="" ignoreCase="true"/>
                     <regexp pattern="(\s)(DATETIME|DATE|TIMESTAMP)(\s|,)" replace="\1TEXT\3" ignoreCase="true"/>
                     <regexp pattern="\s+DEFAULT\s+NULL(\s+|,)" replace="\1" ignoreCase="true"/>
+                    <regexp pattern="\s+DEFAULT\s+TRUE(\s+|,)" replace=" default 1\1" ignoreCase="true"/>
+                    <regexp pattern="\s+DEFAULT\s+FALSE(\s+|,)" replace=" default 0\1" ignoreCase="true"/>
                     <regexp pattern="(?:(\s+NOT\s+NULL)|\s+NULL)([\s,])" replace="\1\2" ignoreCase="true"/>
                     <regexp pattern="\s+ON\s+UPDATE\s+CURRENT_TIMESTAMP" replace="" ignoreCase="true"/>
                     <regexp pattern="\s+REFERENCES\s+[^\s]+\s+\([^)]+\)\s*" replace="" ignoreCase="true"/>
