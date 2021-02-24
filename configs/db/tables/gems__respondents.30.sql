@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__respondents (
-        grs_id_user                bigint unsigned not null auto_increment references gems__user_ids (gui_id_user),
+        grs_id_user                bigint unsigned not null references gems__user_ids (gui_id_user),
 
         grs_ssn                    varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null unique key,
 
@@ -33,9 +33,8 @@ CREATE TABLE if not exists gems__respondents (
         grs_created                timestamp not null,
         grs_created_by             bigint unsigned not null,
 
-        PRIMARY KEY(grs_id_user)
+        PRIMARY KEY (grs_id_user)
     )
     ENGINE=InnoDB
-    AUTO_INCREMENT = 30001
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 

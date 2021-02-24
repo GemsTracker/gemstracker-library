@@ -332,14 +332,19 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizations()
     {
-        return $this->_getTranslatedPairsCached(
-            'gems__organizations',
-            'gor_id_organization',
-            'gor_name',
-            'organizations',
-            'gor_active = 1',
-            'natsort'
-            );
+        try {
+            return $this->_getTranslatedPairsCached(
+                'gems__organizations',
+                'gor_id_organization',
+                'gor_name',
+                'organizations',
+                'gor_active = 1',
+                'natsort'
+                );
+        } catch (\Zend_Db_Statement_Exception $exc) {
+            // Intentional fallthrough when no db present
+            return [];
+        }
     }
 
     /**
