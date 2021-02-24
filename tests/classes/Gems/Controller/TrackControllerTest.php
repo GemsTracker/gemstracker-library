@@ -71,7 +71,7 @@ class TrackControllerTest extends \ControllerTestAbstract
         $req->setPost('no_csrf', $csrf);
         $req->setMethod('post');
         $this->dispatch('/track/create');
-        // echo $this->getResponse()->getBody();
+        // echo __FUNCTION__ . "\n" . $this->getResponse()->getBody();
         $loader   = \GemsEscort::getInstance()->getLoader();
 
         // print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__respondent2track"));
@@ -83,7 +83,7 @@ class TrackControllerTest extends \ControllerTestAbstract
             'datecode' => null,
         ];
         $this->assertEquals($expected, $actual);
-        \MUtil_Batch_BatchAbstract::unload('tmp-track-2');  // Make sure there are no leftovers
+        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /*public function testCorrect() {

@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Prevent the wrong patient being show during embedded login (#607)
 - Remove token events from the listener after use (#611)
 - The default roles no longer show the ask screen (#604)
+- The unit tests seem to have been broken for quite a while (#619)
 - Token 'Assigned by' shows Track assigner (#616)
   
 ## [1.9.0]

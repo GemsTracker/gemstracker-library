@@ -4,7 +4,7 @@ namespace Gems\Controller;
 
 use ControllerTestAbstract;
 
-class IndexControllerTest extends \ControllerTestAbstract
+class IndexControllerTest extends ControllerTestAbstract
 {
     /**
      * @var int
@@ -23,8 +23,8 @@ class IndexControllerTest extends \ControllerTestAbstract
     public function testSaltRequired()
     {
         $this->dispatch('/');
-        $reponse   = $this->getFrontController()->getResponse();
-        $exception = $reponse->getExceptionByMessage("Missing required project setting: 'salt'.");
+        $response  = $this->getFrontController()->getResponse();
+        $exception = $response->getExceptionByMessage("Missing required project setting: 'salt'.");
         $this->assertTrue(count($exception) == 1);
     }
 
@@ -43,29 +43,34 @@ class IndexControllerTest extends \ControllerTestAbstract
         $this->assertAction('login');
     }
 
+    /**
+     * 
+     * @throws \Zend_Cache_Exception
+     * @throws \Zend_Controller_Exception
+     */
     public function testValidProjectLogin()
     {
         $this->_fixSetup();
-        $cache = \GemsEscort::getInstance()->cache;
-        if ($cache instanceof \Zend_Cache_Core) {
-            $cache->clean();
-        }
         
         $postVars = array(
             'organization' => 0,
-            'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in newproject
+            'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in new-project
             'password'     => 'superadmin',
             'button'       => 'Login'           // Submit button / label come from Gems_User_Form_LoginForm
             );
+        
         $this->getRequest()->setMethod('POST')->setPost($postVars);
         $this->dispatch('/index/login');
 
-        // echo $this->getResponse()->getBody();
+        // echo __FUNCTION__ . "\n" . $this->getResponse()->getBody();
         
-        $response = $this->getResponse();
+        $this->getResponse();
         $this->assertRedirect('Valid project login not accepted');
     }
 
+    /**
+     * @throws \Zend_Controller_Exception
+     */
     public function testInvalidProjectLogin()
     {
         $this->_fixSetup();
@@ -78,7 +83,9 @@ class IndexControllerTest extends \ControllerTestAbstract
         $this->getRequest()->setMethod('POST')->setPost($postVars);
 
         $this->dispatch('/index/login');
-        $response = $this->getResponse();
+        // echo __FUNCTION__ . "\n" . $this->getResponse()->getBody();
+        
+        $this->getResponse();
         $this->assertNotRedirect('Invalid project login accepted');
     }
 }

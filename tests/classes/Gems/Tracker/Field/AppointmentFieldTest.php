@@ -267,6 +267,8 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($nextMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        
+        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /**
@@ -319,6 +321,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
 
@@ -475,6 +478,8 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        
+        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /**

@@ -49,7 +49,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_created                 timestamp not null,
         gor_created_by              bigint unsigned not null,
 
-        PRIMARY KEY(gor_id_organization),
+        PRIMARY KEY (gor_id_organization),
         KEY (gor_code)
     )
     ENGINE=InnoDB
