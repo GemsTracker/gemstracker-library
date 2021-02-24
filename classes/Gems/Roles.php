@@ -162,7 +162,9 @@ class Gems_Roles
 
         } catch (\Exception $e) {
 
-            \Gems_Log::getLogger()->logError($e);
+            if (! \Zend_Session::$_unitTestEnabled) {
+                \Gems_Log::getLogger()->logError($e);
+            }
 
             // Reset all roles
             unset($this->_acl);

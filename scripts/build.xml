@@ -30,7 +30,6 @@
             <fileset refid="sql-creation-scripts"/>
             <filterchain>
                 <replaceregexp>
-                    <!-- MySQL Workbench does not know the BOOLEAN type -->
                     <regexp pattern="\`([^\`]*)\`" replace='"\1"' ignoreCase="false"/>
                     <regexp pattern="CREATE\s+TABLE\s+if\s+not\s+exists\s+" replace="CREATE TABLE " ignoreCase="true"/>
                     <regexp pattern="AUTO_INCREMENT\s*=\s*\d+\s*" replace="" ignoreCase="true"/>

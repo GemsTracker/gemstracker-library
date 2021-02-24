@@ -659,9 +659,9 @@ class GemsEscort extends \MUtil_Application_Escort
     {
         $this->bootstrap(array('cache', 'db', 'loader'));
 
-        $accesslog = $this->createProjectClass('AccessLog', $this->cache, $this->db, $this->loader);
-
-        return $accesslog;
+        // Use container as some test will otherwise not find the db
+        $container = $this->getContainer();
+        return $this->createProjectClass('AccessLog', $container->cache, $container->db, $container->loader);
     }
 
     /**

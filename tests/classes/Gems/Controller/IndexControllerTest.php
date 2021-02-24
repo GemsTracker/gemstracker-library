@@ -21,15 +21,17 @@ class IndexControllerTest extends ControllerTestAbstract
     }
 
     /**
-     * TEST Disabled because of PHP version problem while testing against older versions that
-     * do not have the Throwable interface
-     * /
+     */
     public function testSaltRequired()
     {
-        $this->dispatch('/');
-        $response  = $this->getFrontController()->getResponse();
-        $exception = $response->getExceptionByMessage("Missing required project setting: 'salt'.");
-        $this->assertTrue(count($exception) == 1);
+        if (interface_exists('Throwable')) {
+            $this->dispatch('/');
+            $response = $this->getFrontController()->getResponse();
+            $exception = $response->getExceptionByMessage("Missing required project setting: 'salt'.");
+            $this->assertTrue(count($exception) == 1);
+        } else {
+            $this->markTestSkipped("Test cannot be run in PHP versions < 7.0.");
+        }
     }
 
     /**
