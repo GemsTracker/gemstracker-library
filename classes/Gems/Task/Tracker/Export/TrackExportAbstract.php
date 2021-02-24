@@ -64,7 +64,13 @@ abstract class TrackExportAbstract extends \MUtil_Task_TaskAbstract
         $replacements = array("\n" => '\\n', "\r" => '\\r', "\t" => '\\t');
 
         foreach ($data as &$item) {
-            $item = strtr((string) $item, $replacements);
+            if (true === $item) {
+                $item = 1;
+            } elseif (false === $item) {
+                $item = 0;
+            } else {
+                $item = strtr((string) $item, $replacements);
+            }
         }
         fwrite($this->_file, implode("\t", $data) . "\r\n");
     }
