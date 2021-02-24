@@ -91,7 +91,7 @@ if (file_exists(dirname(__FILE__) . '/../vendor/autoload.php')) {
     require_once "Gems/Tracker/Field/FieldAbstract.php";
 }
 
-\Zend_Session::start();
 \Zend_Session::$_unitTestEnabled = true;
+\Zend_Session::start();
 
 // print_r(explode(PATH_SEPARATOR, get_include_path()));
