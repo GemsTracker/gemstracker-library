@@ -428,7 +428,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      *
      * @return \Gems\Model\SiteModel
      */
-    public function getSiteModel(array $styles = [])
+    public function getSiteModel()
     {
         return $this->_loadClass('SiteModel', true);
     }

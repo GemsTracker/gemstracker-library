@@ -19,6 +19,23 @@
 class Gems_Default_SiteMaintenanceAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = [
+        'extraSort'   => [
+            'gsi_order' => SORT_ASC,
+            'gsi_id' => SORT_ASC,
+            ],
+        ];
+    
+    /**
      * Tags for cache cleanup after changes, passed to snippets
      *
      * @var array
@@ -32,10 +49,23 @@ class Gems_Default_SiteMaintenanceAction extends \Gems_Controller_ModelSnippetAc
     public $escort;
 
     /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = ['Generic\\CurrentSiblingsButtonRowSnippet', 'SiteMaintenance\\SiteSetupCheckSnippet', 'SiteMaintenance\\SiteMaintenanceInformation'];
+
+    /**
      *
      * @var \Gems_Loader
      */
     public $loader;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    public $util;
 
     /**
      * @inheritDoc

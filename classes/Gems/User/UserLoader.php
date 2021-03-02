@@ -287,7 +287,6 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
             if ($this->session->__isset('__user_definition')) {
                 $defName = $this->session->__get('__user_definition');
 
-                // Check for during upgrade. Remove for version 1.6
                 if (substr($defName, -10, 10) != 'Definition') {
                     $defName .= 'Definition';
                 }
@@ -418,6 +417,14 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
         return $statusTracker;
     }
 
+    /**
+     * @return string[] default array for when no organizations have been created
+     */
+    public static function getNotOrganizationArray()
+    {
+        return [self::SYSTEM_NO_ORG => 'create db first'];
+    }
+    
     /**
      * Returns an organization object, initiated from the database or from
      * self::$_noOrganization when the database does not yet exist.

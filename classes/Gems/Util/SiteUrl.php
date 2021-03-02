@@ -61,6 +61,17 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Get the first organization id for this url
+     *
+     * @return int
+     */
+    public function getFirstOrganizationId()
+    {
+        reset($this->_data['orgs']);
+        return key($this->_data['orgs']);
+    }
+
+    /**
      * @return string The url itself
      */
     public function getUrl()
@@ -99,17 +110,21 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     {
         try {
             $model = $this->loader->getModels()->getSiteModel();
+            $model->applySettings(true, 'edit');
 
             $data = $model->loadFirst(['gsi_url' => $id]);
 
             if (! $data) {
                 // Auto insert the site
                 $data = $model->save([
-                    'gsi_url'     => $id,
-                    'gsi_blocked' => ($this->_blockOnCreation ? 1 : 0),
-                    ]);
+                     'gsi_url'                  => $id,
+                     'gsi_select_organizations' => 0,
+                     'gsi_blocked'              => ($this->_blockOnCreation ? 1 : 0),
+                     ]);
             }
-        } catch (\Zend_Db_Adapter_Exception $e) {
+            
+            
+        } catch (\Zend_Db_Exception $e) {
             // In case the table does not exist, create temporary data
             $data = [
                 'gsi_url'                  => $id,
@@ -123,12 +138,12 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_blocked'              => ($this->_blockOnCreation ? 1 : 0),
             ];    
             
-            $this->logger->logError($e);
+            // $this->logger->logError($e);
             // \MUtil_Echo::track($e->getMessage());
         }
         
         $namedOrgs = $this->util->getDbLookup()->getOrganizationsForLogin();
-        if ($data['gsi_select_organizations']) {
+        if (isset($data['gsi_select_organizations']) && $data['gsi_select_organizations']) {
             foreach ($data['gsi_organizations'] as $orgId) {
                 if (isset( $namedOrgs[$orgId])) {
                     $data['orgs'][$orgId] = $namedOrgs[$orgId];

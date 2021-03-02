@@ -389,7 +389,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                 );
         } catch (\Zend_Db_Statement_Exception $exc) {
             // Intentional fallthrough when no db present
-            return [];
+            return \Gems_User_UserLoader::getNotOrganizationArray();
         }
     }
 

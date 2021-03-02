@@ -22,11 +22,8 @@ use Gems\Snippets\Ask\RedirectUntilGoodbyeSnippet;
  */
 class SiteUtil extends UtilAbstract
 {
-    /**
-     * @var array url => SiteUrl object
-     */
-    protected $_sites;
-
+    CONST ORG_SEPARATOR = '|';
+    
     /**
      * @var \MUtil_Registry_Source
      */
@@ -53,14 +50,50 @@ class SiteUtil extends UtilAbstract
     } // */
 
     /**
+     * @return \Gems\Util\SiteConsole A console only url
+     */
+    public function getConsoleUrl()
+    {
+        $site = new SiteConsole();
+        $this->source->applySource($site);
+        return $site;
+    }
+    
+    /**
+     * Get the first url for all organizations
+     * 
+     * @return \Gems\Util\SiteUrl|null
+     */
+    public function getOneForAll()
+    {
+        try {
+            $sql = "SELECT gsi_url FROM gems__sites 
+                        WHERE gsi_select_organizations = 0 AND gsi_active = 1 AND gsi_blocked = 0 
+                        ORDER BY gsi_order, gsi_id";
+
+            $url = $this->db->fetchOne($sql);
+            
+            if ($url) {
+                return $this->getSiteForUrl($url);
+            }
+            
+        } catch (\Zend_Db_Statement_Exception $exc) {
+            // Intentional fall through
+        }
+        return null;
+    }
+
+    /**
      * @param $orgId
      * @return string Preferred url for organization
      */
     public function getOrganizationPreferredUrl($orgId)
     {
         try {
-            $id = intval($orgId);
-            $sql = "SELECT gsi_url FROM gems__sites WHERE gsi_select_organizations = 0 OR gsi_organizations LIKE '%|$id|%' ORDER BY gsi_order, gsi_id";
+            $id = self::SiteUtil . intval($orgId) . self::SiteUtil;
+            $sql = "SELECT gsi_url FROM gems__sites 
+                        WHERE gsi_select_organizations = 0 OR gsi_organizations LIKE '%$orgId%' AND gsi_active = 1 AND gsi_blocked = 0
+                        ORDER BY gsi_order, gsi_id";
 
             return $this->db->fetchOne($sql);
         } catch (\Zend_Db_Statement_Exception $exc) {
@@ -72,12 +105,57 @@ class SiteUtil extends UtilAbstract
     /**
      * @param false $blockOnCreation
      * @return \Gems\Util\SiteUrl
+     * @throws \Gems_Exception_Coding
      */
     public function getSiteForCurrentUrl($blockOnCreation = false)
     {
-        return $this->getSiteForUrl($this->util->getCurrentURI(), $blockOnCreation);
+        if (\MUtil_Console::isConsole()) {
+            $site = new SiteConsole('https://console', false);
+            $this->source->applySource($site);
+            return $site;
+            
+        } elseif (\Zend_Session::$_unitTestEnabled) {
+            $url = 'https://test.example.site';
+            
+        } elseif (\Zend_Controller_Front::getInstance()->getResponse() instanceof \Zend_Controller_Request_Abstract) {
+            // I found myself trying to do this so here we prefent this the hard way.
+            throw new \Gems_Exception_Coding(
+                __CLASS__ . '->' . __FUNCTION__ . "() cannot be called before the request object is initialized."
+            );
+            
+        } else {
+            $url = $this->util->getCurrentURI();
+            
+        }
+        
+        return $this->getSiteForUrl($url, $blockOnCreation);
     }
-    
+
+    /**
+     * @param string $url A complete url (not just the server) or otherwise the current url is used
+     * @return \Gems\Util\SiteUrl
+     */
+    public function getSiteByFullUrl($url)
+    {
+        try {
+            $sql = "SELECT gsi_url FROM gems__sites 
+                        WHERE ? LIKE CONCAT(gsi_url, '%') 
+                        ORDER BY gsi_order, gsi_id";
+
+            $foundUrl = $this->db->fetchOne($sql, $url);
+
+            if ($foundUrl) {
+                return $this->getSiteForUrl($foundUrl);
+            }
+            
+            return $this->getSiteForUrl($url, true);
+            
+        } catch (\Zend_Db_Statement_Exception $exc) {
+            return null;
+        }
+        
+    }
+
     /**
      * @param string $url An url or otherwise the current url is used
      * @param false $blockOnCreation
@@ -85,17 +163,35 @@ class SiteUtil extends UtilAbstract
      */
     public function getSiteForUrl($url, $blockOnCreation = false)
     {
-        if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
-            $this->_sites[$url] = new SiteConsole($url, $blockOnCreation);
-            $this->source->applySource($this->_sites[$url]);
-        }        
-        
-        if (! isset($this->_sites[$url])) {
-            $this->_sites[$url] = new SiteUrl($url, $blockOnCreation);
-            $this->source->applySource($this->_sites[$url]);
-        }
+        $site = new SiteUrl($url, $blockOnCreation);
+        $this->source->applySource($site);
 
-        return $this->_sites[$url];
+        return $site;
+    }
+
+    /**
+     * Get the organizations not served by a specific site
+     *
+     * @return array [$orgId]
+     */
+    public function getUnspecificOrganizations()
+    {
+        $existingOrganizations = array_keys($this->util->getDbLookup()->getOrganizations());
+
+        try {
+            $sql = "SELECT gsi_organizations FROM gems__sites WHERE gsi_select_organizations = 1";
+
+            $organizationStrings = $this->db->fetchCol($sql);
+
+            if ($organizationStrings) {
+                $servedOrganizations = array_unique(array_filter(explode(self::ORG_SEPARATOR, implode('', $organizationStrings))));
+
+                return array_diff($existingOrganizations, $servedOrganizations);
+            }
+        } catch (\Zend_Db_Statement_Exception $exc) {
+            // Intentional fall through
+        }
+        return $existingOrganizations;
     }
 
     /**
@@ -123,13 +219,17 @@ class SiteUtil extends UtilAbstract
             // Nothing to check against
             return true;
         }
-        
+
+        // Quick check without database access
         $host = \MUtil_String::stripToHost($incoming);
         if ($host == \MUtil_String::stripToHost($request->getServer('HTTP_HOST'))) {
             return true;
         }
         
-        // TODO: check the db
+        $site = $this->getSiteByFullUrl($incoming);
+        if ($site && $site->isBlocked()) {
+            return false;
+        }
         
         return false;
     }

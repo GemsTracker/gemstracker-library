@@ -207,6 +207,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
             $uri .= '://';
             if (isset($_SERVER['SERVER_NAME'])) {
                 $uri .= $_SERVER['SERVER_NAME'];
+                $uri .= $this->basepath->getBasePath();
             } else {                
                 // I did not want to add loader to util, can no longer tell why
                 $org = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
@@ -214,10 +215,11 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
                 if ($org instanceof \Gems_User_Organization) {
                     $uri = $org->getPreferredSiteUrl();
                 } else {
-                    $uri .= 'localhost'; // Should only happen in tests 
+                    throw new \Gems_Exception_Coding(
+                        __CLASS__ . '->' . __FUNCTION__ . "() should not be called when there is no current organization."
+                    );
                 }
             }
-            $uri .= $this->basepath->getBasePath();
         }
         if ($subpath && ($subpath[0] != '/')) {
             $subpath = '/' . $subpath;

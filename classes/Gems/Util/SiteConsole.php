@@ -20,11 +20,20 @@ namespace Gems\Util;
  */
 class SiteConsole extends SiteUrl
 {
+    const CONSOLE_URL = 'https://console';
     /**
      * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
+    /**
+     * Creates the object.
+     */
+    public function __construct()
+    {
+        parent::__construct(self::CONSOLE_URL, false);
+    }
+    
     /**
      * @return boolean Is this organization id allowed for this site
      */
@@ -38,11 +47,6 @@ class SiteConsole extends SiteUrl
      */
     protected function loadData($id)
     {
-        $namedOrgs = $this->util->getDbLookup()->getOrganizationsForLogin();
-        if (! $namedOrgs) {
-            $namedOrgs = [0 => 'create db first'];
-        }
-        
         return [
             'gsi_url'                  => $id,
             'gsi_order'                => 1000,
@@ -53,7 +57,7 @@ class SiteConsole extends SiteUrl
             'gsi_iso_lang'             => $this->project->getLocaleDefault(),
             'gsi_active'               => 1,
             'gsi_blocked'              => 0,
-            'orgs'                     => $namedOrgs,
+            'orgs'                     => $this->util->getDbLookup()->getOrganizationsForLogin(),
         ];
     }
 

@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use Gems\Util\SiteUtil;
+
 /**
  *
  * @package    Gems
@@ -20,12 +22,6 @@ namespace Gems\Model;
  */
 class SiteModel extends  \Gems_Model_JoinModel
 {
-    /**
-     *
-     * @var \GemsEscort
-     */
-    protected $escort;
-
     /**
      * @var \Gems_Project_ProjectSettings
      */
@@ -75,7 +71,7 @@ class SiteModel extends  \Gems_Model_JoinModel
                    'multiOptions', $this->util->getDbLookup()->getOrganizationsForLogin(),
                    'required', true
         );
-        $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
+        $ct = new \MUtil_Model_Type_ConcatenatedRow(SiteUtil::ORG_SEPARATOR, $this->_(', '), true);
         $ct->apply($this, 'gsi_organizations');
 
         $switches = array(
@@ -85,8 +81,9 @@ class SiteModel extends  \Gems_Model_JoinModel
         );
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gsi_select_organizations');
 
-        if (method_exists($this->escort, 'getStyles')) {
-            $styles = $this->escort->getStyles();
+        $escort = \GemsEscort::getInstance();
+        if (method_exists($escort, 'getStyles')) {
+            $styles = $escort->getStyles();
             
             $this->set('gsi_style', 'label', $this->_('Style'),
                        'multiOptions', $styles
