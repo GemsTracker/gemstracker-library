@@ -62,7 +62,7 @@ class IndexControllerTest extends ControllerTestAbstract
         $this->_fixSetup();
         
         $postVars = array(
-            'organization' => 0,
+            'organization' => \Gems_User_UserLoader::SYSTEM_NO_ORG,
             'userlogin'    => 'superadmin',  // Valid login, this comes from project.ini in new-project
             'password'     => 'superadmin',
             'button'       => 'Login'           // Submit button / label come from Gems_User_Form_LoginForm
@@ -84,7 +84,7 @@ class IndexControllerTest extends ControllerTestAbstract
     {
         $this->_fixSetup();
         $postVars = array(
-            'organization' => '0',
+            'organization' => \Gems_User_UserLoader::SYSTEM_NO_ORG,
             'userlogin'    => 'superadmin',
             'password'     => 'superpassword', // This is wrong
             'submit'       => 'Login'

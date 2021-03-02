@@ -90,7 +90,7 @@ class SiteUtil extends UtilAbstract
     public function getOrganizationPreferredUrl($orgId)
     {
         try {
-            $id = self::SiteUtil . intval($orgId) . self::SiteUtil;
+            $id = self::ORG_SEPARATOR . intval($orgId) . self::ORG_SEPARATOR;
             $sql = "SELECT gsi_url FROM gems__sites 
                         WHERE gsi_select_organizations = 0 OR gsi_organizations LIKE '%$orgId%' AND gsi_active = 1 AND gsi_blocked = 0
                         ORDER BY gsi_order, gsi_id";
