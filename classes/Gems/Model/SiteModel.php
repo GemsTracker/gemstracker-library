@@ -68,7 +68,7 @@ class SiteModel extends  \Gems_Model_JoinModel
         $this->set('gsi_organizations', 'label', $this->_('Organizations'),
                    'description', $this->_('The organizations that use the url.'),
                    'elementClass', 'MultiCheckbox',
-                   'multiOptions', $this->util->getDbLookup()->getOrganizationsForLogin(),
+                   'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                    'required', true
         );
         $ct = new \MUtil_Model_Type_ConcatenatedRow(SiteUtil::ORG_SEPARATOR, $this->_(', '), true);
