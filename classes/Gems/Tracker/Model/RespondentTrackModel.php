@@ -173,11 +173,15 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->set('respondent_name',   'label', $this->_('Respondent name'));
         $this->set('gtr_track_name',    'label', $this->_('Track'));
 
+        $mailCodes = $this->util->getDbLookup()->getRespondentTrackMailCodes();
+        end($mailCodes);
+        $defaultMailCode = key($mailCodes);
         $this->set('gr2t_mailable',
                 'label', $this->_('May be mailed'),
+                'default', $defaultMailCode,
                 'elementClass', 'radio',
                 'separator', ' ',
-                'multiOptions', $this->util->getDbLookup()->getRespondentTrackMailCodes()
+                'multiOptions', $mailCodes 
                 );
 
         $this->set('assigned_by',          'label', $this->_('Assigned by'));
