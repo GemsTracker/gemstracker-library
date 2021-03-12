@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
 ### Added user functionality
+- Add a new track field type for linking tracks to other tracks (#621)
 - Added Url site management (#618)
 - Allow relation to ask for a token mail resend (#601)
 - Debug options for survey events (#613)
+- Show the most recently added track first in the track overviews of patients (#622)
 
 ### Interface improvements
 - Feedback bij niet verstuurde reset mail (#278)

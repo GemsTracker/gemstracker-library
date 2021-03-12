@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MultiselectField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -24,6 +23,16 @@ namespace Gems\Tracker\Field;
 class MultiselectField extends FieldAbstract
 {
     /**
+     * @var string to use as display separator
+     */
+    protected $displaySeparator = ' ';
+
+    /**
+     * @var bool When true the value is saved with padded seperators
+     */
+    protected $padSeperators = false;
+    
+    /**
      *
      * @var \Gems_Util
      */
@@ -38,7 +47,7 @@ class MultiselectField extends FieldAbstract
      */
     protected function addModelSettings(array &$settings)
     {
-        $concatter = new \MUtil_Model_Type_ConcatenatedRow(parent::FIELD_SEP, ' ', false);
+        $concatter = new \MUtil_Model_Type_ConcatenatedRow(parent::FIELD_SEP, $this->displaySeparator, $this->padSeperators);
         $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
         $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
         $settings  = $concatter->getSettings() + $settings;
@@ -57,7 +66,11 @@ class MultiselectField extends FieldAbstract
     public function onFieldDataSave($currentValue, array $fieldData)
     {
         if (is_array($currentValue)) {
-            return implode(parent::FIELD_SEP, $currentValue);
+            if ($this->padSeperators) {
+                return parent::FIELD_SEP . implode(parent::FIELD_SEP, $currentValue) . parent::FIELD_SEP;
+            } else {
+                return implode(parent::FIELD_SEP, $currentValue);
+            }
         }
 
         return $currentValue;

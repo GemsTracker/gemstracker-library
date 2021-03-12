@@ -62,6 +62,7 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
      */
     protected $autofilterParameters = array(
         'extraFilter'     => 'getRespondentFilter',
+        'extraSort'       => array('gr2t_start_date' => SORT_DESC),
         'menuEditActions' => array('edit-track'),
         'menuShowActions' => array('show-track'),
         'respondent'      => 'getRespondent',

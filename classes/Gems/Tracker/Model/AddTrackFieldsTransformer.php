@@ -91,6 +91,10 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         foreach ($settings as $field => &$setting) {
             $setting['noSort'] = true;
             $setting['no_text_search'] = true;
+            
+            if (isset($setting[\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER])) {
+                $model->setMeta(\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER, true);
+            }
         }
         
         return $settings;

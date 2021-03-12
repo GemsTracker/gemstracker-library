@@ -480,21 +480,22 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     public function getFieldTypes()
     {
         $output = [
-            'activity'    => $this->_('Activity'),
-            'appointment' => $this->_('Appointment'),
-            'boolean'     => $this->_('Boolean'),
-            'caretaker'   => $this->_('Caretaker'),
-            'consent'     => $this->_('Consent'),
-            'date'        => $this->_('Date'),
-            'text'        => $this->_('Free text'),
-            'textarea'    => $this->_('Long free text'),
-            'location'    => $this->_('Location'),
-            'datetime'    => $this->_('Moment in time'),
-            'procedure'   => $this->_('Procedure'),
-            'relation'    => $this->_('Relation'),
-            'select'      => $this->_('Select one'),
-            'multiselect' => $this->_('Select multiple'),
-            'track'       => $this->_('Track'),
+            'activity'      => $this->_('Activity'),
+            'appointment'   => $this->_('Appointment'),
+            'boolean'       => $this->_('Boolean'),
+            'caretaker'     => $this->_('Caretaker'),
+            'consent'       => $this->_('Consent'),
+            'date'          => $this->_('Date'),
+            'text'          => $this->_('Free text'),
+            'textarea'      => $this->_('Long free text'),
+            'location'      => $this->_('Location'),
+            'datetime'      => $this->_('Moment in time'),
+            'procedure'     => $this->_('Procedure'),
+            'relatedTracks' => $this->_('Related tracks'),
+            'relation'      => $this->_('Relation'),
+            'select'        => $this->_('Select one'),
+            'multiselect'   => $this->_('Select multiple'),
+            'track'         => $this->_('Track'),
         ];
 
         $event = new TranslatableNamedArrayEvent($output);
