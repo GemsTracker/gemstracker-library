@@ -202,6 +202,12 @@ interface FieldInterface
 
     /**
      *
+     * @return boolean True when this field is read only
+     */
+    public function isReadOnly();
+        
+    /**
+     *
      * @return boolean When this field has dependencies
      */
     public function hasDataModelDependencies();

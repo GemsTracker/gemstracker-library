@@ -1603,7 +1603,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function setMailable($mailable)
     {
-        $values['gr2t_mailable'] = $mailable ? 1 : 0;
+        $mailCodes = array_keys($this->util->getDbLookup()->getRespondentTrackMailCodes());
+        $values['gr2t_mailable'] = $mailable ? max($mailCodes) : min($mailCodes);
 
         return $this->_updateTrack($values, $this->currentUser->getUserId());
     }

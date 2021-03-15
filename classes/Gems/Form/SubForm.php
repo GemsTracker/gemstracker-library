@@ -23,6 +23,15 @@ class Gems_Form_SubForm extends \Gems_Form
     protected $_isArray = true;
 
     /**
+     * The id of the element that keeps track of the focus
+     *
+     * Set to false to disable
+     *
+     * @var string
+     */
+    public $focusTrackerElementId = null;
+
+    /**
      * Load the default decorators
      *
      * @return void
@@ -35,10 +44,13 @@ class Gems_Form_SubForm extends \Gems_Form
 
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
-            $this->addDecorator('FormElements')
-                 ->addDecorator('HtmlTag', array('tag' => 'dl'))
-                 ->addDecorator('Fieldset')
-                 ->addDecorator('DtDdWrapper');
+            $this->addDecorator('FormElements');
+            if (!\MUtil_Bootstrap::enabled()) {
+                $this->addDecorator('HtmlTag', array('tag' => 'dl'))
+                    ->addDecorator('Fieldset')
+                    ->addDecorator('DtDdWrapper');
+            }
+                 
         }
     }
 }

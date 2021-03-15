@@ -270,6 +270,8 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
         // Load all other new data
         $respTrackModel = $this->getRespondentTrackModel();
+        // Make sure the default are loaded
+        $respTrackModel->applyEditSettings($trackEngine);
         $respTrackData  = $respTrackData + $respTrackModel->loadNew(null, $filter);
         // \MUtil_Echo::track($respTrackData);
 
@@ -280,7 +282,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         // Load the track object using only id (otherwise wrong respondent data is loaded)
         $respTrack      = $this->getRespondentTrack($respTrackData['gr2t_id_respondent_track']);
 
-        // Save the fields, this also updates track info in needed
+        // Save the fields, this also updates track info in needed when the fields are empty
         $respTrack->setFieldData($trackFieldsData);
 
         // Create the actual tokens!!!!
