@@ -120,6 +120,9 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
             $emptyLog     = $checkToken->getMockChanges('log');
             if (($emptyAnswers && ($emptyAnswers != $currentAnswers)) || ($emptyLog && ($emptyLog != $currentLog))) {
                 $html->h3($this->_('Data that would be changed if empty'), ['style' => 'clear: both;']);
+                if ($checkToken->getCopiedFrom()) {
+                    $html->pInfo(sprintf($this->_('The answers in this token will be prefilled from the previous token %s.'), $checkToken->getCopiedFrom()));
+                }
                 $html->div($this->showArrayTable($emptyAnswers), ['class' => 'leftFloat']);
                 if ($emptyLog) {
                     $div = $html->div(['class' => 'leftFloat']);

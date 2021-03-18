@@ -1,12 +1,12 @@
 <?php
 
 /**
+ * 
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -235,6 +235,23 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getPreviousRoundId($roundId, $roundOrder = null);
 
     /**
+     * Get all respondent relation fields
+     *
+     * Returns an array of field id => field name
+     *
+     * @return array
+     */
+    public function getRespondentRelationFields();
+
+    /**
+     * Get the round object
+     *
+     * @param int $roundId  Gems round id
+     * @return \Gems\Tracker\Round
+     */
+    public function getRound($roundId);
+
+    /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
      * @param \Gems_Tracker_Token $token
@@ -270,14 +287,6 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array of string snippet names
      */
     public function getRoundEditSnippetNames();
-
-    /**
-     * Get the round object
-     *
-     * @param int $roundId  Gems round id
-     * @return \Gems\Tracker\Round
-     */
-    public function getRound($roundId);
 
     /**
      * Returns a model that can be used to retrieve or save the data.
