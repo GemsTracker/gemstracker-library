@@ -326,15 +326,15 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             if ($this->showForRespondents) {
                 $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
                 if ($dropdown) {
-                    $div[] = $dropdown;
-                    $output       = true;
+                    $div[]  = $dropdown;
+                    $output = true;
                 }
             }
             if ($this->showForStaff) {
                 $dropdown = $this->_getTracks('staff', $pageRef, $this->showForStaff);
                 if ($dropdown) {
-                    $div[] = $dropdown;
-                    $output       = true;
+                    $div[]  = $dropdown;
+                    $output = true;
                 }
             }
             $addToLists[] = $div;

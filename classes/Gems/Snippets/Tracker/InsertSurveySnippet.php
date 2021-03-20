@@ -84,6 +84,11 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         );
 
     /**
+     * @var bool Allow selection of more than one survey
+     */
+    protected $insertMultipleSurveys = true;
+    
+    /**
      * Required
      *
      * @var \Gems_Loader
@@ -91,12 +96,24 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected $loader;
 
     /**
+     * @var \Gems_Tracker_Respondent
+     */
+    protected $respondent;
+    
+    /**
      * Required
      *
-     * @var \Gems_Tracker_RespondentTrack Respondent Track
+     * @var \Gems_Tracker_RespondentTrack The currently selected respondent track, required for save
      */
     protected $respondentTrack;
 
+    /**
+     * Required
+     *
+     * @var array of \Gems_Tracker_RespondentTrack Respondent Track
+     */
+    protected $respondentTracks = [];
+    
     /**
      * The name of the action to forward to after form completion
      *
@@ -106,9 +123,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var array of surveyId => \Gems_Tracker_Survey
      */
-    protected $survey;
+    protected $surveys = [];
 
     /**
      *
@@ -119,9 +136,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * The newly create token
      *
-     * @var \Gems_Tracker_Token
+     * @var array of \Gems_Tracker_Token
      */
-    protected $token;
+    protected $tokens = [];
 
     /**
      *
@@ -129,6 +146,12 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected $tracker;
 
+    /**
+     *
+     * @var array of respondent track id => description
+     */
+    protected $tracksList;
+    
     /**
      *
      * @var \Gems_Util
@@ -159,8 +182,18 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         parent::afterRegistry();
 
-        $this->saveLabel = $this->_('Insert survey');
+        $this->respondent = $this->loader->getRespondent(
+            $this->request->getParam(\MUtil_Model::REQUEST_ID1), 
+            $this->request->getParam(\MUtil_Model::REQUEST_ID2)
+        );
+
+        if ($this->insertMultipleSurveys) {
+            $this->saveLabel = $this->_('Insert survey(s)');
+        } else {
+            $this->saveLabel = $this->_('Insert survey');
+        }
         $this->tracker   = $this->loader->getTracker();
+        
     }
 
     /**
@@ -186,7 +219,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $trackData = $this->util->getTrackData();
 
         if (! $this->surveyList) {
-            $this->surveyList = $trackData->getInsertableSurveys($this->request->getParam(\MUtil_Model::REQUEST_ID2));
+            $this->surveyList = $trackData->getInsertableSurveys($this->respondent->getOrganizationId());
         }
 
         $model->set('gto_id_survey',   'label', $this->_('Suvey to insert'),
@@ -228,24 +261,24 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $select->from('gems__tokens', array('gto_round_description AS round_description'))
                 ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
                 ->joinInner('gems__surveys', 'gto_id_survey = gsu_id_survey', array())
-                ->where('grc_success = 1')
+                // ->where('grc_success = 1')
                 ->group('gto_round_description');
 
-        if ($this->survey instanceof \Gems_Tracker_Survey) {
-            $groupId = $this->survey->getGroupId();
+        $groupIds = implode(', ', $this->getGroupIds());
+        if ($groupIds) {
             $select->columns(array(
                 // Round order is maximum for the survey's group unless this round had no surveys of the same group
                 'round_order'    => new \Zend_Db_Expr(
                         "COALESCE(
-                            MAX(CASE WHEN gsu_id_primary_group = $groupId THEN gto_round_order ELSE NULL END),
+                            MAX(CASE WHEN gsu_id_primary_group IN ($groupIds) THEN gto_round_order ELSE NULL END),
                             MAX(gto_round_order)
                             ) + 1"
                         ),
                 'has_group'      => new \Zend_Db_Expr(
-                        "SUM(CASE WHEN gsu_id_primary_group = $groupId THEN 1 ELSE 0 END)"
+                        "SUM(CASE WHEN gsu_id_primary_group IN ($groupIds) THEN 1 ELSE 0 END)"
                         ),
                 'group_answered' => new \Zend_Db_Expr(
-                        "SUM(CASE WHEN gto_completion_time IS NOT NULL AND gsu_id_primary_group = $groupId
+                        "SUM(CASE WHEN gto_completion_time IS NOT NULL AND gsu_id_primary_group IN ($groupIds)
                             THEN 1
                             ELSE 0
                             END)"
@@ -256,7 +289,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             ));
         } else {
             $select->columns(array(
-                'round_order'    => new \Zend_Db_Expr("MAX(gto_round_order)+ 1"),
+                'round_order'    => new \Zend_Db_Expr("MAX(gto_round_order) + 1"),
                 'has_group'      => new \Zend_Db_Expr("0"),
                 'group_answered' => new \Zend_Db_Expr("0"),
                 'any_answered'   => new \Zend_Db_Expr(
@@ -273,7 +306,34 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         $select->order('round_order');
 
+        // \MUtil_Echo::track((string) $select);
+        
         return $select;
+    }
+
+    /**
+     * @param int $changed
+     * @return string
+     */
+    public function getChangedMessage($changed)
+    {
+        return sprintf($this->plural('%d survey inserted', '%d surveys inserted', $changed), $changed);
+    }
+
+    /**
+     * @return array groupId => groupId for all selected surveys
+     */
+    public function getGroupIds()
+    {
+        $groupIds = [];
+        if ($this->surveys) {
+            foreach ($this->surveys as $survey) {
+                if ($survey instanceof \Gems_Tracker_Survey) {
+                    $groupIds[$survey->getGroupId()] = $survey->getGroupId();
+                }
+            }
+        }
+        return $groupIds;
     }
 
     /**
@@ -362,13 +422,22 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     public function hasHtmlOutput() {
         $this->initTracks();
-        $canDo = count($this->tracks) > 0;
+        $canDo = count($this->tracksList) > 0;
         if ($canDo === false) { 
             $this->afterSaveRouteUrl = ['controller'=>'respondent', 'action'=>'show'];             
         }
         return $canDo && parent::hasHtmlOutput();
     }
 
+    /**
+     * @param \Gems_Tracker_RespondentTrack $respondentTrack
+     * @return bool
+     */
+    protected function includeTrack(\Gems_Tracker_RespondentTrack $respondentTrack)
+    {
+        return $respondentTrack->getReceptionCode()->isSuccess(); 
+    }
+    
     /**
      * Initialize the _items variable to hold all items from the model
      */
@@ -390,18 +459,17 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function initTracks()
     {
-        $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
-        $patientId      = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
-        $respTracks     = $this->tracker->getRespondentTracks(
-                $this->util->getDbLookup()->getRespondentId($patientId, $organizationId),
-                $organizationId,
-                'gr2t_start_date DESC'  // Descending order, last added track comes first
+        $this->respondentTracks = $this->tracker->getRespondentTracks(
+            $this->respondent->getId(), 
+            $this->respondent->getOrganizationId(), 
+            'gr2t_start_date DESC'  // Descending order, last added track comes first
         );
-        $tracks         = array();
-        foreach ($respTracks as $respTrack) {
+        $this->tracksList       = [];
+        
+        foreach ($this->respondentTracks as $respTrack) {
             if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                if ($respTrack->hasSuccesCode()) {
-                    $tracks[$respTrack->getRespondentTrackId()] = substr(sprintf(
+                if ($this->includeTrack($respTrack)) {
+                    $this->tracksList[$respTrack->getRespondentTrackId()] = substr(sprintf(
                                     $this->_('%s - %s'),
                                     $respTrack->getTrackEngine()->getTrackName(),
                                     $respTrack->getFieldsInfo()
@@ -409,13 +477,25 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 }
             }
         }
-        if (!$tracks) {
+        if (! $this->tracksList) {
             $this->addMessageInvalid($this->_('Survey insertion impossible: respondent has no track!'));
         }
-        
-        $this->tracks     = $tracks;
-        $this->respTracks = $respTracks;
     }
+
+    /**
+     * @return bool True when any selected survey is not taken by staff
+     */
+    protected function isAnySurveyTakenByRespondents()
+    {
+        foreach ($this->surveys as $survey) {
+            if ($survey instanceof \Gems_Tracker_Survey) {
+                if (! $survey->isTakenByStaff()) {
+                    return true;
+                }
+            }
+        } 
+        return false;
+    }    
 
     /**
      * Hook that loads the form data from $_POST or the model
@@ -425,25 +505,36 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function loadFormData()
     {
         if ($this->createData && (! $this->request->isPost())) {
-            $now            = new \MUtil_Date();
-            $organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
-            $patientId      = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
-            $respondentData = $this->util->getDbLookup()->getRespondentIdAndName($patientId, $organizationId);
-
+            $surveyId = $this->request->getParam(\Gems_Model::SURVEY_ID);
+            if ($surveyId) {
+                if ($this->insertMultipleSurveys) {
+                    $surveyIds = [$surveyId];
+                } else {
+                    $surveyIds = $surveyId;
+                }
+            } else {
+                if ($this->insertMultipleSurveys) {
+                    $surveyIds = [];
+                } else {
+                    $surveyIds = null;
+                }
+            }
+            
             $this->formData = array(
-                'gr2o_patient_nr'        => $patientId,
-                'gto_id_organization'    => $organizationId,
-                'gto_id_respondent'      => $respondentData['id'],
-                'respondent_name'        => $respondentData['name'],
-                'gto_id_survey'          => $this->request->getParam(\Gems_Model::SURVEY_ID),
+                'gr2o_patient_nr'        => $this->respondent->getPatientNumber(),
+                'gto_id_organization'    => $this->respondent->getOrganizationId(),
+                'gto_id_respondent'      => $this->respondent->getId(),
+                'respondent_name'        => $this->respondent->getName(),
+                'gto_id_survey'          => $surveyIds,
                 'gto_id_track'           => $this->request->getParam(\Gems_Model::TRACK_ID),
                 'gto_valid_from_manual'  => 1,
-                'gto_valid_from'         => $now,
+                'gto_valid_from'         => new \MUtil_Date(),
                 'gto_valid_until_manual' => 0,
                 'gto_valid_until'        => null, // Set in loadSurvey
                 );
 
-            $this->getModel()->processAfterLoad(array($this->formData), $this->createData, false);
+            $output = $this->getModel()->processAfterLoad(array($this->formData), $this->createData, false);
+            $this->formData = reset($output);
         } else {
             parent::loadFormData();
         }
@@ -485,25 +576,36 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         if (! $this->surveyList) {
             $this->addMessageInvalid($this->_('Survey insertion impossible: no insertable survey exists!'));
         }
+
+        $model = $this->getModel();
         if (count($this->surveyList) === 1) {
-            $model = $this->getModel();
             $model->set('gto_id_survey', 'elementClass', 'Exhibitor');
 
             reset($this->surveyList);
             $this->formData['gto_id_survey'] = key($this->surveyList);
+        } elseif ($this->insertMultipleSurveys) {
+            $model->set('gto_id_survey', 'elementClass', 'MultiCheckbox', 'required', 'required');
         }
 
         if (isset($this->formData['gto_id_survey'])) {
-            $this->survey = $this->tracker->getSurvey($this->formData['gto_id_survey']);
-
-            $groupId = $this->survey->getGroupId();
-            $groups  = $this->util->getDbLookup()->getGroups();
-            if (isset($groups[$groupId])) {
-                $this->formData['ggp_name'] = $groups[$groupId];
+            foreach ((array) $this->formData['gto_id_survey'] as $surveyId) {
+                $this->surveys[$surveyId] = $this->tracker->getSurvey($surveyId);
             }
+            
+            $groups = array_intersect_key($this->util->getDbLookup()->getGroups(), $this->getGroupIds());
+            if ($groups) {
+                $this->formData['ggp_name'] = implode($this->_(', '), $groups);
+            }            
 
             if (!(isset($this->formData['gto_valid_until_manual']) && $this->formData['gto_valid_until_manual'])) {
-                $this->formData['gto_valid_until'] = $this->survey->getInsertDateUntil($this->formData['gto_valid_from']);
+                foreach ($this->surveys as $survey) {
+                    if ($survey instanceof \Gems_Tracker_Survey) {
+                        // Just use the date of the first select survey
+                        // No theory about this, will usually be 6 months
+                        $this->formData['gto_valid_until'] = $survey->getInsertDateUntil($this->formData['gto_valid_from']);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -513,41 +615,39 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadTrackSettings()
     {
-        $tracks     = $this->tracks;
-        $respTracks = $this->respTracks;
+        $respTracks = $this->respondentTracks;
         
         if (! isset($this->formData['gto_id_track'])) {
-            reset($tracks);
-            $this->formData['gto_id_track'] = key($tracks);
+            reset($this->tracksList);
+            $this->formData['gto_id_track'] = key($this->tracksList);
         }
         
-        asort($tracks);
+        asort($this->tracksList);
         
         $model = $this->getModel();
-        $model->set('gto_id_track', 'multiOptions', $tracks);
-        if (count($tracks) === 1) {
+        $model->set('gto_id_track', 'multiOptions', $this->tracksList);
+        if (count($this->tracksList) === 1) {
             $model->set('gto_id_track', 'elementClass', 'Exhibitor');
         }
 
-        if (isset($this->formData['gto_id_track']) && (int) $this->formData['gto_id_track'] > 0) {
+        if (isset($this->formData['gto_id_track'], $respTracks[$this->formData['gto_id_track']]) && (int) $this->formData['gto_id_track'] > 0) {
             $this->respondentTrack = $respTracks[$this->formData['gto_id_track']];
 
             // Add relation field when survey is not for staff
-            if ($this->survey && $this->survey->isTakenByStaff() === false) {
+            if ($this->isAnySurveyTakenByRespondents()) {
+                
                 $engine = $this->respondentTrack->getTrackEngine();
-                if (method_exists($engine, 'getRespondentRelationFields')) {
-                    $empty = array('-1' => $this->_('Patient'));
-                    $relations = $empty + $engine->getRespondentRelationFields();
-                    $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
-                        'elementClass', (1 == count($relations) ? 'Exhibitor' : 'Select'),
-                        'multiOptions', $relations,
-                        'required', true
-                    );
-                    
-                    if (! isset($this->formData['gto_id_relationfield'])) {
-                        reset($relations);
-                        $this->formData['gto_id_relationfield'] = key($relations);
-                    }
+                $empty  = array('-1' => $this->_('Patient'));
+                $relations = $empty + $engine->getRespondentRelationFields();
+                $model->set('gto_id_relationfield', 'label', $this->_('Fill out by'),
+                    'elementClass', (1 == count($relations) ? 'Exhibitor' : 'Select'),
+                    'multiOptions', $relations,
+                    'required', true
+                );
+                
+                if (! isset($this->formData['gto_id_relationfield'])) {
+                    reset($relations);
+                    $this->formData['gto_id_relationfield'] = key($relations);
                 }
             }
         }
@@ -580,16 +680,30 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $tokenData[$name] = null;
             }
         }
-        $rounds = $model->get('gto_round_order', 'multiOptions');
+        $changed  = 0;
+        $relation = isset($tokenData['gto_id_relationfield']) ? $tokenData['gto_id_relationfield'] : null;
+        $rounds   = $model->get('gto_round_order', 'multiOptions');
         $tokenData['gto_id_round']          = '0';
         $tokenData['gto_round_order']       = $this->formData['gto_round_order'];
         $tokenData['gto_round_description'] = $rounds[$this->formData['gto_round_order']];
 
-        $surveyId = $this->formData['gto_id_survey'];
+        foreach ((array) $this->formData['gto_id_survey'] as $surveyId) {
+            $survey = $this->tracker->getSurvey($surveyId);
+            
+            if ($survey instanceof \Gems_Tracker_Survey) {
+                // We may have a mix of relation and non/relation fields
+                if ($survey->isTakenByStaff()) {
+                    unset($tokenData['gto_id_relationfield']);
+                } else {
+                    $tokenData['gto_id_relationfield'] = $relation;
+                }
+                $this->tokens[] = $this->respondentTrack->addSurveyToTrack($surveyId, $tokenData, $userId);
+                $tokenData['gto_round_order']++;
+                
+                $changed++;
+            }
+        }
 
-        $this->token = $this->respondentTrack->addSurveyToTrack($surveyId, $tokenData, $userId);
-
-        $changed = 1;
 
         // Communicate with the user
         $this->afterSave($changed);
@@ -604,11 +718,22 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     {
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array(
-                $this->request->getControllerKey() => 'track',
-                $this->request->getActionKey()     => $this->routeAction,
-                \MUtil_Model::REQUEST_ID           => $this->token->getTokenId(),
-                );
+            if (1 == count($this->tokens)) {
+                $token = reset($this->tokens);
+                $this->afterSaveRouteUrl = [
+                    $this->request->getControllerKey() => 'track',
+                    $this->request->getActionKey()     => $this->routeAction,
+                    \MUtil_Model::REQUEST_ID           => $token->getTokenId(),
+                    ];
+            } else {
+                // For multiple surveys
+                $this->afterSaveRouteUrl = [
+                    $this->request->getControllerKey() => 'respondent',
+                    $this->request->getActionKey()     => 'show',
+                    \MUtil_Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
+                    \MUtil_Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
+                ];
+            }
         }
 
         return $this;

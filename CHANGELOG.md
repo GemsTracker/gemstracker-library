@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Add a new track field type for linking tracks to other tracks (#621)
 - Added Url site management (#618)
 - Allow relation to ask for a token mail resend (#601)
+- Enable inserting more than one survey at a time (#617)
 - Debug options for survey events (#613)
 - Show the most recently added track first in the track overviews of patients (#622)
 
@@ -22,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Enable PDF export using PHP Office (#597)
 
 ### Fixed
+- Adding an insertable survey to an emptied phase goes wrong (#609)
 - Error message WHERE token = 'xxx' (#595)
 - Extend length if log IP address storage (#606)
 - Incorrect valid until date set when putting a token in LimeSurvey (#612)
