@@ -330,6 +330,12 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 $values['gr2t_id_track']        = $values['gtr_id_track'];
                 $values['gr2t_count']           = $values['gtr_survey_rounds'];
             }
+            if (isset($filter['gr2t_id_user'])) {
+                $values['gr2t_id_user'] = $filter['gr2t_id_user'];
+            }
+            if (isset($filter['gr2t_id_organization'])) {
+                $values['gr2t_id_organization'] = $filter['gr2t_id_organization'];
+            }
         }
 
         // \MUtil_Echo::track($filter, $values);

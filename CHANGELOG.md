@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Adding an insertable survey to an emptied phase goes wrong (#609)
+- Appointment fields lack context during some track creation (#623)
 - Error message WHERE token = 'xxx' (#595)
 - Extend length if log IP address storage (#606)
 - Incorrect valid until date set when putting a token in LimeSurvey (#612)
