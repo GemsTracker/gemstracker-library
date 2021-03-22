@@ -351,7 +351,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         
                 $this->cache->save($result, $cacheId, (array) $tags);
                 
-            } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
+            } catch (\Zend_Exception $e) {
                 // Do not save on an exception
                 return [];
             }

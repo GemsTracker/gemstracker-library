@@ -48,6 +48,7 @@ class IndexControllerTest extends ControllerTestAbstract
     {
         $this->_fixSetup();
         $this->dispatch('/index/login');
+        // echo __FUNCTION__ . "\n" . $this->getResponse()->getBody();
         $this->assertController('index');
         $this->assertAction('login');
     }

@@ -332,19 +332,14 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizations()
     {
-        try {
-            return $this->_getTranslatedPairsCached(
-                'gems__organizations',
-                'gor_id_organization',
-                'gor_name',
-                'organizations',
-                'gor_active = 1',
-                'natsort'
-                );
-        } catch (\Zend_Db_Statement_Exception $exc) {
-            // Intentional fallthrough when no db present
-            return [];
-        }
+        return $this->_getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            'organizations',
+            'gor_active = 1',
+            'natsort'
+            );
     }
 
     /**
@@ -378,8 +373,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getOrganizationsForLogin()
     {
-        try {
-            return $this->_getTranslatedPairsCached(
+        $output = $this->_getTranslatedPairsCached(
                 'gems__organizations',
                 'gor_id_organization',
                 'gor_name',
@@ -387,10 +381,10 @@ class Gems_Util_DbLookup extends UtilAbstract
                 'gor_active = 1 AND gor_has_login = 1',
                 'natsort'
                 );
-        } catch (\Zend_Db_Statement_Exception $exc) {
-            // Intentional fallthrough when no db present
-            return \Gems_User_UserLoader::getNotOrganizationArray();
+        if ($output) {
+            return $output;
         }
+        return \Gems_User_UserLoader::getNotOrganizationArray();
     }
 
     /**

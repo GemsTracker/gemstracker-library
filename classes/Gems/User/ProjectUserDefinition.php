@@ -69,11 +69,8 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
         } catch (\Zend_Db_Exception $zde) {
         }
         if (! $orgs) {
-            if (null === $organization) {
-                $organization = 0;
-            }
             // Table might not exist or be empty, so do something failsafe
-            $orgs = array($organization => 'create db first');
+            $orgs = \Gems_User_UserLoader::getNotOrganizationArray();
         }
         $login     = $this->project->getSuperAdminName();
         $twoFactor = $this->project->getSuperAdminTwoFactorKey();

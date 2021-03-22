@@ -30,7 +30,8 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
     
     public $organizationIdNr = 1;
 
-    public function setUp() {
+    public function setUp() 
+    {
         $this->setPath(GEMS_TEST_DIR . '/data/model');
         parent::setUp();
         $this->_fixUser();
@@ -52,7 +53,8 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
     /**
      * @return \MUtil_Model_ModelAbstract
      */
-    protected function getAnswerModel() {
+    protected function getAnswerModel() 
+    {
         $sourceSurveyId = 1;
         $language       = 'en';
         $lsDb           = \Zend_Db_Table_Abstract::getDefaultAdapter();
@@ -71,7 +73,8 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         return $model;
     }
 
-    protected function getInitSql() {
+    protected function getInitSql() 
+    {
         $path = GEMS_TEST_DIR . '/data/';
 
         // For successful testing of the complete tokens class, we need more tables
@@ -100,11 +103,45 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
 
         return $translate;
     }
+    public function providerTestBatch()
+    {
+        return [
+            'colon'     => ['answerimport.csv'],
+            'semicolon' => ['answerimportnl.csv']
+        ];
+    }
+       
+    /**
+     * @param string $filename
+     * @dataProvider providerTestBatch
+     */
+    public function testBatch($fileName)
+    {
+        $importLoader = $this->loader->getImportLoader();
+        $importLoader->answerRegistryRequest('_orgCode', 'code');
+        $importer     = $importLoader->getImporter('answers');
+        $importer->setSourceFile(__DIR__ . DIRECTORY_SEPARATOR . $fileName);
+        
+        $importer->setTargetModel($this->getAnswerModel());
+        $importer->setImportTranslator($this->object);
+        $this->object->setSurveyId(1);
+        //$batch = $importer->getCheckWithImportBatches();
+        $batch = $importer->getCheckAndImportBatch();
+        $batch->runAll();
+        /*
+        if ($exceptions = $batch->getExceptions()) {
+            var_dump($exceptions);
+        }
+         */
+        $messages = $batch->getMessages();
+        $this->assertEquals($messages['addedAnswers'], '4 tokens were imported as a new extra token.');
+    }
 
-    public function testFilter() {
+    public function testFilter()
+    {
         $targetModel = $this->getAnswerModel();
         $this->object->setTargetModel($targetModel);
-
+        //echo get_class($this->object->getTargetForm()) . "\n";
         $data = [
             [
                 'patient_id'      => 'o1p1',
@@ -167,38 +204,4 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         //$this->saveTables(['gems__agenda_staff'], 'AppointmentTranslatorTest');
         $this->assertEquals($expected, $actual);
     }
-       
-    /**
-     * @param string $filename
-     * @dataProvider providerTestBatch
-     */
-    public function testBatch($fileName)
-    {
-        $importLoader = $this->loader->getImportLoader();
-        $importLoader->answerRegistryRequest('_orgCode', 'code');
-        $importer     = $importLoader->getImporter('answers');
-        $importer->setSourceFile(__DIR__ . DIRECTORY_SEPARATOR . $fileName);
-        $importer->setTargetModel($this->getAnswerModel());
-        $importer->setImportTranslator($this->object);
-        $this->object->setSurveyId(1);
-        //$batch = $importer->getCheckWithImportBatches();
-        $batch = $importer->getCheckAndImportBatch();
-        $batch->runAll();
-        /*
-        if ($exceptions = $batch->getExceptions()) {
-            var_dump($exceptions);
-        }
-         */
-        $messages = $batch->getMessages();
-        $this->assertEquals($messages['addedAnswers'], '4 tokens were imported as a new extra token.');
-    }
-    
-    public function providerTestBatch()
-    {
-        return [ 
-            'colon'     => ['answerimport.csv'],
-            'semicolon' => ['answerimportnl.csv']
-            ];
-    }
-
 }

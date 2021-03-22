@@ -575,10 +575,13 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     public function getUser($login_name, $currentOrganization)
     {
         $user = $this->getUserClass($login_name, $currentOrganization);
-
+        
         if ($this->allowLoginOnWithoutOrganization && (! $currentOrganization)) {
             $user->setCurrentOrganization($user->getBaseOrganizationId());
         } else {
+            if (! $currentOrganization) {
+                $currentOrganization = self::SYSTEM_NO_ORG;
+            }
             // Check: can the user log in as this organization, if not load non-existing user
             if (! $user->isAllowedOrganization($currentOrganization)) {
                 $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);

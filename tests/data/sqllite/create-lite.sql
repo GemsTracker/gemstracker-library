@@ -1057,7 +1057,7 @@ CREATE TABLE gems__respondents (
         grs_created                TEXT not null,
         grs_created_by             INTEGER not null,
 
-        PRIMARY KEY(grs_id_user)
+        PRIMARY KEY (grs_id_user)
     )
     ;
 

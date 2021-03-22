@@ -210,7 +210,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      */
     public function checkSuperAdminPassword($password)
     {
-        return $password && ($password == $this->getSuperAdminPassword($password));
+        return $password && ($password == $this->getSuperAdminPassword());
     }
 
     /**
