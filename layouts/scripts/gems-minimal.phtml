@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <?php echo $this->headTitle(); ?>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php
+    echo $this->headMeta();
+    echo $this->headLink();
+    echo $this->headStyle();
+    ?>
+
+</head>
+<body>
+    <?php echo $this->layout()->content;
+    echo \MUtil_Echo::out();
+    echo $this->headScript();
+    echo $this->inlineScript();
+    ?>
+</body>
+</html>
