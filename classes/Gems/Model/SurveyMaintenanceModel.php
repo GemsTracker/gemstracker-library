@@ -60,9 +60,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
      * Set those settings needed for the browse display
      *
      * @param boolean $addCount Add a count in rounds column
-     * @return \Gems\Model\ConditionModel
+     * @param boolean $editing True when setting editing mode
+     * @return \Gems\Model\SurveyMaintenanceModel
      */
-    public function applyBrowseSettings($addCount = true)
+    public function applyBrowseSettings($addCount = true, $editing = false)
     {
         $dbLookup   = $this->util->getDbLookup();
         $survey     = null;
@@ -100,7 +101,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'elementClass', 'Exhibitor');
         
         $this->set('gso_source_name',        'label', $this->_('Source'),
-                'elementClass', 'Exhibitor');
+                'elementClass', 'Exhibitor'
+                );
         $this->set('gsu_surveyor_active',    'label', $this->_('Active in source'),
                 'elementClass', 'Exhibitor',
                 'multiOptions', $yesNo
@@ -109,7 +111,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'elementClass', 'Exhibitor'
                 );
         $this->set('gsu_status_show',        'label', $this->_('Status in source'),
-                'elementClass', 'Exhibitor');
+                'elementClass', 'Exhibitor'
+                );
         $this->set('gsu_survey_warnings',        'label', $this->_('Warnings'),
                 'elementClass', 'Exhibitor',
                 'formatFunction', array($this, 'formatWarnings')
@@ -157,17 +160,23 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'description', $this->_('A unique code indentifying this survey during track import'),
                 'size', 20);
 
+        if ($this->project->translateDatabaseFields() && ! $editing) {
+            $this->loader->getModels()->addDatabaseTranslations($this);
+        }
+        
         return $this;
     }
 
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems\Model\ConditionModel
+     * @param int $surveyId The survey to show the details for
+     * @param boolean $editing True when setting editing mode
+     * @return \Gems\Model\SurveyMaintenanceModel
      */
-    public function applyDetailSettings($surveyId = null)
+    public function applyDetailSettings($surveyId = null, $editing = false)
     {
-        $this->applyBrowseSettings(false);
+        $this->applyBrowseSettings(false, $editing);
         $translated = $this->util->getTranslated();
         $dbLookup   = $this->util->getDbLookup();
         
@@ -239,7 +248,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         $this->setOnLoad('calc_duration', array($this, 'calculateDuration'));
 
         $this->set('gsu_duration',         'label', $this->_('Duration description'),
-                'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".')
+                'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'), 
+                'translate', true
                 );
         
         if ($surveyId) {
@@ -287,11 +297,13 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
     /**
      * Set those values needed for editing
      *
-     * @return \Gems\Model\ConditionModel
+     * @param boolean Are we creating a new survey
+     * @param int $surveyId The survey to show the details for
+     * @return \Gems\Model\SurveyMaintenanceModel
      */
     public function applyEditSettings($create = false, $surveyId = null)
     {
-        $this->applyDetailSettings($surveyId);
+        $this->applyDetailSettings($surveyId, true);
         
         $order = $this->getOrder('gsu_insert_organizations') + 1;
         
@@ -311,6 +323,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                         'validators[pdf]', new \MUtil_Validate_Pdf()	
                         );
 
+        if ($this->project->translateDatabaseFields()) {
+            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+        }
+        
         return $this;
     }
     

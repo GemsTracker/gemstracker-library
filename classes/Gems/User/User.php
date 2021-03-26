@@ -1195,7 +1195,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getGroup()
     {
         if (! $this->_group) {
-            $this->_group = $this->userLoader->getGroup($this->getGroupId());
+            $groupId = $this->getGroupId();
+            if ($groupId) {
+                $this->_group = $this->userLoader->getGroup($groupId);
+            }
         }
 
         return $this->_group;

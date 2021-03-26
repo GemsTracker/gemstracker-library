@@ -26,7 +26,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     protected $phpDateFormatString = 'd-m-Y';
 
     /**
-     * Date format string usaed by this project
+     * Date format string used by this project
      *
      * @var string
      */
