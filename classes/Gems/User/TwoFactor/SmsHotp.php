@@ -30,7 +30,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
 
         $element = $form->createElement('exhibitor', 'mobile',
             [
-                'label' => $this->_('Mobile Phonenumber'),
+                'label' => $this->_('Mobile phone'),
                 'value' => $currentValue,
             ]);
         $form->addElement($element);
@@ -70,7 +70,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
             $secret = $user->getTwoFactorKey();
             $code = $this->getNewCode($secret, $user);
 
-            $body = sprintf($this->_('Please authenticate with the following number: %s'), $code);
+            $body = sprintf($this->_('Please authenticate with this number: %s'), $code);
 
             $phonenumber = $user->getPhonenumber();
             $filter = new DutchPhonenumberFilter($phonenumber);

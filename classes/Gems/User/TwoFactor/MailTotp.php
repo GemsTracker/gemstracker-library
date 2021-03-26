@@ -19,7 +19,7 @@ class MailTotp extends TwoFactorTotpAbstract implements SendTwoFactorCodeInterfa
     {
         $element = $form->createElement('exhibitor', 'email',
             [
-                'label' => $this->_('E-mail'),
+                'label' => $this->_('Email'),
                 'value' => $user->getEmailAddress(),
             ]);
         $form->addElement($element);
@@ -39,7 +39,7 @@ class MailTotp extends TwoFactorTotpAbstract implements SendTwoFactorCodeInterfa
 
     public function getSentMessage(\Gems_User_User $user)
     {
-        return $this->_('An authentication code has been sent to your E-mail address');
+        return $this->_('An authentication code has been sent to your email address');
     }
 
     public function sendCode(\Gems_User_User $user)

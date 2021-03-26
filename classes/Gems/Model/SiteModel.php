@@ -102,7 +102,7 @@ class SiteModel extends  \Gems_Model_JoinModel
         );
 
         $this->set('gsi_active', 'label', $this->_('Active'),
-                   'description', $this->_('Is the site in use, when negative default site options are used.'),
+                   'description', $this->_('Is the site in use?'),
                    'multiOptions', $yesNo
         );
         $this->setIfExists('gsi_blocked', 'label', $this->_('Block'),
