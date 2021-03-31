@@ -403,6 +403,14 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * @return int
+     */
+    public function getMailCode()
+    {
+        return $this->_gemsSurvey['gsu_mail_code'];
+    }
+
+    /**
      * Returns an array of array with the structure:
      *      question => string,
      *      class    => question|question_sub
