@@ -3,11 +3,11 @@
 CREATE TABLE if not exists gems__sites (
     gsi_id                      bigint unsigned not null auto_increment,
 
-    gsi_url                     varchar(256) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+    gsi_url                     varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
     gsi_order                   int not null default 100,
 
     gsi_select_organizations    boolean not null default 0,
-    gsi_organizations           varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default '||',
+    gsi_organizations           varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default '||',
 
     gsi_style                   varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',
     gsi_style_fixed             boolean not null default 0,
