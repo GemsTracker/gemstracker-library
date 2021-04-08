@@ -1689,3 +1689,8 @@ UPDATE gems__respondent2track SET gr2t_mailable = 100 WHERE gr2t_mailable = 1;
 ALTER TABLE `gems__user_logins`
     ADD `gul_otp_count` bigint unsigned NOT NULL DEFAULT '0' AFTER `gul_enable_2factor`,
     ADD `gul_otp_requested` timestamp NULL AFTER `gul_otp_count`;
+
+-- PATCH: Add external alternate survey description
+ALTER TABLE gems__surveys
+    ADD gsu_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' 
+        AFTER gsu_survey_description;

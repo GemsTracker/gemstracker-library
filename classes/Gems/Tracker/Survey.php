@@ -20,14 +20,8 @@ use Gems\Date\Period;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
+class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 {
-    /**
-     *
-     * @var array The gems survey data
-     */
-    private $_gemsSurvey;
-
     /**
      *
      * @var \Gems_Tracker_SourceInterface
@@ -36,28 +30,9 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var string The id of the token
-     */
-    private $_surveyId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
      * @var \Gems_Events
      */
     protected $events;
-
-    /**
-     * True when the survey does exist.
-     *
-     * @var boolean
-     */
-    public $exists = true;
 
     /**
      *
@@ -66,20 +41,29 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     protected $tracker;
 
     /**
+     * Set in child classes
+     *
+     * @var string Name of table used in gtrs_table
+     */
+    protected $translationTable = 'gems__surveys';
+    
+    /**
      *
      * @param mixed $gemsSurveyData Token Id or array containing token record
      */
     public function __construct($gemsSurveyData)
     {
         if (is_array($gemsSurveyData)) {
-            $this->_gemsSurvey = $gemsSurveyData;
-            $this->_surveyId   = $gemsSurveyData['gsu_id_survey'];
+            $this->_data = $gemsSurveyData;
+            $this->_id   = $gemsSurveyData['gsu_id_survey'];
         } else {
-            $this->_surveyId = $gemsSurveyData;
+            $this->_id = $gemsSurveyData;
         }
+        
+        parent::__construct($this->_id);
 
         // If loaded using tracker->getSurveyBySourceId the id can be negative if not found
-        if ($this->_surveyId > 0) {
+        if ($this->_id > 0) {
             $this->exists = true;
         } else {
             $this->exists = false;
@@ -87,15 +71,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Makes sure the group data is part of the $this->_gemsSurvey
+     * Makes sure the group data is part of the $this->_data
      *
      * @param boolean $reload Optional parameter to force reload.
      */
     private function _ensureGroupData($reload = false)
     {
-        if ($reload || (! isset($this->_gemsSurvey['ggp_id_group']))) {
+        if ($reload || (! isset($this->_data['ggp_id_group']))) {
             $sql  = "SELECT * FROM gems__groups WHERE ggp_id_group = ?";
-            $code = $this->_gemsSurvey['gsu_id_primary_group'];
+            $code = $this->_data['gsu_id_primary_group'];
 
             if ($code) {
                 $row = $this->db->fetchRow($sql, $code);
@@ -104,17 +88,17 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
             }
 
             if ($row) {
-                $this->_gemsSurvey = $row + $this->_gemsSurvey;
+                $this->_data = $row + $this->_data;
             } else {
                 // Add default empty row
-                $this->_gemsSurvey = array(
+                $this->_data = array(
                     'ggp_id_group' => false,
                     'ggp_name' => '',
                     'ggp_description' => '',
                     'ggp_role' => 'respondent',
                     'ggp_group_active' => 0,
                     'ggp_respondent_members' => 1,
-                    'ggp_staff_members' => 0) + $this->_gemsSurvey;
+                    'ggp_staff_members' => 0) + $this->_data;
             }
         }
     }
@@ -128,15 +112,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     private function _updateSurvey(array $values, $userId)
     {
-        if ($this->tracker->filterChangesOnly($this->_gemsSurvey, $values)) {
+        if ($this->tracker->filterChangesOnly($this->_data, $values)) {
 
             if (\Gems_Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
-                    $old = isset($this->_gemsSurvey[$key]) ? $this->_gemsSurvey[$key] : null;
+                    $old = isset($this->_data[$key]) ? $this->_data[$key] : null;
                     $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
-                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_surveyId);
+                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_id);
             }
 
             if (! isset($values['gsu_changed'])) {
@@ -148,10 +132,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
 
             if ($this->exists) {
                 // Update values in this object
-                $this->_gemsSurvey = $values + $this->_gemsSurvey;
+                $this->_data = $values + $this->_data;
 
                 // return 1;
-                return $this->db->update('gems__surveys', $values, array('gsu_id_survey = ?' => $this->_surveyId));
+                return $this->db->update('gems__surveys', $values, array('gsu_id_survey = ?' => $this->_id));
 
             } else {
                 if (! isset($values['gsu_created'])) {
@@ -162,13 +146,13 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
                 }
 
                 // Update values in this object
-                $this->_gemsSurvey = $values + $this->_gemsSurvey;
+                $this->_data = $values + $this->_data;
 
                 // Remove the Gems survey id
-                unset($this->_gemsSurvey['gsu_id_survey']);
+                unset($this->_data['gsu_id_survey']);
 
-                $this->_surveyId = $this->db->insert('gems__surveys', $this->_gemsSurvey);
-                $this->_gemsSurvey['gsu_id_survey'] = $this->_surveyId;
+                $this->_id = $this->db->insert('gems__surveys', $this->_data);
+                $this->_data['gsu_id_survey'] = $this->_id;
                 $this->exists = true;
 
                 return 1;
@@ -200,33 +184,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->db && (! $this->_gemsSurvey)) {
-            $result = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $this->_surveyId);
-            if ($result) {
-                $this->_gemsSurvey = $result;
-                $this->exists = true;
-            } else {
-                //Row not present, try with empty array? or should we throw an error?
-                $this->_gemsSurvey = array(
-                    'gsu_code'             => null,
-                    'gsu_valid_for_length' => 6,
-                    'gsu_valid_for_unit'   => 'M',
-                    );
-                $this->exists = false;
-            }
-        }
-
-        return (boolean) $this->_gemsSurvey;
-    }
-
-    /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
      * @param \Gems_Tracker_Token $token
@@ -237,7 +194,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function copyTokenToSource(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
-        return $source->copyTokenToSource($token, $language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->copyTokenToSource($token, $language, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -250,7 +207,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getAnswerDateTime($fieldName, $token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getAnswerDateTime($fieldName, $token, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -261,8 +218,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
     {
-        if (isset($this->_gemsSurvey['gsu_display_event']) && $this->_gemsSurvey['gsu_display_event']) {
-            $event = $this->events->loadSurveyDisplayEvent($this->_gemsSurvey['gsu_display_event']);
+        if (isset($this->_data['gsu_display_event']) && $this->_data['gsu_display_event']) {
+            $event = $this->events->loadSurveyDisplayEvent($this->_data['gsu_display_event']);
 
             return $event->getAnswerDisplaySnippets($token);
         }
@@ -277,7 +234,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getAnswerModel($language)
     {
         $source = $this->getSource();
-        return $source->getSurveyAnswerModel($this, $language, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getSurveyAnswerModel($this, $language, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -286,7 +243,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getCode()
     {
-        return $this->_gemsSurvey['gsu_code'];
+        return $this->_data['gsu_code'];
     }
 
     /**
@@ -298,7 +255,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getCompletionTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getCompletionTime($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getCompletionTime($token, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -312,7 +269,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getDatesList($language)
     {
         $source = $this->getSource();
-        return $source->getDatesList($language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getDatesList($language, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -321,7 +278,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getDescription()
     {
-        return $this->_gemsSurvey['gsu_survey_description'];
+        return $this->_data['gsu_survey_description'];
     }
 
     /**
@@ -330,7 +287,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getAvailableLanguages()
     {
-        return $this->_gemsSurvey['gsu_survey_languages'];
+        return $this->_data['gsu_survey_languages'];
     }
 
     /**
@@ -339,7 +296,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyWarnings()
     {
-        return $this->_gemsSurvey['gsu_survey_warnings'];
+        return $this->_data['gsu_survey_warnings'];
     }
 
     /**
@@ -348,7 +305,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getDuration()
     {
-        return $this->_gemsSurvey['gsu_duration'];
+        return $this->_data['gsu_duration'];
     }
 
     /**
@@ -357,7 +314,20 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getExportCode()
     {
-        return $this->_gemsSurvey['gsu_export_code'];
+        return $this->_data['gsu_export_code'];
+    }
+
+    /**
+     *
+     * @return string External description of the survey
+     */
+    public function getExternalName()
+    {
+        if (isset($this->_data['gsu_external_description'])) {
+            return $this->_data['gsu_external_description'];
+        }
+        
+        return $this->getName();
     }
 
     /**
@@ -366,7 +336,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getGroupId()
     {
-        return $this->_gemsSurvey['gsu_id_primary_group'];
+        return $this->_data['gsu_id_primary_group'];
     }
 
     /**
@@ -375,7 +345,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getHash()
     {
-        return array_key_exists('gsu_hash', $this->_gemsSurvey) ? $this->_gemsSurvey['gsu_hash'] : null;
+        return array_key_exists('gsu_hash', $this->_data) ? $this->_data['gsu_hash'] : null;
     }
 
     /**
@@ -388,8 +358,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     {
         return Period::applyPeriod(
                 $from,
-                $this->_gemsSurvey['gsu_valid_for_unit'],
-                $this->_gemsSurvey['gsu_valid_for_length']
+                $this->_data['gsu_valid_for_unit'],
+                $this->_data['gsu_valid_for_length']
                 );
     }
 
@@ -399,7 +369,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getName()
     {
-        return $this->_gemsSurvey['gsu_survey_name'];
+        return $this->_data['gsu_survey_name'];
     }
 
     /**
@@ -407,7 +377,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getMailCode()
     {
-        return $this->_gemsSurvey['gsu_mail_code'];
+        return $this->_data['gsu_mail_code'];
     }
 
     /**
@@ -425,7 +395,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getQuestionInformation($language)
     {
-        return $this->getSource()->getQuestionInformation($language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $this->getSource()->getQuestionInformation($language, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -436,7 +406,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getQuestionList($language)
     {
-        return $this->getSource()->getQuestionList($language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $this->getSource()->getQuestionList($language, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -450,7 +420,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getRawTokenAnswerRow($tokenId)
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRow($tokenId, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRow($tokenId, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -465,7 +435,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getRawTokenAnswerRows($filter = array())
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRows((array) $filter, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRows((array) $filter, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -477,7 +447,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getRawTokenAnswerRowsCount($filter = array())
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -488,7 +458,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      * @return string
      */
     public function getResultField() {
-        return $this->_gemsSurvey['gsu_result_field'];
+        return $this->_data['gsu_result_field'];
     }
 
     /**
@@ -500,7 +470,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getStartTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getStartTime($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getStartTime($token, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -509,11 +479,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSource()
     {
-        if (! $this->_source && isset($this->_gemsSurvey['gsu_id_source']) && $this->_gemsSurvey['gsu_id_source']) {
-            $this->_source = $this->tracker->getSource($this->_gemsSurvey['gsu_id_source']);
+        if (! $this->_source && isset($this->_data['gsu_id_source']) && $this->_data['gsu_id_source']) {
+            $this->_source = $this->tracker->getSource($this->_data['gsu_id_source']);
 
             if (! $this->_source) {
-                throw new \Gems_Exception('No source for exists for source ' . $this->_gemsSurvey['gsu_id_source'] . '.');
+                throw new \Gems_Exception('No source for exists for source ' . $this->_data['gsu_id_source'] . '.');
             }
         }
 
@@ -526,7 +496,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSourceSurveyId()
     {
-        return $this->_gemsSurvey['gsu_surveyor_id'];
+        return $this->_data['gsu_surveyor_id'];
     }
 
     /**
@@ -535,7 +505,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getStatus()
     {
-        return $this->_gemsSurvey['gsu_status'];
+        return $this->_data['gsu_status'];
     }
 
     /**
@@ -545,8 +515,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyBeforeAnsweringEvent()
     {
-        if (isset($this->_gemsSurvey['gsu_beforeanswering_event']) && $this->_gemsSurvey['gsu_beforeanswering_event']) {
-            return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_gemsSurvey['gsu_beforeanswering_event']);
+        if (isset($this->_data['gsu_beforeanswering_event']) && $this->_data['gsu_beforeanswering_event']) {
+            return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_data['gsu_beforeanswering_event']);
         }
     }
 
@@ -557,8 +527,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyCompletedEvent()
     {
-        if (isset($this->_gemsSurvey['gsu_completed_event']) && $this->_gemsSurvey['gsu_completed_event']) {
-            return $event = $this->events->loadSurveyCompletionEvent($this->_gemsSurvey['gsu_completed_event']);
+        if (isset($this->_data['gsu_completed_event']) && $this->_data['gsu_completed_event']) {
+            return $event = $this->events->loadSurveyCompletionEvent($this->_data['gsu_completed_event']);
         }
     }
 
@@ -568,7 +538,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function getSurveyId()
     {
-        return $this->_surveyId;
+        return $this->_id;
     }
 
     /**
@@ -581,7 +551,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function getTokenUrl(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
-        return $source->getTokenUrl($token, $language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->getTokenUrl($token, $language, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -590,7 +560,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function hasPdf()
     {
-        return (boolean) isset($this->_gemsSurvey['gsu_survey_pdf']) && $this->_gemsSurvey['gsu_survey_pdf'];
+        return (boolean) isset($this->_data['gsu_survey_pdf']) && $this->_data['gsu_survey_pdf'];
     }
 
     /**
@@ -602,7 +572,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function inSource(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->inSource($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->inSource($token, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -611,7 +581,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function isActive()
     {
-        return (boolean) isset($this->_gemsSurvey['gsu_active']) && $this->_gemsSurvey['gsu_active'];
+        return (boolean) isset($this->_data['gsu_active']) && $this->_data['gsu_active'];
     }
 
     /**
@@ -620,7 +590,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function isActiveInSource()
     {
-        return (boolean) $this->_gemsSurvey['gsu_surveyor_active'];
+        return (boolean) $this->_data['gsu_surveyor_active'];
     }
 
     /**
@@ -632,7 +602,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function isCompleted(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->isCompleted($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+        return $source->isCompleted($token, $this->_id, $this->_data['gsu_surveyor_id']);
     }
 
     /**
@@ -642,13 +612,37 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function isTakenByStaff()
     {
-        if (! isset($this->_gemsSurvey['ggp_staff_members'])) {
+        if (! isset($this->_data['ggp_staff_members'])) {
             $this->_ensureGroupData();
         }
 
-        return (boolean) $this->_gemsSurvey['ggp_staff_members'];
+        return (boolean) $this->_data['ggp_staff_members'];
     }
 
+    /**
+     * Load the data when the cache is empty.
+     *
+     * @param mixed $id
+     * @return array The array of data values
+     */
+    protected function loadData($id)
+    {
+        $data = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
+        if ($data) {
+            $this->exists = true;
+        } else {
+            //Row not present, try with empty array? or should we throw an error?
+            $data = array(
+                'gsu_code'             => null,
+                'gsu_valid_for_length' => 6,
+                'gsu_valid_for_unit'   => 'M',
+            );
+            $this->exists = false;
+        }
+        
+        return $data;
+    }
+    
     /**
      * Update the survey, both in the database and in memory.
      *
@@ -670,7 +664,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
      */
     public function setHash($hash, $userId)
     {
-        if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_gemsSurvey)) {
+        if ($this->getHash() !== $hash && array_key_exists('gsu_hash', $this->_data)) {
             $values['gsu_hash'] = $hash;
             $this->_updateSurvey($values, $userId);
         }
@@ -686,6 +680,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_TargetAbstract
     public function updateConsent(\Gems_Tracker_Token $token, $consentCode = null)
     {
         $source = $this->getSource();
-        return $source->updateConsent($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id'], $consentCode);
+        return $source->updateConsent($token, $this->_id, $this->_data['gsu_surveyor_id'], $consentCode);
     }
 }

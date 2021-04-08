@@ -73,7 +73,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     protected $project;
 
     /**
-     * Return false on checkRegistryRequestsAnswers when the anser is not an array
+     * Return false on checkRegistryRequestsAnswers when the answer is not an array
      *
      * @var boolean
      */

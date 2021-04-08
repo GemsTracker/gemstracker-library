@@ -92,6 +92,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         $this->set('gsu_survey_name',        'label', $this->_('Name'),
                 'elementClass', 'Exhibitor'
                 );
+        $this->set('gsu_external_description', 'label', $this->_('External Name'),
+                   'description', $this->_('Optional alternate external description for communication with respondents'),
+                   'translate', true
+        );
         $this->set('gsu_survey_description', 'label', $this->_('Description'),
                 'elementClass', 'Exhibitor',
                 'formatFunction', array($this, 'formatDescription')
@@ -184,6 +188,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
         
         $this->setMulti([
             'gsu_survey_name',
+            'gsu_external_description',
             'gsu_survey_description',
             'gsu_survey_languages',
             'gso_source_name',

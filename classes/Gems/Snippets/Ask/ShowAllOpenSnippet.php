@@ -74,7 +74,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $p->br();
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurveyName()));
+            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
             // $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
@@ -133,17 +133,18 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
                 $div = $html->div();
                 $div->class = 'askSurvey';
+                $survey = $token->getSurvey();
                 if ($token->isCompleted()) {
-                    $div->actionDisabled($token->getSurveyName());
+                    $div->actionDisabled($survey->getExternalName());
                     $div->append(' ');
                     $div->append($this->formatCompletion($token->getCompletionTime()));
 
                 } else {
                     $open++;
 
-                    $a = $div->actionLink($this->getTokenHref($token), $token->getSurveyName());
+                    $a = $div->actionLink($this->getTokenHref($token), $survey->getExternalName());
                     $div->append(' ');
-                    $div->append($this->formatDuration($token->getSurvey()->getDuration()));
+                    $div->append($this->formatDuration($survey->getDuration()));
                     $div->append($this->formatUntil($token->getValidUntil()));
 
                     /*

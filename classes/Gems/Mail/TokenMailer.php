@@ -260,7 +260,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $url      .= $this->token->getTokenId();
             $urlInput = $result['site_ask_url'] . 'index/' . \MUtil_Model::REQUEST_ID . '/' . $this->token->getTokenId();
 
-            $result['survey']           = $survey->getName();
+            $result['survey']           = $survey->getExternalName();
 
             $result['todo_all']         = sprintf($this->plural('%d survey', '%d surveys', $todo['all']), $todo['all']);
             $result['todo_all_count']   = $todo['all'];
@@ -270,7 +270,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $result['token']            = strtoupper($this->token->getTokenId());
             $result['token_from']       = \MUtil_Date::format($this->token->getValidFrom(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
 
-            $result['token_link']       = '[url=' . $url . ']' . $survey->getName() . '[/url]';
+            $result['token_link']       = '[url=' . $url . ']' . $survey->getExternalName() . '[/url]';
 
             $result['token_until']      = \MUtil_Date::format($this->token->getValidUntil(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
             $result['token_url']        = $url;

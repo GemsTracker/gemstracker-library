@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-26 16:55+0100\n"
+"POT-Creation-Date: 2021-04-08 17:14+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -188,7 +188,7 @@ msgstr " (%s)"
 #: classes/Gems/Agenda/Filter/OrganizationModelDependency.php:63
 #: classes/Gems/Condition/Track/LocationCondition.php:144
 #: classes/Gems/Model/SiteModel.php:74
-#: classes/Gems/Model/SurveyMaintenanceModel.php:223
+#: classes/Gems/Model/SurveyMaintenanceModel.php:228
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:597
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:916
 #: classes/Gems/Tracker/Model/TrackModel.php:148
@@ -1052,11 +1052,11 @@ msgid "A location field set to: "
 msgstr "A location field set to: "
 
 #: classes/Gems/Condition/Track/LocationCondition.php:141
-#: classes/Gems/Model/SurveyMaintenanceModel.php:375
-#: classes/Gems/Model/SurveyMaintenanceModel.php:379
-#: classes/Gems/Model/SurveyMaintenanceModel.php:383
-#: classes/Gems/Model/SurveyMaintenanceModel.php:387
-#: classes/Gems/Model/SurveyMaintenanceModel.php:409
+#: classes/Gems/Model/SurveyMaintenanceModel.php:380
+#: classes/Gems/Model/SurveyMaintenanceModel.php:384
+#: classes/Gems/Model/SurveyMaintenanceModel.php:388
+#: classes/Gems/Model/SurveyMaintenanceModel.php:392
+#: classes/Gems/Model/SurveyMaintenanceModel.php:414
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:167
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:631
 #: classes/Gems/Util/Translated.php:117
@@ -1179,7 +1179,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:212
 #: classes/Gems/Export/RespondentExport.php:505
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:229
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:230
 #: classes/Gems/Snippets/FormSnippetAbstract.php:221
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/Mail/CommJobShowSnippet.php:65
@@ -1718,7 +1718,7 @@ msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
 #: classes/Gems/Default/AskAction.php:275
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:294
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:295
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1799,7 +1799,7 @@ msgid "Survey"
 msgstr "Survey"
 
 #: classes/Gems/Default/ChartconfigAction.php:39
-#: classes/Gems/Model/SurveyMaintenanceModel.php:155
+#: classes/Gems/Model/SurveyMaintenanceModel.php:159
 msgid "Survey code"
 msgstr "Survey code"
 
@@ -1812,7 +1812,7 @@ msgstr "Survey code"
 #: classes/Gems/Default/UpgradeAction.php:204
 #: classes/Gems/Export/RespondentExport.php:346
 #: classes/Gems/Model/StaffModel.php:356
-#: classes/Gems/Model/SurveyMaintenanceModel.php:95
+#: classes/Gems/Model/SurveyMaintenanceModel.php:99
 #: classes/Gems/Snippets/Track/TracksSnippet.php:89
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:111
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:98
@@ -1948,7 +1948,7 @@ msgstr "(all groups)"
 #: classes/Gems/Default/DatabaseAction.php:219
 #: classes/Gems/Default/DatabaseAction.php:388
 #: classes/Gems/Default/DatabaseAction.php:434
-#: classes/Gems/Model/SurveyMaintenanceModel.php:124
+#: classes/Gems/Model/SurveyMaintenanceModel.php:128
 msgid "Group"
 msgstr "Group"
 
@@ -3221,7 +3221,7 @@ msgid "Mail code code-field"
 msgstr "Mail code code-field"
 
 #: classes/Gems/Default/MailCodeAction.php:70
-#: classes/Gems/Model/SurveyMaintenanceModel.php:156
+#: classes/Gems/Model/SurveyMaintenanceModel.php:160
 msgid "Optional code name to link the survey to program code."
 msgstr "Optional code name to link the survey to program code."
 
@@ -3667,7 +3667,7 @@ msgid "Session"
 msgstr "Session"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:116
-#: classes/Gems/Model/SurveyMaintenanceModel.php:120
+#: classes/Gems/Model/SurveyMaintenanceModel.php:124
 #, php-format
 msgid "Active in %s"
 msgstr "Active in %s"
@@ -3678,7 +3678,7 @@ msgid "By"
 msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:123
-#: classes/Gems/Model/SurveyMaintenanceModel.php:236
+#: classes/Gems/Model/SurveyMaintenanceModel.php:241
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:186
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:625
 #: classes/Gems/Snippets/Tracker/Fields/FilterSearchFormSnippet.php:55
@@ -3690,22 +3690,22 @@ msgid "How many track definitions use this survey?"
 msgstr "How many track definitions use this survey?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:125
-#: classes/Gems/Model/SurveyMaintenanceModel.php:140
+#: classes/Gems/Model/SurveyMaintenanceModel.php:144
 msgid "Insertable"
 msgstr "Insertable"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:126
-#: classes/Gems/Model/SurveyMaintenanceModel.php:141
+#: classes/Gems/Model/SurveyMaintenanceModel.php:145
 msgid "Can this survey be manually inserted into a track?"
 msgstr "Can this survey be manually inserted into a track?"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:131
-#: classes/Gems/Model/SurveyMaintenanceModel.php:250
+#: classes/Gems/Model/SurveyMaintenanceModel.php:255
 msgid "Duration description"
 msgstr "Duration description"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:132
-#: classes/Gems/Model/SurveyMaintenanceModel.php:251
+#: classes/Gems/Model/SurveyMaintenanceModel.php:256
 msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
 msgstr "Text to inform the patient, e.g. \"20 seconds\" or \"1 minute\"."
 
@@ -4758,7 +4758,7 @@ msgstr "Last page"
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:130
 #: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:198
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:290
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:291
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
 #: classes/Gems/Snippets/Token/CheckTokenEvents.php:78
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:794
@@ -6463,159 +6463,170 @@ msgstr "Equation"
 msgid "OK"
 msgstr "OK"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:100
+#: classes/Gems/Model/SurveyMaintenanceModel.php:95
+msgid "External Name"
+msgstr "External Name"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:96
+#| msgid "Alternative description to use with respondents."
+msgid ""
+"Optional alternate external description for communication with respondents"
+msgstr ""
+"Optional alternate external description for communication with patients"
+
+#: classes/Gems/Model/SurveyMaintenanceModel.php:104
 msgid "Available languages"
 msgstr "Available languages"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:103
+#: classes/Gems/Model/SurveyMaintenanceModel.php:107
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:670
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:738
 msgid "Source"
 msgstr "Source"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:106
+#: classes/Gems/Model/SurveyMaintenanceModel.php:110
 msgid "Active in source"
 msgstr "Active in source"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:110
+#: classes/Gems/Model/SurveyMaintenanceModel.php:114
 msgid "Source survey id"
 msgstr "Source survey id"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:113
+#: classes/Gems/Model/SurveyMaintenanceModel.php:117
 msgid "Status in source"
 msgstr "Status in source"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:116
+#: classes/Gems/Model/SurveyMaintenanceModel.php:120
 msgid "Warnings"
 msgstr "Warnings"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:125
+#: classes/Gems/Model/SurveyMaintenanceModel.php:129
 msgid "If empty, survey will never show up!"
 msgstr "If empty, survey will never show up!"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:131
+#: classes/Gems/Model/SurveyMaintenanceModel.php:135
 msgid "Mail code"
 msgstr "Mail code"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:132
+#: classes/Gems/Model/SurveyMaintenanceModel.php:136
 msgid "When mails are sent for this survey"
 msgstr "When mails are sent for this survey"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:159
+#: classes/Gems/Model/SurveyMaintenanceModel.php:163
 msgid "Survey export code"
 msgstr "Survey export code"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:160
+#: classes/Gems/Model/SurveyMaintenanceModel.php:164
 #: classes/Gems/Tracker/Snippets/ExportTrackSnippetAbstract.php:382
 msgid "A unique code indentifying this survey during track import"
 msgstr "A unique code indentifying this survey during track import"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:209
+#: classes/Gems/Model/SurveyMaintenanceModel.php:214
 msgid "Add to inserted end date"
 msgstr "Add to inserted end date"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:210
+#: classes/Gems/Model/SurveyMaintenanceModel.php:215
 msgid "Add to the start date to calculate the end date when inserting."
 msgstr "Add to the start date to calculate the end date when inserting."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:213
+#: classes/Gems/Model/SurveyMaintenanceModel.php:218
 msgid "Inserted end date unit"
 msgstr "Inserted end date unit"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:214
+#: classes/Gems/Model/SurveyMaintenanceModel.php:219
 msgid "The unit used to calculate the end date when inserting the survey."
 msgstr "The unit used to calculate the end date when inserting the survey."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:217
+#: classes/Gems/Model/SurveyMaintenanceModel.php:222
 msgid "Insert organizations"
 msgstr "Insert organizations"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:218
+#: classes/Gems/Model/SurveyMaintenanceModel.php:223
 msgid "The organizations where the survey may be inserted."
 msgstr "The organizations where the survey may be inserted."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:243
+#: classes/Gems/Model/SurveyMaintenanceModel.php:248
 msgid "Duration calculated"
 msgstr "Duration calculated"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:262
+#: classes/Gems/Model/SurveyMaintenanceModel.php:267
 msgid "Result field"
 msgstr "Result field"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:274
+#: classes/Gems/Model/SurveyMaintenanceModel.php:279
 #: classes/Gems/Snippets/Token/CheckTokenEvents.php:88
 msgid "Before answering"
 msgstr "Before answering"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:281
+#: classes/Gems/Model/SurveyMaintenanceModel.php:286
 #: classes/Gems/Tracker/Model/TrackModel.php:125
 msgid "After completion"
 msgstr "After completion"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:288
+#: classes/Gems/Model/SurveyMaintenanceModel.php:293
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:890
 msgid "Answer display"
 msgstr "Answer display"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:353
+#: classes/Gems/Model/SurveyMaintenanceModel.php:358
 msgid "incalculable"
 msgstr "incalculable"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:372
+#: classes/Gems/Model/SurveyMaintenanceModel.php:377
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:523
 #, php-format
 msgid "Answered surveys: %d."
 msgstr "Answered surveys: %d."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:374
+#: classes/Gems/Model/SurveyMaintenanceModel.php:379
 #, php-format
 msgid "Average answer time: %s."
 msgstr "Average answer time: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:378
+#: classes/Gems/Model/SurveyMaintenanceModel.php:383
 #, php-format
 msgid "Standard deviation: %s."
 msgstr "Standard deviation: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:382
+#: classes/Gems/Model/SurveyMaintenanceModel.php:387
 #, php-format
 msgid "Minimum time: %s."
 msgstr "Minimum time: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:386
+#: classes/Gems/Model/SurveyMaintenanceModel.php:391
 #, php-format
 msgid "Maximum time: %s."
 msgstr "Maximum time: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:405
-#: classes/Gems/Model/SurveyMaintenanceModel.php:409
+#: classes/Gems/Model/SurveyMaintenanceModel.php:410
+#: classes/Gems/Model/SurveyMaintenanceModel.php:414
 #, php-format
 msgid "Median value: %s."
 msgstr "Median value: %s."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:446
+#: classes/Gems/Model/SurveyMaintenanceModel.php:451
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d times in %d track(s)."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:448
-#: classes/Gems/Model/SurveyMaintenanceModel.php:494
+#: classes/Gems/Model/SurveyMaintenanceModel.php:453
+#: classes/Gems/Model/SurveyMaintenanceModel.php:499
 msgid "Not in any track."
 msgstr "Not in any track."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:487
+#: classes/Gems/Model/SurveyMaintenanceModel.php:492
 #, php-format
 msgid "%d time in %s track."
 msgid_plural "%d times in %s track."
 msgstr[0] "%d time in %s track."
 msgstr[1] "%d times in %s track."
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:536
+#: classes/Gems/Model/SurveyMaintenanceModel.php:541
 #, php-format
 msgid "Base: %s"
 msgstr "Base: %s"
 
-#: classes/Gems/Model/SurveyMaintenanceModel.php:538
+#: classes/Gems/Model/SurveyMaintenanceModel.php:543
 #, php-format
 msgid "Additional: %s"
 msgstr "Additional: %s"
@@ -7375,17 +7386,17 @@ msgstr "Thank you for answering the \"%s\" survey."
 msgid "Round: %s"
 msgstr "Round: %s"
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:159
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:160
 msgid "Please answer the open survey."
 msgid_plural "Please answer the open surveys."
 msgstr[0] "Please answer the open survey."
 msgstr[1] "Please answer the open surveys."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:161
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:162
 msgid "Thank you for answering all open surveys."
 msgstr "Thank you for answering all open surveys."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:164
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:165
 msgid "There are no surveys to show for this token."
 msgstr "There are no surveys to show for this token."
 
@@ -7442,7 +7453,7 @@ msgstr[0] ""
 msgstr[1] ""
 "Wait %d seconds to open the survey automatically or click on Cancel to stop."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:240
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:241
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -8382,9 +8393,6 @@ msgstr ""
 "is accepted by the server."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:47
-#| msgid ""
-#| "If the the url is new, then the url is by default made accessible for all "
-#| "organizations."
 msgid ""
 "If the url is new, then the url is by default made accessible for all "
 "organizations."
@@ -8421,7 +8429,6 @@ msgstr ""
 "known to the system, this implies the url is not on the server itself."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:56
-#| msgid "If the the url is new, then the url is blocked by default."
 msgid "If the url is new, then the url is blocked by default."
 msgstr "If the url is new, then the url is blocked by default."
 

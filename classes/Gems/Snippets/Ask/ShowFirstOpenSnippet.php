@@ -203,7 +203,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         }
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurveyName()));
+            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
@@ -218,12 +218,13 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
                 $delay), $delay));
         }
 
+        $survey = $this->showToken->getSurvey();
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $buttonDiv->actionLink($href, $this->showToken->getSurveyName());
+        $buttonDiv->actionLink($href, $survey->getExternalName());
 
         $buttonDiv->append(' ');
-        $buttonDiv->append($this->formatDuration($this->showToken->getSurvey()->getDuration()));
-        $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
+        $buttonDiv->append($this->formatDuration($survey->getDuration()));
+        $buttonDiv->append($this->formatUntil($survey->getValidUntil()));
 
         if ($delay > 0) {
             $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->_('Cancel'));
