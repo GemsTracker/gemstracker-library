@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -160,7 +159,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     {
         $lang = $this->locale->getLanguage();
         
-        if ($this->cache) {
+        if ($this->_id && $this->cache) {
             $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
             $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $lang); 
             $this->_data = $this->cache->load($cacheLang);
@@ -173,30 +172,31 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
 
             if ($cacheId) {
                 $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
+            }
+            
+            if (($lang != $this->project->getLocaleDefault()) && $this->translationTable && $this->project->translateDatabaseFields()) {
                 
-                if (($lang != $this->project->getLocaleDefault()) && $this->translationTable && $this->project->translateDatabaseFields()) {
-                    
-                    $tSelect = $this->db->select();
-                    $tSelect->from('gems__translations', ['gtrs_field', 'gtrs_translation'])
-                            ->where('gtrs_table = ?', $this->translationTable)
-                            ->where('gtrs_keys = ?', $this->_id)
-                            ->where('gtrs_iso_lang = ?', $lang)
-                            ->where('LENGTH(gtrs_translation) > 0');
+                $tSelect = $this->db->select();
+                $tSelect->from('gems__translations', ['gtrs_field', 'gtrs_translation'])
+                        ->where('gtrs_table = ?', $this->translationTable)
+                        ->where('gtrs_keys = ?', $this->_id)
+                        ->where('gtrs_iso_lang = ?', $lang)
+                        ->where('LENGTH(gtrs_translation) > 0');
 
-                    $translations = $this->db->fetchPairs($tSelect);
-                    // \MUtil_Echo::track($tSelect->__toString(), $translations);
+                $translations = $this->db->fetchPairs($tSelect);
+                // \MUtil_Echo::track($tSelect->__toString(), $translations);
 
-                    if ($translations) {
-                        foreach ($this->_data as $item => $value) {
-                            if (isset($translations[$item])) {
-                                // Set value to the translation
-                                $this->_data[$item] = $translations[$item];
-                            }
+                if ($translations) {
+                    foreach ($this->_data as $item => $value) {
+                        if (isset($translations[$item])) {
+                            // Set value to the translation
+                            $this->_data[$item] = $translations[$item];
                         }
                     }
                 }
+            }
 
-
+            if ($cacheId) {
                 $this->cache->save($this->_data, $cacheLang, $this->_cacheTags);
             }
         }

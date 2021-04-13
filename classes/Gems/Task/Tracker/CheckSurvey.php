@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -38,7 +37,7 @@ class Gems_Task_Tracker_CheckSurvey extends \MUtil_Task_TaskAbstract
 
         if (null === $userId) {
             $userId = $this->loader->getCurrentUser()->getUserId();
-       }
+        }
 
         $messages = $source->checkSurvey($sourceSurveyId, $surveyId, $userId);
 

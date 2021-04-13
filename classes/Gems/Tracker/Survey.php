@@ -77,9 +77,9 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     private function _ensureGroupData($reload = false)
     {
-        if ($reload || (! isset($this->_data['ggp_id_group']))) {
+        if ($reload || (! $this->_has('ggp_id_group'))) {
             $sql  = "SELECT * FROM gems__groups WHERE ggp_id_group = ?";
-            $code = $this->_data['gsu_id_primary_group'];
+            $code = $this->_get('gsu_id_primary_group');
 
             if ($code) {
                 $row = $this->db->fetchRow($sql, $code);
@@ -171,6 +171,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function calculateHash()
     {
         $answerModel = $this->getAnswerModel('en');
+        $items       = [];
         foreach($answerModel->getItemsOrdered() as $item) {
                 $result = $answerModel->get($item, ['label', 'type', 'multiOptions', 'parent_question', 'thClass', 'group', 'description']);
                 if (array_key_exists('label', $result)) {
@@ -194,7 +195,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function copyTokenToSource(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
-        return $source->copyTokenToSource($token, $language, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->copyTokenToSource($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -207,7 +208,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getAnswerDateTime($fieldName, $token, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getAnswerDateTime($fieldName, $token, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -218,8 +219,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
     {
-        if (isset($this->_data['gsu_display_event']) && $this->_data['gsu_display_event']) {
-            $event = $this->events->loadSurveyDisplayEvent($this->_data['gsu_display_event']);
+        if ($this->_has('gsu_display_event')) {
+            $event = $this->events->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
 
             return $event->getAnswerDisplaySnippets($token);
         }
@@ -234,7 +235,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getAnswerModel($language)
     {
         $source = $this->getSource();
-        return $source->getSurveyAnswerModel($this, $language, $this->_data['gsu_surveyor_id']);
+        return $source->getSurveyAnswerModel($this, $language, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -243,7 +244,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getCode()
     {
-        return $this->_data['gsu_code'];
+        return $this->_get('gsu_code');
     }
 
     /**
@@ -255,7 +256,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getCompletionTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getCompletionTime($token, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getCompletionTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -269,7 +270,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getDatesList($language)
     {
         $source = $this->getSource();
-        return $source->getDatesList($language, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getDatesList($language, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -278,7 +279,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getDescription()
     {
-        return $this->_data['gsu_survey_description'];
+        return $this->_get('gsu_survey_description');
     }
 
     /**
@@ -287,7 +288,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getAvailableLanguages()
     {
-        return $this->_data['gsu_survey_languages'];
+        return $this->_get('gsu_survey_languages');
     }
 
     /**
@@ -296,7 +297,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSurveyWarnings()
     {
-        return $this->_data['gsu_survey_warnings'];
+        return $this->_get('gsu_survey_warnings');
     }
 
     /**
@@ -305,7 +306,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getDuration()
     {
-        return $this->_data['gsu_duration'];
+        return $this->_get('gsu_duration');
     }
 
     /**
@@ -314,7 +315,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getExportCode()
     {
-        return $this->_data['gsu_export_code'];
+        return $this->_get('gsu_export_code');
     }
 
     /**
@@ -323,8 +324,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getExternalName()
     {
-        if (isset($this->_data['gsu_external_description'])) {
-            return $this->_data['gsu_external_description'];
+        if ($this->_has('gsu_external_description')) {
+            return $this->_get('gsu_external_description');
         }
         
         return $this->getName();
@@ -336,7 +337,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getGroupId()
     {
-        return $this->_data['gsu_id_primary_group'];
+        return $this->_get('gsu_id_primary_group');
     }
 
     /**
@@ -358,8 +359,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     {
         return Period::applyPeriod(
                 $from,
-                $this->_data['gsu_valid_for_unit'],
-                $this->_data['gsu_valid_for_length']
+                $this->_get('gsu_valid_for_unit'),
+                $this->_get('gsu_valid_for_length')
                 );
     }
 
@@ -369,7 +370,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getName()
     {
-        return $this->_data['gsu_survey_name'];
+        return $this->_get('gsu_survey_name');
     }
 
     /**
@@ -377,7 +378,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getMailCode()
     {
-        return $this->_data['gsu_mail_code'];
+        return $this->_get('gsu_mail_code');
     }
 
     /**
@@ -395,7 +396,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getQuestionInformation($language)
     {
-        return $this->getSource()->getQuestionInformation($language, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $this->getSource()->getQuestionInformation($language, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -406,7 +407,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getQuestionList($language)
     {
-        return $this->getSource()->getQuestionList($language, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $this->getSource()->getQuestionList($language, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -420,7 +421,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getRawTokenAnswerRow($tokenId)
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRow($tokenId, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRow($tokenId, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -435,7 +436,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getRawTokenAnswerRows($filter = array())
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRows((array) $filter, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRows((array) $filter, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -447,7 +448,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getRawTokenAnswerRowsCount($filter = array())
     {
         $source = $this->getSource();
-        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -458,7 +459,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      * @return string
      */
     public function getResultField() {
-        return $this->_data['gsu_result_field'];
+        return $this->_get('gsu_result_field');
     }
 
     /**
@@ -470,7 +471,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getStartTime(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->getStartTime($token, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getStartTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -479,11 +480,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSource()
     {
-        if (! $this->_source && isset($this->_data['gsu_id_source']) && $this->_data['gsu_id_source']) {
-            $this->_source = $this->tracker->getSource($this->_data['gsu_id_source']);
+        if (! $this->_source && $this->_has('gsu_id_source')) {
+            $this->_source = $this->tracker->getSource($this->_get('gsu_id_source'));
 
             if (! $this->_source) {
-                throw new \Gems_Exception('No source for exists for source ' . $this->_data['gsu_id_source'] . '.');
+                throw new \Gems_Exception('No source for exists for source ' . $this->_get('gsu_id_source') . '.');
             }
         }
 
@@ -496,7 +497,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSourceSurveyId()
     {
-        return $this->_data['gsu_surveyor_id'];
+        return $this->_get('gsu_surveyor_id');
     }
 
     /**
@@ -505,7 +506,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getStatus()
     {
-        return $this->_data['gsu_status'];
+        return $this->_get('gsu_status');
     }
 
     /**
@@ -515,8 +516,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSurveyBeforeAnsweringEvent()
     {
-        if (isset($this->_data['gsu_beforeanswering_event']) && $this->_data['gsu_beforeanswering_event']) {
-            return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_data['gsu_beforeanswering_event']);
+        if ($this->_has('gsu_beforeanswering_event')) {
+            return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
         }
     }
 
@@ -527,8 +528,8 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSurveyCompletedEvent()
     {
-        if (isset($this->_data['gsu_completed_event']) && $this->_data['gsu_completed_event']) {
-            return $event = $this->events->loadSurveyCompletionEvent($this->_data['gsu_completed_event']);
+        if ($this->_has('gsu_completed_event')) {
+            return $event = $this->events->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
         }
     }
 
@@ -551,7 +552,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function getTokenUrl(\Gems_Tracker_Token $token, $language)
     {
         $source = $this->getSource();
-        return $source->getTokenUrl($token, $language, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->getTokenUrl($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -560,7 +561,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function hasPdf()
     {
-        return (boolean) isset($this->_data['gsu_survey_pdf']) && $this->_data['gsu_survey_pdf'];
+        return (boolean) $this->_has('gsu_survey_pdf');
     }
 
     /**
@@ -572,7 +573,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function inSource(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->inSource($token, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->inSource($token, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -581,7 +582,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isActive()
     {
-        return (boolean) isset($this->_data['gsu_active']) && $this->_data['gsu_active'];
+        return (boolean) $this->_has('gsu_active');
     }
 
     /**
@@ -590,7 +591,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isActiveInSource()
     {
-        return (boolean) $this->_data['gsu_surveyor_active'];
+        return (boolean) $this->_get('gsu_surveyor_active');
     }
 
     /**
@@ -602,7 +603,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function isCompleted(\Gems_Tracker_Token $token)
     {
         $source = $this->getSource();
-        return $source->isCompleted($token, $this->_id, $this->_data['gsu_surveyor_id']);
+        return $source->isCompleted($token, $this->_id, $this->_get('gsu_surveyor_id'));
     }
 
     /**
@@ -612,11 +613,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isTakenByStaff()
     {
-        if (! isset($this->_data['ggp_staff_members'])) {
+        if (! $this->_has('ggp_staff_members')) {
             $this->_ensureGroupData();
         }
 
-        return (boolean) $this->_data['ggp_staff_members'];
+        return (boolean) $this->_get('ggp_staff_members');
     }
 
     /**
@@ -680,6 +681,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     public function updateConsent(\Gems_Tracker_Token $token, $consentCode = null)
     {
         $source = $this->getSource();
-        return $source->updateConsent($token, $this->_id, $this->_data['gsu_surveyor_id'], $consentCode);
+        return $source->updateConsent($token, $this->_id, $this->_get('gsu_surveyor_id'), $consentCode);
     }
 }
