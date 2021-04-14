@@ -68,7 +68,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function __construct($gemsSurveyData)
     {
-        \MUtil_Echo::track($gemsSurveyData);
         if (is_array($gemsSurveyData)) {
             $this->_data = $gemsSurveyData;
             $id = $gemsSurveyData['gsu_id_survey'];
@@ -218,7 +217,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        \MUtil_Echo::track($this->_id, $this->_data);
         $output = parent::checkRegistryRequestsAnswers();
 
         // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
@@ -227,7 +225,6 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
         } else {
             $this->exists = false;
         }
-        \MUtil_Echo::track($this->_data);
         
         return $output;
     }
