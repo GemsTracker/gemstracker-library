@@ -130,6 +130,14 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     }
 
     /**
+     * @return bool This instance can be cached
+     */
+    protected function _hasCacheId()
+    {
+        return (boolean) $this->_id;
+    }
+    
+    /**
      * Changes a value and signals the cache.
      *
      * @param string $name
@@ -159,7 +167,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     {
         $lang = $this->locale->getLanguage();
         
-        if ($this->_id && $this->cache) {
+        if ($this->cache && $this->_hasCacheId()) {
             $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
             $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $lang); 
             $this->_data = $this->cache->load($cacheLang);

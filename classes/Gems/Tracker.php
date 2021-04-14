@@ -581,10 +581,9 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     {
         $surveyData = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_source = ? AND gsu_surveyor_id = ?", array($sourceId, $sourceSurveyId));
 
-        if (! $surveyData) {
-            static $newcount = -1;
-
-            $surveyData['gsu_id_survey']   = $newcount--;
+        if (! is_array($surveyData)) {
+            \Gems_Tracker_Survey::$newSurveyCount++;
+            $surveyData['gsu_id_survey']   = -\Gems_Tracker_Survey::$newSurveyCount;
             $surveyData['gsu_surveyor_id'] = $sourceSurveyId;
             $surveyData['gsu_id_source']   = $sourceId;
 

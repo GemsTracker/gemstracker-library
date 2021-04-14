@@ -115,13 +115,17 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      *
      * @var array Nested [filenamePart => [oldName => newName]]
      */
-    protected $variablesChanged = array(
-        'Model_Translator' => array(
+    protected $variablesChanged = [
+        'Model_Translator' => [
             'dateFormat'     => 'dateFormats',
             'datetimeFormat' => 'datetimeFormats',
             'timeFormat'     => 'timeFormats',
-            ),
-        );
+            ],
+        'Tracker_Survey' => [
+            '_gemsSurvey' => '_data',
+            '_surveyId' => '_id',
+            ],
+        ];
 
     /**
      *

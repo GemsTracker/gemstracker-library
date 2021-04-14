@@ -35,6 +35,21 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     protected $events;
 
     /**
+     * @var array
+     */
+    protected $defaultData = [
+        'gsu_active' => 0,
+        'gsu_code' => null,
+        'gsu_valid_for_length' => 6,
+        'gsu_valid_for_unit' => 'M',
+        ];
+
+    /**
+     * @var int Counter for new surveys, negative value used as temp survey id
+     */
+    public static $newSurveyCount = 0;
+
+    /**
      *
      * @var \Gems_Tracker
      */
@@ -53,21 +68,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function __construct($gemsSurveyData)
     {
+        \MUtil_Echo::track($gemsSurveyData);
         if (is_array($gemsSurveyData)) {
             $this->_data = $gemsSurveyData;
-            $this->_id   = $gemsSurveyData['gsu_id_survey'];
+            $id = $gemsSurveyData['gsu_id_survey'];
         } else {
-            $this->_id = $gemsSurveyData;
+            $id = $gemsSurveyData;
         }
         
-        parent::__construct($this->_id);
-
-        // If loaded using tracker->getSurveyBySourceId the id can be negative if not found
-        if ($this->_id > 0) {
-            $this->exists = true;
-        } else {
-            $this->exists = false;
-        }
+        parent::__construct($id);
     }
 
     /**
@@ -104,6 +113,14 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * @return bool This instance can be cached
+     */
+    protected function _hasCacheId()
+    {
+        return $this->_id > 0;
+    }
+
+    /**
      * Update the survey, both in the database and in memory.
      *
      * @param array $values The values that this token should be set to
@@ -112,6 +129,15 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     private function _updateSurvey(array $values, $userId)
     {
+        // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
+        if ($this->_id <= 0) {
+            if (is_array($this->_data)) {
+                $values = $values + $this->_data;
+            } else {
+                \MUtil_Echo::track($this->_data);
+            }
+            $this->_data = [];
+        }
         if ($this->tracker->filterChangesOnly($this->_data, $values)) {
 
             if (\Gems_Tracker::$verbose) {
@@ -182,6 +208,28 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
         $hash = md5(serialize($items));
 
         return $hash;
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        \MUtil_Echo::track($this->_id, $this->_data);
+        $output = parent::checkRegistryRequestsAnswers();
+
+        // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
+        if ($this->_id > 0) {
+            $this->exists = true;
+        } else {
+            $this->exists = false;
+        }
+        \MUtil_Echo::track($this->_data);
+        
+        return $output;
     }
 
     /**
@@ -582,7 +630,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isActive()
     {
-        return (boolean) $this->_has('gsu_active');
+        return $this->exists && $this->_get('gsu_active');
     }
 
     /**
@@ -628,17 +676,20 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
-        $data = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
-        if ($data) {
-            $this->exists = true;
+        // If loaded using tracker->getSurveyBySourceId the id can be negative if survey not found in GT
+        if ($this->_data && $id <= 0) {
+            return $this->_data;
+        }
+        
+        if ($id) {
+            $data = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $id);
         } else {
-            //Row not present, try with empty array? or should we throw an error?
-            $data = array(
-                'gsu_code'             => null,
-                'gsu_valid_for_length' => 6,
-                'gsu_valid_for_unit'   => 'M',
-            );
-            $this->exists = false;
+            $data = false;    
+        }
+        if (! $data) {
+            self::$newSurveyCount++;
+            $this->_id = -self::$newSurveyCount;
+            return ['gsu_id_survey' => $this->_id] + $this->defaultData;
         }
         
         return $data;
