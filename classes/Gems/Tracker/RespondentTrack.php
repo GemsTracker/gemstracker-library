@@ -863,6 +863,22 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @return string Name of the track
+     */
+    public function getExternalTrackName()
+    {
+        if (!isset($this->_respTrackData['gtr_track_name'])) {
+            $this->_ensureTrackData();
+        }
+        if (isset($this->_respTrackData['gtr_external_description']) && $this->_respTrackData['gtr_external_description']) {
+            return $this->_respTrackData['gtr_external_description'];
+        }
+
+        return $this->getTrackName();
+    }
+
+    /**
      * Returns the field data for this respondent track id.
      *
      * The values of fields with a field code occur twice: once using the field

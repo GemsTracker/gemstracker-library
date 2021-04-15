@@ -1694,3 +1694,8 @@ ALTER TABLE `gems__user_logins`
 ALTER TABLE gems__surveys
     ADD gsu_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' 
         AFTER gsu_survey_description;
+
+-- PATCH: Add external alternate track description
+ALTER TABLE gems__tracks
+    ADD gtr_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+        AFTER gtr_track_name;

@@ -116,7 +116,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
                     $div->class = 'askTrack';
                     $div->append($this->_('Track'));
                     $div->append(' ');
-                    $div->strong($row['gtr_track_name']);
+                    $div->strong(isset($row['gtr_external_description']) && $row['gtr_external_description'] ? $row['gtr_external_description'] : $row['gtr_track_name']);
                     if ($row['gr2t_track_info']) {
                         $div->small(sprintf($this->_(' (%s)'), $row['gr2t_track_info']));
                     }

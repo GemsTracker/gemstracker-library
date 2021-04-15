@@ -92,6 +92,11 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
             'label', $translator->_('Name'),
             'translate', true
         );
+        $this->set('gtr_external_description', 
+                   'label', $translator->_('External Name'),
+                   'description', $translator->_('Optional alternate external description for communication with respondents'),
+                   'translate', true
+        );
         $this->set('gtr_track_class',   'label', $translator->_('Track Engine'),
                 'multiOptions', $this->tracker->getTrackEngineList($detailed));
         $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));

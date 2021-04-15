@@ -134,6 +134,12 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getDescription();
 
     /**
+     *
+     * @return string External description of the track
+     */
+    public function getExternalName();
+
+    /**
      * Get the FieldUpdateEvent for this trackId
      *
      * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null

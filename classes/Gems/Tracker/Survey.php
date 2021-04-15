@@ -23,6 +23,13 @@ use Gems\Date\Period;
 class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 {
     /**
+     * Variable to add tags to the cache for cleanup.
+     *
+     * @var array
+     */
+    protected $_cacheTags = ['survey', 'surveys'];
+    
+    /**
      *
      * @var \Gems_Tracker_SourceInterface
      */

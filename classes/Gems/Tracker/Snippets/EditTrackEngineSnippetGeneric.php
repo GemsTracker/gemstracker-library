@@ -83,6 +83,10 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
         if ($this->project->translateDatabaseFields()) {
             $bridge->addFormTable('translations_gtr_track_name');
         }
+        $bridge->addText('gtr_external_description');
+        if ($this->project->translateDatabaseFields()) {
+            $bridge->addFormTable('translations_gtr_external_description');
+        }
 
 
         // gtr_track_class

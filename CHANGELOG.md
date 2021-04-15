@@ -7,7 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
 ### Added user functionality
 - Add a new track field type for linking tracks to other tracks (#621)
-- Add an external survey name to a survey (#625)
+- Add an external survey name to a survey (#626)
+- Add an external track name to a track (#625)
 - Added Url site management (#618)
 - Allow relation to ask for a token mail resend (#601)
 - Enable inserting more than one survey at a time (#617)

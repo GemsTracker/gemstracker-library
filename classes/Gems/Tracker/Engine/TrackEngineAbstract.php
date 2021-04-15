@@ -554,6 +554,19 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     }
 
     /**
+     *
+     * @return string External description of the track
+     */
+    public function getExternalName()
+    {
+        if (isset($this->_trackData['gtr_external_description']) && $this->_trackData['gtr_external_description']) {
+            return $this->_trackData['gtr_external_description'];
+        }
+
+        return $this->getTrackName();
+    }
+
+    /**
      * Get the FieldUpdateEvent for this trackId
      *
      * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null

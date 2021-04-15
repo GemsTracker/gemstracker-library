@@ -434,6 +434,16 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the field data for the respondent track id.
      *
+     * @return \Gems\Tracker\Field\FieldInterface[] of the existing fields for this track
+     */
+    public function getFields()
+    {
+        return $this->_fields;
+    }
+    
+    /**
+     * Returns the field data for the respondent track id.
+     *
      * @param int $respTrackId Gems respondent track id or null when new
      * @return array of the existing field values for this respondent track
      */
