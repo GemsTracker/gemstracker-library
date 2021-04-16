@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Survey;
@@ -28,7 +27,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
      *
      * @var string
      */
-    protected $class = 'browser table';
+    protected $class = 'answers browser table';
 
     /**
      *
@@ -128,19 +127,41 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
      */
     protected function addColumns(\MUtil_Html_TableElement $table)
     {
-        $table->addColumn(
-                array(\MUtil_Html::raw($this->repeater->key), 'class' => $this->repeater->class),
-                $this->_('Question code')
-                );
-        $table->addColumn(
-                array(\MUtil_Html::raw($this->repeater->question), 'class' => $this->repeater->class),
-                $this->_('Question')
-                );
-        $table->addColumn(
-                $this->repeater->answers->call($this, 'showAnswers', $this->repeater->answers),
-                $this->_('Answer options')
-                );
-        // $table->addColumn($this->repeater->type, 'Type');
+        $table->thhrow($this->_('Group'), ['class' => 'group']);
+        $tr = $table->thead()->tr();
+        $tr->th($this->_('Question code'));
+        $tr->th(' ');
+        $tr->th($this->_('Question'));
+        $tr->th($this->_('Answer options'));
+        
+        $cond    = \MUtil_Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
+        $hidden  = \MUtil_Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
+        $visible = \MUtil_Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
+
+        $oldGroup = null;
+        foreach ($this->data as $key => $row) {
+            if ($oldGroup !== $row['groupName']) {
+                $table->tdrow(['class' => 'group'])->raw($row['groupName']);
+                $oldGroup = $row['groupName'];
+            }               
+            
+            $tr = $table->tr();
+            $col2 = $visible;
+            if ($row['alwaysHidden']) {
+                $tr->appendAttrib('class', 'hideAlwaysQuestion');
+                $tr->title = $this->_('Hidden question');
+                $col2 = $hidden;
+            }
+            if ($row['hasConditon']) {
+                $tr->appendAttrib('class', 'conditionQuestion');
+                $tr->title = $this->_('Conditional question');
+                $col2 = $cond;
+            }
+            $tr->td($row['key'], ['class' => $row['class']]);
+            $tr->td($col2, ['class' => 'icon']);
+            $tr->td(['class' => $row['class']])->raw($row['question']);
+            $tr->td($this->showAnswers($row['answers']));
+        }
     }
 
     /**
@@ -226,7 +247,6 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
             if ($this->trackId && (! $this->surveyId)) {
                 // Use the track ID to get the id of the first active survey
                 $this->surveyId = $this->db->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ? ORDER BY gro_id_order', $this->trackId);
-
             }
         }
         // \MUtil_Echo::track($this->surveyId, $this->trackId);

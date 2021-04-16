@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -24,6 +23,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 {
     const ANSWERS_TABLE      = 'answers';
     const ATTRIBUTES_TABLE   = 'question_attributes';
+    const CONDITIONS_TABLE   = 'conditions';
     const GROUPS_TABLE       = 'groups';
     const QUESTIONS_TABLE    = 'questions';
 
@@ -205,6 +205,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $this->_fieldMap = $this->cache->load($cacheId);
 
         if (false === $this->_fieldMap) {
+            $aTable = $this->_getQuestionAttributesTableName();
+            $cTable = $this->_getQuestionConditonsTableName();
             $gTable = $this->_getGroupsTableName();
             $qTable = $this->_getQuestionsTableName();
 
@@ -212,13 +214,17 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 SELECT q.sid, q.type, q.qid, q.gid, q.question, q.title, q.help,
                     q.other, q.question_order,
                     g.group_order, g.group_name, g.description,
-                    sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id
+                    sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id,                
+                    at.value AS hidden, 
+                    CASE WHEN q.relevance IS NULL OR q.relevance = '' OR q.relevance = 1 OR NOT EXISTS (SELECT * FROM $cTable AS cn WHERE cn.qid = q.qid) THEN 0 ELSE 1 END AS hasConditon
                 FROM $qTable AS q
                     LEFT JOIN $gTable AS g ON q.sid = g.sid AND q.gid = g.gid AND q.language=g.language
                     LEFT JOIN $qTable AS sq ON q.qid = sq.parent_qid AND q.language = sq.language
+                    LEFT JOIN (SELECT * FROM $aTable WHERE attribute = 'hidden' AND (language = ''  OR language IS NULL)) AS at ON q.qid = at.qid
                 WHERE g.sid = ? AND g.language = ? AND q.parent_qid = 0
                 ORDER BY g.group_order, q.question_order, sq.scale_id DESC, sq.question_order";
 
+            // \MUtil_Echo::track($sql, $this->sourceSurveyId, $this->language);
             $rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language));
 
             $rowscount = count($rows);
@@ -230,8 +236,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $map = array();
             for ($i = 0; $i < $rowscount; $i++) {
                 $row = $rows[$i];
-                $other = ($row['other'] == 'Y');
-
+                $other  = ($row['other'] == 'Y');
+                $row['hidden']      = (boolean) (1 == $row['hidden']);
+                $row['hasConditon'] = (boolean) (1 == $row['hasConditon']);
+                
                 switch ($row['type']) {
                     case '1':        //Dual scale
                         //Check scale header in attributes table
@@ -538,13 +546,23 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     }
 
     /**
-     * The question attributes table contains all non-translateable settings for a question, e.g. 'page_break'
+     * The question attributes table contains all non-translateable settings for a question, e.g. 'page_break' or 'hidden'
      *
      * @return string name of the question attributes table
      */
     protected function _getQuestionAttributesTableName()
     {
         return $this->tablePrefix . self::ATTRIBUTES_TABLE;
+    }
+
+    /**
+     * The question conditions table contains all conditions not in the relevance equation
+     *
+     * @return string name of the question attributes table
+     */
+    protected function _getQuestionConditonsTableName()
+    {
+        return $this->tablePrefix . self::CONDITIONS_TABLE;
     }
 
     /**
@@ -680,6 +698,15 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             $tmpres = array();
             $tmpres['thClass']         = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            if (isset($field['hidden']) && $field['hidden']) {
+                $tmpres['thClass']      .= ' hideAlwaysQuestion';
+                $tmpres['alwaysHidden'] = $field['hidden'];
+            }
+            if (isset($field['hasConditon']) && $field['hasConditon']) {
+                $tmpres['thClass']     .= ' conditionQuestion';
+                $tmpres['hasConditon'] = $field['hasConditon'];
+            }
+            
             $tmpres['group']           = $field['gid'];
             $tmpres['groupName']       = isset($field['group_name']) ? $field['group_name'] : null;
             $tmpres['type']            = $this->_getType($field);
@@ -827,11 +854,15 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 continue;
             }
 
+            // \MUtil_Echo::track($field);
             $tmpres = array();
-            $tmpres['class'] = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
-            $tmpres['group'] = $field['gid'];
-            $tmpres['type']  = $field['type'];
-            $tmpres['title'] = $field['title'];
+            $tmpres['alwaysHidden'] = $field['hidden'];
+            $tmpres['class']        = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['group']        = $field['gid'];
+            $tmpres['groupName']    = $this->removeMarkup($field['group_name']);
+            $tmpres['hasConditon']  = $field['hasConditon'];
+            $tmpres['type']         = $field['type'];
+            $tmpres['title']        = $field['title'];
             if (array_key_exists('equation', $field)) {
                 $tmpres['equation'] = $field['equation'];
             }
@@ -1013,6 +1044,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     public function removeMarkup($text)
     {
-        return \MUtil_String::beforeChars(\MUtil_Html::removeMarkup($text, 'b|i|u|em|strong'), '{');
+        return trim(\MUtil_String::beforeChars(\MUtil_Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
     }
 }

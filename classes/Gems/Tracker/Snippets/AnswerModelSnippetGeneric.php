@@ -44,7 +44,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      *
      * @var string
      */
-    protected $class = 'browser table answer compliance';
+    protected $class = 'answer answers browser table compliance';
 
     /**
      *
@@ -180,7 +180,6 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         $eventName = 'gems.survey.answers.display-filter';
 
         if ($this->answerFilter instanceof \Gems_Tracker_Snippets_AnswerNameFilterInterface) {
-
             $answerFilter = $this->answerFilter;
             $eventFunction = function (AnswerFilterEvent $event) use ($answerFilter) {
                 $bridge = $event->getBridge();
@@ -197,15 +196,43 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         $answerFilterEvent = new AnswerFilterEvent($bridge, $model, $answerNames);
         $this->event->dispatch($answerFilterEvent, $eventName);
         $answerNames = $answerFilterEvent->getCurrentNames();
+        $oldGroup    = null;
 
+        $cond    = \MUtil_Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
+        $hidden  = \MUtil_Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
+        $visible = \MUtil_Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
+        
         foreach($answerNames as $name) {
             $label = $model->get($name, 'label');
             if (null !== $label) {     // Was strlen($label), but this ruled out empty sub-questions
-                $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
+                $group = $model->get($name, 'groupName');
+                if ($oldGroup !== $group) {
+                    if ($group) {
+                        $bridge->thd(['class' => 'group groupLabel'])->raw($group);
+                        $bridge->td($bridge->blank, ['renderClosingTag' => true]);
+                    }
+                    $oldGroup = $group;
+                }
+                $th = $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
                 $td->appendAttrib('class', 'answer');
                 $td->appendAttrib('class', $selectedClass);
                 $td->appendAttrib('class', $bridge->row_class);
+
+                $col2 = $visible;
+                if ($model->get($name, 'alwaysHidden')) {
+                    $td->appendAttrib('class', 'hideAlwaysQuestion');
+                    $td->title = $this->_('Hidden question');
+                    $th->title = $this->_('Hidden question');
+                    $col2 = $hidden;
+                }
+                if ($model->get($name, 'hasConditon')) {
+                    $td->appendAttrib('class', 'conditionQuestion');
+                    $td->title = $this->_('Conditional question');
+                    $th->title = $this->_('Conditional question');
+                    $col2 = $cond;
+                }
+                $th->append($col2);
             }
         }
 
@@ -288,6 +315,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
         $model = $this->token->getSurveyAnswerModel($this->locale->getLanguage());
 
         $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'token_status');
+        $model->addColumn(new \Zend_Db_Expr("' '"), 'blank');
 
         $model->set('gto_valid_from', 'dateFormat', $this->dateFormat);
         $model->set('gto_completion_time', 'dateFormat', $this->dateFormat);
