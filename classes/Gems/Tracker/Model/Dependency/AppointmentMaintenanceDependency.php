@@ -27,7 +27,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     /**
      * Array of setting => setting of setting changed by this dependency
      *
-     * The settings array for those effecteds that don't have an effects array
+     * The settings array for those effected items that don't have an effects array
      *
      * @var array
      */
@@ -38,25 +38,30 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     /**
      * Array of name => name of items dependency depends on.
      *
-     * Can be overriden in sub class
+     * Can be overridden in sub class
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track');
+    protected $_dependentOn = array('gtf_id_track', 'gtf_id_order', 'gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
      *
-     * Can be overriden in sub class
+     * Can be overridden in sub class
      *
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = array(
         'gtf_id_order', 'htmlCalc', 'gtf_filter_id', 'gtf_min_diff_unit', 'gtf_min_diff_length',
-        'gtf_max_diff_exists', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'gtf_uniqueness',
+        'gtf_max_diff_exists', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'htmlCreate', 'gtf_uniqueness',
         'gtf_create_track', 'gtf_create_wait_days',
         );
 
+    /**
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+    
     /**
      *
      * @var \Gems_Loader
@@ -127,10 +132,29 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
 
         if ($context['gtf_filter_id']) {
             $periodUnits = $this->util->getTranslated()->getPeriodUnits();
+            
+            if (isset($context['gtf_id_track'], $context['gtf_id_order'])) {
+                $previous = $this->db->fetchRow(
+                    "SELECT * FROM gems__track_appointments WHERE gtap_id_track = ? AND gtap_id_order < ? ORDER BY gtap_id_order DESC LIMIT 1",
+                    [$context['gtf_id_track'], $context['gtf_id_order']]
+                );
+                // \MUtil_Echo::track($previous);
+                if ($previous) {
+                    $diffDescription = sprintf(
+                        $this->_("Difference with the previous '%s' appointment (order %d), can be negative but not zero"),
+                        $previous['gtap_field_name'],
+                        $previous['gtap_id_order']
+                    );
+                } else {
+                    $diffDescription = $this->_('Difference with the track start date, can be negative but not zero');                
+                }
+            } else {
+                $diffDescription = $this->_('Difference with the previous appointment or track start date, can be negative but not zero');
+            }
 
             $output['gtf_min_diff_length'] = array(
                 'label'             => $this->_('Minimal time difference'),
-                'description'       => $this->_('Difference with the previous appointment or track start date, can be negative but not zero'),
+                'description'       => $diffDescription,
                 'elementClass'      => 'Text',
                 'required'          => true,
                 // 'size'              => 5, // Causes trouble during save
@@ -189,6 +213,10 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     //                 3 => $this->_('Appointment may not be used in any other track.'),
                     ),
                 );
+            $output['htmlCreate'] = array(
+                'label'        => ' ',
+                'elementClass' => 'Exhibitor',
+            );
             $output['gtf_create_track'] = $this->loader->getAgenda()->getTrackCreateElement();
         }
 

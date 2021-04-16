@@ -306,6 +306,11 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
             $this->setOnLoad('calculation', array($this, 'loadCalculationSources'));
         }
 
+        $this->set('htmlCreate',
+                   'elementClass', 'None', 'nohidden', true,
+                   'value', \MUtil_Html::create('h3', $this->_('Automatic track creation'))
+        );
+
         $this->set('gtf_create_track', 'label', $this->_('When not assigned'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
                 'multiOptions', $yesNo
@@ -343,6 +348,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $contact = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
         $contact->apply($this, 'gtf_calculate_using');
 
+        $this->set('header_creation', 'elementClass', 'None');
+        
         // Clean up data always show in browse view, but not always in detail views
         $this->set('gtf_create_track',    'label', null);
 
