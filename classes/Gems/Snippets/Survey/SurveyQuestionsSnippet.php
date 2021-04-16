@@ -157,7 +157,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
                 $tr->title = $this->_('Conditional question');
                 $col2 = $cond;
             }
-            $tr->td($row['key'], ['class' => $row['class']]);
+            $tr->td($key, ['class' => $row['class']]);
             $tr->td($col2, ['class' => 'icon']);
             $tr->td(['class' => $row['class']])->raw($row['question']);
             $tr->td($this->showAnswers($row['answers']));
@@ -257,11 +257,11 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
         }
         // Load the data
         if (($this->survey instanceof \Gems_Tracker_Survey) && $this->survey->exists) {
-            $this->data = \MUtil_Ra::addKey($this->survey->getQuestionInformation($this->locale->getLanguage()), 'key');
+            $this->data = $this->survey->getQuestionInformation($this->locale->getLanguage());
             //\MUtil_Echo::track($this->data);
         }
 
-        return parent::hasHtmlOutput();
+        return (boolean) $this->data;
     }
 
     public function showAnswers($answers)
