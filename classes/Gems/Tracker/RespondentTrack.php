@@ -9,12 +9,11 @@
  * @license    New BSD License
  */
 
-use \Gems\Tracker\Model\FieldMaintenanceModel;
-use \Gems\Event\Application\TokenEvent;
-use \Gems\Event\Application\RespondentTrackFieldUpdateEvent;
-use \Gems\Event\Application\RespondentTrackFieldEvent;
-
-
+use Gems\Event\Application\TokenEvent;
+use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
+use Gems\Event\Application\RespondentTrackFieldEvent;
+use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Translate\DbTranslateUtilTrait;
 
 /**
  * Object representing a track assignment to a respondent.
@@ -27,6 +26,8 @@ use \Gems\Event\Application\RespondentTrackFieldEvent;
  */
 class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 {
+    use DbTranslateUtilTrait;
+    
     /**
      *
      * @var array of round_id => \Gems_Tracker_Token
@@ -83,16 +84,18 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected $_tokens;
 
     /**
+     * @var array
+     */
+    protected $_tablesForTranslations = [
+        'gems__respondent2track' => 'gr2t_id_respondent_track',
+        'gems__tracks' => 'gtr_id_track',
+        ];
+
+    /**
      *
      * @var \Gems_User_User
      */
     protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      * @var \Gems\Event\EventDispatcher
@@ -104,12 +107,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * @var \Gems_Loader
      */
     protected $loader;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
 
     /**
      *
@@ -239,7 +236,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected function _ensureRounds($reload = false)
     {
         if ((null === $this->_rounds) || $reload) {
-            $rounds = $this->getTrackEngine()->getRoundModel(true, 'index')->load(array('gro_id_track'=>$this->getTrackId()));
+            $rounds = $this->getTrackEngine()->getRoundModel(true, 'index')
+                                             ->load(['gro_id_track'=>$this->getTrackId()]);
 
             $this->_rounds = array();
             foreach($rounds as $round) {
@@ -254,11 +252,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     protected function _ensureTrackData()
     {
         if (! isset($this->_respTrackData['gtr_code'], $this->_respTrackData['gtr_name'])) {
-            $select = $this->db->select();
-            $select->from('gems__tracks')
-                ->where('gtr_id_track = ?', $this->_respTrackData['gr2t_id_track']);
-
-            if ($trackData = $this->db->fetchRow($select)) {
+            $trackData = $this->fetchTranslatedRow('gems__tracks', 'gtr_id_track', $this->_respTrackData['gr2t_id_track']);
+            if ($trackData) {
                 $this->_respTrackData = $this->_respTrackData + $trackData;
             } else {
                 $trackId = $this->_respTrackId;
@@ -590,8 +585,13 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->_respTrackData && $this->currentUser instanceof \Gems_User_User) {
-            $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
+        $this->initDbTranslations();
+        
+        if ($this->_respTrackData) {
+            $this->_respTrackData = $this->translateTables($this->_tablesForTranslations, $this->_respTrackData);
+            if ($this->currentUser instanceof \Gems_User_User) {
+                $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
+            }
         } else {
             if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
                 $this->refresh();
@@ -1490,13 +1490,9 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function refresh(array $gemsData = null)
     {
         if (is_array($gemsData)) {
-            $this->_respTrackData = $gemsData + $this->_respTrackData;
+            $this->_respTrackData = $this->translateTables($this->_tablesForTranslations, $gemsData) + $this->_respTrackData;
         } else {
-            $sql  = "SELECT *
-                        FROM gems__respondent2track
-                        WHERE gr2t_id_respondent_track = ? LIMIT 1";
-
-            $this->_respTrackData = $this->db->fetchRow($sql, $this->_respTrackId);
+            $this->_respTrackData = $this->fetchTranslatedRow('gems__respondent2track', 'gr2t_id_respondent_track', $this->_respTrackId);
         }
         if ($this->_respTrackData && $this->currentUser instanceof \Gems_User_User) {
             $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);

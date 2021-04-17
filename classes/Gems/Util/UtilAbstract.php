@@ -287,33 +287,6 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Sort the array using the specified sort function
-     *
-     * @param array $result
-     * @param strng $sort
-     */
-    protected function _sortResult(array &$result, $sort = 'asort')
-    {
-        // Sorting
-        switch ($sort) {
-            case 'asort':
-                asort($result);
-                break;
-
-            case 'ksort':
-                ksort($result);
-                break;
-
-            case 'natsort':
-                natsort($result);
-                break;
-
-            default:
-                $sort($result);
-        }
-    }
-
-    /**
      * Utility function for loading a translated paired from cache
      *
      * @param string $table
@@ -388,7 +361,34 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         
         return $result ?: [];
     }
-    
+
+    /**
+     * Sort the array using the specified sort function
+     *
+     * @param array $result
+     * @param callable $sort Sort function
+     */
+    protected function _sortResult(array &$result, $sort = 'asort')
+    {
+        // Sorting
+        switch ($sort) {
+            case 'asort':
+                asort($result);
+                break;
+
+            case 'ksort':
+                ksort($result);
+                break;
+
+            case 'natsort':
+                natsort($result);
+                break;
+
+            default:
+                $sort($result);
+        }
+    }
+
     /**
      * Cleans up everything to a save cacheId
      *

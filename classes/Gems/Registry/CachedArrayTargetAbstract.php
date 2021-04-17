@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\Translate\DbTranslateUtilTrait;
+
 /**
  * Add's automatic caching to an registry target object.
  *
@@ -20,6 +22,8 @@
  */
 abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_TargetAbstract
 {
+    use DbTranslateUtilTrait;
+    
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -48,28 +52,11 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     protected $cache;
 
     /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * Does this data item exist?
      *
      * @var boolean
      */
     public $exists = false;
-
-    /**
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      * Return false on checkRegistryRequestsAnswers when the answer is not an array
@@ -165,11 +152,11 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      */
     public function checkRegistryRequestsAnswers()
     {
-        $lang = $this->locale->getLanguage();
+        $this->initDbTranslations();
         
         if ($this->cache && $this->_hasCacheId()) {
             $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
-            $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $lang); 
+            $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $this->language); 
             $this->_data = $this->cache->load($cacheLang);
         } else {
             $cacheId = false;
@@ -182,26 +169,8 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
                 $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
             }
             
-            if (($lang != $this->project->getLocaleDefault()) && $this->translationTable && $this->project->translateDatabaseFields()) {
-                
-                $tSelect = $this->db->select();
-                $tSelect->from('gems__translations', ['gtrs_field', 'gtrs_translation'])
-                        ->where('gtrs_table = ?', $this->translationTable)
-                        ->where('gtrs_keys = ?', $this->_id)
-                        ->where('gtrs_iso_lang = ?', $lang)
-                        ->where('LENGTH(gtrs_translation) > 0');
-
-                $translations = $this->db->fetchPairs($tSelect);
-                // \MUtil_Echo::track($tSelect->__toString(), $translations);
-
-                if ($translations) {
-                    foreach ($this->_data as $item => $value) {
-                        if (isset($translations[$item])) {
-                            // Set value to the translation
-                            $this->_data[$item] = $translations[$item];
-                        }
-                    }
-                }
+            if ((! $this->dbTranslationOff) && $this->translationTable) {
+                $this->_data = $this->translateTable($this->translationTable, $this->_id, $this->_data);
             }
 
             if ($cacheId) {

@@ -725,7 +725,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
                 $trackData = $this->db->fetchRow("SELECT * FROM gems__tracks WHERE gtr_id_track = ?", $trackId);
             }
 
-            // TODO: patch and extend later
             if (! isset($trackData['gtr_track_class'])) {
                 $trackData['gtr_track_class'] = 'AnyStepEngine';
             }

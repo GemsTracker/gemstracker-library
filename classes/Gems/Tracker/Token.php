@@ -783,7 +783,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function getConsentCode()
     {
-        if ($this->hasSuccesCode()) {
+        if ($this->getReceptionCode()->isSuccess()) {
             if (! isset($this->_gemsData['gco_code'])) {
                 $this->_ensureRespondentData();
             }
@@ -1375,28 +1375,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function getStatus()
     {
         return $this->util->getTokenData()->getStatusDescription($this->getStatusCode());
-
-        /*
-        $today  = new \Zend_Date();
-
-        if ($this->isCompleted()) {
-            $status = $this->translate->getAdapter()->_('Completed');
-        } else {
-            $validFrom  = $this->getValidFrom();
-            $validUntil = $this->getValidUntil();
-
-            if (! empty($validUntil) && $validUntil->isEarlier($today)) {
-                $status = $this->translate->getAdapter()->_('Missed');
-            } elseif (! empty($validFrom) && $validFrom->isLater($today)) {
-                $status = $this->translate->getAdapter()->_('Future');
-            } elseif (empty($validFrom) && empty($validUntil)) {
-                $status = $this->translate->getAdapter()->_('Future');
-            } else {
-                $status = $this->translate->getAdapter()->_('Open');
-            }
-        }
-
-        return $status; // */
     }
 
     /**
@@ -1892,16 +1870,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $tokenSelect = $this->tracker->getTokenSelect();
 
             $tokenSelect
-                    ->andReceptionCodes()
                     ->andRespondents()
                     ->andRespondentOrganizations()
-                    ->andConsents()
                     ->forTokenId($this->_tokenId);
 
             $this->_gemsData = $tokenSelect->fetchRow();
-            if (false == $this->_gemsData) {
+            if (! $this->_gemsData) {
                 // on failure, reset to empty array
-                $this->_gemsData = array();
+                $this->_gemsData = [];
             }
         }
         if ($this->currentUser instanceof \Gems_User_User) {

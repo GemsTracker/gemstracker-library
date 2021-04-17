@@ -74,20 +74,7 @@ class Gems_Util_TrackData extends UtilAbstract
      */
     public function getActiveSurveys()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gsu_id_survey, gsu_survey_name
-            FROM gems__surveys
-            WHERE gsu_active = 1
-            ORDER BY gsu_survey_name";
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys'));
-        return $results;
+        return $this->getAllSurveys(true);
     }
 
     /**
@@ -100,27 +87,21 @@ class Gems_Util_TrackData extends UtilAbstract
     public function getActiveTracks($orgs = '1=1')
     {
         if (is_array($orgs) || is_int($orgs)) {
-            $cacheId  = __CLASS__ . '_' . __FUNCTION__ . '_o' .  parent::cleanupForCacheId(implode('_', (array) $orgs));
             $orgWhere = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", (array) $orgs) .
                 "|') > 0)";
         } else {
             $orgWhere = $orgs ? $orgs : '1=1';
-            $cacheId  = __CLASS__ . '_' . __FUNCTION__ . '_' . parent::cleanupForCacheId($orgWhere);
         }
 
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks
-                    WHERE gtr_active=1 AND $orgWhere
-                    ORDER BY gtr_track_name";
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('tracks'));
-        return $results;
+        return $this->_getTranslatedPairsCached(
+            'gems__tracks',
+            'gtr_id_track',
+            'gtr_track_name',
+            ['tracks'],
+            "gtr_active=1 AND $orgWhere",
+            'asort'
+        );
     }
 
     /**
@@ -160,13 +141,14 @@ class Gems_Util_TrackData extends UtilAbstract
      */
     public function getAllSurveys($active = false)
     {
-        if ($active) {
-            $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name";
-        } else {
-            $sql = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
-        }
-
-        return $this->_getSelectPairsCached(__FUNCTION__ . '_' . ($active ? '1' : '0'), $sql, array(), 'surveys');
+        return $this->_getTranslatedPairsCached(
+            'gems__surveys',
+            'gsu_id_survey',
+            'gsu_survey_name',
+            ['surveys'],
+            $active ? "gsu_active = 1" : null, 
+            'asort'
+        );
     }
 
     /**
@@ -198,24 +180,20 @@ class Gems_Util_TrackData extends UtilAbstract
 
     /**
      * Returns array (id => name) of all tracks, sorted alphabetically
+     *
      * @return array
+     * @throws \Zend_Cache_Exception
      */
     public function getAllTracks()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks
-                    WHERE gtr_track_class != 'SingleSurveyEngine'
-                    ORDER BY gtr_track_name";
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('tracks'));
-        return $results;
+        return $this->_getTranslatedPairsCached(
+            'gems__tracks', 
+            'gtr_id_track', 
+            'gtr_track_name',
+            ['tracks'],
+            "gtr_track_class != 'SingleSurveyEngine'",
+            'asort'
+            );
     }
 
     /**

@@ -67,7 +67,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andConsents($fields = '*') {
+    public function andConsents($fields = '*') 
+    {
         $this->sql_select->joinLeft('gems__consents',
                 'gr2o_consent = gco_description',
                 $fields);
@@ -108,7 +109,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andRespondents($fields = '*') {
+    public function andRespondents($fields = '*') 
+    {
         $this->sql_select->join('gems__respondents',
                 'gto_id_respondent = grs_id_user',
                 $fields);
@@ -122,7 +124,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andRespondentOrganizations($fields = '*') {
+    public function andRespondentOrganizations($fields = '*') 
+    {
         $this->sql_select->join('gems__respondent2org',
                 'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
                 $fields);
@@ -137,7 +140,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param boolean $groupBy Optional, add these fields to group by statement
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andRespondentTracks($fields = '*', $groupBy = false) {
+    public function andRespondentTracks($fields = '*', $groupBy = false) 
+    {
         $this->sql_select->join('gems__respondent2track',
                 'gto_id_respondent_track = gr2t_id_respondent_track',
                 $fields);
@@ -155,7 +159,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andRounds($fields = '*') {
+    public function andRounds($fields = '*') 
+    {
         $this->sql_select->join('gems__rounds',
                 'gto_id_round = gro_id_round',
                 $fields);
@@ -169,7 +174,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string|array $fields
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function andSurveys($fields = '*') {
+    public function andSurveys($fields = '*') 
+    {
         $this->sql_select->join('gems__surveys',
                 'gto_id_survey = gsu_id_survey',
                 $fields);
@@ -292,7 +298,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string $organizationId Optional
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forRespondent($respondentId, $organizationId = null) {
+    public function forRespondent($respondentId, $organizationId = null) 
+    {
         if (null !== $respondentId) {
             $this->sql_select->where('gto_id_respondent = ?', $respondentId);
         }
@@ -309,7 +316,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param int $respTrackId Respondent Track ID
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forRespondentTrack($respTrackId) {
+    public function forRespondentTrack($respTrackId) 
+    {
         $this->sql_select
                 ->where('gto_id_respondent_track = ?', $respTrackId)
                 ->order('gto_round_order')
@@ -324,8 +332,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param int $roundId Round ID
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forRound($roundId) {
-
+    public function forRound($roundId) 
+    {
         $this->sql_select->where('gto_id_round = ?', $roundId);
 
         return $this;
@@ -337,7 +345,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string $surveyId
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forSurveyCode($surveyCode) {
+    public function forSurveyCode($surveyCode) 
+    {
         $this->sql_select->where('gsu_code = ?', $surveyCode);
 
         return $this;
@@ -349,7 +358,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string $surveyId
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forSurveyId($surveyId) {
+    public function forSurveyId($surveyId) 
+    {
         $this->sql_select->where('gto_id_survey = ?', $surveyId);
 
         return $this;
@@ -361,7 +371,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string $tokenId
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function forTokenId($tokenId) {
+    public function forTokenId($tokenId) 
+    {
         $this->sql_select->where('gto_id_token = ?', $tokenId);
 
         return $this;
@@ -399,8 +410,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param boolean $recentCheck Check only tokens with recent gto_start_time's
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function onlyActive($recentCheck = false) {
-
+    public function onlyActive($recentCheck = false) 
+    {
         $this->sql_select
                 ->where('gto_in_source = ?', 1)
                 ->where('gto_completion_time IS NULL');
@@ -420,8 +431,8 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function onlyCompleted() {
-
+    public function onlyCompleted() 
+    {
         $this->sql_select
                 ->where('gto_completion_time IS NOT NULL');
 
@@ -447,8 +458,8 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function onlyValid() {
-
+    public function onlyValid() 
+    {
         $this->sql_select->where('gto_completion_time IS NULL')
                 ->where('gto_valid_from <= CURRENT_TIMESTAMP')
                 ->where('(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)');
@@ -474,8 +485,8 @@ class Gems_Tracker_Token_TokenSelect
      * @param string $tokenId
      * @return \Gems_Tracker_Token_TokenSelect
      */
-    public function withoutToken($tokenId) {
-
+    public function withoutToken($tokenId) 
+    {
         $this->sql_select->where('gto_id_token != ?', $tokenId);
 
         return $this;

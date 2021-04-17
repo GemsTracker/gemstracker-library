@@ -12,6 +12,7 @@
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Round;
+use Gems\Translate\DbTranslateUtilTrait;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -25,6 +26,8 @@ use MUtil\Model\Dependency\DependencyInterface;
  */
 abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_TranslateableAbstract implements \Gems_Tracker_Engine_TrackEngineInterface
 {
+    use DbTranslateUtilTrait;
+    
     /**
      * Stores how the fields are define for this track
      *
@@ -55,12 +58,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      * @var int
      */
     protected $_trackId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      *
@@ -389,11 +386,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->db) {
-            $this->_ensureRounds();
+        $this->initDbTranslations();
+        
+        if (! $this->dbTranslationOff) {
+            // This is never refreshed, so we can just translate here 
+            $this->_trackData = $this->translateTable('gems__tracks', $this->_trackId, $this->_trackData);
         }
+        
+        $this->_ensureRounds();
 
-        return (boolean) $this->db;
+        return true;
     }
 
     /**
@@ -892,7 +894,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 );
         $model->set('gro_round_description', 'label', $this->_('Description'),
                 'size', '30'
-                ); //, 'minlength', 4, 'required', true);
+                );
 
         $list = $this->events->listRoundChangedEvents();
         if (count($list) > 1) {

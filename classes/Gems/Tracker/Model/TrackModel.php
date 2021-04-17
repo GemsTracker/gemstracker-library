@@ -8,7 +8,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -39,6 +38,12 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      * @var \Gems_Tracker
@@ -164,6 +169,13 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                     'validators[unique]', $this->createUniqueValidator('gtr_track_name')
                     );
         }
+        if ($this->project->translateDatabaseFields()) {
+            if ($edit) {
+                $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+            } else {
+                $this->loader->getModels()->addDatabaseTranslations($this);
+            }
+        }
         return $this;
     }
 
@@ -252,11 +264,10 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                 'gtf_readonly'          => 0
             )
         );
+        return $defaultFields;
         */
 
-        $defaultFields = array();
-
-        return $defaultFields;
+        return [];
     }
 
     /**
