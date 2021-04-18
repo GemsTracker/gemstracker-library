@@ -63,6 +63,25 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     }
 
     /**
+     * Return a hashed version of the input value.
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string The output to display
+     */
+    public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        $value = parent::hideSSN($value, $isNew, $name, $context, $isPost);
+        if ($value) {
+            $this->set('grs_ssn', 'description', $this->_('Empty this field to remove the BSN'));
+        }
+        return $value;
+    }
+
+
+    /**
      * Set the field values for a dutch social security number
      *
      * @param \MUtil_Model_ModelAbstract $model

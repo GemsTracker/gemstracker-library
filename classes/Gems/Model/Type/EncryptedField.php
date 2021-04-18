@@ -26,6 +26,11 @@
 class Gems_Model_Type_EncryptedField
 {
     /**
+     * @var string 
+     */
+    protected $maskedValue = '********';
+    
+    /**
      *
      * @var \Gems_Project_ProjectSettings
      */
@@ -58,7 +63,7 @@ class Gems_Model_Type_EncryptedField
      */
     public function apply(\MUtil_Model_ModelAbstract $model, $valueField)
     {
-        $model->setSaveWhenNotNull($valueField);
+        $model->setSaveWhen($valueField, array($this, 'saveWhen'));
         $model->setOnLoad($valueField, array($this, 'loadValue'));
         $model->setOnSave($valueField, array($this, 'saveValue'));
 
@@ -89,7 +94,7 @@ class Gems_Model_Type_EncryptedField
     {
         if ($value && (! $isPost)) {
             if ($this->valueMask) {
-                return str_repeat('*', 8);
+                return $this->maskedValue;
             } else {
                 return $this->project->decrypt($value);
             }
@@ -116,5 +121,17 @@ class Gems_Model_Type_EncryptedField
             // \MUtil_Echo::track($value);
             return $this->project->encrypt($value);
         }
+    }
+
+    /**
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function saveWhen($value, $isNew = false, $name = null, array $context = array())
+    {
+        return $this->maskedValue != $value;
     }
 }

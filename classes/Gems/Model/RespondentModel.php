@@ -806,6 +806,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         if ($value && (! $isPost)) {
+            $this->set('grs_ssn', 'description', $this->_('Empty this field to remove the SSN'));
             return str_repeat('*', 9);
         } else {
             return $value;
@@ -1198,6 +1199,9 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      */
     public function whenSSN($value, $isNew = false, $name = null, array $context = array())
     {
+        if (! $value) {
+            return true;
+        }
         return $value && ($value !== $this->hideSSN($value, $isNew, $name, $context));
     }
 }

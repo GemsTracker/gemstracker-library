@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Show the most recently added track first in the track overviews of patients (#622)
 
 ### Interface improvements
+- Enable removal of existing passwords and SSN's (#629)
 - Feedback bij niet verstuurde reset mail (#278)
 - Improve mail template form use with multiple languages (#614)
 - Track builder: filter survey list (#362)

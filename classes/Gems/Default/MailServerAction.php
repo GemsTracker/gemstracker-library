@@ -72,7 +72,7 @@ class Gems_Default_MailServerAction extends \Gems_Controller_ModelSnippetActionA
                     'label', $this->_('Password'),
                     'elementClass', 'Password',
                     'repeatLabel', $this->_('Repeat password'),
-                    'description', $this->_('Enter only when changing'));
+                    'description', $this->_('Enter new or remove stars to empty'));
 
             $type = new \Gems_Model_Type_EncryptedField($this->project, true);
             $type->apply($model, 'gms_password');

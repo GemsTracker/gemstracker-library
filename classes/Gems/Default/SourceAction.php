@@ -212,15 +212,15 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
 
             $model->set('gso_ls_password',     'label', $this->_('Database Password'),
                     'elementClass', 'Password',
+                    'renderPassword', true,
                     'repeatLabel', $this->_('Repeat password'),
                     'required', false,
                     'size', 15
                     );
             if ('create' == $action) {
-                $model->set('gso_ls_password', 'description', $inGems, 'renderPassword', true);
+                $model->set('gso_ls_password', 'description', $inGems);
             } else {
-                $model->set('gso_ls_password', 'description', $this->_('Enter only when changing'),
-                        'renderPassword', false);
+                $model->set('gso_ls_password', 'description', $this->_('Enter new or remove stars to empty'));
             }
             $type = new \Gems_Model_Type_EncryptedField($this->project, true);
             $type->apply($model, 'gso_ls_password');

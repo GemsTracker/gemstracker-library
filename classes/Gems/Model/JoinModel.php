@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+use MUtil\Translate\TranslateableTrait;
 
 /**
  * Extension of MUtil model with auto update changed and create fields.
@@ -21,17 +22,7 @@
  */
 class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
 {
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translateAdapter;
+    use TranslateableTrait;
 
     /**
      * Create a model that joins two or more tables
@@ -48,25 +39,6 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
         if ($fieldPrefix) {
             \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
-    }
-
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        if (! $this->translateAdapter) {
-            $this->initTranslateable();
-        }
-        return $this->translateAdapter->_($text, $locale);
     }
 
     /**
@@ -159,37 +131,6 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
         parent::afterRegistry();
 
         $this->initTranslateable();
-    }
-
-    /**
-     * Function that checks the setup of this class/traight
-     *
-     * This function is not needed if the variables have been defined correctly in the
-     * source for this object and theose variables have been applied.
-     *
-     * return @void
-     */
-    protected function initTranslateable()
-    {
-        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
-            // OK
-            return;
-        }
-
-        if ($this->translate instanceof \Zend_Translate) {
-            // Just one step
-            $this->translateAdapter = $this->translate->getAdapter();
-            return;
-        }
-
-        if ($this->translate instanceof \Zend_Translate_Adapter) {
-            // It does happen and if it is all we have
-            $this->translateAdapter = $this->translate;
-            return;
-        }
-
-        // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
