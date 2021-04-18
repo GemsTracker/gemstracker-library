@@ -110,7 +110,7 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
      */
     public function executeLastAction()
     {
-        $level = $this->_upgrades->getmaxLevel();
+        $level = $this->_upgrades->getMaxLevel();
 
         $this->executeAction($level, $level);
     }
@@ -136,7 +136,6 @@ class Gems_Default_UpgradeAction extends \Gems_Controller_Action
         parent::init();
 
         $this->_upgrades = $this->loader->getUpgrades();
-
     }
 
     /**

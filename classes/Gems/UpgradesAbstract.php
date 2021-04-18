@@ -23,12 +23,20 @@ use MUtil\Translate\TranslateableTrait;
 class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
 {
     use TranslateableTrait;
-    
+
+    /**
+     * @var null default context
+     */
     protected $_context = null;
 
-    protected $_upgradeStack = array();
-
     protected $_messages = array();
+
+    /**
+     * @var int The index the level starts at (to nog be disturbed by removed versions)
+     */
+    protected $_startIndices;
+
+    protected $_upgradeStack = array();
 
     /**
      * Holds the inital config file
@@ -192,13 +200,14 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
 
         if (isset($this->_upgradeStack[$context])) {
             $values = array_keys($this->_upgradeStack[$context]);
-            $values[] = 0;
-            $index = intval(max($values));
-            return $index;
-        } else {
-            return 0;
-
+            if ($values) {
+                return intval(max($values));
+            }
+            if (isset($this->_startIndices[$context])) {
+                return $this->_startIndices[$context];
+            }
         }
+        return 0;
     }
 
     /**
@@ -211,7 +220,8 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param type $context
      * @return type
      */
-    public function getNextLevel($context = null, $level = null) {
+    public function getNextLevel($context = null, $level = null) 
+    {
         if (is_null($context)) {
             $context = $this->getContext();
         }
@@ -363,8 +373,10 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $context
      */
-    public function setContext($context) {
+    public function setContext($context, $startIndex = 0) 
+    {
         $this->_context = $context;
+        $this->_startIndices[$context] = $startIndex;
     }
 
     /**
