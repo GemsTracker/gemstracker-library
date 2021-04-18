@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Adding an insertable survey to an emptied phase goes wrong (#609)
+- Appointment changes can affect conditions (#590)
 - Appointment fields lack context during some track creation (#623)
 - Error message WHERE token = 'xxx' (#595)
 - Extend length if log IP address storage (#606)
@@ -41,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - The default roles no longer show the ask screen (#604)
 - The unit tests seem to have been broken for quite a while (#619)
 - Token 'Assigned by' shows Track assigner (#616)
+- When using an appointment filter with a minimum start date difference tracks are repeatedly created (#628)
   
 ## [1.9.0]
 [1.9.0]: https://github.com/GemsTracker/gemstracker-library/compare/1.8.7...1.9.0

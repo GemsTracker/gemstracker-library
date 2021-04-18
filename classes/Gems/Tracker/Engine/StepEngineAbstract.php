@@ -310,12 +310,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             $token->setReceptionCode($newCode,
                     sprintf($message, $condition->getName(), $condition->getRoundDisplay($token->getTrackId(), $token->getRoundId())),
                     $userId);
-            /* Since tokens skipped by conditions now get calculated we don't need this anymore
-            if ($newStatus == true) {
-                // Token was made valid, now calc the dates
-                $this->checkTokenDates($token, $round, $userId, $respTrack);
-            }
-            */
         }
 
         return $changed;

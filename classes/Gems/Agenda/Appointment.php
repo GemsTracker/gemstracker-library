@@ -288,7 +288,6 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param \Gems_Tracker_RespondentTrack $respTrack
-     *
      * @return boolean
      */
     public function createFromStart($filter, $respTrack)
@@ -312,6 +311,17 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                             $wait
                             ));
                 }
+            }
+        }
+        if ($createTrack) {
+            // Test to see whether this track has already been created by this filterA[[
+            $fieldId = $filter->getFieldId();
+            $data    = $respTrack->getFieldData();
+            if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
+                $createTrack = false;
+                $this->filterTracer->setSkipCreationMessage(
+                    $this->_('track has already been created')
+                );
             }
         }
 

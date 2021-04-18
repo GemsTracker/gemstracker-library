@@ -101,40 +101,6 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
     }
 
     /**
-     * This transform function checks the filter for
-     * a) retrieving filters to be applied to the transforming data,
-     * b) adding filters that are needed
-     *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param array $filter
-     * @return array The (optionally changed) filter
-     * /
-    public function transformFilter(\MUtil_Model_ModelAbstract $model, array $filter)
-    {
-        $textSearch = isset($filter[$model->getTextFilter()]) ? $filter[$model->getTextFilter()] : false;
-        $fieldModel = $this->fieldsDefinition->getDataStorageModel();
-        
-        if ($textSearch && $fieldModel instanceof \MUtil_Model_UnionModel) {
-            foreach ($this->fieldsDefinition->getFieldNames() as $key => $label) {
-                $defs = FieldsDefinition::splitKey($key);
-
-                $subFilter = [
-                    'sub' => $defs['sub'],
-                    'gr2t2f_id_field' => $defs['gtf_id_field'],
-                    'gr2t2f_value' => $textSearch,
-                    ];
-
-                // SHIT! Only filters on key values!               
-                \MUtil_Echo::track($fieldModel->load($subFilter));
-            }
-        }
-        // \MUtil_Echo::track($model->getTextFilter(), $this->fieldsDefinition->getFieldNames(), array_keys($this->fieldsDefinition->getDataStorageModel()->getUnionModels()), $filter);
-        
-        // No changes
-        return $filter;
-    }
-    
-    /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
@@ -209,42 +175,4 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
         // No changes
         return $row;
     }
-
-    /**
-     * This transform function is called before the saving of the data in the source model and allows you to
-     * change all data.
-     *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
-     * @param array $row Array containing row
-     * @return array Row array containing (optionally) transformed data
-     * /
-    public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row)
-    {
-        if (! $this->tracker) {
-            $this->tracker = $this->loader->getTracker();
-        }
-
-        if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
-            $respTrack = $this->tracker->getRespondentTrack($row[$this->respTrackIdField]);
-            $fields    = $respTrack->processFieldsBeforeSave($row);
-
-            $row['gr2t_track_info'] = $this->fieldsDefinition->calculateFieldsInfo($fields);
-
-            // Also save the calculated fields into the row (actual save is in transformRowAfterSave)
-            return $fields + $row;
-        }
-
-        return $row;
-    }
-
-    /**
-     * When true, the on save functions are triggered before passing the data on
-     *
-     * @return boolean
-     * /
-    public function triggerOnSaves()
-    {
-        return true;
-    }
-     */
 }
