@@ -28,23 +28,16 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     protected $basepath;
 
     /**
-     * Creates the form itself
-     *
-     * @param array $options
-     * @return \Gems_Form
-     * /
-    protected function createForm($options = null)
-    {
-        $form = parent::createForm($options);
+     * @var bool 
+     */
+    protected $forCodeBooks = false;
 
-        $form->setAction($this->basepath->getBasePath() . '/' .
-                $this->request->getControllerName() . '/' .
-                $this->request->getActionName() .
-                '/step/batch');
 
-        return $form;
-    }
-
+    /**
+     * @var \Zend_View
+     */
+    protected $view;
+    
 	/**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -144,9 +137,6 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     protected function getSurveySelectElements(array $data)
     {
         $dbLookup      = $this->util->getDbLookup();
-        $translated    = $this->util->getTranslated();
-        // $noRound       = array(self::NoRound => $this->_('No round description'));
-        // $empty         = $translated->getEmptyDropdownArray();
 
         // get the current selections
         $roundDescr = isset($data['gto_round_description']) ? $data['gto_round_description'] : null;
@@ -156,8 +146,33 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         // Get the selection data
         $rounds  = $dbLookup->getRoundsForExport($trackId);
         $tracks  = $this->util->getTrackData()->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
-        $surveys = $dbLookup->getSurveysForExport($trackId, $roundDescr, true);
-
+        
+        // Surveys
+        $surveysByType = $dbLookup->getSurveysForExport($trackId, $roundDescr, false, $this->forCodeBooks);
+        $surveys  = [];
+        if (isset($surveysByType[\Gems_Util_DbLookup::SURVEY_ACTIVE])) {
+            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_ACTIVE] as $surveyId => $label) {
+                $surveys[$surveyId] = $label;
+            }
+        }
+        if (isset($surveysByType[\Gems_Util_DbLookup::SURVEY_INACTIVE])) {
+            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_INACTIVE] as $surveyId => $label) {
+                $surveys[$surveyId] = \MUtil_Html::create(
+                    'em',
+                    sprintf($this->_('%s (%s)'), $label, $this->_('inactive'))
+                )->render($this->view);
+            }
+        }
+        if ($this->forCodeBooks && isset($surveysByType[\Gems_Util_DbLookup::SURVEY_SOURCE_INACTIVE])) {
+            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_SOURCE_INACTIVE] as $surveyId => $label) {
+                $surveys[$surveyId] = \MUtil_Html::create(
+                    'em',
+                    sprintf($this->_('%s (%s)'), $label, $this->_('source inactive')),
+                    ['class' => 'deleted']
+                )->render($this->view);
+            }
+        }
+        
         $elements['gto_id_track'] = $this->_createSelectElement(
                 'gto_id_track',
                 $tracks,
@@ -176,7 +191,10 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 
         $elements[] = \MUtil_Html::create('br');
 
-        $elements[] = $this->_createMultiCheckBoxElements('gto_id_survey', $surveys);
+        $elements['gto_id_survey'] = $this->_createMultiCheckBoxElements('gto_id_survey', $surveys, '<br/>');
+        if (isset($elements['gto_id_survey']['gto_id_survey'])) {
+            $elements['gto_id_survey']['gto_id_survey']->setAttrib('escape', false);
+        }
 
         return $elements;
     }

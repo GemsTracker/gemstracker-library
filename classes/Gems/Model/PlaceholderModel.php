@@ -1,18 +1,45 @@
 <?php
 /**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Jasper van Gestel <jvangestel@gmail.com>
+ * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
+ * @license    New BSD License
+ */
+
+/**
  * A placeholder array model
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2021 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.9,0
  */
 class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
 {
+    /**
+     * @var array The data in the model
+     */
 	protected $data;
 
-	public function __construct($modelName, $fieldArray, $data = array())
+    /**
+     * Gems_Model_PlaceholderModel constructor.
+     *
+     * @param string $modelName
+     * @param array $fieldArray Nested array containing settings
+     * @param array $data
+     */
+	public function __construct($modelName, array $fieldArray, array $data = array())
 	{
         parent::__construct($modelName);
         
 		$this->data = $data;
 
-		$this->setMulti($fieldArray);
+		if ($fieldArray) {
+		    $this->setMulti($fieldArray);
+        }
 	}
 
     /**

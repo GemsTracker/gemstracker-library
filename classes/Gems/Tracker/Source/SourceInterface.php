@@ -29,6 +29,11 @@ interface Gems_Tracker_Source_SourceInterface extends \MUtil_Registry_TargetInte
     public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb);
 
     /**
+     * @return boolean When true can export when survey inactive in source
+     */
+    public function canExportInactive();
+    
+    /**
      * Checks wether this particular source is active or not and should handle updating the gems-db
      * with the right information about this source
      *

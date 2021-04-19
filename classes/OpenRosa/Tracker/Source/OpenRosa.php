@@ -25,7 +25,6 @@ use OpenRosa\Tracker\Model\SurveyModel;
  */
 class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
 {
-
     protected $_attributeMap = array(
         'gto_id_respondent',
         'gto_id_organization',

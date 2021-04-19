@@ -421,7 +421,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         // EXPORT TO HTML
         $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');
 
-        $export->addPage($this->_('Survey codebooks'), 'pr.survey-maintenance.code-book-export', 'survey-code-book-multi-export', 'index');
+        $export->addPage($this->_('Survey codebooks'), 'pr.export.code-book-export', 'survey-code-book-multi-export', 'index');
 
 
         return $export;

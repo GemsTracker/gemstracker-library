@@ -85,8 +85,6 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
                 $this->accesslog->logChange($this->getRequest(), null, $data + $filter);
             }
 
-
-
             if ($batch->run($this->request)) {
                 exit;
             } else {
@@ -180,6 +178,8 @@ class Gems_Default_ExportMultiSurveysAction extends \Gems_Default_ExportSurveyAc
                     parent::indexAction();
 
                 } else {
+                    // Peevent 'parsererror'
+                    unset($data['reset']);
                     $this->exportBatch($data);
                 }
             } else {

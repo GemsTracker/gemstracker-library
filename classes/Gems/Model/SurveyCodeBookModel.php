@@ -1,11 +1,27 @@
 <?php
 
 
-namespace Gems\Model;
+/**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Jasper van Gestel <jvangestel@gmail.com>
+ * @copyright  Copyright (c) 2021, Erasmus MC and MagnaFacta B.V.
+ * @license    New BSD License
+ */
 
+namespace Gems\Model;
 
 use MUtil\Translate\TranslateableTrait;
 
+/**
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2021 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.9,1
+ */
 class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
 {
 
@@ -16,8 +32,6 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
      * @var \Gems_User_User
      */
     protected $currentUser;
-
-    protected $data;
 
     /**
      * @var array List of field columns
@@ -34,8 +48,11 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
      *
      * @var \Zend_Locale
      */
-    public $locale;
+    protected $locale;
 
+    /**
+     * @var int 
+     */
     protected $surveyId;
 
     /**
@@ -43,25 +60,38 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
      */
     public $tracker;
 
+    /**
+     * SurveyCodeBookModel constructor.
+     *
+     * @param int $surveyId
+     */
     public function __construct($surveyId)
     {
         $this->surveyId = $surveyId;
     }
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
     public function afterRegistry()
     {
         if (! $this->tracker instanceof \Gems_Tracker) {
             $this->tracker = $this->loader->getTracker();
         }
 
-        $this->data = $this->getData($this->surveyId);
+        $data   = $this->getData($this->surveyId);
         $survey = $this->tracker->getSurvey($this->surveyId);
-        $name = $this->cleanupName($survey->getName()) . '-code-book';
+        $name   = $this->cleanupName($survey->getName()) . '-code-book';
 
-        parent::__construct($name, $this->fieldArray, $this->data);
+        // We only know the name now!
+        parent::__construct($name, [], $data);
 
         $this->initTranslateable();
         $this->resetOrder();
+
         $this->set('id', 'label', $this->_('Survey ID'));
         $this->set('title', 'label', $this->_('Question code'));
         $this->set('question', 'label', $this->_('Question'));
@@ -85,20 +115,19 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
         return \MUtil_File::cleanupName($filename);
     }
 
+    /**
+     * @param int $surveyId
+     * @return array
+     */
     public function getData($surveyId)
     {
-        $survey = $this->tracker->getSurvey($surveyId);
-        // Use interface language
-        $locale = $this->currentUser->getLocale();
-        $questionInformation = $survey->getQuestionInformation($locale);
+        $survey              = $this->tracker->getSurvey($surveyId);
+        $questionInformation = $survey->getQuestionInformation($this->locale);
         if (empty($questionInformation)) {
             // Inactive / deleted survey?
-            $this->fieldArray = [];
-            return array();
+            return [];
         }
-        $firstItem = reset($questionInformation);
-        $this->fieldArray = array_keys($firstItem);
-
+        
         $data = [];
         foreach ($questionInformation as $questionTitle => $information) {
             $answers     = $information['answers'];
@@ -113,7 +142,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
             
             if (array_key_exists('equation', $information)) {
                 // If there is an equation, we don't have answers
-                $answers = $information['equation'];
+                $answers     = $information['equation'];
                 $answerCodes = $this->_('Equation');                
             }
 

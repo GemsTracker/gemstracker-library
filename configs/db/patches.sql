@@ -1699,3 +1699,8 @@ ALTER TABLE gems__surveys
 ALTER TABLE gems__tracks
     ADD gtr_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
         AFTER gtr_track_name;
+
+-- PATCH: Add codebook export to export groups
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export.code-book-export') 
+    WHERE grl_privileges NOT LIKE '%,pr.export.code-book-export%' AND grl_privileges NOT LIKE '%,pr.export%'
+

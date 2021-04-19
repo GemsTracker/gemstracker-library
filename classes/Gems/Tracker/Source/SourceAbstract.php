@@ -224,6 +224,14 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
     }
 
     /**
+     * @return boolean When true can export when survey inactive in source
+     */
+    public function canExportInactive()
+    {
+        return false;
+    }
+    
+    /**
      * Extract limit and offset from the filter and add it to a select
      *
      * @param array $filter

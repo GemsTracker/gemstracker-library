@@ -21,6 +21,10 @@ use Gems\Util\UtilAbstract;
  */
 class Gems_Util_DbLookup extends UtilAbstract
 {
+    const SURVEY_ACTIVE          = 'active';
+    const SURVEY_INACTIVE        = 'inactive';
+    const SURVEY_SOURCE_INACTIVE = 'source inactive';
+    
     /**
      *
      * @var \Zend_Acl
@@ -225,87 +229,6 @@ class Gems_Util_DbLookup extends UtilAbstract
         if (isset($roles[$current])) {
             return $roles[$current];
         }
-    }
-
-    /**
-     * Get the filter to use on the tokenmodel when working with a mailjob.
-     *
-     * @param array $job
-     * @param $respondentId Optional, get for just one respondent
-     * @param $organizationId Optional, get for just one organization
-     * @return array
-     * /
-    public function getFilterForMailJob($job, $respondentId = null, $organizationId = null)
-    {
-        // Set up filter
-        $filter = array(
-        	'can_email'           => 1,
-            'gtr_active'          => 1,
-            'gsu_active'          => 1,
-            'grc_success'         => 1,
-        	'gto_completion_time' => NULL,
-        	'gto_valid_from <= CURRENT_TIMESTAMP',
-            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
-        );
-
-        switch ($job['gcj_filter_mode']) {
-            case 'E':   // Reminder before expiry
-                $filter[] = 'gto_mail_sent_date < CURRENT_DATE() AND CURRENT_DATE() = DATE(DATE_SUB(gto_valid_until, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY))';
-                break;
-
-            case 'R':   // Reminder after first email
-                $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
-                $filter[] = 'gto_mail_sent_num <= ' . $job['gcj_filter_max_reminders'];
-                break;
-
-            case 'N':   // First email
-            default:
-                $filter['gto_mail_sent_date'] = NULL;
-                break;
-        }
-        if ($job['gcj_id_organization']) {
-            if ($organizationId && ($organizationId !== $job['gcj_id_organization'])) {
-                // Should never return any data
-                $filter[] = '1=0';
-                return $filter;
-            }
-            $filter['gto_id_organization'] = $job['gcj_id_organization'];
-        }
-        if ($job['gcj_id_track']) {
-            $filter['gto_id_track'] = $job['gcj_id_track'];
-        }
-        if ($job['gcj_round_description']) {
-            if ($job['gcj_id_track']) {
-                $roundIds = $this->db->fetchCol('
-                    SELECT gro_id_round FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ? AND gro_round_description = ?', array(
-                    $job['gcj_id_track'],
-                    $job['gcj_round_description'])
-                );
-            } else {
-                $roundIds = $this->db->fetchCol('
-                    SELECT gro_id_round FROM gems__rounds WHERE gro_active = 1 AND gro_round_description = ?', array(
-                    $job['gcj_round_description'])
-                );
-            }
-            // Add round 0 for inserted rounds, and check if the description matches
-            $filter[] = sprintf('(gto_id_round IN (%s)) OR (gto_id_round = 0 AND gto_round_description = %s)', $this->db->quote($roundIds), $this->db->quote($job['gcj_round_description']));
-        }
-        if ($job['gcj_id_survey']) {
-            $filter['gto_id_survey'] = $job['gcj_id_survey'];
-        }
-        if ($respondentId) {
-            $filter['gto_id_respondent'] = $respondentId;
-        }
-
-        if ($job['gcj_target'] == 1) {
-            // Only relations
-            $filter[] = 'gto_id_relation <> 0';
-        } elseif ($job['gcj_target'] == 2) {
-            // Only respondents
-            $filter[] = '(gto_id_relation = 0 OR gto_id_relation IS NULL)';
-        }
-
-        return $filter;
     }
 
     /**
@@ -707,10 +630,13 @@ class Gems_Util_DbLookup extends UtilAbstract
      * As this depends on the kind of source used it is in this method so projects can change to
      * adapt to their own sources.
      *
-     * @param int $trackId Optional track id
+     * @param int $trackId Optional track id to filter on
+     * @param string $roundDescription Optional round description to filter on
+     * @param boolean $flat Return an array with sub-arrays for active / inactive in source / inactive
+     * @param boolean $keepSourceInactive Do we include the source inactive (only for codebooks)
      * @return array
      */
-    public function getSurveysForExport($trackId = null, $roundDescription = null, $flat = false)
+    public function getSurveysForExport($trackId = null, $roundDescription = null, $flat = false, $keepSourceInactive = false)
     {
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
@@ -722,7 +648,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             //->where('gsu_surveyor_active = 1')
             // Leave inactive surveys, we toss out the inactive ones for limesurvey
             // as it is no problem for OpenRosa to have them in
-            ->order(array('gsu_active DESC', 'gsu_survey_name'));
+            ->order(array('gsu_active DESC', 'gsu_surveyor_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
             if ($roundDescription) {
@@ -734,7 +660,8 @@ class Gems_Util_DbLookup extends UtilAbstract
             $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_round_description = ?)', $roundDescription);
         }
 
-        $result = $this->db->fetchAll($select);
+        $result  = $this->db->fetchAll($select);
+        $tracker = $this->loader->getTracker();
 
         if ($result) {
             // And transform to have inactive surveys in gems and source in a
@@ -742,26 +669,32 @@ class Gems_Util_DbLookup extends UtilAbstract
             $surveys = array();
             $inactive = $this->_('inactive');
             $sourceInactive = $this->_('source inactive');
-            foreach ($result as $survey) {
-                $id   = $survey['gsu_id_survey'];
-                $name = $survey['gsu_survey_name'];
-                if ($survey['gsu_surveyor_active'] == 0) {
+            foreach ($result as $surveyData) {
+                $survey = $tracker->getSurvey($surveyData);
+                
+                $id   = $surveyData['gsu_id_survey'];
+                $name = $survey->getName();
+                if (! $survey->isActiveInSource()) {
                     // Inactive in the source, for LimeSurvey this is a problem!
-                    if (strpos($survey['gso_ls_class'], 'LimeSurvey') === false) {
+                    if ($keepSourceInactive || $survey->getSource()->canExportInactive()) {
                         if ($flat) {
                             $surveys[$id] = $name . " ($sourceInactive) ";
                         } else {
-                            $surveys[$sourceInactive][$id] = $name;
+                            $surveys[self::SURVEY_SOURCE_INACTIVE][$id] = $name;
                         }
                     }
-                } elseif ($survey['gsu_active'] == 0) {
+                } elseif ($survey->isActive()) {
                     if ($flat) {
                         $surveys[$id] = $name . " ($inactive) ";
                     } else {
-                        $surveys[$inactive][$id] = $name;
+                        $surveys[self::SURVEY_INACTIVE][$id] = $name;
                     }
                 } else {
-                    $surveys[$id] = $name;
+                    if ($flat) {
+                        $surveys[$id] = $name;
+                    } else {
+                        $surveys[self::SURVEY_ACTIVE][$id] = $name;                        
+                    }
                 }
             }
         } else {

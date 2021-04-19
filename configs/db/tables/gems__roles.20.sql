@@ -107,7 +107,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     'pr.comm.job,
     ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
-    ,pr.export,pr.export.export,pr.export-html,
+    ,pr.export,pr.export.export,pr.export-html,pr.export.code-book-export,
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
