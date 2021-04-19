@@ -1702,5 +1702,5 @@ ALTER TABLE gems__tracks
 
 -- PATCH: Add codebook export to export groups
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export.code-book-export') 
-    WHERE grl_privileges NOT LIKE '%,pr.export.code-book-export%' AND grl_privileges NOT LIKE '%,pr.export%'
+    WHERE grl_privileges NOT LIKE '%,pr.export.code-book-export%' AND grl_privileges LIKE '%,pr.export%'
 

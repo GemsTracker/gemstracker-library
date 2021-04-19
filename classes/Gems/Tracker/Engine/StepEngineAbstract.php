@@ -255,16 +255,9 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
         $date = $this->calculateFromDate($startDate, $type, $period);
 
         if ($date instanceof \MUtil_Date) {
-            switch (strtoupper($type)) {
-                case 'N':
-                case 'H':
-                    break;
-
-                default:
-                    // Make sure day based units are valid until the end of the day.
-                    $date->setTimeToDayEnd();
-                    break;
-
+            if (Period::isDateType($type)) {
+                // Make sure day based units are valid until the end of the day.
+                $date->setTimeToDayEnd();
             }
             return $date;
         }

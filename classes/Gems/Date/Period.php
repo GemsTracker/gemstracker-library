@@ -35,15 +35,9 @@ class Period
         if ($startDate instanceof \MUtil_Date) {
             $date = clone $startDate;
 
-            switch (strtoupper($type)) {
-                case 'S':
-                case 'N':
-                case 'H':
-                    break;
-
-                default:
-                    // A 'whole day' period should start at 00:00:00, even when the period is '0'
-                    $date->setTime(0);
+            if (self::isDateType($type)) {
+                // A 'whole day' period should start at 00:00:00, even when the period is '0'
+                $date->setTime(0);
             }
 
             if ($period) {
@@ -86,6 +80,24 @@ class Period
                 }
             }
             return $date;
+        }
+    }
+
+    /**
+     * @param $type One letter
+     * @return bool
+     */
+    public static function isDateType($type)
+    {
+        switch (strtoupper($type)) {
+            case 'S':
+            case 'N':
+            case 'H':
+                return false;
+
+            default:
+                // A 'whole day' period should start at 00:00:00, even when the period is '0'
+                return true;
         }
     }
 }
