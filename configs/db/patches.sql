@@ -1704,3 +1704,7 @@ ALTER TABLE gems__tracks
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export.code-book-export') 
     WHERE grl_privileges NOT LIKE '%,pr.export.code-book-export%' AND grl_privileges LIKE '%,pr.export%'
 
+-- PATCH: Add contact right to all roles
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact,')
+    WHERE grl_privileges NOT LIKE '%,pr.contact,%';
+

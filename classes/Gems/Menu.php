@@ -125,9 +125,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
     {
         $project = $this->project;
 
-        $page = $this->addPage($label, null, 'contact');
+        $page = $this->addPage($label, 'pr.contact', 'contact');
 
-        $page->addAction(sprintf($this->_('About %s'), $project->getName()), null, 'about');
+        $page->addAction(sprintf($this->_('About %s'), $project->getName()), 'pr.contact', 'about');
         $page->addAction(sprintf($this->_('About %s'), $this->_('GemsTracker')), 'pr.contact.gems', 'gems');
 
         $page->addAction($this->_('Reporting bugs'), 'pr.contact.bugs', 'bugs');

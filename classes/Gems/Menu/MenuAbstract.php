@@ -80,8 +80,10 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
                 continue;
             }
             $_itemlabel = $label . ($item->get('label') ?: $item->get('privilege'));
-            if ($_privilege = $item->get('privilege')) {
-
+            $_privilege = $item->get('privilege');
+            
+            // True is used to make a privilege always accessible, e.g. for ask/return and ask/forward
+            if ($_privilege && (true !== $_privilege)) {
                 if (isset($privileges[$_privilege])) {
                     $add = "<br/>&nbsp; + " . $_itemlabel;
                     if (! \MUtil_String::contains($privileges[$_privilege], $add)) {
