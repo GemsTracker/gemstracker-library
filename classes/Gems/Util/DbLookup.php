@@ -24,17 +24,12 @@ class Gems_Util_DbLookup extends UtilAbstract
     const SURVEY_ACTIVE          = 'active';
     const SURVEY_INACTIVE        = 'inactive';
     const SURVEY_SOURCE_INACTIVE = 'source inactive';
-    
+
     /**
      *
      * @var \Zend_Acl
      */
     protected $acl;
-
-    /**
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
 
     /**
      *
@@ -55,9 +50,11 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getActiveOrganizations()
     {
+        $currentOrganizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+
         $where = $this->db->quoteInto('(gor_active = 1 AND gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
-                        gor_id_organization = ?', $this->currentUser->getCurrentOrganizationId());
-        
+                        gor_id_organization = ?', $currentOrganizationId);
+
         return $this->_getTranslatedPairsCached(
             'gems__organizations',
             'gor_id_organization',
