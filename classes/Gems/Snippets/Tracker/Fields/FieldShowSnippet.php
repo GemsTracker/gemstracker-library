@@ -101,9 +101,9 @@ class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
                 }
             }
         }
-        
-        \MUtil_Echo::track($tid, $fid, $prev, $next);
-        
+
+        //\MUtil_Echo::track($tid, $fid, $prev, $next);
+
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
