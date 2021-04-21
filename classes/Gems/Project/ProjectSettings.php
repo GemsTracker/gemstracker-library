@@ -217,9 +217,10 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Decrypt a string encrypted with encrypt()
      *
      * @param string $input String to decrypt
-     * @return decrypted string
+     * @param string $key Optional key. If null project salt will be used
+     * @return string decrypted string
      */
-    public function decrypt($input)
+    public function decrypt($input, $key=null)
     {
         if (! $input) {
             return $input;
@@ -241,13 +242,17 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             $method = $mkey;
         }
 
+        if ($key === null) {
+            $key = $this->getEncryptionSaltKey();
+        }
+
         $decoded = base64_decode($base64);
         if ('mcrypt' == $method) {
-            $output = $this->decryptMcrypt($decoded);
+            $output = $this->decryptMcrypt($decoded, $key);
         } elseif ('null' == $method) {
             $output = $base64;
         } else {
-            $output = $this->decryptOpenSsl($decoded, $method);
+            $output = $this->decryptOpenSsl($decoded, $method, $key);
         }
 
         if (false === $output) {
@@ -261,13 +266,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Decrypt a string encrypted with encrypt()
      *
      * @param string $input String to decrypt
+     * @param string $key Key to use for decryption
      * @return string decrypted string of false
      */
-    protected function decryptMcrypt($input)
+    protected function decryptMcrypt($input, $key)
     {
         $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
         $iv    = substr($input, 0, $ivlen);
-        $key   = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
 
         // Remove trailing zero bytes!
         return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, substr($input, $ivlen), MCRYPT_MODE_CBC, $iv), "\0");
@@ -278,13 +283,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      *
      * @param string $input String to decrypt
      * @param string $method The cipher method, one of openssl_get_cipher_methods().
+     * @param string $key Key to use for decryption
      * @return string decrypted string of false
      */
-    protected function decryptOpenSsl($input, $method)
+    protected function decryptOpenSsl($input, $method, $key)
     {
         $ivlen = openssl_cipher_iv_length($method);
         $iv    = substr($input, 0, $ivlen);
-        $key   = $this->getEncryptionSaltKey();
 
         return openssl_decrypt(substr($input, $ivlen), $method, $key, 0, $iv);
     }
@@ -293,9 +298,10 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Reversibly encrypt a string
      *
      * @param string $input String to decrypt
-     * @return encrypted string
+     * @param string $key Optional key. If null project salt will be used
+     * @return string encrypted string
      */
-    public function encrypt($input)
+    public function encrypt($input, $key=null)
     {
         if (! $input) {
             return $input;
@@ -304,13 +310,16 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         $methods = $this->getEncryptionMethods();
         $method  = reset($methods);
         $mkey    = key($methods);
+        if ($key === null) {
+            $key = $this->getEncryptionSaltKey();
+        }
 
         if ('mcrypt' == $method) {
-            $result = $this->encryptMcrypt($input);
+            $result = $this->encryptMcrypt($input, $key);
         } elseif ('null' == $method) {
             $result = $input;
         } else {
-            $result = $this->encryptOpenSsl($input, $method);
+            $result = $this->encryptOpenSsl($input, $method, $key);
         }
 
         return ":$mkey:" . base64_encode($result);
@@ -320,13 +329,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * Reversibly encrypt a string
      *
      * @param string $input String to encrypt
-     * @return encrypted string
+     * @param string $key Key used for encryption
+     * @return string encrypted string
      */
-    protected function encryptMcrypt($input)
+    protected function encryptMcrypt($input, $key)
     {
         $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
         $iv    = mcrypt_create_iv($ivlen, MCRYPT_RAND);
-        $key   = $this->getEncryptionSaltKey();
 
         return $iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv);
     }
@@ -337,13 +346,13 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      *
      * @param string $input String to encrypt
      * @param string $method The cipher method, one of openssl_get_cipher_methods().
-     * @return encrypted string
+     * @param string $key Key used for encryption
+     * @return string encrypted string
      */
-    protected function encryptOpenSsl($input, $method)
+    protected function encryptOpenSsl($input, $method, $key)
     {
         $ivlen = openssl_cipher_iv_length($method);
         $iv    = openssl_random_pseudo_bytes($ivlen);
-        $key   = $this->getEncryptionSaltKey();
 
         return $iv . openssl_encrypt($input, $method, $key, 0, $iv);
     }
@@ -475,7 +484,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
      * The site url during command line actions
      *
      * @return string
-     * @deprecated since version 1.9.1, is stored in gems__sites               
+     * @deprecated since version 1.9.1, is stored in gems__sites
      */
     public function getConsoleUrl()
     {
@@ -1360,7 +1369,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             $this['multiLocale'] &&
             (1 == $this['translate']['databasefields']);
     }
-    
+
     /**
      * Does this project use Csrf checks
      *
