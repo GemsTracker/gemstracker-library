@@ -656,6 +656,21 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * Get stored encryption keys by name
+     *
+     * @param $keyName string name of the stored key
+     * @return string|null Stored key, or null if not found
+     */
+    public function getEncryptionKey($keyName)
+    {
+        if (isset($this['security'], $this['security']['keys'], $this['security']['keys'][$keyName])) {
+            return $this['security']['keys'][$keyName];
+        }
+
+        return null;
+    }
+
+    /**
      *
      * @return string The salt key
      */
