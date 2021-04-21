@@ -50,6 +50,8 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getActiveOrganizations()
     {
+        // DO NOT USE $this->>currentUser or currentOrganization as this will not work
+        // in the API
         $currentOrganizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
 
         $where = $this->db->quoteInto('(gor_active = 1 AND gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR

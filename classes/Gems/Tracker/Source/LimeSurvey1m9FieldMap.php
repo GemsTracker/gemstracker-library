@@ -461,8 +461,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     }
                     $maxvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_max', 10);
                     $minvalue  = $this->_getQuestionAttribute($qid, 'multiflexible_min', 1);
-                    $stepvalue = $this->_getQuestionAttribute($qid, 'multiflexible_step', 1);
-                    $answers   = range($minvalue, $maxvalue, $stepvalue);
+                    $stepvalue = $this->_getQuestionAttribute($qid, 'multiflexible_step', ($minvalue > $maxvalue ? 1 : -1));
+                    $answers   = (array) range($minvalue, $maxvalue, $stepvalue);
                     $answers   = array_combine($answers, $answers);
                     break;
                 case '5':

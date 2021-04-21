@@ -208,8 +208,8 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'elementClass' => 'Radio',
                 'multiOptions' => array(
                     0 => $this->_('No: repeatedly linked appointments are allowed.'),
-                    1 => $this->_('Track instances may link only once to an appointment.'),
-                    2 => $this->_('Tracks of this type may link only once to an appointment.'),
+                    1 => $this->_('A track instance may link only one field to a specific appointment.'),
+                    2 => $this->_('All instances of this track may link only once to a specific appointment.'),
     //                 3 => $this->_('Appointment may not be used in any other track.'),
                     ),
                 );

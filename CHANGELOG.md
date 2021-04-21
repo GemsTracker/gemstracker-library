@@ -6,23 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
 ### Added user functionality
-- Add a new track field type for linking tracks to other tracks (#621)
+- Add a new track field type for linking track to multiple other tracks (#621)
 - Add an external survey name to a survey (#626)
 - Add an external track name to a track (#625)
-- Add group information for limesurvey questionnaires to survey preview and answer views (#34)
 - Add insertable survey only shows part of the title (#602)
-- Add survey question display to survey-maintenance-show questions (#541)
 - Added Url site management (#618)
 - Allow relation to ask for a token mail resend (#601)
 - Enable inserting more than one survey at a time (#617)
 - Debug options for survey events (#613)
-- Show more information when editing appointment fields (#627)
-- Show the most recently added track first in the track overviews of patients (#622)
 
 ### Interface improvements
+- Add group information for limesurvey questionnaires to survey preview and answer views (#34)
+- Add survey question display to survey-maintenance-show questions (#541)
 - Enable removal of existing passwords and SSN's (#629)
 - Feedback bij niet verstuurde reset mail (#278)
 - Improve mail template form use with multiple languages (#614)
+- Show more information when editing appointment fields (#627)
+- Show the most recently added track first in the track overviews of patients (#622)
 - Track builder: filter survey list (#362)
 
 ### Programmability

@@ -248,7 +248,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             }
         }
         if ($createTrack) {
-            // Test to see whether this track has already been created by this filterA[[
+            // Test to see whether this track has already been created by this filter
             $fieldId = $filter->getFieldId();
             $data    = $respTrack->getFieldData();
             if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
@@ -325,7 +325,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             }
         }
         if ($createTrack) {
-            // Test to see whether this track has already been created by this filterA[[
+            // Test to see whether this track has already been created by this filter
             $fieldId = $filter->getFieldId();
             $data    = $respTrack->getFieldData();
             if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
