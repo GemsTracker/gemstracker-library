@@ -230,7 +230,8 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         // Set the from address to use in this job
         switch ($job['gcj_fallback_method']) {
             case 'O':   // Send on behalf of organization
-                return $mailer->getOrganization()->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
+                $organization = $mailer->getOrganization();
+                return $organization->getContactName() . ' <' . $organization->getEmail() . '>';
 
             case 'U':   // Send on behalf of fixed user
                 return $sendByMail;
