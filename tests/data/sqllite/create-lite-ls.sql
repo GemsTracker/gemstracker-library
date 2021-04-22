@@ -1,3 +1,16 @@
+
+CREATE TABLE conditions (
+    cid int(11) NOT NULL,
+    qid int(11) NOT NULL DEFAULT 0,
+    scenario int(11) NOT NULL DEFAULT 1,
+    cqid int(11) NOT NULL DEFAULT 0,
+    cfieldname varchar(50) NOT NULL DEFAULT '',
+    method varchar(5) NOT NULL DEFAULT '',
+    value varchar(255) NOT NULL DEFAULT '',
+
+    PRIMARY KEY (cid)
+ );
+
 CREATE TABLE groups (
 	gid int(11) NOT NULL,
 	sid int(11) NOT NULL DEFAULT 0,

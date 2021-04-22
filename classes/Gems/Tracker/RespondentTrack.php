@@ -1421,7 +1421,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->refresh();
         }
 
-        return $this->_respTrackData['gr2t_mailable'] == 1 && $this->getRespondent()->isMailable();
+        $mailCode = $this->util->getDbLookup()->getRespondentTrackNoMailCodeValue();
+        return $this->_respTrackData['gr2t_mailable'] > $mailCode && $this->getRespondent()->isMailable();
     }
 
     /**

@@ -70,7 +70,7 @@ gems__respondent2track:
         gr2t_start_date: '2012-09-07'
         gr2t_end_date: '{LAST_MONTH}-02'
         gr2t_id_organization: 1
-        gr2t_mailable: 1
+        gr2t_mailable: 100
         gr2t_active: 1
         gr2t_count: 1
         gr2t_completed: 1

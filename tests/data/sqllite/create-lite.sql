@@ -1201,7 +1201,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     'pr.comm.job,
     ,pr.comm.template,pr.comm.template.create,pr.comm.template.delete,pr.comm.template.edit,
     ,pr.consent,pr.consent.create,pr.consent.edit,
-    ,pr.export,pr.export.export,pr.export-html,
+    ,pr.export,pr.export.export,pr.export-html,pr.export.code-book-export,
     ,pr.group,
     ,pr.mail.log,
     ,pr.organization,pr.organization-switch,
@@ -1348,11 +1348,11 @@ DELETE FROM gems__rounds WHERE gro_id_round != 0 AND gro_survey_name = 'Dummy fo
 CREATE TABLE gems__sites (
     gsi_id                      INTEGER not null ,
 
-    gsi_url                     varchar(256) not null,
+    gsi_url                     varchar(255) not null,
     gsi_order                   INTEGER not null default 100,
 
     gsi_select_organizations    TINYINT(1) not null default 0,
-    gsi_organizations           varchar(250) not null default '||',
+    gsi_organizations           varchar(255) not null default '||',
 
     gsi_style                   varchar(15)  not null default 'gems',
     gsi_style_fixed             TINYINT(1) not null default 0,
@@ -1472,6 +1472,7 @@ CREATE TABLE gems__surveys (
         gsu_id_survey               INTEGER not null ,
         gsu_survey_name             varchar(100) not null,
         gsu_survey_description      varchar(100) ,
+        gsu_external_description    varchar(100) ,
         gsu_survey_languages        varchar(100) ,
 
         gsu_surveyor_id             int(11),
@@ -1668,6 +1669,7 @@ CREATE TABLE gems__token_replacements (
 CREATE TABLE gems__tracks (
         gtr_id_track                INTEGER not null ,
         gtr_track_name              varchar(40) not null unique,
+        gtr_external_description    varchar(100) ,
 
         gtr_track_info              varchar(250) ,
         gtr_code                    varchar(64),

@@ -5,7 +5,7 @@
     <gems__surveys gsu_id_survey="1" gsu_survey_name="test survey1" gsu_export_code="export1" gsu_id_primary_group="222" gsu_id_source="1" gsu_changed_by="1" gsu_created="2012-03-29 10:55:55" gsu_created_by="1"/>
     <gems__surveys gsu_id_survey="2" gsu_survey_name="test survey2" gsu_export_code="export2" gsu_id_primary_group="222" gsu_id_source="1" gsu_changed_by="1" gsu_created="2012-03-29 10:55:55" gsu_created_by="1"/>
     
-    <gems__tracks gtr_id_track="1" gtr_track_class="AnyStepEngine" gtr_track_name="Test Track" gtr_date_start="2000-01-01 00:00:00" gtr_organizations = "|1|" gtr_changed_by="1" gtr_created="2012-09-07" gtr_created_by="1"/>
+    <gems__tracks gtr_id_track="1" gtr_track_class="AnyStepEngine" gtr_track_name="Test Track" gtr_external_description="Test external"  gtr_date_start="2000-01-01 00:00:00" gtr_organizations = "|1|" gtr_changed_by="1" gtr_created="2012-09-07" gtr_created_by="1"/>
     
     <gems__track_fields gtf_id_field = "1" gtf_id_order = "10" gtf_id_track="1" gtf_field_name="Name" gtf_field_code="code" gtf_field_type="text" gtf_field_default="default" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>
     <gems__track_fields gtf_id_field = "2" gtf_id_order = "20" gtf_id_track="1" gtf_field_name="DateName" gtf_field_code="datecode" gtf_field_type="date" gtf_to_track_info="0" gtf_changed_by="1" gtf_created="2012-09-07" gtf_created_by="1"/>

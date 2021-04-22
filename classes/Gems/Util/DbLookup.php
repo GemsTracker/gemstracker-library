@@ -430,7 +430,7 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
-     * @return array mailId => descr
+     * @return int lowest mailId
      */
     public function getRespondentTrackMailCodes()
     {
@@ -444,6 +444,16 @@ class Gems_Util_DbLookup extends UtilAbstract
         );
     }
 
+    /**
+     * @return array mailId => descr
+     */
+    public function getRespondentTrackNoMailCodeValue()
+    {
+        $mailCodes = $this->getRespondentTrackMailCodes();
+        reset($mailCodes);
+        return key($mailCodes);
+    }
+    
     /**
      * Returns the roles in the acl
      *

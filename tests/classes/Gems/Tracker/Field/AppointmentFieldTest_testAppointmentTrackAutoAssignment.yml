@@ -11,6 +11,33 @@ gems__appointment_filters:
         gaf_changed_by: 1
         gaf_created: '2017-08-09'
         gaf_created_by: 1
+gems__mail_codes:
+    -
+        gmc_id: 0
+        gmc_mail_to_target: No
+        gmc_mail_cause_target: Never mail
+        gmc_code:
+        gmc_for_surveys: 0
+        gmc_for_tracks: 1
+        gmc_for_respondents: 1
+        gmc_active: 1
+        gmc_changed: 2012-09-07
+        gmc_changed_by: 1
+        gmc_created: 2012-09-07
+        gmc_created_by: 1
+    -
+        gmc_id: 100
+        gmc_mail_to_target: Yes
+        gmc_mail_cause_target: Mail
+        gmc_code:
+        gmc_for_surveys: 1
+        gmc_for_tracks: 1
+        gmc_for_respondents: 1
+        gmc_active: 1
+        gmc_changed: 2012-09-07
+        gmc_changed_by: 1
+        gmc_created: 2012-09-07
+        gmc_created_by: 1
 gems__respondent2track:
     -
         gr2t_id_respondent_track: 1
@@ -19,7 +46,7 @@ gems__respondent2track:
         gr2t_track_info: ''
         gr2t_start_date: '2012-09-07'
         gr2t_id_organization: 1
-        gr2t_mailable: 1
+        gr2t_mailable: 100
         gr2t_active: 1
         gr2t_count: 1
         gr2t_completed: 0

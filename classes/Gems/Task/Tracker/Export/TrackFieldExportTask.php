@@ -49,7 +49,7 @@ class TrackFieldExportTask extends TrackExportAbstract
                     $data['gtf_filter_id'], // TODO: Export track filters
                     $data['gtf_field_value_keys'],
                     $data['gtf_changed'], $data['gtf_changed_by'], $data['gtf_created'], $data['gtf_created_by'],
-                    $data['calculation'], $data['htmlUse'], $data['htmlCalc']);
+                    $data['calculation'], $data['htmlUse'], $data['htmlCalc'], $data['htmlCreate']);
 
             if (isset($data['gtf_calculate_using']) && $data['gtf_calculate_using']) {
                 $calcs = explode(FieldAbstract::FIELD_SEP, $data['gtf_calculate_using']);

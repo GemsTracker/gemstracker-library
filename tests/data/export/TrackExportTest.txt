@@ -1,7 +1,7 @@
 
 track
-gtr_track_name	gtr_track_info	gtr_code	gtr_date_start	gtr_date_until	gtr_track_class	gtr_beforefieldupdate_event	gtr_calculation_event	gtr_completed_event	gtr_fieldupdate_event
-Test Track			2000-01-01 00:00:00		AnyStepEngine				
+gtr_track_name	gtr_external_description	gtr_track_info	gtr_code	gtr_date_start	gtr_date_until	gtr_track_class	gtr_beforefieldupdate_event	gtr_calculation_event	gtr_completed_event	gtr_fieldupdate_event
+Test Track	Test external			2000-01-01 00:00:00		AnyStepEngine				
 
 organizations
 gor_id_organization	gor_name

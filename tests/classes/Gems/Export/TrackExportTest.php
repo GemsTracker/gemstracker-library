@@ -181,7 +181,6 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract
                     $roundId
                     );
         }
-    
 
         $batch->setVariable('file', fopen($filename, 'a'));
         $batch->runAll();

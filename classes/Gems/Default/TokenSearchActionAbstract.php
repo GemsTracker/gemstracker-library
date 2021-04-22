@@ -223,7 +223,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable, we don't want to ask them for email if we are not allowed to used it anyway
-                    $filter['gr2t_mailable'] = 1;
+                    $filter[] = 'gr2t_mailable > 0';
                     break;
 
                 case 'notmailable':
@@ -251,7 +251,7 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable
-                    $filter['gr2t_mailable'] = 1;
+                    $filter[] = 'gr2t_mailable > 0';
                     break;
 
                 case 'toremind':
