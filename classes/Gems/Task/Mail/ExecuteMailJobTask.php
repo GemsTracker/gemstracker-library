@@ -122,7 +122,8 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
             // The variable from is used in the preview message
             $from = $this->getFromEmail($job, $sendByMail, $mailer);
-            $mailer->setFrom($from);
+            $fromName = $this->getFromName($job, $sendByMail, $mailer);
+            $mailer->setFrom($from, $fromName);
             $mailer->setBy($sendById);
 
             try {
@@ -260,7 +261,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
             case 'O':   // Send on behalf of organization
-                return $mailer->getOrganization()->getEmail(); //$organization->getName() . ' <' . $organization->getEmail() . '>';
+                return $mailer->getOrganization()->getEmail();
 
             case 'U':   // Send on behalf of fixed user
                 return $sendByMail;
@@ -273,6 +274,26 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
             default:
                 throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+        }
+    }
+
+    /**
+     *
+     * @param array $job
+     * @param string $sendByMail Email address
+     * @param \Gems_Mail_TokenMailer $mailer
+     * @return string or null
+     * @throws \Gems_Exception
+     */
+    protected function getFromName(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    {
+        // Set the from address to use in this job
+        switch ($job['gcj_from_method']) {
+            case 'O':   // Send on behalf of organization
+                return $mailer->getOrganization()->getContactName();
+
+            default:
+                return null;
         }
     }
 

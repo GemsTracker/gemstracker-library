@@ -23,7 +23,7 @@ use MUtil\Translate\TranslateableTrait;
 abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 {
     use TranslateableTrait;
-    
+
     /**
      * @var string  Message body in BBcode
      */
@@ -69,6 +69,11 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     protected $from;
 
     /**
+     * @var string  Email From name field
+     */
+    protected $fromName;
+
+    /**
      * @var \Zend_Mail
      */
     protected $mail;
@@ -77,7 +82,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      * @var string
      */
     protected $language;
-    
+
     protected $layout;
 
     /**
@@ -412,7 +417,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     {
         $mail = $this->getMail();
 
-        $mail->setFrom($this->from);
+        $mail->setFrom($this->from, $this->fromName);
         $mail->addTo($this->to, '', $this->bounceCheck());
 
         if (isset($this->project->email['bcc'])) {
@@ -453,16 +458,17 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     /**
      * set the from field
      */
-    public function setFrom($newFrom)
+    public function setFrom($newFrom, $newFromName = null)
     {
         $this->from = $newFrom;
+        $this->fromName = $newFromName;
         $this->mailFields['from'] = $this->mailFields['reply_to'] = $newFrom;
     }
 
     /**
      * Set the language in which the mail should be sent.
      * @param string $language language code
-     * @param false $reloadFields 
+     * @param false $reloadFields
      */
     public function setLanguage($language, $reloadFields = false)
     {
