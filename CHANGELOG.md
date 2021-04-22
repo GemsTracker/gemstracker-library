@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - The default roles no longer show the ask screen (#604)
 - The unit tests seem to have been broken for quite a while (#619)
 - Token 'Assigned by' shows Track assigner (#616)
+- Use the organization contact name in e-mail from (#321)
 - When using an appointment filter with a minimum start date difference tracks are repeatedly created (#628)
   
 ## [1.9.0]

@@ -253,9 +253,11 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             $data    = $respTrack->getFieldData();
             if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
                 $createTrack = false;
-                $this->filterTracer->setSkipCreationMessage(
-                    $this->_('track has already been created')
-                );
+                if ($this->filterTracer) {
+                    $this->filterTracer->setSkipCreationMessage(
+                        $this->_('track has already been created')
+                    );
+                }
             }
         }
 
@@ -330,9 +332,11 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             $data    = $respTrack->getFieldData();
             if (isset($data[$fieldId]) && ($data[$fieldId] == $this->_appointmentId)) {
                 $createTrack = false;
-                $this->filterTracer->setSkipCreationMessage(
-                    $this->_('track has already been created')
-                );
+                if ($this->filterTracer) {
+                    $this->filterTracer->setSkipCreationMessage(
+                        $this->_('track has already been created')
+                    );
+                }
             }
         }
 
