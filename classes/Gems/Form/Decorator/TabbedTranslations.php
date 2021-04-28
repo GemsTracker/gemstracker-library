@@ -60,8 +60,8 @@ class Gems_Form_Decorator_TabbedTranslations extends \Zend_Form_Decorator_Abstra
                 if (form.find('.translate-tabs').length === 0) {
                     form.prepend('".$tabs."');
                 }
-                console.log(element);
-                console.log(form);
+//                console.log(element);
+//                console.log(form);
                 
                 element.find('.input-group').hide();
                 
