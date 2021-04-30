@@ -254,7 +254,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
                     $batch->addTask('Mail\\AddAllMailJobsTask', $respondent->getId(), $respondent->getOrganizationId(), true);
                     $batch->runAll();
 
-                    $sent = $batch->getCounter('mails_sent');
+                    $sent = $batch->getCounter('communications_sent');
                     // \MUtil_Echo::track($sent, $batch->getCounter('jobs_started'), $userData);
                 }
                 if (0 === $sent) {

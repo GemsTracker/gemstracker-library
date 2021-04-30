@@ -282,6 +282,18 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the Comm Methods model
+     *
+     * @return Gems\Model\CommMethodsModel
+     */
+    public function getCommMethodsModel()
+    {
+        $model = $this->_loadClass('CommMethodsModel', true);
+
+        return $model;
+    }
+
+    /**
      * Load the commtemplate model
      *
      * @return \Gems_Model_CommtemplateModel

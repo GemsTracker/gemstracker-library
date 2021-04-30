@@ -443,6 +443,17 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     {
         return $this->_get('gor_reset_pass_template');
     }
+
+    /**
+     * Get the Sms from name
+     *
+     * @return string SMS from
+     */
+    public function getSmsFrom()
+    {
+        return $this->_get('gor_contact_sms_from');
+    }
+
     /**
      * Get the signature of the organization.
      *

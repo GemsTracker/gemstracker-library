@@ -44,8 +44,9 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
      */
     public function execute($respondentId = null, $organizationId = null, $forceSent = false)
     {
-        $sql = "SELECT gcj_id_job
+        $sql = "SELECT gcj_id_job, gcj_communication_type
             FROM gems__comm_jobs
+            JOIN gems__comm_methods ON gcj_communication_method = gcm_id_method
             WHERE gcj_active = 1";
 
         if ($organizationId) {
@@ -67,11 +68,11 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
 
         $jobs = $this->db->fetchAll($sql);
         // \MUtil_Echo::track($sql, $jobs);
-        
+
         $batch = $this->getBatch();
         if ($jobs) {
             foreach ($jobs as $job) {
-                $batch->addTask('Mail\\ExecuteMailJobTask', $job['gcj_id_job'], $respondentId, $organizationId, false, $forceSent);
+                $batch->addTask('Comm\\ExecuteCommJobTask', $job['gcj_id_job'], $respondentId, $organizationId, false, $forceSent);
             }
         } else {
             $this->getBatch()->addMessage($this->_('Nothing to do, please create a mail job first.'));

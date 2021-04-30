@@ -36,8 +36,8 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     /**
      * @var bool Whether or not we are editing
      */
-    protected $notEditing = true; 
-    
+    protected $notEditing = true;
+
     /**
      *
      * @var \Gems_Project_ProjectSettings
@@ -100,7 +100,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->addColumn('gor_id_organization', 'pref_url');
         $this->set('pref_url', 'label', $this->_("Preferred url"), 'elementClass', 'Exhibitor');
         $this->setOnLoad('pref_url', [$this->util->getSites(), 'getOrganizationPreferredUrl']);
-        
+
         $this->setIfExists('gor_code',             'label', $this->_('Organization code'),
                 'description', $this->_('Optional code name to link the organization to program code.')
                 );
@@ -115,6 +115,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
 
         $this->set('gor_contact_name',          'label', $this->_('Contact name'), 'translate', true);
         $this->set('gor_contact_email',         'label', $this->_('Contact email'));
+        $this->set('gor_contact_sms_from',      'label', $this->_('Contact SMS From'));
 
         // Determine order for details, but do not show in browse
         $this->set('gor_welcome', 'translate', true);
@@ -242,7 +243,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     public function applyEditSettings()
     {
         $this->notEditing = false;
-        
+
         $this->applyDetailSettings();
         $this->resetOrder();
 
@@ -283,6 +284,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'size', 50,
                 'validator', 'SimpleEmail'
                 );
+        $this->set('gor_contact_sms_from',
+                'size', 50,
+                'maxlength', 11,
+                'description', $this->_('The from field for an sms.')
+        );
         $this->set('gor_mail_watcher', 'label', $this->_('Check cron job mail'),
                     'description', $this->_('If checked the organization contact will be mailed when the cron job does not run on time.'),
                     'elementClass', 'Checkbox',
@@ -364,11 +370,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'order', $this->getOrder('gor_user_class') + 1010,
                 'default', $this->project->getLocaleDefault()
                 );
-        
+
         if ($this->_styles) {
             $this->setIfExists('gor_style');
         }
-        
+
         if ($this->project->translateDatabaseFields()) {
             $this->loader->getModels()->addDatabaseTranslationEditFields($this);
         }

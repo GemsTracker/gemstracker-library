@@ -19,7 +19,7 @@ namespace Gems\Util;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 13-Aug-2019 14:41:34
  */
-class MailJobsUtil extends UtilAbstract
+class CommJobsUtil extends UtilAbstract
 {
     /**
      *
@@ -188,10 +188,10 @@ class MailJobsUtil extends UtilAbstract
             2 => $this->_('Manually')
         ];
     }
-    
+
     /**
      * Returns array (id => name) of all fillers (groups + relations) in all tracks, sorted by name
-     * 
+     *
      * @param $trackId TrajectId to filter
      * @param $target  -1 = Staff/Respondent/Relation, 0 = Respondent/Relation, 1 = Relation, 2 = Respondent, 3 = Staff
      *
@@ -203,9 +203,9 @@ class MailJobsUtil extends UtilAbstract
             $trackId = -1;
         }
         $trackId = (int) $trackId;
-        
+
         $cacheId = str_replace(__CLASS__ . '_' . __FUNCTION__ . '_' . $trackId . 'x' . $target, '-', 'z');
-        
+
         // When not only relation we include groups
         if ($target <> 1) {
             $sqlGroups = "SELECT DISTINCT ggp_name
@@ -247,19 +247,19 @@ class MailJobsUtil extends UtilAbstract
                 $sqlRelations . "
                 ) AS tmpTable";
                 break;
-        
+
             case 1:
                 $sql = $sqlRelations;
                 break;
-                
+
             case 2:
             case 3:
                 $sql = $sqlGroups;
                 break;
         }
-        
+
         $sql = $sql . " ORDER BY ggp_name";
-        
+
         return $this->_getSelectPairsCached($cacheId, $sql, array(), 'tracks');
     }
 
@@ -355,6 +355,21 @@ class MailJobsUtil extends UtilAbstract
     }
 
     /**
+     * The methods available for automatic communication
+     *
+     * @return array
+     */
+    public function getCommunicationMethods()
+    {
+        $select = $this->db->select();
+        $select->from('gems__comm_methods', ['gcm_id_method', 'gcm_name'])
+            ->where('gcm_active = 1')
+            ->order('gcm_id_order');
+
+        return $this->db->fetchPairs($select);
+    }
+
+    /**
      * Get the filter to use on the tokenmodel when working with a mailjob.
      *
      * @param array $job
@@ -405,7 +420,7 @@ class MailJobsUtil extends UtilAbstract
                 $forceSent);
 
         $this->_addToFilter($filter, $job['gcj_target'], $job['gcj_to_method'], $job['gcj_fallback_method']);
-        
+
         if (array_key_exists('gcj_target_group', $job) && $job['gcj_target_group']) {
             $filter[] = $this->db->quoteinto('(ggp_name = ? AND gto_id_relationfield IS NULL) or gtf_field_name = ?', $job['gcj_target_group']);
         }

@@ -88,7 +88,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
      * @return \MUtil_Form_Element_Table
      */
-    public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null) 
+    public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null)
     {
         $options = func_get_args();
         $options = \MUtil_Ra::pairs($options, 2);
@@ -129,7 +129,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \Gems_Form_Element_CKEditor|\Zend_Form_Element_Hidden
      */
-    public function createBodyElement($name, $label, $required = false, $hidden = false, $mailFields = array(), $mailFieldsLabel = false) 
+    public function createBodyElement($name, $label, $required = false, $hidden = false, $mailFields = array(), $mailFieldsLabel = false)
     {
         if ($hidden) {
             return new \Zend_Form_Element_Hidden($name);
@@ -161,7 +161,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param bool $multi
      * @return \Zend_Form_Element_Text
      */
-    public function createEmailElement($name, $label, $required = false, $multi = false) 
+    public function createEmailElement($name, $label, $required = false, $multi = false)
     {
         $options['label']     = $label;
         $options['maxlength'] = 250;
@@ -186,7 +186,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      */
     public function createMethodElement()
     {
-        $multiOptions = $this->util->getMailJobsUtil()->getBulkProcessOptions();
+        $multiOptions = $this->util->getCommJobsUtil()->getBulkProcessOptions();
         $options      = array(
             'label'        => $this->translate->_('Method'),
             'multiOptions' => $multiOptions,
@@ -202,7 +202,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param bool $noText Is there no preview text button?
      * @return \MUtil_Form_Element_Exhibitor
      */
-    public function createPreviewHtmlElement($label = false) 
+    public function createPreviewHtmlElement($label = false)
     {
         if ($label) {
             $options['label'] = $this->translate->_($label);
@@ -210,7 +210,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
             $options['label'] = $this->translate->_('Preview HTML');
         }
         $options['nohidden'] = true;
-        
+
         return $this->_form->createElement('Html', 'preview_html', $options);
     }
 
@@ -219,7 +219,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      *
      * @return \MUtil_Form_Element_Exhibitor
      */
-    public function createPreviewTextElement() 
+    public function createPreviewTextElement()
     {
         $options['label']    = $this->translate->_('Preview Text');
         $options['nohidden'] = true;
@@ -233,13 +233,13 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * @param string $label
      * @return \Zend_Form_Element_Submit
      */
-    public function createSubmitButton($name, $label) 
+    public function createSubmitButton($name, $label)
     {
         $button = $this->_form->createElement('submit', $name, array('label' => $label));
         return $button;
     }
 
-    public function createTemplateSelectElement($name, $label, $target = false, $list = false, $onChangeSubmit = false) 
+    public function createTemplateSelectElement($name, $label, $target = false, $list = false, $onChangeSubmit = false)
     {
         $query = 'SELECT gems__comm_templates.gct_id_template, gems__comm_templates.gct_name
         FROM gems__comm_template_translations
@@ -268,7 +268,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         return $this->_form->createElement('select', $name, $options);
     }
 
-    public static function displayMailHtml($text) 
+    public static function displayMailHtml($text)
     {
         $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
@@ -277,27 +277,27 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
     }
 
     /**
-     * Returns an html element that displays the array of mauilfields 
-     * 
+     * Returns an html element that displays the array of mauilfields
+     *
      * @param array $mailFields
      * @return \MUtil_Html_HtmlElement
      * @throws \MUtil_Lazy_LazyException
      */
-    public function displayMailFields(array $mailFields) 
+    public function displayMailFields(array $mailFields)
     {
         ksort($mailFields);
         $mailFieldsRepeater = new \MUtil_Lazy_RepeatableByKeyValue($mailFields);
         $mailFieldsHtml     = new \MUtil_Html_TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->value, $this->translate->_('Value'));
-        
+
         $container   = \MUtil_Html::create()->div(['class' => 'table-container']);
         $container[] = $mailFieldsHtml;
-        
+
         return $container;
     }
 
-    public function getEmailOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false) 
+    public function getEmailOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false)
     {
         if (!$email) {
             $email = $this->translate->_('no email adress');
@@ -334,7 +334,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         return $text;
     }
 
-    public function setForm($form) 
+    public function setForm($form)
     {
         $this->_form = $form;
     }

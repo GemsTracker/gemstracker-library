@@ -440,7 +440,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function calculateReturnUrl()
     {
-        $currentUri = $this->getOrganization()->getPreferredSiteUrl(); 
+        $currentUri = $this->getOrganization()->getPreferredSiteUrl();
 
         /*
         // Referrer would be powerful when someone is usng multiple windows, but
@@ -467,7 +467,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // \MUtil_Echo::track($currentUri, \MUtil_Html::urlString($surveyReturn));
             return $currentUri . \MUtil_Html::urlString($surveyReturn);
         }
-        
+
         // Ultimate backup solution for return
         return $currentUri . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
     }
@@ -1025,6 +1025,33 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
 
         return $this->_gemsData['gr2o_patient_nr'];
+    }
+
+    /**
+     * Get the phone number of the person who needs to fill out this survey.
+     *
+     * This method will return null when no number is available
+     *
+     * @return string|null phone number of the person who needs to fill out the survey or null
+     */
+    public function getPhoneNumber()
+    {
+        // If staff, return null, we don't know who to message
+        if ($this->getSurvey()->isTakenByStaff()) {
+            return null;
+        }
+
+        // If we have a relation, return that address
+        if ($this->hasRelation()) {
+            if ($relation = $this->getRelation()) {
+                return $relation->getPhoneNumber();
+            }
+
+            return null;
+        }
+
+        // It can only be the respondent
+        return $this->getRespondent()->getMobilePhoneNumber();
     }
 
     /**

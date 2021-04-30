@@ -71,7 +71,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         $mailLoader = $this->loader->getMailLoader();
         $sendById   = $job['gcj_id_user_as'];
         $sendByMail = $this->getUserEmail($sendById);
-        $filter     = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job, $respondentId, $organizationId, $forceSent);
+        $filter     = $this->loader->getUtil()->getCommJobsUtil()->getJobFilter($job, $respondentId, $organizationId, $forceSent);
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
@@ -162,7 +162,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                         $mailer->setTemplate($job['gcj_id_message']);
                         $mailer->setMailjob($job['gcj_id_job']);
                         $mailer->send();
-                        $this->getBatch()->addToCounter('mails_sent', 1);
+                        $this->getBatch()->addToCounter('communications_sent', 1);
                     } else {
                         $this->getBatch()->addMessage(sprintf(
                                 $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from

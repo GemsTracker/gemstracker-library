@@ -442,6 +442,16 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the Mobile phone number specifically. In some projects this is fixed to a specific field
+     *
+     * @return string|null
+     */
+    public function getMobilePhoneNumber()
+    {
+        return $this->getPhonenumber();
+    }
+
+    /**
      * Return the \Gems_Util_ReceptionCode object
      *
      * @return \Gems_Util_ReceptionCode reception code

@@ -75,7 +75,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = ['Generic\\ContentTitleSnippet', 'Mail\\CommJobShowSnippet'];
-    
+
     /**
      * The automatically filtered result
      *
@@ -108,7 +108,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         $dbLookup   = $this->util->getDbLookup();
         $dbTracks   = $this->util->getTrackData();
-        $mailUtil   = $this->util->getMailJobsUtil();
+        $commUtil   = $this->util->getCommJobsUtil();
         $unselected = array('' => '');
 
         $model = new \MUtil_Model_TableModel('gems__comm_jobs');
@@ -131,6 +131,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 }
             }
         }
+
+        $model->set('gcj_communication_method',
+            [
+                'label' => $this->_('Communication method'),
+                'description' => $this->_('The communication method the message should be sent. E.g. mail, sms'),
+                'required' => true,
+                'multiOptions' => $commUtil->getCommunicationMethods(),
+            ]
+        );
+
         $model->set('gcj_id_message',          'label', $this->_('Template'),
                 'multiOptions', $unselected + $dbLookup->getCommTemplates('token')
                 );
@@ -146,15 +156,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     );
         }
         $model->set('gcj_active',              'label', $this->_('Execution method'),
-                'multiOptions', $mailUtil->getActiveOptions(),
+                'multiOptions', $commUtil->getActiveOptions(),
                 'required', true,
                 'description', $this->_('Manual jobs run only manually, but not during automatic jobs. Disabled jobs not even then. ')
                 );
 
         if ($detailed) {
-            $bulkProcessOptions = $mailUtil->getBulkProcessOptions();
+            $bulkProcessOptions = $commUtil->getBulkProcessOptions();
         } else {
-            $bulkProcessOptions = $mailUtil->getBulkProcessOptionsShort();
+            $bulkProcessOptions = $commUtil->getBulkProcessOptionsShort();
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'),
                 'default', 'O',
@@ -162,7 +172,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'multiOptions', $bulkProcessOptions
                 );
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'),
-                'multiOptions', $unselected + $mailUtil->getBulkFilterOptions()
+                'multiOptions', $unselected + $commUtil->getBulkFilterOptions()
                 );
 
         if ($detailed) {
@@ -210,7 +220,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'default', $this->currentUser->getUserId(),
                 'description', $this->_('Used for logging and possibly from address.'))
                 ;
-        $fromMethods = $unselected + $mailUtil->getBulkFromOptions();
+        $fromMethods = $unselected + $commUtil->getBulkFromOptions();
         $model->set('gcj_from_method', 'label', $this->_('From address used'),
                 'multiOptions', $fromMethods
                 );
@@ -243,20 +253,20 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         }
         $model->set('gcj_target', 'label', $this->_('Filler'),
                 'default', 0,
-                'multiOptions', $mailUtil->getBulkTargetOptions()
+                'multiOptions', $commUtil->getBulkTargetOptions()
                 );
         if ($detailed) {
-            $model->set('gcj_to_method', 'multiOptions', $mailUtil->getBulkToOptions());
+            $model->set('gcj_to_method', 'multiOptions', $commUtil->getBulkToOptions());
             $model->set('gcj_fallback_method', 'multiOptions', $fromMethods);
             $model->set('gcj_fallback_fixed', 'validators[mail]', 'SimpleEmail');
 
             $model->addDependency('CommJob\\Senderdependency');
         }
-        
+
         if ($model->has('gcj_target_group')) {
             $anyGroup[''] = $this->_('(all groups)');
             $model->set('gcj_target_group', 'label', $this->_('Group'),
-                    'multiOptions', $anyGroup + $mailUtil->getAllGroups(),
+                    'multiOptions', $anyGroup + $commUtil->getAllGroups(),
                     'onchange', 'this.form.submit();'
                     );
         }
@@ -499,7 +509,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     break;
             }
             $model  = $this->loader->getTracker()->getTokenModel();
-            $filter = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job);
+            $filter = $this->loader->getUtil()->getCommJobsUtil()->getJobFilter($job);
             // Clone request and unset the id parameter to prevent filtering
             $cleanReq = clone $this->getRequest();
             $cleanReq->setParam(\MUtil_Model::REQUEST_ID, null);

@@ -81,7 +81,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             }
             $_itemlabel = $label . ($item->get('label') ?: $item->get('privilege'));
             $_privilege = $item->get('privilege');
-            
+
             // True is used to make a privilege always accessible, e.g. for ask/return and ask/forward
             if ($_privilege && (true !== $_privilege)) {
                 if (isset($privileges[$_privilege])) {
@@ -345,6 +345,8 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 
         // COMMUNICATION TEMPLATE CONTROLLER
         $setup->addBrowsePage($this->_('Templates'), 'pr.comm.template', 'comm-template');
+
+        $setup->addBrowsePage($this->_('Methods'), 'pr.comm.methods', 'comm-methods');
 
         // COMMUNICATION ACTIVITY CONTROLLER
         //$setup->addBrowsePage();

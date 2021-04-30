@@ -3,6 +3,8 @@ CREATE TABLE if not exists gems__comm_jobs (
         gcj_id_job                  bigint unsigned not null auto_increment,
         gcj_id_order                int not null default 10,
 
+        gcj_communication_method    varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+
         gcj_id_message              bigint unsigned not null references gems__comm_templates (gct_id_template),
 
         gcj_id_user_as              bigint unsigned not null references gems__staff (gsf_id_user),

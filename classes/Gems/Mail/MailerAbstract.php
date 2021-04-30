@@ -242,6 +242,36 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         return str_replace($mailKeys, $this->mailFields, $text);
     }
 
+    public function getBodyHtml()
+    {
+        if ($this->bodyHtml) {
+            return $this->applyFields($this->bodyHtml);
+        }
+
+        if ($this->bodyBb) {
+            return \MUtil_Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Html');
+        }
+
+        if ($this->bodyText) {
+            return $this->applyFields($this->bodyText);
+        }
+
+        return null;
+    }
+
+    public function getBodyText()
+    {
+        if ($this->bodyText) {
+            return $this->applyFields($this->bodyText);
+        }
+
+        if ($this->bodyBb) {
+            return \MUtil_Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Text');
+        }
+
+        return null;
+    }
+
     /**
      * Get the prefered template language
      * @return string language code
