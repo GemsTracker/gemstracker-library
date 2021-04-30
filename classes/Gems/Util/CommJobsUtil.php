@@ -359,10 +359,10 @@ class CommJobsUtil extends UtilAbstract
      *
      * @return array
      */
-    public function getCommunicationMethods()
+    public function getCommunicationMessengers()
     {
         $select = $this->db->select();
-        $select->from('gems__comm_methods', ['gcm_id_method', 'gcm_name'])
+        $select->from('gems__comm_messengers', ['gcm_id_messenger', 'gcm_name'])
             ->where('gcm_active = 1')
             ->order('gcm_id_order');
 

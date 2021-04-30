@@ -326,8 +326,8 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $setup = $this->addContainer($label);
 
         // AUTOMATIC COMMUNICATION CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
-        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
+        $page = $setup->addBrowsePage($this->_('Automatic messaging'), 'pr.comm.job', 'comm-job');
+        $page->addButtonOnly($this->_('Turn Automatic Messaging Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
         $page->addButtonOnly($this->_('Monitor'), 'pr.comm.job', 'comm-job', 'monitor');
 
         $page->addPage($this->_('Run all'), 'pr.cron.job', 'comm-job', 'execute-all');

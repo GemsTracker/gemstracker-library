@@ -2,9 +2,9 @@
 
 namespace Gems\Util;
 
-class CommMethodsUtil extends UtilAbstract
+class CommMessengersUtil extends UtilAbstract
 {
-    public function getAvailableMethodTypes()
+    public function getAvailableMessengerTypes()
     {
         return [
             'mail' => $this->_('Mail'),

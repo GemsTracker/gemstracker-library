@@ -5,6 +5,6 @@ class Gems_Default_CommMethodsAction extends \Gems_Controller_ModelSnippetAction
 
     protected function createModel($detailed, $action)
     {
-        return $this->loader->getModels()->getCommMethodsModel();
+        return $this->loader->getModels()->getCommMethodsModel($detailed);
     }
 }

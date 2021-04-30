@@ -35,7 +35,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
 
         if (empty($email)) {
             if ($preview) {
-                $this->getBatch()->addMessage(sprintf(
+                $this->addBatchMessage(sprintf(
                     $this->_('%s %s can not be sent because no email address is available.'), $token->getPatientNumber(), $token->getSurveyName()
                 ));
             }
@@ -53,7 +53,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
         $fromName = $this->getFromName($job, $sendByMail, $mailer);
 
         if ($preview) {
-            $this->getBatch()->addMessage(sprintf(
+            $this->addBatchMessage(sprintf(
                 $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
             ));
         } else {

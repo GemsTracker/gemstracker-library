@@ -122,11 +122,11 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the maintenance lock
      *
-     * @return \Gems\Util\CommMethodsUtil
+     * @return \Gems\Util\CommMessengersUtil
      */
-    public function getCommMethodsUtil()
+    public function getCommMessengersUtil()
     {
-        return $this->_getClass('commMethodsUtil');
+        return $this->_getClass('commMessengersUtil');
     }
 
     /**

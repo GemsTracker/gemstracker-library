@@ -121,6 +121,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
 
         $topic = $this->getTopic();
 
+
         if ($preview) {
             $this->getBatch()->addMessage(sprintf(
                 $this->_('Would send %d %s with template %s, and update %d tokens.'),
@@ -161,7 +162,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
     {
         $sql = $this->db->select()->from('gems__comm_jobs')
             ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
-            ->join('gems__comm_methods', 'gcj_id_communication_method = gcm_id_method')
+            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
             ->where('gcj_active > 0')
             ->where('gcj_id_job = ?', $jobId);
 

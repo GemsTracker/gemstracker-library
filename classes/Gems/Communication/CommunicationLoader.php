@@ -56,12 +56,12 @@ class CommunicationLoader extends \Gems_Loader_TargetLoaderAbstract
             case MailJobMessenger::class:
             case 'MailJobMessenger':
             case 'mail':
-                return $this->_loadClass('MailJobMessenger', true);
+                return $this->_loadClass('JobMessenger\\MailJobMessenger', true);
 
             case SmsJobMessenger::class:
             case 'SmsJobMessenger':
             case 'sms':
-                return $this->_loadClass('SmsJobMessenger', true);
+                return $this->_loadClass('JobMessenger\\SmsJobMessenger', true);
             default:
                 return null;
         }
