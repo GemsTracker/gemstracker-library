@@ -7,10 +7,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
+
+use Gems\Date\Period;
 
 /**
  *
@@ -34,7 +35,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
     protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $onOffFields = array('gr2t_track_info', 'gto_round_description', 'grc_description');
-        foreach ($onOffFields  as $field) {
+        foreach ($onOffFields as $field) {
             if (! (isset($this->formData[$field]) && $this->formData[$field])) {
                 $model->set($field, 'elementClass', 'None');
             }
@@ -77,6 +78,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
                         'gto_round_description',
                         'gsu_survey_name',
                         'ggp_name',
+                        'gro_valid_for_unit',
                         'gto_valid_from_manual',
                         'gto_valid_from',
                         'gto_valid_until_manual',
@@ -107,7 +109,8 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
     {
         $model = $this->getModel();
 
-        if ($this->formData['gto_valid_until']) {
+        // \MUtil_Echo::track($this->formData);
+        if ($this->formData['gto_valid_until'] && Period::isDateType($this->formData['gro_valid_for_unit'])) {
             // Make sure date based units are valid until the end of the day.
             $date = new \MUtil_Date(
                     $this->formData['gto_valid_until'],

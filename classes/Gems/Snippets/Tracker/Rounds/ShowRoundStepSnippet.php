@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker\Rounds;
@@ -97,11 +96,12 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
         if ($model->has('gro_valid_for_length', 'label')) {
             $bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
         }
-        
+
+        $bridge->addItem('valid_cond');
         $bridge->addItem('condition_display');
 
         $bridge->addItem('gro_active');
-        // Preven empty row when no changed events exist
+        // Prevent empty row when no changed events exist
         if ($label = $model->get('gro_changed_event', 'label')) {
             $bridge->addItem('gro_changed_event');
         }

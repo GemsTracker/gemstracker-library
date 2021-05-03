@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 use Gems\Date\Period;
@@ -714,6 +713,15 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     'label', $this->_('Add to date unit'),
                     'multiOptions', $periodUnits
                     );
+
+            // Calculate valid until
+            $html = \MUtil_Html::create()->h4($this->_('Validity calculation'));
+            $model->set('valid_cond',
+                        'label', ' ',
+                        'default', $html,
+                        'elementClass', 'html',
+                        'value', $html
+            );
 
             // Continue with last round level items
             $model->set('gro_condition');

@@ -19,11 +19,25 @@
 class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
 {
     /**
-     * Format string usaed by this project date time output to site users
+     * Format string usaed by this project date output to site users
      *
      * @var string
      */
     protected $phpDateFormatString = 'd-m-Y';
+
+    /**
+     * Format string usaed by this project date time output to site users
+     *
+     * @var string
+     */
+    protected $phpDateTimeFormatString = 'd-m-Y H:i';
+
+    /**
+     * Format string usaed by this project time output to site users
+     *
+     * @var string
+     */
+    protected $phpTimeFormatString = 'H:i';
 
     /**
      * Date format string used by this project
@@ -78,101 +92,22 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
-     */
-    public function formatDate($dateValue)
-    {
-        return $this->formatDateTime($dateValue);
-    }
-
-    /**
-     * Get a readable version of date / time object with nearby days translated in text
-     * or 'forever' when null
-     *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
-     */
-    public function formatDateForever($dateValue)
-    {
-        if ($dateValue) {
-            return $this->formatDateTime($dateValue);
-        } else {
-            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
-        }
-    }
-
-    /**
-     * Get a readable version of date / time object with nearby days translated in text
-     * or 'n/a' when null
-     *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
-     */
-    public function formatDateNa($dateValue)
-    {
-        if ($dateValue) {
-            return $this->formatDateTime($dateValue);
-        } else {
-            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
-        }
-    }
-
-    /**
-     * Get a readable version of date / time object with nearby days translated in text
-     * or 'never' when null
-     *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
-     */
-    public function formatDateNever($dateValue)
-    {
-        if ($dateValue) {
-            return $this->formatDateTime($dateValue);
-        } else {
-            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
-        }
-    }
-
-    /**
-     * Get a readable version of date / time object with nearby days translated in text
-     * or 'unknown' when null
-     *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
-     */
-    public function formatDateUnknown($dateValue)
-    {
-        if ($dateValue) {
-            return $this->formatDateTime($dateValue);
-        } else {
-            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
-        }
-    }
-
-    /**
-     * Get a readable version of date / time object with nearby days translated in text
-     *
      * @param \MUtil_Date $dateTimeValue
      * @return string
      */
-    public function formatDateTime($dateTimeValue)
+    public function describeDateFromNow($dateTimeValue)
     {
         if (! $dateTimeValue) {
             return null;
         }
 
-        //$dateTime = strtotime($dateTimeValue);
-        // \MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
-        // TODO: Timezone seems to screw this one up
-        //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
         if ($dateTimeValue instanceof \MUtil_Date) {
             $dateTime = $dateTimeValue;
         } else{
             $dateTime = \MUtil_Date::ifDate(
-                    $dateTimeValue,
-                    array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
-                    );
+                $dateTimeValue,
+                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+            );
             if (! $dateTime) {
                 return null;
             }
@@ -205,6 +140,207 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
                 }
 
                 return $dateTime->getDateTime()->format($this->phpDateFormatString);
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby time translated in text
+     *
+     * @param \MUtil_Date $dateTimeValue
+     * @return string
+     */
+    public function describeTimeFromNow($dateTimeValue)
+    {
+        if (! $dateTimeValue) {
+            return null;
+        }
+
+        if ($dateTimeValue instanceof \MUtil_Date) {
+            $dateTime = $dateTimeValue;
+        } else{
+            $dateTime = \MUtil_Date::ifDate(
+                $dateTimeValue,
+                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+            );
+            if (! $dateTime) {
+                return null;
+            }
+        }
+        
+        $hours = $dateTime->diffHours();
+        
+        if (abs($hours) < 49) {
+            if ($hours > 1) {
+                return sprintf($this->_('In %d hours'), $hours);
+            } 
+            if ($hours < -1) {
+                return sprintf($this->_('%d hours ago'), $hours);
+            }
+            
+            // Switch to minutes
+            $minutes = $dateTime->diffMinutes();
+            if ($minutes > 0) {
+                return sprintf($this->plural('In %d minute', 'In %d minutes', $minutes), $minutes);
+            } 
+            if ($minutes < 0) {
+                return sprintf($this->plural('%d minute ago', '%d minutes ago', -$minutes), -$minutes);
+            }
+            
+            return $this->_('this minute!');
+        }
+
+        return $dateTime->getDateTime()->format($this->phpDateTimeFormatString);        
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDate($dateValue)
+    {
+        return $this->describeDateFromNow($dateValue);
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'forever' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateForever($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeDateFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'n/a' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateNa($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeDateFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'never' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateNever($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeDateFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     *
+     * @param \MUtil_Date $dateTimeValue
+     * @param string $format Optioanl PHP date() format
+     * @return string
+     * @deprecated since version 1.9.1, replaced by describeDateFromNow
+     */
+    public function formatDateTime($dateTimeValue, $format = null)
+    {
+        return $this->describeDateFromNow($dateTimeValue);
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'forever' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateTimeForever($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeTimeFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'n/a' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateTimeNa($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeTimeFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'never' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateTimeNever($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeTimeFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'unknown' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateTimeUnknown($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeTimeFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+        }
+    }
+
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'unknown' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
+    public function formatDateUnknown($dateValue)
+    {
+        if ($dateValue) {
+            return $this->describeDateFromNow($dateValue);
+        } else {
+            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
@@ -332,14 +468,14 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
     public function getPeriodUnits()
     {
         return array(
-            'S' => $this->translate->_('Seconds'),
-            'N' => $this->translate->_('Minutes'),
-            'H' => $this->translate->_('Hours'),
-            'D' => $this->translate->_('Days'),
-            'W' => $this->translate->_('Weeks'),
-            'M' => $this->translate->_('Months'),
-            'Q' => $this->translate->_('Quarters'),
-            'Y' => $this->translate->_('Years')
+            // 'S' => $this->_('Seconds'),
+            'N' => $this->_('Minutes'),
+            'H' => $this->_('Hours'),
+            'D' => $this->_('Days'),
+            'W' => $this->_('Weeks'),
+            'M' => $this->_('Months'),
+            'Q' => $this->_('Quarters'),
+            'Y' => $this->_('Years')
         );
     }
 

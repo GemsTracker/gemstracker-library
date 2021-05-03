@@ -85,7 +85,7 @@ class Period
 
     /**
      * @param $type One letter
-     * @return bool
+     * @return bool True when whole date
      */
     public static function isDateType($type)
     {

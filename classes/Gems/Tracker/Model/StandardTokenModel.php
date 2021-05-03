@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\Date\Period;
+use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
@@ -42,6 +44,41 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  */
 class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizationModel
 {
+    /**
+     * @var boolean When true the default settings are date only values
+     */
+    public static $dateOnlyDefault = true;
+    
+    /**
+     * @var string Format to use for whole date tokens
+     */
+    public static $dateOnlyFormat = 'dd-MM-yyyy';
+
+    /**
+     * @var string $util->getTranslated() Format function to use for whole date tokens after date 
+     */
+    public static $dateOnlyTranslatedFrom = 'formatDateNever';
+
+    /**
+     * @var string $util->getTranslated() Format function to use for whole date tokens for date
+     */
+    public static $dateOnlyTranslatedUntil = 'formatDateForever';
+    
+    /**
+     * @var string Format to use for date/time tokens
+     */
+    public static $dateTimeFormat = 'dd-MM-yyyy HH:mm';
+
+    /**
+     * @var string $util->getTranslated() Format function to use for date/time tokens after date
+     */
+    public static $dateTimeTranslatedFrom = 'formatDateTimeNever';
+
+    /**
+     * @var string $util->getTranslated() Format function to use for date/time tokens for date
+     */
+    public static $dateTimeTranslatedUntil = 'formatDateTimeForever';
+    
     /**
      *
      * @var boolean When true the labels of wholly masked items are removed
@@ -196,12 +233,9 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      */
     public function addEditTracking()
     {
-//        Old code
-//        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
-//
-//        $changer->apply('gto_valid_from_manual',  'gto_valid_from');
-//        $changer->apply('gto_valid_until_manual', 'gto_valid_until');
-
+        $this->set('gro_valid_after_unit', 'elementClass', 'Hidden');
+        $this->set('gro_valid_for_unit', 'elementClass', 'Hidden');
+        
         $this->addDependency(new OffOnElementsDependency('gto_valid_from_manual',  'gto_valid_from', 'readonly', $this));
         $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until', 'readonly', $this));
 
@@ -301,8 +335,9 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 );
         $this->set('gto_valid_from',         'label', $this->_('Valid from'),
                 'elementClass', 'Date',
-                'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
+        $this->set('gto_valid_from', $this->getTokenDateSettings(true));
+        $this->setOnLoad('gto_valid_from', [$this, 'formatValidFromDate']);
         $this->set('gto_valid_until_manual', 'label', $this->_('Set valid until'),
                 'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
@@ -311,8 +346,9 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                 );
         $this->set('gto_valid_until',        'label', $this->_('Valid until'),
                 'elementClass', 'Date',
-                'formatFunction', $translated->formatDateForever,
                 'tdClass', 'date');
+        $this->set('gto_valid_until', $this->getTokenDateSettings(false));
+        $this->setOnLoad('gto_valid_until', [$this, 'formatValidUntilDate']);
         $this->set('gto_comment',            'label', $this->_('Comments'),
                 'cols', 50,
                 'elementClass', 'Textarea',
@@ -323,14 +359,14 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         // Token, display part
         $this->set('gto_mail_sent_date',     'label', $this->_('Last contact'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', $translated->formatDateNever,
+                'formatFunction', $translated->formatDateTimeNever,
                 'tdClass', 'date');
         $this->set('gto_mail_sent_num',      'label', $this->_('Number of contact moments'),
                 'elementClass', 'Exhibitor'
                 );
         $this->set('gto_completion_time',    'label', $this->_('Completed'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', $translated->formatDateNa,
+                'formatFunction', $translated->formatDateTimeNa,
                 'tdClass', 'date');
         $this->set('gto_duration_in_sec',    'label', $this->_('Duration in seconds'),
                 'elementClass', 'Exhibitor'
@@ -378,6 +414,91 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         return $this->translate && $this->util;
     }
 
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a \Zend_Date format
+     *
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return \MUtil_Date|\Zend_Db_Expr|null
+     */
+    public function formatValidFromDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        // We set these values here instead of in a dependency, because the parent onLoad function is called
+        // before the dependencies are.
+        if (isset($context['gro_valid_after_unit'])) {
+            $this->set($name, $this->getTokenDateSettings(true, $context['gro_valid_after_unit']));
+        }
+
+        return parent::formatLoadDate($value, $isNew, $name, $context, $isPost);
+    }
+
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a \Zend_Date format
+     *
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see \MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return \MUtil_Date|\Zend_Db_Expr|null
+     */
+    public function formatValidUntilDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        // We set these values here instead of in a dependency, because the parent onLoad function is called
+        // before the dependencies are.
+        if (isset($context['gro_valid_for_unit'])) {
+            $this->set($name, $this->getTokenDateSettings(false, $context['gro_valid_for_unit']));
+        }
+
+        return parent::formatLoadDate($value, $isNew, $name, $context, $isPost);
+    }
+
+    /**
+     * @param bool $validFrom valid from or valid intil?
+     * @param string $periodUnit Single char
+     * @return array modelsettings
+     */
+    public function getTokenDateSettings(bool $validFrom, string $periodUnit = null)
+    {
+        if ($periodUnit) {
+            $useFullDate = Period::isDateType($periodUnit);
+        } else {
+            $useFullDate = self::$dateOnlyDefault;
+        }
+        if ($useFullDate) {
+            $output['dateFormat'] = self::$dateOnlyFormat;
+            if ($validFrom) {
+                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateOnlyTranslatedFrom];
+            } else {
+                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateOnlyTranslatedUntil];
+            }
+        } else {
+            $output['dateFormat'] = self::$dateTimeFormat;
+            if ($validFrom) {
+                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateTimeTranslatedFrom];
+            } else {
+                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateTimeTranslatedUntil];
+            }
+        }
+        
+        return $output;
+    }
+    
     /**
      * A ModelAbstract->setOnSave() function that can transform the saved item.
      *

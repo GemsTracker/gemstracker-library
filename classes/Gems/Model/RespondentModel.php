@@ -296,7 +296,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('gr2o_opened',
                 'label', $this->_('Opened'),
-                'formatFunction', $translated->formatDateTime);
+                'formatFunction', $translated->describeDateFromNow);
         $this->setIfExists('gr2o_consent',
                 'label', $this->_('Consent'),
                 'multiOptions', $dbLookup->getUserConsents()
@@ -406,7 +406,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
                 'elementClass', 'None',  // Has little use to show: is usually editor
-                'formatFunction', array($translated, 'formatDateTime')
+                'formatFunction', array($translated, 'describeDateFromNow')
                 );
         $this->setIfExists('gr2o_opened_by',  'label', $this->_('Opened'),
                 'elementClass', 'None',  // Has little use to show: is usually editor
@@ -415,7 +415,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_changed',    'label', $this->_('Changed on'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
-                'formatFunction', array($translated, 'formatDateTime')
+                'formatFunction', array($translated, 'describeDateFromNow')
                 );
         $this->setIfExists('gr2o_changed_by', 'label', $this->_('Changed by'),
                 'multiOptions', $changers
@@ -423,7 +423,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_created',    'label', $this->_('Creation date'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
-                'formatFunction', array($translated, 'formatDateTime')
+                'formatFunction', array($translated, 'describeDateFromNow')
                 );
         $this->setIfExists('gr2o_created_by', 'label', $this->_('Creation by'),
                 'multiOptions', $changers

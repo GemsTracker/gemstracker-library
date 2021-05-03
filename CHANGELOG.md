@@ -16,9 +16,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Debug options for survey events (#613)
 
 ### Interface improvements
+- Add a header to the round editor to show where the conditions start (#635)
 - Add group information for limesurvey questionnaires to survey preview and answer views (#34)
 - Add survey question display to survey-maintenance-show questions (#541)
 - Enable removal of existing passwords and SSN's (#629)
+- Enabled time use when editing and displaying Token valid from and until dates (#634)
 - Feedback bij niet verstuurde reset mail (#278)
 - Improve mail template form use with multiple languages (#614)
 - Show more information when editing appointment fields (#627)

@@ -145,7 +145,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                     $li->em($trackData['trackName']);
                 }
                 if ($trackData['trackStart'] instanceof \Zend_Date) {
-                    $startDate = $translated->formatDateTime($trackData['trackStart']);
+                    $startDate = $translated->describeDateFromNow($trackData['trackStart']);
                 } else {
                     $startDate = $this->_('startdate unknown');
                 }

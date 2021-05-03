@@ -226,6 +226,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 'getSurveys' => 'Gems_Util_TrackData->getSurveysFor',
                 ],
             'Gems_Util_Translated' => [
+                'formatDateTime'                 => 'describeDateFromNow',
                 'getBulkMailProcessOptions'      => 'MailJobsUtil->getBulkProcessOptions',
                 'getBulkMailProcessOptionsShort' => 'MailJobsUtil->getBulkProcessOptionsShort',
                 'getBulkMailTargetOptions'       => 'MailJobsUtil->getBulkTargetOptions',
