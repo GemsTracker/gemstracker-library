@@ -183,7 +183,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
                 return sprintf($this->plural('In %d minute', 'In %d minutes', $minutes), $minutes);
             } 
             if ($minutes < 0) {
-                return sprintf($this->plural('%d minute ago', '%d minutes ago', -$minutes), -$minutes);
+                return sprintf($this->plural('%d minute ago', '%d minutes ago', $minutes), $minutes);
             }
             
             return $this->_('this minute!');
