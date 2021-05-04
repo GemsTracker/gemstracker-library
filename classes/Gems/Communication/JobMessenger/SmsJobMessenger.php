@@ -5,6 +5,7 @@ namespace Gems\Communication\JobMessenger;
 
 use Gems\Batch\BatchHandlerTrait;
 use Gems\Exception\ClientException;
+use Gems\User\Filter\DutchPhonenumberFilter;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 
@@ -113,6 +114,8 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         $number = $this->getPhoneNumber($job, $token, $tokenData['can_email']);
         $message = $this->getMessage($job, $tokenData);
         $from = $this->getFrom($job, $token);
+        $phoneNumberFilter = new DutchPhonenumberFilter();
+        $filteredNumber = $phoneNumberFilter->filter($number);
 
         if ($preview) {
             $this->addBatchMessage(sprintf(
@@ -120,14 +123,15 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
             ));
         } else {
             try {
-                $smsClient->sendMessage($number, $message, $from);
+
+                $smsClient->sendMessage($filteredNumber, $message, $from);
                 $this->logRespondentCommunication($token, $job, $number, $from);
             } catch (ClientException $e) {
 
                 $info = sprintf("Error sending sms to %s respondent %s with email address %s.",
                     $tokenData['gto_id_organization'],
                     $tokenData['gto_id_respondent'],
-                    $number
+                    $filteredNumber
                 );
 
                 // Use a gems exception to pass extra information to the log
