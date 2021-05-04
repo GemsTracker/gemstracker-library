@@ -341,12 +341,12 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $ajaxPage = $this->addPage($this->_('Sort jobs'), 'pr.comm.job.edit', 'comm-job', 'sort', array('visible' => false));
 
         // MAIL SERVER CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
+        $page = $setup->addBrowsePage($this->_('Mail servers'), 'pr.mail.server', 'mail-server');
 
         // COMMUNICATION TEMPLATE CONTROLLER
         $setup->addBrowsePage($this->_('Templates'), 'pr.comm.template', 'comm-template');
 
-        $setup->addBrowsePage($this->_('Methods'), 'pr.comm.methods', 'comm-methods');
+        $setup->addBrowsePage($this->_('Messengers'), 'pr.comm.messenger', 'comm-messengers');
 
         // COMMUNICATION ACTIVITY CONTROLLER
         //$setup->addBrowsePage();

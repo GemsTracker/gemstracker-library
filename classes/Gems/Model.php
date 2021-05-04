@@ -287,7 +287,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @return Gems\Model\CommMessengersModel
      */
-    public function getCommMethodsModel($detailed)
+    public function getCommMessengersModel($detailed)
     {
         $model = $this->_loadClass('CommMessengersModel', true);
         $model->applySetting($detailed);

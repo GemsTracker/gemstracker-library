@@ -1,10 +1,10 @@
 <?php
 
-class Gems_Default_CommMethodsAction extends \Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_CommMessengersAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
 
     protected function createModel($detailed, $action)
     {
-        return $this->loader->getModels()->getCommMethodsModel($detailed);
+        return $this->loader->getModels()->getCommMessengersModel($detailed);
     }
 }
