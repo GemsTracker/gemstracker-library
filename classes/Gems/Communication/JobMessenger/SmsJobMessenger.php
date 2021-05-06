@@ -4,6 +4,7 @@ namespace Gems\Communication\JobMessenger;
 
 
 use Gems\Batch\BatchHandlerTrait;
+use Gems\Communication\Http\SmsClientInterface;
 use Gems\Exception\ClientException;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use MUtil\Registry\TargetTrait;
@@ -111,6 +112,10 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         $communicationLoader = $this->loader->getCommunicationLoader();
         $smsClient = $communicationLoader->getSmsClient($clientId);
 
+        if (!($smsClient instanceof SmsClientInterface)) {
+            throw new \Gems_Communication_Exception(sprintf('No Sms Client with id %s found', $clientId));
+        }
+
         $number = $this->getPhoneNumber($job, $token, $tokenData['can_email']);
         $message = $this->getMessage($job, $tokenData);
         $from = $this->getFrom($job, $token);
@@ -125,6 +130,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
             try {
 
                 $smsClient->sendMessage($filteredNumber, $message, $from);
+                $token->setMessageSent();
                 $this->logRespondentCommunication($token, $job, $number, $from);
             } catch (ClientException $e) {
 

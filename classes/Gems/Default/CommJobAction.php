@@ -330,7 +330,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
 
         if (!$batch->isLoaded() && !is_null(($jobId))) {
             $batch->addMessage(sprintf(
-                    $this->_('Starting single %s mail job %s'),
+                    $this->_('Starting single %s message job %s'),
                     $this->project->getName(),
                     $jobId
                     ));
@@ -350,7 +350,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 $batch->addTask('Comm\\ExecuteCommJobTask', $job, null, null, $preview);
             } else {
                 $batch->reset();
-                $this->addMessage($this->_("Mailjob is inactive and won't be executed"), 'danger');
+                $this->addMessage($this->_("Messagejob is inactive and won't be executed"), 'danger');
             }
 
             if ($preview === true) {
@@ -375,22 +375,22 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         }
 
         if ($preview === true) {
-            $title = sprintf($this->_('Preview single mail job %s'), $jobId);
+            $title = sprintf($this->_('Preview single message job %s'), $jobId);
         } else {
-            $title = sprintf($this->_('Executing single mail job %s'), $jobId);
+            $title = sprintf($this->_('Executing single message job %s'), $jobId);
         }
 
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
     }
 
     /**
-     * Execute all mail jobs
+     * Execute all message jobs
      */
     public function executeAllAction()
     {
         $this->_helper->BatchRunner(
                 $this->loader->getMailLoader()->getCronBatch('commjob-execute-all'),
-                $this->_('Execute all mail jobs'),
+                $this->_('Execute all message jobs'),
                 $this->accesslog
                 );
     }
@@ -402,7 +402,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     public function getIndexTitle()
     {
-        return $this->_('Automatic mail jobs');
+        return $this->_('Automatic message jobs');
     }
 
     public function getMailMonitorJob()
@@ -461,7 +461,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     }
 
     /**
-     * Execute a single mail job
+     * Execute a single message job
      */
     public function previewAction() {
         $this->executeAction(true);
@@ -520,7 +520,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'showActionLinks' => false,
                 'class'           => 'browser table mailjob' . $class,
                 'caption'         => $caption,
-                'onEmpty'         => $this->_('No tokens found to email'),
+                'onEmpty'         => $this->_('No tokens found to message'),
                 'extraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
             ];
             $this->addSnippet('TokenPlanTableSnippet', $params);

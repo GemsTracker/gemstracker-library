@@ -305,9 +305,9 @@ class CommJobsUtil extends UtilAbstract
     public function getBulkProcessOptions()
     {
         return array(
-            'M' => $this->_('Send multiple mails per respondent, one for each checked token.'),
-            'O' => $this->_('Send one mail per respondent, mark all checked tokens as sent.'),
-            'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
+            'M' => $this->_('Send multiple messages per respondent, one for each checked token.'),
+            'O' => $this->_('Send one message per respondent, mark all checked tokens as sent.'),
+            'A' => $this->_('Send one message per respondent, mark only mailed tokens as sent.'),
             );
     }
 
@@ -319,9 +319,9 @@ class CommJobsUtil extends UtilAbstract
     public function getBulkProcessOptionsShort()
     {
         return array(
-            'M' => $this->_('Multiple emails'),
-            'O' => $this->_('One mail, mark all'),
-            'A' => $this->_('One mail'),
+            'M' => $this->_('Multiple messages'),
+            'O' => $this->_('One message, mark all'),
+            'A' => $this->_('One message'),
             );
     }
 

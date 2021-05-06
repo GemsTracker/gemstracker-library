@@ -356,8 +356,10 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     public function updateToken($tokenId=false)
     {
         if (!$tokenId) {
-            $tokenId = $this->token->getTokenId();
+            $this->token->setMessageSent();
+            return;
         }
+        
         $tokenData['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
         $tokenData['gto_mail_sent_date'] = \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd');
 

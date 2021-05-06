@@ -1962,6 +1962,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
+     * Add 1 to the number of messages sent and change the sent date
+     */
+    public function setMessageSent()
+    {
+        $values = [
+            'gto_mail_sent_num' => new \Zend_Db_Expr('gto_mail_sent_num + 1'),
+            'gto_mail_sent_date' => \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd'),
+        ];
+
+        $this->_updateToken($values, $this->currentUser->getUserId());
+    }
+
+    /**
      * Sets the next token in this track
      *
      * @param \Gems_Tracker_Token $token
