@@ -57,7 +57,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems\Util\MailJobsUtil
+     * @var \Gems\Util\CommJobsUtil
      */
     protected $mailJobsUtil;
 
@@ -90,7 +90,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * @var \Gems\Util\SiteUtil
      */
     protected $sites;
-    
+
     /**
      *
      * @var \Gems_Util_TokenData
@@ -108,6 +108,26 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * @var \Gems_Util_Translated
      */
     protected $translated;
+
+    /**
+     * Returns the maintenance lock
+     *
+     * @return \Gems\Util\CommJobsUtil
+     */
+    public function getCommJobsUtil()
+    {
+        return $this->_getClass('commJobsUtil');
+    }
+
+    /**
+     * Returns the maintenance lock
+     *
+     * @return \Gems\Util\CommMessengersUtil
+     */
+    public function getCommMessengersUtil()
+    {
+        return $this->_getClass('commMessengersUtil');
+    }
 
     /**
      *
@@ -208,10 +228,10 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
             if (isset($_SERVER['SERVER_NAME'])) {
                 $uri .= $_SERVER['SERVER_NAME'];
                 $uri .= $this->basepath->getBasePath();
-            } else {                
+            } else {
                 // I did not want to add loader to util, can no longer tell why
                 $org = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
-                
+
                 if ($org instanceof \Gems_User_Organization) {
                     $uri = $org->getPreferredSiteUrl();
                 } else {
@@ -270,16 +290,6 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     public function getLocalized()
     {
         return $this->_getClass('localized');
-    }
-
-    /**
-     * Returns the maintenance lock
-     *
-     * @return \Gems\Util\MailJobsUtil
-     */
-    public function getMailJobsUtil()
-    {
-        return $this->_getClass('mailJobsUtil');
     }
 
     /**

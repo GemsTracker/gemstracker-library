@@ -1692,7 +1692,7 @@ ALTER TABLE `gems__user_logins`
 
 -- PATCH: Add external alternate survey description
 ALTER TABLE gems__surveys
-    ADD gsu_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' 
+    ADD gsu_external_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
         AFTER gsu_survey_description;
 
 -- PATCH: Add external alternate track description
@@ -1701,10 +1701,23 @@ ALTER TABLE gems__tracks
         AFTER gtr_track_name;
 
 -- PATCH: Add codebook export to export groups
-UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export.code-book-export') 
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.export.code-book-export')
     WHERE grl_privileges NOT LIKE '%,pr.export.code-book-export%' AND grl_privileges LIKE '%,pr.export%'
 
 -- PATCH: Add contact right to all roles
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact,')
     WHERE grl_privileges NOT LIKE '%,pr.contact,%';
 
+-- PATCH: Add Communication job type
+ALTER TABLE `gems__comm_jobs`
+    ADD gcj_id_communication_messenger varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL AFTER `gcj_id_order`;
+
+UPDATE gems__comm_jobs SET gcj_id_communication_method = 1300;
+
+-- PATCH: Add phone to respondent relation
+ALTER TABLE `gems__respondent_relations`
+    ADD grr_phone varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER grr_email;
+
+-- PATCH: Add contact sms from to organization
+ALTER TABLE `gems__organizations`
+    ADD gor_contact_sms_from        varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_contact_email;

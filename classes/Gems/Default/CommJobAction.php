@@ -75,7 +75,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = ['Generic\\ContentTitleSnippet', 'Mail\\CommJobShowSnippet'];
-    
+
     /**
      * The automatically filtered result
      *
@@ -108,7 +108,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         $dbLookup   = $this->util->getDbLookup();
         $dbTracks   = $this->util->getTrackData();
-        $mailUtil   = $this->util->getMailJobsUtil();
+        $commUtil   = $this->util->getCommJobsUtil();
         $unselected = array('' => '');
 
         $model = new \MUtil_Model_TableModel('gems__comm_jobs');
@@ -131,6 +131,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 }
             }
         }
+
+        $model->set('gcj_id_communication_messenger',
+            [
+                'label' => $this->_('Communication method'),
+                'description' => $this->_('The communication method the message should be sent. E.g. mail, sms'),
+                'required' => true,
+                'multiOptions' => $commUtil->getCommunicationMessengers(),
+            ]
+        );
+
         $model->set('gcj_id_message',          'label', $this->_('Template'),
                 'multiOptions', $unselected + $dbLookup->getCommTemplates('token')
                 );
@@ -146,15 +156,15 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                     );
         }
         $model->set('gcj_active',              'label', $this->_('Execution method'),
-                'multiOptions', $mailUtil->getActiveOptions(),
+                'multiOptions', $commUtil->getActiveOptions(),
                 'required', true,
                 'description', $this->_('Manual jobs run only manually, but not during automatic jobs. Disabled jobs not even then. ')
                 );
 
         if ($detailed) {
-            $bulkProcessOptions = $mailUtil->getBulkProcessOptions();
+            $bulkProcessOptions = $commUtil->getBulkProcessOptions();
         } else {
-            $bulkProcessOptions = $mailUtil->getBulkProcessOptionsShort();
+            $bulkProcessOptions = $commUtil->getBulkProcessOptionsShort();
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'),
                 'default', 'O',
@@ -162,7 +172,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'multiOptions', $bulkProcessOptions
                 );
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'),
-                'multiOptions', $unselected + $mailUtil->getBulkFilterOptions()
+                'multiOptions', $unselected + $commUtil->getBulkFilterOptions()
                 );
 
         if ($detailed) {
@@ -210,7 +220,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
                 'default', $this->currentUser->getUserId(),
                 'description', $this->_('Used for logging and possibly from address.'))
                 ;
-        $fromMethods = $unselected + $mailUtil->getBulkFromOptions();
+        $fromMethods = $unselected + $commUtil->getBulkFromOptions();
         $model->set('gcj_from_method', 'label', $this->_('From address used'),
                 'multiOptions', $fromMethods
                 );
@@ -243,20 +253,20 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         }
         $model->set('gcj_target', 'label', $this->_('Filler'),
                 'default', 0,
-                'multiOptions', $mailUtil->getBulkTargetOptions()
+                'multiOptions', $commUtil->getBulkTargetOptions()
                 );
         if ($detailed) {
-            $model->set('gcj_to_method', 'multiOptions', $mailUtil->getBulkToOptions());
+            $model->set('gcj_to_method', 'multiOptions', $commUtil->getBulkToOptions());
             $model->set('gcj_fallback_method', 'multiOptions', $fromMethods);
             $model->set('gcj_fallback_fixed', 'validators[mail]', 'SimpleEmail');
 
             $model->addDependency('CommJob\\Senderdependency');
         }
-        
+
         if ($model->has('gcj_target_group')) {
             $anyGroup[''] = $this->_('(all groups)');
             $model->set('gcj_target_group', 'label', $this->_('Group'),
-                    'multiOptions', $anyGroup + $mailUtil->getAllGroups(),
+                    'multiOptions', $anyGroup + $commUtil->getAllGroups(),
                     'onchange', 'this.form.submit();'
                     );
         }
@@ -337,7 +347,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             $job = $this->db->fetchOne($sql);
 
             if (!empty($job)) {
-                $batch->addTask('Mail\\ExecuteMailJobTask', $job, null, null, $preview);
+                $batch->addTask('Comm\\ExecuteCommJobTask', $job, null, null, $preview);
             } else {
                 $batch->reset();
                 $this->addMessage($this->_("Mailjob is inactive and won't be executed"), 'danger');
@@ -420,7 +430,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('automatic mail job', 'automatic mail jobs', $count);
+        return $this->plural('automatic messaging job', 'automatic messaging jobs', $count);
     }
 
     /**
@@ -430,16 +440,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     {
         $lock = $this->util->getCronJobLock();
         if ($lock->isLocked()) {
-            $this->addMessage(sprintf($this->_('Automatic mails have been turned off since %s.'), $lock->getLockTime()));
+            $this->addMessage(sprintf($this->_('Automatic messaging have been turned off since %s.'), $lock->getLockTime()));
 
             if ($menuItem = $this->menu->findController('cron', 'cron-lock')) {
-                $menuItem->set('label', $this->_('Turn Automatic Mail Jobs ON'));
+                $menuItem->set('label', $this->_('Turn Automatic Messaging Jobs ON'));
             }
         }
 
         parent::indexAction();
 
-        $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
+        $this->html->pInfo($this->_('With automatic messaging jobs and a cron job on the server, messages can be sent without manual user action.'));
     }
 
     public function monitorAction() {
@@ -484,22 +494,22 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
             switch ($job['gcj_active']) {
                 case 0:
                     $class   = ' disabled';
-                    $caption = $this->_('Mailjob inactive, can not be sent');
+                    $caption = $this->_('Message job inactive, can not be sent');
                     break;
 
                 case 2:
                     $class = ' manual';
-                    $caption = $this->_('Mailjob manual, can only be sent using run');
+                    $caption = $this->_('Message job manual, can only be sent using run');
                     break;
 
                 // gcj_active = 1
                 default:
                     $class = '';
-                    $caption = $this->_('Mailjob automatic, can be sent using run or run all');
+                    $caption = $this->_('Message job automatic, can be sent using run or run all');
                     break;
             }
             $model  = $this->loader->getTracker()->getTokenModel();
-            $filter = $this->loader->getUtil()->getMailJobsUtil()->getJobFilter($job);
+            $filter = $this->loader->getUtil()->getCommJobsUtil()->getJobFilter($job);
             // Clone request and unset the id parameter to prevent filtering
             $cleanReq = clone $this->getRequest();
             $cleanReq->setParam(\MUtil_Model::REQUEST_ID, null);

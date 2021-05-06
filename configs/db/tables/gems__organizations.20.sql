@@ -7,11 +7,11 @@ CREATE TABLE if not exists gems__organizations (
         gor_user_class              varchar(30)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'StaffUser',
         gor_location                varchar(255)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_url                     varchar(127)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        
+
         -- deprecated as of 1.9.1
         gor_url_base                varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        -- end deprecated 
-        
+        -- end deprecated
+
         gor_task                    varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gor_provider_id             varchar(10)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
@@ -21,6 +21,7 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_contact_name            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_contact_email           varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gor_contact_sms_from        varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_mail_watcher            boolean not null default 1,
         gor_welcome                 text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'  null,
         gor_signature               text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,

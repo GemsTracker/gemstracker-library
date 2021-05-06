@@ -81,7 +81,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             }
             $_itemlabel = $label . ($item->get('label') ?: $item->get('privilege'));
             $_privilege = $item->get('privilege');
-            
+
             // True is used to make a privilege always accessible, e.g. for ask/return and ask/forward
             if ($_privilege && (true !== $_privilege)) {
                 if (isset($privileges[$_privilege])) {
@@ -326,8 +326,8 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $setup = $this->addContainer($label);
 
         // AUTOMATIC COMMUNICATION CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
-        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
+        $page = $setup->addBrowsePage($this->_('Automatic messaging'), 'pr.comm.job', 'comm-job');
+        $page->addButtonOnly($this->_('Turn Automatic Messaging Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
         $page->addButtonOnly($this->_('Monitor'), 'pr.comm.job', 'comm-job', 'monitor');
 
         $page->addPage($this->_('Run all'), 'pr.cron.job', 'comm-job', 'execute-all');
@@ -340,11 +340,14 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
         $ajaxPage = $this->addPage($this->_('Sort jobs'), 'pr.comm.job.edit', 'comm-job', 'sort', array('visible' => false));
 
-        // MAIL SERVER CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
+        // MESSENGERS
+        $setup->addBrowsePage($this->_('Messengers'), 'pr.comm.messenger', 'comm-messengers');
 
         // COMMUNICATION TEMPLATE CONTROLLER
         $setup->addBrowsePage($this->_('Templates'), 'pr.comm.template', 'comm-template');
+
+        // MAIL SERVER CONTROLLER
+        $setup->addBrowsePage($this->_('Mail servers'), 'pr.mail.server', 'mail-server');
 
         // COMMUNICATION ACTIVITY CONTROLLER
         //$setup->addBrowsePage();

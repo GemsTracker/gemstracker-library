@@ -153,7 +153,7 @@ class CommLogModel extends \Gems_Model_JoinModel
                 // $this->set('grco_id_job', 'label', $this->_('Job'), 'formatFunction', [$this, 'formatJob']);
                 $this->set('grco_id_job', 'label', $this->_('Job'),
                         'formatFunction', [$this, 'formatJob', true],
-                        'multiOptions', $this->util->getMailJobsUtil()->getJobsOverview()
+                        'multiOptions', $this->util->getCommJobsUtil()->getJobsOverview()
                         );
             }
         }
