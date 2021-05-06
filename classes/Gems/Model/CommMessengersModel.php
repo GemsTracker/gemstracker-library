@@ -48,10 +48,10 @@ class CommMessengersModel extends \Gems_Model_JoinModel
             ]
         );
 
-        $this->set('gcm_method_identifier',
+        $this->set('gcm_messenger_identifier',
             [
-                'label' => $this->_('Method identifier'),
-                'description' => $this->_('An optional identifier for the chosen method type to pick a specific one'),
+                'label' => $this->_('Messenger identifier'),
+                'description' => $this->_('An optional identifier for the chosen messenger type to pick a specific one'),
             ]
         );
 

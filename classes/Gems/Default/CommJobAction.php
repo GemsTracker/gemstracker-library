@@ -135,7 +135,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $model->set('gcj_id_communication_messenger',
             [
                 'label' => $this->_('Communication method'),
-                'description' => $this->_('The communication method the message should be sent. E.g. mail, sms'),
+                'description' => $this->_('The communication method the message should be sent as. E.g. mail, sms'),
                 'required' => true,
                 'multiOptions' => $commUtil->getCommunicationMessengers(),
             ]
