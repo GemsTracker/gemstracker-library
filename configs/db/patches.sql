@@ -1709,10 +1709,10 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact,')
     WHERE grl_privileges NOT LIKE '%,pr.contact,%';
 
 -- PATCH: Add Communication job type
-ALTER TABLE `gems__comm_jobs`
+ALTER TABLE gems__comm_jobs
     ADD gcj_id_communication_messenger varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL AFTER `gcj_id_order`;
 
-UPDATE gems__comm_jobs SET gcj_id_communication_method = 1300;
+UPDATE gems__comm_jobs SET gcj_id_communication_messenger = 1300;
 
 -- PATCH: Add phone to respondent relation
 ALTER TABLE `gems__respondent_relations`
@@ -1720,4 +1720,4 @@ ALTER TABLE `gems__respondent_relations`
 
 -- PATCH: Add contact sms from to organization
 ALTER TABLE `gems__organizations`
-    ADD gor_contact_sms_from        varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_contact_email;
+    ADD gor_contact_sms_from varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_contact_email;

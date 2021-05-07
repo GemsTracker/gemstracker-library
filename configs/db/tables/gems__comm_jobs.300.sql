@@ -3,7 +3,7 @@ CREATE TABLE if not exists gems__comm_jobs (
         gcj_id_job                  bigint unsigned not null auto_increment,
         gcj_id_order                int not null default 10,
 
-        gcj_id_communication_messenger  bigint unsigned not null,
+        gcj_id_communication_messenger  bigint unsigned not null references gems__comm_messengers (gcm_id_messenger),
 
         gcj_id_message              bigint unsigned not null references gems__comm_templates (gct_id_template),
 
