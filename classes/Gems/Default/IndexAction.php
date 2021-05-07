@@ -436,8 +436,9 @@ class Gems_Default_IndexAction extends \Gems_Controller_Action
         if ($key = $this->_getParam('key')) {
             $user = $this->loader->getUserLoader()->getUserByResetKey($key);
 
+            // \MUtil_Echo::track($user->hasValidResetKey(), $user->getLoginName(), $user->hasPassword(), $user->isActive());
             if ($user->hasValidResetKey()) {
-                // Signal the reqset required so the maxage check is disabled while validating
+                // Signal the reset required so the max-age check is disabled while validating
                 $user->setPasswordResetRequired(true);
 
                 $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true, 'labelWidthFactor' => $this->labelWidthFactor));

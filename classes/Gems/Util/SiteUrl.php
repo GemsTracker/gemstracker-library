@@ -92,7 +92,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function hasUrlOrganizationsId($orgId)
     {
-        return array_key_exists($orgId, $this->_data['orgs']);
+        return $this->isOneForAll() || array_key_exists($orgId, $this->_data['orgs']);
     }
 
     /**
@@ -102,7 +102,15 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     {
         return 1 == $this->_data['gsi_blocked'];
     }
-    
+
+    /**
+     * @return bool Is this url accessible for all organizations
+     */
+    public function isOneForAll()
+    {
+        return 0 == $this->_data['gsi_select_organizations'];
+    }
+
     /**
      * @inheritDoc
      */
