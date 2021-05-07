@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-06 22:52+0200\n"
+"POT-Creation-Date: 2021-05-07 13:01+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2996,29 +2996,29 @@ msgstr "Login in orde, welkom %s."
 msgid "Good bye: %s."
 msgstr "Tot ziens: %s."
 
-#: classes/Gems/Default/IndexAction.php:448
+#: classes/Gems/Default/IndexAction.php:449
 msgid "For that reason you cannot reset your password."
 msgstr "Om die reden kunt u uw wachtwoord niet wijzigen."
 
-#: classes/Gems/Default/IndexAction.php:465
+#: classes/Gems/Default/IndexAction.php:466
 msgid ""
 "Your password reset request is no longer valid, please request a new link."
 msgstr ""
 "Uw verzoek om een nieuw wachtwoord is niet meer geldig, maar u kan hieronder "
 "een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:467
+#: classes/Gems/Default/IndexAction.php:468
 msgid ""
 "Your password input request is no longer valid, please request a new link."
 msgstr ""
 "Uw link om een wachtwoord in te voeren is niet meer geldig, maar u kan "
 "hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:492
+#: classes/Gems/Default/IndexAction.php:493
 msgid "For that reason you cannot request a password reset."
 msgstr "Om die reden kunt u geen wachtwoord wijziging aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:513
+#: classes/Gems/Default/IndexAction.php:514
 msgid ""
 "If the entered username or e-mail is valid, we have sent you an e-mail with "
 "a reset link. Click on the link in the e-mail."
@@ -3026,20 +3026,20 @@ msgstr ""
 "Als de opgegeven gebruikersnaam of e-mail geldig is, hebben we u een email "
 "met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:527
+#: classes/Gems/Default/IndexAction.php:528
 #: classes/Gems/Snippets/User/PasswordResetSnippet.php:196
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/IndexAction.php:535
+#: classes/Gems/Default/IndexAction.php:536
 msgid "User logged in through reset password."
 msgstr "Gebruiker ingelogd middels wachtwoord reset."
 
-#: classes/Gems/Default/IndexAction.php:554
+#: classes/Gems/Default/IndexAction.php:555
 msgid "Password reset requested"
 msgstr "Wachtwoord wijziging aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:557
+#: classes/Gems/Default/IndexAction.php:558
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -5884,7 +5884,7 @@ msgstr "Het soort berichtmethode, bijv. Email, sms"
 
 #: classes/Gems/Model/CommMessengersModel.php:53
 msgid "Messenger identifier"
-msgstr " identificatie."
+msgstr "Bericht methode identificatie"
 
 #: classes/Gems/Model/CommMessengersModel.php:54
 msgid ""
@@ -6185,7 +6185,7 @@ msgstr "Email"
 
 #: classes/Gems/Model/OrganizationModel.php:290
 msgid "The from field for an sms."
-msgstr "Het vanaf veld voor een sms"
+msgstr "Het vanaf veld voor een sms."
 
 #: classes/Gems/Model/OrganizationModel.php:292
 #: classes/Gems/Model/StaffModel.php:298
@@ -7654,6 +7654,17 @@ msgstr "tot"
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:148
 msgid "Toggle"
 msgstr "Toggle"
+
+#: classes/Gems/Snippets/Communication/MessengersEditSnippet.php:13
+msgid "Instructions"
+msgstr "Instructies"
+
+#: classes/Gems/Snippets/Communication/MessengersEditSnippet.php:14
+msgid ""
+"HTTP API messengers can be configured in /var/settings/communication.php"
+msgstr ""
+"HTTP API bericht methodes kunnen ingesteld worden in /var/settings/"
+"communication.php"
 
 #: classes/Gems/Snippets/Condition/ConditionSearchFormSnippet.php:44
 #: classes/Gems/Snippets/Tracker/Fields/FieldsAutosearchForm.php:38
