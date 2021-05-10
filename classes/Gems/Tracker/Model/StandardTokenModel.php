@@ -473,7 +473,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      * @param string $periodUnit Single char
      * @return array modelsettings
      */
-    public function getTokenDateSettings(bool $validFrom, string $periodUnit = null)
+    public function getTokenDateSettings($validFrom, $periodUnit = null)
     {
         if ($periodUnit) {
             $useFullDate = Period::isDateType($periodUnit);
