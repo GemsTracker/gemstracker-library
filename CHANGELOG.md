@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
+### Added
+- Reorganize and extend the documentation (#639)
+
 ### Added user functionality
 - Add a new track field type for linking track to multiple other tracks (#621)
 - Add an external survey name to a survey (#626)
