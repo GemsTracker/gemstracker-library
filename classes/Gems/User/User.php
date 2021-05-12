@@ -1536,6 +1536,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                     $this->_getVar('user_two_factor_key'),
                     2
                     );
+        } else {
+            $key = null;
         }
         return $key;
     }

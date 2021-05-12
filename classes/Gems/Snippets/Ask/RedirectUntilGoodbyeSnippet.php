@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ShowFirstOpenSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Ask;
@@ -80,9 +79,8 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         $org  = $this->token->getOrganization();
         $html = $this->getHtmlSequence();
 
-        $html->h3($this->_('Token'));
-        $html->pInfo(sprintf($this->_('Thank you %s,'), $this->token->getRespondentName()));
-
+        $html->h3($this->getHeaderLabel());
+        $html->append($this->formatThanks());
         if ($welcome = $org->getWelcome()) {
             $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
         }
@@ -103,14 +101,6 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         if ($sig = $org->getSignature()) {
             $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
         }
-
-        /*
-        $html->br();
-
-        $href = array($this->request->getActionKey() => 'index', \MUtil_Model::REQUEST_ID => null);
-        $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $buttonDiv->actionLink($href, $this->_('OK'));
-        // */
 
         return $html;
     }

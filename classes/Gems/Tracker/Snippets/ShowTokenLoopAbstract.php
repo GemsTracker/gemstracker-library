@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -40,6 +39,11 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      * @var boolean
      */
     protected $showDuration = true;
+
+    /**
+     * @var bool Switch for showing the last name
+     */
+    protected $showLastName = false;
     
     /**
      * Switch for showing how long the token is valid.
@@ -131,6 +135,23 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     }
 
     /**
+     * Return a thanks greeting depending on showlastName switch
+     * 
+     * @return \MUtil_Html_HtmlElement
+     */
+    public function formatThanks() 
+    {
+        $output = \MUtil_Html::create('pInfo'); 
+        if ($this->showLastName) {
+            // getRespondentName returns the relation name when the token has a relation
+            $output->sprintf($this->_('Thank you %s,'), $this->token->getRespondentName());
+        } else {
+            $output->append($this->_('Thank you for your answers,'));
+        }
+        return $output;
+    }
+
+    /**
      * Formats an until date for this display
      *
      * @param \MUtil_Date $dateTime
@@ -148,18 +169,18 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
 
         switch ($days) {
             case 0:
-                return array(
+                return [
                     \MUtil_Html::create('strong', $this->_('Warning!!!')),
                     ' ',
                     $this->_('This survey must be answered today!')
-                    );
+                    ];
 
             case 1:
-                return array(
+                return [
                     \MUtil_Html::create('strong', $this->_('Warning!!')),
                     ' ',
                     $this->_('This survey can only be answered until tomorrow!')
-                    );
+                    ];
 
             case 2:
                 return $this->_('Warning! This survey can only be answered for another 2 days!');
@@ -175,6 +196,39 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
 
                 return sprintf($this->_('Please answer this survey before %s.'), $dateTime->toString($this->dateFormat));
         }
+    }
+
+    /**
+     * Return a welcome greeting depending on showlastName switch
+     *
+     * @return \MUtil_Html_HtmlElement
+     */
+    public function formatWelcome()
+    {
+        $output = \MUtil_Html::create('pInfo');
+        if ($this->showLastName) {
+            // getRespondentName returns the relation name when the token has a relation
+            $output->sprintf($this->_('Welcome %s,'), $this->token->getRespondentName());
+        } else {
+            $output->append($this->_('Welcome,'));
+        }
+        if ($this->token->hasRelation() && $this->showLastName) {
+            return [
+                $output,
+                \MUtil_Html::create('pInfo', sprintf(
+                    $this->_('We kindly ask you to answer a survey about %s.'), 
+                    $this->token->getRespondent()->getName()
+                ))];
+        }
+        return $output;
+    }
+
+    /**
+     * @return string Return the header for the screen
+     */
+    protected function getHeaderLabel()
+    {
+        return $this->_('Token');
     }
 
     /**

@@ -209,7 +209,6 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function _addRelation($select)
     {
-        // now add a left join with the round table so we have all tokens, also the ones without rounds
         if (!is_null($this->_gemsData['gto_id_relation'])) {
             $select->forWhere('gto_id_relation = ?', $this->_gemsData['gto_id_relation']);
         } else {

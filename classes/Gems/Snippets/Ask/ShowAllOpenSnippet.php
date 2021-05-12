@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ShowAllOpenSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Ask;
@@ -49,39 +48,12 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $util;
 
     /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return array tokenId => \Gems_Tracker_Token
+     * @throws \Zend_Date_Exception
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    protected function getDisplayTokens()
     {
-        $html    = $this->getHtmlSequence();
-        $org     = $this->token->getOrganization();
         $tracker = $this->loader->getTracker();
-
-        $html->h3($this->_('Token'));
-        if ($this->token->hasRelation()) {
-            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->token->getRelation()->getName()));    
-            
-            $html->pInfo(sprintf($this->_('We kindly ask you to answer a survey about %s.'), $this->token->getRespondent()->getName()));            
-        } else {
-            $p = $html->pInfo(sprintf($this->_('Welcome %s,'), $this->token->getRespondentName()));    
-        }
-        $p->br();
-        $p->br();
-
-        if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
-            // $html->pInfo($this->_('Please click the button below to answer the next survey.'));
-        } else {
-            if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
-            }
-            // $html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($this->token->getTokenId())));
-        }
 
         // Only valid or answerd in the last
         $where = "(gto_completion_time IS NULL AND gto_valid_from <= CURRENT_TIMESTAMP AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP))";
@@ -100,60 +72,87 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
         // Get the tokens
         $tokens = $this->token->getAllUnansweredTokens($where);
+        $output = [];
 
+        foreach ($tokens as $tokenData) {
+            $token = $tracker->getToken($tokenData);
+            $output[$token->getTokenId()] = $token;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(\Zend_View_Abstract $view)
+    {
+        $html    = $this->getHtmlSequence();
+        $org     = $this->token->getOrganization();
+        $tracker = $this->loader->getTracker();
+
+        $html->h3($this->getHeaderLabel());
+        $html->append($this->formatWelcome());
+
+        if ($this->wasAnswered) {
+            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
+        } else {
+            if ($welcome = $org->getWelcome()) {
+                $html->pInfo()->bbcode($welcome);
+            }
+        }
+
+        $tokens = $this->getDisplayTokens();
         if ($tokens) {
-            $currentToken = $this->token->isCompleted() ? false : $this->token->getTokenId();
-            $lastRound    = false;
-            $lastTrack    = false;
-            $open         = 0;
-            $pStart       = $html->pInfo();
+            $lastRound = false;
+            $lastTrack = false;
+            $open      = 0;
+            $pStart    = $html->pInfo();
 
-            foreach ($tokens as $row) {
-                if ($row['gtr_track_name'] !== $lastTrack) {
-                    $lastTrack = $row['gtr_track_name'];
+            foreach ($tokens as $token) {
+                if ($token instanceof \Gems_Tracker_Token) {
+                    if ($token->getTrackEngine()->getExternalName() !== $lastTrack) {
+                        $lastTrack = $token->getTrackEngine()->getExternalName();
+
+                        $div = $html->div();
+                        $div->class = 'askTrack';
+                        $div->append($this->_('Track'));
+                        $div->append(' ');
+                        $div->strong($lastTrack);
+                        if ($token->getRespondentTrack()->getFieldsInfo()) {
+                            $div->small(sprintf($this->_(' (%s)'), $token->getRespondentTrack()->getFieldsInfo()));
+                        }
+                    }
+
+                    if ($token->getRoundDescription() && ($token->getRoundDescription() !== $lastRound)) {
+                        $lastRound = $token->getRoundDescription();
+                        $div = $html->div();
+                        $div->class = 'askRound';
+                        $div->strong(sprintf($this->_('Round: %s'), $lastRound));
+                        $div->br();
+                    }
 
                     $div = $html->div();
-                    $div->class = 'askTrack';
-                    $div->append($this->_('Track'));
-                    $div->append(' ');
-                    $div->strong(isset($row['gtr_external_description']) && $row['gtr_external_description'] ? $row['gtr_external_description'] : $row['gtr_track_name']);
-                    if ($row['gr2t_track_info']) {
-                        $div->small(sprintf($this->_(' (%s)'), $row['gr2t_track_info']));
+                    $div->class = 'askSurvey';
+                    $survey = $token->getSurvey();
+                    if ($token->isCompleted()) {
+                        $div->actionDisabled($survey->getExternalName());
+                        $div->append(' ');
+                        $div->append($this->formatCompletion($token->getCompletionTime()));
+
+                    } else {
+                        $open++;
+
+                        $a = $div->actionLink($this->getTokenHref($token), $survey->getExternalName());
+                        $div->append(' ');
+                        $div->append($this->formatDuration($survey->getDuration()));
+                        $div->append($this->formatUntil($token->getValidUntil()));
                     }
-                }
-
-                if ($row['gto_round_description'] && ($row['gto_round_description'] !== $lastRound)) {
-                    $lastRound = $row['gto_round_description'];
-                    $div = $html->div();
-                    $div->class = 'askRound';
-                    $div->strong(sprintf($this->_('Round: %s'), $row['gto_round_description']));
-                    $div->br();
-                }
-                $token = $tracker->getToken($row);
-
-                $div = $html->div();
-                $div->class = 'askSurvey';
-                $survey = $token->getSurvey();
-                if ($token->isCompleted()) {
-                    $div->actionDisabled($survey->getExternalName());
-                    $div->append(' ');
-                    $div->append($this->formatCompletion($token->getCompletionTime()));
-
-                } else {
-                    $open++;
-
-                    $a = $div->actionLink($this->getTokenHref($token), $survey->getExternalName());
-                    $div->append(' ');
-                    $div->append($this->formatDuration($survey->getDuration()));
-                    $div->append($this->formatUntil($token->getValidUntil()));
-
-                    /*
-                    if (false === $currentToken) {
-                        $currentToken = $token->getTokenId();
-                    }
-                    if ($token->getTokenId() == $currentToken) {
-                        $a->appendAttrib('class', 'currentRow');
-                    } // */
                 }
             }
             if ($open) {
@@ -168,7 +167,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         if ($sig = $org->getSignature()) {
             $p = $html->pInfo();
             $p->br();
-            $p->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $p->bbcode($sig);
         }
         return $html;
     }

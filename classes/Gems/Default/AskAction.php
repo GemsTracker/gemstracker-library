@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -236,7 +235,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
                         strtoupper($this->tokenId)
                         ));
             }
-            $this->_forward('index');
+            $this->forward('index');
             return;
         }
 
@@ -332,7 +331,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     {
         if (! $this->_initToken()) {
             // In all other cases: the action that generates meaningfull warnings and is reachable for everyone
-            $this->_forward('forward');
+            $this->forward('forward');
             return;
         }
 

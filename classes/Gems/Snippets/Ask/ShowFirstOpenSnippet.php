@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ShowFirstOpenSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Ask;
@@ -85,18 +84,6 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         }
     }
 
-    public function addWelcome(\MUtil_Html_HtmlInterface $html)
-    {
-        if ($this->showToken) {
-            if ($this->showToken->hasRelation()) {
-                $name = $this->showToken->getRelation()->getName();
-            } else {
-                $name = $this->showToken->getRespondentName();
-            }
-            $html->pInfo(sprintf($this->_('Welcome %s,'), $name));
-        }        
-    }
-
     public function checkContinueLinkClicked()
     {
         return $this->request->getParam('continue_later', false);
@@ -127,7 +114,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $html = $this->getHtmlSequence();
         $org  = $this->token->getOrganization();
 
-        $html->h3($this->_('Token'));
+        $html->h3($this->getHeaderLabel());
 
         $mailLoader = $this->loader->getMailLoader();
         /** @var \Gems_Mail_TokenMailer $mail */
@@ -195,19 +182,16 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $html  = $this->getHtmlSequence();
         $org   = $this->showToken->getOrganization();
 
-        $html->h3($this->_('Token'));
+        $html->h3($this->getHeaderLabel());
 
-        $this->addWelcome($html);
-        if ($this->showToken && $this->showToken->hasRelation()) {
-            $html->pInfo(sprintf($this->_('We kindly ask you to answer a survey about %s.'), $this->showToken->getRespondent()->getName()));
-        }
+        $html->append($this->formatWelcome());
 
         if ($this->wasAnswered) {
             $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
+                $html->pInfo()->bbcode($welcome);
             }
             $html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($this->showToken->getTokenId())));
         }
@@ -224,7 +208,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
         $buttonDiv->append(' ');
         $buttonDiv->append($this->formatDuration($survey->getDuration()));
-        $buttonDiv->append($this->formatUntil($survey->getValidUntil()));
+        $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
 
         if ($delay > 0) {
             $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->_('Cancel'));
@@ -243,7 +227,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
                 $next), $next));
         }
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $html->pInfo()->bbcode($sig);
         }
         return $html;
     }
@@ -288,14 +272,14 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $html = $this->getHtmlSequence();
         $org  = $this->token->getOrganization();
 
-        $html->h3($this->_('Token'));
+        $html->h3($this->getHeaderLabel());
 
-        $this->addWelcome($html);
+        $html->append($this->formatThanks());
 
         $html->pInfo($this->_('Thank you for answering. At the moment we have no further surveys for you to take.'));
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $html->pInfo()->bbcode($sig);
         }
 
         return $html;
