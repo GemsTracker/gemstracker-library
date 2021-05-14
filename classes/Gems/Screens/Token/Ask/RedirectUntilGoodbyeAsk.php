@@ -26,6 +26,16 @@ class RedirectUntilGoodbyeAsk extends AskScreenAbstract
     /**
      *
      * @param \Gems_Tracker_Token $token
+     * @return array Added before all other parameters
+     */
+    public function getParameters(\Gems_Tracker_Token $token)
+    {
+        return ['showLastName' => true];
+    }
+
+    /**
+     *
+     * @param \Gems_Tracker_Token $token
      * @return array Of snippets or false to use original
      */
     public function getSnippets(\Gems_Tracker_Token $token)

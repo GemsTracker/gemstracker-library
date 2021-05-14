@@ -29,12 +29,6 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $db;
 
     /**
-     *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
      * Show completed surveys answered in last X hours
      *
      * @var int
@@ -42,24 +36,17 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $lookbackInHours = 24;
 
     /**
-     *
-     * @var \Gems_Util
-     */
-    protected $util;
-
-    /**
      * @return array tokenId => \Gems_Tracker_Token
      * @throws \Zend_Date_Exception
      */
     protected function getDisplayTokens()
     {
-        $tracker = $this->loader->getTracker();
-
-        // Only valid or answerd in the last
+        // Only valid
         $where = "(gto_completion_time IS NULL AND gto_valid_from <= CURRENT_TIMESTAMP AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP))";
 
         // Do we always look back
         if ($this->lookbackInHours) {
+            //  or answered in the last X hours
             $where .= $this->db->quoteInto("OR DATE_ADD(gto_completion_time, INTERVAL ? HOUR) >= CURRENT_TIMESTAMP", $this->lookbackInHours, \Zend_Db::INT_TYPE);
         }
 
@@ -75,7 +62,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $output = [];
 
         foreach ($tokens as $tokenData) {
-            $token = $tracker->getToken($tokenData);
+            $token = $this->tracker->getToken($tokenData);
             $output[$token->getTokenId()] = $token;
         }
 
@@ -92,9 +79,8 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $html    = $this->getHtmlSequence();
-        $org     = $this->token->getOrganization();
-        $tracker = $this->loader->getTracker();
+        $html = $this->getHtmlSequence();
+        $org  = $this->token->getOrganization();
 
         $html->h3($this->getHeaderLabel());
         $html->append($this->formatWelcome());

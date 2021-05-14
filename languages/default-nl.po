@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-07 13:01+0200\n"
+"POT-Creation-Date: 2021-05-14 16:44+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -25,6 +25,7 @@ msgstr ""
 #: classes/Gems/Agenda.php:389 classes/Gems/Agenda/Appointment.php:550
 #: classes/Gems/Agenda/EpisodeOfCare.php:160
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:101
+#: classes/Gems/Tracker/Model/Dependency/OtherFieldValuesDependency.php:102
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:875
 msgid "; "
 msgstr "; "
@@ -179,7 +180,7 @@ msgid "Subject"
 msgstr "Onderwerp"
 
 #: classes/Gems/Agenda.php:907
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:121
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:114
 #, php-format
 msgid " (%s)"
 msgstr " (%s)"
@@ -422,7 +423,7 @@ msgid "Not used in tracks"
 msgstr "Niet gebruikt in trajecten"
 
 #: classes/Gems/Agenda/AppointmentFilterModel.php:427
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:428
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:455
 msgid ": "
 msgstr ": "
 
@@ -1192,7 +1193,7 @@ msgstr "Ronde"
 #: classes/Gems/Export/RespondentExport.php:345
 #: classes/Gems/Export/RespondentExport.php:357 classes/Gems/Menu.php:464
 #: classes/Gems/Model/CommLogModel.php:143
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:117
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:110
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:42
 #: classes/Gems/Snippets/Respondent/MinimalTableSnippet.php:104
 #: classes/Gems/Snippets/Respondent/RespondentTableSnippet.php:101
@@ -1254,7 +1255,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:211
 #: classes/Gems/Export/RespondentExport.php:505
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:230
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:214
 #: classes/Gems/Snippets/FormSnippetAbstract.php:221
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/Mail/CommJobShowSnippet.php:65
@@ -1397,7 +1398,7 @@ msgid "Save"
 msgstr "Opslaan"
 
 #: classes/Gems/Controller/BrowseEditAction.php:945
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:300
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:363
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
@@ -1413,7 +1414,7 @@ msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 #: classes/Gems/Controller/BrowseEditAction.php:959
 #: classes/Gems/Snippets/Login/TwoFactorCheckSnippet.php:271
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:453
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:531
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:540
 msgid "The form was open for too long or was opened in multiple windows."
 msgstr ""
 "Dit invoerscherm staat te lang open of staat open in meerdere vensters."
@@ -1478,7 +1479,7 @@ msgstr "Toon %s"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:679
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:360
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:420
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:429
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/WizardFormSnippetAbstract.php:438
 msgid "item"
 msgid_plural "items"
@@ -1765,24 +1766,24 @@ msgstr "U heeft geen toegang %s afspraken!"
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
-#: classes/Gems/Default/AskAction.php:197
+#: classes/Gems/Default/AskAction.php:196
 #, php-format
 msgid "Enter your %s token"
 msgstr "Voer uw %s kenmerk in"
 
-#: classes/Gems/Default/AskAction.php:200
+#: classes/Gems/Default/AskAction.php:199
 msgid "Tokens identify a survey that was assigned to you personally."
 msgstr "Elk kenmerk verwijst naar een specifiek aan u toegekende vragenlijst."
 
-#: classes/Gems/Default/AskAction.php:200
+#: classes/Gems/Default/AskAction.php:199
 msgid "Entering the token and pressing OK will open that survey."
 msgstr "Vul uw kenmerk in en druk op OK om die vragenlijst te openen."
 
-#: classes/Gems/Default/AskAction.php:204
+#: classes/Gems/Default/AskAction.php:203
 msgid "After answering the survey you will be logged off automatically."
 msgstr "Na het invullen wordt u automatisch uitgelogd."
 
-#: classes/Gems/Default/AskAction.php:209
+#: classes/Gems/Default/AskAction.php:208
 msgid ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
@@ -1791,7 +1792,7 @@ msgstr ""
 "(niet verplicht) streepje ertussen. Hoofdletters of gewone letters maakt "
 "niets uit."
 
-#: classes/Gems/Default/AskAction.php:210
+#: classes/Gems/Default/AskAction.php:209
 msgid ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
@@ -1799,13 +1800,13 @@ msgstr ""
 "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook "
 "niet tussen het getal één en de letter L."
 
-#: classes/Gems/Default/AskAction.php:235
+#: classes/Gems/Default/AskAction.php:234
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
-#: classes/Gems/Default/AskAction.php:275
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:295
+#: classes/Gems/Default/AskAction.php:274
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:279
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1814,7 +1815,7 @@ msgstr ""
 "Dank u voor uw antwoorden. Op dit moment hebben we geen vragenlijsten meer "
 "voor u."
 
-#: classes/Gems/Default/AskAction.php:280
+#: classes/Gems/Default/AskAction.php:279
 #, php-format
 msgid ""
 "The survey for token %s has been answered and no further surveys are open."
@@ -1822,7 +1823,7 @@ msgstr ""
 "De vragenlijst met het kenmerk %s is beantwoord en er staan verder geen "
 "vragenlijsten open."
 
-#: classes/Gems/Default/AskAction.php:422
+#: classes/Gems/Default/AskAction.php:421
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
@@ -4874,11 +4875,6 @@ msgstr "Laatste pagina"
 #: classes/Gems/Model/CommLogModel.php:141
 #: classes/Gems/Model/OrganizationModel.php:279
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:89
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:83
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:65
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:130
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:198
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:291
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:64
 #: classes/Gems/Snippets/Token/CheckTokenEvents.php:78
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:789
@@ -4886,6 +4882,7 @@ msgstr "Laatste pagina"
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:296
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:239
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:250
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:246
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:607
 msgid "Token"
 msgstr "Kenmerk"
@@ -5571,10 +5568,8 @@ msgid "Templates"
 msgstr "Sjablonen"
 
 #: classes/Gems/Menu/MenuAbstract.php:350
-#, fuzzy
-#| msgid "Email servers"
 msgid "Mail servers"
-msgstr "Email servers"
+msgstr "Mail servers"
 
 #: classes/Gems/Menu/MenuAbstract.php:408
 msgid "Single survey answers"
@@ -6430,7 +6425,7 @@ msgstr "Blokker deze website."
 
 #: classes/Gems/Model/StaffModel.php:140
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:205
-#: classes/Gems/User/User.php:1960
+#: classes/Gems/User/User.php:1962
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -6998,17 +6993,29 @@ msgstr "Uitschrijven voor vragenlijsten bij %s"
 msgid "(default project specific token ask screen)"
 msgstr "(standaard project kenmerk afname scherm)"
 
-#: classes/Gems/Screens/Token/Ask/RedirectUntilGoodbyeAsk.php:42
+#: classes/Gems/Screens/Token/Ask/RedirectUntilGoodbyeAsk.php:52
 msgid "Answer first open until finished"
 msgstr "Beantwoord eerste open vragenlijst tot klaar"
 
-#: classes/Gems/Screens/Token/Ask/ShowAllOpenAsk.php:42
-msgid "Show all open tokens"
-msgstr "Toon alle open vragenlijsten"
+#: classes/Gems/Screens/Token/Ask/ShowAllOpenAsk.php:52
+msgid "Show all open tokens - use lastname"
+msgstr "Toon alle open vragenlijsten - met achternaam"
 
-#: classes/Gems/Screens/Token/Ask/ShowFirstOpenAsk.php:42
-msgid "Show first open token only"
-msgstr "Toon alleen de eerste open vragenlijst"
+#: classes/Gems/Screens/Token/Ask/ShowAllOpenAskPrivate.php:39
+msgid "Show all open tokens - without lastname"
+msgstr "Toon alle open vragenlijsten - zonder achternaam"
+
+#: classes/Gems/Screens/Token/Ask/ShowFirstOpenAsk.php:52
+msgid "Show first open token only - use lastname"
+msgstr "Toon alleen de eerste open vragenlijst - met achternaam"
+
+#: classes/Gems/Screens/Token/Ask/ShowFirstOpenAskPrivate.php:39
+msgid "Show first open token only - without lastname"
+msgstr "Toon alleen de eerste open vragenlijst - zonder achternaam"
+
+#: classes/Gems/Screens/Token/Ask/ShowOpenSequenceAsk.php:39
+msgid "Show token by token with open count."
+msgstr "Toon de vragenlijsten één voor één, met teller."
 
 #: classes/Gems/Selector/DateSelectorAbstract.php:268
 msgid "<<"
@@ -7508,79 +7515,61 @@ msgstr ""
 msgid "Please try again later."
 msgstr "Probeert u het s.v.p. later nog een keer."
 
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:84
-#, php-format
-msgid "Thank you %s,"
-msgstr "Dank u wel %s,"
-
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:92
+#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:90
 msgid "Thanks for answering our questions."
 msgstr "Dank u voor het beantwoorden van onze vragen."
 
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:95
+#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:93
 msgid "This survey has expired. You can no longer answer it."
 msgstr "Deze vragenlijst kan niet meer ingevuld worden."
 
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:97
+#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:95
 msgid "This survey is no longer valid."
 msgstr "Deze vragenlijst is niet meer geldig."
 
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:100
+#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:98
 msgid "We have no further questions for you at the moment."
 msgstr "Op dit moment hebben wij geen verdere vragen."
 
-#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:101
+#: classes/Gems/Snippets/Ask/RedirectUntilGoodbyeSnippet.php:99
 msgid "We appreciate your cooperation very much."
 msgstr "Wij waarderen uw medewerking."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:67
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:71
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:96
-#, php-format
-msgid "Welcome %s,"
-msgstr "Welkom %s,"
-
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:69
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:202
-#, php-format
-msgid "We kindly ask you to answer a survey about %s."
-msgstr "Wij verzoeken u een vragenlijst over %s te beantwoorden."
-
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:77
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:206
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:89
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:190
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:129
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:122
 #, php-format
 msgid "Round: %s"
 msgstr "Ronde: %s"
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:160
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:145
 msgid "Please answer the open survey."
 msgid_plural "Please answer the open surveys."
 msgstr[0] "Wij verzoeken u de openstaande vragenlijst nu in te vullen."
 msgstr[1] "Wij verzoeken u de openstaande vragenlijsten nu in te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:162
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:147
 msgid "Thank you for answering all open surveys."
 msgstr "Dank u voor het beantwoorden van alle openstaande vragenlijsten."
 
-#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:165
+#: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:150
 msgid "There are no surveys to show for this token."
 msgstr "U heeft geen open vragenlijsten voor dit kenmerk."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:79
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:78
 #: classes/Gems/User/TwoFactor/TwoFactorTotpAbstract.php:45
 msgid "or"
 msgstr "of"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:83
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:82
 msgid "Send me an email to continue later"
 msgstr "Stuur mij een email om later verder te gaan"
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:140
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:127
 msgid ""
 "An email with information to continue later was already sent to your "
 "registered email address today."
@@ -7588,7 +7577,7 @@ msgstr ""
 "Een email met informatie om later verder te gaan is vandaag al verstuurd "
 "naar uw emailadres."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:143
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:130
 msgid ""
 "An email with information to continue later was sent to your registered "
 "email address."
@@ -7596,7 +7585,7 @@ msgstr ""
 "Een email met informatie om later verder te gaan is verstuurd naar uw "
 "emailadres."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:146
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:133
 msgid ""
 "Delivery can take a while. If you do not receive an email please check your "
 "spam-box."
@@ -7604,18 +7593,18 @@ msgstr ""
 "Het kan even duren voordat u de email ontvangt. Als u niets ontvangt, "
 "controleer dan uw spam-box."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:207
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:191
 msgid "Please click the button below to answer the next survey."
 msgstr "Klik op de onderstaande knop om de volgende vragenlijst in te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:212
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:196
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr ""
 "Klik op de onderstaande knop om de vragenlijst behorende bij kenmerk %s in "
 "te vullen."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:216
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:200
 #, php-format
 msgid ""
 "Wait one second to open the survey automatically or click on Cancel to stop."
@@ -7628,7 +7617,7 @@ msgstr[1] ""
 "Over %d seconden start de vragenlijst automatisch. Klik op annuleren om dit "
 "te onderbreken."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:241
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:225
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -7636,6 +7625,34 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:31
+msgid "Welcome back,"
+msgstr "Welkomterug,"
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:33
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:228
+msgid "Welcome,"
+msgstr "Welkom,"
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:56
+#, php-format
+msgid "Thank you for your answering \"%s\","
+msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:68
+#, php-format
+msgid "Thank you for answering the surveys for \"%s\","
+msgstr "Dank u voor het invullen van de vragenlijsten voor \"%s\"."
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:100
+msgid "Click on the link to answer the survey:"
+msgstr "Klik op de knop om de vragenlijst in te vullen:"
+
+#: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:112
+#, php-format
+msgid "There are open %d surveys"
+msgstr "Er staan %d vragenlijsten open."
 
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:140
 msgid "For date"
@@ -10753,10 +10770,12 @@ msgid "Enter a default value"
 msgstr "Geef een standaardwaarde op"
 
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:141
+#: classes/Gems/Tracker/Model/Dependency/OtherFieldValuesDependency.php:143
 msgid "Calculate from"
 msgstr "Berekenen met"
 
 #: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:142
+#: classes/Gems/Tracker/Model/Dependency/OtherFieldValuesDependency.php:144
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:288
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:303
 msgid "Automatically calculate this field using other fields"
@@ -11273,71 +11292,90 @@ msgstr "%s ronde"
 msgid "No round specified."
 msgstr "Geen ronde opgegeven."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:104
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:123
 msgid "We have received your answers today. Thank you!"
 msgstr "We hebben uw vragenlijst vandaag ingevuld ontvangen. Dank u wel!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:107
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:126
 msgid "We have received your answers yesterday. Thank you!"
 msgstr "We hebben uw vragenlijst gisteren ingevuld ontvangen. Dank u wel!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:110
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
 msgid "We have received your answers 2 days ago. Thank you."
 msgstr "We hebben uw vragenlijst eergisteren ingevuld ontvangen. Dank u wel."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:114
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:133
 #, php-format
 msgid "We have received your answers %d days ago. Thank you."
 msgstr ""
 "We hebben uw vragenlijst %d dagen geleden ingevuld ontvangen. Dank u wel."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:116
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:135
 #, php-format
 msgid "We have received your answers on %s. "
 msgstr "We hebben uw vragenlijst op %s ingevuld ontvangen. "
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:148
 #, php-format
 msgid "Takes about %s to answer."
 msgstr "Duurt meestal ongeveer %s."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:144
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:162
+#, php-format
+msgid "Thank you %s,"
+msgstr "Dank u wel %s,"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:164
+msgid "Thank you for your answers,"
+msgstr "Bedankt voor uw antwoorden,"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:180
 msgid "Survey has no time limit."
 msgstr "Vragenlijst zonder eindtijd."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:152
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:188
 msgid "Warning!!!"
 msgstr "Let op!!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:154
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:190
 msgid "This survey must be answered today!"
 msgstr "Deze vragenlijst kan alleen vandaag nog ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:159
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:195
 msgid "Warning!!"
 msgstr "Let op!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:161
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:197
 msgid "This survey can only be answered until tomorrow!"
 msgstr "Deze vragenlijst kan slechts tot morgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:165
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:201
 msgid "Warning! This survey can only be answered for another 2 days!"
 msgstr "Let op! Deze vragenlijst kan slechts tot overmorgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:169
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:205
 #, php-format
 msgid "Please answer this survey within %d days."
 msgstr "Wij verzoeken u deze vragenlijst binnen %d dagen in te vullen."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:173
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:209
 msgid "This survey can no longer be answered."
 msgstr "Deze vragenlijst kan niet langer worden ingevuld."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:176
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:212
 #, php-format
 msgid "Please answer this survey before %s."
 msgstr "Wij verzoeken u deze vragenlijst voor %s in te vullen."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:226
+#, php-format
+msgid "Welcome %s,"
+msgstr "Welkom %s,"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:234
+#, php-format
+msgid "We kindly ask you to answer a survey about %s."
+msgstr "Wij verzoeken u een vragenlijst over %s te beantwoorden."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:168
 #, php-format
@@ -11535,7 +11573,7 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token.php:2087
+#: classes/Gems/Tracker/Token.php:2086
 #, php-format
 msgid ""
 "%s: Reset number of contact moments because new start date %s is later than "
@@ -11669,7 +11707,7 @@ msgid "Staff account setup page"
 msgstr "Medewerker \"Uw account\" pagina"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:180
-#: classes/Gems/User/User.php:1940 classes/Gems/User/User.php:1955
+#: classes/Gems/User/User.php:1942 classes/Gems/User/User.php:1957
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -12012,32 +12050,32 @@ msgstr "U kunt vanaf deze locatie niet inloggen."
 msgid "Project 'master'"
 msgstr "Project 'master'"
 
-#: classes/Gems/User/User.php:1925
+#: classes/Gems/User/User.php:1927
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1948
+#: classes/Gems/User/User.php:1950
 msgid "Your zipcode"
 msgstr "Uw postcode"
 
-#: classes/Gems/User/User.php:2087
+#: classes/Gems/User/User.php:2089
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:2115
+#: classes/Gems/User/User.php:2117
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
-#: classes/Gems/User/User.php:2257 classes/Gems/User/User.php:2262
+#: classes/Gems/User/User.php:2259 classes/Gems/User/User.php:2264
 msgid "No access to group"
 msgstr "Geen toegang tot deze groep"
 
-#: classes/Gems/User/User.php:2258
+#: classes/Gems/User/User.php:2260
 #, php-format
 msgid "You are not allowed to switch to the %s group."
 msgstr "U mag niet naar de %s groep switchen."
 
-#: classes/Gems/User/User.php:2263
+#: classes/Gems/User/User.php:2265
 #, php-format
 msgid "You cannot switch to an inactive or non-existing group."
 msgstr "U mag niet switchen naar een inactieve of niet-bestaande groep."
@@ -12808,23 +12846,23 @@ msgstr ""
 msgid "No field overlap between source and target"
 msgstr "Bron en doel velden komen niet overeen"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:421
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:448
 #, php-format
 msgid "Row %s"
 msgstr "Rij %s"
 
-#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:426
+#: vendor/magnafacta/mutil/src/MUtil/Model/ModelTranslatorAbstract.php:453
 #, php-format
 msgid " field %s"
 msgstr " veld %s"
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/FormSnippetAbstract.php:449
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:527
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:536
 #, php-format
 msgid "Input error! Changes to %s not saved!"
 msgstr "Invoer fout! Veranderingen aan %s niet opgeslagen!"
 
-#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:505
+#: vendor/magnafacta/mutil/src/MUtil/Snippets/ModelFormSnippetAbstract.php:514
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/MultiRowModelFormAbstract.php:95
 msgid "Unknown edit data requested"
 msgstr "Onjuist gegevens bewerkingsverzoek"

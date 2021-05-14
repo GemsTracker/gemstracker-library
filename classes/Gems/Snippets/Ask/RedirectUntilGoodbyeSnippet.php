@@ -52,7 +52,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         if ($this->wasAnswered) {
             $this->currentToken = $this->token->getNextUnansweredToken();
         } else {
-            $validator = $this->loader->getTracker()->getTokenValidator();
+            $validator = $this->tracker->getTokenValidator();
 
             if ($validator->isValid($this->token->getTokenId())) {
                 $this->currentToken = $this->token;
@@ -82,7 +82,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         $html->h3($this->getHeaderLabel());
         $html->append($this->formatThanks());
         if ($welcome = $org->getWelcome()) {
-            $html->pInfo()->raw(\MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
+            $html->pInfo()->bbcode($welcome);
         }
 
         $p = $html->pInfo()->spaced();
@@ -99,7 +99,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
         $p->append($this->_('We appreciate your cooperation very much.'));
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
+            $html->pInfo()->bbcode($sig);
         }
 
         return $html;

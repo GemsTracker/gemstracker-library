@@ -27,6 +27,12 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     protected $dateFormat = 'd MMMM yyyy';
 
     /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * Required
      *
      * @var \Zend_Controller_Request_Abstract
@@ -60,6 +66,12 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     protected $token;
 
     /**
+     *
+     * @var \Gems_Tracker
+     */
+    protected $tracker;
+
+    /**
      * Required
      *
      * @var \Zend_View
@@ -81,6 +93,9 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      */
     public function checkRegistryRequestsAnswers()
     {
+        if(! $this->tracker) {
+            $this->tracker = $this->loader->getTracker();
+        }
         if ($this->token instanceof \Gems_Tracker_Token) {
 
             $this->wasAnswered = $this->token->isCompleted();

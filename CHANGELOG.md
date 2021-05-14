@@ -17,7 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Allow relation to ask for a token mail resend (#601)
 - Enable inserting more than one survey at a time (#617)
 - Debug options for survey events (#613)
-
+- Make display of family name in ask screen optional (#641)
+  
 ### Interface improvements
 - Add a header to the round editor to show where the conditions start (#635)
 - Add group information for limesurvey questionnaires to survey preview and answer views (#34)
