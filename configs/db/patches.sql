@@ -1,4 +1,4 @@
-GEMS VERSION: 1
+-- GEMS VERSION: 1
 -- PATCH: Test skip earlier patch levels
 
 SELECT NULL;
