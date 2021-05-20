@@ -27,6 +27,12 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
     private $_respondent;
 
     /**
+     *
+     * @var \Gems_User_User
+     */
+    public $currentUser;
+
+    /**
      * Model level parameters used for all actions, overruled by any values set in any other
      * parameters array except the private $_defaultParamters values in this module.
      *
@@ -89,6 +95,12 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
                 throw new \Gems_Exception(sprintf($this->getMissingRespondentMessage(), $patientNumber));
             }
 
+            if ($this->_respondent->exists && (! array_key_exists($this->_respondent->getOrganizationId(), $this->currentUser->getAllowedOrganizations()))) {
+                throw new \Gems_Exception(
+                    $this->_('Inaccessible or unknown organization'),
+                    403, null,
+                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
+            }
             $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
         }
 

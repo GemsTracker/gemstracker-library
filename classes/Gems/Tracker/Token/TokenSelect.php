@@ -88,7 +88,7 @@ class Gems_Tracker_Token_TokenSelect
      */
     public function andConsents($fields = '*') 
     {
-        $this->sql_select->columns('gems__consents',
+        $this->sql_select->join('gems__consents',
                 'gr2o_consent = gco_description',
                 $fields);
 

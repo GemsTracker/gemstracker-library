@@ -143,12 +143,6 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
 
     /**
      *
-     * @var \Gems_User_User
-     */
-    public $currentUser;
-
-    /**
-     *
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -968,6 +962,13 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
             $token = $this->loader->getTracker()->getToken($tokenId);
         }
         if ($token && $token->exists) {
+            if (! array_key_exists($token->getOrganizationId(), $this->currentUser->getAllowedOrganizations())) {
+                throw new \Gems_Exception(
+                    $this->_('Inaccessible or unknown organization'),
+                    403, null,
+                    sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
+            }
+
             // Set variables for the menu
             $token->applyToMenuSource($this->menu->getParameterSource());
 
