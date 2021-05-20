@@ -22,7 +22,7 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 12:55:25
  */
-class CommLogModel extends \Gems_Model_JoinModel
+class CommLogModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
      *

@@ -1896,8 +1896,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $tokenSelect = $this->tracker->getTokenSelect();
 
             $tokenSelect
+                    ->andReceptionCodes()
                     ->andRespondents()
                     ->andRespondentOrganizations()
+                    ->addStatus()
                     ->forTokenId($this->_tokenId);
 
             $this->_gemsData = $tokenSelect->fetchRow();

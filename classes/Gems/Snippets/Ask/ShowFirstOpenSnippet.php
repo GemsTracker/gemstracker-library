@@ -187,7 +187,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $html->append($this->formatWelcome());
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->token->getSurvey()->getExternalName()));
+            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->getSurveyName($this->token)));
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
@@ -202,12 +202,11 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
                 $delay), $delay));
         }
 
-        $survey = $this->showToken->getSurvey();
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $buttonDiv->actionLink($href, $survey->getExternalName());
+        $buttonDiv->actionLink($href, $this->getSurveyName($this->showToken));
 
         $buttonDiv->append(' ');
-        $buttonDiv->append($this->formatDuration($survey->getDuration()));
+        $buttonDiv->append($this->formatDuration($this->showToken->getSurvey()->getDuration()));
         $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
 
         if ($delay > 0) {
@@ -219,7 +218,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $this->addContinueLink($html);
         }
 
-        if ($next = $this->showToken->getTokenCountUnanswered()) {
+        if ($next = $this->getOtherTokenCountUnanswered($this->showToken)) {
             $html->pInfo(sprintf(
             $this->plural(
                 'After this survey there is one other survey we would like you to answer.',
@@ -230,6 +229,31 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $html->pInfo()->bbcode($sig);
         }
         return $html;
+    }
+
+    /**
+     * Count the number of other surveys not yet answered
+     * 
+     * @param \Gems_Tracker_Token $token
+     * @return int
+     */
+    protected function getOtherTokenCountUnanswered(\Gems_Tracker_Token $token)
+    {
+        $count = $token->getTokenCountUnanswered();
+        
+        // In case of null
+        return $count ? $count : 0;
+    }
+
+    /**
+     * Allow for overruling
+     * 
+     * @param \Gems_Tracker_Token $token
+     * @return string
+     */
+    public function getSurveyName(\Gems_Tracker_Token $token)
+    {
+        return $token->getSurvey()->getExternalName();
     }
 
     /**

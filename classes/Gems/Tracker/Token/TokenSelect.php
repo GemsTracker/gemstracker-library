@@ -62,6 +62,25 @@ class Gems_Tracker_Token_TokenSelect
     }
 
     /**
+     * Add the status column to the select, $this->andReceptionCodes() must be called first
+     * 
+     * @return $this
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function addStatus()
+    {
+        // Some queries use multiple token tables
+        $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
+
+        $this->sql_select->columns(
+            ['token_status' => new \Zend_Db_Expr($expr)],
+            'gems__tokens'
+        );
+                
+        return $this;
+    }
+    
+    /**
      * Add consent descriptions to the select statement
      *
      * @param string|array $fields
@@ -69,7 +88,7 @@ class Gems_Tracker_Token_TokenSelect
      */
     public function andConsents($fields = '*') 
     {
-        $this->sql_select->joinLeft('gems__consents',
+        $this->sql_select->columns('gems__consents',
                 'gr2o_consent = gco_description',
                 $fields);
 
@@ -91,13 +110,7 @@ class Gems_Tracker_Token_TokenSelect
                                 $fields);
 
         if ($addStatus) {
-            // Some queries use multiple token tables
-            $expr = str_replace('gto_', 'gems__tokens.gto_', (string) $this->util->getTokenData()->getStatusExpression());
-
-            $this->sql_select->columns(
-                ['token_status' => new \Zend_Db_Expr($expr)],
-                'gems__tokens'
-            );
+            $this->addStatus();
         }
         
         return $this;
@@ -491,5 +504,4 @@ class Gems_Tracker_Token_TokenSelect
 
         return $this;
     }
-
 }

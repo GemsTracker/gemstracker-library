@@ -24,7 +24,7 @@ use MUtil\Model\Type\JsonData;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 16:53:36
  */
-class LogModel extends \Gems_Model_JoinModel
+class LogModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
      *
