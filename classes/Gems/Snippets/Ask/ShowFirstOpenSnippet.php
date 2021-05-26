@@ -44,6 +44,13 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $project;
 
     /**
+     * Show this snippet show a thank you screen when there are no more tokens to answer?
+     *
+     * @var boolean
+     */
+    public $showEndScreen = true;
+
+    /**
      * Optional, calculated from $token
      *
      * @var \Gems_Tracker_Token
@@ -56,38 +63,6 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * @var boolean
      */
     protected $showUntil = false;
-
-    /**
-     * Show this snippet show a thank you screen when there are no more tokens to answer?
-     *
-     * @var boolean
-     */
-    public $showEndScreen = true;
-
-    public function addContinueLink(\MUtil_Html_HtmlInterface $html)
-    {
-        if (!$this->checkContinueLinkClicked()) {
-            $mailLoader = $this->loader->getMailLoader();
-            /** @var \Gems_Mail_TokenMailer $mailer */
-            $mailer     = $mailLoader->getMailer('token', $this->showToken->getTokenId());            
-            $orgEmail   = $this->showToken->getOrganization()->getFrom();
-            $respEmail  = $this->showToken->getEmail();
-
-            // If there is no template, or no email for sender / receiver we show no link
-            if ($mailer->setTemplateByCode('continue') && !empty($orgEmail) && $this->showToken->isMailable()) {
-                $html->pInfo($this->_('or'));
-                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'forward'));
-                $href = $menuItem->toHRefAttribute($this->request);
-                $href->add(['continue_later' => 1, 'id' => $this->token->getTokenId()]);
-                $html->actionLink($href, $this->_('Send me an email to continue later'));
-            }
-        }
-    }
-
-    public function checkContinueLinkClicked()
-    {
-        return $this->request->getParam('continue_later', false);
-    }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -105,42 +80,6 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     }
 
     /**
-     * Handle the situation when the continue later link was clicked
-     *
-     * @return \MUtil_Html_HtmlInterface
-     */
-    public function continueClicked()
-    {
-        $html = $this->getHtmlSequence();
-        $org  = $this->token->getOrganization();
-
-        $html->h3($this->getHeaderLabel());
-
-        $mailLoader = $this->loader->getMailLoader();
-        /** @var \Gems_Mail_TokenMailer $mail */
-        $mail       = $mailLoader->getMailer('token', $this->showToken->getTokenId());
-        $mail->setFrom($this->showToken->getOrganization()->getFrom());
-        if ($mail->setTemplateByCode('continue')) {
-            $lastMailedDate = \MUtil_Date::ifDate($this->showToken->getMailSentDate(), 'yyyy-MM-dd');
-            // Do not send multiple mails a day
-            if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
-                $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
-            } else {
-                $mail->send();
-                $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
-            }
-
-            $html->pInfo($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
-        }
-
-        if ($sig = $org->getSignature()) {
-            $html->pInfo()->raw(\MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
-        }
-
-        return $html;
-    }
-
-    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
@@ -150,15 +89,13 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if ($this->wasAnswered) {
-            if (!($this->showToken instanceof \Gems_Tracker_Token)) {
-                // Last token was answered, return info
-                return $this->lastCompleted();
-
-            } elseif ($this->checkContinueLinkClicked()) {
-                // Continue later was clicked, handle the click
-                return $this->continueClicked();
-            }
+        if ($this->checkContinueLinkClicked()) {
+            // Continue later was clicked, handle the click
+            return $this->continueClicked();
+        }
+        if ($this->showToken->isCompleted()) {
+            // Last token was answered, return info
+            return $this->lastCompleted();
         }
 
         $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
@@ -179,6 +116,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
                 $this->view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
         }
 
+        $count = $this->getOtherTokenCountUnanswered($this->showToken);
         $html  = $this->getHtmlSequence();
         $org   = $this->showToken->getOrganization();
 
@@ -187,13 +125,17 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $html->append($this->formatWelcome());
 
         if ($this->wasAnswered) {
-            $html->pInfo(sprintf($this->_('Thank you for answering the "%s" survey.'), $this->getSurveyName($this->token)));
+            $html->pInfo(sprintf(
+                             $this->_('Thank you for answering the "%s" survey.'),
+                             $this->getSurveyName($this->token)));
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
                 $html->pInfo()->bbcode($welcome);
             }
-            $html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($this->showToken->getTokenId())));
+            $html->pInfo(sprintf(
+                             $this->_('Please click the button below to answer the survey for token %s.'),
+                             strtoupper($this->showToken->getTokenId())));
         }
         if ($delay > 0) {
             $html->pInfo(sprintf($this->plural(
@@ -215,15 +157,16 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
         if ($this->wasAnswered) {
             // Provide continue later link only when the first survey was answered
-            $this->addContinueLink($html);
+            $this->addContinueLink($html, $this->token);
         }
 
-        if ($next = $this->getOtherTokenCountUnanswered($this->showToken)) {
-            $html->pInfo(sprintf(
-            $this->plural(
+        if ($count) {
+            $html->pInfo(sprintf($this->plural(
                 'After this survey there is one other survey we would like you to answer.',
                 'After this survey there are another %d surveys we would like you to answer.',
-                $next), $next));
+                $count), $count));
+        } elseif ($this->wasAnswered) {
+            $html->pInfo($this->_('This survey is the last survey to answer.'));
         }
         if ($sig = $org->getSignature()) {
             $html->pInfo()->bbcode($sig);
@@ -283,29 +226,5 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         }
 
         return $validToken;
-    }
-
-    /**
-     * The last token was answered, there are no more tokens to answer
-     *
-     * @return \MUtil_Html_HtmlInterface
-     */
-    public function lastCompleted()
-    {
-        // We use $this->token since there is no showToken anymore
-        $html = $this->getHtmlSequence();
-        $org  = $this->token->getOrganization();
-
-        $html->h3($this->getHeaderLabel());
-
-        $html->append($this->formatThanks());
-
-        $html->pInfo($this->_('Thank you for answering. At the moment we have no further surveys for you to take.'));
-
-        if ($sig = $org->getSignature()) {
-            $html->pInfo()->bbcode($sig);
-        }
-
-        return $html;
     }
 }

@@ -20,6 +20,8 @@
  */
 class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_SnippetAbstract
 {
+    const CONTINUE_LATER_PARAM = 'continue_later';
+    
     /**
      * General date format
      * @var string
@@ -86,6 +88,79 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     protected $wasAnswered;
 
     /**
+     * @param \MUtil_Html_HtmlInterface $html
+     * @param \Gems_Tracker_Token|null  $token
+     */
+    public function addContinueLink(\MUtil_Html_HtmlInterface $html, \Gems_Tracker_Token $token = null)
+    {
+        if (null == $token) {
+            $token = $this->token;
+        }
+        if (! $token->isCompleted()) {
+            $mailLoader = $this->loader->getMailLoader();
+            /** @var \Gems_Mail_TokenMailer $mailer */
+            $mailer     = $mailLoader->getMailer('token', $this->showToken->getTokenId());
+            $orgEmail   = $token->getOrganization()->getFrom();
+            $respEmail  = $token->showToken->getEmail();
+
+            // If there is no template, or no email for sender / receiver we show no link
+            if ($mailer->setTemplateByCode('continue') && (!empty($orgEmail)) && $token->isMailable()) {
+                $html->pInfo($this->_('or'));
+                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'forward'));
+                $href     = $menuItem->toHRefAttribute($this->request);
+                $href->add([self::CONTINUE_LATER_PARAM => 1, 'id' => $token->getTokenId()]);
+                $html->actionLink($href, $this->_('Send me an email to continue later'));
+            }
+        }
+    }
+
+    /**
+     * Handle the situation when the continue later link was clicked
+     *
+     * @return \MUtil_Html_HtmlInterface
+     */
+    public function continueClicked()
+    {
+        $html = $this->getHtmlSequence();
+        $org  = $this->token->getOrganization();
+
+        $html->h3($this->getHeaderLabel());
+
+        $mailLoader = $this->loader->getMailLoader();
+        /** @var \Gems_Mail_TokenMailer $mail */
+        $mail       = $mailLoader->getMailer('token', $this->showToken->getTokenId());
+        $mail->setFrom($this->showToken->getOrganization()->getFrom());
+        
+        if ($mail->setTemplateByCode('continue')) {
+            $lastMailedDate = \MUtil_Date::ifDate($this->showToken->getMailSentDate(), 'yyyy-MM-dd');
+
+            // Do not send multiple mails a day
+            if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
+                $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
+            } else {
+                $mail->send();
+                $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
+            }
+
+            $html->pInfo($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
+        }
+
+        if ($sig = $org->getSignature()) {
+            $html->pInfo()->bbcode($sig);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @return boolean Was the continue link clicked
+     */
+    public function checkContinueLinkClicked()
+    {
+        return $this->request->getParam(self::CONTINUE_LATER_PARAM, false);
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -147,6 +222,16 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         if ($duration && $this->showDuration) {
             return sprintf($this->_('Takes about %s to answer.'),  $duration) . ' ';
         }
+    }
+
+    /**
+     * Return a no further questions statement (or nothing) 
+     *
+     * @return \MUtil_Html_HtmlElement
+     */
+    public function formatNoFurtherQuestions()
+    {
+        return \MUtil_Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));    
     }
 
     /**
@@ -264,5 +349,29 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
             );
 
         return new \MUtil_Html_HrefArrayAttribute($params);
+    }
+
+    /**
+     * The last token was answered, there are no more tokens to answer
+     *
+     * @return \MUtil_Html_HtmlInterface
+     */
+    public function lastCompleted()
+    {
+        // We use $this->token since there is no showToken anymore
+        $html = $this->getHtmlSequence();
+        $org  = $this->token->getOrganization();
+
+        $html->h3($this->getHeaderLabel());
+
+        $html->append($this->formatThanks());
+
+        $html->append($this->formatNoFurtherQuestions());
+
+        if ($sig = $org->getSignature()) {
+            $html->pInfo()->bbcode($sig);
+        }
+
+        return $html;
     }
 }
