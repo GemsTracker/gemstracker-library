@@ -1,21 +1,22 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: GemsTracker NL\n"
+"Project-Id-Version: GemsTracker FR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-04 11:22+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Source-Language: en\n"
+"X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.4.3\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -728,7 +729,7 @@ msgid ""
 " - At least minimum age\n"
 " - But no older than maximum age"
 msgstr ""
-"Le série sera valable lorsque le répondant est:\n"
+"Le série sera valable lorsque le  est:\n"
 " - Avoir au moins l'âge minimum\n"
 " - Mais pas plus que l'âge maximum"
 
@@ -757,7 +758,7 @@ msgstr "Âge maximum"
 #: classes/Gems/Condition/Round/AgeCondition.php:76
 #: classes/Gems/Condition/Round/AgeCondition.php:93
 msgid "Respondent age"
-msgstr "Âge du répondant"
+msgstr "Âge du"
 
 #: classes/Gems/Condition/Round/AgeCondition.php:90
 msgid " (age in months"
@@ -810,8 +811,8 @@ msgid ""
 "Round will be valid depending on the gender of the respondent or the "
 "relation assinged to the survey."
 msgstr ""
-"La série sera valable en fonction du genre du répondant ou de la relation "
-"assignée à l'enquête."
+"La série sera valable en fonction du genre du  ou de la relation assignée à "
+"l'enquête."
 
 #: classes/Gems/Condition/Round/GenderCondition.php:69
 #: classes/Gems/Condition/Round/GenderCondition.php:109
@@ -825,7 +826,7 @@ msgstr ""
 #: classes/Gems/Tracker.php:698
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:788
 msgid "Respondent"
-msgstr "Participant"
+msgstr "Patient(e)"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:70
 #: classes/Gems/Condition/Round/GenderCondition.php:110
@@ -852,7 +853,7 @@ msgstr "Sexe"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:92
 msgid "Respondent or relation gender"
-msgstr "Sexe du répondant ou de la relation"
+msgstr "Sexe du patient(e) ou de la relation"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:98
 msgid "Round is not for relations"
@@ -860,7 +861,7 @@ msgstr "La série n'est pas pour les relations"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:100
 msgid "Round is not for respondents"
-msgstr "La série n'est pas pour les répondants"
+msgstr "La série n'est pas pour les s"
 
 #: classes/Gems/Condition/Round/GenderCondition.php:119
 #, php-format
@@ -1252,12 +1253,12 @@ msgstr ""
 #: classes/Gems/Default/AgendaActivityAction.php:127
 #: classes/Gems/Default/AgendaProcedureAction.php:127
 msgid "Respondent explanation"
-msgstr "Explication du répondant"
+msgstr "Explication du patient(e)"
 
 #: classes/Gems/Default/AgendaActivityAction.php:128
 #: classes/Gems/Default/AgendaProcedureAction.php:128
 msgid "Alternative description to use with respondents."
-msgstr "Description alternative à utiliser avec les répondants."
+msgstr "Description alternative à utiliser avec les s."
 
 #: classes/Gems/Default/AgendaActivityAction.php:130
 #: classes/Gems/Default/AgendaProcedureAction.php:130
@@ -1403,7 +1404,7 @@ msgid ""
 "e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) "
 "operation, etc..."
 msgstr ""
-"Une procédure décrit les effets des rendez-vous sur un répondant :\n"
+"Une procédure décrit les effets des rendez-vous sur un  :\n"
 "par exemple, un exercice, une explication, un massage, une prise de "
 "conscience, une opération (spécifique), etc..."
 
@@ -1468,12 +1469,12 @@ msgstr "Vérification du filtre du parcours de soin pour ce rendez-vous"
 #: classes/Gems/Default/AppointmentAction.php:242
 #, php-format
 msgid "Appointments for respondent number %s"
-msgstr "Rendez-vous pour le répondant numéro %s"
+msgstr "Rendez-vous pour le  numéro %s"
 
 #: classes/Gems/Default/AppointmentAction.php:248
 #, php-format
 msgid "Appointments for respondent number %s: %s"
-msgstr "Rendez-vous pour le répondants numéro %s: %s"
+msgstr "Rendez-vous pour le s numéro %s: %s"
 
 #: classes/Gems/Default/AppointmentAction.php:260 classes/Gems/Menu.php:448
 #: classes/Gems/Model/EpisodeOfCareModel.php:154
@@ -1588,12 +1589,12 @@ msgstr "Importation directe"
 #: classes/Gems/Default/CareEpisodeAction.php:135
 #, php-format
 msgid "Episodes of care for respondent number %s"
-msgstr "Épisodes de soins pour le répondant numéro %s"
+msgstr "Épisodes de soins pour le  numéro %s"
 
 #: classes/Gems/Default/CareEpisodeAction.php:137
 #, php-format
 msgid "Episodes of care for respondent number %s: %s"
-msgstr "Épisodes de soins pour le répondants numéro %s: %s"
+msgstr "Épisodes de soins pour le s numéro %s: %s"
 
 #: classes/Gems/Default/CareEpisodeAction.php:149
 msgid "Episodes of care"
@@ -1603,7 +1604,7 @@ msgstr "Épisodes de soin"
 #: classes/Gems/Default/CareEpisodeAction.php:192
 #, php-format
 msgid "for respondent number %s"
-msgstr "pour le répondants numéro %s"
+msgstr "pour le s numéro %s"
 
 #: classes/Gems/Default/CareEpisodeAction.php:198
 msgid "episode of care"
@@ -1976,7 +1977,7 @@ msgstr "Modèles de e-mail"
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:266
 #: classes/Gems/Util/TokenData.php:694
 msgid "Respondent nr"
-msgstr "N° du répondant"
+msgstr "Patient(e) N°"
 
 #: classes/Gems/Default/ComplianceAction.php:94
 #: classes/Gems/Default/FieldOverviewAction.php:104
@@ -2049,13 +2050,13 @@ msgstr ""
 
 #: classes/Gems/Default/ConsentAction.php:83
 msgid "Respondent informed consent codes"
-msgstr "Codes de consentement éclairé du répondant"
+msgstr "Codes de consentement éclairé du patient(e)"
 
 #: classes/Gems/Default/ConsentAction.php:94
 msgid "respondent consent"
 msgid_plural "respondent consents"
-msgstr[0] "consentement du répondant"
-msgstr[1] "consentement des répondants"
+msgstr[0] "consentement du"
+msgstr[1] "consentement des"
 
 #: classes/Gems/Default/ConsentPlanAction.php:109
 msgid "Year"
@@ -2490,7 +2491,7 @@ msgstr "Les données de la table %s"
 
 #: classes/Gems/Default/DatabaseBackupAction.php:56
 msgid "Respondent data"
-msgstr "Données du répondant"
+msgstr "Données du patient(e)"
 
 #: classes/Gems/Default/DatabaseBackupAction.php:58
 msgid "Export table"
@@ -2526,7 +2527,7 @@ msgstr "Exporter les données d'une seule enquête"
 
 #: classes/Gems/Default/FieldOverviewAction.php:142
 msgid "Respondent Track fields"
-msgstr "Champs du Parcours de soin du répondant"
+msgstr "Champs de parcours de patient(e)"
 
 #: classes/Gems/Default/FieldOverviewAction.php:178
 msgid "track field"
@@ -2697,7 +2698,7 @@ msgstr "Équipe"
 #: classes/Gems/Snippets/Tracker/AddTracksSnippet.php:255
 #: classes/Gems/Util/MailJobsUtil.php:265
 msgid "Respondents"
-msgstr "Participants"
+msgstr "Patients"
 
 #: classes/Gems/Default/GroupAction.php:172
 msgid "Login allowed from IP Ranges"
@@ -2731,17 +2732,17 @@ msgstr "Paramètres de l'écran"
 
 #: classes/Gems/Default/GroupAction.php:212
 msgid "Respondent browse screen"
-msgstr "Écran de navigation du répondant"
+msgstr "Page de navigation du"
 
 #: classes/Gems/Default/GroupAction.php:218
 #: classes/Gems/Model/OrganizationModel.php:158
 msgid "Respondent edit screen"
-msgstr "Écran d’édition du répondant"
+msgstr "Page d’édition du patient(e)"
 
 #: classes/Gems/Default/GroupAction.php:224
 #: classes/Gems/Model/OrganizationModel.php:161
 msgid "Respondent show screen"
-msgstr "Écran de présentation du répondant"
+msgstr "Page de présentation du patient(e)"
 
 #: classes/Gems/Default/GroupAction.php:269
 msgid "Administrative groups"
@@ -2920,8 +2921,7 @@ msgstr "Organisations"
 #: classes/Gems/Default/LocationAction.php:134
 #: classes/Gems/Model/OrganizationModel.php:132
 msgid "Checked organizations see this organizations respondents."
-msgstr ""
-"Les organisations vérifiées voient les répondants de ces organisations."
+msgstr "Les organisations vérifiées voient les s de ces organisations."
 
 #: classes/Gems/Default/LocationAction.php:146
 msgid "Location code"
@@ -3242,23 +3242,22 @@ msgstr "L'accès à cette page n'est pas autorisé pour le rôle actuel: %s."
 
 #: classes/Gems/Default/OrganizationAction.php:140
 msgid "Checking all respondents."
-msgstr "Vérification de tous les répondants."
+msgstr "Vérification de tous les s."
 
 #: classes/Gems/Default/OrganizationAction.php:158
 #, php-format
 msgid "Nothing to do: respondent change event for %s not set."
-msgstr ""
-"Rien à faire: le changent d'événement du répondant pour %s n’est pas fixé."
+msgstr "Rien à faire: le changent d'événement du  pour %s n’est pas fixé."
 
 #: classes/Gems/Default/OrganizationAction.php:165
 #, php-format
 msgid "Nothing to do: %s has no respondents."
-msgstr "Rien à faire: %s n'a pas de répondants."
+msgstr "Rien à faire: %s n'a pas de s."
 
 #: classes/Gems/Default/OrganizationAction.php:188
 #, php-format
 msgid "Checking respondents for '%s'."
-msgstr "Vérification des répondants pour les ”%s”."
+msgstr "Vérification des s pour les ”%s”."
 
 #: classes/Gems/Default/OrganizationAction.php:248
 msgid "Participating organizations"
@@ -3552,9 +3551,7 @@ msgstr "Description de la durée"
 #: classes/Gems/Default/ProjectSurveysAction.php:132
 #: classes/Gems/Model/SurveyMaintenanceModel.php:231
 msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
-msgstr ""
-"Texte pour informer le répondant, par exemple \"20 secondes\" ou \"1 minute"
-"\"."
+msgstr "Texte pour informer le , par exemple \"20 secondes\" ou \"1 minute\"."
 
 #: classes/Gems/Default/ProjectSurveysAction.php:157
 msgid "Active surveys"
@@ -3615,7 +3612,7 @@ msgstr "Peut être affecté à"
 
 #: classes/Gems/Default/ReceptionAction.php:86
 msgid "This reception code can be assigned to a respondent."
-msgstr "Ce code de réception peut être attribué à un répondant."
+msgstr "Ce code de réception peut être attribué à un ."
 
 #: classes/Gems/Default/ReceptionAction.php:90
 msgid "This reception code can be assigned to a track."
@@ -3666,29 +3663,29 @@ msgstr[1] "codes de réception"
 #: classes/Gems/Default/TokenAction.php:82
 #, php-format
 msgid "Unknown respondent %s."
-msgstr "Répondant inconnus %s."
+msgstr "Patient inconnus %s."
 
 #: classes/Gems/Default/RespondentExportAction.php:30
 msgid "Respondent numbers"
-msgstr "Numéros des répondants"
+msgstr "Numéros des patients"
 
 #: classes/Gems/Default/RespondentExportAction.php:34
 msgid "Separate multiple respondents with a comma (,) or whitespace"
-msgstr "Séparez les répondants multiples par une virgule (,) ou un espace"
+msgstr "Séparez les s multiples par une virgule (,) ou un espace"
 
 #: classes/Gems/Default/RespondentExportAction.php:38
 #: classes/Gems/Default/RespondentNewAction.php:509
 msgid "Export respondent archive"
-msgstr "Exporter l’archive du répondant"
+msgstr "Exporter l’archive du patient(e)"
 
 #: classes/Gems/Default/RespondentExportAction.php:51
 msgid "Please select at least one respondent"
-msgstr "Veuillez sélectionner au moins un répondant"
+msgstr "Veuillez sélectionner au moins un patient(e)"
 
 #: classes/Gems/Default/RespondentMailLogAction.php:130
 #, php-format
 msgid "Communication activity log for respondent %s: %s"
-msgstr "Journal des activités de communication pour le répondant %s: %s"
+msgstr "Journal des activités de communication pour le  %s: %s"
 
 #: classes/Gems/Default/RespondentMailLogAction.php:183
 msgid "communication activity"
@@ -3698,27 +3695,27 @@ msgstr[1] "activités de communication"
 
 #: classes/Gems/Default/RespondentNewAction.php:458
 msgid "Delete or stop respondent"
-msgstr "Supprimer ou arrêter le répondant"
+msgstr "Supprimer ou arrêter le patient(e)"
 
 #: classes/Gems/Default/RespondentNewAction.php:540
 msgid "New respondent..."
-msgstr "Nouveau répondant"
+msgstr "Nouveau patient..."
 
 #: classes/Gems/Default/RespondentNewAction.php:572
 #, php-format
 msgid "Edit respondent nr %s"
-msgstr "Editer le répondant n° %s"
+msgstr "Editer le  n° %s"
 
 #: classes/Gems/Default/RespondentNewAction.php:575
 #, php-format
 msgid "Edit respondent nr %s: %s"
-msgstr "Editer le répondant n° %s: %s"
+msgstr "Editer le  n° %s: %s"
 
 #: classes/Gems/Default/RespondentNewAction.php:752
 msgid "respondent"
 msgid_plural "respondents"
-msgstr[0] "répondant"
-msgstr[1] "répondants"
+msgstr[0] "patient(e)"
+msgstr[1] "patients"
 
 #: classes/Gems/Default/RespondentPlanAction.php:55
 #: classes/Gems/Model/RespondentModel.php:294
@@ -3744,7 +3741,7 @@ msgstr "Progrès"
 
 #: classes/Gems/Default/RespondentPlanAction.php:71
 msgid "Respondent planning"
-msgstr "Planification du répondant"
+msgstr "Planification du patient(e)"
 
 #: classes/Gems/Default/RespondentRelationAction.php:78
 #, php-format
@@ -4148,7 +4145,7 @@ msgstr "La réinitialisation des valeurs par défaut pour le modèle %s a échou
 #: classes/Gems/Default/TokenAction.php:63
 #, php-format
 msgid "Surveys assigned to respondent %s"
-msgstr "Enquêtes attribuées au répondant %s"
+msgstr "Enquêtes attribuées au  %s"
 
 #: classes/Gems/Default/TokenPlanAction.php:29
 msgid "Token planning"
@@ -4200,20 +4197,17 @@ msgstr "Réponses au token : %s"
 #: classes/Gems/Default/TrackAction.php:454
 #, php-format
 msgid "Checking all surveys of respondent %s, %s for answers."
-msgstr ""
-"Vérification de toutes les enquêtes des répondants %s, %s pour les réponses."
+msgstr "Vérification de toutes les enquêtes des s %s, %s pour les réponses."
 
 #: classes/Gems/Default/TrackAction.php:461
 msgid "This task (re)checks all tokens of this respondent for answers."
-msgstr ""
-"Cette tâche (re)vérifie tous les tokens de ce répondant pour des réponses."
+msgstr "Cette tâche (re)vérifie tous les tokens de ce  pour des réponses."
 
 #: classes/Gems/Default/TrackAction.php:480
 #, php-format
 msgid "Checking round assignments for all tracks of respondent %s, %s."
 msgstr ""
-"Vérification des affectations des rondes pour toutes les pistes des "
-"répondants %s, %s."
+"Vérification des affectations des rondes pour toutes les pistes des s %s, %s."
 
 #: classes/Gems/Default/TrackAction.php:504
 #, php-format
@@ -4228,22 +4222,22 @@ msgstr "Cette tâche consiste à vérifier un token pour obtenir des réponses."
 #, php-format
 msgid "Checking round assignments for track '%s' of respondent %s, %s."
 msgstr ""
-"Vérification des affectations des rondes pour le parcours de soin ”%s” des "
-"répondants %s, %s."
+"Vérification des affectations des rondes pour le parcours de soin ”%s” des s "
+"%s, %s."
 
 #: classes/Gems/Default/TrackAction.php:556
 #, php-format
 msgid "Checking the surveys in track '%s' of respondent %s, %s for answers."
 msgstr ""
-"Vérification des enquêtes dans le parcours de soin ”%s” du répondant %s, %s "
-"pour des réponses."
+"Vérification des enquêtes dans le parcours de soin ”%s” du  %s, %s pour des "
+"réponses."
 
 #: classes/Gems/Default/TrackAction.php:564
 msgid ""
 "This task checks all tokens for this track for this respondent for answers."
 msgstr ""
 "Cette tâche vérifie tous les tokens de cette parcours de soin pour des "
-"réponses pour ce répondant."
+"réponses pour ce ."
 
 #: classes/Gems/Default/TrackAction.php:727
 #, php-format
@@ -4253,29 +4247,28 @@ msgstr "Réponses correctes pour l'enquête %s, série %s"
 #: classes/Gems/Default/TrackAction.php:743
 #, php-format
 msgid "Adding the %s track to respondent %s: %s"
-msgstr "En ajoutant le parcours de soin %s au répondant %s: %s"
+msgstr "En ajoutant le parcours de soin %s au  %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:765
 #, php-format
 msgid "%s track for respondent nr %s"
-msgstr "%s parcours de soin pour le répondant n° %s"
+msgstr "%s parcours de soin pour le  n° %s"
 
 #: classes/Gems/Default/TrackAction.php:773
 #, php-format
 msgid "%s track for respondent nr %s: %s"
-msgstr "%s parcours de soin pour le répondant n° %s: %s"
+msgstr "%s parcours de soin pour le  n° %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:793
 #, php-format
 msgid "Token %s in round \"%s\" in track \"%s\" for respondent nr %s: %s"
 msgstr ""
-"Token %s dans la série ”%s” dans le parcours de soin ”%s” pour le répondants "
-"n° %s: %s"
+"Token %s dans la série ”%s” dans le parcours de soin ”%s” pour le s n° %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:814
 #, php-format
 msgid "Send mail to %s respondent nr %s for token %s"
-msgstr "Envoyer un e-mail au %s répondant n° %s pour le token %s"
+msgstr "Envoyer un e-mail au %s  n° %s pour le token %s"
 
 #: classes/Gems/Default/TrackAction.php:831
 #, php-format
@@ -4285,16 +4278,15 @@ msgstr "Parcours de soin attribués à %s: %s"
 #: classes/Gems/Default/TrackAction.php:847
 #, php-format
 msgid "Inserting a survey in a track for respondent %s: %s"
-msgstr ""
-"Insertion d'une enquête dans un parcours de soin pour le répondant %s: %s"
+msgstr "Insertion d'une enquête dans un parcours de soin pour le  %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:900
 msgid "No track specified for respondent!"
-msgstr "Aucun parcours de soin spécifié pour le répondant !"
+msgstr "Aucun parcours de soin spécifié pour le  !"
 
 #: classes/Gems/Default/TrackAction.php:925
 msgid "No track found for respondent!"
-msgstr "Aucun parcours de soin trouvé pour le répondant !"
+msgstr "Aucun parcours de soin trouvé pour le  !"
 
 #: classes/Gems/Default/TrackAction.php:1065
 msgid "No track engine specified!"
@@ -4303,7 +4295,7 @@ msgstr "Aucun moteur de parcours de soin n'est spécifié !"
 #: classes/Gems/Default/TrackAction.php:1119
 #, php-format
 msgid "%s track assignments for respondent nr %s: %s"
-msgstr "%s tâches du parcours de soins pou le répondant n° %s: %s"
+msgstr "%s tâches du parcours de soins pou le  n° %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:1126
 #, php-format
@@ -4314,15 +4306,14 @@ msgstr "%s vue d'ensemble du parcours de soin"
 #, php-format
 msgid "Recalculating fields for all tracks of respondent %s, %s."
 msgstr ""
-"En train de recalculer les champs pour toutes les parcours de soin du "
-"répondant %s, %s."
+"En train de recalculer les champs pour toutes les parcours de soin du  %s, "
+"%s."
 
 #: classes/Gems/Default/TrackAction.php:1239
 #, php-format
 msgid "Recalculating fields for track '%s' of respondent %s, %s."
 msgstr ""
-"En train de recalculer les champs pour le parcours de soin ”%s” du répondant "
-"%s, %s."
+"En train de recalculer les champs pour le parcours de soin ”%s” du  %s, %s."
 
 #: classes/Gems/Default/TrackFieldsAction.php:146
 msgid "Do you want to delete this field?"
@@ -4442,7 +4433,7 @@ msgstr "Ajoutez toutes les parcours de soin contenant le trackcode \"%s\"."
 
 #: classes/Gems/Event/Respondent/Change/RecalculateTracks.php:48
 msgid "Recalculate all respondent tracks"
-msgstr "Recalculer touts les parcours due soin du répondant"
+msgstr "Recalculer touts les parcours due soin du patient(e)"
 
 #: classes/Gems/Event/Survey/BeforeAnswering/FillTrackFieldAnswers.php:32
 msgid "Copy track fields with the same trackfield code to answers"
@@ -4474,8 +4465,8 @@ msgid ""
 "or RD for Respondent (only age/sex/birthdate)"
 msgstr ""
 "Remplissez la question de l'enquête lorsque le code commence par: TF pour "
-"trackfield, CP pour enquête ou RD pour répondant (uniquement âge/genre/date "
-"de naissance)"
+"trackfield, CP pour enquête ou RD pour  (uniquement âge/genre/date de "
+"naissance)"
 
 #: classes/Gems/Event/Survey/Completed/BmiCalculation.php:31
 msgid "Bmi Calculation"
@@ -4586,7 +4577,7 @@ msgstr "Délimiteur"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:95
 msgid "Respondent ID"
-msgstr "Identification du répondant"
+msgstr "ID du répondant"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:101
 msgid "Relation ID"
@@ -4601,7 +4592,7 @@ msgstr "Consentement"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:106
 msgid "Respondent track ID"
-msgstr "Identification du parcours de soin du répondant"
+msgstr "Identification du parcours"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:107
 #: classes/Gems/Snippets/Tracker/Rounds/ConditionRoundsTableSnippet.php:104
@@ -4689,27 +4680,27 @@ msgstr "Ajouter des champs du parcours de soin à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:471
 msgid "Add respondent nr to export"
-msgstr "Ajouter le numéro du répondant à l'exportation"
+msgstr "Ajouter le numéro du  à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:477
 msgid "Respondent gender"
-msgstr "Sexe du répondant"
+msgstr "Sexe du"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:478
 msgid "Add respondent gender to export"
-msgstr "Ajouter le genre du répondant à l'exportation"
+msgstr "Ajouter le genre du  à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:483
 msgid "Respondent birth year"
-msgstr "Année de naissance du répondant"
+msgstr "Année de naissance du"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:484
 msgid "Add respondent birth year to export"
-msgstr "Ajouter l'année de naissance du répondant à l'exportation"
+msgstr "Ajouter l'année de naissance du  à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:489
 msgid "Respondent birth month"
-msgstr "Mois de naissance du répondant"
+msgstr "Mois de naissance du"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:490
 msgid "Add respondent birth month to export"
@@ -4717,11 +4708,11 @@ msgstr "Ajouter le mois de naissance de l'enquêté à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:495
 msgid "Respondent birth year/month"
-msgstr "Année/mois de naissance du répondant"
+msgstr "Année/mois de naissance du"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:496
 msgid "Add respondent birth year and month to export"
-msgstr "Ajouter l'année et le mois de naissance du répondant à l'exportation"
+msgstr "Ajouter l'année et le mois de naissance du  à l'exportation"
 
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:503
 msgid "Add reception code of track"
@@ -4739,7 +4730,7 @@ msgstr "Enquête Unique"
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:133
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:130
 msgid "Enter the particulars concerning the assignment to this respondent."
-msgstr "Indiquez les détails concernant la tâche à ce répondant."
+msgstr "Indiquez les détails concernant la tâche à ce ."
 
 #: classes/Gems/Export/RespondentExport.php:343
 #: classes/Gems/Snippets/Token/RespondentTokenSnippet.php:115
@@ -4891,7 +4882,7 @@ msgstr "Démarrage de %s tâches de e-mail"
 
 #: classes/Gems/Mail/RespondentMailer.php:90
 msgid "Respondent data not found"
-msgstr "Données du répondant non trouvées"
+msgstr "Données du patient(e) non trouvées"
 
 #: classes/Gems/Mail/StaffMailer.php:102
 msgid "staff data not found"
@@ -4975,11 +4966,11 @@ msgstr "Groupes"
 
 #: classes/Gems/Menu.php:204
 msgid "Check all respondents"
-msgstr "Vérifiez tous les répondants"
+msgstr "Vérifiez tous les s"
 
 #: classes/Gems/Menu.php:206
 msgid "Check respondents"
-msgstr "Vérifier les répondants"
+msgstr "Vérifier les s"
 
 #: classes/Gems/Menu.php:216
 msgid "Agenda"
@@ -5005,7 +4996,7 @@ msgstr ""
 
 #: classes/Gems/Menu.php:263
 msgid "Display multiple organizations in respondent overview."
-msgstr "Afficher plusieurs organisations dans la vue d'ensemble du répondant."
+msgstr "Afficher plusieurs organisations dans la vue d'ensemble du ."
 
 #: classes/Gems/Menu.php:266
 msgid "Display raw data in Episodes of Care."
@@ -5020,14 +5011,13 @@ msgid ""
 "Grant checkboxes to select respondents on track status in respondent "
 "overview."
 msgstr ""
-"Cochez les cases pour sélectionner les répondants pour le statut du parcours "
-"de soin dans la vue d’ensemble des répondants."
+"Cochez les cases pour sélectionner les s pour le statut du parcours de soin "
+"dans la vue d’ensemble des s."
 
 #: classes/Gems/Menu.php:275
 msgid "Grant checkbox to view deleted respondents in respondent overview."
 msgstr ""
-"Cochez la case pour afficher les répondants supprimés dans la vue d'ensemble "
-"des répondants."
+"Cochez la case pour afficher les s supprimés dans la vue d'ensemble des s."
 
 #: classes/Gems/Menu.php:278
 msgid "Display staff member name in token overviews."
@@ -5043,8 +5033,7 @@ msgstr ""
 #: classes/Gems/Menu.php:284
 msgid "Grant right to export respondent numbers with survey answers."
 msgstr ""
-"Accorder le droit d'exporter les numéros des répondants avec les réponses à "
-"l’enquête."
+"Accorder le droit d'exporter les numéros des s avec les réponses à l’enquête."
 
 #: classes/Gems/Menu.php:287
 msgid "Grant right to export gender and age information with survey answers."
@@ -5343,7 +5332,7 @@ msgstr "Réponses à des enquêtes multiples"
 
 #: classes/Gems/Menu/MenuAbstract.php:422
 msgid "Respondent archives"
-msgstr "Archives du répondant"
+msgstr "Archives du patient(e)"
 
 #: classes/Gems/Menu/MenuAbstract.php:424
 msgid "Survey codebooks"
@@ -5420,7 +5409,7 @@ msgstr "Par token"
 
 #: classes/Gems/Menu/MenuAbstract.php:595
 msgid "By respondent"
-msgstr "Par répondant"
+msgstr "Par patient(e)"
 
 #: classes/Gems/Menu/MenuAbstract.php:599
 msgid "Bulk mail"
@@ -5428,7 +5417,7 @@ msgstr "E-mail groupé"
 
 #: classes/Gems/Menu/MenuAbstract.php:603
 msgid "Respondent status"
-msgstr "Statut du répondant"
+msgstr "Statut du patient(e)"
 
 #: classes/Gems/Menu/MenuAbstract.php:621
 msgid "Errors"
@@ -5736,7 +5725,7 @@ msgstr "(pas d'utilisateur)"
 
 #: classes/Gems/Model/LogModel.php:86
 msgid "(no respondent)"
-msgstr "(pas de répondant)"
+msgstr "(pas de )"
 
 #: classes/Gems/Model/LogModel.php:102
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:77
@@ -5833,20 +5822,19 @@ msgstr "En train d’accepter"
 
 #: classes/Gems/Model/OrganizationModel.php:120
 msgid "Can new respondents be added to the organization?"
-msgstr ""
-"Est-ce que des répondants nouveaux peuvent être ajoutés à l’organisation?"
+msgstr "Est-ce que des s nouveaux peuvent être ajoutés à l’organisation?"
 
 #: classes/Gems/Model/OrganizationModel.php:124
 msgid "Does the organization have respondents?"
-msgstr "L'organisation a-t-elle des répondants ?"
+msgstr "L'organisation a-t-elle des s ?"
 
 #: classes/Gems/Model/OrganizationModel.php:127
 msgid "Respondent group"
-msgstr "Groupe du répondant"
+msgstr "Groupe du"
 
 #: classes/Gems/Model/OrganizationModel.php:128
 msgid "Allows respondents to login."
-msgstr "Permet aux répondants de se connecter."
+msgstr "Permet aux s de se connecter."
 
 #: classes/Gems/Model/OrganizationModel.php:131
 msgid "Accessible by"
@@ -5875,7 +5863,7 @@ msgstr "Écran de demande de token"
 
 #: classes/Gems/Model/OrganizationModel.php:174
 msgid "Respondent change event"
-msgstr "Le répondant change l’évenement"
+msgstr "Quand le patient a changé"
 
 #: classes/Gems/Model/OrganizationModel.php:177
 #: classes/Gems/Model/RespondentModel.php:393
@@ -5974,7 +5962,7 @@ msgstr "SSN"
 #: classes/Gems/Model/RespondentModel.php:345
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:165
 msgid "Respondent number"
-msgstr "Répondant numéro"
+msgstr "Patient(e) numéro"
 
 #: classes/Gems/Model/RespondentModel.php:348
 msgid "Initials"
@@ -6031,7 +6019,7 @@ msgstr "Paramètres"
 
 #: classes/Gems/Model/RespondentModel.php:399
 msgid "Has the respondent signed the informed consent letter?"
-msgstr "Le répondant a-t-il signé le consentement éclairé?"
+msgstr "Le  a-t-il signé le consentement éclairé?"
 
 #: classes/Gems/Model/RespondentModel.php:420
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:96
@@ -6049,7 +6037,7 @@ msgstr "Création par"
 #: classes/Gems/Model/RespondentModel.php:479
 #: classes/Gems/Model/RespondentModel.php:484
 msgid "Respondent has no e-mail"
-msgstr "La répondant n'a pas de e-mail"
+msgstr "Patient(e) n'a pas de e-mail"
 
 #: classes/Gems/Model/RespondentModel.php:517
 msgid "Medical data"
@@ -6061,18 +6049,18 @@ msgstr "Avec numéro d’habitation"
 
 #: classes/Gems/Model/RespondentModel.php:613
 msgid "Respondent not found in sending organization."
-msgstr "Répondant non trouvé dans l'organisation d'envoi."
+msgstr "Patient(e) non trouvé dans l'organisation d'envoi."
 
 #: classes/Gems/Model/RespondentModel.php:620
 msgid "Respondent already exists in destination organization."
-msgstr "Le répondant existe déjà dans l'organisation de destination."
+msgstr "Patient(e) existe déjà dans l'organisation de destination."
 
 #: classes/Gems/Model/RespondentModel.php:624
 msgid ""
 "Respondent with requested respondent number already exists in receiving "
 "organization."
 msgstr ""
-"Le répondant dont le numéro est demandé existe déjà dans l'organisme "
+"Le patient(e) dont le numéro est demandé existe déjà dans l'organisme "
 "destinataire."
 
 #: classes/Gems/Model/RespondentModel.php:628
@@ -6080,21 +6068,20 @@ msgid ""
 "Respondent already exists in destination organization, but with different "
 "respondent number."
 msgstr ""
-"Le répondant existe déjà dans l'organisme de destination, mais avec un "
-"numéro de répondant différent."
+"Patient(e) existe déjà dans l'organisation de destination, mais avec un "
+"numéro différent."
 
 #: classes/Gems/Model/RespondentModel.php:1014
 msgid ""
 "Respondent already exists in destination, please delete current record "
 "manually if needed."
 msgstr ""
-"Le répondant existe déjà dans la destination, veuillez supprimer "
-"manuellement l'enregistrement actuel si nécessaire."
+"Patient(e) existe déjà dans la destination, veuillez supprimer manuellement "
+"l'enregistrement actuel si nécessaire."
 
 #: classes/Gems/Model/RespondentNlModel.php:35
 #: classes/Gems/Model/RespondentNlModel.php:36
 #: classes/Gems/Model/StaffModel.php:230
-#, fuzzy
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
 
@@ -6105,7 +6092,7 @@ msgstr "DBC's, etc..."
 #: classes/Gems/Model/RespondentNlModel.php:89
 #, php-format
 msgid "Random Example BSN: %s"
-msgstr "Exemple aléatoire BSN : %s"
+msgstr "Exemple aléatoire BSN: %s"
 
 #: classes/Gems/Model/RespondentNlModel.php:91
 msgid "Enter a 9-digit SSN number."
@@ -6186,16 +6173,12 @@ msgstr ""
 "est cochée."
 
 #: classes/Gems/Model/StaffModel.php:366
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The type of system user."
-msgstr "Le système de codage utilisé."
+msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:374
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The group of the system user."
-msgstr "Le système de codage utilisé."
+msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:378
 msgid "Logout on survey"
@@ -6210,26 +6193,20 @@ msgid "Logout on survey."
 msgstr "Déconnexion quand il y a une enquête."
 
 #: classes/Gems/Model/StaffModel.php:395
-#, fuzzy
-#| msgid "Primary Group"
 msgid "(user primary group)"
-msgstr "Groupe primaire"
+msgstr "(utiliser le groupe primaire)"
 
 #: classes/Gems/Model/StaffModel.php:405
-#, fuzzy
-#| msgid "May set groups"
 msgid "Used group"
-msgstr "Peut fixer des groupes"
+msgstr "Groupe utilisé"
 
 #: classes/Gems/Model/StaffModel.php:406
 msgid "The group the deferred user should be changed to"
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:411
-#, fuzzy
-#| msgid "Can access"
 msgid "Can create users"
-msgstr "Accès autorisé"
+msgstr "Peut créer des utilisateurs"
 
 #: classes/Gems/Model/StaffModel.php:412
 msgid ""
@@ -6238,10 +6215,8 @@ msgid ""
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:418
-#, fuzzy
-#| msgid "Identification"
 msgid "Authentication"
-msgstr "Identification"
+msgstr "Authentification"
 
 #: classes/Gems/Model/StaffModel.php:420
 msgid "The authentication method used to authenticate the embedded user."
@@ -6256,10 +6231,8 @@ msgid "The method used to load an embedded user."
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:432
-#, fuzzy
-#| msgid "Execution method"
 msgid "Redirect method"
-msgstr "Mode d'exécution"
+msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:434
 msgid "The page the user is redirected to after successful login."
@@ -6270,22 +6243,16 @@ msgid "Layout"
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:440
-#, fuzzy
-#| msgid "The coding method used."
 msgid "The layout frame used."
-msgstr "La méthode de codage utilisée."
+msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:446 classes/Gems/Model/StaffModel.php:452
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The display style used."
-msgstr "Le système de codage utilisé."
+msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:450
-#, fuzzy
-#| msgid "Answer display"
 msgid "Crumbs display"
-msgstr "Affichage des réponses"
+msgstr "Affichage des miettes"
 
 #: classes/Gems/Model/StaffModel.php:462
 msgid "Secret key"
@@ -6522,7 +6489,7 @@ msgstr "Date manquante dans le champ completion_date."
 #: classes/Gems/Model/Translator/DateAnswerTranslator.php:116
 #, php-format
 msgid "Respondent %s has no valid token for the %s survey."
-msgstr "Le répondant %s n'a pas de token valable pour l'enquête %s."
+msgstr "Patient(e) %s n'a pas de token valable pour l'enquête %s."
 
 #: classes/Gems/Model/Translator/DateAnswerTranslator.php:146
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:141
@@ -6536,7 +6503,7 @@ msgstr "ID de l'organisation"
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:197
 #, php-format
 msgid "Missing respondent number in %s field."
-msgstr "Numéro du répondant manquant dans le champ %s."
+msgstr "Numéro du  manquant dans le champ %s."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:200
 #, php-format
@@ -6550,12 +6517,12 @@ msgstr "Définition de l'enquête manquante."
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:215
 #, php-format
 msgid "Organization %s (specified for respondent %s) does not exist."
-msgstr "L'organisation %s (spécifiés pour le répondant %s) n'existe pas."
+msgstr "L'organisation %s (spécifiés pour le  %s) n'existe pas."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:222
 #, php-format
 msgid "Respondent %s does not exist in organization %s."
-msgstr "Le répondant %s n'existe pas dans l’organisation %s."
+msgstr "Patient(e) %s n'existe pas dans l’organisation %s."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:233
 #, php-format
@@ -6565,17 +6532,17 @@ msgstr "Le ID du parcours de soin %d n'existe pas"
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:249
 #, php-format
 msgid "Respondent %s does not have a valid %s track."
-msgstr "Le répondant %s n’a pas un parcours de soin %s valide."
+msgstr "Patient(e) %s n’a pas un parcours de soin %s valide."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:266
 #, php-format
 msgid "Respondent %s has only deleted %s surveys."
-msgstr "Le répondant %s a supprimé seulement les enquêtes %s."
+msgstr "Patient(e) %s a supprimé seulement les enquêtes %s."
 
 #: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:273
 #, php-format
 msgid "Respondent %s has no %s surveys."
-msgstr "Le répondant %s n'a pas d’enquêtes %s."
+msgstr "Patient(e) %s n'a pas d’enquêtes %s."
 
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:106
 #, php-format
@@ -6603,9 +6570,8 @@ msgid "Unable to run PDF conversion (%s): \"%s\""
 msgstr "Impossible d'exécuter la conversion PDF (%s): \"%s\""
 
 #: classes/Gems/Screens/Respondent/Browse/GemsDefaultBrowse.php:43
-#, fuzzy
 msgid "(default Gems table display)"
-msgstr "(par défaut Gems table display)"
+msgstr "(défaut Gems table display)"
 
 #: classes/Gems/Screens/Respondent/Browse/MinimalBrowse.php:41
 msgid "Browse with minimal information"
@@ -6617,9 +6583,8 @@ msgstr "Naviguer sans adresse"
 
 # (affichage du tableau spécifique au projet de défaut)
 #: classes/Gems/Screens/Respondent/Browse/ProjectDefaultBrowse.php:43
-#, fuzzy
 msgid "(default project specific table display)"
-msgstr "(par défaut project specific table display)"
+msgstr "(défaut project specific table display)"
 
 #: classes/Gems/Screens/Respondent/Browse/WithAddressBrowse.php:41
 msgid "Browse with address"
@@ -6627,41 +6592,35 @@ msgstr "Naviguer avec l'adresse"
 
 #: classes/Gems/Screens/Respondent/Edit/GemsDefaultNoTabEdit.php:55
 msgid "(default Gems respondent no tab edit)"
-msgstr "(par défaut Gems répondant no tab edit)"
+msgstr "(par défaut Gems  no tab edit)"
 
 #: classes/Gems/Screens/Respondent/Edit/GemsDefaultTabbedEdit.php:55
 msgid "(default Gems respondent tabbed edit)"
 msgstr "(par défaut Gems réspondent tabbed edit)"
 
 #: classes/Gems/Screens/Respondent/Edit/ProjectDefaultEdit.php:32
-#, fuzzy
 msgid "(default project respondent edit)"
-msgstr "(par défaut Gems répondant no tab edit)"
+msgstr "(défaut Gems patient modification)"
 
 #: classes/Gems/Screens/Respondent/Show/GemsDefaultShow.php:46
-#, fuzzy
 msgid "(default Gems respondent show)"
-msgstr "(par défaut Gems répondant show)"
+msgstr "(défaut Gems patient show)"
 
 #: classes/Gems/Screens/Respondent/Show/GemsProjectDefaultShow.php:32
-#, fuzzy
 msgid "(default project respondent show)"
-msgstr "(par défaut Gems répondant no tab edit)"
+msgstr "(défaut Gems patient exposition)"
 
 #: classes/Gems/Screens/Respondent/Show/GemsRoundTabsShow.php:46
-#, fuzzy
 msgid "Rounds as tabs show"
-msgstr "Les séries comme tabs show"
+msgstr ""
 
 #: classes/Gems/Screens/Respondent/Show/GemsTimelineShow.php:46
-#, fuzzy
 msgid "Timeline show respondent"
-msgstr "Timeline montre le répondant"
+msgstr ""
 
 #: classes/Gems/Screens/Respondent/Show/HixTimelineShow.php:43
-#, fuzzy
 msgid "Timeline show respondent for HiX"
-msgstr "Timeline montre le répondant"
+msgstr ""
 
 #: classes/Gems/Screens/Respondent/Subscribe/EmailOnlySubscribe.php:71
 msgid "Subscribe using e-mail address only"
@@ -6682,9 +6641,8 @@ msgid "Unsubscribe from surveys for %s"
 msgstr "Se désabonner des enquêtes pour les %s"
 
 #: classes/Gems/Screens/Token/Ask/ProjectDefaultAsk.php:32
-#, fuzzy
 msgid "(default project specific token ask screen)"
-msgstr "(par défaut project specific token ask screen)"
+msgstr "(défaut projet spécifique token demande page)"
 
 #: classes/Gems/Screens/Token/Ask/RedirectUntilGoodbyeAsk.php:42
 msgid "Answer first open until finished"
@@ -6769,7 +6727,7 @@ msgstr "semaine %s"
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:55
 #: classes/Gems/Selector/TokenDateSelector.php:69
 msgid "for respondents"
-msgstr "pour les répondants"
+msgstr "pour les s"
 
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:56
 #: classes/Gems/Selector/TokenDateSelector.php:70
@@ -7134,7 +7092,7 @@ msgstr "(tous les localisations)"
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:130
 #: classes/Gems/Snippets/Tracker/EditTrackSnippet.php:34
 msgid "Show respondent"
-msgstr "Afficher le répondant"
+msgstr "Afficher le patient(e)"
 
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:122
 #: classes/Gems/Snippets/Agenda/EpisodeTableSnippet.php:79
@@ -7357,7 +7315,6 @@ msgstr "jusqu’au"
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:243
 #: classes/Gems/Snippets/Survey/Display/FullAnswerToggleSnippet.php:53
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:134
-#, fuzzy
 msgid "Toggle"
 msgstr "Basculer"
 
@@ -7366,9 +7323,8 @@ msgid "Conditions with this condition"
 msgstr "Conditions avec cette condition"
 
 #: classes/Gems/Snippets/ConditionAndOrTableSnippet.php:83
-#, fuzzy
 msgid "No conditions using this condition found"
-msgstr "Aucune condition utilisant cette condition n'a été trouvée"
+msgstr ""
 
 #: classes/Gems/Snippets/ConditionDeleteSnippet.php:81
 #, php-format
@@ -7378,7 +7334,6 @@ msgstr[0] "Cette condition a été utilisée %s fois."
 msgstr[1] "Cette condition a été utilisée %s fois."
 
 #: classes/Gems/Snippets/ConditionDeleteSnippet.php:84
-#, fuzzy
 msgid "This condition cannot be deleted, only deactivated."
 msgstr "Cette condition ne peut pas être supprimée, seulement désactivée."
 
@@ -7392,12 +7347,11 @@ msgstr "Désactiver la condition"
 
 #: classes/Gems/Snippets/Database/DatabaseExportFormSnippet.php:21
 msgid "Include respondent data"
-msgstr "Inclure les données du répondant"
+msgstr "Inclure les données du patient(e)"
 
 #: classes/Gems/Snippets/Database/DatabaseExportFormSnippet.php:27
-#, fuzzy
 msgid "Include drop tables"
-msgstr "Inclure les tables de dépôt"
+msgstr ""
 
 #: classes/Gems/Snippets/Database/DatabaseExportFormSnippet.php:28
 msgid "Single transaction"
@@ -7517,7 +7471,7 @@ msgstr "La production du rapport est terminée."
 
 #: classes/Gems/Snippets/Export/ReportHeaderSnippet.php:36
 msgid "Respondent report"
-msgstr "Rapport du répondant"
+msgstr "Rapport du patient(e)"
 
 #: classes/Gems/Snippets/Export/ReportHeaderSnippet.php:40
 msgid "Report information"
@@ -7534,13 +7488,13 @@ msgstr "Généré le"
 #: classes/Gems/Snippets/Export/RespondentSnippet.php:50
 #, php-format
 msgid "Unknown respondent %s"
-msgstr "Répondants inconnus %s"
+msgstr "Patients inconnus %s"
 
 #: classes/Gems/Snippets/Export/RespondentSnippet.php:56
 #: classes/Gems/Snippets/Export/RespondentSnippet.php:67
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:245
 msgid "Respondent information"
-msgstr "Informations du répondant"
+msgstr "Information du patient(e)"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippet.php:54
 #: classes/Gems/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php:79
@@ -7575,15 +7529,15 @@ msgstr "Fin du parcours de soin"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:83
 msgid "Respondent id's"
-msgstr "Identification du répondant"
+msgstr "ID du répondants"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:86
 msgid ""
 "Not respondent nr, but respondent id as exported here. Separate multiple "
 "id's with , or ;"
 msgstr ""
-"Numéro du non répondant, mais le id du répondant tel qu'il est exporté ici. "
-"Séparez les id multiples par , ou ;"
+"Numéro du non , mais le id du  tel qu'il est exporté ici. Séparez les id "
+"multiples par , ou ;"
 
 #: classes/Gems/Snippets/Export/SurveyExportSearchFormSnippetAbstract.php:101
 msgid "Output"
@@ -7803,11 +7757,11 @@ msgstr "L’enquête a été répondue."
 
 #: classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:105
 msgid "Respondent does not have an e-mail address."
-msgstr "Le répondant n'a pas d'adresse électronique."
+msgstr "Patient(e) n'a pas d'adresse électronique."
 
 #: classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:108
 msgid "Survey cannot be taken by a respondent."
-msgstr "L’enquête ne peut pas être répondue par un répondant."
+msgstr "L’enquête ne peut pas être répondue par un ."
 
 #: classes/Gems/Snippets/Mail/TokenBulkMailFormSnippet.php:110
 msgid "Survey cannot be taken at this moment."
@@ -7847,15 +7801,15 @@ msgstr "Contrôles"
 
 #: classes/Gems/Snippets/Organization/CheckOrganizationInformation.php:39
 msgid "Executes respondent change event for all active respondents."
-msgstr "Exécute respondent change event pour tous les répondants actifs."
+msgstr "Exécute respondent change event pour tous les s actifs."
 
 #: classes/Gems/Snippets/Organization/CheckOrganizationInformation.php:42
 msgid ""
 "Run this code when the respondent change event was changed or e.g. when a "
 "new \"default\" track was created."
 msgstr ""
-"Exécutez ce code lorsque le répondant change event a été modifié ou, par "
-"exemple, lorsqu'un nouveau parcours de soin \"par défaut\" a été créé."
+"Exécutez ce code lorsque le  change event a été modifié ou, par exemple, "
+"lorsqu'un nouveau parcours de soin \"par défaut\" a été créé."
 
 #: classes/Gems/Snippets/Organization/ChooseListedOrganizationSnippet.php:72
 #: classes/Gems/Snippets/Organization/ChooseOrganizationSnippet.php:63
@@ -7866,12 +7820,11 @@ msgstr "Choisissez une organisation"
 msgid ""
 "This organization cannot have any respondents, please choose one that does:"
 msgstr ""
-"Cette organisation ne peut pas avoir aucun répondant, veuillez en choisir un "
-"qui en a:"
+"Cette organisation ne peut pas avoir aucun , veuillez en choisir un qui en a:"
 
 #: classes/Gems/Snippets/Organization/ChooseOrganizationSnippet.php:78
 msgid "This organization cannot have any respondents."
-msgstr "Cette organisation ne peut pas avoir aucun répondant."
+msgstr "Cette organisation ne peut pas avoir aucun ."
 
 #: classes/Gems/Snippets/Organization/OrganizationEditSnippet.php:76
 msgid "No access to other organizations."
@@ -7879,23 +7832,23 @@ msgstr "Pas d'accès à d'autres organisations."
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:45
 msgid "Organizations that may have respondents"
-msgstr "Organisations qui pourraient avoir des répondants"
+msgstr "Organisations qui pourraient avoir des s"
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:46
 msgid "Organizations that create respondents"
-msgstr "Organisations qui créent des répondants"
+msgstr "Organisations qui créent des s"
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:47
 msgid "Organizations that have respondents"
-msgstr "Organisations qui ont des répondants"
+msgstr "Organisations qui ont des s"
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:48
 msgid "Organizations that cannot create new respondents"
-msgstr "Organisations qui ne peuvent pas créer de nouveaux répondants"
+msgstr "Organisations qui ne peuvent pas créer de nouveaux s"
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:49
 msgid "Organizations that have no respondents"
-msgstr "Organisations qui n'ont pas de répondants"
+msgstr "Organisations qui n'ont pas de s"
 
 #: classes/Gems/Snippets/Organization/OrganizationSearchSnippet.php:52
 msgid "(accessible by any organization)"
@@ -7968,7 +7921,7 @@ msgstr "C’est l'organisation actuelle."
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:127
 #, php-format
 msgid "Exists already with respondent nr %s."
-msgstr "Existe déjà avec le répondant n° %s."
+msgstr "Existe déjà avec le  n° %s."
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:141
 msgid "New organization"
@@ -7980,7 +7933,7 @@ msgstr "Vous ne pouvez pas passer à cette organisation"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:162
 msgid "New respondent nr"
-msgstr "Nouveau répondant n°"
+msgstr "Nouveau  n°"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:180
 #, php-format
@@ -8000,16 +7953,16 @@ msgstr "Déplacement de %s à %s en tant que %s"
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:239
 #, php-format
 msgid "Change organization of respondent nr %s"
-msgstr "Changement d'organisation des répondants n° %s"
+msgstr "Changement d'organisation des s n° %s"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:244
 #, php-format
 msgid "Change organization of respondent nr %s: %s"
-msgstr "Changer l’organisation du répondant n° %s: %s"
+msgstr "Changer l’organisation du  n° %s: %s"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:249
 msgid "Change organization of respondent"
-msgstr "Changer l'organisation du répondant"
+msgstr "Changer l'organisation du patient(e)"
 
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:294
 #: classes/Gems/Snippets/Respondent/ChangeRespondentOrganization.php:303
@@ -8025,8 +7978,7 @@ msgstr[1] "consentements"
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:56
 #, php-format
 msgid "Consent change log for respondent %s, %s at %s"
-msgstr ""
-"Enregistrez le changement du consentement pour les répondants %s, %s à %s"
+msgstr "Enregistrez le changement du consentement pour les s %s, %s à %s"
 
 #: classes/Gems/Snippets/Respondent/Consent/RespondentConsentLogSnippet.php:63
 msgid "No consent changes found"
@@ -8046,11 +7998,11 @@ msgstr "Restaure les parcours de soin"
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:145
 msgid "Restores tracks with the same code as the respondent."
-msgstr "Restaure les parcours de soin avec le même code que le répondant."
+msgstr "Restaure les parcours de soin avec le même code que le ."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:183
 msgid "Respondent restored."
-msgstr "Répondant restauré."
+msgstr "Patient(e) restauré."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:188
 #, php-format
@@ -8061,7 +8013,7 @@ msgstr[1] "Parcours de soin %d restaurés."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:194
 msgid "Respondent deleted."
-msgstr "Répondant supprimé."
+msgstr "Patient(e) supprimé."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:200
 #, php-format
@@ -8078,7 +8030,7 @@ msgstr "Parcours de soin assignées"
 #: classes/Gems/Snippets/Respondent/RespondentDetailsSnippet.php:42
 #: classes/Gems/Snippets/Respondent/RespondentMinimalDetailsSnippet.php:48
 msgid "Respondent nr: "
-msgstr "Répondant n°: "
+msgstr "Patient n°: "
 
 #: classes/Gems/Snippets/Respondent/DetailsWithAssignmentsSnippet.php:76
 msgid "No tracks"
@@ -8090,16 +8042,16 @@ msgstr "Adresse"
 
 #: classes/Gems/Snippets/Respondent/RespondentFormSnippet.php:97
 msgid "Known respondent."
-msgstr "Répondant connu."
+msgstr "Patient connu."
 
 #: classes/Gems/Snippets/Respondent/RespondentFormSnippet.php:115
 #, php-format
 msgid "Respondent data retrieved from %s."
-msgstr "Données des répondants extraites de %s."
+msgstr "Données des patient(e) extraites de %s."
 
 #: classes/Gems/Snippets/Respondent/RespondentFormSnippet.php:119
 msgid "Respondent data found."
-msgstr "Données du répondant trouvées."
+msgstr "Données du patient(e) trouvées."
 
 #: classes/Gems/Snippets/Respondent/RespondentOverviewSnippet.php:184
 msgid "No summary available"
@@ -8196,12 +8148,12 @@ msgstr "Détails"
 
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:204
 msgid "Please settle the informed consent form for this respondent."
-msgstr "Veuillez régler le consentement éclairé pour ce répondant."
+msgstr "Veuillez régler le consentement éclairé pour ce ."
 
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:248
 #, php-format
 msgid "%s respondent information"
-msgstr "information sur le répondant %s"
+msgstr "information sur le  %s"
 
 #: classes/Gems/Snippets/Role/RoleEditFormSnippet.php:97
 msgid "child of current role"
@@ -8253,7 +8205,6 @@ msgid "password"
 msgstr "mot de passe"
 
 #: classes/Gems/Snippets/Staff/SystemUserSearchSnippet.php:56
-#, fuzzy
 msgid "Is embedder"
 msgstr "Est delegué"
 
@@ -8307,7 +8258,7 @@ msgstr "Sauter les inconnues"
 
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:140
 msgid "What to do when the respondent does not exist"
-msgstr "Que faire lorsque le répondant n'existe pas"
+msgstr "Que faire lorsque le  n'existe pas"
 
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:147
 msgid "Delete old token and create new"
@@ -8356,14 +8307,10 @@ msgstr ""
 "ont des tokens terminés."
 
 #: classes/Gems/Snippets/Survey/CheckAnswersInformation.php:49
-#, fuzzy
 msgid ""
 "Run this code when survey result fields, survey or round events or the event "
 "code has changed or after bulk changes in a survey source."
 msgstr ""
-"Exécutez ce code lorsque des champs de résultats, d'enquête, des événements "
-"de série ou le code d'événement a changé ou après des modifications en masse "
-"dans une source d'enquête."
 
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:292
 #, php-format
@@ -8385,9 +8332,8 @@ msgid "Print"
 msgstr "Imprimer"
 
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:104
-#, fuzzy
 msgid "Survey replace"
-msgstr "Enquête remplace"
+msgstr "Enquête remplacer"
 
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:167
 #: classes/Gems/Snippets/Survey/SurveyCompareSnippet.php:362
@@ -8676,11 +8622,11 @@ msgstr "Score"
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:154
 #, php-format
 msgid "Add %s track to this respondent"
-msgstr "Ajoutez le parcours de soin %s à ce répondant"
+msgstr "Ajoutez le parcours de soin %s à ce patient(e)"
 
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:171
 msgid "Add a track to this respondent"
-msgstr "Ajouter un parcours de soin à ce répondant"
+msgstr "Ajouter un parcours de soin à ce patient(e)"
 
 #: classes/Gems/Snippets/Token/RoundTokenSnippet.php:175
 msgid "No valid tokens found"
@@ -8745,12 +8691,9 @@ msgstr ""
 "et à l'ordre de la série en cours."
 
 #: classes/Gems/Snippets/Track/CheckRoundsInformation.php:41
-#, fuzzy
 msgid ""
 "Updates the survey of unanswered tokens when the round survey was changed."
 msgstr ""
-"Met à jour l'enquête des tokens sans réponse lors de la modification de "
-"l'enquête de la série."
 
 #: classes/Gems/Snippets/Track/CheckRoundsInformation.php:42
 msgid "Removes unanswered tokens when the round is no longer active."
@@ -8880,20 +8823,19 @@ msgstr "Nouvelle série"
 
 #: classes/Gems/Snippets/Tracker/Buttons/TrackActionButtonRow.php:39
 msgid "Edit respondent"
-msgstr "Editer le répondant"
+msgstr "Editer le patient(e)"
 
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceLegenda.php:66
 msgid "Track Legend"
 msgstr "Légende du parcours de soin"
 
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceLegenda.php:70
-#, fuzzy
 msgid "Su"
-msgstr "Dim"
+msgstr "En"
 
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:50
 msgid "Search respondent data"
-msgstr "Recherche les données du répondant"
+msgstr "Recherche les données du patient(e)"
 
 #: classes/Gems/Snippets/Tracker/DeleteTrackSnippet.php:113
 msgid "Restore tokens"
@@ -9027,9 +8969,7 @@ msgstr "%s - %s"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:410
 msgid "Survey insertion impossible: respondent has no track!"
-msgstr ""
-"Introduction de l'enquête impossible: le répondant n'a pas de parcours de "
-"soin!"
+msgstr "Introduction de l'enquête impossible: le  n'a pas de parcours de soin!"
 
 #: classes/Gems/Snippets/Tracker/InsertSurveySnippet.php:483
 msgid "Survey insertion impossible: no insertable survey exists!"
@@ -9131,19 +9071,19 @@ msgstr "Enquêtes dans le parcours de soin %s"
 
 #: classes/Gems/Snippets/Tracker/TrackUsageOverviewSnippet.php:179
 msgid "Other assignments of this track to this respondent."
-msgstr "Autres attributions de ce parcours de soin à ce répondant."
+msgstr "Autres attributions de ce parcours de soin à ce ."
 
 #: classes/Gems/Snippets/Tracker/TrackUsageOverviewSnippet.php:180
 msgid "This track is assigned only once to this respondent."
-msgstr "Ce parcours de soin n'est attribuée qu'une seule fois à ce répondant."
+msgstr "Ce parcours de soin n'est attribuée qu'une seule fois à ce ."
 
 #: classes/Gems/Snippets/Tracker/TrackUsageOverviewSnippet.php:191
 msgid "Existing assignments of this track to this respondent."
-msgstr "Attributions existantes de ce parcours de soin à ce répondant."
+msgstr "Attributions existantes de ce parcours de soin à ce ."
 
 #: classes/Gems/Snippets/Tracker/TrackUsageOverviewSnippet.php:192
 msgid "This track is not assigned to this respondent."
-msgstr "Ce parcours de soin n'est pas attribuée à ce répondant."
+msgstr "Ce parcours de soin n'est pas attribuée à ce ."
 
 #: classes/Gems/Snippets/Tracker/TrackUsageTextDetailsSnippet.php:81
 msgid "Unknown track"
@@ -9175,10 +9115,8 @@ msgid "Quick view %s track"
 msgstr "Quick view du parcours de soin %s"
 
 #: classes/Gems/Snippets/Unsubscribe/EmailUnsubscribeSnippet.php:116
-#, fuzzy
-#| msgid "Your e-mail address has been unsubscribed"
 msgid "If your E-email address is known, you have been unsubscribed."
-msgstr "Votre adresse électronique a été désabonnée"
+msgstr ""
 
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:40
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:43
@@ -9243,10 +9181,8 @@ msgid "The Staff User to login as."
 msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:94
-#, fuzzy
-#| msgid "Allows respondents to login."
 msgid "The respondent to login to."
-msgstr "Permet aux répondants de se connecter."
+msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:102
 msgid "Standard query"
@@ -9257,10 +9193,8 @@ msgid "Example url"
 msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:112
-#, fuzzy
-#| msgid "Recalculate fields"
 msgid "Replace {} fields!"
-msgstr "Recalculer les champs"
+msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:113
 msgid "Please open in private mode or in other browser."
@@ -9432,7 +9366,7 @@ msgstr ""
 #: classes/Gems/Task/Respondent/UpdateRespondentTask.php:61
 #, php-format
 msgid "%d respondents checked, %d respondents were changed."
-msgstr "%d répondants ont été vérifiés, %d répondants ont été changés."
+msgstr "%d s ont été vérifiés, %d s ont été changés."
 
 #: classes/Gems/Task/Survey/MoveAnswersTask.php:118
 #, php-format
@@ -9752,9 +9686,8 @@ msgid "Deactivated round %s."
 msgstr "Désactivation de la série %s."
 
 #: classes/Gems/Task/Tracker/Merge/MergeTrackImportTask.php:69
-#, fuzzy
 msgid "Merged track data"
-msgstr "Données des parcours de soin fusionnés"
+msgstr ""
 
 # the english version is misspelledd: changes
 #: classes/Gems/Task/Tracker/ProcessTokenCompletion.php:47
@@ -9795,8 +9728,8 @@ msgstr "%d des %d options ont changé."
 #, php-format
 msgid "%d token out of %d tokens changed."
 msgid_plural "%d tokens out of %d tokens changed."
-msgstr[0] "%d von %d Token geändert."
-msgstr[1] "%d von %d Token geändert."
+msgstr[0] "%d token sur %d tokens modifiés."
+msgstr[1] "%d tokens sur %d tokens modifiés."
 
 #: classes/Gems/Task/Tracker/SourceSyncSurveys.php:43
 #, php-format
@@ -9905,7 +9838,7 @@ msgstr "%s"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:546
 msgid "Respondent created"
-msgstr "Le répondant a été créé"
+msgstr "Patient(e) a été créé"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:619
 msgid "Valid from calculation"
@@ -9968,7 +9901,7 @@ msgstr "Utilisez une date au niveau de parcours de soin."
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:788
 msgid "Use a respondent level date."
-msgstr "Utilisez une date au niveau de répondant."
+msgstr "Utilisez une date au niveau de ."
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:441
 #, php-format
@@ -9978,7 +9911,6 @@ msgstr ""
 "de parcours de soin."
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:464
-#, fuzzy
 msgid " - Copy"
 msgstr " - Copie"
 
@@ -10006,9 +9938,8 @@ msgid "Optional code name to link the field to program code."
 msgstr "Nom de code optionnel pour relier le champ au code du programme."
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:922
-#, fuzzy
 msgid "Condition help"
-msgstr "Condition aide"
+msgstr "Aide à la condition"
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:942
 msgid "Organization specific round"
@@ -10223,8 +10154,8 @@ msgid ""
 "Create a track if the respondent does not have a track where this field is "
 "empty."
 msgstr ""
-"Créez un parcours de soin si le répondant ne dispose pas d’un parcours de "
-"soin où ce champ est vide."
+"Créez un parcours de soin si le  ne dispose pas d’un parcours de soin où ce "
+"champ est vide."
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:331
 msgid "Optional extra description to show the user."
@@ -10284,7 +10215,7 @@ msgstr "Finissant le"
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:166
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:269
 msgid "Respondent name"
-msgstr "Nom du répondant"
+msgstr "Nom du"
 
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:187
 msgid "Set ending on"
@@ -10303,12 +10234,10 @@ msgid "Reception code"
 msgstr "Code de réception"
 
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:296
-#, fuzzy
 msgid "Set valid from"
 msgstr "Valable à partir de"
 
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:306
-#, fuzzy
 msgid "Set valid until"
 msgstr "Valable jusqu'au"
 
@@ -10502,14 +10431,13 @@ msgid "Leave current round"
 msgstr "Abandonner la série en cours"
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:155
-#, fuzzy
 msgid "Replace with import round"
-msgstr "Remplacer par la série importée"
+msgstr ""
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "Replace with import round %s"
-msgstr "Remplacer par la série importée %s"
+msgstr ""
 
 #: classes/Gems/Tracker/Snippets/ImportTrackSnippetAbstract.php:168
 #, php-format
@@ -10771,13 +10699,11 @@ msgid "Please answer this survey before %s."
 msgstr "Veuillez répondre à cette enquête avant le %s."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:168
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "The description of the exit url description was changed for %s languages in "
 "survey '%s'."
 msgstr ""
-"La description de l'url de sortie a été modifiée pour les langues %s dans "
-"l'enquête \"%s\"."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:343
 #, php-format
@@ -10904,14 +10830,12 @@ msgstr "Homme"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:153
 #: classes/Gems/Tracker/Source/LimeSurvey4m00FieldMap.php:46
 #: classes/OpenRosa/Tracker/Source/Form.php:573
-#, fuzzy
 msgid "Checked"
 msgstr "Vérifié"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:154
 #: classes/Gems/Tracker/Source/LimeSurvey4m00FieldMap.php:47
 #: classes/OpenRosa/Tracker/Source/Form.php:574
-#, fuzzy
 msgid "Not checked"
 msgstr "Non vérifié"
 
@@ -10940,9 +10864,8 @@ msgstr " (commentaire)"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:480
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:717
-#, fuzzy
 msgid "Free number"
-msgstr "Numéro gratuit"
+msgstr "Numéro libero"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:486
 msgid "Free text (long)"
@@ -11011,11 +10934,8 @@ msgstr "Synchronisation des enquêtes pour toutes les sources"
 #: classes/Gems/Upgrades.php:314 classes/Gems/Upgrades.php:330
 #: classes/Gems/Upgrades.php:345 classes/Gems/Upgrades.php:365
 #: classes/Gems/Upgrades.php:380 classes/Gems/Upgrades.php:395
-#, fuzzy
 msgid "Make sure to read the changelog as it contains important instructions"
 msgstr ""
-"Assurez-vous de lire le changelog car il contient des instructions "
-"importantes"
 
 #: classes/Gems/Upgrades.php:255 classes/Gems/Upgrades.php:269
 #: classes/Gems/Upgrades.php:283 classes/Gems/Upgrades.php:300
@@ -11062,16 +10982,12 @@ msgid "UNSAFE: Compare to secret key"
 msgstr ""
 
 #: classes/Gems/User/Embed/DeferredUserLoader/DeferredStaffUser.php:85
-#, fuzzy
-#| msgid "Save as system user"
 msgid "Load a staff user"
-msgstr "Enregistrer comme utilisateur du système"
+msgstr ""
 
 #: classes/Gems/User/Embed/EmbedLoader.php:158
-#, fuzzy
-#| msgid "Project settings"
 msgid "(use project settings)"
-msgstr "Paramètres du projet"
+msgstr "(utiliser les paramètres du projet)"
 
 #: classes/Gems/User/Embed/EmbedLoader.php:159
 msgid "Hide crumbs"
@@ -11082,28 +10998,20 @@ msgid "Hide topmost crumb"
 msgstr ""
 
 #: classes/Gems/User/Embed/EmbedLoader.php:182
-#, fuzzy
-#| msgid "No consent changes found"
 msgid "Do not change layout"
-msgstr "Aucune modification du consentement n'a été trouvée"
+msgstr "Ne changez pas layout"
 
 #: classes/Gems/User/Embed/EmbedLoader.php:221
-#, fuzzy
-#| msgid "Insert organizations"
 msgid "Use organization style"
-msgstr "Insérer des organisations"
+msgstr ""
 
 #: classes/Gems/User/Embed/Redirect/RespondentSearchPage.php:32
-#, fuzzy
-#| msgid "Respondent changed"
 msgid "Respondent search page"
-msgstr "Le répondant a changé"
+msgstr ""
 
 #: classes/Gems/User/Embed/Redirect/RespondentShowPage.php:32
-#, fuzzy
-#| msgid "Respondent age"
 msgid "Respondent show page"
-msgstr "Âge du répondant"
+msgstr ""
 
 #: classes/Gems/User/Embed/Redirect/StaffAccountPage.php:32
 msgid "Staff account setup page"
@@ -11229,7 +11137,7 @@ msgstr "Masquer complètement"
 
 #: classes/Gems/User/Mask/MaskStore.php:83
 msgid "Mask respondent name"
-msgstr "Masquer le nom du répondant"
+msgstr "Masquer le nom du patient(e)"
 
 #: classes/Gems/User/Mask/MaskStore.php:84
 msgid "Hide name and e-mail address."
@@ -11436,14 +11344,12 @@ msgid "You cannot switch to an inactive or non-existing group."
 msgstr "Vous ne pouvez pas passer à un groupe inactif ou inexistant."
 
 #: classes/Gems/User/UserLoader.php:237 classes/Gems/User/UserLoader.php:251
-#, fuzzy
 msgid "Db storage"
 msgstr "Stockage de Db"
 
 #: classes/Gems/User/UserLoader.php:252
-#, fuzzy
 msgid "Radius storage"
-msgstr "Stockage du radius"
+msgstr ""
 
 #: classes/Gems/User/UserLoader.php:256
 msgid "LDAP"
@@ -11482,7 +11388,7 @@ msgstr "Ce n'est pas le bon code à deux facteurs!"
 #: classes/Gems/Util/DbLookup.php:395
 #, php-format
 msgid "Respondent id %s not found."
-msgstr "Identification du répondant %s non trouvé."
+msgstr "ID du répondant %s non trouvé."
 
 #: classes/Gems/Util/DbLookup.php:398 classes/Gems/Util/DbLookup.php:425
 #: classes/Gems/Util/DbLookup.php:459
@@ -11533,25 +11439,23 @@ msgid "Use site %s address"
 msgstr "Utiliser l'adresse du site %s"
 
 #: classes/Gems/Util/MailJobsUtil.php:207
-#, fuzzy
 msgid "Use the 'By staff member' address"
-msgstr "Utilisez l'adresse \"Par membre du personnel\""
+msgstr ""
 
 #: classes/Gems/Util/MailJobsUtil.php:221
 msgid "Send multiple mails per respondent, one for each checked token."
-msgstr "Envoyez plusieurs e-mail par répondant, un pour chaque token vérifié."
+msgstr "Envoyez plusieurs e-mail par , un pour chaque token vérifié."
 
 #: classes/Gems/Util/MailJobsUtil.php:222
 msgid "Send one mail per respondent, mark all checked tokens as sent."
 msgstr ""
-"Envoyez un courrier par répondant, marquez tous les tokens vérifiés comme "
-"envoyés."
+"Envoyez un courrier par , marquez tous les tokens vérifiés comme envoyés."
 
 #: classes/Gems/Util/MailJobsUtil.php:223
 msgid "Send one mail per respondent, mark only mailed tokens as sent."
 msgstr ""
-"Envoyez un e-mail par répondant, marquez seulement les tokens envoyés par e-"
-"mail comme envoyés."
+"Envoyez un e-mail par , marquez seulement les tokens envoyés par e-mail "
+"comme envoyés."
 
 #: classes/Gems/Util/MailJobsUtil.php:235
 msgid "Multiple emails"
@@ -11579,7 +11483,7 @@ msgstr "Repli (uniquement)"
 
 #: classes/Gems/Util/MailJobsUtil.php:263
 msgid "Respondents and Relations"
-msgstr "Répondants et relations"
+msgstr "Patients et relations"
 
 #: classes/Gems/Util/ReceptionCodeLibrary.php:132
 msgid "Yes (forget answers)"
@@ -12304,9 +12208,8 @@ msgid "%s is not a valid import definition."
 msgstr "%s n'est pas une définition valable de l'importation."
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:778
-#, fuzzy
 msgid "For bold"
-msgstr "Pour les audacieux"
+msgstr ""
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:797
 #, php-format

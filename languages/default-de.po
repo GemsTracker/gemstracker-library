@@ -1,21 +1,21 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: GemsTracker NL\n"
+"Project-Id-Version: GemsTracker DE\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-04 11:21+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
-"Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Source-Language: en\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.4.3\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -2455,7 +2455,7 @@ msgstr "Nicht existierende Datenbankobjekte erstellen"
 msgid "One database object does not exist."
 msgid_plural "These %d database objects do not exist."
 msgstr[0] "Ein Datenbankobjekt existiert nicht."
-msgstr[1] "Diese %d Datenbankobjekten existieren nicht. "
+msgstr[1] "Diese %d Datenbankobjekten existieren nicht."
 
 #: classes/Gems/Default/DatabaseAction.php:609
 msgid "Are you sure you want to create it?"
@@ -5649,7 +5649,7 @@ msgstr "Schritt %d von %d im Skript erfolgreich."
 
 #: classes/Gems/Model/DbaModel.php:343
 msgid "  in step "
-msgstr " im Schritt"
+msgstr " im Schritt "
 
 #: classes/Gems/Model/DbaModel.php:348
 #, php-format
@@ -6154,16 +6154,12 @@ msgstr ""
 "ist."
 
 #: classes/Gems/Model/StaffModel.php:366
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The type of system user."
-msgstr "Das verwendete Kodierungssystem."
+msgstr "Der Typ des Systembenutzers."
 
 #: classes/Gems/Model/StaffModel.php:374
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The group of the system user."
-msgstr "Das verwendete Kodierungssystem."
+msgstr "Die Gruppe des Systembenutzers."
 
 #: classes/Gems/Model/StaffModel.php:378
 msgid "Logout on survey"
@@ -6180,26 +6176,20 @@ msgid "Logout on survey."
 msgstr "Abmelden bei der Umfrage."
 
 #: classes/Gems/Model/StaffModel.php:395
-#, fuzzy
-#| msgid "Primary Group"
 msgid "(user primary group)"
-msgstr "Primaire groep"
+msgstr "(Benutzerprimärgruppe)"
 
 #: classes/Gems/Model/StaffModel.php:405
-#, fuzzy
-#| msgid "May set groups"
 msgid "Used group"
-msgstr "Mag deze groepen instellen"
+msgstr "Benutzte Gruppe"
 
 #: classes/Gems/Model/StaffModel.php:406
 msgid "The group the deferred user should be changed to"
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:411
-#, fuzzy
-#| msgid "Can access"
 msgid "Can create users"
-msgstr "Kann auf Folgendes zugreifen"
+msgstr "Kann Benutzer erstellen"
 
 #: classes/Gems/Model/StaffModel.php:412
 msgid ""
@@ -6208,10 +6198,8 @@ msgid ""
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:418
-#, fuzzy
-#| msgid "Identification"
 msgid "Authentication"
-msgstr "Identifikation"
+msgstr "Authentifizierung"
 
 #: classes/Gems/Model/StaffModel.php:420
 msgid "The authentication method used to authenticate the embedded user."
@@ -6226,10 +6214,8 @@ msgid "The method used to load an embedded user."
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:432
-#, fuzzy
-#| msgid "Execution method"
 msgid "Redirect method"
-msgstr "Ausführungsmethode"
+msgstr "Umleitungsmethode"
 
 #: classes/Gems/Model/StaffModel.php:434
 msgid "The page the user is redirected to after successful login."
@@ -6240,22 +6226,16 @@ msgid "Layout"
 msgstr ""
 
 #: classes/Gems/Model/StaffModel.php:440
-#, fuzzy
-#| msgid "The coding method used."
 msgid "The layout frame used."
-msgstr "Het gebruikte coderingssysteem."
+msgstr "Der verwendete Layoutrahmen."
 
 #: classes/Gems/Model/StaffModel.php:446 classes/Gems/Model/StaffModel.php:452
-#, fuzzy
-#| msgid "The coding system used."
 msgid "The display style used."
-msgstr "Das verwendete Kodierungssystem."
+msgstr "Der verwendete Anzeigestil."
 
 #: classes/Gems/Model/StaffModel.php:450
-#, fuzzy
-#| msgid "Answer display"
 msgid "Crumbs display"
-msgstr "Anzeige der Antwort"
+msgstr "Krümelspuranzeige"
 
 #: classes/Gems/Model/StaffModel.php:462
 msgid "Secret key"
@@ -6620,10 +6600,8 @@ msgid "Timeline show respondent"
 msgstr "Zeitleiste Patient zeigen"
 
 #: classes/Gems/Screens/Respondent/Show/HixTimelineShow.php:43
-#, fuzzy
-#| msgid "Timeline show respondent"
 msgid "Timeline show respondent for HiX"
-msgstr "Zeitleiste Patient zeigen"
+msgstr "Timeline zeigt Patienten für HiX"
 
 #: classes/Gems/Screens/Respondent/Subscribe/EmailOnlySubscribe.php:71
 msgid "Subscribe using e-mail address only"
@@ -8008,7 +7986,7 @@ msgstr "Patient wiederhergestellt."
 msgid "Restored %d track."
 msgid_plural "Restored %d tracks."
 msgstr[0] " %d Track wiederhergestellt."
-msgstr[1] " %d Tracks wiederhergestellt."
+msgstr[1] " %d Tracks wiederhergestellt"
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:194
 msgid "Respondent deleted."
@@ -8829,9 +8807,8 @@ msgid "Track Legend"
 msgstr "Legende des Tracks"
 
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceLegenda.php:70
-#, fuzzy
 msgid "Su"
-msgstr "Vr"
+msgstr "Su"
 
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:50
 msgid "Search respondent data"
@@ -9113,10 +9090,8 @@ msgid "Quick view %s track"
 msgstr "Schnellansicht %s-Track"
 
 #: classes/Gems/Snippets/Unsubscribe/EmailUnsubscribeSnippet.php:116
-#, fuzzy
-#| msgid "Your e-mail address has been unsubscribed"
 msgid "If your E-email address is known, you have been unsubscribed."
-msgstr "Ihre E-Mail-Adresse wurde abgemeldet"
+msgstr "Wenn Ihre E-Mail-Adresse bekannt ist, wurden Sie abgemeldet."
 
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:40
 #: classes/Gems/Snippets/Unsubscribe/NoUnsubscriptionsSnippet.php:43
@@ -9181,10 +9156,8 @@ msgid "The Staff User to login as."
 msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:94
-#, fuzzy
-#| msgid "Allows respondents to login."
 msgid "The respondent to login to."
-msgstr "Ermöglicht den Patienten die Anmeldung."
+msgstr "Der Patient dem Sie anmelden."
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:102
 msgid "Standard query"
@@ -9195,10 +9168,8 @@ msgid "Example url"
 msgstr ""
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:112
-#, fuzzy
-#| msgid "Recalculate fields"
 msgid "Replace {} fields!"
-msgstr "Trackfelder neu berechnen"
+msgstr "Ersetze {} Felder!"
 
 #: classes/Gems/Snippets/User/EmbeddedUserTestUrlForm.php:113
 msgid "Please open in private mode or in other browser."
@@ -10628,7 +10599,7 @@ msgstr "Wir haben Ihre Umfrage vor %d Tagen ausgefüllt erhalten. Danke."
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:116
 #, php-format
 msgid "We have received your answers on %s. "
-msgstr "Wir haben Ihre Umfrage am %s ausgefüllt erhalten"
+msgstr "Wir haben Ihre Antworten am %s erhalten."
 
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
 #, php-format
@@ -10959,16 +10930,12 @@ msgid "UNSAFE: Compare to secret key"
 msgstr ""
 
 #: classes/Gems/User/Embed/DeferredUserLoader/DeferredStaffUser.php:85
-#, fuzzy
-#| msgid "Save as system user"
 msgid "Load a staff user"
-msgstr "Als Systembenutzer speichern"
+msgstr "Laden Sie einen Mitarbeiter"
 
 #: classes/Gems/User/Embed/EmbedLoader.php:158
-#, fuzzy
-#| msgid "Project settings"
 msgid "(use project settings)"
-msgstr "Projekteinstellungen"
+msgstr "(Projekteinstellungen verwenden)"
 
 #: classes/Gems/User/Embed/EmbedLoader.php:159
 msgid "Hide crumbs"
@@ -10979,28 +10946,20 @@ msgid "Hide topmost crumb"
 msgstr ""
 
 #: classes/Gems/User/Embed/EmbedLoader.php:182
-#, fuzzy
-#| msgid "No consent changes found"
 msgid "Do not change layout"
-msgstr "Keine Zustimmungsänderungen gefunden"
+msgstr "Layout nicht ändern"
 
 #: classes/Gems/User/Embed/EmbedLoader.php:221
-#, fuzzy
-#| msgid "Insert organizations"
 msgid "Use organization style"
-msgstr "Organisationen einfügen"
+msgstr "Organisationen verwenden"
 
 #: classes/Gems/User/Embed/Redirect/RespondentSearchPage.php:32
-#, fuzzy
-#| msgid "Respondent changed"
 msgid "Respondent search page"
-msgstr "Patiënt veranderd"
+msgstr "Patientensuchseite"
 
 #: classes/Gems/User/Embed/Redirect/RespondentShowPage.php:32
-#, fuzzy
-#| msgid "Respondent age"
 msgid "Respondent show page"
-msgstr "Alter des Patienten"
+msgstr "Respondent show page"
 
 #: classes/Gems/User/Embed/Redirect/StaffAccountPage.php:32
 msgid "Staff account setup page"
@@ -12135,8 +12094,8 @@ msgstr[1] "%d rijen geïmporteerd."
 #, php-format
 msgid "%d row changed."
 msgid_plural "%d rows changed."
-msgstr[0] "Zeile %d geändert."
-msgstr[1] "%d Zeilen geändert"
+msgstr[0] "%d Zeile geändert."
+msgstr[1] "%d Zeilen geändert."
 
 #: vendor/magnafacta/mutil/src/MUtil/Snippets/Standard/ModelImportSnippet.php:538
 msgid "Import field definitions"
