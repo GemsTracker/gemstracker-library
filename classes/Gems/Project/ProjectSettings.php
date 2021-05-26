@@ -1273,6 +1273,14 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
+     * @return bool True if the program is using a nonce
+     */
+    public function hasNonce()
+    {
+        return isset($this->headers['Content-Security-Policy']) && strpos($this->headers['Content-Security-Policy'], '$scriptNonce') !== false;
+    }
+    
+    /**
      * True when a response database with a table with one row for each token answer should exist.
      *
      * @return boolean

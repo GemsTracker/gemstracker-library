@@ -11,6 +11,7 @@
  */
 
 use MUtil\Controller\Router\Rewrite;
+use MUtil\Javascript;
 
 /**
  * Project Application Core code
@@ -911,6 +912,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         // Initialize view
         $view = new \Zend_View();
+        
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
         $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
@@ -931,7 +933,11 @@ class GemsEscort extends \MUtil_Application_Escort
         }
 
         // Generate a nonce for script tags
-        //\MUtil\Javascript::generateNonce();
+        if ($this->project->hasNonce()) {
+            Javascript::generateNonce();
+        }
+        // Make sure the variable is set (if Javascript::generateNonce() this will return an empty string)
+        $view->nonceString = Javascript::getNonceAttributeString();
 
         // Add it to the ViewRenderer
         $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
@@ -2130,14 +2136,14 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($request->isDispatched()) {
             $headers = $this->project->getResponseHeaders();
             foreach ($headers as $name => $value) {
-                /* check if nonce should be added to the CSP header
-                 * if ($name == 'Content-Security-Policy' && strpos($value, '$scriptNonce') !== false) {
-                    if (\MUtil\Javascript::$scriptNonce) {
-                        $value = str_replace('$scriptNonce', \MUtil\Javascript::$scriptNonce, $value);
+                // check if nonce should be added to the CSP header
+                if ($name == 'Content-Security-Policy' && strpos($value, '$scriptNonce') !== false) {
+                    if (Javascript::$scriptNonce) {
+                        $value = str_replace('$scriptNonce', Javascript::$scriptNonce, $value);
                     } else {
-                        throw new Gems_Exception_Security('script nouce set in headers but no nonce generated');
+                        throw new Gems_Exception_Security('script nonce set in headers but no nonce generated');
                     }
-                }*/
+                } // */
                 $this->response->setHeader($name, $value, true);
             }
 
@@ -2157,8 +2163,9 @@ class GemsEscort extends \MUtil_Application_Escort
                 \MUtil_JQuery::enableView($this->view);
                 $scripts = $this->view->jQuery()->getOnLoadActions();
                 $content = '';
+                $nonceString = Javascript::getNonceAttributeString();
                 foreach($scripts as $script) {
-                    $content .= "<script type='text/javascript'>$script</script>\n";
+                    $content .= "<script type='text/javascript' $nonceString>$script</script>\n";
                 }
                 $content .= $this->view->inlineScript();
 

@@ -10,12 +10,6 @@
     // Check if jQuery library is needed
     if ($this->jQuery) {
         echo $this->jQuery()->renderStylesheets();
-        //Error message for when jQuery can not be loaded
-        /*echo "<script>
-        if (typeof jQuery == 'undefined') {
-            document.writeln('<div class=\"errors\">The site requires external JavaScript from another domain, which is blocked or failed to load.</div>');
-        }
-        </script>";*/
     }
     ?>
     </head>

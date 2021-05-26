@@ -694,26 +694,31 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $this->html->pInfo('No headers section found.');
             $issues = true;
         } else {
-            $headers = $this->project->offsetGet('headers');
+            $headers = $this->project->getResponseHeaders();
             if (isset($headers['Content-Security-Policy'])) {
-                $csp = $headers['Content-Security-Policy'];
-                if (! \MUtil_String::contains($csp, ' data: ')) {
-                    if (\MUtil_String::contains($csp, ' data ')) {
+                // Split by -src(-xxx)
+                preg_match_all("/(\w+-src(-\w+)?) ([^;]+);/", $headers['Content-Security-Policy'], $r);
+                $csp = array_combine($r[1], $r[3]);
+                // \MUtil_Echo::track($csp);
+
+                /*
+                if (! \MUtil_String::contains($csp['script-src'], " 'nonce-\$scriptNonce' ")) {
+                    $this->html->pInfo('Content-Security-Policy script-src \'nonce-\$scriptNonce\' setting missing. This is unsafe!');
+                    $issues = true;
+                } // */
+                if (! \MUtil_String::contains($csp['img-src'], ' data: ')) {
+                    if (\MUtil_String::contains($csp['img-src'], ' data ')) {
                         $this->html->pInfo('Content-Security-Policy uses data instead of data:!');
                     }
                     $this->html->pInfo('Content-Security-Policy img-src data: setting missing, 2FA QR codes will not work!');
                     $issues = true;
                 }
-                if (! \MUtil_String::contains($csp, " 'nonce-\$scriptNonce' ")) {
-                    $this->html->pInfo('Content-Security-Policy script-src \'nonce-\$scriptNonce\' setting missing. This is unsafe!');
-                    $issues = true;
-                }
-                if (! \MUtil_String::contains($csp, ' object-src ')) {
-                    $this->html->pInfo("Content-Security-Policy object-src missing, add:: object-src 'none';");
+                if (! isset($csp['object-src'])) {
+                    $this->html->pInfo("Content-Security-Policy object-src missing, add: object-src 'none';");
                     $issues = true;
                 }
             } else {
-                $this->html->pInfo('No headers Content-Security-Policy set!');
+                $this->html->pInfo('No headers.Content-Security-Policy set!');
                 $issues = true;
             }
         }

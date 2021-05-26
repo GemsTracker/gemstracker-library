@@ -42,7 +42,7 @@
         echo \MUtil_Bootstrap::bootstrap()->renderJavascript();
     }
 ?>
-<script type="text/javascript">
+<script type="text/javascript" <?php echo isset($this->nonceString) ? $this->nonceString : ''; ?>>
 $(function() {
 
     $('#menu-toggle').on('click', function() {
