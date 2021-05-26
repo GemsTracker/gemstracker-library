@@ -196,14 +196,15 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
     {
         // \MUtil_Echo::track($filename);
         if ($download) {
-            // Download & save
-			header('Content-Type: application/x-download');
+            $disposition = 'attachment';
         } else {
-            //We send to a browser
-            header('Content-Type: application/pdf');
+            $disposition = 'inline';
         }
+        header('Content-Type: application/pdf');
         header('Content-Length: '.strlen($content));
-        header('Content-Disposition: inline; filename="'.$filename.'"');
+        header('Content-Disposition: ' . $disposition . '; filename="'.$filename.'"');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Description: File Transfer');
         header('Cache-Control: private, max-age=0, must-revalidate');
         header('Pragma: public');
 

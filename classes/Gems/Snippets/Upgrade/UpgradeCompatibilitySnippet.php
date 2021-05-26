@@ -693,6 +693,29 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         if (! $this->project->offsetExists('headers')) {
             $this->html->pInfo('No headers section found.');
             $issues = true;
+        } else {
+            $headers = $this->project->offsetGet('headers');
+            if (isset($headers['Content-Security-Policy'])) {
+                $csp = $headers['Content-Security-Policy'];
+                if (! \MUtil_String::contains($csp, ' data: ')) {
+                    if (\MUtil_String::contains($csp, ' data ')) {
+                        $this->html->pInfo('Content-Security-Policy uses data instead of data:!');
+                    }
+                    $this->html->pInfo('Content-Security-Policy img-src data: setting missing, 2FA QR codes will not work!');
+                    $issues = true;
+                }
+                if (! \MUtil_String::contains($csp, " 'nonce-\$scriptNonce' ")) {
+                    $this->html->pInfo('Content-Security-Policy script-src \'nonce-\$scriptNonce\' setting missing. This is unsafe!');
+                    $issues = true;
+                }
+                if (! \MUtil_String::contains($csp, ' object-src ')) {
+                    $this->html->pInfo("Content-Security-Policy object-src missing, add:: object-src 'none';");
+                    $issues = true;
+                }
+            } else {
+                $this->html->pInfo('No headers Content-Security-Policy set!');
+                $issues = true;
+            }
         }
         if (!$this->project->offsetExists('meta')) {
             $this->html->pInfo('No meta headers section found.');
