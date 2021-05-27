@@ -235,7 +235,7 @@ class GemsEscort extends \MUtil_Application_Escort
     protected function _checkParameters(array $params, array $posts)
     {
         foreach ($params as $key => $value) {
-            $rest = strpbrk($key, '<>=%&"\'');
+            $rest = strpbrk($key, '<>=%&"\'`');
             if (false !== $rest) {
                 $this->setError(
                         $this->_('Illegal request parameter'),
