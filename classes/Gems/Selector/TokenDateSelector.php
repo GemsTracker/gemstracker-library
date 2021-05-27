@@ -117,14 +117,19 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
      */
     protected function processSelect(\Zend_Db_Select $select)
     {
+        $select->columns([   'gto_id_organization', 'gto_id_track ', 'gto_id_survey', 'gto_round_description',
+                             'gto_valid_from', 'gto_valid_until', 'gto_completion_time ', 
+                             'gto_mail_sent_date',
+        ], $this->dataTableName);
+        
         // $select->joinLeft('gems__rounds',      'gto_id_round = gro_id_round', array());
         // $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
-        $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', array());
+        $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', ['gsu_active']);
         $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group', array());
         $select->join('gems__respondents',     'gto_id_respondent = grs_id_user', array());
         $select->join('gems__respondent2org',  '(gto_id_organization = gr2o_id_organization AND gto_id_respondent = gr2o_id_user)', array());
-        $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', array());        
-        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
+        $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', ['gr2t_created_by']);        
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', ['grc_success']);
         $select->joinLeft('gems__respondent_relations', '(gto_id_relation = grr_id AND gto_id_respondent = grr_id_respondent)', array()); // Add relation
         $select->joinLeft('gems__track_fields',  '(gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation")', array());       // Add relation fields     
     }

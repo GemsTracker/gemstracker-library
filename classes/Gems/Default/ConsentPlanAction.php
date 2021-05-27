@@ -105,6 +105,8 @@ class Gems_Default_ConsentPlanAction extends \Gems_Controller_ModelSnippetAction
             $detailed = true;
         }
 
+        $fixed = ['gr2o_id_organization'];
+        $fields = array_combine($fixed, $fixed);
         if ($detailed) {
             $year  = $this->_('Year');
             $month = $this->_('Month');

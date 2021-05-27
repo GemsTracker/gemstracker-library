@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Inappropriate access control for logs (#642)
 - Inappropriate access for some track pages (#643)
 - Prevent the wrong patient being shown during embedded login (#607)
+- Prevent user defined query columns (#647)
 - Remove the '1' privilege from the role editor (#631)
 
 ### Fixed
