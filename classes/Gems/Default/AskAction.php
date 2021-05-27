@@ -170,19 +170,21 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             return false;
         }
 
-        if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
-            $tokenLang = strtolower($this->token->getRespondentLanguage());
-            $tokenOrg  = $this->token->getOrganization();
+        if (! \Gems_Cookies::getLocale($this->getRequest())) {
+            if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
+                $tokenLang = strtolower($this->token->getRespondentLanguage());
+                $tokenOrg = $this->token->getOrganization();
 
-            if ($tokenOrg->getId() != $this->currentOrganization->getId()) {
-                $this->currentUser->setCurrentOrganization($tokenOrg);
-            }
-            // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
-            if ($tokenLang != $this->locale->getLanguage()) {
-                if ($this->currentUser->switchLocale($tokenLang)) {
-                    // Reload url as the menu has already been loaded in the previous language 
-                    $url = $tokenOrg->getLoginUrl() . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/' . $this->tokenId;
-                    $this->getResponse()->setRedirect($url);
+                if ($tokenOrg->getId() != $this->currentOrganization->getId()) {
+                    $this->currentUser->setCurrentOrganization($tokenOrg);
+                }
+                // \MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
+                if ($tokenLang != $this->locale->getLanguage()) {
+                    if ($this->currentUser->switchLocale($tokenLang)) {
+                        // Reload url as the menu has already been loaded in the previous language 
+                        $url = $tokenOrg->getLoginUrl() . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/' . $this->tokenId;
+                        $this->getResponse()->setRedirect($url);
+                    }
                 }
             }
         }
