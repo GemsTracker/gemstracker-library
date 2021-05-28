@@ -70,5 +70,7 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
                 }
             }
         }
+
+        $batch->addTask('Sites\\BlockNewSites');
     }
 }
