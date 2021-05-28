@@ -7297,7 +7297,7 @@ msgstr[0] ""
 "Après cette enquête, il y a une autre enquête à laquelle nous aimerions que "
 "vous répondiez."
 msgstr[1] ""
-"Après cette enquête, il y a %d autres enquêtes auxquelle nous aimerions que "
+"Après cette enquête, il y a %d autres enquêtes auxquelles nous aimerions que "
 "vous répondiez."
 
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:140
@@ -7684,7 +7684,7 @@ msgid "To"
 msgstr "À"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:139
-msgid "Prefered Language"
+msgid "Preferred Language"
 msgstr "Langue préférée"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:163

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 16:48+0200\n"
+"POT-Creation-Date: 2021-05-28 13:08+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -96,7 +96,7 @@ msgstr "Erroneous input"
 #: classes/Gems/Default/AgendaProcedureAction.php:122
 #: classes/Gems/Default/AgendaStaffAction.php:123
 #: classes/Gems/Default/CommJobAction.php:314
-#: classes/Gems/Default/ConsentPlanAction.php:148
+#: classes/Gems/Default/ConsentPlanAction.php:150
 #: classes/Gems/Default/IndexAction.php:320
 #: classes/Gems/Export/ModelSource/AnswerExportModelSource.php:96
 #: classes/Gems/Model/AppointmentModel.php:210
@@ -1250,7 +1250,7 @@ msgstr "Ok"
 #: classes/Gems/Default/UpgradeAction.php:211
 #: classes/Gems/Export/RespondentExport.php:505
 #: classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php:228
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:214
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:155
 #: classes/Gems/Snippets/FormSnippetAbstract.php:221
 #: classes/Gems/Snippets/Generic/ButtonRowSnippet.php:79
 #: classes/Gems/Snippets/Mail/CommJobShowSnippet.php:65
@@ -1750,24 +1750,24 @@ msgstr "You have no access to %s appointments!"
 msgid "Organization does not exist."
 msgstr "Organization does not exist."
 
-#: classes/Gems/Default/AskAction.php:196
+#: classes/Gems/Default/AskAction.php:202
 #, php-format
 msgid "Enter your %s token"
 msgstr "Enter your %s token"
 
-#: classes/Gems/Default/AskAction.php:199
+#: classes/Gems/Default/AskAction.php:205
 msgid "Tokens identify a survey that was assigned to you personally."
 msgstr "Tokens identify a survey that was assigned to you personally."
 
-#: classes/Gems/Default/AskAction.php:199
+#: classes/Gems/Default/AskAction.php:205
 msgid "Entering the token and pressing OK will open that survey."
 msgstr "Entering the token and pressing OK will open that survey."
 
-#: classes/Gems/Default/AskAction.php:203
+#: classes/Gems/Default/AskAction.php:209
 msgid "After answering the survey you will be logged off automatically."
 msgstr "After answering the survey you will be logged off automatically."
 
-#: classes/Gems/Default/AskAction.php:208
+#: classes/Gems/Default/AskAction.php:214
 msgid ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
@@ -1775,7 +1775,7 @@ msgstr ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
 
-#: classes/Gems/Default/AskAction.php:209
+#: classes/Gems/Default/AskAction.php:215
 msgid ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
@@ -1783,13 +1783,12 @@ msgstr ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
 
-#: classes/Gems/Default/AskAction.php:234
+#: classes/Gems/Default/AskAction.php:240
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
-#: classes/Gems/Default/AskAction.php:274
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:279
+#: classes/Gems/Default/AskAction.php:280
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1798,14 +1797,14 @@ msgstr ""
 "Thank you for answering. At the moment we have no further surveys for you to "
 "take."
 
-#: classes/Gems/Default/AskAction.php:279
+#: classes/Gems/Default/AskAction.php:285
 #, php-format
 msgid ""
 "The survey for token %s has been answered and no further surveys are open."
 msgstr ""
 "The survey for token %s has been answered and no further surveys are open."
 
-#: classes/Gems/Default/AskAction.php:421
+#: classes/Gems/Default/AskAction.php:427
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
@@ -1918,7 +1917,6 @@ msgstr ""
 "Execution order of the communication jobs, lower numbers are executed first."
 
 #: classes/Gems/Default/CommJobAction.php:137
-#| msgid "Communication log"
 msgid "Communication method"
 msgstr "Communication method"
 
@@ -2059,34 +2057,28 @@ msgstr "(all organizations)"
 
 #: classes/Gems/Default/CommJobAction.php:333
 #, php-format
-#| msgid "Starting single %s mail job %s"
 msgid "Starting single %s message job %s"
 msgstr "Starting single %s message job %s"
 
 #: classes/Gems/Default/CommJobAction.php:353
-#| msgid "Mailjob is inactive and won't be executed"
 msgid "Messagejob is inactive and won't be executed"
 msgstr "Messagejob is inactive and won't be executed"
 
 #: classes/Gems/Default/CommJobAction.php:378
 #, php-format
-#| msgid "Preview single mail job %s"
 msgid "Preview single message job %s"
 msgstr "Preview single message job %s"
 
 #: classes/Gems/Default/CommJobAction.php:380
 #, php-format
-#| msgid "Executing single mail job %s"
 msgid "Executing single message job %s"
 msgstr "Executing single message job %s"
 
 #: classes/Gems/Default/CommJobAction.php:393
-#| msgid "Execute all mail jobs"
 msgid "Execute all message jobs"
 msgstr "Execute all message jobs"
 
 #: classes/Gems/Default/CommJobAction.php:405
-#| msgid "Automatic mail jobs"
 msgid "Automatic message jobs"
 msgstr "Automatic message jobs"
 
@@ -2095,8 +2087,6 @@ msgid "(all execution methods)"
 msgstr "(all execution methods)"
 
 #: classes/Gems/Default/CommJobAction.php:433
-#| msgid "automatic mail job"
-#| msgid_plural "automatic mail jobs"
 msgid "automatic messaging job"
 msgid_plural "automatic messaging jobs"
 msgstr[0] "automatic messaging job"
@@ -2104,19 +2094,14 @@ msgstr[1] "automatic messaging jobs"
 
 #: classes/Gems/Default/CommJobAction.php:443
 #, php-format
-#| msgid "Automatic mails have been turned off since %s."
 msgid "Automatic messaging have been turned off since %s."
 msgstr "Automatic messaging have been turned off since %s."
 
 #: classes/Gems/Default/CommJobAction.php:446
-#| msgid "Turn Automatic Mail Jobs ON"
 msgid "Turn Automatic Messaging Jobs ON"
 msgstr "Turn Automatic Messaging Jobs ON"
 
 #: classes/Gems/Default/CommJobAction.php:452
-#| msgid ""
-#| "With automatic mail jobs and a cron job on the server, mails can be sent "
-#| "without manual user action."
 msgid ""
 "With automatic messaging jobs and a cron job on the server, messages can be "
 "sent without manual user action."
@@ -2125,22 +2110,18 @@ msgstr ""
 "sent without manual user action."
 
 #: classes/Gems/Default/CommJobAction.php:497
-#| msgid "Mailjob inactive, can not be sent"
 msgid "Message job inactive, can not be sent"
 msgstr "Message job inactive, can not be sent"
 
 #: classes/Gems/Default/CommJobAction.php:502
-#| msgid "Mailjob manual, can only be sent using run"
 msgid "Message job manual, can only be sent using run"
 msgstr "Message job manual, can only be sent using run"
 
 #: classes/Gems/Default/CommJobAction.php:508
-#| msgid "Mailjob automatic, can be sent using run or run all"
 msgid "Message job automatic, can be sent using run or run all"
 msgstr "Message job automatic, can be sent using run or run all"
 
 #: classes/Gems/Default/CommJobAction.php:523
-#| msgid "No tokens found to email"
 msgid "No tokens found to message"
 msgstr "No tokens found to message"
 
@@ -2223,7 +2204,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/ComplianceAction.php:250
 #: classes/Gems/Default/FieldReportAction.php:367
 #: classes/Gems/Default/ProjectTracksAction.php:148
-#: classes/Gems/Default/TrackAction.php:1039
+#: classes/Gems/Default/TrackAction.php:1040
 #: classes/Gems/Default/TrackMaintenanceAction.php:323
 #: classes/Gems/Snippets/Agenda/AppointmentCheckSnippet.php:217
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:200
@@ -2271,32 +2252,32 @@ msgid_plural "respondent consents"
 msgstr[0] "patient consent"
 msgstr[1] "patient consents"
 
-#: classes/Gems/Default/ConsentPlanAction.php:109
+#: classes/Gems/Default/ConsentPlanAction.php:111
 msgid "Year"
 msgstr "Year"
 
-#: classes/Gems/Default/ConsentPlanAction.php:110
+#: classes/Gems/Default/ConsentPlanAction.php:112
 msgid "Month"
 msgstr "Month"
 
-#: classes/Gems/Default/ConsentPlanAction.php:121
-#: classes/Gems/Default/ConsentPlanAction.php:159
+#: classes/Gems/Default/ConsentPlanAction.php:123
+#: classes/Gems/Default/ConsentPlanAction.php:161
 msgid "Total OK"
 msgstr "Total OK"
 
-#: classes/Gems/Default/ConsentPlanAction.php:127
-#: classes/Gems/Default/ConsentPlanAction.php:159
+#: classes/Gems/Default/ConsentPlanAction.php:129
+#: classes/Gems/Default/ConsentPlanAction.php:161
 msgid "Dropped"
 msgstr "Dropped"
 
-#: classes/Gems/Default/ConsentPlanAction.php:128
-#: classes/Gems/Default/ConsentPlanAction.php:159
+#: classes/Gems/Default/ConsentPlanAction.php:130
+#: classes/Gems/Default/ConsentPlanAction.php:161
 #: classes/Gems/Default/SummaryAction.php:93
 #: classes/Gems/Default/TrackOverviewAction.php:110
 msgid "Total"
 msgstr "Total"
 
-#: classes/Gems/Default/ConsentPlanAction.php:188
+#: classes/Gems/Default/ConsentPlanAction.php:190
 msgid "consent per organization"
 msgstr "consent per organization"
 
@@ -2818,11 +2799,11 @@ msgstr "Files ready for import"
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/StaffAction.php:196
 #: classes/Gems/Default/StaffAction.php:210
-#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2499
+#: classes/Gems/Default/StaffLogAction.php:68 classes/GemsEscort.php:2506
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2501
+#: classes/Gems/Default/GroupAction.php:85 classes/GemsEscort.php:2508
 #, php-format
 msgid "Access to the %s/%s page is not allowed for your current group: %s."
 msgstr "Access to the %s/%s page is not allowed for your current group: %s."
@@ -3423,14 +3404,14 @@ msgid "Fill in"
 msgstr "Fill in"
 
 #: classes/Gems/Default/OpenRosaFormAction.php:107
-#: classes/Gems/Default/TrackAction.php:977
+#: classes/Gems/Default/TrackAction.php:978
 msgid "No existing token specified!"
 msgstr "No existing token specified!"
 
 #: classes/Gems/Default/OpenRosaFormAction.php:128
 #: classes/Gems/Default/SummaryAction.php:249
 #: classes/Gems/Default/TokenSearchActionAbstract.php:281
-#: classes/Gems/Default/TrackAction.php:1019
+#: classes/Gems/Default/TrackAction.php:1020
 #: classes/Gems/Snippets/Token/TokenForgottenSnippet.php:228
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:122
 msgid "token"
@@ -3474,11 +3455,15 @@ msgstr[0] "your setup"
 msgstr[1] "your setup"
 
 #: classes/Gems/Default/OrganizationAction.php:109
+#: classes/Gems/Default/RespondentChildActionAbstract.php:100
+#: classes/Gems/Default/TrackAction.php:967
 #: classes/Gems/Model/HiddenOrganizationModel.php:86
 msgid "Inaccessible or unknown organization"
 msgstr "Inaccessible or unknown organization"
 
 #: classes/Gems/Default/OrganizationAction.php:112
+#: classes/Gems/Default/RespondentChildActionAbstract.php:102
+#: classes/Gems/Default/TrackAction.php:969
 #: classes/Gems/Model/HiddenOrganizationModel.php:88
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
@@ -3900,7 +3885,7 @@ msgid_plural "reception codes"
 msgstr[0] "reception code"
 msgstr[1] "reception codes"
 
-#: classes/Gems/Default/RespondentChildActionAbstract.php:72
+#: classes/Gems/Default/RespondentChildActionAbstract.php:78
 #, php-format
 msgid "Respondent %s is not participating at the moment."
 msgstr "Patient %s is not participating at the moment."
@@ -4415,118 +4400,118 @@ msgstr "Contact date"
 msgid "No tokens found."
 msgstr "No tokens found."
 
-#: classes/Gems/Default/TrackAction.php:442
+#: classes/Gems/Default/TrackAction.php:436
 #, php-format
 msgid "Token answers: %s"
 msgstr "Token answers: %s"
 
-#: classes/Gems/Default/TrackAction.php:477
+#: classes/Gems/Default/TrackAction.php:471
 #, php-format
 msgid "Checking all surveys of respondent %s, %s for answers."
 msgstr "Checking all surveys of patient %s, %s for answers."
 
-#: classes/Gems/Default/TrackAction.php:484
+#: classes/Gems/Default/TrackAction.php:478
 msgid "This task (re)checks all tokens of this respondent for answers."
 msgstr "This task (re)checks all tokens of this patient for answers."
 
-#: classes/Gems/Default/TrackAction.php:503
+#: classes/Gems/Default/TrackAction.php:497
 #, php-format
 msgid "Checking round assignments for all tracks of respondent %s, %s."
 msgstr "Checking round assignments for all tracks of patient %s, %s."
 
-#: classes/Gems/Default/TrackAction.php:539
+#: classes/Gems/Default/TrackAction.php:533
 #, php-format
 msgid "Checking the token %s for answers."
 msgstr "Checking the token %s for answers."
 
-#: classes/Gems/Default/TrackAction.php:545
+#: classes/Gems/Default/TrackAction.php:539
 msgid "This task checks one token for answers."
 msgstr "This task checks one token for answers."
 
-#: classes/Gems/Default/TrackAction.php:565
+#: classes/Gems/Default/TrackAction.php:559
 #, php-format
 msgid "Checking round assignments for track '%s' of respondent %s, %s."
 msgstr "Checking round assignments for track '%s' of patient %s, %s."
 
-#: classes/Gems/Default/TrackAction.php:591
+#: classes/Gems/Default/TrackAction.php:585
 #, php-format
 msgid "Checking the surveys in track '%s' of respondent %s, %s for answers."
 msgstr "Checking the surveys in track '%s' of patient %s, %s for answers."
 
-#: classes/Gems/Default/TrackAction.php:599
+#: classes/Gems/Default/TrackAction.php:593
 msgid ""
 "This task checks all tokens for this track for this respondent for answers."
 msgstr ""
 "This task checks all tokens for this track for this patient for answers."
 
-#: classes/Gems/Default/TrackAction.php:762
+#: classes/Gems/Default/TrackAction.php:756
 #, php-format
 msgid "Correct answers for survey %s, round %s"
 msgstr "Correct answers for survey %s, round %s"
 
-#: classes/Gems/Default/TrackAction.php:778
+#: classes/Gems/Default/TrackAction.php:772
 #, php-format
 msgid "Adding the %s track to respondent %s: %s"
 msgstr "Adding the %s track to patient %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:797
+#: classes/Gems/Default/TrackAction.php:791
 #, php-format
 msgid "Send mail to %s respondent nr %s for token %s"
 msgstr "Send mail to %s patient nr %s for token %s"
 
-#: classes/Gems/Default/TrackAction.php:814
+#: classes/Gems/Default/TrackAction.php:808
 #, php-format
 msgid "Tracks assigned to %s: %s"
 msgstr "Tracks assigned to %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:830
+#: classes/Gems/Default/TrackAction.php:824
 #, php-format
 msgid "Inserting a survey in a track for respondent %s: %s"
 msgstr "Inserting a survey in a track for patient %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:883
+#: classes/Gems/Default/TrackAction.php:877
 msgid "No track specified for respondent!"
 msgstr "No track specified for patient!"
 
-#: classes/Gems/Default/TrackAction.php:908
+#: classes/Gems/Default/TrackAction.php:902
 msgid "No track found for respondent!"
 msgstr "No track found for patient!"
 
-#: classes/Gems/Default/TrackAction.php:1002
+#: classes/Gems/Default/TrackAction.php:1003
 #, php-format
 msgid "Token %s in round \"%s\" in track \"%s\" for respondent nr %s: %s"
 msgstr "Token %s in round \"%s\" in track \"%s\" for patient nr %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:1069
+#: classes/Gems/Default/TrackAction.php:1070
 msgid "No track engine specified!"
 msgstr "No track engine specified!"
 
-#: classes/Gems/Default/TrackAction.php:1114
+#: classes/Gems/Default/TrackAction.php:1115
 #, php-format
 msgid "%s track for respondent nr %s"
 msgstr "%s track for patient nr %s"
 
-#: classes/Gems/Default/TrackAction.php:1122
+#: classes/Gems/Default/TrackAction.php:1123
 #, php-format
 msgid "%s track for respondent nr %s: %s"
 msgstr "%s track for patient number %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:1154
+#: classes/Gems/Default/TrackAction.php:1155
 #, php-format
 msgid "%s track assignments for respondent nr %s: %s"
 msgstr "%s track assignments for patient nr %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:1161
+#: classes/Gems/Default/TrackAction.php:1162
 #, php-format
 msgid "%s track overview"
 msgstr "%s track overview"
 
-#: classes/Gems/Default/TrackAction.php:1250
+#: classes/Gems/Default/TrackAction.php:1251
 #, php-format
 msgid "Recalculating fields for all tracks of respondent %s, %s."
 msgstr "Recalculating fields for all tracks of patient %s, %s."
 
-#: classes/Gems/Default/TrackAction.php:1274
+#: classes/Gems/Default/TrackAction.php:1275
 #, php-format
 msgid "Recalculating fields for track '%s' of respondent %s, %s."
 msgstr "Recalculating fields for track '%s' of patient %s, %s."
@@ -4842,7 +4827,7 @@ msgstr "Last page"
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:296
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:239
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:250
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:246
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:331
 #: classes/OpenRosa/Tracker/Source/OpenRosa.php:607
 msgid "Token"
 msgstr "Token"
@@ -5282,7 +5267,7 @@ msgstr "Change password"
 msgid "Participate"
 msgstr "Participate"
 
-#: classes/Gems/Menu.php:333 classes/GemsEscort.php:1295
+#: classes/Gems/Menu.php:333 classes/GemsEscort.php:1301
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -5477,12 +5462,10 @@ msgid "Clean up"
 msgstr "Clean up"
 
 #: classes/Gems/Menu/MenuAbstract.php:329
-#| msgid "Automatic mail"
 msgid "Automatic messaging"
 msgstr "Automatic messaging"
 
 #: classes/Gems/Menu/MenuAbstract.php:330
-#| msgid "Turn Automatic Mail Jobs OFF"
 msgid "Turn Automatic Messaging Jobs OFF"
 msgstr "Turn Automatic Messaging Jobs OFF"
 
@@ -5509,7 +5492,6 @@ msgid "Sort jobs"
 msgstr "Sort"
 
 #: classes/Gems/Menu/MenuAbstract.php:344
-#| msgid "Message"
 msgid "Messengers"
 msgstr "Messengers"
 
@@ -5519,7 +5501,6 @@ msgid "Templates"
 msgstr "Templates"
 
 #: classes/Gems/Menu/MenuAbstract.php:350
-#| msgid "Email servers"
 msgid "Mail servers"
 msgstr "Mail servers"
 
@@ -5781,7 +5762,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:196
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1700
+#: classes/Gems/Model/AppointmentModel.php:245 classes/GemsEscort.php:1706
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -5830,7 +5811,6 @@ msgid "The type of messenger this is, e.g. mail, sms"
 msgstr "The type of messenger this is, e.g. mail, sms"
 
 #: classes/Gems/Model/CommMessengersModel.php:53
-#| msgid "Missing track identifier."
 msgid "Messenger identifier"
 msgstr "Messenger identifier"
 
@@ -5928,7 +5908,7 @@ msgstr "Unable to load condition with ID %s"
 #: classes/Gems/Model/EpisodeOfCareModel.php:146
 #: classes/Gems/Model/EpisodeOfCareModel.php:149
 #: classes/Gems/Model/EpisodeOfCareModel.php:187
-#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1681
+#: classes/Gems/Model/EpisodeOfCareModel.php:190 classes/GemsEscort.php:1687
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
@@ -6025,7 +6005,6 @@ msgid "Contact email"
 msgstr "Contact email"
 
 #: classes/Gems/Model/OrganizationModel.php:118
-#| msgid "Contact moments"
 msgid "Contact SMS From"
 msgstr "Contact SMS From"
 
@@ -6853,17 +6832,17 @@ msgstr "Patient %s has no %s surveys."
 msgid "No token defined in row %s."
 msgstr "No token defined in row %s."
 
-#: classes/Gems/Pdf.php:266
+#: classes/Gems/Pdf.php:267
 #, php-format
 msgid "PDF Source File '%s' not found!"
 msgstr "PDF Source File '%s' not found!"
 
-#: classes/Gems/Pdf.php:324
+#: classes/Gems/Pdf.php:325
 #, php-format
 msgid " The error message is: %s"
 msgstr " The error message is: %s"
 
-#: classes/Gems/Pdf.php:367 classes/Gems/Pdf.php:375
+#: classes/Gems/Pdf.php:368 classes/Gems/Pdf.php:376
 #, php-format
 msgid "Unable to run PDF conversion (%s): \"%s\""
 msgstr "Unable to run PDF conversion (%s): \"%s\""
@@ -6947,27 +6926,22 @@ msgid "Answer first open until finished"
 msgstr "Answer first open until finished"
 
 #: classes/Gems/Screens/Token/Ask/ShowAllOpenAsk.php:52
-#| msgid "Show all open tokens"
 msgid "Show all open tokens - use lastname"
 msgstr "Show all open tokens - use lastname"
 
 #: classes/Gems/Screens/Token/Ask/ShowAllOpenAskPrivate.php:39
-#| msgid "Show all open tokens"
 msgid "Show all open tokens - without lastname"
 msgstr "Show all open tokens - without lastname"
 
 #: classes/Gems/Screens/Token/Ask/ShowFirstOpenAsk.php:52
-#| msgid "Show first open token only"
 msgid "Show first open token only - use lastname"
 msgstr "Show first open token only - use lastname"
 
 #: classes/Gems/Screens/Token/Ask/ShowFirstOpenAskPrivate.php:39
-#| msgid "Show first open token only"
 msgid "Show first open token only - without lastname"
 msgstr "Show first open token only - without lastname"
 
 #: classes/Gems/Screens/Token/Ask/ShowOpenSequenceAsk.php:39
-#| msgid "Show only city and country"
 msgid "Show token by token with open count."
 msgstr "Show token by token with open count."
 
@@ -7419,7 +7393,7 @@ msgid "Appointment SQL"
 msgstr "Appointment SQL"
 
 #: classes/Gems/Snippets/Ask/MaintenanceModeAskSnippet.php:42
-#: classes/GemsEscort.php:2449 classes/GemsEscort.php:2460
+#: classes/GemsEscort.php:2456 classes/GemsEscort.php:2467
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
@@ -7488,7 +7462,7 @@ msgid "We appreciate your cooperation very much."
 msgstr "We appreciate your cooperation very much."
 
 #: classes/Gems/Snippets/Ask/ShowAllOpenSnippet.php:89
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:190
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:129
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Thank you for answering the \"%s\" survey."
@@ -7512,49 +7486,16 @@ msgstr "Thank you for answering all open surveys."
 msgid "There are no surveys to show for this token."
 msgstr "There are no surveys to show for this token."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:78
-#: classes/Gems/User/TwoFactor/TwoFactorTotpAbstract.php:45
-msgid "or"
-msgstr "or"
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:82
-msgid "Send me an email to continue later"
-msgstr "Send me an email to continue later"
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:127
-msgid ""
-"An email with information to continue later was already sent to your "
-"registered email address today."
-msgstr ""
-"An email with information to continue later was already sent to your "
-"registered email address today."
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:130
-msgid ""
-"An email with information to continue later was sent to your registered "
-"email address."
-msgstr ""
-"An email with information to continue later was sent to your registered "
-"email address."
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:133
-msgid ""
-"Delivery can take a while. If you do not receive an email please check your "
-"spam-box."
-msgstr ""
-"Delivery can take a while. If you do not receive an email please check your "
-"spam-box."
-
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:191
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:131
 msgid "Please click the button below to answer the next survey."
 msgstr "Please click the button below to answer the next survey."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:196
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:137
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr "Please click the button below to answer the survey for token %s."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:200
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:142
 #, php-format
 msgid ""
 "Wait one second to open the survey automatically or click on Cancel to stop."
@@ -7565,7 +7506,7 @@ msgstr[0] ""
 msgstr[1] ""
 "Wait %d seconds to open the survey automatically or click on Cancel to stop."
 
-#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:225
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:165
 #, php-format
 msgid ""
 "After this survey there is one other survey we would like you to answer."
@@ -7575,39 +7516,37 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#: classes/Gems/Snippets/Ask/ShowFirstOpenSnippet.php:169
+#| msgid "Checking all surveys in the %s source for answers."
+msgid "This survey is the last survey to answer."
+msgstr "This survey is the last survey to answer."
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:31
-#| msgid "Welcome %s,"
 msgid "Welcome back,"
 msgstr "Welcome back,"
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:33
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:228
-#| msgid "Welcome %s,"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:313
 msgid "Welcome,"
 msgstr "Welcome,"
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:56
 #, php-format
-#| msgid "Thank you for answering the \"%s\" survey."
-msgid "Thank you for your answering \"%s\","
-msgstr "Thank you for your answering \"%s\","
+msgid "Thank you for answering \"%s\"."
+msgstr "Thank you for answering \"%s\"."
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:68
 #, php-format
-#| msgid "Thank you for answering the \"%s\" survey."
-msgid "Thank you for answering the surveys for \"%s\","
-msgstr "Thank you for answering the surveys for \"%s\","
+msgid "Thank you for answering the surveys for \"%s\"."
+msgstr "Thank you for answering the surveys for \"%s\"."
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:100
-#| msgid "Please click the button below to answer the next survey."
 msgid "Click on the link to answer the survey:"
 msgstr "Click on the link to answer the survey:"
 
 #: classes/Gems/Snippets/Ask/ShowOpenSequenceSnippet.php:112
 #, php-format
-#| msgid "Please answer the open survey."
-#| msgid_plural "Please answer the open surveys."
 msgid "There are open %d surveys"
 msgstr "There are open %d surveys"
 
@@ -7630,7 +7569,6 @@ msgid "Toggle"
 msgstr "Toggle"
 
 #: classes/Gems/Snippets/Communication/MessengersEditSnippet.php:13
-#| msgid "Actions"
 msgid "Instructions"
 msgstr "Instructions"
 
@@ -8052,8 +7990,8 @@ msgid "To"
 msgstr "To"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:139
-msgid "Prefered Language"
-msgstr "Prefered Language"
+msgid "Preferred Language"
+msgstr "Preferred Language"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:163
 msgid "Send"
@@ -9843,21 +9781,16 @@ msgstr "Would be marked: %s %s"
 
 #: classes/Gems/Task/Comm/ExecuteCommJobTask.php:127
 #, php-format
-#| msgid "Would send %d e-mails with template %s, and update %d tokens."
 msgid "Would send %d %s with template %s, and update %d tokens."
 msgstr "Would send %d %s with template %s, and update %d tokens."
 
 #: classes/Gems/Task/Comm/ExecuteCommJobTask.php:135
 #, php-format
-#| msgid "Sent %d e-mails with template %s, updated %d tokens."
 msgid "Sent %d %s with template %s, updated %d tokens."
 msgstr "Sent %d %s with template %s, updated %d tokens."
 
 #: classes/Gems/Task/Comm/ExecuteCommJobTask.php:145
 #, php-format
-#| msgid ""
-#| "%d error(s) occurred while creating mails for template %s. Check error "
-#| "log for details."
 msgid ""
 "%d error(s) occurred while creating %s for template %s. Check error log for "
 "details."
@@ -11221,87 +11154,126 @@ msgstr "%s round"
 msgid "No round specified."
 msgstr "No round specified."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:123
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:108
+#: classes/Gems/User/TwoFactor/TwoFactorTotpAbstract.php:45
+msgid "or"
+msgstr "or"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:112
+msgid "Send me an email to continue later"
+msgstr "Send me an email to continue later"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:139
+msgid ""
+"An email with information to continue later was already sent to your "
+"registered email address today."
+msgstr ""
+"An email with information to continue later was already sent to your "
+"registered email address today."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:142
+msgid ""
+"An email with information to continue later was sent to your registered "
+"email address."
+msgstr ""
+"An email with information to continue later was sent to your registered "
+"email address."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:145
+msgid ""
+"Delivery can take a while. If you do not receive an email please check your "
+"spam-box."
+msgstr ""
+"Delivery can take a while. If you do not receive an email please check your "
+"spam-box."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:198
 msgid "We have received your answers today. Thank you!"
 msgstr "We have received your answers today. Thank you!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:126
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:201
 msgid "We have received your answers yesterday. Thank you!"
 msgstr "We have received your answers yesterday. Thank you!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:204
 msgid "We have received your answers 2 days ago. Thank you."
 msgstr "We have received your answers 2 days ago. Thank you."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:133
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:208
 #, php-format
 msgid "We have received your answers %d days ago. Thank you."
 msgstr "We have received your answers %d days ago. Thank you."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:135
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:210
 #, php-format
 msgid "We have received your answers on %s. "
 msgstr "We have received your answers on %s. "
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:148
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:223
 #, php-format
 msgid "Takes about %s to answer."
 msgstr "Takes about %s to answer."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:162
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:234
+#| msgid ""
+#| "Thank you for answering. At the moment we have no further surveys for you "
+#| "to take."
+msgid "At the moment we have no further surveys for you to take."
+msgstr "At the moment we have no further surveys for you to take."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:247
 #, php-format
 msgid "Thank you %s,"
 msgstr "Thank you %s,"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:164
-#| msgid "Thank you for subscribing!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:249
 msgid "Thank you for your answers,"
 msgstr "Thank you for your answers,"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:180
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:265
 msgid "Survey has no time limit."
 msgstr "Survey has no time limit."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:188
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:273
 msgid "Warning!!!"
 msgstr "Warning!!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:190
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:275
 msgid "This survey must be answered today!"
 msgstr "This survey must be answered today!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:195
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:280
 msgid "Warning!!"
 msgstr "Warning!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:197
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:282
 msgid "This survey can only be answered until tomorrow!"
 msgstr "This survey can only be answered until tomorrow!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:201
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:286
 msgid "Warning! This survey can only be answered for another 2 days!"
 msgstr "Warning! This survey can only be answered for another 2 days!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:205
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:290
 #, php-format
 msgid "Please answer this survey within %d days."
 msgstr "Please answer this survey within %d days."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:209
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:294
 msgid "This survey can no longer be answered."
 msgstr "This survey can no longer be answered."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:212
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:297
 #, php-format
 msgid "Please answer this survey before %s."
 msgstr "Please answer this survey before %s."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:226
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:311
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welcome %s,"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:234
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:319
 #, php-format
 msgid "We kindly ask you to answer a survey about %s."
 msgstr "We kindly ask you to answer a survey about %s."
@@ -11502,7 +11474,7 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
-#: classes/Gems/Tracker/Token.php:2086
+#: classes/Gems/Tracker/Token.php:2088
 #, php-format
 msgid ""
 "%s: Reset number of contact moments because new start date %s is later than "
@@ -12079,32 +12051,26 @@ msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
 #: classes/Gems/Util/CommJobsUtil.php:308
-#| msgid "Send multiple mails per respondent, one for each checked token."
 msgid "Send multiple messages per respondent, one for each checked token."
 msgstr "Send multiple messages per patient, one for each checked token."
 
 #: classes/Gems/Util/CommJobsUtil.php:309
-#| msgid "Send one mail per respondent, mark all checked tokens as sent."
 msgid "Send one message per respondent, mark all checked tokens as sent."
 msgstr "Send one message per patient, mark all checked tokens as sent."
 
 #: classes/Gems/Util/CommJobsUtil.php:310
-#| msgid "Send one mail per respondent, mark only mailed tokens as sent."
 msgid "Send one message per respondent, mark only mailed tokens as sent."
 msgstr "Send one message per patient, mark only mailed tokens as sent."
 
 #: classes/Gems/Util/CommJobsUtil.php:322
-#| msgid "Multiple emails"
 msgid "Multiple messages"
 msgstr "Multiple messages"
 
 #: classes/Gems/Util/CommJobsUtil.php:323
-#| msgid "One mail, mark all"
 msgid "One message, mark all"
 msgstr "One message, mark all"
 
 #: classes/Gems/Util/CommJobsUtil.php:324
-#| msgid "Message"
 msgid "One message"
 msgstr "One message"
 
@@ -12362,54 +12328,54 @@ msgstr "Mrs."
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 
-#: classes/GemsEscort.php:240 classes/GemsEscort.php:259
+#: classes/GemsEscort.php:241 classes/GemsEscort.php:260
 msgid "Illegal request parameter"
 msgstr "Illegal request parameter"
 
-#: classes/GemsEscort.php:242
+#: classes/GemsEscort.php:243
 #, php-format
 msgid "Illegal character %s in parameter name."
 msgstr "Illegal character %s in parameter name."
 
-#: classes/GemsEscort.php:261
+#: classes/GemsEscort.php:262
 #, php-format
 msgid ""
 "Illegal parameter value containing the text \"%s\" after a %s character."
 msgstr ""
 "Illegal parameter value containing the text \"%s\" after a %s character."
 
-#: classes/GemsEscort.php:356 vendor/magnafacta/mutil/src/MUtil/Log.php:105
+#: classes/GemsEscort.php:357 vendor/magnafacta/mutil/src/MUtil/Log.php:105
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:1098
+#: classes/GemsEscort.php:1104
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:1293
+#: classes/GemsEscort.php:1299
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:1299
+#: classes/GemsEscort.php:1305
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1527
+#: classes/GemsEscort.php:1533
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1558
+#: classes/GemsEscort.php:1564
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1712
+#: classes/GemsEscort.php:1718
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:2235
+#: classes/GemsEscort.php:2242
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -12417,27 +12383,27 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:2455
+#: classes/GemsEscort.php:2462
 msgid "The page you requested is currently inaccessible."
 msgstr "The page you requested is currently inaccessible."
 
-#: classes/GemsEscort.php:2456
+#: classes/GemsEscort.php:2463
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:2469
+#: classes/GemsEscort.php:2476
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:2471 classes/GemsEscort.php:2544
+#: classes/GemsEscort.php:2478 classes/GemsEscort.php:2551
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:2526 classes/GemsEscort.php:2542
+#: classes/GemsEscort.php:2533 classes/GemsEscort.php:2549
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:2527
+#: classes/GemsEscort.php:2534
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 

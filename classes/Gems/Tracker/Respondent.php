@@ -352,7 +352,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get the respondents prefered language
+     * Get the respondents preferred language
      * @return string
      */
     public function getLanguage() {
@@ -628,7 +628,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Overwrite the respondents prefered language
+     * Overwrite the respondents preferred language
      */
     public function setLocale($locale)
     {

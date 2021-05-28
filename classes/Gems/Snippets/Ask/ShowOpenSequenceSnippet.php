@@ -53,7 +53,7 @@ class ShowOpenSequenceSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstra
             $nextToken = $this->token->getNextUnansweredToken();
             if ($nextToken) {
                 $html->pInfo(sprintf(
-                                 $this->_('Thank you for your answering "%s",'),
+                                 $this->_('Thank you for answering "%s".'),
                                  $this->token->getSurvey()->getExternalName()));
 
                 $open = $this->getOpenCount();
@@ -65,7 +65,7 @@ class ShowOpenSequenceSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstra
                 $html->pInfo($this->showLink($nextToken));
             } else {
                 $html->pInfo(sprintf(
-                                 $this->_('Thank you for answering the surveys for "%s",'),
+                                 $this->_('Thank you for answering the surveys for "%s".'),
                                  $this->token->getTrackEngine()->getExternalName()));
             }
             

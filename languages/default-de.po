@@ -7665,7 +7665,7 @@ msgid "To"
 msgstr "An"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:139
-msgid "Prefered Language"
+msgid "Preferred Language"
 msgstr "Bevorzugte Sprache"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:163
@@ -7985,8 +7985,8 @@ msgstr "Patient wiederhergestellt."
 #, php-format
 msgid "Restored %d track."
 msgid_plural "Restored %d tracks."
-msgstr[0] " %d Track wiederhergestellt."
-msgstr[1] " %d Tracks wiederhergestellt"
+msgstr[0] "%d Track wiederhergestellt."
+msgstr[1] "%d Tracks wiederhergestellt."
 
 #: classes/Gems/Snippets/Respondent/DeleteRespondentSnippet.php:194
 msgid "Respondent deleted."
@@ -10599,7 +10599,7 @@ msgstr "Wir haben Ihre Umfrage vor %d Tagen ausgefüllt erhalten. Danke."
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:116
 #, php-format
 msgid "We have received your answers on %s. "
-msgstr "Wir haben Ihre Antworten am %s erhalten."
+msgstr "Wir haben Ihre Antworten am %s erhalten. "
 
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:129
 #, php-format
