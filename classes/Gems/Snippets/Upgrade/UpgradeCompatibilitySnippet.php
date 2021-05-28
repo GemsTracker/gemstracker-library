@@ -192,7 +192,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $obsFunctions = array(
             'GemsEscort' => [
-                'isAllowedHost' => 'SiteUtil->isPostFromAllowedHost',
+                'isAllowedHost' => 'SiteUtil->isRequestFromAllowedHost',
                 ],
             'Gems\\Agenda\\Filter\\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
@@ -204,7 +204,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
                 ],
             'Gems_Project_ProjectSettings' => [
-                'getAllowedHosts' => 'SiteUtil->isPostFromAllowedHost',
+                'getAllowedHosts' => 'SiteUtil->isRequestFromAllowedHost',
                 'getConsoleUrl' => 'Gems_User_Organization->getPreferredSiteUrl',
                 'hasAnySupportUrl' => null,
                 'hasBugsUrl' => null,

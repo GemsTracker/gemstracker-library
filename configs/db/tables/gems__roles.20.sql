@@ -181,6 +181,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
     ,pr.role.create,pr.role.edit,
+    ,pr.site-maint,pr.site-maint.create,pr.site-maint.delete,,pr.site-maint.edit,,pr.site-maint.lock,
     ,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.create,pr.source.edit,pr.source.synchronize,
     ,pr.source.synchronize-all,
     ,pr.staff.edit.all,pr.staff.switch-user,

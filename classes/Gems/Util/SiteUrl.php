@@ -116,19 +116,29 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
+        $blockSave = $this->util->getSites()->getSiteLock()->isLocked();
+        
         try {
             $model = $this->loader->getModels()->getSiteModel();
             $model->applySettings(true, 'edit');
 
             $data = $model->loadFirst(['gsi_url' => $id]);
-
+            // \MUtil_Echo::track($data);
+            
             if (! $data) {
-                // Auto insert the site
-                $data = $model->save([
-                     'gsi_url'                  => $id,
-                     'gsi_select_organizations' => 0,
-                     'gsi_blocked'              => ($this->_blockOnCreation ? 1 : 0),
-                     ]);
+                if ($blockSave) {
+                    $data  = $model->loadNew();
+                    $data['gsi_url'] = $id;
+                    $data['gsi_blocked'] = 1;
+                    
+                } else {
+                    // Auto insert the site
+                    $data = $model->save([
+                        'gsi_url' => $id,
+                        'gsi_select_organizations' => 0,
+                        'gsi_blocked' => ($this->_blockOnCreation ? 1 : 0),
+                        ]);
+                }
             }
             
             
@@ -143,7 +153,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_style_fixed'          => '0',
                 'gsi_iso_lang'             => 'en',
                 'gsi_active'               => 1,
-                'gsi_blocked'              => ($this->_blockOnCreation ? 1 : 0),
+                'gsi_blocked'              => ($blockSave || $this->_blockOnCreation ? 1 : 0),
             ];    
             
             // $this->logger->logError($e);

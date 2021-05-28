@@ -88,4 +88,34 @@ class Gems_Default_SiteMaintenanceAction extends \Gems_Controller_ModelSnippetAc
     {
         return $this->plural('site url', 'site url\'s', $count);
     }
+
+    /**
+     * Action for showing a browse page
+     */
+    public function indexAction()
+    {
+        $lock = $this->util->getSites()->getSiteLock();
+        if ($lock->isLocked()) {
+            $this->addMessage(sprintf($this->_('Automatic new site registration has been blocked since %s.'), $lock->getLockTime()));
+
+            if ($menuItem = $this->menu->findController('site-maintenance', 'lock')) {
+                $menuItem->set('label', $this->_('UNBLOCK new sites'));
+            }
+        } else {
+            $this->addMessage($this->_('Automatic new site registration is unblocked!'));
+            $this->addMessage($this->_('Block automatic site registration once setup is ready.'));
+        }
+
+        return parent::indexAction();
+    }
+
+    public function lockAction()
+    {
+        // Switch lock
+        $this->util->getSites()->getSiteLock()->reverse();
+
+        // Redirect
+        $request = $this->getRequest();
+        $this->_reroute($this->menu->getCurrentParent()->toRouteUrl());
+    }
 }

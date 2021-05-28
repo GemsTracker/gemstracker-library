@@ -207,7 +207,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      */
     public function getCronJobLock()
     {
-        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/cron_lock.txt'));
+        return $this->getLockFile('cron_lock.txt');
     }
 
     /**
@@ -293,13 +293,24 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a lock object
+     *
+     * @param string $filename (without a path!)
+     * @return \Gems_Util_LockFile
+     */
+    public function getLockFile($filename)
+    {
+        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/' . $filename));
+    }
+
+    /**
      * Returns the maintenance lock
      *
      * @return \Gems_Util_LockFile
      */
     public function getMaintenanceLock()
     {
-        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/lock.txt'));
+        return $this->getLockFile('lock.txt');
     }
 
     /**

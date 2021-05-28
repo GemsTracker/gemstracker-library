@@ -39,7 +39,12 @@ class SiteMaintenanceInformation extends \MUtil_Snippets_SnippetAbstract
         $div->pInfo($this->_('Site maintenance does multiple things: it link url\'s to organizations for email and login. It also performs a security function.'));
 
         $div->h3($this->_('How it works'));
-        $div->pInfo($this->_('Site maintenance can be maintained manually, but is usually automatically filled every time the login screen is opened or data is committed by post.'));
+        $p = $div->pInfo($this->_('Site maintenance can be maintained manually but is automatically filled when new sites is UNBLOCKed.'));
+        $p->append(' ' . $this->_('Usually initially we fill the sites automatically.'));
+        $p->append(' ' . $this->_('But once setup is finished you should block the use of any unknown sites.'));
+        
+        $p = $div->pInfo($this->_('Checks are performed every time a page is opened.'));
+        $p->append(' ' . $this->_('Only when new sites is UNBLOCKed are new sites are added automatically, but they may be blocked even then when the behaviour is deemed sketchy.'));
 
         $div->h3($this->_('Linking an url to an organization'));
 

@@ -215,7 +215,8 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $cont->addSystemUserPage($this->_('System users'));
 
         // SITE MAINTENANCE CONTROLLER
-        $cont->addBrowsePage($this->_('Sites'), 'pr.site-maint', 'site-maintenance');
+        $sitesPage = $cont->addBrowsePage($this->_('Sites'), 'pr.site-maint', 'site-maintenance');
+        $sitesPage->addButtonOnly($this->_('BLOCK new sites'), 'pr.site-maint.lock', 'site-maintenance', 'lock');
         
         // AGENDA CONTAINER
         $setup->addAgendaSetupMenu($this->_('Agenda'));

@@ -1721,3 +1721,10 @@ ALTER TABLE `gems__respondent_relations`
 -- PATCH: Add contact sms from to organization
 ALTER TABLE `gems__organizations`
     ADD gor_contact_sms_from varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_contact_email;
+
+-- PATCH: Add roles for site management
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.create') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.create%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.delete') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.delete%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.edit') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.edit%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.lock') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.lock%';

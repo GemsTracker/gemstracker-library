@@ -2046,7 +2046,7 @@ class GemsEscort extends \MUtil_Application_Escort
      *
      * @param string $fullHost
      * @return boolean
-     * @deprecated since version 1.9.1 replaced by SiteUrl->isPostFromAllowedHost
+     * @deprecated since version 1.9.1 replaced by SiteUrl->isRequestFromAllowedHost
      */
     public function isAllowedHost($fullHost)
     {
@@ -2560,10 +2560,11 @@ class GemsEscort extends \MUtil_Application_Escort
             $menuItem->applyHiddenParameters($request, $source);
             $menu->setCurrent($menuItem);
         }
-        if (($request instanceof \Zend_Controller_Request_Http) && $request->isPost()) {
-            if (! $this->util->getSites()->isPostFromAllowedHost($request)) {
+        if (($request instanceof \Zend_Controller_Request_Http)) {
+            $sites = $this->util->getSites();
+            if (! $sites->isRequestFromAllowedHost($request)) {
                 throw new \Gems_Exception(
-                    sprintf("Invalid source host, possible CSRF attack. Used host: %s", $incoming),
+                    sprintf("Invalid source host, possible CSRF attack. Used host: %s!", $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', $request->getHttpHost()))),
                     403
                 );
             }
