@@ -623,19 +623,21 @@ class GemsEscort extends \MUtil_Application_Escort
         $this->bootstrap(array('event'));
 
         $loader = $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
-        
+
         if (class_exists('\\Zalt\\Loader\\ProjectOverloader')) {
 
             $config['abstract_factories'][] = new Zalt\Loader\ServiceManager\Factory\ZendRegistryFactory($this->getContainer());
-            
-            $overLoader = new \Zalt\Loader\ProjectOverloader(array_keys($this->_loaderDirs), true);
+
+            $loaderDirs = array_reverse($this->_loaderDirs);
+
+            $overLoader = new \Zalt\Loader\ProjectOverloader(array_keys($loaderDirs), true);
             $overLoader->legacyClasses = true;
             $overLoader->createServiceManager([], $config);
             $overLoader->setSource($loader);
             // \Zalt\Loader\ProjectOverloader::$verbose = true;
 
             $this->getContainer()->overLoader = $overLoader;
-            
+
             // Store the loader directories in container
             $this->getContainer()->loaderDirs = $this->_loaderDirs;
         }
