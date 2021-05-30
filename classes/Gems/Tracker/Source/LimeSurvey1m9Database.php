@@ -1390,7 +1390,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $lsUntil = $tokenUntil;
             } else {
                 // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
-                $lsUntil = clone $tokenFrom;
+                $lsUntil = clone $now;
                 $lsUntil->setTimeToDayEnd();
             }
         } else {
@@ -1399,7 +1399,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $lsUntil = $lsFrom;
         }
         
-//        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $tokenFrom;
+//        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $gtokenFrom;
 //        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
 //            $lsUntil = $tokenUntil;
 //        } elseif (!is_null($tokenFrom)) {
