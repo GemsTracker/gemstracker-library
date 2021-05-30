@@ -50,6 +50,11 @@ class PasswordResetSnippet extends FormSnippetAbstract
     protected $checkFields = null;
 
     /**
+     * @var bool Normally we check if the user is active ON THIS SITE, but not in the admin panel 
+     */
+    protected $checkCurrentOrganization = true;
+
+    /**
      * Should the password rules be enforced.
      *
      * @var boolean Not set when null
@@ -174,7 +179,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if (! ($this->user->inAllowedGroup() && $this->user->canSetPassword())) {
+        if (! ($this->user->inAllowedGroup() && $this->user->canSetPassword($this->checkCurrentOrganization))) {
             $this->addMessage($this->getNotAllowedMessage());
             return false;
         }

@@ -23,6 +23,11 @@ namespace Gems\Snippets\User;
 class AdminPasswordResetSnippet extends PasswordResetSnippet
 {
     /**
+     * @var bool Normally we check if the user is active ON THIS SITE, but not in the admin panel
+     */
+    protected $checkCurrentOrganization = true;
+
+    /**
      *
      * @var \Gems_Loader
      */

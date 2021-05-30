@@ -1729,12 +1729,18 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     *
+     * @param boolean $checkCurrentOrganization Normally we check if the user is active ON THIS SITE, but not in the admin panel
      * @return boolean True when a user can log in.
      */
-    public function isActive()
+    public function isActive($checkCurrentOrganization = true)
     {
-        return (boolean) $this->canLoginHere() && $this->_getVar('user_active');
+        if ($this->_getVar('user_active')) {
+            if ($checkCurrentOrganization) {
+                return $this->canLoginHere();
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
