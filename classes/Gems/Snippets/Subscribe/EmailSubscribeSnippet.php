@@ -60,6 +60,11 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
     protected $patientNrGenerator;
 
     /**
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
      * Add the elements to the form
      *
      * @param \Zend_Form $form
@@ -89,28 +94,34 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
     {
         $this->addMessage($this->_('You have been subscribed succesfully.'));
 
-        $sql = "SELECT gr2o_id_user FROM gems__respondent2org
+        $sql = "SELECT gr2o_id_user, gr2o_patient_nr FROM gems__respondent2org
             WHERE gr2o_email = ? AND gr2o_id_organization = ?";
 
-        $userId = $this->db->fetchOne($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
+        $userIds = $this->db->fetchRow($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
 
         $model = $this->loader->getModels()->createRespondentModel();
 
+        $mailCodes = $this->util->getDbLookup()->getRespondentMailCodes();
+        key($mailCodes);
+        $mailable = key($mailCodes);
+        
         $values['grs_iso_lang']         = $this->locale->getLanguage();
         $values['gr2o_id_organization'] = $this->currentOrganization->getId();
         $values['gr2o_email']           = $this->formData['email'];
-        $values['gr2o_mailable']        = 1;
+        $values['gr2o_mailable']        = $mailable;
         $values['gr2o_comments']        = $this->_('Created by subscription');
         $values['gr2o_opened_by']       = $this->currentUser->getUserId();
 
-        if ($userId) {
-            $values['grs_id_user'] = $userId;
-            $values['gr2o_id_user'] = $userId;
+        \MUtil_Echo::track($userId, $this->formData['email']);
+        if ($userIds) {
+            $values['grs_id_user']     = $userIds['gr2o_id_user'];
+            $values['gr2o_id_user']    = $userIds['gr2o_id_user'];
+            $values['gr2o_patient_nr'] = $userIds['gr2o_patient_nr'];
         } else {
             $func = $this->patientNrGenerator;
-            $values['gr2o_patient_nr']      = $func();
+            $values['gr2o_patient_nr'] = $func();
         }
-        // \MUtil_Echo::track($values);
+        \MUtil_Echo::track($values);
 
         $model->save($values);
 
