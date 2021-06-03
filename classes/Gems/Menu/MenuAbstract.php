@@ -877,7 +877,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
                 ->addParameters(\MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
 
-        $codePage = $showPage->addPage($this->_('Export codebook'), 'pr.survey-maintenance.code-book-export', 'survey-code-book', 'export')
+        $codePage = $showPage->addPage($this->_('Export codebook'), 'pr.survey-maintenance.code-book-export', 'survey-code-book-export', 'export')
             ->addParameters(\MUtil_Model::REQUEST_ID)
             ->setParameterFilter('gsu_active', 1);
 
