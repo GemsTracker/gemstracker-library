@@ -692,7 +692,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                             $surveys[self::SURVEY_SOURCE_INACTIVE][$id] = $name;
                         }
                     }
-                } elseif ($survey->isActive()) {
+                } elseif (!$survey->isActive()) {
                     if ($flat) {
                         $surveys[$id] = $name . " ($inactive) ";
                     } else {
