@@ -546,7 +546,9 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $this->refresh();
         }
 
-        return $this->_gemsData['gr2o_mailable'] == 1;
+        $noMailCode = $this->util->getDbLookup()->getRespondentNoMailCodeValue();
+
+        return $this->_gemsData['gr2o_mailable'] > $noMailCode;
     }
 
     /**
