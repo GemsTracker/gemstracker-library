@@ -68,8 +68,8 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
-     * Return all organizations this arganization is allowed acces to 
-     * 
+     * Return all organizations this arganization is allowed acces to
+     *
      * @param int $orgId
      * @return array
      */
@@ -121,11 +121,11 @@ class Gems_Util_DbLookup extends UtilAbstract
     {
         try {
             $staffGroups = $this->_getTranslatedPairsCached(
-                'gems__groups', 
-                'ggp_id_group', 
-                'ggp_name', 
-                'groups', 
-                'ggp_group_active = 1 AND ggp_staff_members = 1', 
+                'gems__groups',
+                'ggp_id_group',
+                'ggp_name',
+                'groups',
+                'ggp_group_active = 1 AND ggp_staff_members = 1',
                 'natsort');
         } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
@@ -239,11 +239,11 @@ class Gems_Util_DbLookup extends UtilAbstract
     {
         return $this->util->getTranslated()->getEmptyDropdownArray() +
             $this->_getTranslatedPairsCached(
-                'gems__groups', 
-                'ggp_id_group', 
-                'ggp_name', 
-                'groups', 
-                'ggp_group_active = 1', 
+                'gems__groups',
+                'ggp_id_group',
+                'ggp_name',
+                'groups',
+                'ggp_group_active = 1',
                 'natsort');
     }
 
@@ -430,6 +430,16 @@ class Gems_Util_DbLookup extends UtilAbstract
     }
 
     /**
+     * @return array mailId => descr
+     */
+    public function getRespondentNoMailCodeValue()
+    {
+        $mailCodes = $this->getRespondentMailCodes();
+        reset($mailCodes);
+        return key($mailCodes);
+    }
+
+    /**
      * @return int lowest mailId
      */
     public function getRespondentTrackMailCodes()
@@ -453,7 +463,7 @@ class Gems_Util_DbLookup extends UtilAbstract
         reset($mailCodes);
         return key($mailCodes);
     }
-    
+
     /**
      * Returns the roles in the acl
      *
@@ -554,7 +564,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             'ksort'
         );
     }
-    
+
     /**
      * Return key/value pairs of all staff members, currently active or not
      *
@@ -600,7 +610,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      *
      * @param string $organizationId
      * @return array
-     * @deprecated since 1.8.7 
+     * @deprecated since 1.8.7
      * @see \Gems_Util_TrackData->getSurveysFor
      */
     public function getSurveys($organizationId = null)
@@ -680,7 +690,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             $sourceInactive = $this->_('source inactive');
             foreach ($result as $surveyData) {
                 $survey = $tracker->getSurvey($surveyData);
-                
+
                 $id   = $surveyData['gsu_id_survey'];
                 $name = $survey->getName();
                 if (! $survey->isActiveInSource()) {
@@ -702,7 +712,7 @@ class Gems_Util_DbLookup extends UtilAbstract
                     if ($flat) {
                         $surveys[$id] = $name;
                     } else {
-                        $surveys[self::SURVEY_ACTIVE][$id] = $name;                        
+                        $surveys[self::SURVEY_ACTIVE][$id] = $name;
                     }
                 }
             }
