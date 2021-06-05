@@ -166,30 +166,30 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
                 return null;
             }
         }
-        
+
         $hours = $dateTime->diffHours();
-        
+
         if (abs($hours) < 49) {
             if ($hours > 1) {
                 return sprintf($this->_('In %d hours'), $hours);
-            } 
-            if ($hours < -1) {
-                return sprintf($this->_('%d hours ago'), $hours);
             }
-            
+            if ($hours < -1) {
+                return sprintf($this->_('%d hours ago'), -$hours);
+            }
+
             // Switch to minutes
             $minutes = $dateTime->diffMinutes();
             if ($minutes > 0) {
                 return sprintf($this->plural('In %d minute', 'In %d minutes', $minutes), $minutes);
-            } 
-            if ($minutes < 0) {
-                return sprintf($this->plural('%d minute ago', '%d minutes ago', $minutes), $minutes);
             }
-            
+            if ($minutes < 0) {
+                return sprintf($this->plural('%d minute ago', '%d minutes ago', $minutes), -$minutes);
+            }
+
             return $this->_('this minute!');
         }
 
-        return $dateTime->getDateTime()->format($this->phpDateTimeFormatString);        
+        return $dateTime->getDateTime()->format($this->phpDateTimeFormatString);
     }
 
     /**
