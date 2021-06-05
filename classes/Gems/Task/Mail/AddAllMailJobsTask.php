@@ -46,7 +46,6 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
     {
         $sql = "SELECT gcj_id_job
             FROM gems__comm_jobs
-            JOIN gems__comm_messengers ON gcj_communication_messenger = gcm_id_messenger
             WHERE gcj_active = 1";
 
         if ($organizationId) {
