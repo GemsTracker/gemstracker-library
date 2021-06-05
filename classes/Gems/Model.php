@@ -466,6 +466,24 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the staff log model
+     *
+     * @param $detailed
+     * @return \Gems\Model\StaffLogModel
+     */
+    public function getStaffLogModel($detailed)
+    {
+        $model = $this->_loadClass('StaffLogModel', true);
+        if ($detailed) {
+            $model->applyDetailSettings();
+        } else {
+            $model->applyBrowseSettings();
+        }
+
+        return $model;
+    }
+
+    /**
      * Get the respondent relation model
      *
      * @return \Gems\Model\SurveyMaintenanceModel

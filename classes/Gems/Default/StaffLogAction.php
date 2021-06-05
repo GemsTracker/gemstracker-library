@@ -72,7 +72,7 @@ class Gems_Default_StaffLogAction extends \Gems_Default_LogAction
             }
         }
 
-        return parent::createModel($detailed, $action);
+        return $this->loader->getModels()->getStaffLogModel($detailed);
     }
 
     /**
