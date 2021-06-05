@@ -58,7 +58,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
         $sentContactData    = [];
 
         foreach ($multipleTokensData as $tokenData) {
-            $token = $this->loader->getTracker()->getToken($tokenData);
+            $token = $this->loader->getTracker()->getToken($tokenData['gto_id_token']);
 
             $contactData = $job['gcj_target'] . $job['gcj_to_method'];
 

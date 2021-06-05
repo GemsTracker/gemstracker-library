@@ -135,8 +135,8 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
             } catch (ClientException $e) {
 
                 $info = sprintf("Error sending sms to %s respondent %s with email address %s.",
-                    $tokenData['gto_id_organization'],
-                    $tokenData['gto_id_respondent'],
+                    $token->getOrganizationId(),
+                    $token->getRespondentId(),
                     $filteredNumber
                 );
 
