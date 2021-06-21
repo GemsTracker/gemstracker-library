@@ -104,6 +104,14 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * @return bool Is the site newly added
+     */
+    public function isNew()
+    {
+        return $this->_data['is_new'];
+    }
+    
+    /**
      * @return bool Is this url accessible for all organizations
      */
     public function isOneForAll()
@@ -125,11 +133,13 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
             $data = $model->loadFirst(['gsi_url' => $id]);
             // \MUtil_Echo::track($data);
             
-            if (! $data) {
+            if ($data) {
+                $data['is_new'] = false;
+            } else {
                 if ($blockSave) {
-                    $data  = $model->loadNew();
+                    $data = $model->loadNew();
                     $data['gsi_url'] = $id;
-                    $data['gsi_blocked'] = 1;
+                    $data['gsi_blocked'] = ($this->_blockOnCreation ? 1 : 0);
                     
                 } else {
                     // Auto insert the site
@@ -139,6 +149,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                         'gsi_blocked' => ($this->_blockOnCreation ? 1 : 0),
                         ]);
                 }
+                $data['is_new'] = true;
             }
             
             
@@ -154,6 +165,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_iso_lang'             => 'en',
                 'gsi_active'               => 1,
                 'gsi_blocked'              => ($blockSave || $this->_blockOnCreation ? 1 : 0),
+                'is_new'                   => true,
             ];    
             
             // $this->logger->logError($e);
