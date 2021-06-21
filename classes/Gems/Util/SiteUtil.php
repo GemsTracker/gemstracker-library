@@ -271,25 +271,27 @@ class SiteUtil extends UtilAbstract
             }
         }
 
-        $referrers = [];
-        $referrers[] = $request->getServer('HTTP_ORIGIN');
-        $referrers[] = $request->getServer('HTTP_REFERER');
-        // $referrers[] = 'http://www.evilsite.com/';
-        // $referrers[] = 'http://www.evilsite.com/pulse/id/1?attack=mode';
-        // $referrers[] = 'http://www.evilsite2.com/';
-        //\MUtil_Echo::track($referrers);
-        foreach (array_unique(array_filter($referrers)) as $referrer) {
-            if (! \MUtil_String::contains($referrer, $basePath)) {
-                $referrer = rtrim($referrer, '/') . $basePath;
-            }
-            $site = $this->getSiteByFullUrl($referrer, $isPost);
-            if ($site) {
-                if ($site->isNew()) {
-                    if ($isPost) {
-                        return \MUtil_String::beforeChars($referrer, '?&<>=');
+        if ($isPost) {
+            $referrers = [];
+            $referrers[] = $request->getServer('HTTP_ORIGIN');
+            $referrers[] = $request->getServer('HTTP_REFERER');
+            // $referrers[] = 'http://www.evilsite.com/';
+            // $referrers[] = 'http://www.evilsite.com/pulse/id/1?attack=mode';
+            // $referrers[] = 'http://www.evilsite2.com/';
+            //\MUtil_Echo::track($referrers);
+            foreach (array_unique(array_filter($referrers)) as $referrer) {
+                if (! \MUtil_String::contains($referrer, $basePath)) {
+                    $referrer = rtrim($referrer, '/') . $basePath;
+                }
+                $site = $this->getSiteByFullUrl($referrer, $isPost);
+                if ($site) {
+                    if ($site->isNew()) {
+                        if ($isPost) {
+                            return \MUtil_String::beforeChars($referrer, '?&<>=');
+                        }
+                    } elseif ($site->isBlocked()) {
+                        return $site->getUrl();
                     }
-                } elseif ($site->isBlocked()) {
-                    return $site->getUrl();
                 }
             }
         }
