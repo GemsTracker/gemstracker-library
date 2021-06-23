@@ -55,7 +55,7 @@ class SiteUtil extends UtilAbstract
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         $this->loadUrlCache();
     } // */
 
@@ -68,10 +68,10 @@ class SiteUtil extends UtilAbstract
         $this->source->applySource($site);
         return $site;
     }
-    
+
     /**
      * Get the first url for all organizations
-     * 
+     *
      * @return \Gems\Util\SiteUrl|null
      */
     public function getOneForAll()
@@ -82,11 +82,11 @@ class SiteUtil extends UtilAbstract
                         ORDER BY gsi_order, gsi_id";
 
             $url = $this->db->fetchOne($sql);
-            
+
             if ($url) {
                 return $this->getSiteForUrl($url);
             }
-            
+
         } catch (\Zend_Db_Statement_Exception $exc) {
             // Intentional fall through
         }
@@ -123,21 +123,21 @@ class SiteUtil extends UtilAbstract
             $site = new SiteConsole('https://console', false);
             $this->source->applySource($site);
             return $site;
-            
+
         } elseif (\Zend_Session::$_unitTestEnabled) {
             $url = 'https://test.example.site';
-            
+
         } elseif (\Zend_Controller_Front::getInstance()->getResponse() instanceof \Zend_Controller_Request_Abstract) {
             // I found myself trying to do this so here we prefent this the hard way.
             throw new \Gems_Exception_Coding(
                 __CLASS__ . '->' . __FUNCTION__ . "() cannot be called before the request object is initialized."
             );
-            
+
         } else {
             $url = $this->util->getCurrentURI();
-            
+
         }
-        
+
         return $this->getSiteForUrl($url, $blockOnCreation);
     }
 
@@ -159,13 +159,13 @@ class SiteUtil extends UtilAbstract
             if ($foundUrl) {
                 return $this->getSiteForUrl($foundUrl);
             }
-            
+
             return $this->getSiteForUrl($url, $blockOnCreation);
-            
+
         } catch (\Zend_Db_Statement_Exception $exc) {
             return null;
         }
-        
+
     }
 
     /**
@@ -193,17 +193,17 @@ class SiteUtil extends UtilAbstract
 
     /**
      * @param \Zend_Controller_Request_Abstract $request
-     * @return string 
+     * @return string
      */
     public function getUsedHost(\Zend_Controller_Request_Abstract $request)
     {
         return \MUtil_String::stripToHost($request->getServer(
-            'HTTP_ORIGIN', 
+            'HTTP_ORIGIN',
             $request->getServer(
                 'HTTP_REFERER',
                 $this->util->getCurrentURI())));
     }
-    
+
     /**
      * Get the organizations not served by a specific site
      *
@@ -238,19 +238,19 @@ class SiteUtil extends UtilAbstract
         if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
             return null;
         }
-        
+
         if (! $request instanceof \Zend_Controller_Request_Http) {
             // Should not really occur, but now the code knows the type
             return null;
         }
-        
-        $basePath = $request->getBasePath(); 
+
+        $basePath = $request->getBasePath();
         $isPost   = $request->isPost();
         $locked   = $this->getSiteLock()->isLocked();
-        
+
         $hosts = [];
         if (isset($_SERVER['HTTP_HOST'])) {
-            $hosts[] = $_SERVER['HTTP_HOST'];            
+            $hosts[] = $_SERVER['HTTP_HOST'];
         }
         if (isset($_SERVER['SERVER_NAME'])) {
             $hosts[] = $_SERVER['SERVER_NAME'];
@@ -280,7 +280,7 @@ class SiteUtil extends UtilAbstract
             // $referrers[] = 'http://www.evilsite2.com/';
             //\MUtil_Echo::track($referrers);
             foreach (array_unique(array_filter($referrers)) as $referrer) {
-                if (! \MUtil_String::contains($referrer, $basePath)) {
+                if (!empty($basePath) && !\MUtil_String::contains($referrer, $basePath)) {
                     $referrer = rtrim($referrer, '/') . $basePath;
                 }
                 $site = $this->getSiteByFullUrl($referrer, $isPost);
@@ -295,7 +295,7 @@ class SiteUtil extends UtilAbstract
                 }
             }
         }
-        
+
         return null;
     }
 }
