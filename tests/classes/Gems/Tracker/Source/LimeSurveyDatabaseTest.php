@@ -83,7 +83,7 @@ class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
                 null,
                 [
                     'validfrom'  => $nextWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
+                    'validuntil' => $now->toString('yyyy-MM-dd 23:59:59'),
                 ]                                
             ],
             'futureClosed' => [

@@ -239,7 +239,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $other  = ($row['other'] == 'Y');
                 $row['hidden']      = (boolean) (1 == $row['hidden']);
                 $row['hasConditon'] = (boolean) (1 == $row['hasConditon']);
-                
+
                 switch ($row['type']) {
                     case '1':        //Dual scale
                         //Check scale header in attributes table
@@ -706,7 +706,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $tmpres['thClass']     .= ' conditionQuestion';
                 $tmpres['hasConditon'] = $field['hasConditon'];
             }
-            
+
             $tmpres['group']           = $field['gid'];
             $tmpres['groupName']       = isset($field['group_name']) ? $field['group_name'] : null;
             $tmpres['type']            = $this->_getType($field);
@@ -744,6 +744,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             if (isset($field['question'])) {
                 $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
+                $tmpres['label_raw'] = \MUtil_Html::raw($field['question']);
             }
             if (isset($field['help']) && $field['help']) {
                 $tmpres['description'] = \MUtil_Html::raw($this->removeMarkup($field['help']));
@@ -765,8 +766,14 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                             $this->removeMarkup($field['sq_question']),
                             $this->removeMarkup($field['sq_question1'])
                             ));
+                    $tmpres['label_raw'] = \MUtil_Html::raw(sprintf(
+                            $this->translate->_('%s: %s'),
+                            $field['sq_question'],
+                            $field['sq_question1']
+                            ));
                 } else {
                     $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['sq_question']));
+                    $tmpres['label_raw'] = \MUtil_Html::raw($field['sq_question']);
                 }
                 $tmpres['thClass'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }

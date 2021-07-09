@@ -35,6 +35,16 @@ class SiteUtil extends UtilAbstract
     protected $util;
 
     /**
+     * @param $host
+     * @param $basePath Optional addiitonal basepath
+     * @return string Normalized https:// string for a host name
+     */
+    protected function _hostToUrl($host, $basePath)
+    {
+        return (\MUtil_Https::on() ? 'https' : 'http') . '://' . $host . $basePath;
+    }
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -45,7 +55,7 @@ class SiteUtil extends UtilAbstract
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         $this->loadUrlCache();
     } // */
 
@@ -58,10 +68,10 @@ class SiteUtil extends UtilAbstract
         $this->source->applySource($site);
         return $site;
     }
-    
+
     /**
      * Get the first url for all organizations
-     * 
+     *
      * @return \Gems\Util\SiteUrl|null
      */
     public function getOneForAll()
@@ -72,11 +82,11 @@ class SiteUtil extends UtilAbstract
                         ORDER BY gsi_order, gsi_id";
 
             $url = $this->db->fetchOne($sql);
-            
+
             if ($url) {
                 return $this->getSiteForUrl($url);
             }
-            
+
         } catch (\Zend_Db_Statement_Exception $exc) {
             // Intentional fall through
         }
@@ -113,21 +123,21 @@ class SiteUtil extends UtilAbstract
             $site = new SiteConsole('https://console', false);
             $this->source->applySource($site);
             return $site;
-            
+
         } elseif (\Zend_Session::$_unitTestEnabled) {
             $url = 'https://test.example.site';
-            
+
         } elseif (\Zend_Controller_Front::getInstance()->getResponse() instanceof \Zend_Controller_Request_Abstract) {
             // I found myself trying to do this so here we prefent this the hard way.
             throw new \Gems_Exception_Coding(
                 __CLASS__ . '->' . __FUNCTION__ . "() cannot be called before the request object is initialized."
             );
-            
+
         } else {
             $url = $this->util->getCurrentURI();
-            
+
         }
-        
+
         return $this->getSiteForUrl($url, $blockOnCreation);
     }
 
@@ -149,13 +159,13 @@ class SiteUtil extends UtilAbstract
             if ($foundUrl) {
                 return $this->getSiteForUrl($foundUrl);
             }
-            
+
             return $this->getSiteForUrl($url, $blockOnCreation);
-            
+
         } catch (\Zend_Db_Statement_Exception $exc) {
             return null;
         }
-        
+
     }
 
     /**
@@ -183,17 +193,17 @@ class SiteUtil extends UtilAbstract
 
     /**
      * @param \Zend_Controller_Request_Abstract $request
-     * @return string 
+     * @return string
      */
     public function getUsedHost(\Zend_Controller_Request_Abstract $request)
     {
         return \MUtil_String::stripToHost($request->getServer(
-            'HTTP_ORIGIN', 
+            'HTTP_ORIGIN',
             $request->getServer(
                 'HTTP_REFERER',
                 $this->util->getCurrentURI())));
     }
-    
+
     /**
      * Get the organizations not served by a specific site
      *
@@ -221,45 +231,71 @@ class SiteUtil extends UtilAbstract
 
     /**
      * @param \Zend_Controller_Request_Abstract $request
-     * @return bool
+     * @return string The not allowed host
      */
     public function isRequestFromAllowedHost(\Zend_Controller_Request_Abstract $request)
     {
         if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
-            return true;
-        }
-        
-        if (! $request instanceof \Zend_Controller_Request_Http) {
-            // Should not really occur, but now the code knows the type
-            return true;
-        }
-        
-        if (! ($request->isPost() || $this->getSiteLock()->isLocked())) {
-            // True when not a post and the site lock is unlocked
-            return true; 
+            return null;
         }
 
-        $incoming = $request->getServer('HTTP_ORIGIN',$request->getServer('HTTP_REFERER', false));
-        if ($incoming) {
-            // \MUtil_Echo::track($incoming);
-            $site = $this->getSiteByFullUrl($incoming  . $request->getBasePath(), $request->isPost());
-            if ($site) {
-                if ($site->isBlocked()) {
-                    return false;
-                }
-            } 
+        if (! $request instanceof \Zend_Controller_Request_Http) {
+            // Should not really occur, but now the code knows the type
+            return null;
         }
-        
-        // Quick check without database access
-        $host = $this->util->getCurrentURI();
-        if ($host) {
-            // \MUtil_Echo::track($host);
-            $site = $this->getSiteByFullUrl($host, $request->isPost());
+
+        $basePath = $request->getBasePath();
+        $isPost   = $request->isPost();
+        $locked   = $this->getSiteLock()->isLocked();
+
+        $hosts = [];
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $hosts[] = $_SERVER['HTTP_HOST'];
+        }
+        if (isset($_SERVER['SERVER_NAME'])) {
+            $hosts[] = $_SERVER['SERVER_NAME'];
+        }
+        // $hosts[] = 'www.evilsite.com';
+        // \MUtil_Echo::track($hosts);
+        foreach (array_unique($hosts) as $host) {
+            $url  = $this->_hostToUrl($host, $basePath);
+            $site = $this->getSiteForUrl($url, $isPost);
             if ($site) {
-                return ! $site->isBlocked();
+                if ($site->isNew()) {
+                    if ($isPost || $locked) {
+                        return $host;
+                    }
+                } elseif ($site->isBlocked()) {
+                    return $host;
+                }
             }
         }
-        
-        return false;
+
+        if ($isPost) {
+            $referrers = [];
+            $referrers[] = $request->getServer('HTTP_ORIGIN');
+            $referrers[] = $request->getServer('HTTP_REFERER');
+            // $referrers[] = 'http://www.evilsite.com/';
+            // $referrers[] = 'http://www.evilsite.com/pulse/id/1?attack=mode';
+            // $referrers[] = 'http://www.evilsite2.com/';
+            //\MUtil_Echo::track($referrers);
+            foreach (array_unique(array_filter($referrers)) as $referrer) {
+                if (!empty($basePath) && !\MUtil_String::contains($referrer, $basePath)) {
+                    $referrer = rtrim($referrer, '/') . $basePath;
+                }
+                $site = $this->getSiteByFullUrl($referrer, $isPost);
+                if ($site) {
+                    if ($site->isNew()) {
+                        if ($isPost) {
+                            return \MUtil_String::beforeChars($referrer, '?&<>=');
+                        }
+                    } elseif ($site->isBlocked()) {
+                        return $site->getUrl();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

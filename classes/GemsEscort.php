@@ -2563,10 +2563,11 @@ class GemsEscort extends \MUtil_Application_Escort
             $menu->setCurrent($menuItem);
         }
         if (($request instanceof \Zend_Controller_Request_Http)) {
-            $sites = $this->util->getSites();
-            if (! $sites->isRequestFromAllowedHost($request)) {
+            $sites       = $this->util->getSites();
+            $invalidHost = $sites->isRequestFromAllowedHost($request);
+            if ($invalidHost) {
                 throw new \Gems_Exception(
-                    sprintf("Invalid source host, possible CSRF attack. Used host: %s!", $request->getServer('HTTP_ORIGIN', $request->getServer('HTTP_REFERER', $request->getHttpHost()))),
+                    sprintf("Invalid source host, possible CSRF attack. Used host: %s!", $invalidHost),
                     403
                 );
             }
