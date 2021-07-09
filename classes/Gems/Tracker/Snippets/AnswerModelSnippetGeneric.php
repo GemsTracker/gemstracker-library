@@ -191,12 +191,18 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
                 $event->setCurrentNames($answerNames);
             };
             $this->event->addListener($eventName, $eventFunction, 100);
+        } else {
+            $eventFunction = null;
         }
 
         $answerFilterEvent = new AnswerFilterEvent($bridge, $model, $answerNames);
         $this->event->dispatch($answerFilterEvent, $eventName);
         $answerNames = $answerFilterEvent->getCurrentNames();
         $oldGroup    = null;
+
+        if ($eventFunction) {
+            $this->event->removeListener($eventName, $eventFunction, 100);
+        }
 
         $cond    = \MUtil_Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
         $hidden  = \MUtil_Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
