@@ -26,7 +26,7 @@ class Gems_Snippets_Export_SurveyHeaderSnippet extends \MUtil_Snippets_SnippetAb
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html = $this->getHtmlSequence();
-        $html->div($this->token->getSurveyName(), array('class'=>'surveyTitle'));
+        $html->div($this->token->getSurveyName(), array('class'=>'surveyTitle'), ' ');
         $html->div($this->token->getRoundDescription(), array('class'=>'roundDescription', 'renderClosingTag'=>true));
 
         return $html;
