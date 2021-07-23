@@ -164,8 +164,8 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_style_fixed'          => '0',
                 'gsi_iso_lang'             => 'en',
                 'gsi_active'               => 1,
-                'gsi_blocked'              => ($blockSave || $this->_blockOnCreation ? 1 : 0),
-                'is_new'                   => true,
+                'gsi_blocked'              => 0,     // Never block when the table does not exist
+                'is_new'                   => false, // And we fake this!
             ];    
             
             // $this->logger->logError($e);
