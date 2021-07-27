@@ -126,6 +126,7 @@ class SiteUtil extends UtilAbstract
 
         } elseif (\Zend_Session::$_unitTestEnabled) {
             $url = 'https://test.example.site';
+            $blockOnCreation = false;
 
         } elseif (\Zend_Controller_Front::getInstance()->getResponse() instanceof \Zend_Controller_Request_Abstract) {
             // I found myself trying to do this so here we prefent this the hard way.

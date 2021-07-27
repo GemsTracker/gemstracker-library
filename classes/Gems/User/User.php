@@ -450,6 +450,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
 
             if (! $style) {
+                $site = $this->util->getSites()->getSiteForCurrentUrl();
+                if ($site) {
+                    $style = $site->getStyle();
+                }
+            }
+                
+            if (! $style) {
                 $style = $this->getCurrentOrganization()->getStyle();
             }
 
@@ -2443,7 +2450,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         if (null === $locale) {
             $locale = $this->getLocale();
-        } elseif ($this->getLocale() != $locale) {
+            if (null === $locale) {
+                $site = $this->util->getSites()->getSiteForCurrentUrl();
+                if ($site) {
+                    $locale = $site->getLocale();
+                }
+            }
+        } 
+        if ($this->getLocale() != $locale) {
             $this->setLocale($locale);
         }
 

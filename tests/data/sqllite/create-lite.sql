@@ -186,6 +186,8 @@ CREATE TABLE gems__comm_jobs (
         gcj_id_job                  INTEGER not null ,
         gcj_id_order                INTEGER not null default 10,
 
+        gcj_id_communication_messenger  INTEGER not null,
+
         gcj_id_message              INTEGER not null,
 
         gcj_id_user_as              INTEGER not null,
@@ -243,6 +245,27 @@ CREATE TABLE gems__comm_jobs (
         PRIMARY KEY (gcj_id_job)
    )
    ;
+
+CREATE TABLE gems__comm_messengers (
+    gcm_id_messenger            INTEGER NOT NULL  PRIMARY KEY,
+    gcm_id_order                INTEGER NOT NULL,
+    gcm_type                    varchar(32) NOT NULL,
+    gcm_name                    varchar(32) NOT NULL,
+    gcm_description             varchar(255),
+
+    gcm_messenger_identifier    varchar(32),
+    gcm_active                  tinyint NOT NULL DEFAULT '1',
+
+    gcm_changed                 TEXT not null default current_timestamp,
+    gcm_changed_by              INTEGER not null,
+    gcm_created                 TEXT not null default '0000-00-00 00:00:00',
+    gcm_created_by              INTEGER not null
+)
+;
+
+-- Default Mail vaLue
+INSERT INTO gems__comm_messengers ("gcm_id_messenger", "gcm_id_order", "gcm_type", "gcm_name", "gcm_description", "gcm_messenger_identifier", "gcm_active", "gcm_changed", "gcm_changed_by", "gcm_created", "gcm_created_by")
+    VALUES (1300, 10, 'mail', 'E-mail', 'Send by E-mail',, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 CREATE TABLE gems__comm_templates (
       gct_id_template INTEGER not null ,
@@ -793,11 +816,11 @@ CREATE TABLE gems__organizations (
         gor_user_class              varchar(30)   not null default 'StaffUser',
         gor_location                varchar(255),
         gor_url                     varchar(127),
-        
+
         -- deprecated as of 1.9.1
         gor_url_base                varchar(1270),
-        -- end deprecated 
-        
+        -- end deprecated
+
         gor_task                    varchar(50),
 
         gor_provider_id             varchar(10),
@@ -807,6 +830,7 @@ CREATE TABLE gems__organizations (
 
         gor_contact_name            varchar(50),
         gor_contact_email           varchar(127),
+        gor_contact_sms_from        varchar(12),
         gor_mail_watcher            TINYINT(1) not null default 1,
         gor_welcome                 text,
         gor_signature               text,
@@ -1072,6 +1096,7 @@ CREATE TABLE gems__respondent_relations (
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100),
+        grr_phone                   varchar(20),
         grr_mailable                tinyint not null default 100,
         -- grs_initials_name           varchar(30) ,
         grr_first_name              varchar(30) ,
@@ -1130,7 +1155,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     (801, 'guest', 'guest',,
-    'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent,pr.respondent.ask',
+    'pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.cron.job,pr.islogin,pr.respondent,pr.respondent.ask,pr.ask',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,
@@ -1275,6 +1300,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.plan.mail-as-application,pr.reception.delete,
     ,pr.respondent.multiorg,
     ,pr.role.create,pr.role.edit,
+    ,pr.site-maint,pr.site-maint.create,pr.site-maint.delete,,pr.site-maint.edit,,pr.site-maint.lock,
     ,pr.source.check-attributes,pr.source.check-attributes-all,pr.source.create,pr.source.edit,pr.source.synchronize,
     ,pr.source.synchronize-all,
     ,pr.staff.edit.all,pr.staff.switch-user,
@@ -1293,7 +1319,7 @@ CREATE TABLE gems__rounds (
 
         gro_id_survey          INTEGER not null,
 
-        --- fields for relations
+        -- fields for relations
         gro_id_relationfield   bigint(2),
 
         -- Survey_name is a temp copy from __surveys, needed by me to keep an overview as

@@ -83,6 +83,7 @@ class SiteUtilTest extends \Gems_Test_DbTestAbstract
         $acl        = $roles->getAcl();
 
         $this->siteUtil = $this->util->getSites();
+        $this->siteUtil->getSiteLock()->unlock();
         
         $this->initOrgCount  = $this->db->fetchOne("SELECT COUNT(*) FROM gems__organizations WHERE gor_active = 1");
         $this->initSiteCount = $this->getSiteCount();
@@ -97,14 +98,14 @@ class SiteUtilTest extends \Gems_Test_DbTestAbstract
     {
         if ($acceptLoginFirst) {
             // create first
-            if (true !== $acceptLoginFirst) {
-                $this->siteUtil->getSiteForUrl($acceptLoginFirst);
+            if (true === $acceptLoginFirst) {
+                $this->siteUtil->getSiteForUrl($url, false);
             } else {
-                $this->siteUtil->getSiteForUrl($url);
+                $this->siteUtil->getSiteForUrl($acceptLoginFirst, false);
             }
         }
         
-        $site = $this->siteUtil->getSiteByFullUrl($url);
+        $site = $this->siteUtil->getSiteByFullUrl($url, true);
         
         if ($shouldBeBlocked) {
             $this->assertTrue($site->isBlocked());

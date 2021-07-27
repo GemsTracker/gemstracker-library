@@ -2334,6 +2334,12 @@ class GemsEscort extends \MUtil_Application_Escort
         if ($this->project->isMultiLocale()) {
             // Get the choosen language
             $localeId = \Gems_Cookies::getLocale($request);
+            if (! $localeId) {
+                $site = $this->getUtil()->getSites()->getSiteForCurrentUrl();
+                if ($site) {
+                    $localeId = $site->getLocale();
+                }
+            }
 
             // Change when $localeId exists and is different from session
             if ($localeId && ($this->locale->getLanguage() !== $localeId)) {

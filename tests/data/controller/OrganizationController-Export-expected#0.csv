@@ -1,4 +1,4 @@
 ﻿Name,Location,Task,"Company url","Preferred url","Organization code","Healthcare provider id",Active,"Contact name","Contact email","Contact SMS From",Login,Accepting,Patients,"Patient group","Accessible by","User Definition","Patient edit screen","Patient show screen","Subscribe screen","Unsubscribe screen","Token ask screen","Patient change event",Language
-testorg,,,,,,,Yes,,,10,Yes,Yes,No,n/a,,"Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
-testorg2,,,,,,,Yes,,,10,Yes,Yes,No,n/a,"testorg, testorg2","Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
-testorg2,,,,,,,Yes,,,10,Yes,Yes,No,n/a,,"Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
+testorg,,,,,,,Yes,,,,Yes,Yes,No,n/a,,"Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
+testorg2,,,,,,,Yes,,,,Yes,Yes,No,n/a,"testorg, testorg2","Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
+testorg2,,,,,,,Yes,,,,Yes,Yes,No,n/a,,"Db storage","Defer to user group setting","Defer to user group setting",n/a,n/a,,n/a,English
