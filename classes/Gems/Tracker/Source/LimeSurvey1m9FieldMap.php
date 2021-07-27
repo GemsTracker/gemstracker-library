@@ -708,7 +708,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             $tmpres['group']           = $field['gid'];
-            $tmpres['groupName']       = isset($field['group_name']) ? $field['group_name'] : null;
+            $tmpres['groupName']       = isset($field['group_name']) ? preg_replace('/&(?!(#[0-9]{2,4}|[A-z]{2,6})+;)/', '&amp;', $field['group_name']) : null;
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
             $tmpres['sourceId']        = $name;
@@ -785,7 +785,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             // Parent storage
-            if (\Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
+            if (\Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION !== $tmpres['thClass']) {
                 $parent = $name;
             } elseif ($parent) {
                 // Add the name of the parent item

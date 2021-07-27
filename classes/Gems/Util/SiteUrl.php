@@ -72,6 +72,25 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * @return string The locale for the url
+     */
+    public function getLocale()
+    {
+        if (isset($this->_data['gsi_iso_lang'])) {
+            return $this->_data['gsi_iso_lang'];
+        }
+        // print_r($this->_data);
+    }
+
+    /**
+     * @return string The style for the url
+     */
+    public function getStyle()
+    {
+        return $this->_data['gsi_style'];
+    }
+
+    /**
      * @return string The url itself
      */
     public function getUrl()
@@ -164,10 +183,11 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_style_fixed'          => '0',
                 'gsi_iso_lang'             => 'en',
                 'gsi_active'               => 1,
-                'gsi_blocked'              => ($blockSave || $this->_blockOnCreation ? 1 : 0),
-                'is_new'                   => true,
-            ];    
+                'gsi_blocked'              => 0,     // Never block when the table does not exist
+                'is_new'                   => false, // And we fake this!
+            ]; 
             
+            // echo $e->getMessage() . "\n";
             // $this->logger->logError($e);
             // \MUtil_Echo::track($e->getMessage());
         }

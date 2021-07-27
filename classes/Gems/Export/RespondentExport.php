@@ -529,6 +529,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         // clean string using DOM object
         $dom = new \DOMDocument();
         $dom->loadHTML($string);
+        // file_put_contents('D:\temp\beforeDom.html', $string);
         
         $dom = $this->cleanDom($dom);
         
@@ -540,6 +541,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         // clear scripting and unnecessary tags
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
         $string = strip_tags( $string, '<p><h1><h2><h3><h4><h5><h6><#text><strong><b><em><i><u><sup><sub><span><font><table><tr><td><th><ul><ol><li><img><br><a>' );
+        
+        // Cleanup nested empty tags used with font awesome, as well as links unused because of the cleanup
+        $string = preg_replace("@<i[^>]*></i>@si", '', $string);
+        $string = preg_replace("@<span[^>]*></span>@si", '', $string);
+        $string = preg_replace("@<a[^>]*></a>@si", '', $string);
 
         return trim( $string );
     }
@@ -554,27 +560,29 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     {
         // add border attributes to tables
         foreach ($dom->getElementsByTagName('table') as $tablenode) {
-            $tablenode->setAttribute('style','border: 2px #000000 solid');
+            $tablenode->setAttribute('style','border: 2px #000000 solid;');
         }
         
         // add font weight attributes to th elements
         foreach ($dom->getElementsByTagName('th') as $thnode) {
-            $thnode->setAttribute('style','font-weight: bold');
+            $thnode->setAttribute('style','font-weight: bold;');
         }
         
         // replace h1-h6 elements for PHP Word processing
         for ($i = 1; $i <= 6; $i++) {
-            $headers = $dom->getElementsByTagName('h' . $i);
-            if ($headers->length > 0) {
-                $fontsize = 26 - ($i * 2);
-                foreach ($headers as $headernode) {
-                    $newheadernode = $dom->createElement("p", $headernode->nodeValue);
-                    $newheadernode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px');
-                    $headernode->parentNode->replaceChild($newheadernode, $headernode);
+            $fontsize = 26 - ($i * 2);
+            do {
+                // The list is dynamic so search again until no longer found
+                $headers = $dom->getElementsByTagName('h' . $i);
+                $headerNode = $headers->item(0);
+                if ($headerNode) {
+                    $newHeaderNode = $dom->createElement("p", $headerNode->nodeValue);
+                    $newHeaderNode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px;');
+                    $headerNode->parentNode->replaceChild($newHeaderNode, $headerNode);
+                    
                 }
-            }
+            } while  ($headers->length > 0);
         }
-        
         return $dom;
     }
 
@@ -631,6 +639,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
             
             $content = $this->prepareWordExport($content);
+            file_put_contents('D:\temp\wordExport.html', $content);
             
             $section = $this->_word->addSection();
             \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);

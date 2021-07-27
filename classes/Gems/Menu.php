@@ -319,7 +319,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
     public function addLogonOffToken()
     {
-        $this->addPage($this->_('Logon'), 'pr.nologin', 'index', 'login')
+        $this->addPage($this->_('Login'), 'pr.nologin', 'index', 'login')
              ->addAction($this->_('Lost password'), 'pr.nologin', 'resetpassword', ['allowed-alternative' => 'option/change-password']);
 
         $optionPage = $this->addPage($this->_('Your account'), 'pr.option.edit', 'option', 'edit');

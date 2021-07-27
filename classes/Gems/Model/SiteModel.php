@@ -97,7 +97,7 @@ class SiteModel extends  \Gems_Model_JoinModel
         }
 
         $this->set('gsi_iso_lang', 'label', $this->_('Initial language'),
-                   'default', $this->project->getLocaleDefault(),
+                   'default', $this->project->getLocaleDefault() ?: 'en',
                    'multiOptions', $this->util->getLocalized()->getLanguages()
         );
 
