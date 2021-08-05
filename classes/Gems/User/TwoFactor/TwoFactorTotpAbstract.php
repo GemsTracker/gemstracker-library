@@ -304,10 +304,10 @@ abstract class TwoFactorTotpAbstract extends \MUtil_Translate_TranslateableAbstr
             return false;
         }
 
-        \MUtil_Echo::track($discrepancy);
+        // \MUtil_Echo::track($discrepancy);
 
         for ($i = -$discrepancy; $i <= $discrepancy; ++$i) {
-            \MUtil_Echo::track($i);
+            // \MUtil_Echo::track($i);
             $calculatedCode = $this->getCode($secret, $currentTimeSlice + $i);
             if ($this->_timingSafeEquals($calculatedCode, $code)) {
                 return true;

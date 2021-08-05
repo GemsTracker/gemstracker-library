@@ -332,15 +332,13 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Return org dependent login url
      *
+     * Synonym for getPreferredSiteUrl(), may devert in the future
+     * 
      * @return string
      */
     public function getLoginUrl()
     {
-        if ($base = $this->_get('base_url')) {
-            return $base;
-        } else {
-            return $this->util->getCurrentURI();
-        }
+        return $this->getPreferredSiteUrl();
     }
 
     /**
@@ -532,7 +530,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
             return null;
         }
 
-        return $this->getLoginUrl() . '/participate/unsubscribe/org/' . $this->getId();
+        return $this->getPreferredSiteUrl() . '/participate/unsubscribe/org/' . $this->getId();
     }
 
     /**
@@ -586,12 +584,6 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 
         if ($data) {
             $data['can_access'] = $this->util->getDbLookup()->getAllowedOrganizationsFor($id);
-
-            // \MUtil_Echo::track($sql, $data['can_access']);
-
-            if (array_key_exists('gor_url_base', $data) && $baseUrls = explode(' ', $data['gor_url_base'])) {
-                $data['base_url'] = reset($baseUrls);
-            }
         } else {
             $data = $this->_noOrganization;
             $data['gor_id_organization'] = $id;

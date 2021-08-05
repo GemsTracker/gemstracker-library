@@ -449,7 +449,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $style = null;
             }
 
-            if (! $style) {
+            // Cookie org is often either \Gems_User_UserLoader::SYSTEM_NO_ORG (-1) or 0 if not set
+            if (! ($style || \Gems_Cookies::getOrganization($this->getRequest()) > 0)) {
                 $site = $this->util->getSites()->getSiteForCurrentUrl();
                 if ($site) {
                     $style = $site->getStyle();
