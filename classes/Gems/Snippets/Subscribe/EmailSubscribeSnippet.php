@@ -112,7 +112,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $values['gr2o_comments']        = $this->_('Created by subscription');
         $values['gr2o_opened_by']       = $this->currentUser->getUserId();
 
-        \MUtil_Echo::track($userId, $this->formData['email']);
+        // \MUtil_Echo::track($userIds, $this->formData['email']);
         if ($userIds) {
             $values['grs_id_user']     = $userIds['gr2o_id_user'];
             $values['gr2o_id_user']    = $userIds['gr2o_id_user'];
@@ -121,7 +121,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
             $func = $this->patientNrGenerator;
             $values['gr2o_patient_nr'] = $func();
         }
-        \MUtil_Echo::track($values);
+        // \MUtil_Echo::track($values);
 
         $model->save($values);
 

@@ -54,8 +54,9 @@ class EmailOnlySubscribe extends \MUtil_Translate_TranslateableAbstract implemen
         }
 
         $sql  = "SELECT gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?";
+        $function = function_exists('random_int') ? 'random_int' : 'rand';
         do {
-            $number = $prefix . random_int(1000000, 9999999);
+            $number = $prefix . $function(1000000, 9999999);
             // \MUtil_Echo::track($number);
         } while ($this->db->fetchOne($sql, [$number, $orgId]));
 
