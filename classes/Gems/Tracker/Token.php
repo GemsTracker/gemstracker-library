@@ -439,7 +439,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     protected function calculateReturnUrl()
     {
-        $currentUri = $this->getOrganization()->getPreferredSiteUrl();
+        if ($this->currentUser->isActive(false)) {
+            $currentUri = $this->util->getCurrentURI();
+        } else {
+            $currentUri = $this->getOrganization()->getPreferredSiteUrl();
+        }
 
         /*
         // Referrer would be powerful when someone is usng multiple windows, but

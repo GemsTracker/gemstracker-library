@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Fixed
 - Export to Word chokes on & and h2 elements in questions (#653, partial quick fix)
 - The parent child information for surveys is incorrect (#654)
+- Token return is set to organisation url, even when logged in (#660)
 - Url site management blocks access before update (#655)
 - Url site management does not use specified layout and locale (#656)
 
