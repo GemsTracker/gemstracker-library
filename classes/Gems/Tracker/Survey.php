@@ -271,7 +271,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
     {
-        if ($this->_has('gsu_display_event')) {
+        if ($this->_has('gsu_display_event') && $this->_get('gsu_display_event')) {
             $event = $this->events->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
 
             return $event->getAnswerDisplaySnippets($token);
@@ -568,7 +568,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSurveyBeforeAnsweringEvent()
     {
-        if ($this->_has('gsu_beforeanswering_event')) {
+        if ($this->_has('gsu_beforeanswering_event') && $this->_get('gsu_beforeanswering_event')) {
             return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
         }
     }
@@ -580,7 +580,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function getSurveyCompletedEvent()
     {
-        if ($this->_has('gsu_completed_event')) {
+        if ($this->_has('gsu_completed_event') && $this->_get('gsu_completed_event')) {
             return $event = $this->events->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
         }
     }

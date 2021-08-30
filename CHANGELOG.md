@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1p2]
 
 ### Fixed
+- Embedded login sometimes fails with error instead of correct error log (#662)
 - Export to Word chokes on & and h2 elements in questions (#653, partial quick fix)
+- Prevent error message when getimagesize() fails to read a file (#663)
+- Survey sometimes tries to load empty events (#661)
 - The parent child information for surveys is incorrect (#654)
 - Token return is set to organisation url, even when logged in (#660)
 - Url site management blocks access before update (#655)
