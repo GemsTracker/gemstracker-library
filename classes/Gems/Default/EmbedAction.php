@@ -185,7 +185,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
         );
         $embeddedUser = $this->getUser($epdUserLogin, $organizations);
 
-        if ($this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
+        if ($embeddedUser && $this->authenticateEmbedded($embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)) {
             $embeddedUserData = $embeddedUser->getEmbedderData();
             $deferredUser     = $embeddedUserData->getDeferredUser($embeddedUser, $deferredLogin);
 

@@ -19,8 +19,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstract {
-
+class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstract 
+{
     /**
      * The model this instance is designed for
      *
@@ -49,7 +49,8 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
     protected $loader;
 
 
-    public function __construct($model, $data) {
+    public function __construct($model, $data) 
+    {
         // Sanity check:
         if (!($model instanceof Gems_Model_RespondentRelationModel)) {
             throw new \Gems_Exception_Coding('Please provide the correct type of model');

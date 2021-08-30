@@ -283,7 +283,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             'gor_id_organization',
             'gor_name',
             'organizations',
-            $this->db->quoteInto('gor_active = 1 AND (gor_has_respondents = 1 OR and gor_code = ?)', $code),
+            $this->db->quoteInto('gor_active = 1 AND gor_has_respondents = 1 AND gor_code = ?', $code),
             'natsort'
         );
     }

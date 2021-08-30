@@ -303,8 +303,8 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                     $result['name']       = $relation->getName();
                     $result['first_name'] = $relation->getFirstName();
                     $result['last_name']  = $relation->getLastName();
-                    $result['full_name']  = $relation->getHello();
-                    $result['greeting']   = $relation->getGreeting();
+                    $result['full_name']  = $relation->getHello($this->token->getRespondentLanguage());
+                    $result['greeting']   = $relation->getGreeting($this->token->getRespondentLanguage());
                     $result['to']         = $relation->getEmail();
                 } else {
                     $result['name']       = $this->_('Undefined relation');
