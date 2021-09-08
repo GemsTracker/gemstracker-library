@@ -231,7 +231,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             list($empty, $mkey, $base64) = explode(':', $input, 3);
 
             if (! isset($methods[$mkey])) {
-                $error = sprintf("Encryption method '%s' not defined in projec.ini.", $mkey);
+                $error = sprintf("Encryption method '%s' not defined in project.ini.", $mkey);
                 throw new \Gems_Exception_Coding($error);
             }
 

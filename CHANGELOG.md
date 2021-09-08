@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1p2]
 
 ### Fixed
+- Birthday sometimes stored incorrectly (#666)
 - Embedded login sometimes fails with error instead of correct error log (#662)
 - Export to Word chokes on & and h2 elements in questions (#653, partial quick fix)
 - Prevent error message when getimagesize() fails to read a file (#663)

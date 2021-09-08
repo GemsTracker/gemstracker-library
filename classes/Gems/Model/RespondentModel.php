@@ -522,6 +522,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
+                // 'dateFormat', 'dd-MM-yyyy',
                 'elementClass', 'Date',
                 'validator', new \MUtil_Validate_Date_DateBefore()
                 );
