@@ -94,7 +94,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
         switch ($job['gcj_fallback_method']) {
             case 'O':   // Send on behalf of organization
                 $organization = $mailer->getOrganization();
-                return $organization->getContactName() . ' <' . $organization->getEmail() . '>';
+                return $organization->getEmail();
 
             case 'U':   // Send on behalf of fixed user
                 return $sendByMail;

@@ -18,6 +18,7 @@ namespace Gems\Task\Mail;
  * @copyright  Copyright (c) 2016 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.3
+ * @deprecated since version 1.9.1
  */
 class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 {
