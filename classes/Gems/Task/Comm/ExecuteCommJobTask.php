@@ -1,9 +1,25 @@
 <?php
 
+/**
+ *
+ * @package    Gems
+ * @subpackage task\Comm
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2021, Erasmus MC and MagnaFacta B.V.
+ * @license    New BSD License
+ */
+
 namespace Gems\Task\Comm;
 
 use Gems\Exception\ClientException;
 
+/**
+ *
+ * @package    Gems
+ * @subpackage Communication
+ * @license    New BSD License
+ * @since      Class available since version 1.9.1
+ */
 class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
 {
     /**
@@ -31,6 +47,11 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
     protected $project;
 
     /**
+     * @var \Gems_Util
+     */
+    protected $util; 
+
+    /**
      *
      * @param array $job
      * @param $respondentId int Optional, execute for just one respondent
@@ -42,15 +63,18 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
     {
         $this->currentUser->disableMask();
 
-        $job = $this->getJob($jobId);
+        $this->getBatch()->addToCounter('jobs_started', 1);
+        
+        $jobsUtil = $this->util->getCommJobsUtil();
+        $tracker  = $this->loader->getTracker();
+
+        $job = $jobsUtil->getJob($jobId);
 
         if (empty($job)) {
             throw new \Gems_Exception($this->_('Mail job not found!'));
         }
 
-        $this->getBatch()->addToCounter('jobs_started', 1);
-
-        $multipleTokensData = $this->getTokenData($job, $respondentId, $organizationId, $forceSent);
+        $multipleTokensData = $jobsUtil->getTokenData($job, $respondentId, $organizationId, $forceSent);
 
         $errors             = 0;
         $communications     = 0;
@@ -99,7 +123,9 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
             }
 
             if ($communicate == true) {
-                $messenger = $this->getJobMessenger($job, $tokenData, $preview);
+                $messenger = $jobsUtil->getJobMessenger($job);
+                $messenger->setBatch($this->getBatch());
+                
                 $result = $messenger->sendCommunication($job, $tokenData, $preview);
 
                 if ($result === false) {
@@ -153,23 +179,6 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
     }
 
     /**
-     * Get all the job data
-     *
-     * @param $jobId
-     * @return mixed
-     */
-    protected function getJob($jobId)
-    {
-        $sql = $this->db->select()->from('gems__comm_jobs')
-            ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
-            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
-            ->where('gcj_active > 0')
-            ->where('gcj_id_job = ?', $jobId);
-
-        return $this->db->fetchRow($sql);
-    }
-
-    /**
      * @param array $job
      * @param array $tokenData
      * @param $preview
@@ -182,24 +191,6 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
         $messenger = $this->loader->getCommunicationLoader()->getJobMessenger($messengerName);
         $messenger->setBatch($this->getBatch());
         return $messenger;
-    }
-
-    protected function getTokenData(array $job, $respondentId = null, $organizationId = null, $forceSent = false)
-    {
-        $filter     = $this->loader->getUtil()->getCommJobsUtil()->getJobFilter($job, $respondentId, $organizationId, $forceSent);
-        $tracker    = $this->loader->getTracker();
-        $model      = $tracker->getTokenModel();
-
-        // Fix for #680: token with the valid from the longest in the past should be the
-        // used as first token and when multiple rounds start at the same date the
-        // lowest round order should be used.
-        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
-
-        // Prevent out of memory errors, only load the tokenid
-        $model->trackUsage();
-        $model->set('gto_id_token');
-
-        return $model->load($filter);
     }
 
     protected function getTopic()

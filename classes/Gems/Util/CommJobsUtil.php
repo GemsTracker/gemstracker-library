@@ -22,6 +22,11 @@ namespace Gems\Util;
 class CommJobsUtil extends UtilAbstract
 {
     /**
+     * @var \Gems_Loader
+     */
+    protected $loader;
+    
+    /**
      *
      * @param array $filter
      * @param string $mode
@@ -370,6 +375,23 @@ class CommJobsUtil extends UtilAbstract
     }
 
     /**
+     * Get all the job data
+     *
+     * @param $jobId
+     * @return mixed
+     */
+    public function getJob($jobId)
+    {
+        $sql = $this->db->select()->from('gems__comm_jobs')
+                        ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+                        ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
+                        ->where('gcj_active > 0')
+                        ->where('gcj_id_job = ?', $jobId);
+
+        return $this->db->fetchRow($sql);
+    }
+
+    /**
      * Get the filter to use on the tokenmodel when working with a mailjob.
      *
      * @param array $job
@@ -432,6 +454,18 @@ class CommJobsUtil extends UtilAbstract
     }
 
     /**
+     * @param array $jobData
+     * @return \Gems\Communication\JobMessenger\JobMessengerAbstract|null
+     */
+    public function getJobMessenger(array $jobData)
+    {
+        $messengerName = $jobData['gcm_type'];
+        $messenger     = $this->loader->getCommunicationLoader()->getJobMessenger($messengerName);
+        
+        return $messenger;
+    }
+
+    /**
      * Get the filter to use on the tokenmodel when working with a mailjob.
      *
      * @return array job_id => description
@@ -458,5 +492,29 @@ class CommJobsUtil extends UtilAbstract
 
         return $this->db->fetchPairs($sql);
         return $this->_getSelectPairsCached(__FUNCTION__, $sql);
+    }
+
+    /**
+     * @param array $jobData
+     * @param int   $respondentId Optional
+     * @param int   $organizationId Optional
+     * @param false $forceSent Ignore previous mails
+     * @return mixed
+     */
+    public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false)
+    {
+        $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
+        $model  = $this->loader->getTracker()->getTokenModel();
+
+        // Fix for #680: token with the valid from the longest in the past should be the
+        // used as first token and when multiple rounds start at the same date the
+        // lowest round order should be used.
+        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
+
+        // Prevent out of memory errors, only load the tokenid
+        $model->trackUsage();
+        $model->set('gto_id_token');
+
+        return $model->load($filter);
     }
 }

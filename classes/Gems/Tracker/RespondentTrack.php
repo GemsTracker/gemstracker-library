@@ -12,6 +12,7 @@
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
+use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Translate\DbTranslateUtilTrait;
 
@@ -468,7 +469,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // relation is defined.
         $this->_ensureRounds();
         $relationFields = $this->getFieldData();
-        $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+        $fieldPrefix = FieldsDefinition::makeKey(FieldMaintenanceModel::FIELDS_NAME, '');
         $changes = 0;
         foreach ($this->getTokens() as $token) {
             /* @var $token \Gems_Tracker_Token */
