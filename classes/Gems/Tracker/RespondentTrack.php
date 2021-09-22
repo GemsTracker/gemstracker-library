@@ -572,7 +572,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // \MUtil_Echo::track($endDate, $tokenSelect->getSelect()->__toString());
 
         if (false === $endDate) {
-            return null;;
+            return null;
         } else {
             return $endDate;
         }
@@ -1573,7 +1573,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function setEndDate($endDate, $userId)
     {
-        $values['gr2t_end_date'] = $endDate;
+        $values['gr2t_end_date']        = $endDate;
+        $values['gr2t_end_date_manual'] = 1;
 
         return $this->_updateTrack($values, $userId);
     }

@@ -18,7 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Token return is set to organisation url, even when logged in (#660)
 - Url site management blocks access before update (#655)
 - Url site management does not use specified layout and locale (#656)
-
+- When using RespondentTrack->setEndDate the date should be set to manual (#670)
+  
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
 ### Added
