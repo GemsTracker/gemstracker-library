@@ -87,7 +87,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @return \Gems_Tracker_RespondentTrack
      * @throws \Zend_Date_Exception
      */
-    protected function createRespondentTrack($respondentId, $organizationsId, $subDays, $relationId = null)
+    protected function createRespondentTrack($respondentId, $organizationsId, $trackId, $subDays, $relationId = null, $mailCode = 100)
     {
         static $respondentTrackid = 0;
         
@@ -100,7 +100,8 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
         $startDate = new \MUtil_Date();
         $data      = [
             'gr2t_id_respondent_track' => ++$respondentTrackid,
-            'gr2t_start_date' => $startDate->subDay($subDays),
+            'gr2t_start_date'          => $startDate->subDay($subDays),
+            'gr2t_mailable'            => $mailCode,
             ];
         $fields    = [];
         if ($relationId) {
@@ -108,7 +109,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
             $fields[$key] = $relationId;
         }
         
-        return $this->tracker->createRespondentTrack($respondentId, $organizationsId, 1, 1, $data, $fields);
+        return $this->tracker->createRespondentTrack($respondentId, $organizationsId, $trackId, 1, $data, $fields);
     }
 
     /**
@@ -162,12 +163,109 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
     /**
      * Uses generic (respondents & relations) job 1
      */
+    public function testMailCodesNotUsed()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1);
+        $this->createRespondentTrack(20, 70, 2, 1);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertCount(4, $multipleTokensData, 'We expected 4 tokens for 2 respondents as all have the mail code 100.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesUsedForRespondents()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1);
+        $this->createRespondentTrack(20, 71, 2, 1);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertCount(3, $multipleTokensData, 'We expected 3 tokens for 2 respondents as one respondent has the mail code 50.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesUsedForTracks()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1, null, 50);
+        $this->createRespondentTrack(20, 70, 2, 1, null, 50);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertCount(2, $multipleTokensData, 'We expected 2 tokens for 2 respondents as both tracks have the mail code 50.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesUsedForTracksAndRespondents()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1, null, 50);
+        $this->createRespondentTrack(20, 71, 2, 1, null, 100);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertCount(2, $multipleTokensData, 'We expected 2 tokens for 2 respondents as one tracks and one respondent have the mail code 50.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesZeroForRespondent()
+    {
+        $this->createRespondentTrack(30, 70, 2, 1);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertEmpty($multipleTokensData, 'We expected no tokens for 1 respondent as the respondent has the mail code 0.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesZeroForTracks()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1, null, 0);
+        $this->createRespondentTrack(20, 71, 2, 1, null, 0);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertEmpty($multipleTokensData, 'We expected no tokens for 2 respondents as both tracks have the mail code 0.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
+    public function testMailCodesZeroForTracksOrRespondents()
+    {
+        $this->createRespondentTrack(10, 70, 2, 1, null, 0);
+        $this->createRespondentTrack(30, 70, 2, 1, null, 100);
+
+        $jobData            = $this->commJobsUtil->getJob(1);
+        $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
+
+        $this->assertEmpty($multipleTokensData, 'We expected no tokens for 2 respondents as both either the track or the respondent has the mail code 0.');
+    }
+
+    /**
+     * Uses generic (respondents & relations) job 1
+     */
     public function testNoMailInitial()
     {
         $jobData            = $this->commJobsUtil->getJob(1);
         $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
         
-        $this->assertEmpty($multipleTokensData);
+        $this->assertEmpty($multipleTokensData, 'We expected no tokens as there are no respondent tracks.');
     }
 
     /**
@@ -175,12 +273,12 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      */
     public function testRespondentOneNoRelation()
     {
-        $this->createRespondentTrack(10, 70, 1);
+        $this->createRespondentTrack(10, 70, 1, 1);
 
         $jobData            = $this->commJobsUtil->getJob(1);
         $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
 
-        $this->assertCount(1, $multipleTokensData, 'We expected 1 token for one respondents as no relation was set.');
+        $this->assertCount(1, $multipleTokensData, 'We expected 1 token for 1 respondent as no relation was set.');
     }
 
     /**
@@ -188,14 +286,14 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      */
     public function testRespondentOneWithRelation()
     {
-        $this->createRespondentTrack(10, 70, 1, 10);
+        $this->createRespondentTrack(10, 70, 1, 1, 10);
 
         $jobData            = $this->commJobsUtil->getJob(1);
         $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
 
         // print_r($this->db->fetchAll("SELECT * FROM gems__tokens"));
 
-        $this->assertCount(2, $multipleTokensData, 'We expected 2 tokens for one respondents and one relation.');
+        $this->assertCount(2, $multipleTokensData, 'We expected 2 tokens for 1 respondent and 1 relation.');
     }
 
     /**
@@ -203,9 +301,9 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      */
     public function testRespondentAllOnlyRelationsJob()
     {
-        $this->createRespondentTrack(10, 70, 1, 10);
-        $this->createRespondentTrack(20, 70, 1);
-        $this->createRespondentTrack(30, 71, 1, 30);
+        $this->createRespondentTrack(10, 70, 1, 1, 10);
+        $this->createRespondentTrack(20, 70, 1, 1);
+        $this->createRespondentTrack(30, 71, 1, 1, 30);
 
         $jobData            = $this->commJobsUtil->getJob(2);
         $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
@@ -228,9 +326,9 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      */
     public function testRespondentsAllOnlyRespondentJobs()
     {
-        $this->createRespondentTrack(10, 70, 1, 10);
-        $this->createRespondentTrack(20, 70, 1);
-        $this->createRespondentTrack(30, 71, 1, 30);
+        $this->createRespondentTrack(10, 70, 1, 1, 10);
+        $this->createRespondentTrack(20, 70, 1, 1);
+        $this->createRespondentTrack(30, 71, 1, 1, 30);
 
         $jobData            = $this->commJobsUtil->getJob(3);
         $multipleTokensData = $this->commJobsUtil->getTokenData($jobData);
@@ -245,6 +343,6 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
         
         $this->assertTokenAddresses($jobData, $token10, 'test1@org.com', 'Test one', 'a123@test.nl', 'test1@org.com');
         $this->assertTokenAddresses($jobData, $token20, 'test1@org.com', 'Test one', 'b123@test.nl', 'test1@org.com');
-        $this->assertTokenAddresses($jobData, $token30, 'test2@org.com', 'Test two', 'c234@test.nl', 'test2@org.com');
+        $this->assertTokenAddresses($jobData, $token30, 'test2@org.com', 'Test two', 'c2345@test.nl', 'test2@org.com');
     }
 }

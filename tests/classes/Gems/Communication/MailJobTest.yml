@@ -160,6 +160,19 @@ gems__mail_codes:
     gmc_created: 2012-09-07
     gmc_created_by: 1
   -
+    gmc_id: 50
+    gmc_mail_to_target: Critical
+    gmc_mail_cause_target: Critical 
+    gmc_code:
+    gmc_for_surveys: 1
+    gmc_for_tracks: 1
+    gmc_for_respondents: 1
+    gmc_active: 1
+    gmc_changed: 2012-09-07
+    gmc_changed_by: 1
+    gmc_created: 2012-09-07
+    gmc_created_by: 1
+  -
     gmc_id: 100
     gmc_mail_to_target: Yes
     gmc_mail_cause_target: Mail
@@ -250,10 +263,36 @@ gems__respondent2org:
     gr2o_created: '2012-09-07'
     gr2o_created_by: 1
   -
-    gr2o_patient_nr: "c234"
+    gr2o_patient_nr: "d234"
+    gr2o_id_user: 20
+    gr2o_id_organization: 71
+    gr2o_email: "b234@test.nl"
+    gr2o_consent: "Yes"
+    gr2o_mailable: 50
+    gr2o_reception_code: "OK"
+    gr2o_opened_by: 1
+    gr2o_changed: '2012-09-07'
+    gr2o_changed_by: 1
+    gr2o_created: '2012-09-07'
+    gr2o_created_by: 1
+  -
+    gr2o_patient_nr: "b2345"
+    gr2o_id_user: 30
+    gr2o_id_organization: 70
+    gr2o_email: "b2345@test.nl"
+    gr2o_consent: "Yes"
+    gr2o_mailable: 0
+    gr2o_reception_code: "OK"
+    gr2o_opened_by: 1
+    gr2o_changed: '2012-09-07'
+    gr2o_changed_by: 1
+    gr2o_created: '2012-09-07'
+    gr2o_created_by: 1
+  -
+    gr2o_patient_nr: "c2345"
     gr2o_id_user: 30
     gr2o_id_organization: 71
-    gr2o_email: "c234@test.nl"
+    gr2o_email: "c2345@test.nl"
     gr2o_consent: "Yes"
     gr2o_mailable: 100
     gr2o_reception_code: "OK"
@@ -318,7 +357,8 @@ gems__rounds:
     gro_id_track: 0
     gro_id_order: 0
     gro_id_survey: 0
-    gro_survey_name: inserted
+    gro_round_description: Intake
+    gro_survey_name: test staff survey
     gro_valid_after_id: '1'
     gro_valid_after_source: tok
     gro_valid_after_field: gto_valid_from
@@ -338,7 +378,7 @@ gems__rounds:
     gro_id_order: 10
     gro_id_survey: 1
     gro_round_description: Intake
-    gro_survey_name: baseline
+    gro_survey_name: test respondent survey
     gro_valid_after_id: 1
     gro_id_relationfield:
     gro_valid_after_source: rtr
@@ -360,7 +400,7 @@ gems__rounds:
     gro_id_survey: 2
     gro_id_relationfield: 
     gro_round_description: Intake
-    gro_survey_name: baseline
+    gro_survey_name: test respondent survey
     gro_valid_after_id: 1
     gro_valid_after_source: rtr
     gro_valid_after_field: gr2t_start_date
@@ -381,7 +421,7 @@ gems__rounds:
     gro_id_survey: 2
     gro_id_relationfield: 1
     gro_round_description: Intake 2
-    gro_survey_name: baseline
+    gro_survey_name: test respondent survey
     gro_valid_after_id: 1
     gro_valid_after_source: rtr
     gro_valid_after_field: gr2t_start_date
@@ -402,12 +442,54 @@ gems__rounds:
     gro_id_survey: 2
     gro_id_relationfield:
     gro_round_description: Posttake
-    gro_survey_name: baseline
+    gro_survey_name: test respondent survey
     gro_valid_after_id: 1
     gro_valid_after_source: rtr
     gro_valid_after_field: gr2t_start_date
     gro_valid_after_unit: M
     gro_valid_after_length: 1
+    gro_valid_for_id: 10
+    gro_valid_for_source: tok
+    gro_valid_for_field: gto_valid_from
+    gro_valid_for_unit: M
+    gro_valid_for_length: 2
+    gro_changed_by: '1'
+    gro_created: '2012-03-29 10:55:55'
+    gro_created_by: '1'
+  -
+    gro_id_round: 210
+    gro_id_track: 2
+    gro_id_order: 10
+    gro_id_survey: 2
+    gro_id_relationfield:
+    gro_round_description: "Pre op"
+    gro_survey_name: test respondent survey
+    gro_valid_after_id: 1
+    gro_valid_after_source: rtr
+    gro_valid_after_field: gr2t_start_date
+    gro_valid_after_unit: M
+    gro_valid_after_length: 0
+    gro_valid_for_id: 10
+    gro_valid_for_source: tok
+    gro_valid_for_field: gto_valid_from
+    gro_valid_for_unit: M
+    gro_valid_for_length: 2
+    gro_changed_by: '1'
+    gro_created: '2012-03-29 10:55:55'
+    gro_created_by: '1'
+  -
+    gro_id_round: 220
+    gro_id_track: 2
+    gro_id_order: 20
+    gro_id_survey: 3
+    gro_id_relationfield:
+    gro_round_description: "Pre op"
+    gro_survey_name: test critical survey
+    gro_valid_after_id: 1
+    gro_valid_after_source: rtr
+    gro_valid_after_field: gr2t_start_date
+    gro_valid_after_unit: M
+    gro_valid_after_length: 0
     gro_valid_for_id: 10
     gro_valid_for_source: tok
     gro_valid_for_field: gto_valid_from
@@ -438,18 +520,30 @@ gems__surveys:
   -
     gsu_id_survey: 1
     gsu_survey_name: 'test staff survey'
-    gsu_id_primary_group: 902
     gsu_id_source: 1
     gsu_active: 1
+    gsu_id_primary_group: 902
+    gsu_mail_code: 100
     gsu_changed_by: 1
     gsu_created: '2012-03-29 10:55:55'
     gsu_created_by: 1
   -
     gsu_id_survey: 2
     gsu_survey_name: 'test respondent survey'
-    gsu_id_primary_group: 904
     gsu_id_source: 1
     gsu_active: 1
+    gsu_id_primary_group: 904
+    gsu_mail_code: 100
+    gsu_changed_by: 1
+    gsu_created: '2012-03-29 10:55:55'
+    gsu_created_by: 1
+  -
+    gsu_id_survey: 3
+    gsu_survey_name: 'test critical survey'
+    gsu_id_source: 1
+    gsu_active: 1
+    gsu_id_primary_group: 904
+    gsu_mail_code: 50
     gsu_changed_by: 1
     gsu_created: '2012-03-29 10:55:55'
     gsu_created_by: 1
