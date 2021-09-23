@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -5982,7 +5982,7 @@ msgstr "Geen script voor %1$s."
 
 #: classes/Gems/Model/Dependency/CommJob/Senderdependency.php:87
 msgid "Staff address used"
-msgstr "Medewerker vanaf adres"
+msgstr "Medewerker ontvangst adres"
 
 #: classes/Gems/Model/Dependency/CommJob/Senderdependency.php:96
 msgid "Fallback other"
