@@ -12,6 +12,7 @@
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
+use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Translate\DbTranslateUtilTrait;
 
@@ -468,7 +469,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // relation is defined.
         $this->_ensureRounds();
         $relationFields = $this->getFieldData();
-        $fieldPrefix = FieldMaintenanceModel::FIELDS_NAME . \Gems\Tracker\Engine\FieldsDefinition::FIELD_KEY_SEPARATOR;
+        $fieldPrefix = FieldsDefinition::makeKey(FieldMaintenanceModel::FIELDS_NAME, '');
         $changes = 0;
         foreach ($this->getTokens() as $token) {
             /* @var $token \Gems_Tracker_Token */
@@ -571,7 +572,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         // \MUtil_Echo::track($endDate, $tokenSelect->getSelect()->__toString());
 
         if (false === $endDate) {
-            return null;;
+            return null;
         } else {
             return $endDate;
         }
@@ -1572,7 +1573,8 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function setEndDate($endDate, $userId)
     {
-        $values['gr2t_end_date'] = $endDate;
+        $values['gr2t_end_date']        = $endDate;
+        $values['gr2t_end_date_manual'] = 1;
 
         return $this->_updateTrack($values, $userId);
     }

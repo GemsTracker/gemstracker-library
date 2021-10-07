@@ -24,14 +24,12 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     public function sendCommunication(array $job, array $tokenData, $preview)
     {
         $mailLoader = $this->loader->getMailLoader();
-        $mailer       = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
+        $mailer     = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
         /* @var $mailer \Gems_Mail_TokenMailer */
         $token  = $mailer->getToken();
 
-        $sendById   = $job['gcj_id_user_as'];
-        $sendByMail = $this->getUserEmail($sendById);
-
-        $email = $this->getToEmail($job, $sendByMail, $mailer, $token, $tokenData['can_email']);
+        $sendById = $job['gcj_id_user_as'];
+        $email    = $this->getToEmail($job, $mailer, $token, $tokenData['can_email']);
 
         if (empty($email)) {
             if ($preview) {
@@ -49,8 +47,8 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
         }
 
         // The variable from is used in the preview message
-        $from = $this->getFromEmail($job, $sendByMail, $mailer);
-        $fromName = $this->getFromName($job, $sendByMail, $mailer);
+        $from = $this->getFromEmail($job, $mailer);
+        $fromName = $this->getFromName($job, $mailer);
 
         if ($preview) {
             $this->addBatchMessage(sprintf(
@@ -83,21 +81,20 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param string $sendByMail Email address
      * @param \Gems_Mail_TokenMailer $mailer
      * @return string or null
      * @throws \Gems_Exception
      */
-    protected function getFallbackEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    public function getFallbackEmail(array $job, \Gems_Mail_TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_fallback_method']) {
             case 'O':   // Send on behalf of organization
                 $organization = $mailer->getOrganization();
-                return $organization->getContactName() . ' <' . $organization->getEmail() . '>';
+                return $organization->getEmail();
 
             case 'U':   // Send on behalf of fixed user
-                return $sendByMail;
+                return $this->getUserEmail($job['gcj_id_user_as']);
 
             case 'F':   // Send on behalf of fixed email address
                 return $job['gcj_fallback_fixed'];
@@ -113,12 +110,11 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param string $sendByMail Email address
      * @param \Gems_Mail_TokenMailer $mailer
      * @return string or null
      * @throws \Gems_Exception
      */
-    protected function getFromEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    public function getFromEmail(array $job, \Gems_Mail_TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -126,7 +122,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 return $mailer->getOrganization()->getEmail();
 
             case 'U':   // Send on behalf of fixed user
-                return $sendByMail;
+                return $this->getUserEmail($job['gcj_id_user_as']);
 
             case 'F':   // Send on behalf of fixed email address
                 return $job['gcj_from_fixed'];
@@ -142,12 +138,11 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param string $sendByMail Email address
      * @param \Gems_Mail_TokenMailer $mailer
      * @return string or null
      * @throws \Gems_Exception
      */
-    protected function getFromName(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    public function getFromName(array $job, \Gems_Mail_TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -162,14 +157,13 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param string $sendByMail Email address
      * @param \Gems_Mail_TokenMailer $mailer
      * @param \Gems_Tracker_Token $token
      * @param boolean $canBeMailed True when allowed to mail respondent
      * @return string or null
      * @throws \Gems_Exception
      */
-    protected function getToEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer, \Gems_Tracker_Token $token, $canBeMailed)
+    public function getToEmail(array $job, \Gems_Mail_TokenMailer $mailer, \Gems_Tracker_Token $token, $canBeMailed)
     {
         $email = null;
 
@@ -193,7 +187,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 break;
 
             case '3':
-                return $this->getFallbackEmail($job, $sendByMail, $mailer);
+                return $this->getFallbackEmail($job, $mailer);
 
             default:
                 throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
@@ -210,7 +204,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 }
             // Intentional fall through
             case 'F':
-                return $this->getFallbackEmail($job, $sendByMail, $mailer);
+                return $this->getFallbackEmail($job, $mailer);
 
             default:
                 throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));

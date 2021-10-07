@@ -8,7 +8,6 @@
  * @subpackage Test
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TestAbstract.php 925 2012-09-05 09:59:13Z mennodekker $
  */
 
 /**
@@ -98,6 +97,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
         // Now add some utility functions that sqlite does not have. Copied from
         // Drupal: https://github.com/drupal/drupal/blob/8.4.x/core/lib/Drupal/Core/Database/Driver/sqlite/Connection.php
         /* @var $connection \PDO */
+        $connection->sqliteCreateFunction('CHAR_LENGTH', 'strlen');
         $connection->sqliteCreateFunction('concat', array(__CLASS__, 'sqlFunctionConcat'));
         $connection->sqliteCreateFunction('concat_ws', array(__CLASS__, 'sqlFunctionConcatWs'));
 
