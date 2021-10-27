@@ -651,7 +651,9 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         $mailLogPage->addAutofilterAction();
-        $mailLogPage->addShowAction();
+        $showPage = $mailLogPage->addShowAction();
+        $showPage->addButtonOnly($this->_('Resend mail'), 'pr.respondent-commlog.resend', 'respondent-mail-log', 'resend')
+                 ->setModelParameters(1);
 
         // LOG CONTROLLER
         $logPage = $rPage->addPage($this->_('Activity log'), 'pr.respondent-log', 'respondent-log', 'index');

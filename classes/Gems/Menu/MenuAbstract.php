@@ -354,7 +354,9 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $page = $setup->addPage($this->_('Communication log'), 'pr.mail.log', 'mail-log');
         $page->addAutofilterAction();
         $page->addExportAction();
-        $page->addShowAction();
+        $showPage = $page->addShowAction();
+        $showPage->addButtonOnly($this->_('Resend mail'), 'pr.mail.log.resend', 'mail-log', 'resend')
+            ->setModelParameters(1);
 
         return $setup;
     }

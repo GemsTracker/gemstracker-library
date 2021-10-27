@@ -129,10 +129,8 @@ class CommLogModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->resetOrder();
 
-        $this->set('grco_created',    'label', $this->_('Date sent'));
-        if ($detailed) {
-            $this->set('grco_created', 'formatFunction', $this->util->getTranslated()->formatDate);
-        }
+        $this->set('grco_created',    'label', $this->_('Date sent'),
+            'dateFormat', \Gems_Tracker::DB_DATETIME_FORMAT);
         $this->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
         $this->set('respondent_name', 'label', $this->_('Receiver'));
         $this->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
