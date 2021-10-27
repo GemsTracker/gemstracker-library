@@ -184,7 +184,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $def = ['{patient_nr}' => '{patient_nr}'];
         $sql = "SELECT gr2o_patient_nr, gr2o_patient_nr
             FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
-            WHERE gr2o_id_organization = ? AND grc_success = 1";
+            WHERE gr2o_id_organization = ? AND grc_success = 1 LIMIT 1000";
 
 
         $patients = $this->db->fetchPairs($sql, $orgId);
@@ -206,7 +206,9 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $def = ['{login_id}' => '{login_id}'];
         $sql = "SELECT gul_login, gul_login
             FROM gems__user_logins
-            WHERE gul_id_organization = ? AND gul_user_class = ? AND gul_can_login = 1";
+            WHERE gul_id_organization = ? AND gul_user_class = ? AND gul_can_login = 1 AND 
+                  gul_login  NOT IN (SELECT gsf_login FROM gems__staff INNER JOIN gems__systemuser_setup ON gsf_id_user = gsus_id_user)
+            ORDER BY gul_login";
 
 
         $staff = $this->db->fetchPairs($sql, [$orgId, $this->selectedUser->getUserDefinitionClass()]);
