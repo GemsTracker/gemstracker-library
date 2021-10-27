@@ -131,4 +131,12 @@ class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbst
 
         return $filter;
     }
+
+    /**
+     * Resend a log item
+     */
+    public function resendAction()
+    {
+        $this->addSnippets('Gems\\Snippets\\Communication\\ResendCommLogItemSnippet');        
+    }
 }

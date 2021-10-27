@@ -200,4 +200,12 @@ class Gems_Default_RespondentMailLogAction extends \Gems_Default_RespondentChild
 
         return $filter;
     }
+
+    /**
+     * Resend a log item
+     */
+    public function resendAction()
+    {
+        $this->addSnippets('Gems\\Snippets\\Communication\\ResendCommLogItemSnippet');
+    }
 }

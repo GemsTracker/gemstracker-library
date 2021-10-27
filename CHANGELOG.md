@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1p4]
 ### Added user functionality
+- Send again button in communication log (#668)
 - Reset sent mail - using checkbox in Token edit screen (#674)
-
+  
 ### Fixed
+- Default view of MailLog does not show the time the mail was send (#667)
 - Do not show more than all patient numbers in the systemuser show screen (#675)
 
 ## [1.9.1p3]
