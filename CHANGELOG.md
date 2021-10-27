@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1p4]
+### Added user functionality
+- Reset sent mail - using checkbox in Token edit screen (#674)
+
+### Fixed
+- Do not show more than all patient numbers in the systemuser show screen (#675)
+
 ## [1.9.1p3]
 ### Fixed
 - Focus tracking does not work on sub forms and element (#671)

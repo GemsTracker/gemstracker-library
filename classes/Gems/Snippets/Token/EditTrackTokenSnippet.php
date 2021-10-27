@@ -34,6 +34,12 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
      */
     protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
+        $model->set('reset_mail', [
+            'label'        => $this->_('Reset sent mail'),
+            'description'  => $this->_('Set to zero mails sent'),
+            'elementClass' => 'Checkbox',                
+        ]);
+        
         $onOffFields = array('gr2t_track_info', 'gto_round_description', 'grc_description');
         foreach ($onOffFields as $field) {
             if (! (isset($this->formData[$field]) && $this->formData[$field])) {
@@ -85,6 +91,8 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
                         'gto_valid_until',
                         'gto_comment',
                         'gto_mail_sent_date',
+                        'gto_mail_sent_num',
+                        'reset_mail',
                         'gto_completion_time',
                         'grc_description',
                         'gto_changed',
@@ -119,6 +127,15 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
             $date->setTimeToDayEnd();
             $this->formData['gto_valid_until'] = $date;
         }
+        
+        if (isset($this->formData['reset_mail']) && $this->formData['reset_mail']) {
+            $this->formData['gto_mail_sent_date'] = null;
+            $this->formData['gto_mail_sent_num']  = 0;
+        } else {
+            // This value is not editable so it should not be saved.
+            unset($this->formData['gto_mail_sent_date'], $this->formData['gto_mail_sent_num']);
+        }
+        unset($this->formData['reset_mail']);
 
         // Save the token using the model
         parent::saveData();
@@ -132,7 +149,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
         $updateData['gto_valid_until']        = $this->formData['gto_valid_until'];
         $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
         $updateData['gto_comment']            = $this->formData['gto_comment'];
-
+        \MUtil_Echo::track($updateData);
         $this->token->refresh($updateData);
 
         $respTrack = $this->token->getRespondentTrack();

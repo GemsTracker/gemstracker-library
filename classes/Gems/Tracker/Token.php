@@ -2074,7 +2074,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      */
     public function setValidFrom($validFrom, $validUntil, $userId)
     {
-        if ($validFrom && $this->getMailSentDate()) {
+        $mailSentDate = $this->getMailSentDate();
+        if (! $mailSentDate instanceof \MUtil_Date) {
+            $mailSentDate = \MUtil_Date::ifDate($mailSentDate, [\Gems_Tracker::DB_DATE_FORMAT, \Gems_Tracker::DB_DATETIME_FORMAT]);
+        }
+        if ($validFrom && $mailSentDate) {
             // Check for newerness
 
             if ($validFrom instanceof \Zend_Date) {
@@ -2083,15 +2087,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $start = new \MUtil_Date($validFrom, \Gems_Tracker::DB_DATETIME_FORMAT);
             }
 
-            if ($start->isLater($this->getMailSentDate())) {
+            if ($start->isLater($mailSentDate)) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
                 $now = new \MUtil_Date();
                 $newComment = sprintf(
-                    $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date.'),
+                    $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),
                     $now->toString('yyyy-MM-dd HH:mm:ss'),
-                    $start->toString('yyyy-MM-dd HH:mm:ss')
+                    $start->toString('yyyy-MM-dd HH:mm:ss'),
+                    $mailSentDate->toString('yyyy-MM-dd HH:mm:ss')
                 );
                 $comment = $this->getComment();
                 if (!empty($comment)) {
