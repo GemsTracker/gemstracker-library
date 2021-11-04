@@ -137,6 +137,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     public $allowedOrgs;
 
     /**
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+    
+    /**
      * Sets pagination on or off.
      *
      * @var boolean
@@ -158,6 +163,11 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * Display text for track that can be mailed, set in afterRegistry
      */
     protected $textNotMailable;
+
+    /**
+     * @var \Gems_Util
+     */
+    protected $util;
 
     protected function _addTooltip($element, $text, $placement = "auto")
     {
@@ -242,7 +252,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      */
     protected function _initView($view)
     {
-        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
+        $baseUrl = $this->basepath->getBasePath();
 
         // Make sure we can use jQuery
         \MUtil_JQuery::enableView($view);
@@ -255,7 +265,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
          *  - Hide all tokens initially (accessability, when no javascript they should be visible)
          *  - If there is a day labeled today, scroll to it (prevents errors when not visible)
          */
-        $view->headScript()->appendFile($baseUrl . '/gems/js/trafficlight.js');
+        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.trafficlight.js');
+        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.verticalExpand.js');
+        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.respondentAnswersModal.js');
     }
 
     /**
@@ -352,7 +364,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 }
                 $this->_completed++;
                 if ($tokenLink) {
-                    $tokenLink->target = 'inline';
+                    $tokenLink->appendAttrib('class', 'inline-answers');
                 }
                 break;
 
@@ -565,8 +577,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         $main = $this->creator->div(array('class' => 'panel panel-default', 'id' => 'trackwrapper', 'renderClosingTag' => true));
 
-        $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
+        //$main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
+        $currentTrackId  = \Gems_Cookies::get($this->request, 'track_idx');
         $data            = $this->_loadData();
         $doelgroep       = null;
         $lastDate        = null;
@@ -578,7 +591,13 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $trackProgress   = null;
         $minIcon         = \MUtil_Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
         $summaryIcon     = \MUtil_Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
+        $trackIds        = array_column($data, 'gto_id_respondent_track', 'gto_id_respondent_track');
 
+        // Check for cookie set for this patient
+        if (! isset($trackIds[$currentTrackId])) {
+            $currentTrackId =  reset($trackIds);
+        }
+        
         // The normal loop
         foreach ($data as $row)
         {
@@ -601,13 +620,21 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     'can_edit'                 => 1
                 );
 
-                $track         = $main->div(array('class' => 'panel panel-default traject'));
+                if ($row['gto_id_respondent_track'] == $currentTrackId) {
+                    $caretClass = "fa-chevron-down";
+                    $bodyStyle  = "";  
+                } else {
+                    $caretClass = "fa-chevron-right";
+                    $bodyStyle  = "display: none;";
+                }
+                
+                $track         = $main->div(array('class' => 'panel panel-default traject verticalExpand'));
 
-                $trackHeading  = $track->div(array('class' => 'panel-heading', 'renderClosingTag' => true));
+                $trackHeading  = $track->div(array('class' => 'panel-heading header', 'renderClosingTag' => true));
 
                 $trackTitle    = \MUtil_Html::create('span', array('class' => 'title'));
                 $trackTitle[]  = ' ' . $row['gtr_track_name'];
-                $trackTitle[]  = \MUtil_Html::create('span', array('class' => "fa fa-chevron-down fa-fw", 'renderClosingTag' => true));
+                $trackTitle[]  = \MUtil_Html::create('span', array('class' => "header-caret fa fa-fw " . $caretClass, 'renderClosingTag' => true));
 
                 $trackReceptionCode = $this->loader->getUtil()->getReceptionCode($row['gr2t_reception_code']);
                 if (!$trackReceptionCode->isSuccess()) {
@@ -631,10 +658,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $trackStartDate = $this->_('n/a');
                 }
                 $trackHeading->div($row['gr2t_track_info'], array('renderClosingTag' => true));
-                $trackHeading->div($this->_('Start date') . ': ' . $trackStartDate, array('renderClosingTag' => true));
+                $trackHeading->div($this->_('Start date') . ': ' . $trackStartDate);
                 $trackProgress = $trackHeading->div(array('class' => 'progress pull-right', 'renderClosingTag' => true));
 
-                $container    = $track->div(array('class' => 'panel-body', 'renderClosingTag' => true));
+                $container    = $track->div(array('class' => 'panel-body', 'style' => $bodyStyle));
                 $subcontainer = $container->div(array('class' => 'objecten', 'renderClosingTag' => true));
             }
 
@@ -666,10 +693,16 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     'gto_round_description'   => urlencode(str_replace('/', '&#47;', $description))
                 ];
                 if ($this->_overview) {
-                    $summaryLink = $this->createMenuLink([
-                        'gr2o_patient_nr' => $row['gr2o_patient_nr'],
-                        'gr2o_id_organization' => $row['gr2o_id_organization'],
-                        'RouteReset' => true], 'respondent', 'overview', $summaryIcon, $this->_overview);
+                    $summaryLink = $this->createMenuLink(
+                        [
+                            'gr2o_patient_nr' => $row['gr2o_patient_nr'],
+                            'gr2o_id_organization' => $row['gr2o_id_organization'],
+                            'RouteReset' => true,
+                            ],  
+                        'respondent', 
+                        'overview', 
+                        $summaryIcon, 
+                        $this->_overview);
                     $summaryLink->href->add($params);
                     $summaryLink->target = 'inline';
                 } else {

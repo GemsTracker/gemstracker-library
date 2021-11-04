@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Fixed
 - Default view of MailLog does not show the time the mail was send (#667)
 - Do not show more than all patient numbers in the systemuser show screen (#675)
+- The answer popup during an embedded login has inconsistent output (#679)
+
+### Programmability
+- Remember in the session that the user is embedded (#680)
 
 ## [1.9.1p3]
 ### Fixed

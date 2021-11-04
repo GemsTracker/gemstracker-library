@@ -21,6 +21,11 @@
 abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -128,6 +133,10 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
 
                 $htmlDiv->h3($this->getTitle());
 
+                // Always add the script, it will only be used if the answer button class
+                // is set to inline-answers (in the menu or elsewhere)
+                $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.respondentAnswersModal.js');
+                
                 $table = parent::getHtmlOutput($view);
                 $this->applyHtmlAttributes($table);
                 $htmlDiv[] = $table;

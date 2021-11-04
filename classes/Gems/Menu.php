@@ -628,7 +628,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
-        $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
+        $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer', ['class' => $this->currentUser->isSessionFramed() ? 'inline-answers' : ''])
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('gto_in_source', 1, \Gems_Model::ID_TYPE, 'token')
                 ->set('target', \MUtil_Model::REQUEST_ID);
