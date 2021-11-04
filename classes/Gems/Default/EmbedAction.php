@@ -149,7 +149,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             $this->activityLog->log($message, $priority);
         } catch(\Exception $e) {
             error_log($e->getMessage());
-            error_log($logInfo);
+            error_log($message);
         }
     }
 

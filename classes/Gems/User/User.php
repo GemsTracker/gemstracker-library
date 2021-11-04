@@ -1861,6 +1861,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * @return boolean True when we're (functionally) working in a frame, e.g. for an embedded user
+     */
+    public function isSessionFramed()
+    {
+        return $this->_getVar('current_user_framed', false);
+    }
+
+    /**
      * Returns true when this user is a staff member.
      *
      * @return boolean
@@ -2341,6 +2349,18 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function setSessionCrumbs($option)
     {
         $this->_setVar('current_user_crumbs', $option);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param boolean $option When true we're working in a frame
+     * @return $this
+     */
+    public function setSessionFramed($option = true)
+    {
+        $this->_setVar('current_user_framed', $option);
 
         return $this;
     }
