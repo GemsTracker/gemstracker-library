@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__conditions (
-        gcon_id                  bigint unsigned auto_increment not null,
+        gcon_id                  bigint unsigned not null auto_increment,
 
         gcon_type                varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         gcon_class               varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,

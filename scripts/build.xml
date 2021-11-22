@@ -68,7 +68,118 @@
         </append>
     </target>
 
-<target name="striplicense">
+    <fileset id="sql-structural-files" dir="../configs">
+        <include name="db/tables/gems__agenda_activities.50.sql"/>
+        <include name="db/tables/gems__agenda_diagnoses.50.sql"/>
+        <include name="db/tables/gems__agenda_procedures.50.sql"/>
+        <include name="db/tables/gems__agenda_staff.50.sql"/>
+        <include name="db/tables/gems__appointments.100.sql"/>
+        <include name="db/tables/gems__appointment_filters.60.sql"/>
+        <include name="db/tables/gems__consents.10.sql"/>
+        <include name="db/tables/gems__conditions.60.sql"/>
+        <include name="db/tables/gems__episodes_of_care.90.sql"/>
+        <include name="db/tables/gems__mail_codes.10.sql"/>
+        <include name="db/tables/gems__groups.20.sql"/>
+        <include name="db/tables/gems__locations.50.sql"/>
+        <include name="db/tables/gems__organizations.20.sql"/>
+        <include name="db/tables/gems__reception_codes.10.sql"/>
+        <include name="db/tables/gems__respondents.30.sql"/>
+        <include name="db/tables/gems__respondent_relations.40.sql"/>
+        <include name="db/tables/gems__respondent2org.50.sql"/>
+        <include name="db/tables/gems__respondent2track.40.sql"/>
+        <include name="db/tables/gems__respondent2track2appointment.110.sql"/>
+        <include name="db/tables/gems__respondent2track2field.50.sql"/>
+        <include name="db/tables/gems__rounds.40.sql"/>
+        <include name="db/tables/gems__sources.20.sql"/>
+        <include name="db/tables/gems__staff.20.sql"/>
+        <include name="db/tables/gems__surveys.30.sql"/>
+        <include name="db/tables/gems__survey_questions.100.sql"/>
+        <include name="db/tables/gems__survey_question_options.200.sql"/>
+        <include name="db/tables/gems__tokens.200.sql"/>
+        <include name="db/tables/gems__tracks.30.sql"/>
+        <include name="db/tables/gems__track_appointments.100.sql"/>
+        <include name="db/tables/gems__track_fields.40.sql"/>
+        <include name="db/tables/gems__user_ids.10.sql"/>
+        <include name="db_response_data/tables/gemsdata__responses.10000.sql"/>
+    </fileset>
+
+    <!-- Merge SQL creation scripts -->
+    <target name="dbdiagram.io">
+        <copy file="dbdiagram.start.txt" tofile="../docs/database/gemstracker-database.dbml" overwrite="true" />
+        <append destFile="../docs/database/gemstracker-database.dbml">
+            <fileset refid="sql-structural-files"/>
+            <filterchain>
+                <replaceregexp>
+                    <!-- Remove comments & deprecated columns -->
+                    <regexp pattern="\s+--\s+deprecated.*--\s+end\s+deprecated" replace="" ignoreCase="true" multiline="true" modifiers="U" />
+                    <regexp pattern="\s+--.*" replace="" ignoreCase="true" multiline="false" />
+
+                    <regexp pattern="CREATE\s+TABLE\s*(if\s+not\s+exists\s+)?(\w+)\s+\(" replace="TABLE \2 {" ignoreCase="true"/>
+                    <regexp pattern="(\s)\s+\)" replace="${line.separator}} // " ignoreCase="true"/>
+
+                    <regexp pattern="([ ]+)PRIMARY\s+KEY\s*([^}]+)" replace="\1indexes {${line.separator}\1PRIMARY KEY \2\1}${line.separator}" ignoreCase="true"  multiline="true" />
+                    <regexp pattern="([ ]+)PRIMARY KEY \(([^\)]+)\),?(\s)" replace="\1\1(\2) [pk]\3" ignoreCase="true"  multiline="true" />
+                    <regexp pattern="([ ]+)UNIQUE\s+(INDEX|KEY)(\s+\w+)?\s*\(([^\)]+)\),?(\s)" replace="\1\1(\4) [unique]\5" ignoreCase="true"  multiline="true" />
+                    <regexp pattern="([ ]+)(INDEX|KEY)(\s+\w+)?\s*\(([^\)]+)\),?(\s)" replace="\1\1(\4)\5" ignoreCase="true"  multiline="true" />
+                    
+                    <regexp pattern="\s*ENGINE\s*=\s*\w+\s*" replace="" ignoreCase="true"/>
+                    <regexp pattern="\s*AUTO_INCREMENT\s*=\s\d+\s*" replace="" ignoreCase="true"/>
+                    
+                    <regexp pattern="\s+\w+_(changed|changed_by|created|created_by)\s[^,]+," replace="" ignoreCase="true" />
+                    <regexp pattern="\s+\w+\s+boolean[^,]*," replace="" ignoreCase="true" />
+                    <regexp pattern="\s+\((grc_success|gr2o_changed_by|gr2t_created_by|gsu_active|gsu_surveyor_active|gto_created|gto_in_source|gtr_active)\)" replace="" ignoreCase="true" />
+
+                    <regexp pattern="\s*COLLATE\s*=?\s*[^\s,]+[ ]*" replace=" " ignoreCase="true"/>
+                    <regexp pattern="\b(DEFAULT\s+CHARACTER\s+SET|DEFAULT\s+CHARSET|CHARACTER\s+SET|CHARSET)(\s*=?\s*|\s+)[^\s,]+" replace="" ignoreCase="true"/>
+
+                    <regexp pattern="(\s)auto_increment(.?)" replace="\1increment\2" ignoreCase="true" />
+                    <regexp pattern="(un)?signed" replace="" ignoreCase="true" />
+
+                    <regexp pattern="([{,]\s+\w+\s+\w+)(\s*\(\s*\d+\s*\))" replace="\1" multiline="true" />
+                    <regexp pattern="([{,]\s+\w+\s+\w+)\s+([^\[,]+)," replace="\1 [\2]," multiline="true" />
+                    <regexp pattern="([{,]\s+\w+\s+\w+)\s+([^\[,]+)," replace="\1 [\2]," multiline="true" />
+
+                    <regexp pattern="\s*DELETE [^;]*;" replace="" ignoreCase="true" multiline="true" />
+                    <regexp pattern="\s*INSERT [^;]*;" replace="" ignoreCase="true" multiline="true" />
+                    <regexp pattern="\s*UPDATE [^;]*;" replace="" ignoreCase="true" multiline="true" />
+
+                    <regexp pattern=",([^ ])" replace="\1" ignoreCase="true" multiline="true" />
+                    <regexp pattern=" \[ \]" replace="" ignoreCase="true" multiline="true" />
+                    <regexp pattern="\],(\s)" replace="]\1" ignoreCase="true" multiline="true" />
+                    <regexp pattern=";(\s)" replace="\1" ignoreCase="true" multiline="true" />
+
+                    <regexp pattern="(not\s+null|null)\s+(default\s|increment|references|unique\s+key)" replace="\1, \2" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(default\s+([\w']+))\s+(increment|not|null|references)" replace="\1, \3" ignoreCase="true" multiline="false" />
+                    <regexp pattern="(default\s+current_timestamp)\s+on\s+update\s+current_timestamp" replace="default `current_timestamp`" ignoreCase="true" />
+                    <regexp pattern="(\bdefault)(\s)" replace="\1:\2" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\bunique)\s+key" replace="\1" ignoreCase="true" multiline="true" />
+                    <regexp pattern="\breferences\s+(\w+)\s+\((\w+)\)" replace="ref: > \1.\2" ignoreCase="true" multiline="true" />
+                </replaceregexp>
+            </filterchain>
+        </append>
+        <!-- append destFile="dbdiagram.start.txt">
+            <fileset refid="sql-structural-files"/>
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern=".*(CREATE\s+TABLE|references).*" ignoreCase="true" multiline="false" />
+                </linecontainsregexp>
+                <replaceregexp>
+                    <regexp pattern="CREATE\s+TABLE\s*(if\s+not\s+exists\s+)?(\w+)\s+\(\s*" replace="${line.separator}\2." ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\s*[^\s]+).*references\s+(\w+)\s*\(([^\)]+)\)," replace="\1 > \2.\3" ignoreCase="true" multiline="false" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="(\w+\.)(\w+ > \w+\.\w+)(\s*)(\w+ > \w+\.\w+)" replace="\1\2${line.separator}\1\4" ignoreCase="true" multiline="true" />
+                    <regexp pattern="\w+\.\s*$" replace="" ignoreCase="true" multiline="false" />
+                    <regexp pattern="(\w+\.\w+ > \w+\.\w+)" replace="Ref { \1 }" ignoreCase="true" multiline="false" />
+                </replaceregexp>
+            </filterchain>
+        </append -->
+    </target>
+    
+    <target name="striplicense">
         <reflexive>
             <fileset dir=".." id="phpfiles">
                 <include name="**/*.php" />
@@ -76,7 +187,7 @@
             </fileset>
             <filterchain>
                 <replaceregexp>
-                    <regexp pattern="\s*\*\s*Copyright.*POSSIBILITY OF SUCH DAMAGE\..*?\n.*?(\n)" replace="\1" multiline="true"/>
+                    <regexp pattern="\s*\*\s*Copyright.*POSSIBILITY OF SUCH DAMAGE\..*?\n.*?(\n)" replace="" multiline="true"/>
                 </replaceregexp>
             </filterchain>
         </reflexive>

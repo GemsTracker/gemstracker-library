@@ -1,0 +1,48 @@
+Project GemsTracker {
+  database_type: 'MySQL'
+  Note: 'An overview of the GemsTracker Respondent and Track tables'
+}
+
+Ref: gems__tokens.gto_id_token < gemsdata__responses.gdr_id_token
+Ref: gems__survey_questions.gsq_name < gemsdata__responses.gdr_answer_id
+
+TableGroup APPOINTMENTS {
+    gems__appointments
+    gems__episodes_of_care
+    gems__agenda_activities
+    gems__agenda_diagnoses
+    gems__agenda_procedures
+    gems__agenda_staff
+    gems__locations
+}
+
+TableGroup RESPONDENTS {
+    gems__consents
+    gems__respondents
+    gems__respondent_relations
+    gems__respondent2org
+}
+
+TableGroup RESPONDENT_TRACKS {
+    gems__respondent2track
+    gems__respondent2track2appointment
+    gems__respondent2track2field
+    gems__tokens
+    gemsdata__responses
+}
+
+TableGroup SURVEYS { 
+    gems__sources
+    gems__surveys
+    gems__survey_questions
+    gems__survey_question_options    
+}
+
+TableGroup TRACKS_DEFINITION { 
+    gems__tracks
+    gems__track_appointments
+    gems__appointment_filters
+    gems__track_fields
+    gems__conditions
+    gems__rounds    
+}

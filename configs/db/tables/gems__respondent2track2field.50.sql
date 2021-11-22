@@ -11,7 +11,7 @@ CREATE TABLE if not exists gems__respondent2track2field (
         gr2t2f_created              timestamp not null,
         gr2t2f_created_by           bigint unsigned not null,
 
-        PRIMARY KEY(gr2t2f_id_respondent_track,gr2t2f_id_field)
+        PRIMARY KEY(gr2t2f_id_respondent_track, gr2t2f_id_field)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

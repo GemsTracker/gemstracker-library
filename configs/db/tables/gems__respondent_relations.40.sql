@@ -1,11 +1,11 @@
 
 CREATE TABLE IF NOT EXISTS gems__respondent_relations (
         grr_id                      bigint(20) NOT NULL AUTO_INCREMENT,
-        grr_id_respondent           bigint(20) NOT NULL,
+        grr_id_respondent           bigint(20) NOT NULL  references gems__respondents (grs_id_user),
         grr_type                    varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- When staff this holds the id
-        grr_id_staff                bigint(20) NULL DEFAULT NULL,
+        grr_id_staff                bigint(20) NULL DEFAULT NULL references gems__staff (gsf_id_user),
 
         -- when not staff, we need at least name, gender and email
         grr_email                   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS gems__respondent_relations (
         grr_created_by              bigint unsigned not null,
 
         PRIMARY KEY (grr_id),
-        INDEX grr_id_respondent (grr_id_respondent,grr_id_staff)
+        INDEX grr_id_respondent (grr_id_respondent, grr_id_staff)
     )
     ENGINE=InnoDB
-    DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
+    CHARSET = utf8 COLLATE = utf8_unicode_ci
     AUTO_INCREMENT = 10001;
