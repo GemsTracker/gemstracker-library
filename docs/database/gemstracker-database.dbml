@@ -1,0 +1,791 @@
+Project GemsTracker {
+  database_type: 'MySQL'
+  Note: 'An overview of the GemsTracker Respondent and Track tables'
+}
+
+Ref: gems__tokens.gto_id_token < gemsdata__responses.gdr_id_token
+Ref: gems__survey_questions.gsq_name < gemsdata__responses.gdr_answer_id
+
+TableGroup APPOINTMENTS {
+    gems__appointments
+    gems__episodes_of_care
+    gems__agenda_activities
+    gems__agenda_diagnoses
+    gems__agenda_procedures
+    gems__agenda_staff
+    gems__locations
+}
+
+TableGroup RESPONDENTS {
+    gems__consents
+    gems__respondents
+    gems__respondent_relations
+    gems__respondent2org
+}
+
+TableGroup RESPONDENT_TRACKS {
+    gems__respondent2track
+    gems__respondent2track2appointment
+    gems__respondent2track2field
+    gems__tokens
+    gemsdata__responses
+}
+
+TableGroup SURVEYS { 
+    gems__sources
+    gems__surveys
+    gems__survey_questions
+    gems__survey_question_options    
+}
+
+TableGroup TRACKS_DEFINITION { 
+    gems__tracks
+    gems__track_appointments
+    gems__appointment_filters
+    gems__track_fields
+    gems__conditions
+    gems__rounds    
+}
+
+TABLE gems__agenda_activities {
+        gaa_id_activity     bigint [not null, increment]
+        gaa_name            varchar
+
+        gaa_id_organization bigint [null, ref: > gems__organizations.gor_id_organization]
+
+        gaa_name_for_resp   varchar
+        gaa_match_to        varchar
+        gaa_code            varchar
+
+        indexes {
+                (gaa_id_activity) [pk]
+                (gaa_name)
+        }
+} // 
+
+
+TABLE gems__agenda_diagnoses {
+        gad_diagnosis_code  varchar [not null]
+        gad_description     varchar [null, default: null]
+
+        gad_coding_method   varchar [not null, default: 'DBC']
+        gad_code            varchar [null, default: null]
+
+        gad_source          varchar [not null, default: 'manual']
+        gad_id_in_source    varchar [null, default: null]
+
+        indexes {
+                (gad_diagnosis_code) [pk]
+                (gad_description)
+        }
+} // 
+
+
+TABLE gems__agenda_procedures {
+        gapr_id_procedure    bigint [not null, increment]
+        gapr_name            varchar
+
+        gapr_id_organization bigint [null, ref: > gems__organizations.gor_id_organization]
+
+        gapr_name_for_resp   varchar
+        gapr_match_to        varchar
+        gapr_code            varchar
+
+        indexes {
+                (gapr_id_procedure) [pk]
+                (gapr_name)
+        }
+} // 
+
+
+TABLE gems__agenda_staff {
+        gas_id_staff        bigint [not null, increment]
+        gas_name            varchar
+        gas_function        varchar
+
+        gas_id_organization bigint [not null, ref: > gems__organizations.gor_id_organization]
+        gas_id_user         bigint [null, ref: > gems__staff.gsf_id_user]
+
+        gas_match_to        varchar
+
+        gas_source          varchar [not null, default: 'manual']
+        gas_id_in_source    varchar [null, default: null]
+
+        indexes {
+                (gas_id_staff) [pk]
+                (gas_name)
+        }
+} // 
+
+
+TABLE gems__appointments {
+        gap_id_appointment      bigint [not null, increment]
+        gap_id_user             bigint [not null, ref: > gems__respondents.grs_id_user]
+        gap_id_organization     bigint [not null, ref: > gems__organizations.gor_id_organization]
+
+        gap_id_episode          bigint [null, ref: > gems__episodes_of_care.gec_episode_of_care_id]
+
+        gap_source              varchar [not null, default: 'manual']
+        gap_id_in_source        varchar [null, default: null]
+
+        gap_code                varchar [not null, default: 'A']
+
+        gap_status              varchar [not null, default: 'AC']
+
+        gap_admission_time      datetime [not null]
+        gap_discharge_time      datetime [null]
+
+        gap_id_attended_by      bigint [null, ref: > gems__agenda_staff.gas_id_staff]
+        gap_id_referred_by      bigint [null, ref: > gems__agenda_staff.gas_id_staff]
+        gap_id_activity         bigint [null, ref: > gems__agenda_activities.gaa_id_activity]
+        gap_id_procedure        bigint [null, ref: > gems__agenda_procedures.gapr_id_procedure]
+        gap_id_location         bigint [null, ref: > gems__locations.glo_id_location]
+        gap_diagnosis_code      varchar [null, ref: > gems__agenda_diagnoses.gad_diagnosis_code]
+
+        gap_subject             varchar [null, default: null]
+        gap_comment             TEXT [null, default: null]
+
+        indexes {
+                (gap_id_appointment) [pk]
+                (gap_id_in_source, gap_id_organization, gap_source) [unique]
+                (gap_id_user, gap_id_organization)
+                (gap_admission_time)
+                (gap_code)
+                (gap_status)
+                (gap_id_attended_by)
+                (gap_id_referred_by)
+                (gap_id_activity)
+                (gap_id_procedure)
+                (gap_id_location)
+        }
+} // 
+
+TABLE gems__appointment_filters {
+        gaf_id                  bigint [not null, increment]
+        gaf_class               varchar [not null]
+
+        gaf_manual_name         varchar [null]
+        gaf_calc_name           varchar [not null]
+
+        gaf_id_order            int [not null, default: 10]
+        gaf_filter_text1        varchar [null]
+        gaf_filter_text2        varchar [null]
+        gaf_filter_text3        varchar [null]
+        gaf_filter_text4        varchar [null]
+
+        indexes {
+                (gaf_id) [pk]
+        }
+} // 
+
+TABLE gems__conditions {
+        gcon_id                  bigint [not null, increment]
+
+        gcon_type                varchar [not null]
+        gcon_class               varchar [not null]
+        gcon_name                varchar [not null]
+        gcon_condition_text1        varchar [null]
+        gcon_condition_text2        varchar [null]
+        gcon_condition_text3        varchar [null]
+        gcon_condition_text4        varchar [null]
+
+        indexes {
+                (gcon_id) [pk]
+        }
+} // 
+
+
+TABLE gems__consents {
+      gco_description varchar [not null]
+      gco_order smallint [not null, default: 10]
+      gco_code varchar [not null, default: 'do, not use']
+
+      indexes {
+            (gco_description) [pk]
+      }
+} //
+
+TABLE gems__episodes_of_care {
+        gec_episode_of_care_id      bigint [not null, increment]
+        gec_id_user                 bigint [not null, ref: > gems__respondents.grs_id_user]
+        gec_id_organization         bigint [not null, ref: > gems__organizations.gor_id_organization]
+
+        gec_source                  varchar [not null, default: 'manual']
+        gec_id_in_source            varchar [null, default: null]
+
+        gec_status                  varchar [not null, default: 'A']
+
+        gec_startdate               date [not null]
+        gec_enddate                 date [null]
+
+        gec_id_attended_by          bigint [null, ref: > gems__agenda_staff.gas_id_staff]
+
+        gec_subject                 varchar [null, default: null]
+        gec_comment                 text [null, default: null]
+
+        gec_diagnosis               varchar [null, default: null]
+        gec_diagnosis_data          text [null, default: null]
+        gec_extra_data              text [null, default: null]
+
+        indexes {
+                (gec_episode_of_care_id) [pk]
+        }
+} // 
+
+
+TABLE gems__groups {
+        ggp_id_group              bigint [not null, increment]
+        ggp_name                  varchar [not null]
+        ggp_description           varchar [not null]
+
+        ggp_role                  varchar [not null, default: 'respondent']
+
+        ggp_may_set_groups        varchar [null, default: null]
+        ggp_default_group         bigint [null]
+        ggp_allowed_ip_ranges     text [null]
+        ggp_no_2factor_ip_ranges  text [null]
+        ggp_2factor_set           tinyint [not null, default: 50]
+        ggp_2factor_not_set       tinyint [not null, default: 0]
+
+        ggp_respondent_browse     varchar [null, default: null]
+        ggp_respondent_edit       varchar [null, default: null]
+        ggp_respondent_show       varchar [null, default: null]
+
+        ggp_mask_settings         text [null, default: null]
+
+        indexes {
+                (ggp_id_group) [pk]
+        }
+} //
+
+TABLE gems__locations {
+        glo_id_location     bigint [not null, increment]
+        glo_name            varchar
+        glo_organizations   varchar
+
+        glo_match_to        varchar
+        glo_code            varchar
+
+        glo_url             varchar
+        glo_url_route       varchar
+
+        glo_address_1       varchar
+        glo_address_2       varchar
+        glo_zipcode         varchar
+        glo_city            varchar
+        glo_iso_country     char [not null, default: 'NL']
+        glo_phone_1         varchar
+
+        indexes {
+                (glo_id_location) [pk]
+                (glo_name)
+                (glo_match_to)
+        }
+} // 
+
+
+TABLE gems__mail_codes {
+        gmc_id                      tinyint [not null]
+        gmc_mail_to_target          varchar [not null]
+        gmc_mail_cause_target       varchar [not null]
+
+        gmc_code                    varchar [null]
+
+        indexes {
+                (gmc_id) [pk]
+        }
+} //
+
+TABLE gems__organizations {
+        gor_id_organization         bigint [not null, increment]
+
+        gor_name                    varchar [not null]
+        gor_code                    varchar [null]
+        gor_user_class              varchar [not null, default: 'StaffUser']
+        gor_location                varchar [null]
+        gor_url                     varchar [null]
+
+        gor_task                    varchar [null]
+
+        gor_provider_id             varchar [null]
+        gor_accessible_by           text [null]
+
+        gor_contact_name            varchar [null]
+        gor_contact_email           varchar [null]
+        gor_contact_sms_from        varchar [null]
+        gor_welcome                 text [null]
+        gor_signature               text [null]
+
+        gor_respondent_edit         varchar [null, default: null]
+        gor_respondent_show         varchar [null, default: null]
+        gor_respondent_subscribe    varchar [default: '']
+        gor_respondent_unsubscribe  varchar [default: '']
+        gor_token_ask               varchar [null, default: null]
+
+        gor_style                   varchar [not null, default: 'gems']
+        gor_resp_change_event       varchar
+        gor_iso_lang                char [not null, default: 'en']
+        gor_respondent_group        bigint [null, ref: > gems__groups.ggp_id_group]
+        gor_create_account_template bigint [null]
+        gor_reset_pass_template     bigint [null]
+        gor_allowed_ip_ranges       text [null]
+
+        indexes {
+                (gor_id_organization) [pk]
+                (gor_code)
+        }
+} //
+
+TABLE gems__reception_codes {
+      grc_id_reception_code varchar [not null]
+      grc_description       varchar [not null]
+
+      grc_for_surveys       tinyint [not null, default: 0]
+      grc_redo_survey       tinyint [not null, default: 0]
+
+      indexes {
+            (grc_id_reception_code) [pk]
+      }
+} //
+
+TABLE gems__respondent2org {
+        gr2o_patient_nr         varchar [not null]
+        gr2o_id_organization    bigint [not null, ref: > gems__organizations.gor_id_organization]
+
+        gr2o_id_user            bigint [not null, ref: > gems__respondents.grs_id_user]
+        gr2o_email              varchar [null]
+        gr2o_mailable           tinyint [not null, default: 100, ref: > gems__mail_codes.gmc_id]
+        gr2o_comments           text [null]
+
+        gr2o_consent            varchar [not null, default: 'Unknown', ref: > gems__consents.gco_description]
+        gr2o_reception_code     varchar [default: 'OK', not null, ref: > gems__reception_codes.grc_id_reception_code]
+
+        gr2o_opened             timestamp [not null, default: `current_timestamp`]
+        gr2o_opened_by          bigint [not null]
+
+        indexes {
+                (gr2o_patient_nr, gr2o_id_organization) [pk]
+                (gr2o_id_user, gr2o_id_organization) [unique]
+                (gr2o_id_organization)
+                (gr2o_email)
+                (gr2o_opened)
+                (gr2o_reception_code)
+                (gr2o_opened_by)
+                (gr2o_consent)
+        }
+} // 
+
+
+TABLE gems__respondent2track {
+        gr2t_id_respondent_track    bigint [not null, increment]
+
+        gr2t_id_user                bigint [not null, ref: > gems__respondents.grs_id_user]
+        gr2t_id_track               int [not null, ref: > gems__tracks.gtr_id_track]
+
+        gr2t_track_info             varchar
+        gr2t_start_date             datetime [null]
+        gr2t_end_date               datetime [null]
+
+        gr2t_id_organization        bigint [not null, ref: > gems__organizations.gor_id_organization]
+
+        gr2t_mailable               tinyint [not null, default: 100, ref: > gems__mail_codes.gmc_id]
+        gr2t_count                  int [not null, default: 0]
+        gr2t_completed              int [not null, default: 0]
+
+        gr2t_reception_code         varchar [default: 'OK', not null, ref: > gems__reception_codes.grc_id_reception_code]
+        gr2t_comment                varchar [null]
+
+        indexes {
+                (gr2t_id_respondent_track) [pk]
+                (gr2t_id_track)
+                (gr2t_id_user)
+                (gr2t_start_date)
+                (gr2t_id_organization)
+        }
+} // 
+
+TABLE gems__respondent2track2appointment {
+        gr2t2a_id_respondent_track  bigint [not null, ref: > gems__respondent2track.gr2t_id_respondent_track]
+        gr2t2a_id_app_field         bigint [not null, ref: > gems__track_appointments.gtap_id_app_field]
+
+        gr2t2a_id_appointment       bigint [null, ref: > gems__appointments.gap_id_appointment]
+
+        indexes {
+                (gr2t2a_id_respondent_track, gr2t2a_id_app_field) [pk]
+                (gr2t2a_id_appointment)
+        }
+} // 
+
+
+TABLE gems__respondent2track2field {
+        gr2t2f_id_respondent_track  bigint [not null, ref: > gems__respondent2track.gr2t_id_respondent_track]
+        gr2t2f_id_field             bigint [not null, ref: > gems__track_fields.gtf_id_field]
+
+        gr2t2f_value                text [null]
+
+        indexes {
+                (gr2t2f_id_respondent_track, gr2t2f_id_field) [pk]
+        }
+} // 
+
+
+TABLE gems__respondents {
+        grs_id_user                bigint [not null, ref: > gems__user_ids.gui_id_user]
+
+        grs_ssn                    varchar [null, unique]
+
+        grs_iso_lang               char [not null, default: 'nl']
+        grs_first_name             varchar
+        grs_surname_prefix         varchar
+        grs_last_name              varchar
+        grs_gender                 char [not null, default: 'U']
+        grs_birthday               date
+
+        grs_address_1              varchar
+        grs_address_2              varchar
+        grs_zipcode                varchar
+        grs_city                   varchar
+        grs_iso_country            char [not null, default: 'NL']
+        grs_phone_1                varchar
+        grs_phone_2                varchar
+
+        indexes {
+                (grs_id_user) [pk]
+        }
+} // 
+
+
+TABLE gems__respondent_relations {
+        grr_id                      bigint [NOT NULL, increment]
+        grr_id_respondent           bigint [NOT NULL, ref: > gems__respondents.grs_id_user]
+        grr_type                    varchar
+        grr_id_staff                bigint [NULL, DEFAULT: NULL, ref: > gems__staff.gsf_id_user]
+        grr_email                   varchar [null]
+        grr_phone                   varchar [null]
+        grr_mailable                tinyint [not null, default: 100, ref: > gems__mail_codes.gmc_id]
+        grr_first_name              varchar
+        grr_last_name               varchar
+        grr_gender                  char [not null, default: 'U']
+        grr_birthdate               date [NULL, DEFAULT: NULL]
+        grr_comments                text [null]
+
+        indexes {
+                (grr_id) [pk]
+                (grr_id_respondent, grr_id_staff)
+        }
+} // 
+
+TABLE gems__rounds {
+        gro_id_round           bigint [not null, increment]
+
+        gro_id_track           bigint [not null, ref: > gems__tracks.gtr_id_track]
+        gro_id_order           int [not null, default: 10]
+
+        gro_id_survey          bigint [not null, ref: > gems__surveys.gsu_id_survey]
+        gro_id_relationfield   bigint [null, default: null]
+        gro_survey_name        varchar [not null]
+
+        gro_round_description  varchar [null]
+        gro_icon_file          varchar [null]
+        gro_changed_event      varchar [null]
+        gro_display_event      varchar [null]
+
+        gro_valid_after_id     bigint [null, ref: > gems__rounds.gro_id_round]
+        gro_valid_after_source varchar [not null, default: 'tok']
+        gro_valid_after_field  varchar [not null, default: 'gto_valid_from']
+        gro_valid_after_unit   char [not null, default: 'M']
+        gro_valid_after_length int [not null, default: 0]
+
+        gro_valid_for_id       bigint [null, ref: > gems__rounds.gro_id_round]
+        gro_valid_for_source   varchar [not null, default: 'nul']
+        gro_valid_for_field    varchar [null, default: null]
+        gro_valid_for_unit     char [not null, default: 'M']
+        gro_valid_for_length   int [not null, default: 0]
+
+        gro_condition          bigint [null, ref: > gems__conditions.gcon_id]
+        gro_organizations     varchar
+        gro_code               varchar [null, default: null]
+
+        indexes {
+                (gro_id_round) [pk]
+                (gro_id_track, gro_id_order)
+                (gro_id_order)
+                (gro_id_survey)
+        }
+} //
+
+TABLE gems__sources {
+        gso_id_source       int [NOT NULL, increment]
+        gso_source_name     varchar [NOT NULL]
+
+        gso_ls_url          varchar [NOT NULL]
+        gso_ls_class        varchar [NOT NULL, default: 'Gems_Source_LimeSurvey1m9Database']
+        gso_ls_adapter      varchar [default: NULL]
+        gso_ls_dbhost       varchar [default: NULL]
+        gso_ls_database     varchar [default: NULL]
+        gso_ls_dbport       mediumint [default: NULL]
+        gso_ls_table_prefix varchar [default: NULL]
+        gso_ls_username     varchar [default: NULL]
+        gso_ls_password     varchar [default: NULL]
+
+        gso_ls_charset      varchar [default: NULL]
+
+        gso_active          tinyint [NOT NULL, default: '1']
+
+        gso_status          varchar [default: NULL]
+        gso_last_synch      timestamp [NULL, default: NULL]
+
+        indexes {
+                (gso_id_source) [pk]
+                (gso_source_name) [unique]
+                (gso_ls_url) [unique]
+        }
+} //
+
+TABLE gems__staff {
+        gsf_id_user             bigint [not null, ref: > gems__user_ids.gui_id_user]
+
+        gsf_login               varchar [not null]
+        gsf_id_organization     bigint [not null, ref: > gems__organizations.gor_id_organization]
+
+        gsf_id_primary_group    bigint [ref: > gems__groups.ggp_id_group]
+        gsf_iso_lang            char [not null, default: 'en']
+
+        gsf_email               varchar
+
+        gsf_first_name          varchar
+        gsf_surname_prefix      varchar
+        gsf_last_name           varchar
+        gsf_gender              char [not null, default: 'U']
+        gsf_job_title           varchar
+        gsf_phone_1             varchar
+
+        indexes {
+                (gsf_id_user) [pk]
+                (gsf_login, gsf_id_organization) [unique]
+                (gsf_email)
+        }
+} // 
+
+
+TABLE gems__surveys {
+        gsu_id_survey               int [not null, increment]
+        gsu_survey_name             varchar [not null]
+        gsu_survey_description      varchar
+        gsu_external_description    varchar
+        gsu_survey_languages        varchar
+
+        gsu_surveyor_id             int
+
+        gsu_survey_pdf              varchar
+        gsu_beforeanswering_event   varchar
+        gsu_completed_event         varchar
+        gsu_display_event           varchar
+
+        gsu_id_source               int [not null, ref: > gems__sources.gso_id_source]
+        gsu_status                  varchar
+        gsu_survey_warnings         varchar
+
+        gsu_id_primary_group        bigint [null, ref: > gems__groups.ggp_id_group]
+        gsu_mail_code               tinyint [not null, default: 1, ref: > gems__mail_codes.gmc_id]
+        gsu_valid_for_unit          char [not null, default: 'M']
+        gsu_valid_for_length        int [not null, default: 6]
+        gsu_insert_organizations    varchar
+
+        gsu_result_field            varchar
+
+        gsu_agenda_result           varchar
+        gsu_duration                varchar
+
+        gsu_code                    varchar [null]
+        gsu_export_code             varchar [null]
+        gsu_hash                    CHAR [NULL, DEFAULT: NULL]
+
+        indexes {
+                (gsu_id_survey) [pk]
+                (gsu_code)
+                (gsu_id_primary_group)
+        }
+} // 
+
+
+TABLE gems__survey_questions {
+        gsq_id_survey       int [not null, ref: > gems__surveys.gsu_id_survey]
+        gsq_name            varchar [not null]
+
+        gsq_name_parent     varchar
+        gsq_order           int [not null, default: 10]
+        gsq_type            smallint [not null, default: 1]
+        gsq_class           varchar
+        gsq_group           varchar
+
+        gsq_label           text
+        gsq_description     text
+
+        indexes {
+                (gsq_id_survey, gsq_name) [pk]
+        }
+} // 
+
+TABLE gems__survey_question_options {
+        gsqo_id_survey      int [not null, ref: > gems__surveys.gsu_id_survey]
+        gsqo_name           varchar [not null]
+        gsqo_order          int [not null, default: 0]
+
+        gsqo_key            varchar
+        gsqo_label          varchar
+
+        indexes {
+                (gsqo_id_survey, gsqo_name, gsqo_order) [pk]
+        }
+} // 
+
+TABLE gems__tokens {
+        gto_id_token            varchar [not null]
+
+        gto_id_respondent_track bigint [not null, ref: > gems__respondent2track.gr2t_id_respondent_track]
+        gto_id_round            bigint [not null, ref: > gems__rounds.gro_id_round]
+        gto_id_respondent       bigint [not null, ref: > gems__respondents.grs_id_user]
+        gto_id_organization     bigint [not null, ref: > gems__organizations.gor_id_organization]
+        gto_id_track            bigint [not null, ref: > gems__tracks.gtr_id_track]
+        gto_id_survey           bigint [not null, ref: > gems__surveys.gsu_id_survey]
+        gto_round_order         int [not null, default: 10]
+        gto_icon_file           varchar [null]
+        gto_round_description   varchar [null]
+        gto_id_relationfield    bigint [null, default: null]
+        gto_id_relation         bigint [null, default: null]
+        gto_valid_from          datetime
+        gto_valid_until         datetime
+        gto_mail_sent_date      date
+        gto_mail_sent_num       int [not null, default: 0]
+
+        gto_start_time          datetime
+        gto_by                  bigint [NULL]
+
+        gto_completion_time     datetime
+        gto_duration_in_sec     bigint [NULL]
+        gto_result              varchar
+
+        gto_comment             text [null, default: null]
+        gto_reception_code      varchar [default: 'OK', not null, ref: > gems__reception_codes.grc_id_reception_code]
+
+        gto_return_url          varchar [null, default: null]
+
+        indexes {
+                (gto_id_token) [pk]
+                (gto_id_organization)
+                (gto_id_respondent)
+                (gto_id_survey)
+                (gto_id_track)
+                (gto_id_round)
+                (gto_reception_code)
+                (gto_id_respondent_track, gto_round_order)
+                (gto_valid_from, gto_valid_until)
+                (gto_completion_time)
+                (gto_by)
+                (gto_round_order)
+        }
+} // 
+
+
+TABLE gems__tracks {
+        gtr_id_track                int [not null, increment]
+        gtr_track_name              varchar [not null, unique]
+        gtr_external_description    varchar
+
+        gtr_track_info              varchar
+        gtr_code                    varchar [null]
+
+        gtr_date_start              date [not null]
+        gtr_date_until              date [null]
+        gtr_survey_rounds           int [not null, default: 0]
+
+        gtr_track_class             varchar [not null]
+        gtr_beforefieldupdate_event varchar
+        gtr_calculation_event       varchar
+        gtr_completed_event         varchar
+        gtr_fieldupdate_event       varchar
+        gtr_organizations           varchar
+
+        indexes {
+                (gtr_id_track) [pk]
+                (gtr_track_name)
+                (gtr_track_class)
+        }
+} // 
+
+
+TABLE gems__track_appointments {
+        gtap_id_app_field       bigint [not null, increment]
+        gtap_id_track           int [not null, ref: > gems__tracks.gtr_id_track]
+
+        gtap_id_order           int [not null, default: 10]
+
+        gtap_field_name         varchar [not null]
+        gtap_field_code         varchar [null]
+        gtap_field_description  varchar [null]
+
+        gtap_filter_id          bigint [null, ref: > gems__appointment_filters.gaf_id]
+        gtap_min_diff_length    int [not null, default: 1]
+        gtap_min_diff_unit      char [not null, default: 'D']
+        gtap_max_diff_length    int [not null, default: 0]
+        gtap_max_diff_unit      char [not null, default: 'D']
+        gtap_uniqueness         tinyint [not null, default: 0]
+
+        gtap_create_track       int [not null, default: 0]
+        gtap_create_wait_days   bigint [not null, default: 182]
+
+        indexes {
+                (gtap_id_app_field) [pk]
+                (gtap_id_track)
+                (gtap_id_order)
+        }
+} // 
+
+
+TABLE gems__track_fields {
+        gtf_id_field            bigint [not null, increment]
+        gtf_id_track            int [not null, ref: > gems__tracks.gtr_id_track]
+
+        gtf_id_order            int [not null, default: 10]
+
+        gtf_field_name          varchar [not null]
+        gtf_field_code          varchar [null]
+        gtf_field_description   varchar [null]
+
+        gtf_field_values        text [null]
+        gtf_field_default       varchar [null]
+        gtf_calculate_using     varchar
+
+        gtf_field_type          varchar [not null]
+
+        indexes {
+                (gtf_id_field) [pk]
+                (gtf_id_track)
+                (gtf_id_order)
+        }
+} // 
+
+
+TABLE gems__user_ids {
+        gui_id_user          bigint [not null]
+
+        indexes {
+                (gui_id_user) [pk]
+        }
+} // 
+
+TABLE gemsdata__responses {
+        gdr_id_response     bigint [NOT NULL, increment]
+        gdr_id_token        varchar [not null]
+        gdr_answer_id       varchar [not null]
+        gdr_answer_row      bigint [NOT NULL, default: 1]
+
+        gdr_response        text
+
+        indexes {
+                (gdr_id_response) [pk]
+                (gdr_id_token, gdr_answer_id, gdr_answer_row) [unique]
+        }
+} // 
+

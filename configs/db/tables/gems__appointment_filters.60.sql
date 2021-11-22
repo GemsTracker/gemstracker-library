@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__appointment_filters (
-        gaf_id                  bigint unsigned auto_increment not null,
+        gaf_id                  bigint unsigned not null auto_increment,
         gaf_class               varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
         gaf_manual_name         varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
