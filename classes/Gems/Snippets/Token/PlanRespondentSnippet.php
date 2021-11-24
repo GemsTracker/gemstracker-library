@@ -89,11 +89,11 @@ class PlanRespondentSnippet extends PlanTokenSnippet
             $td->class   = 'indentLeft';
             $td->colspan = 4;
             $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
-            $td = $bridge->addMultiSort('progress', array($trackButton));
+            $td = $bridge->addMultiSort('track_progress', array($trackButton));
             $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
         } else {
             $bridge->addSortable('grs_birthday');
-            $bridge->addMultiSort('progress', array($respondentButton));
+            $bridge->addMultiSort('track_progress', array($respondentButton));
         }
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
