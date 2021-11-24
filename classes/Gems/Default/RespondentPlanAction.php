@@ -55,8 +55,8 @@ class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenSearchActionA
         $model->set('grs_birthday', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM);
         $model->set('grs_city', 'label', $this->_('City'));
 
-        $model->addColumn("CONCAT(gr2t_completed, '" . $this->_(' of ') . "', gr2t_count)", 'progress');
-        $model->set('progress', 'label', $this->_('Progress'));
+        $model->addColumn("CONCAT(gr2t_completed, '" . $this->_(' of ') . "', gr2t_count)", 'track_progress');
+        $model->set('track_progress', 'label', $this->_('Progress'));
 
         return $model;
     }
