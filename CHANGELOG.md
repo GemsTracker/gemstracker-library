@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
   
 ### Fixed
 - Default view of MailLog does not show the time the mail was send (#667)
-- Do not show more than all patient numbers in the systemuser show screen (#675)
+- Do not show more than 2000 patient numbers in the systemuser show screen (#675)
 - Document the db (#16)
 - Export of By patient Overview always returns empty output (#683)
 - Print button in modal dialog shows empty page (#681)  
