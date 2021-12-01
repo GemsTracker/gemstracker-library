@@ -105,10 +105,40 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbs
     {
         $filter = parent::getSearchFilter($useRequest);
 
+        // The processing of these filters is complicated because
+        // 1 - we have a base filter set by the search snippet
+        // 2 - we may have additional filter constraints for the Selector snippet
+        //
+        // So we need to
+        // a) set the selector to it's own filter values 
+        // b) remove the selector filter from that filter to get the "real" filter
+        // c) filter the counts of the selector using that "real" filter
+        //   1) for this we create a sub select that can be used in both filters
+        //   2) add that filter to the selector
+        //   3) add that filter to the output
+        // d) add the filter of the clicked selector square to the filter output here
+        
+        $model    = $this->getModel();
         $selector = $this->getDateSelector();
-        $output = $selector->getFilter($this->request, $filter);
 
-        // \MUtil_Echo::track($filter, $output);
+        // a) set the selector to it's own filter values 
+        // b) remove the selector filter from that filter to get the "real" filter
+        $realFilter = $selector->processSelectorFilter($this->getRequest(), $filter);
+
+        // c) filter the counts of the selector using that "real" filter
+        //   1) for this we create a sub select that can be used in both filters
+        $subSelect = $model->getFilteredSelect($realFilter);
+
+        // c) filter the counts of the selector using that "real" filter
+        //   2) add that filter to the selector
+        $selector->setFilter(['gto_id_token' => $subSelect]);
+
+        // c) filter the counts of the selector using that "real" filter
+        //   3) add that filter to the output
+        $output['gto_id_token'] = $subSelect;
+
+        // d) add the filter of the clicked selector square to the filter output here
+        $output += $selector->getSelectorFilterPart();
 
         return $output;
     }

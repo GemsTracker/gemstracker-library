@@ -209,6 +209,19 @@ abstract class Gems_Default_TokenSearchActionAbstract extends \Gems_Controller_M
             $filter['grc_success'] = 1;
         }
 
+        if (isset($filter['forgroupid'])) {
+            $values = explode('|', $filter['forgroupid']);
+            if(count($values) > 1) {
+                $groupType = array_shift($values);
+                if ('g' == $groupType) {
+                    $filter['ggp_id_group'] = $values;
+                } elseif ('r' == $groupType) {
+                    $filter['gtf_id_field'] = $values;
+                }
+            }
+            unset($filter['forgroupid']);
+        }
+        
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
                 case 'hasnomail':
