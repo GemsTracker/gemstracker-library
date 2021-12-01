@@ -380,26 +380,29 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     }
 
     /**
+     * Returns the base model.
+     *
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     */
+    public function getModel()
+    {
+        if (! $this->_model) {
+            $this->_model = $this->createModel();
+        }
+
+        return $this->_model;
+    }
+
+    /**
      * Prcesses the filter for the date selector and return the filter to use instead
      *
-     * @param \Zend_Controller_Request_Abstract $request
-     * @param array $filter
      * @param string $dateField
      * @return array The new complete filter to use
      */
-    public function getFilter(\Zend_Controller_Request_Abstract $request, array $filter = array(), $dateField = null)
+    public function getSelectorFilterPart($dateField = null)
     {
-        $this->_actionKey = $request->getActionKey();
-
-        // \MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ .' 1');
-        $filter = $this->processFilter($request, $filter);
-
-        if ($filter) {
-            $model = $this->getModel();
-            $model->addFilter($filter);
-        }
-        // \MUtil_Echo::r($filter, __CLASS__ . '->' . __FUNCTION__ . ' 2');
-        $newfilter = $filter;
+        // \MUtil_Echo::track($filter);
+        $newfilter = [];
 
         if ($this->dateCurrentStart && $this->dateCurrentEnd) {
             if (null === $dateField) {
@@ -420,39 +423,6 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         }
 
         return $newfilter;
-    }
-
-    /*
-    public function getSort()
-    {
-        $results = array();
-
-        if ($this->dateGroup) {
-            $fields = $this->getFields();
-            if (isset($fields[$this->dateGroup])) {
-                if ($sort = $fields[$this->dateGroup]->getOrderBy()) {
-                    $results[] = $filter;
-                }
-            }
-        }
-        // \MUtil_Echo::r($results);
-        // \MUtil_Model::$verbose = true;
-
-        return $results;
-    } */
-
-    /**
-     * Returns the base model.
-     *
-     * @return \MUtil_Model_Transform_RequiredRowsTransformer
-     */
-    public function getModel()
-    {
-        if (! $this->_model) {
-            $this->_model = $this->createModel();
-        }
-
-        return $this->_model;
     }
 
     public function getTable($baseurl)
@@ -478,19 +448,30 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     abstract protected function loadFields();
 
     /**
-     * Processing of filter, can be overriden.
+     * Stub function to allow extension of standard one table select.
+     *
+     * @param \Zend_Db_Select $select
+     */
+    protected function processSelect(\Zend_Db_Select $select)
+    {  }
+
+    /**
+     * Processing of filter, sets the selected position in the overview table.
+     * Can be overriden.
      *
      * @param \Zend_Controller_Request_Abstract $request
      * @param array $filter
-     * @return array
+     * @return array The filter minus the Selector fields
      */
-    protected function processFilter(\Zend_Controller_Request_Abstract $request, array $filter)
+    public function processSelectorFilter(\Zend_Controller_Request_Abstract $request, array $filter)
     {
+        $this->_actionKey = $request->getActionKey();
+
         $defaults = $this->getDefaultSearchData();
 
-        $this->dateFactor = $this->processFilterName(self::DATE_FACTOR, $request, $filter, $defaults);
-        $this->dateGroup  = $this->processFilterName(self::DATE_GROUP, $request, $filter, $defaults);
-        $this->dateType   = $this->processFilterName(self::DATE_TYPE, $request, $filter, $defaults);
+        $this->dateFactor = $this->processSelectorFilterName(self::DATE_FACTOR, $request, $filter, $defaults);
+        $this->dateGroup  = $this->processSelectorFilterName(self::DATE_GROUP, $request, $filter, $defaults);
+        $this->dateType   = $this->processSelectorFilterName(self::DATE_TYPE, $request, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
 
@@ -499,7 +480,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         return $filter;
     }
 
-    protected function processFilterName($name, \Zend_Controller_Request_Abstract $request, array $filter, array $defaults = null)
+    protected function processSelectorFilterName($name, \Zend_Controller_Request_Abstract $request, array $filter, array $defaults = null)
     {
         if (isset($filter[$name])) {
             return $filter[$name];
@@ -515,14 +496,16 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
             return $defaults;
         }
     }
-
+    
     /**
-     * Stub function to allow extension of standard one table select.
-     *
-     * @param \Zend_Db_Select $select
+     * Set the filter for the whole table
+     * @param array $filter
      */
-    protected function processSelect(\Zend_Db_Select $select)
-    {  }
+    public function setFilter(array $filter)
+    {
+        $model = $this->getModel();
+        $model->setFilter($filter);
+    }
 
     protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {

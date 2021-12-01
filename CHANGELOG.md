@@ -9,12 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Reset sent mail - using checkbox in Token edit screen (#674)
   
 ### Fixed
+- By period Token overview totals do not match (#685)
 - Default view of MailLog does not show the time the mail was send (#667)
 - Do not show more than 2000 patient numbers in the systemuser show screen (#675)
 - Document the db (#16)
 - Export of By patient Overview always returns empty output (#683)
 - Print button in modal dialog shows empty page (#681)  
 - The answer popup during an embedded login has inconsistent output (#679)
+- Token overviews fail on relations with a slash in the name (#684)
 
 ### Programmability
 - Remember in the session that the user is embedded (#680)

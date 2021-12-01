@@ -56,7 +56,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @param array $data
      * @param string $elementId
      */
-    protected function addFillerSelect(array &$elements, $data, $elementId = 'filler')
+    protected function addFillerIdSelect(array &$elements, $data, $elementId = 'filler')
     {
         if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
             $trackId = (int) $data['gto_id_track'];
@@ -64,6 +64,51 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
             $trackId = -1;
         }
                        
+        $sqlGroups = "SELECT CONCAT('g|', GROUP_CONCAT(DISTINCT ggp_id_group SEPARATOR '|')) as forgroupid, ggp_name as label
+                        FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                            INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                            INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                        WHERE ggp_group_active = 1 AND
+                            gro_active=1 AND
+                            gtr_active=1";
+        if ($trackId > -1) {
+            $sqlGroups .= $this->db->quoteInto(" AND gtr_id_track = ?", $trackId);
+        }
+        $sqlGroups .= " GROUP BY ggp_name";
+        
+        $sqlRelations = "SELECT CONCAT('r|', GROUP_CONCAT(DISTINCT gtf_id_field SEPARATOR '|')) as forgroupid, gtf_field_name as label
+                        FROM gems__track_fields
+                        WHERE gtf_field_type = 'relation'";
+        if ($trackId > -1) {
+            $sqlRelations .= $this->db->quoteInto(" AND gtf_id_track = ?", $trackId);
+        }
+        $sqlRelations .= " GROUP BY gtf_field_name";
+        
+        $sql = "SELECT forgroupid, label FROM ("
+                . $sqlGroups .
+                " UNION ALL " .
+                $sqlRelations . "
+                ) AS tmpTable
+                ORDER BY label";
+
+        $elements[$elementId] = $this->_createSelectElement($elementId, $sql, $this->_('(all fillers)'));
+    }
+
+    /**
+     * Add filler select to the elements array
+     *
+     * @param array $elements
+     * @param array $data
+     * @param string $elementId
+     */
+    protected function addFillerSelect(array &$elements, $data, $elementId = 'filler')
+    {
+        if (isset($data['gto_id_track']) && !empty($data['gto_id_track'])) {
+            $trackId = (int) $data['gto_id_track'];
+        } else {
+            $trackId = -1;
+        }
+
         $sqlGroups = "SELECT DISTINCT ggp_name
                         FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                             INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
@@ -74,18 +119,18 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         if ($trackId > -1) {
             $sqlGroups .= $this->db->quoteInto(" AND gtr_id_track = ?", $trackId);
         }
-        
+
         $sqlRelations = "SELECT DISTINCT gtf_field_name as ggp_name
                         FROM gems__track_fields
                         WHERE gtf_field_type = 'relation'";
         if ($trackId > -1) {
             $sqlRelations .= $this->db->quoteInto(" AND gtf_id_track = ?", $trackId);
         }
-        
+
         $sql = "SELECT ggp_name, ggp_name as label FROM ("
-                . $sqlGroups .
-                " UNION ALL " .
-                $sqlRelations . "
+            . $sqlGroups .
+            " UNION ALL " .
+            $sqlRelations . "
                 ) AS tmpTable
                 ORDER BY ggp_name";
 
@@ -181,7 +226,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                 $this->_('(all fillers)')
                 );*/
         
-        $this->addFillerSelect($elements, $data, 'forgroup');
+        $this->addFillerIdSelect($elements, $data, 'forgroupid');
 
         $elements['gr2t_created_by'] = $this->_createSelectElement(
                 'gr2t_created_by',
