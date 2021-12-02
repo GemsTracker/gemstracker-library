@@ -23,7 +23,7 @@ use Gems\Translate\DbTranslateUtilTrait;
 abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_TargetAbstract
 {
     use DbTranslateUtilTrait;
-    
+
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -68,10 +68,10 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     /**
      * Set in child classes
      *
-     * @var string Name of table used in gtrs_table 
+     * @var string Name of table used in gtrs_table
      */
     protected $translationTable;
-    
+
     /**
      * Creates the object.
      *
@@ -123,7 +123,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     {
         return (boolean) $this->_id;
     }
-    
+
     /**
      * Changes a value and signals the cache.
      *
@@ -153,10 +153,10 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     public function checkRegistryRequestsAnswers()
     {
         $this->initDbTranslations();
-        
+
         if ($this->cache && $this->_hasCacheId()) {
             $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
-            $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $this->language); 
+            $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $this->language);
             $this->_data = $this->cache->load($cacheLang);
         } else {
             $cacheId = false;
@@ -168,8 +168,8 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
             if ($cacheId) {
                 $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
             }
-            
-            if ((! $this->dbTranslationOff) && $this->translationTable) {
+
+            if ((! $this->dbTranslationOff) && $this->translationTable && is_array($this->_data)) {
                 $this->_data = $this->translateTable($this->translationTable, $this->_id, $this->_data);
             }
 
