@@ -491,7 +491,7 @@ class CommJobsUtil extends UtilAbstract
                 );
 
         return $this->db->fetchPairs($sql);
-        return $this->_getSelectPairsCached(__FUNCTION__, $sql);
+        // return $this->_getSelectPairsCached(__FUNCTION__, $sql);
     }
 
     /**

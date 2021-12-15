@@ -50,20 +50,42 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
             $this->assertEquals($fallback, $messenger->getFallbackEmail($jobData, $mailer));
         }
     }
-    
+
     /**
      * @param array $multipleTokensData
      * @param int   $respondentId
      * @param int   $roundOrder
+     * @param int   , $relationId Optional
      * @return \Gems_Tracker_Token|null
      */
-    protected function assertTokenExists(array $multipleTokensData, $respondentId, $roundOrder)
+    protected function assertTokenExists(array $multipleTokensData, $respondentId, $roundOrder, $relationId = null)
     {
-        $token = $this->findToken($multipleTokensData, $respondentId, $roundOrder);
+        $token = $this->findToken($multipleTokensData, $respondentId, $roundOrder, $relationId);
         
-        $this->assertNotEmpty($token, "A token for respondent $respondentId, round $roundOrder is not in the set.");
+        if ($relationId) {
+            $this->assertNotEmpty($token, "A token for respondent $respondentId, round $roundOrder, $relationId is nott in the set.");
+        } else {
+            $this->assertNotEmpty($token, "A token for respondent $respondentId, round $roundOrder is not in the set.");
+        }
         
         return $token;
+    }
+
+    /**
+     * @param       $tokenId
+     * @param array $mailTestData
+     */
+    protected function assertTokenMailFields($tokenId, array $mailTestData)
+    {
+        $mailLoader = $this->loader->getMailLoader();
+        $mailer     = $mailLoader->getMailer('token', $tokenId);
+
+        $mailFields = $mailer->getMailFields(false);
+        // print_r($mailFields);
+        foreach ($mailTestData as $name => $value) {
+            $this->assertArrayHasKey($name, $mailFields);
+            $this->assertEquals($value, $mailFields[$name], "Failed asserting that the value of mailfield $name is correct.");
+        }
     }
 
     /**
@@ -116,16 +138,19 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @param array $multipleTokensData
      * @param int   $respondentId
      * @param int   $roundOrder
+     * @param int   $relationId Optional
      * @return \Gems_Tracker_Token|null
      * @throws \Gems_Exception
      */
-    protected function findToken(array $multipleTokensData, $respondentId, $roundOrder)
+    protected function findToken(array $multipleTokensData, $respondentId, $roundOrder, $relationId = null)
     {
         foreach ($multipleTokensData as $tokenData) {
             $token = $this->tracker->getToken($tokenData['gto_id_token']);
             // echo $token->getRespondentId() . '--'  . $token->getRoundOrder() . "\n";
             if ($token->exists && ($token->getRespondentId() == $respondentId) && ($token->getRoundOrder() == $roundOrder)) {
-                return $token;
+                if ((! $relationId) || ($relationId == $token->getRelationId())) {
+                    return $token;
+                }
             }
         }
 
@@ -302,6 +327,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
     public function testRespondentAllOnlyRelationsJob()
     {
         $this->createRespondentTrack(10, 70, 1, 1, 10);
+        $this->createRespondentTrack(10, 70, 1, 1, 20);
         $this->createRespondentTrack(20, 70, 1, 1);
         $this->createRespondentTrack(30, 71, 1, 1, 30);
 
@@ -310,14 +336,59 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
 
         // print_r($this->db->fetchAll("SELECT * FROM gems__tokens"));
 
-        $this->assertCount(2, $multipleTokensData, 'We expected 2 tokens only for relations.');
+        $this->assertCount(3, $multipleTokensData, 'We expected 2 tokens only for relations.');
 
         // print_r($multipleTokensData);
-        $token10 = $this->assertTokenExists($multipleTokensData, 10, 30);
+        $token10 = $this->assertTokenExists($multipleTokensData, 10, 30, 10);
+        $token12 = $this->assertTokenExists($multipleTokensData, 10, 30, 20);
         $this->assertTokenNotExists($multipleTokensData, 20, 30);
         $token30 = $this->assertTokenExists($multipleTokensData, 30, 30);
         
+        $this->assertTokenMailFields($token10->getTokenId(), [
+            'dear' => 'Dear mr. Walker',
+            'name' => 'Johnny Walker',
+            'last_name' => 'Walker',
+            'full_name' => 'Mr. Walker',
+            'greeting' => 'mr. Walker',
+            'relation_about' => 'Test With relation',
+            'relation_about_first_name' => 'Test',
+            'relation_about_last_name' => 'With relation',
+            'relation_about_full_name' => 'Mr. Test With relation',
+            'relation_about_dear' => 'Dear mr. With relation',
+            'relation_about_greeting' => 'mr. With relation',
+            'relation_field_name' => 'relation',
+            ]);
+        $this->assertTokenMailFields($token12->getTokenId(), [
+            'dear' => 'Dear mrs. Walker',
+            'name' => 'Janine Walker',
+            'last_name' => 'Walker',
+            'full_name' => 'Mrs. Walker',
+            'greeting' => 'mrs. Walker',
+            'relation_about' => 'Test With relation',
+            'relation_about_first_name' => 'Test',
+            'relation_about_last_name' => 'With relation',
+            'relation_about_full_name' => 'Mr. Test With relation',
+            'relation_about_dear' => 'Dear mr. With relation',
+            'relation_about_greeting' => 'mr. With relation',
+            'relation_field_name' => 'relation',
+        ]);
+        $this->assertTokenMailFields($token30->getTokenId(), [
+            'dear' => 'Beste mevrouw Walker',
+            'name' => 'Janet Walker',
+            'last_name' => 'Walker',
+            'full_name' => 'Mevrouw Walker',
+            'greeting' => 'mevrouw Walker',
+            'relation_about' => 'Other org with Relation',
+            'relation_about_first_name' => 'Other org',
+            'relation_about_last_name' => 'with Relation',
+            'relation_about_full_name' => 'De heer/Mevrouw Other org with Relation',
+            'relation_about_dear' => 'Beste heer/mevrouw with Relation',
+            'relation_about_greeting' => 'heer/mevrouw with Relation',
+            'relation_field_name' => 'relation',
+        ]);
+        
         $this->assertTokenAddresses($jobData, $token10, 'test1@org.com', 'Test one', 'johnny@who.is', 'test1@org.com');
+        $this->assertTokenAddresses($jobData, $token12, 'test1@org.com', 'Test one', 'janine@who.is', 'test1@org.com');
         $this->assertTokenAddresses($jobData, $token30, 'test2@org.com', 'Test two', 'janet@who.is', 'test2@org.com');
     }
 
@@ -340,6 +411,49 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
         $token10 = $this->assertTokenExists($multipleTokensData, 10, 20);
         $token20 = $this->assertTokenExists($multipleTokensData, 20, 20);
         $token30 = $this->assertTokenExists($multipleTokensData, 30, 20);
+
+        $this->assertTokenMailFields($token10->getTokenId(), [
+            'dear' => 'Dear mr. With relation',
+            'name' => 'Test With relation',
+            'last_name' => 'With relation',
+            'full_name' => 'Mr. Test With relation',
+            'greeting' => 'mr. With relation',
+            'relation_about' => 'yourself',
+            'relation_about_first_name' => '',
+            'relation_about_last_name' => '',
+            'relation_about_full_name' => '',
+            'relation_about_dear' => '',
+            'relation_about_greeting' => '',
+            'relation_field_name' => '',
+        ]);
+        $this->assertTokenMailFields($token20->getTokenId(), [
+            'dear' => 'Dear mrs. No relation',
+            'name' => 'Test No relation',
+            'last_name' => 'No relation',
+            'full_name' => 'Mrs. Test No relation',
+            'greeting' => 'mrs. No relation',
+            'relation_about' => 'yourself',
+            'relation_about_first_name' => '',
+            'relation_about_last_name' => '',
+            'relation_about_full_name' => '',
+            'relation_about_dear' => '',
+            'relation_about_greeting' => '',
+            'relation_field_name' => '',
+        ]);
+        $this->assertTokenMailFields($token30->getTokenId(), [
+            'dear' => 'Beste heer/mevrouw with Relation',
+            'name' => 'Other org with Relation',
+            'last_name' => 'with Relation',
+            'full_name' => 'De heer/Mevrouw Other org with Relation',
+            'greeting' => 'heer/mevrouw with Relation',
+            'relation_about' => 'uzelf',
+            'relation_about_first_name' => '',
+            'relation_about_last_name' => '',
+            'relation_about_full_name' => '',
+            'relation_about_dear' => '',
+            'relation_about_greeting' => '',
+            'relation_field_name' => '',
+        ]);
         
         $this->assertTokenAddresses($jobData, $token10, 'test1@org.com', 'Test one', 'a123@test.nl', 'test1@org.com');
         $this->assertTokenAddresses($jobData, $token20, 'test1@org.com', 'Test one', 'b123@test.nl', 'test1@org.com');

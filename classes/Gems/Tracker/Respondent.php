@@ -250,13 +250,14 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get the propper Dear mr./mrs/ greeting of respondent
+     * Get the proper Dear mr./mrs/ greeting of respondent
+     * 
      * @return string
      */
     public function getDearGreeting()
     {
 
-        $genderDears = $this->util->getTranslated()->getGenderDear();
+        $genderDears = $this->util->getTranslated()->getGenderDear($this->getLanguage());
 
         $gender = $this->getGender();
         if (isset($genderDears[$gender])) {
@@ -294,7 +295,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getFullName()
     {
 
-        $genderGreetings = $this->util->getTranslated()->getGenderHello();
+        $genderGreetings = $this->util->getTranslated()->getGenderHello($this->getLanguage());
 
         $greeting = isset($genderGreetings[$this->getGender()]) ? $genderGreetings[$this->getGender()] : '';
 
@@ -317,7 +318,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     public function getGreeting()
     {
 
-        $genderGreetings = $this->util->getTranslated()->getGenderGreeting();
+        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
 
         $gender = $this->getGender();
         if (isset($genderGreetings[$gender])) {
@@ -335,7 +336,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      */
     public function getGreetingNL()
     {
-        $genderGreetings = $this->util->getTranslated()->getGenderGreeting();
+        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
 
         $greeting = $genderGreetings[$this->_gemsData['grs_gender']];
 

@@ -48,6 +48,11 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
      */
     protected $loader;
 
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     public function __construct($model, $data) 
     {
@@ -121,6 +126,25 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
         return array_key_exists('grr_birthdate', $this->_data) ? $this->_data['grr_birthdate'] : null;
     }
 
+    /**
+     * Get the proper Dear mr./mrs/ greeting of respondent
+     * 
+     * @return string
+     */
+    public function getDearGreeting($language)
+    {
+        $genderDears = $this->util->getTranslated()->getGenderDear($language);
+
+        $gender = $this->getGender();
+        if (isset($genderDears[$gender])) {
+            $greeting = $genderDears[$gender] . ' ';
+        } else {
+            $greeting = '';
+        }
+
+        return $greeting . $this->getLastName();
+    }
+
     public function getEmail()
     {
         return $this->_data['grr_email'];
@@ -148,7 +172,7 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
 
     public function getGreeting($language)
     {
-        $genderGreetings = $this->loader->getUtil()->getTranslated()->getGenderGreeting($language);
+        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($language);
         $greeting = $genderGreetings[$this->getGender()] . ' ' . ucfirst($this->getLastName());
 
         return $greeting;
@@ -156,7 +180,7 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
 
     public function getHello($language)
     {
-        $genderHello = $this->loader->getUtil()->getTranslated()->getGenderHello($language);
+        $genderHello = $this->util->getTranslated()->getGenderHello($language);
         $hello = $genderHello[$this->getGender()] . ' ' . ucfirst($this->getLastName());
 
         return $hello;

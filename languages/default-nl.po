@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: ISO-8859-1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SearchPath-0: classes\n"
 "X-Poedit-SearchPath-1: languages\n"
 "X-Poedit-SearchPath-2: views\n"
@@ -12497,7 +12497,7 @@ msgstr "Beste meneer"
 
 #: classes/Gems/Util/Translated.php:434
 msgid "Dear mrs."
-msgstr "Beste mevrouw %s"
+msgstr "Beste mevrouw"
 
 #: classes/Gems/Util/Translated.php:434
 msgid "Dear mr./mrs."
