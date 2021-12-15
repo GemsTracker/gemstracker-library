@@ -1125,7 +1125,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Get the relation object if any
      *
-     * @return Gems_Model_RespondentRelationInstance
+     * @return \Gems_Model_RespondentRelationInstance
      */
     public function getRelation()
     {

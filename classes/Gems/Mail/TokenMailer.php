@@ -234,7 +234,9 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     public function tokenMailFields()
     {
         if ($this->token) {
-            $survey = $this->token->getSurvey();
+            $language = $this->token->getRespondentLanguage();
+            $survey   = $this->token->getSurvey();
+            
             // Count todo
             $tSelect = $this->loader->getTracker()->getTokenSelect(array(
                 'all'   => 'COUNT(*)',
@@ -250,11 +252,10 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
 
             // Set the basic fields
 
-            $result['round']                   = $this->token->getRoundDescription();
+            $result['round']        = $this->token->getRoundDescription();
 
-            $organizationLoginUrl = $this->organization->getLoginUrl();
-
-            $result['site_ask_url']            = $organizationLoginUrl . '/ask/';
+            $organizationLoginUrl   = $this->organization->getLoginUrl();
+            $result['site_ask_url'] = $organizationLoginUrl . '/ask/';
             // Url's
             $url      = $organizationLoginUrl . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/';
             $url      .= $this->token->getTokenId();
@@ -262,9 +263,9 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
 
             $result['survey']           = $survey->getExternalName();
 
-            $result['todo_all']         = sprintf($this->plural('%d survey', '%d surveys', $todo['all']), $todo['all']);
+            $result['todo_all']         = sprintf($this->plural('%d survey', '%d surveys', $todo['all'], $language), $todo['all']);
             $result['todo_all_count']   = $todo['all'];
-            $result['todo_track']       = sprintf($this->plural('%d survey', '%d surveys', $todo['track']), $todo['track']);
+            $result['todo_track']       = sprintf($this->plural('%d survey', '%d surveys', $todo['track'], $language), $todo['track']);
             $result['todo_track_count'] = $todo['track'];
 
             $result['token']            = strtoupper($this->token->getTokenId());
@@ -296,18 +297,21 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                 $result['relation_about_full_name'] = $allFields['full_name'];
                 $result['relation_about_greeting'] = $allFields['greeting'];
                 $result['relation_about_last_name'] = $allFields['last_name'];
+                $result['relation_about_dear'] = $allFields['dear'];
                 $result['relation_field_name'] = $this->token->getRelationFieldName();
 
                 if ($relation = $this->token->getRelation()) {
                     // Now update all respondent fields to be of the relation
+                    $result['dear']       = $relation->getDearGreeting($language);
                     $result['name']       = $relation->getName();
                     $result['first_name'] = $relation->getFirstName();
                     $result['last_name']  = $relation->getLastName();
-                    $result['full_name']  = $relation->getHello($this->token->getRespondentLanguage());
-                    $result['greeting']   = $relation->getGreeting($this->token->getRespondentLanguage());
+                    $result['full_name']  = $relation->getHello($language);
+                    $result['greeting']   = $relation->getGreeting($language);
                     $result['to']         = $relation->getEmail();
                 } else {
-                    $result['name']       = $this->_('Undefined relation');
+                    $result['name']       = $this->_('Undefined relation', $language);
+                    $result['dear']       = '';
                     $result['first_name'] = '';
                     $result['last_name']  = '';
                     $result['full_name']  = '';
@@ -315,11 +319,12 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                     $result['to']         = '';
                 }
             } else {
-                $result['relation_about'] = $this->_('yourself');
+                $result['relation_about'] = $this->_('yourself', $language);
                 $result['relation_about_first_name'] = '';
                 $result['relation_about_full_name'] = '';
                 $result['relation_about_greeting'] = '';
                 $result['relation_about_last_name'] = '';
+                $result['relation_about_dear'] = '';
                 $result['relation_field_name'] = '';
             }
 
@@ -338,7 +343,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $result['token_url']                 = '';
             $result['token_url_input']           = '';
             $result['track']                     = '';
-            $result['relation_about']            = $this->_('yourself');
+            $result['relation_about']            = $this->_('yourself', $language);
             $result['relation_about_first_name'] = '';
             $result['relation_about_full_name']  = '';
             $result['relation_about_greeting']   = '';

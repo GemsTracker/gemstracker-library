@@ -51,14 +51,14 @@ class GetFirstAnswers extends \MUtil_Registry_TargetAbstract
      */
     public function processTokenInsertion(\Gems_Tracker_Token $token)
     {
-        if ($token->hasSuccesCode() && (! $token->isCompleted())) {
+        if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
             // Preparation for a more general object class
             $surveyId   = $token->getSurveyId();
 
             $next = $token->getRespondentTrack()->getFirstToken();
             while ($next) {
 
-                if ($next->hasSuccesCode() && $next->isCompleted()) {
+                if ($next->getReceptionCode()->isSuccess() && $next->isCompleted()) {
                     // Check first on survey id and when that does not work by name.
                     if ($next->getSurveyId() == $surveyId) {
                         return $next->getRawAnswers();

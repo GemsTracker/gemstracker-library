@@ -46,7 +46,7 @@
                     <regexp pattern="(\s)BOOLEAN(\s)" replace="\1TINYINT(1)\2" ignoreCase="true"/>
                     <regexp pattern="(\s)signed(\s)" replace="\1" ignoreCase="true"/>
                     <regexp pattern="ENGINE=[^\s,;]+\s*" replace="" ignoreCase="true"/>
-                    <regexp pattern="DEFAULT\s+CHARSET\s*=\s*[^\s,;]+\s+COLLATE\s*=\s*[^\s,;]+" replace="" ignoreCase="true"/>
+                    <regexp pattern="(DEFAULT|)\s+CHARSET\s*=\s*[^\s,;]+\s+COLLATE\s*=\s*[^\s,;]+" replace="" ignoreCase="true"/>
                     <regexp pattern="DEFAULT\s+CHARACTER\s+SET\s*" replace="CHARACTER SET " ignoreCase="true"/>
                     <regexp pattern="DEFAULT\s+CHARSET\s*" replace="CHARACTER SET " ignoreCase="true"/>
                     <regexp pattern="CHARACTER\s+SET\s*[^\s,;]+\s*" replace="" ignoreCase="true"/>

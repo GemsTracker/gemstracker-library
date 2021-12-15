@@ -239,6 +239,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $trackData = [
             'gr2t_start_date' => new \MUtil_Date('2000-01-01')
             ];
+        \MUtil_Batch_BatchAbstract::unload('tmptrack3');
         $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1, $trackData);
 
         $actual = $expected = $respondentTrack->getFieldData();

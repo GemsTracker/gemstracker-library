@@ -50,14 +50,14 @@ class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswersByCode extends \MUtil_
      */
     public function processTokenInsertion(\Gems_Tracker_Token $token)
     {
-        if ($token->hasSuccesCode() && (! $token->isCompleted())) {
+        if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
             // Preparation for a more general object class
             $code = $token->getSurvey()->getCode();
 
             $prev = $token;
             while ($prev = $prev->getPreviousToken()) {
 
-                if ($prev->hasSuccesCode() && $prev->isCompleted()) {
+                if ($prev->getReceptionCode()->isSuccess() && $prev->isCompleted()) {
                     // Check first on survey id and when that does not work by name.
                     if ($prev->getSurvey()->getCode() == $code) {
                         return $prev->getRawAnswers();

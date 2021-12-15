@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1p4]
 ### Added user functionality
+- Allow mailability to be set at multiple levels (#603)
+- Auto mail job should also be able to send different kind of messages (#636)
 - Send again button in communication log (#668)
 - Reset sent mail - using checkbox in Token edit screen (#674)
   

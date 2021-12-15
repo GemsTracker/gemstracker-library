@@ -141,7 +141,7 @@ CREATE TABLE gems__appointments (
     ;
 
 CREATE TABLE gems__appointment_filters (
-        gaf_id                  INTEGER not null,
+        gaf_id                  INTEGER not null ,
         gaf_class               varchar(200) not null,
 
         gaf_manual_name         varchar(200),
@@ -420,7 +420,7 @@ Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande 
     (21, 'nl', 'Er staan op dit moment geen vragenlijsten voor u klaar', 'Beste {greeting},\n\nEr staan op dit moment geen vragenlijsten voor u klaar.\nIndien u toch vragenlijsten verwacht had, reageer dan s.v.p. gewoon op deze mail.\n\n{organization_signature}');
 
 CREATE TABLE gems__conditions (
-        gcon_id                  INTEGER not null,
+        gcon_id                  INTEGER not null ,
 
         gcon_type                varchar(200) not null,
         gcon_class               varchar(200) not null,
@@ -818,7 +818,7 @@ CREATE TABLE gems__organizations (
         gor_url                     varchar(127),
 
         -- deprecated as of 1.9.1
-        gor_url_base                varchar(1270),
+        gor_url_base                varchar(127),
         -- end deprecated
 
         gor_task                    varchar(50),
@@ -964,7 +964,7 @@ CREATE TABLE gems__respondent2org (
 
         -- gr2o_treatment          varchar(200),
         gr2o_email              varchar(100),
-        gr2o_mailable           tinyint not null default 1,
+        gr2o_mailable           tinyint not null default 100,
         gr2o_comments           text,
 
         gr2o_consent            varchar(20) not null default 'Unknown',
@@ -1042,7 +1042,7 @@ CREATE TABLE gems__respondent2track2field (
         gr2t2f_created              TEXT not null,
         gr2t2f_created_by           INTEGER not null,
 
-        PRIMARY KEY(gr2t2f_id_respondent_track,gr2t2f_id_field)
+        PRIMARY KEY(gr2t2f_id_respondent_track, gr2t2f_id_field)
     )
     ;
 
@@ -1117,7 +1117,6 @@ CREATE TABLE gems__respondent_relations (
 
         PRIMARY KEY (grr_id)
     )
-    
     ;
 
 CREATE TABLE gems__roles (
@@ -1371,6 +1370,7 @@ UPDATE ignore gems__rounds SET gro_id_round = 0 WHERE gro_survey_name = 'Dummy f
 
 DELETE FROM gems__rounds WHERE gro_id_round != 0 AND gro_survey_name = 'Dummy for inserted surveys';
 
+
 CREATE TABLE gems__sites (
     gsi_id                      INTEGER not null ,
 
@@ -1434,27 +1434,28 @@ CREATE TABLE gems__sources (
         UNIQUE (gso_ls_url)
     )
     ;
+
 -- Table containing the project staff
 --
 CREATE TABLE gems__staff (
-        gsf_id_user				INTEGER not null,
+        gsf_id_user             INTEGER not null,
 
-        gsf_login				varchar(20) not null,
-        gsf_id_organization		INTEGER not null,
+        gsf_login               varchar(20) not null,
+        gsf_id_organization     INTEGER not null,
 
-        gsf_active				TINYINT(1) default 1,
+        gsf_active              TINYINT(1) default 1,
 
-        gsf_id_primary_group	INTEGER,
-        gsf_iso_lang			char(2) not null default 'en',
-        gsf_logout_on_survey	TINYINT(1) not null default 0,
-		gsf_mail_watcher		TINYINT(1) not null default 0,
+        gsf_id_primary_group    INTEGER,
+        gsf_iso_lang            char(2) not null default 'en',
+        gsf_logout_on_survey    TINYINT(1) not null default 0,
+        gsf_mail_watcher        TINYINT(1) not null default 0,
 
-        gsf_email				varchar(100) ,
+        gsf_email               varchar(100) ,
 
-        gsf_first_name			varchar(30) ,
-        gsf_surname_prefix		varchar(10) ,
-        gsf_last_name			varchar(30) ,
-        gsf_gender				char(1) not null default 'U',
+        gsf_first_name          varchar(30) ,
+        gsf_surname_prefix      varchar(10) ,
+        gsf_last_name           varchar(30) ,
+        gsf_gender              char(1) not null default 'U',
         -- gsf_birthday            TEXT,
         gsf_job_title           varchar(64) ,
 
@@ -1464,16 +1465,16 @@ CREATE TABLE gems__staff (
         -- gsf_city                varchar(40) ,
         -- gsf_region              varchar(40) ,
         -- gsf_iso_country         char(2) --,
-        gsf_phone_1				varchar(25) ,
+        gsf_phone_1             varchar(25) ,
         -- gsf_phone_2             varchar(25) ,
         -- gsf_phone_3             varchar(25) ,
 
-        gsf_is_embedded			TINYINT(1) not null default 0,
+        gsf_is_embedded         TINYINT(1) not null default 0,
 
-        gsf_changed				TEXT not null default current_timestamp,
-        gsf_changed_by			INTEGER not null,
-        gsf_created				TEXT not null,
-        gsf_created_by			INTEGER not null,
+        gsf_changed             TEXT not null default current_timestamp,
+        gsf_changed_by          INTEGER not null,
+        gsf_created             TEXT not null,
+        gsf_created_by          INTEGER not null,
 
         PRIMARY KEY (gsf_id_user),
         UNIQUE (gsf_login, gsf_id_organization)
@@ -1887,17 +1888,17 @@ CREATE TABLE gems__user_passwords (
     ;
 
 CREATE TABLE gemsdata__responses (
-        gdr_id_response		bigint(20)  NOT NULL ,
-        gdr_id_token		varchar(9)  not null,
-        gdr_answer_id		varchar(40) not null,
-		gdr_answer_row		bigint(20)  NOT NULL default 1,
+        gdr_id_response     bigint(20)  NOT NULL ,
+        gdr_id_token        varchar(9)  not null,
+        gdr_answer_id       varchar(40) not null,
+        gdr_answer_row      bigint(20)  NOT NULL default 1,
 
-        gdr_response		text ,
+        gdr_response        text ,
 
-        gdr_changed			TEXT not null default current_timestamp,
-        gdr_changed_by		INTEGER not null,
-		gdr_created			TEXT not null,
-        gdr_created_by		INTEGER not null,
+        gdr_changed         TEXT not null default current_timestamp,
+        gdr_changed_by      INTEGER not null,
+        gdr_created         TEXT not null,
+        gdr_created_by      INTEGER not null,
 
         PRIMARY KEY (gdr_id_response),
         UNIQUE (gdr_id_token, gdr_answer_id, gdr_answer_row)

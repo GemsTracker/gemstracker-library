@@ -1658,7 +1658,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if ($code->isStopCode()) {
             // Cascade stop to unanswered tokens
             foreach ($this->getTokens() as $token) {
-                if ($token->hasSuccesCode() && (! $token->isCompleted())) {
+                if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
                     $changed += $token->setReceptionCode($code, $comment, $userId);
                 }
             }
@@ -1670,7 +1670,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         } elseif (! $code->isSuccess()) {
             // Cascade code to tokens
             foreach ($this->getTokens() as $token) {
-                if ($token->hasSuccesCode()) {
+                if ($token->getReceptionCode()->isSuccess()) {
                     $token->setReceptionCode($code, $comment, $userId);
                 }
             }
