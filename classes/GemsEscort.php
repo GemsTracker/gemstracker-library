@@ -68,7 +68,7 @@ class GemsEscort extends \MUtil_Application_Escort
      * Set jQuery version number
      * @var string
      */
-    public $jqueryVersionNr = '3.4.1';
+    public $jqueryVersionNr = '3.6.0';
 
     /**
      * Set jQuery UI version number

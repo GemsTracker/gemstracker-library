@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1p5]
+### Security
+- Update externals in templates to recent versions (#193)
+
 ## [1.9.1p4]
 ### Added user functionality
 - Allow mailability to be set at multiple levels (#603)
