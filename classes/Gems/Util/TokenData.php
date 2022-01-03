@@ -131,6 +131,19 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * An expression for calculating the show status for answers
+     *
+     * @param int $groupId
+     * @return \Zend_Db_Expr
+     */
+    public function getShowAnswersExpression($groupId)
+    {
+        return new \Zend_Db_Expr(sprintf(
+            "CASE WHEN gsu_answers_by_group = 0 OR gsu_answer_groups LIKE '%%|%d|%%' THEN 1 ELSE 0 END",
+            $groupId));
+    }
+
+    /**
      * Returns the class to display the answer
      *
      * @param string $value Character
@@ -307,9 +320,10 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      * @param string $tokenId
      * @param string $tokenStatus
      * @param boolean $keepCaps Keep the capital letters in the label
+     * @param boolean $showAnswers
      * @return \MUtil_Html_AElement
      */
-    public function getTokenAnswerLink($tokenId, $tokenStatus, $keepCaps)
+    public function getTokenAnswerLink($tokenId, $tokenStatus, $keepCaps, $showAnswers = true)
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
             $menuItem = $this->_getAnswerMenuItem();
@@ -321,6 +335,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                     'gto_id_token' => $tokenId,
                     'gto_in_source' => 1,
                     \Gems_Model::ID_TYPE => 'token',
+                    'show_answers' => $showAnswers,
                 ]);
 
             if ($link) {
@@ -348,7 +363,8 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         return \MUtil_Lazy::method($this, 'getTokenAnswerLink',
                 $bridge->getLazy('gto_id_token'),
                 $bridge->getLazy('token_status'),
-                $keepCaps
+                $keepCaps,
+                $bridge->getLazy('show_answers'),
                 );
     }
 

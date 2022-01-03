@@ -13,4 +13,4 @@ CREATE TABLE if not exists gems__patch_levels (
 -- this ensures new patches at this level will be run 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (67, CURRENT_TIMESTAMP);
+   (68, CURRENT_TIMESTAMP);

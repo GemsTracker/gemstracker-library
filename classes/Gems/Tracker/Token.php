@@ -1889,6 +1889,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return boolean True when this user has the right to view these answers
+     */
+    public function isViewable()
+    {
+        if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
+            return $this->currentUser->isAllowedOrganization($this->getOrganizationId());    
+        }
+        
+        return false;
+    }
+
+    /**
+     *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
      * @return \Gems_Tracker_Token (continuation pattern)
      */
@@ -1904,6 +1917,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                     ->andRespondents()
                     ->andRespondentOrganizations()
                     ->addStatus()
+                    ->addShowAnswers($this->currentUser->getGroupId(true))
                     ->forTokenId($this->_tokenId);
 
             $this->_gemsData = $tokenSelect->fetchRow();

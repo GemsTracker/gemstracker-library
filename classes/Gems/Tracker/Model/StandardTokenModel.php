@@ -45,6 +45,12 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
 class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      * @var boolean When true the default settings are date only values
      */
     public static $dateOnlyDefault = true;
@@ -256,6 +262,10 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
     {
         parent::afterRegistry();
 
+        $this->addColumn(
+            $this->util->getTokenData()->getShowAnswersExpression($this->currentUser->getGroupId(true)),
+            'show_answers');
+        
         //If we are allowed to see who filled out a survey, modify the model accordingly
         if ($this->currentUser->hasPrivilege('pr.respondent.who')) {
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));

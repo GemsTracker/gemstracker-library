@@ -883,6 +883,9 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             ->addParameters(\MUtil_Model::REQUEST_ID)
             ->setParameterFilter('gsu_active', 1);
 
+        $this->addHiddenPrivilege('pr.survey-maintenance.answer-groups', $this->_(
+            'Grant right to set answer access to surveys.'
+        ));
 
         // Multi survey
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');

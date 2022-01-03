@@ -63,6 +63,24 @@ class Gems_Tracker_Token_TokenSelect
 
     /**
      * Add the status column to the select, $this->andReceptionCodes() must be called first
+     *
+     * @param int $groupId
+     * @return $this
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function addShowAnswers($groupId)
+    {
+        $this->andSurveys([]);
+        $this->sql_select->columns(
+            ['show_answers' => $this->util->getTokenData()->getShowAnswersExpression($groupId),],
+            'gems__tokens'
+        );
+
+        return $this;
+    }
+    
+    /**
+     * Add the status column to the select, $this->andReceptionCodes() must be called first
      * 
      * @return $this
      * @throws \Zend_Db_Select_Exception

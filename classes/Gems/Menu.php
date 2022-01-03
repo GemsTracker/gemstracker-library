@@ -608,7 +608,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         $tkPage->addAction($this->_('Correct answers'), 'pr.token.correct', 'correct')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('is_completed', 1, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
+                ->setParameterFilter('is_completed', 1, 'grc_success', 1, Gems_Model::ID_TYPE, 'token', 'show_answers', 1);
         $tkPage->addDeleteAction('pr.token.delete')
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
                 ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');
@@ -630,7 +630,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
                 ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
         $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer', ['class' => $this->currentUser->isSessionFramed() ? 'inline-answers' : ''])
                 ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('gto_in_source', 1, \Gems_Model::ID_TYPE, 'token')
+                ->setParameterFilter('gto_in_source', 1, \Gems_Model::ID_TYPE, 'token', 'show_answers', 1)
                 ->set('target', \MUtil_Model::REQUEST_ID);
         $tkPage->addAction($this->_('Token check'), 'pr.token.check', 'check-token')
                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')

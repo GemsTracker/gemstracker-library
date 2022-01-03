@@ -429,7 +429,14 @@ class Gems_Default_TrackAction extends \Gems_Default_RespondentChildActionAbstra
         // Set menu OFF
         $this->menu->setVisible(false);
 
-        $token    = $this->getToken();
+        $token = $this->getToken();
+        if (! $token->isViewable()) {
+            throw new \Gems_Exception(
+                sprintf($this->_('Inaccessible or unknown token %s'), strtoupper($token->getTokenId())),
+                403, null,
+                sprintf($this->_('Access to this token is not allowed for current role: %s.'), $this->currentUser->getRole()));
+        }
+        
         $snippets = $token->getAnswerSnippetNames();
 
         if ($snippets) {

@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @version    $Id$
  * @package    Gems
  * @subpackage Versions
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -34,7 +33,7 @@ class Gems_Versions
          * This means that future patches for will be loaded,
          * but that previous patches are ignored.
          */
-        return 67;
+        return 68;
     }
 
     /**
@@ -44,7 +43,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.9.1p5';
+        return '1.9.2';
     }
 
     /**

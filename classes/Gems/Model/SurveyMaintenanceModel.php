@@ -19,8 +19,14 @@ namespace Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
-    
+class SurveyMaintenanceModel extends \Gems_Model_JoinModel 
+{
+    /**
+     *
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -129,6 +135,11 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'description', $this->_('If empty, survey will never show up!'),
                 'multiOptions', $dbLookup->getGroups()
                 );
+        $this->set('gsu_answers_by_group',            'label', $this->_('Show answers by groups'),
+                   'description', $this->_('Answers can be seen only by groups selected.'),
+                   'elementClass', 'Checkbox',
+                   'multiOptions', $yesNo
+        );
         
         $mailCodes = $dbLookup->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
@@ -198,12 +209,24 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
             'gsu_survey_warnings',
             'gsu_active',
             'gsu_id_primary_group',
+            'gsu_answers_by_group',
+            'gsu_answer_groups',
             'gsu_mail_code',
             'gsu_insertable'            
             ]);
-                
-        $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
+
         $this->set('gsu_survey_languages', 'itemDisplay', array($this, 'formatLanguages'));
+
+        $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
+
+        $this->set('gsu_answer_groups', 'label', $this->_('Answer groups'),
+                   'description', $this->_('The groups that may see this organization or none.'),
+                   'elementClass', 'MultiCheckbox',
+                   'multiOptions', $dbLookup->getActiveStaffGroups(),
+                   'required', false
+        );
+        $ct->apply($this, 'gsu_answer_groups');
+        
         $this->set('gsu_active',
                 'validators[group]', new \MUtil_Validate_Require(
                         $this->get('gsu_active', 'label'),
@@ -225,17 +248,16 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
                 'multiOptions', $dbLookup->getOrganizationsWithRespondents(),
                 'required', true
                 );
-        $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
         $ct->apply($this, 'gsu_insert_organizations');
 
-        $switches = array(
-            0 => array(
-                'gsu_valid_for_length'     => array('elementClass' => 'Hidden', 'label' => null),
-                'gsu_valid_for_unit'       => array('elementClass' => 'Hidden', 'label' => null),
-                'gsu_insert_organizations' => array('elementClass' => 'Hidden', 'label' => null),
-                'toggleOrg'                => array('elementClass' => 'Hidden', 'label' => null),
-            ),
-        );
+        $hideElement = ['elementClass' => 'Hidden', 'label' => null];
+        $this->addDependency(array('ValueSwitchDependency', [0 => ['gsu_answer_groups' => $hideElement]]), 'gsu_answers_by_group');
+        $switches = [0 => [
+            'gsu_valid_for_length'     => $hideElement,
+            'gsu_valid_for_unit'       => $hideElement,
+            'gsu_insert_organizations' => $hideElement,
+            'toggleOrg'                => $hideElement,
+        ],];
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');
         
         $this->set('track_usage',          'label', $this->_('Usage'),
@@ -309,7 +331,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel {
     public function applyEditSettings($create = false, $surveyId = null)
     {
         $this->applyDetailSettings($surveyId, true);
-        
+
+        if ($this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
+            $this->addDependency('CanEditDependency', 'gsu_answers_by_group', array('gsu_answer_groups'));
+        } else {
+            $this->setMulti(['gsu_answers_by_group', gsu_answer_groups], ['readonly' => 'readonly', 'disabled' => 'disabled']);
+        }
+        $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
+
         $order = $this->getOrder('gsu_insert_organizations') + 1;
         
         $this->set('toggleOrg',

@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Security
 - Update externals in templates to recent versions (#193)
 
+### Added user functionality
+- Displaying answers depending on role (#23)
+
 ## [1.9.1p4]
 ### Added user functionality
 - Allow mailability to be set at multiple levels (#603)
