@@ -27,14 +27,22 @@ class EventDispatcher
      */
     protected $eventDispatcher;
 
+    protected $legacyDispatcher = false;
+
     public function __construct()
     {
         $this->eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher();
+        if (!in_array('Psr\EventDispatcher\EventDispatcherInterface', class_implements($this->eventDispatcher))) {
+            $this->legacyDispatcher = true;
+        }
     }
 
     public function dispatch(Event $event, $eventName = null)
     {
-        //$eventName = $eventName ?? \get_class($event);
+        if (!$this->legacyDispatcher) {
+            return $this->eventDispatcher->dispatch($event, $eventName);
+        }
+
         if (is_null($eventName)) {
             $eventName = \get_class($event);
         }
