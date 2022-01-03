@@ -27,8 +27,8 @@ class Gems_Event_Survey_Display_OnlyAnswered extends \Gems_Event_SurveyAnswerFil
      *
      * Empty is NULL or empty string, values of 0 are NOT empty unless they are a checkbox
      *
-     * @param type $inputArray
-     * @param type $model
+     * @param array $inputArray
+     * @param \MUtil_Model_ModelAbstract $model
      * @return boolean
      */
     public function array_filter($inputArray, $model)

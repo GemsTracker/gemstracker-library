@@ -3,12 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [1.9.1p5]
-### Security
-- Update externals in templates to recent versions (#193)
-
+## [1.9.2]
 ### Added user functionality
 - Displaying answers depending on role (#23)
+- Survey display option to show all instances, but only answered questions (#689)
+
+### Fixed
+- Mailcodes show up ugly in survey maintenance search screen when there is only 1 survey mail code (#690)
+
+### Security
+- Update externals in templates to recent versions (#193)
 
 ## [1.9.1p4]
 ### Added user functionality

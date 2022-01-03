@@ -220,7 +220,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
 
         $this->set('gsu_answer_groups', 'label', $this->_('Answer groups'),
-                   'description', $this->_('The groups that may see this organization or none.'),
+                   'description', $this->_('The groups that may see the answers or none.'),
                    'elementClass', 'MultiCheckbox',
                    'multiOptions', $dbLookup->getActiveStaffGroups(),
                    'required', false
