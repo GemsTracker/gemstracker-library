@@ -69,7 +69,7 @@
         "erusev/parsedown": "~1.7",
         "ifsnop/mysqldump-php": "^2.6",
         "symfony/cache": "^3.4.36",
-        "symfony/event-dispatcher": "^3.4 || ^4.4 || ^5.3"
+        "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "zf1s/phpunit": "dev-master",
