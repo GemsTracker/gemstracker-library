@@ -5,57 +5,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.2]
 ### Added user functionality
+- Allow mailability to be set at multiple levels (#603)
+- Auto mail job should also be able to send different kind of messages (#636)
 - Displaying answers depending on role (#23)
+- Reset sent mail - using checkbox in Token edit screen (#674)
+- Send again button in communication log (#668)
 - Survey display option to show all instances, but only answered questions (#689)
 
 ### Fixed
-- Mailcodes show up ugly in survey maintenance search screen when there is only 1 survey mail code (#690)
-
-### Security
-- Update externals in templates to recent versions (#193)
-
-## [1.9.1p4]
-### Added user functionality
-- Allow mailability to be set at multiple levels (#603)
-- Auto mail job should also be able to send different kind of messages (#636)
-- Send again button in communication log (#668)
-- Reset sent mail - using checkbox in Token edit screen (#674)
-  
-### Fixed
+- Birthday sometimes stored incorrectly (#666)
 - By period Token overview totals do not match (#685)
 - Default view of MailLog does not show the time the mail was send (#667)
 - Do not show more than 2000 patient numbers in the systemuser show screen (#675)
 - Document the db (#16)
+- Dossier export cannot open in a new tab in EPD environments (#691)
+- Embedded login sometimes fails with error instead of correct error log (#662)
 - Export of By patient Overview always returns empty output (#683)
-- Print button in modal dialog shows empty page (#681)  
+- Export to Word chokes on & and h2 elements in questions (#653)
+- Focus tracking does not work on sub forms and element (#671)
+- From e-mail address should be just that (#669)
+- Mailcodes show up ugly in survey maintenance search screen when there is only 1 survey mail code (#690)
+- Prevent error message when getimagesize() fails to read a file (#663)
+- Print button in modal dialog shows empty page (#681)
+- RespondentRelations field error in TokenMailer (#664)
+- SelectModel drops sort columns silently #672
+- SQL error in getOrganizationsByCode (#665)
+- Survey sometimes tries to load empty events (#661)
 - The answer popup during an embedded login has inconsistent output (#679)
+- The parent child information for surveys is incorrect (#654)
 - Token overviews fail on relations with a slash in the name (#684)
+- Token return is set to organisation url, even when logged in (#660)
+- Url site management blocks access before update (#655)
+- Url site management does not use specified layout and locale (#656)
+- Watermark in empty form-fields (#8)
+- When using RespondentTrack->setEndDate the date should be set to manual (#670)
 
 ### Programmability
 - Remember in the session that the user is embedded (#680)
 
-## [1.9.1p3]
-### Fixed
-- Focus tracking does not work on sub forms and element (#671)
-- SelectModel drops sort columns silently #672
-- Watermark in empty form-fields (#8)
-- When using RespondentTrack->setEndDate the date should be set to manual (#670)
-  
-## [1.9.1p2]
-### Fixed
-- Birthday sometimes stored incorrectly (#666)
-- Embedded login sometimes fails with error instead of correct error log (#662)
-- Export to Word chokes on & and h2 elements in questions (#653, partial quick fix)
-- From e-mail address should be just that (#669)
-- Prevent error message when getimagesize() fails to read a file (#663)
-- RespondentRelations field error in TokenMailer (#664)
-- SQL error in getOrganizationsByCode (#665)
-- Survey sometimes tries to load empty events (#661)
-- The parent child information for surveys is incorrect (#654)
-- Token return is set to organisation url, even when logged in (#660)
-- Url site management blocks access before update (#655)
-- Url site management does not use specified layout and locale (#656)
-  
+### Security
+- Update externals in templates to recent versions (#193)
+
+
 ## [1.9.1]
 [1.9.1]: https://github.com/GemsTracker/gemstracker-library/compare/1.9.0...1.9.1
 ### Added

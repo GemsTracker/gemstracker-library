@@ -502,7 +502,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function exportArchiveAction()
     {
-        $params = $this->_processParameters($this->showParameters);
+        $params = $this->_processParameters(['addCurrentParent' => false] + $this->showParameters);
 
         $this->addSnippets($this->exportSnippets, $params);
 
