@@ -364,7 +364,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                 $bridge->getLazy('gto_id_token'),
                 $bridge->getLazy('token_status'),
                 $keepCaps,
-                $bridge->getLazy('show_answers'),
+                $bridge->getLazy('show_answers')
                 );
     }
 
