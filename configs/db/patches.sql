@@ -1733,4 +1733,5 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.l
 -- PATCH: Add seeing answers by group
 ALTER TABLE gems__surveys ADD gsu_answers_by_group boolean not null default 0 AFTER gsu_id_primary_group;
 ALTER TABLE gems__surveys ADD gsu_answer_groups varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_answers_by_group;
+ALTER TABLE gems__surveys ADD gsu_allow_export boolean not null default 1 AFTER gsu_answer_groups;
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.survey-maintenance.answer-groups') WHERE grl_privileges LIKE '%pr.survey-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.survey-maintenance.answer-groups%';

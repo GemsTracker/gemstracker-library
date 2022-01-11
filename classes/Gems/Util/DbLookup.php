@@ -32,6 +32,11 @@ class Gems_Util_DbLookup extends UtilAbstract
     protected $acl;
 
     /**
+     * @var \Gems_User_User
+     */
+    protected $currentUser;
+
+    /**
      *
      * @var \Gems_Loader
      */
@@ -664,6 +669,8 @@ class Gems_Util_DbLookup extends UtilAbstract
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
+            ->where('gsu_allow_export = 1')
+            ->where($this->util->getTokenData()->getShowAnswersExpression($this->currentUser->getGroupId(true)))
             //->where('gsu_surveyor_active = 1')
             // Leave inactive surveys, we toss out the inactive ones for limesurvey
             // as it is no problem for OpenRosa to have them in
