@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Programmability
 - Remember in the session that the user is embedded (#680)
+- Remember date of last import of appointments (#694)
 
 ### Security
 - Update externals in templates to recent versions (#193)

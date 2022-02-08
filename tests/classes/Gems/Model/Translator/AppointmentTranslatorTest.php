@@ -100,6 +100,10 @@ class AppointmentTranslatorTest extends ControllerTestAbstract
         ];
 
         $this->saveTables(['gems__agenda_staff'], 'AppointmentTranslatorTest');
+        
+        // This field does not count
+        unset($actual[0]['gap_last_synch']);
+
         $this->assertEquals($expected, $actual);
     }
 

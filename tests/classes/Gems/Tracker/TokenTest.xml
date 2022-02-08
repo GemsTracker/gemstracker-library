@@ -16,4 +16,5 @@
     <gems__respondent2org gr2o_id_user="1234" gr2o_id_organization="1" gr2o_consent="ok" gr2o_patient_nr="abc"
         gr2o_opened_by="1" gr2o_changed="2012-09-07" gr2o_changed_by="1" gr2o_created="2012-09-07" gr2o_created_by="1"/>
     <gems__consents gco_description="informed" gco_changed_by="1" gco_created="2012-09-07" gco_created_by="1"/>
+    <gems__surveys gsu_id_survey="1" gsu_survey_name="Survey" gsu_id_source="1" gsu_id_primary_group="1" gsu_answers_by_group="0" gsu_answer_groups="||" gsu_created="2012-09-07" gsu_created_by="1" gsu_changed_by="1" />
 </dataset>

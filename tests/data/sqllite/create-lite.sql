@@ -103,6 +103,7 @@ CREATE TABLE gems__appointments (
 
         gap_source              varchar(20) not null default 'manual',
         gap_id_in_source        varchar(40),
+        gap_last_synch          TEXT,
         gap_manual_edit         TINYINT(1) not null default 0,
 
         gap_code                varchar(1) not null default 'A',
@@ -818,7 +819,7 @@ CREATE TABLE gems__organizations (
         gor_url                     varchar(127),
 
         -- deprecated as of 1.9.1
-        gor_url_base                varchar(127),
+        gor_url_base                varchar(1270),
         -- end deprecated
 
         gor_task                    varchar(50),
@@ -904,7 +905,7 @@ CREATE TABLE gems__patch_levels (
 -- this ensures new patches at this level will be run 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (67, CURRENT_TIMESTAMP);
+   (68, CURRENT_TIMESTAMP);
 
 CREATE TABLE gems__radius_config (
         grcfg_id                bigint(11) NOT NULL ,
@@ -1516,6 +1517,9 @@ CREATE TABLE gems__surveys (
         gsu_survey_warnings         varchar(250) ,
 
         gsu_id_primary_group        INTEGER,
+        gsu_answers_by_group        TINYINT(1) not null default 0,
+        gsu_answer_groups           varchar(250) ,
+        gsu_allow_export            TINYINT(1) not null default 1,
         gsu_mail_code               tinyint not null default 1,
 
         gsu_insertable              TINYINT(1) not null default 0,

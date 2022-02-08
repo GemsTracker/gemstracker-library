@@ -1735,3 +1735,7 @@ ALTER TABLE gems__surveys ADD gsu_answers_by_group boolean not null default 0 AF
 ALTER TABLE gems__surveys ADD gsu_answer_groups varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_answers_by_group;
 ALTER TABLE gems__surveys ADD gsu_allow_export boolean not null default 1 AFTER gsu_answer_groups;
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.survey-maintenance.answer-groups') WHERE grl_privileges LIKE '%pr.survey-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.survey-maintenance.answer-groups%';
+
+-- PATCH: Remember last synch  
+ALTER TABLE gems__appointments
+    ADD gap_last_synch timestamp null default null AFTER gap_id_in_source;

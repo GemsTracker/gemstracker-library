@@ -8,6 +8,7 @@ CREATE TABLE if not exists gems__appointments (
 
         gap_source              varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual',
         gap_id_in_source        varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gap_last_synch          timestamp null default null,
         gap_manual_edit         boolean not null default 0,
 
         gap_code                varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'A',
