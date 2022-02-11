@@ -308,9 +308,11 @@ abstract class Gems_Default_FileActionAbstract extends \Gems_Controller_ModelSni
     /**
      * Import the file
      */
-    public function importAction()
+    public function importAction($id = null)
     {
-        $id    = $this->_getIdParam();
+        if (! $id) {
+            $id = $this->_getIdParam();
+        }
         $model = $this->getModel();
 
         $data = $model->loadFirst(array('urlpath' => $id));

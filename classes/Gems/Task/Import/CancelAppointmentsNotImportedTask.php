@@ -28,15 +28,18 @@ class CancelAppointmentsNotImportedTask extends \MUtil_Task_TaskAbstract
     /**
      * @inheritDoc
      */
-    public function execute($source = null, $cancelCode = null, $fromDate = null)
+    public function execute($source = null, $cancelCode = null, $startSynchDate = null, $onlyFutureAppointments = true)
     {
-        if ($source && $cancelCode && $fromDate) {
+        if ($source && $cancelCode && $startSynchDate) {
             $values = ["gap_status" => $cancelCode];
             
             $where = $this->db->quoteInto("gap_source = ?", $source);
             $where .= $this->db->quoteInto(" AND gap_status != ?", $cancelCode);
-            $where .= $this->db->quoteInto(" AND gap_last_synch < ?", $fromDate);
-
+            $where .= $this->db->quoteInto(" AND gap_last_synch < ?", $startSynchDate);
+            if ($onlyFutureAppointments) {
+                $where .= " AND gap_admission_time > CURRENT_TIMESTAMP";
+            }
+            
             // \MUtil_Echo::track($values, $where);            
             $deleted = $this->db->update('gems__appointments', $values, $where);
             
