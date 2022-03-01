@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.2]
 ### Added user functionality
 - Allow mailability to be set at multiple levels (#603)
+- Allow some (limited) option for repeating parts of tracks (#697)
 - Auto mail job should also be able to send different kind of messages (#636)
 - Displaying answers depending on role (#23)
 - Forbid the export of certain surveys (#693)
