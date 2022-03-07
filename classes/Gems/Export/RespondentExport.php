@@ -614,7 +614,14 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         if ($this->isFramed && ('html' == $format)) {
             $div = $this->html->div();
-            $div->a($this->request->getParams(), $this->_('Back'), ['class' => 'btn']);
+            $url = new \MUtil_Html_HrefArrayAttribute([
+                $this->request->getControllerKey() => $this->request->getControllerName(),
+                $this->request->getActionKey() => $this->request->getActionName(),
+                \MUtil_Model::REQUEST_ID1 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                \MUtil_Model::REQUEST_ID2 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID2),
+                ]);
+            $url->setRouteReset(true);
+            $div->a($url, $this->_('Back'), ['class' => 'btn']);
         }
 
         $this->html->snippet($this->_reportHeader);
