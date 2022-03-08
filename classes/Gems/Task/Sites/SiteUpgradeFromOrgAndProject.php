@@ -24,7 +24,7 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
-    
+
     /**
      * @var \Gems_Project_ProjectSettings
      */
@@ -45,17 +45,18 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
             "SELECT gor_id_organization, gor_url_base FROM gems__organizations 
                     WHERE gor_url_base IS NOT NULL AND gor_url_base != ''");
 
+        $isoLang = $this->project->getLocaleDefault();
         $project = $this->project;
         $addHttp = ! $this->project->isHttpsRequired();
         if (isset($project['console']['url'])) {
-            $batch->addTask('Sites\\AddToBaseUrl', 'https://' . $project['console']['url']);
+            $batch->addTask('Sites\\AddToBaseUrl', 'https://' . $project['console']['url'], null, $isoLang);
             if ($addHttp) {
-                $batch->addTask('Sites\\AddToBaseUrl', 'http://' . $project['console']['url']);
+                $batch->addTask('Sites\\AddToBaseUrl', 'http://' . $project['console']['url'], null, $isoLang);
             }
         }
 
         $batch->addTask('Sites\\AddToBaseUrl', $this->util->getCurrentURI());
-        
+
         foreach ($orgs as $id => $baseUrls) {
             foreach (explode(' ', $baseUrls) as $url) {
                 $batch->addTask('Sites\\AddToBaseUrl', $url, $id);
@@ -64,10 +65,10 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
         
         if (isset($project['allowedSourceHosts'])) {
             foreach ((array) $project['allowedSourceHosts'] as $host) {
-                $batch->addTask('Sites\\AddToBaseUrl', "https://$host");
-                
+                $batch->addTask('Sites\\AddToBaseUrl', "https://$host", null, $isoLang);
+
                 if ($addHttp) {
-                    $batch->addTask('Sites\\AddToBaseUrl', "http://$host");
+                    $batch->addTask('Sites\\AddToBaseUrl', "http://$host", null, $isoLang);
                 }
             }
         }
