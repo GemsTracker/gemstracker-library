@@ -47,9 +47,9 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
 
         $addHttp = ! $this->project->isHttpsRequired();
         if (isset($project['console']['url'])) {
-            $batch->addTask('Sites\\AddToBaseUrl', 'https:\\\\' . $project['console']['url']);
+            $batch->addTask('Sites\\AddToBaseUrl', 'https://' . $project['console']['url']);
             if ($addHttp) {
-                $batch->addTask('Sites\\AddToBaseUrl', 'http:\\\\' . $project['console']['url']);
+                $batch->addTask('Sites\\AddToBaseUrl', 'http://' . $project['console']['url']);
             }
         }
 
@@ -61,12 +61,13 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
             }
         }
 
+        $project = $this->project;
         if (isset($project['allowedSourceHosts'])) {
             foreach ((array) $project['allowedSourceHosts'] as $host) {
-                $batch->addTask('Sites\\AddToBaseUrl', "https:\\\\$host");
+                $batch->addTask('Sites\\AddToBaseUrl', "https://$host");
                 
                 if ($addHttp) {
-                    $batch->addTask('Sites\\AddToBaseUrl', "http:\\\\$host");
+                    $batch->addTask('Sites\\AddToBaseUrl', "http://$host");
                 }
             }
         }
