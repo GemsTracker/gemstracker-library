@@ -779,6 +779,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         if ($this->offsetExists('locale') && isset($this->locale['default'])) {
             return (string) $this->locale['default'];
         }
+        return null;
     }
 
     /**
