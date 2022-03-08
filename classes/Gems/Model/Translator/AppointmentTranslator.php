@@ -38,6 +38,11 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         );
 
     /**
+     * @var string The import source identifier
+     */
+    protected $importSource = 'import';
+    
+    /**
      * The name of the field to store the organization id in
      *
      * @var string
@@ -107,8 +112,28 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
 
             // Autofill fields - without a source field but possibly set in this translator
             'gap_id_user',
-
+            'gap_last_synch',
         );
+    }
+
+    /**
+     * Prepare for the import.
+     *
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function startImport()
+    {
+        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            // No multiOptions as a new items can be created during import
+            $fields = array(
+                'gap_id_attended_by', 'gap_id_referred_by', 'gap_id_activity',  'gap_id_procedure', 'gap_id_location',
+            );
+            foreach ($fields as $name) {
+                $this->_targetModel->del($name, 'multiOptions');
+            }
+        }
+
+        return parent::startImport();
     }
 
     /**
@@ -127,7 +152,7 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         }
 
         // Set fixed values for import
-        $row['gap_source']      = 'import';
+        $row['gap_source']      = $this->importSource;
         $row['gap_manual_edit'] = 0;
 
         if (! isset($row['gap_id_user'])) {
@@ -199,28 +224,11 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         if ($skip) {
             return null;
         }
+        
+        // This value has a fixed meaning! 
+        $row['gap_last_synch'] = new \MUtil_Date();
         // \MUtil_Echo::track($row);
 
         return $row;
-    }
-
-    /**
-     * Prepare for the import.
-     *
-     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
-     */
-    public function startImport()
-    {
-        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
-            // No multiOptions as a new items can be created during import
-            $fields = array(
-                'gap_id_attended_by', 'gap_id_referred_by', 'gap_id_activity',  'gap_id_procedure', 'gap_id_location',
-                );
-            foreach ($fields as $name) {
-                $this->_targetModel->del($name, 'multiOptions');
-            }
-        }
-
-        return parent::startImport();
     }
 }

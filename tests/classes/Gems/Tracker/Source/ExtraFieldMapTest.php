@@ -87,8 +87,8 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
         }
 
         // To update the stored fieldmap, uncomment the following if you know what you are doing
-        //$export = serialize($result);
-        //file_put_contents(GEMS_TEST_DIR . '/data/fieldmap.txt', $export);
+        // $export = serialize($result);
+        // file_put_contents(GEMS_TEST_DIR . '/data/fieldmap.txt', $export);
         $expected = unserialize(file_get_contents(GEMS_TEST_DIR . '/data/fieldmap.txt'));
         $this->assertEquals($expected, $result, 'Fieldmap has changed!!');
     }

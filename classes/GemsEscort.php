@@ -237,6 +237,8 @@ class GemsEscort extends \MUtil_Application_Escort
         foreach ($params as $key => $value) {
             $rest = strpbrk($key, '<>=%&"\'`');
             if (false !== $rest) {
+//                $msg = sprintf("Illegal character %s for parameter %s using url %s from ip address %s.", $rest[0], $key, $_SERVER['REQUEST_URI'], $this->request->getServer('REMOTE_ADDR'));
+//                $this->logger->log($msg, \Zend_Log::ERR);
                 $this->setError(
                         $this->_('Illegal request parameter'),
                         422,

@@ -46,12 +46,12 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
                     WHERE gor_url_base IS NOT NULL AND gor_url_base != ''");
 
         $isoLang = $this->project->getLocaleDefault();
-
+        $project = $this->project;
         $addHttp = ! $this->project->isHttpsRequired();
         if (isset($project['console']['url'])) {
-            $batch->addTask('Sites\\AddToBaseUrl', 'https:\\\\' . $project['console']['url'], null, $isoLang);
+            $batch->addTask('Sites\\AddToBaseUrl', 'https://' . $project['console']['url'], null, $isoLang);
             if ($addHttp) {
-                $batch->addTask('Sites\\AddToBaseUrl', 'http:\\\\' . $project['console']['url'], null, $isoLang);
+                $batch->addTask('Sites\\AddToBaseUrl', 'http://' . $project['console']['url'], null, $isoLang);
             }
         }
 
@@ -62,13 +62,13 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
                 $batch->addTask('Sites\\AddToBaseUrl', $url, $id);
             }
         }
-
+        
         if (isset($project['allowedSourceHosts'])) {
             foreach ((array) $project['allowedSourceHosts'] as $host) {
-                $batch->addTask('Sites\\AddToBaseUrl', "https:\\\\$host", null, $isoLang);
+                $batch->addTask('Sites\\AddToBaseUrl', "https://$host", null, $isoLang);
 
                 if ($addHttp) {
-                    $batch->addTask('Sites\\AddToBaseUrl', "http:\\\\$host", null, $isoLang);
+                    $batch->addTask('Sites\\AddToBaseUrl', "http://$host", null, $isoLang);
                 }
             }
         }

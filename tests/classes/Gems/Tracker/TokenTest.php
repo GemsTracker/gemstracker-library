@@ -139,7 +139,8 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
         $this->assertEquals($expected[1], $token->isNotYetValid());
     }
     
-    public function providerTokenValid() {
+    public function providerTokenValid() 
+    {
         $now = new MUtil_Date();
         $tomorrow = clone $now;
         $yesterday = clone $now;

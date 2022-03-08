@@ -62,7 +62,11 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
             }
         }
 
-        if ($this->currentToken instanceof \Gems_Tracker_Token) {
+        if ($this->checkContinueLinkClicked()) {
+            // Continue later was clicked, handle the click
+            return $this->continueClicked();
+
+        } elseif ($this->currentToken instanceof \Gems_Tracker_Token) {
             $href = $this->getTokenHref($this->currentToken);
             $url  = $href->render($this->view);
 

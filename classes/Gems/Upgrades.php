@@ -44,6 +44,7 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
         $this->register('Upgrade186to187', 'Upgrade from 1.8.6 to 1.8.7');
         $this->register('Upgrade187to190', 'Upgrade from 1.8.7 to 1.9.0');
         $this->register('Upgrade190to191', 'Upgrade from 1.9.0 to 1.9.1');
+        $this->register('Upgrade191to192', 'Upgrade from 1.9.1 to 1.9.2');
         /**
          * To have the new_project updated to the highest level, update
          *
@@ -232,6 +233,21 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
 
         $this->_batch->addTask('Sites\\SiteUpgradeFromOrgAndProject');
         
+        // Use AddTask task to execute after patches
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+
+        return true;
+    }
+
+    /**
+     * To upgrade to 1.9.2
+     */
+    public function Upgrade191to192()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 68);
+
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
         $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));

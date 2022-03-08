@@ -127,16 +127,21 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 'elementClass', 'Exhibitor',
                 'formatFunction', array($this, 'formatWarnings')
                 );
-        $this->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
+        $this->set('gsu_active', 'label', sprintf($this->_('Active in %s'), $this->project->getName()),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-        $this->set('gsu_id_primary_group',   'label', $this->_('Group'),
+        $this->set('gsu_id_primary_group', 'label', $this->_('Group'),
                 'description', $this->_('If empty, survey will never show up!'),
                 'multiOptions', $dbLookup->getGroups()
                 );
-        $this->set('gsu_answers_by_group',            'label', $this->_('Show answers by groups'),
+        $this->set('gsu_answers_by_group', 'label', $this->_('Show answers by groups'),
                    'description', $this->_('Answers can be seen only by groups selected.'),
+                   'elementClass', 'Checkbox',
+                   'multiOptions', $yesNo
+        );
+        $this->set('gsu_allow_export', 'label', $this->_('Export allowed'),
+                   'description', $this->_('Allow the export of answers?'),
                    'elementClass', 'Checkbox',
                    'multiOptions', $yesNo
         );
@@ -211,6 +216,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             'gsu_id_primary_group',
             'gsu_answers_by_group',
             'gsu_answer_groups',
+            'gsu_allow_export',
             'gsu_mail_code',
             'gsu_insertable'            
             ]);
@@ -335,7 +341,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         if ($this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
             $this->addDependency('CanEditDependency', 'gsu_answers_by_group', array('gsu_answer_groups'));
         } else {
-            $this->setMulti(['gsu_answers_by_group', gsu_answer_groups], ['readonly' => 'readonly', 'disabled' => 'disabled']);
+            $this->setMulti(['gsu_answers_by_group', 'gsu_answer_groups', 'gsu_allow_export'], ['readonly' => 'readonly', 'disabled' => 'disabled']);
         }
         $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
 

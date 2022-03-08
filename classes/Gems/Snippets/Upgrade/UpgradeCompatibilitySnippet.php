@@ -780,7 +780,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $this->codeVersion = $this->loader->getVersions()->getBuild();
         foreach ($this->escort->getLoaderDirs() as $prefix => $dir) {
-            $this->projectDirs[$prefix . '_'] = $prefix;
+            $this->projectDirs[str_replace('\\', '\\\\', $prefix) . '_'] = $prefix;
         }
     }
 

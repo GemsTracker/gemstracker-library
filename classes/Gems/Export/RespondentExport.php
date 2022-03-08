@@ -62,6 +62,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     protected $_respondentSnippet = 'Export_RespondentSnippet';
 
     /**
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -79,6 +84,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      */
     protected $html;
 
+    /**
+     * @var bool The login was in an embedded browser frame
+     */
+    protected $isFramed = false;
+    
     /**
      *
      * @var \Gems_Loader
@@ -459,6 +469,44 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         // Do not know why, but for some reason menu is not loaded automatically.
         $this->menu   = $this->loader->getMenu();
+        
+        $this->isFramed = $this->currentUser->isSessionFramed();
+    }
+
+
+    /**
+     * Clean DOM object for Word export
+     *
+     * @param object $dom
+     */
+    public function cleanDom($dom)
+    {
+        // add border attributes to tables
+        foreach ($dom->getElementsByTagName('table') as $tablenode) {
+            $tablenode->setAttribute('style','border: 2px #000000 solid;');
+        }
+
+        // add font weight attributes to th elements
+        foreach ($dom->getElementsByTagName('th') as $thnode) {
+            $thnode->setAttribute('style','font-weight: bold;');
+        }
+
+        // replace h1-h6 elements for PHP Word processing
+        for ($i = 1; $i <= 6; $i++) {
+            $fontsize = 26 - ($i * 2);
+            do {
+                // The list is dynamic so search again until no longer found
+                $headers = $dom->getElementsByTagName('h' . $i);
+                $headerNode = $headers->item(0);
+                if ($headerNode) {
+                    $newHeaderNode = $dom->createElement("p", $headerNode->nodeValue);
+                    $newHeaderNode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px;');
+                    $headerNode->parentNode->replaceChild($newHeaderNode, $headerNode);
+
+                }
+            } while  ($headers->length > 0);
+        }
+        return $dom;
     }
 
     /**
@@ -470,7 +518,9 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     public function getForm($hideGroup = false)
     {
         $form = new \Gems_Form();
-        $form->setAttrib('target', '_blank');
+        if (! $this->isFramed) {
+            $form->setAttrib('target', '_blank');
+        }
 
         if ($hideGroup) {
             $element = new \Zend_Form_Element_Hidden('group');
@@ -525,7 +575,8 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         
         // clear scripting
         $string = preg_replace( '@<(script|style|head|header|footer)[^>]*?>.*?</\\1>@si', '', $string );
-        
+        $string = preg_replace('/&(?!(#[0-9]{2,4}|[A-z]{2,6})+;)/', '&amp;', $string);
+
         // clean string using DOM object
         $dom = new \DOMDocument();
         $dom->loadHTML($string);
@@ -546,46 +597,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $string = preg_replace("@<i[^>]*></i>@si", '', $string);
         $string = preg_replace("@<span[^>]*></span>@si", '', $string);
         $string = preg_replace("@<a[^>]*></a>@si", '', $string);
-
+        
         return trim( $string );
     }
     
-    
-    /**
-     * Clean DOM object for Word export
-     *
-     * @param object $dom
-     */
-    public function cleanDom($dom)
-    {
-        // add border attributes to tables
-        foreach ($dom->getElementsByTagName('table') as $tablenode) {
-            $tablenode->setAttribute('style','border: 2px #000000 solid;');
-        }
-        
-        // add font weight attributes to th elements
-        foreach ($dom->getElementsByTagName('th') as $thnode) {
-            $thnode->setAttribute('style','font-weight: bold;');
-        }
-        
-        // replace h1-h6 elements for PHP Word processing
-        for ($i = 1; $i <= 6; $i++) {
-            $fontsize = 26 - ($i * 2);
-            do {
-                // The list is dynamic so search again until no longer found
-                $headers = $dom->getElementsByTagName('h' . $i);
-                $headerNode = $headers->item(0);
-                if ($headerNode) {
-                    $newHeaderNode = $dom->createElement("p", $headerNode->nodeValue);
-                    $newHeaderNode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px;');
-                    $headerNode->parentNode->replaceChild($newHeaderNode, $headerNode);
-                    
-                }
-            } while  ($headers->length > 0);
-        }
-        return $dom;
-    }
-
     /**
      * Renders the entire report (including layout)
      *
@@ -596,6 +611,18 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     public function render($respondents, $group = true, $format = 'html')
     {
         $this->_group = $group;
+
+        if ($this->isFramed && ('html' == $format)) {
+            $div = $this->html->div();
+            $url = new \MUtil_Html_HrefArrayAttribute([
+                $this->request->getControllerKey() => $this->request->getControllerName(),
+                $this->request->getActionKey() => $this->request->getActionName(),
+                \MUtil_Model::REQUEST_ID1 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                \MUtil_Model::REQUEST_ID2 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID2),
+                ]);
+            $url->setRouteReset(true);
+            $div->a($url, $this->_('Back'), ['class' => 'btn']);
+        }
 
         $this->html->snippet($this->_reportHeader);
 
