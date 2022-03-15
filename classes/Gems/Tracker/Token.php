@@ -1470,7 +1470,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         $tokenSelect = $this->tracker->getTokenSelect(new \Zend_Db_Expr('COUNT(*)'));
         $tokenSelect
-                ->andReceptionCodes(array())
+                ->andReceptionCodes(array(), false)
                 ->andSurveys(array())
                 ->andRounds(array())
                 ->forRespondent($this->getRespondentId())
@@ -1894,9 +1894,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function isViewable()
     {
         if (isset($this->_gemsData['show_answers']) && $this->_gemsData['show_answers']) {
-            return $this->currentUser->isAllowedOrganization($this->getOrganizationId());    
+            return $this->currentUser->isAllowedOrganization($this->getOrganizationId());
         }
-        
+
         return false;
     }
 
