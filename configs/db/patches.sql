@@ -1729,6 +1729,10 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.d
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.edit') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.edit%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.lock') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.lock%';
 
+-- PATCH: Add index to gems data
+ALTER TABLE gemsdata__responses ADD INDEX gdr_changed (gdr_changed);
+
+
 -- GEMS VERSION: 68
 -- PATCH: Add seeing answers by group
 ALTER TABLE gems__surveys ADD gsu_answers_by_group boolean not null default 0 AFTER gsu_id_primary_group;
@@ -1736,6 +1740,6 @@ ALTER TABLE gems__surveys ADD gsu_answer_groups varchar(250) CHARACTER SET 'utf8
 ALTER TABLE gems__surveys ADD gsu_allow_export boolean not null default 1 AFTER gsu_answer_groups;
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.survey-maintenance.answer-groups') WHERE grl_privileges LIKE '%pr.survey-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.survey-maintenance.answer-groups%';
 
--- PATCH: Remember last synch  
+-- PATCH: Remember last synch
 ALTER TABLE gems__appointments
     ADD gap_last_synch timestamp null default null AFTER gap_id_in_source;
