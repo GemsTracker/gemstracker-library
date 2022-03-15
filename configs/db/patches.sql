@@ -1729,10 +1729,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.d
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.edit') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.edit%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.lock') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.lock%';
 
--- PATCH: Add index to gems data
-ALTER TABLE gemsdata__responses ADD INDEX gdr_changed (gdr_changed);
-
-
 -- GEMS VERSION: 68
 -- PATCH: Add seeing answers by group
 ALTER TABLE gems__surveys ADD gsu_answers_by_group boolean not null default 0 AFTER gsu_id_primary_group;
