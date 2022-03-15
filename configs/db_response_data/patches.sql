@@ -18,3 +18,6 @@ ALTER TABLE  gemsdata__responses ADD
 
 ALTER IGNORE TABLE gemsdata__responses ADD UNIQUE INDEX (gdr_id_token, gdr_answer_id, gdr_answer_row);
 
+-- GEMS VERSION: 67
+-- PATCH: Add index to gems data
+ALTER TABLE gemsdata__responses ADD INDEX gdr_changed (gdr_changed);
