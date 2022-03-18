@@ -141,6 +141,8 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
             // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", \Zend_Log::ERR);
+//                $msg = sprintf("Additional brute force info: url was %s from ip address %s.", $_SERVER['REQUEST_URI'], $this->request->getServer('REMOTE_ADDR'));
+//                $this->logger->log($msg, \Zend_Log::ERR);
 
                 $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');
 

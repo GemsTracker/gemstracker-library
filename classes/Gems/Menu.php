@@ -105,6 +105,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         // Routes for token controller return
         $this->addPage(null, true, 'ask', 'forward');
+        $this->addPage(null, true, 'ask', 'resume-later');
         $this->addPage(null, true, 'ask', 'return');
         $this->addPage(null, true, 'ask', 'to-survey')->setModelParameters(1);
         $this->addPage(null, true, 'ask', 'token');

@@ -99,7 +99,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         
         // \MUtil_Echo::track($oldRoundDescription, $newRoundDescription);
         foreach ($allTokens as $next) {
-            if ($next->getRoundDescription() == $oldRoundDescription) {
+            if ($next->getReceptionCode()->isSuccess() && ($next->getRoundDescription() == $oldRoundDescription)) {
                 $newValues = [
                     'gto_id_round'           => 0,
                     'gto_round_order'        => ++$newOrder,

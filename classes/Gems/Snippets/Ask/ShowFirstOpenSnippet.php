@@ -25,18 +25,6 @@ namespace Gems\Snippets\Ask;
 class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 {
     /**
-     *
-     * @var \Gems_Loader
-     */
-    public $loader;
-
-    /**
-     *
-     * @var \Gems_Menu
-     */
-    public $menu;
-
-    /**
      * Required
      *
      * @var \Gems_Project_ProjectSettings
@@ -49,13 +37,6 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * @var boolean
      */
     public $showEndScreen = true;
-
-    /**
-     * Optional, calculated from $token
-     *
-     * @var \Gems_Tracker_Token
-     */
-    protected $showToken;
 
     /**
      * Switch for showing how long the token is valid.
@@ -157,7 +138,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
         if ($this->wasAnswered) {
             // Provide continue later link only when the first survey was answered
-            $this->addContinueLink($html, $this->token);
+            $this->addContinueLink($html, $this->showToken);
         }
 
         if ($count) {

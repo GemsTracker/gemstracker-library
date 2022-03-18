@@ -27,7 +27,7 @@ class ShowFirstOpenAskPrivate extends ShowFirstOpenAsk
      */
     public function getParameters(\Gems_Tracker_Token $token)
     {
-        return ['showLastName' => true];
+        return ['showLastName' => false];
     }
 
     /**

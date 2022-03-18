@@ -20,7 +20,12 @@
  */
 class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_SnippetAbstract
 {
-    const CONTINUE_LATER_PARAM = 'continue_later';
+    const CONTINUE_LATER_PARAM = 'continueLater';
+
+    /**
+     * @var string 
+     */
+    protected $action = 'forward';
     
     /**
      * General date format
@@ -33,6 +38,12 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Menu
+     */
+    protected $menu;
 
     /**
      * Required
@@ -52,7 +63,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      * @var bool Switch for showing the last name
      */
     protected $showLastName = false;
-    
+
     /**
      * Switch for showing how long the token is valid.
      *
@@ -99,19 +110,27 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         if (! $token->isCompleted()) {
             $mailLoader = $this->loader->getMailLoader();
             /** @var \Gems_Mail_TokenMailer $mailer */
-            $mailer     = $mailLoader->getMailer('token', $this->showToken->getTokenId());
+            $mailer     = $mailLoader->getMailer('token', $token->getTokenId());
             $orgEmail   = $token->getOrganization()->getFrom();
-            $respEmail  = $token->showToken->getEmail();
+            $respEmail  = $token->getEmail();
 
             // If there is no template, or no email for sender / receiver we show no link
             if ($mailer->setTemplateByCode('continue') && (!empty($orgEmail)) && $token->isMailable()) {
                 $html->pInfo($this->_('or'));
-                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'forward'));
+                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => $this->action));
                 $href     = $menuItem->toHRefAttribute($this->request);
                 $href->add([self::CONTINUE_LATER_PARAM => 1, 'id' => $token->getTokenId()]);
                 $html->actionLink($href, $this->_('Send me an email to continue later'));
             }
         }
+    }
+
+    /**
+     * @return boolean Was the continue link clicked
+     */
+    public function checkContinueLinkClicked()
+    {
+        return $this->request->getParam(self::CONTINUE_LATER_PARAM, false);
     }
 
     /**
@@ -121,18 +140,24 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      */
     public function continueClicked()
     {
+        if ($this->token->isCompleted()) {
+            $token = $this->token->getNextUnansweredToken();
+        } else {
+            $token = $this->token;
+        }
+
         $html = $this->getHtmlSequence();
-        $org  = $this->token->getOrganization();
+        $org  = $token->getOrganization();
 
         $html->h3($this->getHeaderLabel());
 
         $mailLoader = $this->loader->getMailLoader();
         /** @var \Gems_Mail_TokenMailer $mail */
-        $mail       = $mailLoader->getMailer('token', $this->showToken->getTokenId());
-        $mail->setFrom($this->showToken->getOrganization()->getFrom());
+        $mail       = $mailLoader->getMailer('token', $token->getTokenId());
+        $mail->setFrom($token->getOrganization()->getFrom());
         
         if ($mail->setTemplateByCode('continue')) {
-            $lastMailedDate = \MUtil_Date::ifDate($this->showToken->getMailSentDate(), 'yyyy-MM-dd');
+            $lastMailedDate = \MUtil_Date::ifDate($token->getMailSentDate(), 'yyyy-MM-dd');
 
             // Do not send multiple mails a day
             if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
@@ -150,14 +175,6 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         }
 
         return $html;
-    }
-
-    /**
-     * @return boolean Was the continue link clicked
-     */
-    public function checkContinueLinkClicked()
-    {
-        return $this->request->getParam(self::CONTINUE_LATER_PARAM, false);
     }
 
     /**
@@ -358,7 +375,6 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      */
     public function lastCompleted()
     {
-        // We use $this->token since there is no showToken anymore
         $html = $this->getHtmlSequence();
         $org  = $this->token->getOrganization();
 

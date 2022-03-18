@@ -88,6 +88,27 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
     public $project;
 
     /**
+     * The parameters used for the lost action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $resumeLaterParameters = [];
+    
+    /**
+     * Usually a child of \Gems_Tracker_Snippets_ShowTokenLoopAbstract,
+     * Ask_ShowAllOpenSnippet or Ask_ShowFirstOpenSnippet or
+     * a project specific one.
+     *
+     * @var array Or string of snippet names, presumably \Gems_Tracker_Snippets_ShowTokenLoopAbstract snippets
+     */
+    protected $resumeLaterSnippets = 'Ask\\ResumeLaterSnippet';
+        
+    /**
      * The current token ID
      *
      * set by _initToken()
@@ -190,6 +211,37 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
         }
 
         return true;
+    }
+
+    /**
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function _processAskParameters(array $input)
+    {
+        $output = [];
+
+        foreach ($input as $key => $value) {
+            if (is_string($value) && method_exists($this, $value)) {
+                $value = $this->$value($key);
+
+                if (is_integer($key) || ($value === null)) {
+                    continue;
+                }
+            }
+            $output[$key] = $value;
+        }
+        if (! isset($output['token'])) {
+            if (! $this->token) {
+                $this->_initToken();
+            }
+            if ($this->token) {
+                $output['token'] = $this->token;
+            }
+        }
+        
+        return $output;
     }
 
     /**
@@ -327,7 +379,15 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
      */
     public function lostAction()
     {
-        $this->addSnippet($this->lostSnippets, $this->lostParameters);
+        $this->addSnippet($this->lostSnippets, $this->_processAskParameters($this->lostParameters));
+    }
+
+    /**
+     * If the user signalled to resume later
+     */
+    public function resumeLaterAction()
+    {
+        $this->addSnippet($this->resumeLaterSnippets, $this->_processAskParameters($this->resumeLaterParameters));
     }
 
     /**
@@ -341,6 +401,11 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
             return;
         }
 
+        if ((! $this->currentUser->isActive()) && $this->getParam('resumeLater', 0)) {
+            $this->forward('resume-later');
+            return;
+        }
+        
         if ($url = $this->token->getReturnUrl()) {
             // Check for completed tokens
             $this->tracker->processCompletedTokens(
@@ -375,7 +440,7 @@ class Gems_Default_AskAction extends \Gems_Controller_Action
 
         $this->_reroute($parameters, true);
     }
-
+    
     /**
      * Duplicate of to-survey to enable separate rights
      */

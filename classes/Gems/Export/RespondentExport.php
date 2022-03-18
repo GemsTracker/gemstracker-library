@@ -253,7 +253,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         return false;
     }
-
+    
     /**
      * Exports all the tokens of a single track, grouped by round
      *
@@ -502,7 +502,6 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                     $newHeaderNode = $dom->createElement("p", $headerNode->nodeValue);
                     $newHeaderNode->setAttribute('style', 'font-weight: bolder; font-size: ' . $fontsize . 'px;');
                     $headerNode->parentNode->replaceChild($newHeaderNode, $headerNode);
-
                 }
             } while  ($headers->length > 0);
         }
@@ -539,6 +538,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $element->setValue('pdf');
         }
         if ($this->_word) {
+            $outputFormats['rtf']  = 'RTF';
             $outputFormats['word'] = 'Word';
             $element->setValue('word');
         }
@@ -660,7 +660,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
             $content = $this->_pdf->convertFromHtml($content);
             $this->_pdf->echoPdfContent($content, $filename, true);
-        } elseif (($format == 'word') || ($format == 'pdf')) {
+        } elseif (($format == 'word') || ($format == 'pdf') || ($format == 'rtf')) {
             if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
                 $respondentId = $respondentId['gr2o_patient_nr'];
             }
@@ -681,7 +681,14 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                 header('Cache-Control: private, max-age=0, must-revalidate');
                 header('Pragma: public');
                 $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'PDF');
-                
+
+            } elseif ($format == 'rtf') {
+                $filename = 'respondent-export-' . strtolower($respondentId) . '.rtf';
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment;filename="' . $filename . '"');
+                header('Cache-Control: private, max-age=0, must-revalidate');
+                header('Pragma: public');
+                $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($this->_word, 'RTF');
             } else {
                 $filename = 'respondent-export-' . strtolower($respondentId) . '.docx';
                 header('Content-Type: application/octet-stream');

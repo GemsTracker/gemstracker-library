@@ -265,13 +265,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
     /**
      * Check if the token should be enabled / disabled due to conditions
      *
-     * @param \GemS_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
      * @param \Gems_Tracker_RespondentTrack Current respondent track
      * @return int The number of tokens changed by this code
      */
-    protected function checkTokenCondition(\GemS_Tracker_Token $token, $round, $userId, \Gems_Tracker_RespondentTrack $respTrack)
+    protected function checkTokenCondition(\Gems_Tracker_Token $token, $round, $userId, \Gems_Tracker_RespondentTrack $respTrack)
     {
         $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
 
