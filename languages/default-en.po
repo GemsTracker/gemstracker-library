@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-18 16:31+0100\n"
+"POT-Creation-Date: 2022-03-21 17:32+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: GemsTracker <matijs.de.jong@magnafacta.nl>\n"
@@ -1751,24 +1751,24 @@ msgstr "You have no access to %s appointments!"
 msgid "Organization does not exist."
 msgstr "Organization does not exist."
 
-#: classes/Gems/Default/AskAction.php:256
+#: classes/Gems/Default/AskAction.php:254
 #, php-format
 msgid "Enter your %s token"
 msgstr "Enter your %s token"
 
-#: classes/Gems/Default/AskAction.php:259
+#: classes/Gems/Default/AskAction.php:257
 msgid "Tokens identify a survey that was assigned to you personally."
 msgstr "Tokens identify a survey that was assigned to you personally."
 
-#: classes/Gems/Default/AskAction.php:259
+#: classes/Gems/Default/AskAction.php:257
 msgid "Entering the token and pressing OK will open that survey."
 msgstr "Entering the token and pressing OK will open that survey."
 
-#: classes/Gems/Default/AskAction.php:263
+#: classes/Gems/Default/AskAction.php:261
 msgid "After answering the survey you will be logged off automatically."
 msgstr "After answering the survey you will be logged off automatically."
 
-#: classes/Gems/Default/AskAction.php:268
+#: classes/Gems/Default/AskAction.php:266
 msgid ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
@@ -1776,7 +1776,7 @@ msgstr ""
 "A token consists of two groups of four letters and numbers, separated by an "
 "optional hyphen. Tokens are case insensitive."
 
-#: classes/Gems/Default/AskAction.php:269
+#: classes/Gems/Default/AskAction.php:267
 msgid ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
@@ -1784,12 +1784,12 @@ msgstr ""
 "The number zero and the letter O are treated as the same; the same goes for "
 "the number one and the letter L."
 
-#: classes/Gems/Default/AskAction.php:294
+#: classes/Gems/Default/AskAction.php:292
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
-#: classes/Gems/Default/AskAction.php:334
+#: classes/Gems/Default/AskAction.php:332
 #, php-format
 msgid ""
 "Thank you for answering. At the moment we have no further surveys for you to "
@@ -1798,14 +1798,14 @@ msgstr ""
 "Thank you for answering. At the moment we have no further surveys for you to "
 "take."
 
-#: classes/Gems/Default/AskAction.php:339
+#: classes/Gems/Default/AskAction.php:337
 #, php-format
 msgid ""
 "The survey for token %s has been answered and no further surveys are open."
 msgstr ""
 "The survey for token %s has been answered and no further surveys are open."
 
-#: classes/Gems/Default/AskAction.php:494
+#: classes/Gems/Default/AskAction.php:492
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
@@ -4663,7 +4663,11 @@ msgstr "Add all tracks with containing the trackcode \"%s\"."
 msgid "Recalculate all respondent tracks"
 msgstr "Recalculate all patient tracks"
 
-#: classes/Gems/Event/Survey/BeforeAnswering/FillTrackFieldAnswers.php:32
+#: classes/Gems/Event/Survey/BeforeAnswering/FillBirthDayGender.php:30
+msgid "Copy gtAgeYears, gtAgeMonths, gtGender and gtRespondentNr."
+msgstr "Copy gtAgeYears, gtAgeMonths, gtGender and gtRespondentNr."
+
+#: classes/Gems/Event/Survey/BeforeAnswering/FillTrackFieldAnswers.php:34
 msgid "Copy track fields with the same trackfield code to answers"
 msgstr "Copy track fields with the same trackfield code to answers"
 
@@ -4679,7 +4683,7 @@ msgstr "Lookup answers in previous instance of survey in track."
 msgid "Lookup answers in previous survey with the same survey code in track."
 msgstr "Lookup answers in previous survey with the same survey code in track."
 
-#: classes/Gems/Event/Survey/BeforeAnswering/PrefillAnswers.php:44
+#: classes/Gems/Event/Survey/BeforeAnswering/PrefillAnswers.php:47
 msgid ""
 "Fill survey question when code starts with: TF for trackfield, CP for survey "
 "or RD for Respondent (only age/sex/birthdate)"
@@ -7506,7 +7510,6 @@ msgid "Click here to resume %s now"
 msgstr "Click here to resume %s now"
 
 #: classes/Gems/Snippets/Ask/ResumeLaterSnippet.php:41
-#| msgid "Thank you for answering \"%s\"."
 msgid "Thank you for answering so far"
 msgstr "Thank you for answering so far"
 
@@ -10938,11 +10941,11 @@ msgstr "After field update"
 msgid "Dear %s"
 msgstr "Dear %s"
 
-#: classes/Gems/Tracker/RespondentTrack.php:796
+#: classes/Gems/Tracker/RespondentTrack.php:795
 msgid "Track stopped"
 msgstr "Track stopped"
 
-#: classes/Gems/Tracker/RespondentTrack.php:799
+#: classes/Gems/Tracker/RespondentTrack.php:798
 msgid "Track completed"
 msgstr "Track completed"
 
