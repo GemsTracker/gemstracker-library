@@ -10,6 +10,8 @@
 
 namespace Gems\Event\Survey\BeforeAnswering;
 
+use Gems\Event\BeforeAnsweringAbstract;
+
 /**
  * This events look for a previous copy of a survey with the same code and copies
  * the answers for all fields starting with a prefix
@@ -20,7 +22,7 @@ namespace Gems\Event\Survey\BeforeAnswering;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 21-Mar-2018 19:49:43
  */
-class FillTrackFieldAnswers extends PrefillAnswers
+class FillTrackFieldAnswers extends BeforeAnsweringAbstract
 {
     /**
      * A pretty name for use in dropdown selection boxes.
@@ -33,34 +35,18 @@ class FillTrackFieldAnswers extends PrefillAnswers
     }
 
     /**
-     * Process the data and return the answers that should be filled in beforehand.
+     * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
+     * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * Storing the changed values is handled by the calling function.
-     *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @return array Containing the changed values
+     * @param \Gems_Tracker_Token $token
      */
-    public function processTokenInsertion(\Gems_Tracker_Token $token)
+    protected function processOutput(\Gems_Tracker_Token $token)
     {
-        $this->token = $token;
+        $this->log("Setting track fields");
 
-        if ($token->getReceptionCode()->isSuccess() && (!$token->isCompleted())) {
-            // Read questioncodes
-            $questions = $token->getSurvey()->getQuestionList(null);
-            $fields    = [];
-            $results   = [];
+        $fields = $this->getTrackFieldValues($token->getRespondentTrack());
+        // \MUtil_Echo::track($fields);
 
-            // Check if they match a prefix schema
-            foreach ($questions as $code => $text) {
-                $upperField = strtoupper($code);
-                $fields[$code] = $upperField;
-            }
-
-            if (count($fields) > 0) {
-                $results = $results + $this->getTrackFields($fields);
-            }
-
-            return $results;
-        }
+        $this->addCheckedArray($fields);
     }
 }

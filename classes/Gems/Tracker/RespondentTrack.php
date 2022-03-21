@@ -692,7 +692,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 
     /**
      * Return all possible code fields with the values filled for those that exist for this track,
-     * optionally with a prefix
      *
      * @return array code => value
      */

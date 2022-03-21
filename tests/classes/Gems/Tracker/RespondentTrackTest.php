@@ -69,6 +69,21 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet($classFile);
     }
 
+    public function testGetCodeFields()
+    {
+        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
+
+        $actual = $respondentTrack->getCodeFields();
+
+        $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
+        $expected = array(
+            'code' => 'test',
+            'datecode' => $date->toString('dd MMM yyyy'),
+            'rel'  => 'Johnny Walker'
+        );
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testGetFieldCodes()
     {
         $expected = array(
@@ -273,7 +288,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $actual = array_intersect_key($newData, $expected);
         $this->assertEquals($expected, $actual);
     }
-    
+
     /**
      * Test if settings fields via code works
      */
@@ -311,21 +326,6 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
     }
     
-    public function testGetCodeFields()
-    {
-        $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
-        
-        $actual = $respondentTrack->getCodeFields();
-        
-        $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
-        $expected = array(
-            'code' => 'test',
-            'datecode' => $date->toString('dd MMM yyyy'),
-            'rel'  => 'Johnny Walker'
-            );
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testGetTrackCode()
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
