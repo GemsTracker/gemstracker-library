@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Add RTF export to DossierExport (#703)
 - Allow mailability to be set at multiple levels (#603)
 - Allow save & resume from LimeSurvey using GT (#702)
+- Allow single click copy of tables and other objects to the clipboard (#705) first version
 - Allow some (limited) option for repeating parts of tracks (#697)
 - Auto mail job should also be able to send different kind of messages (#636)
 - Displaying answers depending on role (#23)

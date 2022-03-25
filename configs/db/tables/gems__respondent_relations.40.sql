@@ -32,5 +32,5 @@ CREATE TABLE IF NOT EXISTS gems__respondent_relations (
         INDEX grr_id_respondent (grr_id_respondent, grr_id_staff)
     )
     ENGINE=InnoDB
-    CHARSET = utf8 COLLATE = utf8_unicode_ci
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
     AUTO_INCREMENT = 10001;

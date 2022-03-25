@@ -40,11 +40,17 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
     protected $answerFilter;
 
     /**
+     *
+     * @var \Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
      */
-    protected $class = 'answer answers browser table compliance';
+    protected $class = 'answer answers browser table compliance copy-to-clipboard';
 
     /**
      *
@@ -339,6 +345,8 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends \Gems_Snippets_Mod
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
+        $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.copyToClipboard.js');
+        
         $htmlDiv = \MUtil_Html::create()->div(array('class' => 'answer-container'));
 
         if ($this->tokenId) {
