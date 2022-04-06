@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Spelling mistakes in Site setup information (#710)  
 - Submitting last survey generates fatal error (#707)
 - Token overview by period creates an error (#706)
+- Limesurvey 4+ fieldmap error (#542)
 
 ## [1.9.1p4]
 ### Added user functionality
