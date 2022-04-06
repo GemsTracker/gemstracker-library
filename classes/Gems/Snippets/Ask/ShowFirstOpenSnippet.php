@@ -82,7 +82,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
         $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
         $href  = $this->getTokenHref($this->showToken);
         $url   = $href->render($view);
-        $delay = 2;
+        
         switch ($delay) {
             case 0:
                 // Redirect at once
