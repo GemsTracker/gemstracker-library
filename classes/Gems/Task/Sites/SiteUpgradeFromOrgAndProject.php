@@ -47,6 +47,7 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
 
         $isoLang = $this->project->getLocaleDefault();
         $project = $this->project;
+        
         $addHttp = ! $this->project->isHttpsRequired();
         if (isset($project['console']['url'])) {
             $batch->addTask('Sites\\AddToBaseUrl', 'https://' . $project['console']['url'], null, $isoLang);

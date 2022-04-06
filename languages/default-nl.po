@@ -8642,7 +8642,7 @@ msgid ""
 "email and login. It also performs a security function."
 msgstr ""
 "Website onderhoud doet meerdere dingen: het koppelt webadressen (url's) aan "
-"organisatie voor email en login. Daarnaast wordt het gebruikt voor "
+"organisaties voor email en login. Daarnaast wordt het gebruikt voor "
 "beveiliging."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:41
@@ -8654,8 +8654,8 @@ msgid ""
 "Site maintenance can be maintained manually but is automatically filled when "
 "new sites is UNBLOCKed."
 msgstr ""
-"Websites kunnen handmatig onderhouden worden, maar worden automatisch gevuld "
-"nieuwe websites geDEBLOKKEERd zijn."
+"Websites kunnen handmatig onderhouden worden, maar worden automatisch "
+"ingericht als nieuwe websites geDEBLOKKEERd zijn."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:43
 msgid "Usually initially we fill the sites automatically."
@@ -8665,21 +8665,21 @@ msgstr "Gewoonlijk vullen we initieel de websites automatisch."
 msgid ""
 "But once setup is finished you should block the use of any unknown sites."
 msgstr ""
-"Maar als de installatie afgerond is moet je de automatische registratie van "
+"Maar als de installatie afgerond is, moet je de automatische registratie van "
 "nieuwe websites blokkeren."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:46
 msgid "Checks are performed every time a page is opened."
-msgstr "Controlers worden uitgevoerd elke keer dat een pagina geopend wordt."
+msgstr "Controles worden uitgevoerd elke keer dat een pagina geopend wordt."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:47
 msgid ""
 "Only when new sites is UNBLOCKed are new sites are added automatically, but "
 "they may be blocked even then when the behaviour is deemed sketchy."
 msgstr ""
-"Allen wanneer nieuwe websites geDEBLOKKEERd zijn worden nieuwe websites "
-"automatisch toegevoegd, maar zelfs dan kunnen ze geblokkeerd worden als er "
-"verdacht gedrag gezien wordt."
+"Alleen wanneer nieuwe websites geDEBLOKKEERd zijn worden nieuwe websites "
+"automatisch toegevoegd, maar zelfs dan kunnen ze geblokkeerd toegevoegd "
+"worden als er verdacht gedrag gezien wordt."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:49
 msgid "Linking an url to an organization"
@@ -8712,8 +8712,8 @@ msgid ""
 "The email url used by an organization is the oldest url with the lowest "
 "priority number accessible for that organization."
 msgstr ""
-"Het webadres gebruikt in emails van een organisatie is altijd de oudste url "
-"met de laagste prioriteit, toegankelijk voor die organisatie."
+"Het webadres dat gebruikt wordt in emails van een organisatie is altijd de "
+"oudste url, met de laagste prioriteit, toegankelijk voor die organisatie."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:58
 msgid "Defending against cross site posting"
@@ -8724,20 +8724,21 @@ msgid ""
 "When a user tries to login (or post in general) from a site that is not "
 "known to the system, this implies the url is not on the server itself."
 msgstr ""
-"Als een gebruik probeert in te loggen (of andere gegevens verstuurd) vanaf "
-"een onbekende website, dan impliceert dit dat de server dit adres niet kent."
+"Als een gebruiker probeert in te loggen (of anders gegevens verstuurd) vanaf "
+"een hier niet bekende website, dan impliceert dit dat de website niet op "
+"deze server staat."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:61
 msgid "If the url is new, then the url is blocked by default."
-msgstr "Een nieuw webadres wordt altijd eerst geblokkeerd."
+msgstr "Zo'n nieuwe website wordt altijd automatisch geblokkeerd."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteMaintenanceInformation.php:63
 msgid ""
 "If the login is legitimate (e.g. from another site in the same organization) "
 "you can unblock the url here."
 msgstr ""
-"Indien de login legitiem is (bijvoorbeeld van een andere website van een "
-"eigen organisatie) dan kan je de website hier deblokkeren."
+"Indien de login toch legitiem is (bijvoorbeeld afkomstig van een andere "
+"website van een eigen organisatie) dan kan je de website hier deblokkeren."
 
 #: classes/Gems/Snippets/SiteMaintenance/SiteSetupCheckSnippet.php:48
 msgid "Site setup information"

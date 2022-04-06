@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+<<<<<<< HEAD
 ## [1.9.2]
 ### Added user functionality
 - Add RTF export to DossierExport (#703)
@@ -20,7 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ### Fixed
 - Birthday sometimes stored incorrectly (#666)
+- Cannot perform installation with table translations initialized (#712)
 - Database filtering error on multi dimensional multiOption (#695)
+- Default email templates have spelling errors (#711)
 - Default view of MailLog does not show the time the mail was send (#667)
 - Do not show more than 2000 patient numbers in the systemuser show screen (#675)
 - Embedded login sometimes fails with error instead of correct error log (#662)
@@ -34,11 +37,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Prevent error message when getimagesize() fails to read a file (#663)
 - Print button in modal dialog shows empty page (#681)
 - RespondentRelations field error in TokenMailer (#664)
+- Roles table overview has incompete records (#709)
 - SelectModel drops sort columns silently (#672)
 - SQL error in getOrganizationsByCode (#665)
+- Spelling mistakes in Site setup information (#710)
+- Submitting last survey generates fatal error (#707)
 - Survey sometimes tries to load empty events (#661)
 - The answer popup during an embedded login has inconsistent output (#679)
 - The parent child information for surveys is incorrect (#654)
+- Token overview by period creates an error (#706)
 - Token overviews fail on relations with a slash in the name (#684)
 - Token return is set to organisation url, even when logged in (#660)
 - Url site management blocks access before update (#655)
