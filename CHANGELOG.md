@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1p5]
+### Fixed
+- Cannot perform installation with table translations initialized (#712)
+- Default email templates have spelling errors (#711) 
+- Roles table overview has incompete records (#709)
+- Spelling mistakes in Site setup information (#710)  
+- Submitting last survey generates fatal error (#707)
+- Token overview by period creates an error (#706)
+
 ## [1.9.1p4]
 ### Added user functionality
 - Allow mailability to be set at multiple levels (#603)

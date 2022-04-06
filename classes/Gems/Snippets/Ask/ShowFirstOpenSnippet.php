@@ -93,15 +93,15 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             // Continue later was clicked, handle the click
             return $this->continueClicked();
         }
-        if ($this->showToken->isCompleted()) {
+        if (! $this->showToken) {
             // Last token was answered, return info
             return $this->lastCompleted();
         }
 
         $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
         $href  = $this->getTokenHref($this->showToken);
-        $url   = $href->render($this->view);
-
+        $url   = $href->render($view);
+        $delay = 2;
         switch ($delay) {
             case 0:
                 // Redirect at once
@@ -113,7 +113,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 
             default:
                 // Let the page load after stated interval
-                $this->view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
+                $view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
         }
 
         $count = $this->getOtherTokenCountUnanswered($this->showToken);

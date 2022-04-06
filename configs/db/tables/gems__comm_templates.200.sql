@@ -20,12 +20,12 @@ CREATE TABLE if not exists gems__comm_templates (
 
 INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
     VALUES
-    (11, 'Questions for your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (12, 'Reminder: your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (13, 'Questions for your treatement at {organization} with unsubscribe', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (14, 'Reminder: your treatement at {organization} with unsubscribe', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (15, 'Questions for treatement of {relation_about} at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (16, 'Reminder: treatement of {relation_about} at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (11, 'Questions for your treatment at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (12, 'Reminder: your treatment at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (13, 'Questions for your treatment at {organization} with unsubscribe', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (14, 'Reminder: your treatment at {organization} with unsubscribe', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (15, 'Questions for treatment of {relation_about} at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (16, 'Reminder: treatment of {relation_about} at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     (19, 'Linked account created', 'staff', 'linkedAccountCreated', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),

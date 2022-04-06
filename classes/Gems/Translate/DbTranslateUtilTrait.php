@@ -96,9 +96,16 @@ trait DbTranslateUtilTrait
                 ->where('gtrs_iso_lang = ?', $this->language)
                 ->where('LENGTH(gtrs_translation) > 0');
 
-        $translations = $this->db->fetchPairs($tSelect);
-        // \MUtil_Echo::track($tSelect->__toString(), $translations);
-
+        try {
+            $translations = $this->db->fetchPairs($tSelect);
+            // \MUtil_Echo::track($tSelect->__toString(), $translations);
+        } catch (\Zend_Db_Statement_Mysqli_Exception $sme) {
+            // Ignore: as can be setup error
+            $translations = [];
+            \MUtil_Echo::r($sme->getMessage());
+            error_log($sme->getMessage());
+        } 
+        
         if ($translations) {
             foreach ($data as $item => $value) {
                 if (isset($translations[$item])) {

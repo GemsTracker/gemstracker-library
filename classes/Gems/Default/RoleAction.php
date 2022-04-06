@@ -193,7 +193,7 @@ class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstrac
                         return $output;
                     }
                     if (\MUtil_String::contains($description, '<br/>')) {
-                        $description = substr($description, 0, strpos($description, '<br/>') - 1);
+                        $description = substr($description, 0, strpos($description, '<br/>'));
                     }
                     $output->raw($description);
                     $output->br();

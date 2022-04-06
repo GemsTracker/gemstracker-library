@@ -271,9 +271,15 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllGroups($allowedOrgs, array $data)
     {
-        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+        if ($allowedOrgs) {
+            $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
+            $orgWhere = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
+        } else {
+            $orgIn = $orgWhere = "1 = 1";
+        }
+
         return "(SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                         INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
@@ -292,9 +298,9 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
                     WHERE
                         gto_id_round = 0 AND
-                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                        $orgIn
                 )
-                    ORDER BY ggp_name";
+                ORDER BY ggp_name";
     }
 
     /**
@@ -305,9 +311,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllTrackRounds($allowedOrgs, array $data)
     {
-        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+        if ($allowedOrgs) {
+            $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
+            $orgWhere = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
+        } else {
+            $orgIn = $orgWhere = "1 = 1";
+        }
 
         /**
          * Explanation:
@@ -329,7 +340,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                     WHERE
                         gto_id_round = 0 AND
                         LENGTH(gto_round_description) > 0 AND
-                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                        $orgIn
                 )
                 ORDER BY gro_round_description";
     }
@@ -353,9 +364,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllSurveys($allowedOrgs, array $data)
     {
-        $orgWhere    = "(INSTR(gtr_organizations, '|" .
+        if ($allowedOrgs) {
+            $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
+            $orgWhere = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
+        } else {
+            $orgIn = $orgWhere = "1 = 1";
+        }
 
         return "(SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
@@ -373,7 +389,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                     INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
                     WHERE
                         gto_id_round = 0 AND
-                        gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")
+                        $orgIn
                 )
                 ORDER BY gsu_survey_name";
     }
