@@ -1739,3 +1739,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.survey-maint
 -- PATCH: Remember last synch
 ALTER TABLE gems__appointments
     ADD gap_last_synch timestamp null default null AFTER gap_id_in_source;
+
+-- PATCH: Add index to log activity
+ALTER TABLE gems__log_activity ADD INDEX gla_created (gla_created);

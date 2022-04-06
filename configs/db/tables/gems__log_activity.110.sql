@@ -22,7 +22,8 @@ CREATE TABLE if not exists gems__log_activity (
         INDEX (gla_respondent_id),
         INDEX (gla_by),
         INDEX (gla_organization),
-        INDEX (gla_role)
+        INDEX (gla_role),
+        INDEX (gla_created)
    )
    ENGINE=InnoDB
    auto_increment = 100000
