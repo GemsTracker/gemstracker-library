@@ -166,6 +166,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                         'gsi_url' => $id,
                         'gsi_select_organizations' => 0,
                         'gsi_blocked' => ($this->_blockOnCreation ? 1 : 0),
+                        'gsi_iso_lang' => $this->project->getLocaleDefault() ?: 'en'
                         ]);
                 }
                 $data['is_new'] = true;
@@ -181,7 +182,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_organizations'        => [],
                 'gsi_style'                => 'gems',
                 'gsi_style_fixed'          => '0',
-                'gsi_iso_lang'             => 'en',
+                'gsi_iso_lang'             => $this->project->getLocaleDefault() ?: 'en',
                 'gsi_active'               => 1,
                 'gsi_blocked'              => 0,     // Never block when the table does not exist
                 'is_new'                   => false, // And we fake this!

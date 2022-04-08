@@ -6,12 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1p5]
 ### Fixed
 - Cannot perform installation with table translations initialized (#712)
-- Default email templates have spelling errors (#711) 
+- Default email templates have spelling errors (#711)
+- Limesurvey 4+ fieldmap error (#542)
+- New site install default language not correct (#714)
+- Relation_about fields in mail are empty when there is no relation (#715)
 - Roles table overview has incompete records (#709)
-- Spelling mistakes in Site setup information (#710)  
+- Spelling mistakes in Site setup information (#710)
 - Submitting last survey generates fatal error (#707)
 - Token overview by period creates an error (#706)
-- Limesurvey 4+ fieldmap error (#542)
 
 ## [1.9.1p4]
 ### Added user functionality

@@ -1728,3 +1728,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.c
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.delete') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.delete%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.edit') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.edit%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.lock') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.site-maint.lock%';
+
+-- PATCH: Fix comm template spelling mistake
+UPDATE gems__comm_templates SET gct_name = REPLACE(gct_name, 'treatement', 'treatment');
