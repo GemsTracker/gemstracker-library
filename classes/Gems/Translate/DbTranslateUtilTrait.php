@@ -102,7 +102,7 @@ trait DbTranslateUtilTrait
         } catch (\Zend_Db_Statement_Mysqli_Exception $sme) {
             // Ignore: as can be setup error
             $translations = [];
-            \MUtil_Echo::r($sme->getMessage());
+            \MUtil_Echo::r("Translations table required, but does not exist.");
             error_log($sme->getMessage());
         } 
         

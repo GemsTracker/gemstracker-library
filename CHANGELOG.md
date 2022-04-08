@@ -3,7 +3,6 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-<<<<<<< HEAD
 ## [1.9.2]
 ### Added user functionality
 - Add RTF export to DossierExport (#703)
@@ -31,11 +30,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Export to Word chokes on & and h2 elements in questions (#653)
 - From e-mail address should be just that (#669)
 - HtmlElement access on non-existing content generates only useless notices (#696) 
+- Limesurvey 4+ fieldmap error (#542)
 - Mailcodes show up ugly in survey maintenance search screen when there is only 1 survey mail code (#690)
+- New site install default language not correct (#714)
 - Preg_match() notice in upgrade compatibility check (#698)
 - PrefillAnswers script fails when track fieldcodes are equal but differ in case (#687)
 - Prevent error message when getimagesize() fails to read a file (#663)
 - Print button in modal dialog shows empty page (#681)
+- Relation_about fields in mail are empty when there is no relation (#715)
 - RespondentRelations field error in TokenMailer (#664)
 - Roles table overview has incompete records (#709)
 - SelectModel drops sort columns silently (#672)

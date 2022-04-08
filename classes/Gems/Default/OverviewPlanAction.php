@@ -125,17 +125,26 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbs
         // b) remove the selector filter from that filter to get the "real" filter
         $realFilter = $selector->processSelectorFilter($this->getRequest(), $filter);
 
+        // Remove non-columns
+        foreach ($realFilter as $key => $value) {
+            if (! $model->has($key)) {
+                unset($realFilter[$key]);
+            }
+        }
+        
         // c) filter the counts of the selector using that "real" filter
         //   1) for this we create a sub select that can be used in both filters
         $subSelect = $model->getFilteredSelect($realFilter);
 
         // c) filter the counts of the selector using that "real" filter
         //   2) add that filter to the selector
-        $selector->setFilter(['gto_id_token' => $subSelect]);
+        $selector->setFilter([sprintf('gto_id_token IN (%s)', (string) $subSelect)]); // MUtil 1.9.1 does not support passing on a Select object
+        // $selector->setFilter(['gto_id_token' => $subSelect]);
 
         // c) filter the counts of the selector using that "real" filter
         //   3) add that filter to the output
-        $output['gto_id_token'] = $subSelect;
+        $output[] = sprintf('gto_id_token IN (%s)', (string) $subSelect); // MUtil 1.9.1 does not support passing on a Select object
+        // $output['gto_id_token'] = $subSelect;
 
         // d) add the filter of the clicked selector square to the filter output here
         $output += $selector->getSelectorFilterPart();

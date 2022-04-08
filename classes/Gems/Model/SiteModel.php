@@ -44,7 +44,7 @@ class SiteModel extends  \Gems_Model_JoinModel
             'row_class'
         );
     }
-    
+
     /**
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.

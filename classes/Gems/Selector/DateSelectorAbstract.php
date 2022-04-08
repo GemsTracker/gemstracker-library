@@ -475,8 +475,6 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
 
-        $model = $this->getModel();
-
         return $filter;
     }
 

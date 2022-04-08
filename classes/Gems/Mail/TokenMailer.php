@@ -289,17 +289,16 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                 $result[$key] = $data;
             }
 
+            $allFields = $this->getMailFields(false);
+            // Set about to patient name
+            $result['relation_about'] = $allFields['name'];
+            $result['relation_about_first_name'] = $allFields['first_name'];
+            $result['relation_about_full_name'] = $allFields['full_name'];
+            $result['relation_about_greeting'] = $allFields['greeting'];
+            $result['relation_about_last_name'] = $allFields['last_name'];
+            $result['relation_about_dear'] = $allFields['dear'];
+            $result['relation_field_name'] = $this->token->getRelationFieldName();
             if ($this->token->hasRelation()) {
-                $allFields = $this->getMailFields(false);
-                // Set about to patient name
-                $result['relation_about'] = $allFields['name'];
-                $result['relation_about_first_name'] = $allFields['first_name'];
-                $result['relation_about_full_name'] = $allFields['full_name'];
-                $result['relation_about_greeting'] = $allFields['greeting'];
-                $result['relation_about_last_name'] = $allFields['last_name'];
-                $result['relation_about_dear'] = $allFields['dear'];
-                $result['relation_field_name'] = $this->token->getRelationFieldName();
-
                 if ($relation = $this->token->getRelation()) {
                     // Now update all respondent fields to be of the relation
                     $result['dear']       = $relation->getDearGreeting($language);
@@ -318,14 +317,6 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
                     $result['greeting']   = '';
                     $result['to']         = '';
                 }
-            } else {
-                $result['relation_about'] = $this->_('yourself', $language);
-                $result['relation_about_first_name'] = '';
-                $result['relation_about_full_name'] = '';
-                $result['relation_about_greeting'] = '';
-                $result['relation_about_last_name'] = '';
-                $result['relation_about_dear'] = '';
-                $result['relation_field_name'] = '';
             }
 
         } else {
