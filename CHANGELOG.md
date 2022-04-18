@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1p5]
 ### Fixed
+- Canvas nodes in Dossier Export corrupt Word document (#717)
+- Clicking on cell in Per period overview stopped working (#716)
+- Score in traffic light screen does not show up inline (#720)
+- Stored password fields empty stored passwords when nothing is entered (#718)
+- Trafficlight screen does not remember last clicked token (#719)
+
+## [1.9.1p5]
+### Fixed
 - Cannot perform installation with table translations initialized (#712)
 - Default email templates have spelling errors (#711)
 - Limesurvey 4+ fieldmap error (#542)

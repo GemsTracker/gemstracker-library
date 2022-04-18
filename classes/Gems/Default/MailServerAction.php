@@ -6,7 +6,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -71,6 +70,7 @@ class Gems_Default_MailServerAction extends \Gems_Controller_ModelSnippetActionA
             $model->set('gms_password',
                     'label', $this->_('Password'),
                     'elementClass', 'Password',
+                    'renderPassword', true,
                     'repeatLabel', $this->_('Repeat password'),
                     'description', $this->_('Enter new or remove stars to empty'));
 

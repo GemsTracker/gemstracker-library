@@ -337,7 +337,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             reset($definitions);
             // MD: Removed onchange because it does not play nice with the processAfterLoad and save methods in this class
             //     @@TODO: See if we can enable it when these methods are changed into a dependency
-            $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true/*, 'onchange', 'this.form.submit();'*/);
+            $this->setIfExists('gor_user_class', 'default', key($definitions), 'required', true, 'onchange', 'this.form.submit();');
         }
 
         // INTERFACE TAB

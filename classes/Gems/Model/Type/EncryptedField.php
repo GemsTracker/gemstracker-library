@@ -70,7 +70,13 @@ class Gems_Model_Type_EncryptedField
         if ($model instanceof \MUtil_Model_DatabaseModelAbstract) {
             $model->setOnTextFilter($valueField, false);
         }
-
+        if ($model->get($valueField, 'repeatLabel')) {
+            $repeatField = $valueField . '__repeat';
+            $model->set($repeatField, 'elementClass', 'None');
+            $model->setSaveWhen($repeatField, false);
+            $model->setOnLoad($repeatField, array($this, 'loadValue'));
+        }
+        
         return $this;
     }
 
@@ -92,6 +98,13 @@ class Gems_Model_Type_EncryptedField
      */
     public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
+        if (\MUtil_String::endsWith($name, '__repeat')) {
+            // Fill value for repeat element 
+            $origName = substr($name, 0, - 8);
+            if (isset($context[$origName])) {
+                $value = $context[$origName];
+            }
+        }
         if ($value && (! $isPost)) {
             if ($this->valueMask) {
                 return $this->maskedValue;
@@ -132,6 +145,6 @@ class Gems_Model_Type_EncryptedField
      */
     public function saveWhen($value, $isNew = false, $name = null, array $context = array())
     {
-        return $this->maskedValue != $value;
+        return $value && $this->maskedValue != $value;
     }
 }
