@@ -127,7 +127,7 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbs
 
         // Remove non-columns
         foreach ($realFilter as $key => $value) {
-            if (! $model->has($key)) {
+            if (! (is_integer($key) || $model->has($key))) {
                 unset($realFilter[$key]);
             }
         }
@@ -147,7 +147,7 @@ class Gems_Default_OverviewPlanAction extends \Gems_Default_TokenSearchActionAbs
         // $output['gto_id_token'] = $subSelect;
 
         // d) add the filter of the clicked selector square to the filter output here
-        $output += $selector->getSelectorFilterPart();
+        $output = array_merge($selector->getSelectorFilterPart(), $output);
 
         return $output;
     }

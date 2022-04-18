@@ -505,6 +505,17 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                 }
             } while  ($headers->length > 0);
         }
+        
+        do {
+            // The list is dynamic so search again until no longer found
+            $canvas = $dom->getElementsByTagName('canvas' . $i);
+            $canvasNode = $canvas->item(0);
+            if ($canvasNode) {
+                $canvasNode->parentNode->removeChild($canvasNode);
+
+            }
+        } while  ($canvas->length > 0);
+
         return $dom;
     }
 

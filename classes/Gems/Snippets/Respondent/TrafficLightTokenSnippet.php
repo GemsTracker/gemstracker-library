@@ -7,7 +7,6 @@
  * @author     Menno Dekker
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrafficLightTokenSnippet.php 2136 2014-09-29 14:58:20Z matijsdejong $
  */
 
 /**
@@ -708,7 +707,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 } else {
                     $summaryLink = \MUtil_Html::create('div', $summaryIcon, array('renderClosingTag' => true));
                 }
-                $summaryLink->class='pull-right';
+                $summaryLink->class='pull-right inline-answers';
                 $day->h5(array($summaryLink, ucfirst($description)));
                 $day->h6($date);
 
