@@ -680,7 +680,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ->order('gtr_track_name')
                 ->order('gr2t_track_info')
                 ->order('gto_valid_until')
-                ->order('gto_valid_from');
+                ->order('gto_valid_from')
+                ->order('gto_round_order');
 
         $this->_addRelation($select);
 
