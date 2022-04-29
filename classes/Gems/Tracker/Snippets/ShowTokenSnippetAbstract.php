@@ -133,10 +133,13 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
 
                 $htmlDiv->h3($this->getTitle());
 
+                $basePath = $this->basepath->getBasePath();
+                $view->headScript()->appendFile($basePath . '/gems/js/gems.copyToClipboard.js');
                 // Always add the script, it will only be used if the answer button class
                 // is set to inline-answers (in the menu or elsewhere)
-                $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.respondentAnswersModal.js');
-                
+                $view->headScript()->appendFile($basePath . '/gems/js/gems.respondentAnswersModal.js');
+
+
                 $table = parent::getHtmlOutput($view);
                 $this->applyHtmlAttributes($table);
                 $htmlDiv[] = $table;
@@ -200,7 +203,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends \MUtil_Sni
         $form->removeDecorator('HtmlTag');
 
         $element = new \Zend_Form_Element_Text('gto_id_token');
-        $element->class = 'token_copy';
+        $element->class = 'token_copy copy-to-clipboard-after';
         $element->setDecorators(array('ViewHelper', array('HtmlTag', 'Div')));
 
         $form->addElement($element);

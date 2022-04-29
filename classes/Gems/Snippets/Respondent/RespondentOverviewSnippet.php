@@ -103,7 +103,8 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
         foreach ($showMenuItems as $menuItem) {
             $link = $menuItem->toActionLinkLower($this->request, $bridge);
-            $link->target = 'inline';
+            // $link->target = 'inline';
+            $link->appendAttrib('class', 'inline-answers');
             $bridge->addItemLink($link);
         }
     }
@@ -111,16 +112,8 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     public function getHtmlOutput(\Zend_View_Abstract $view) {
         // Make sure we can use jQuery
         \MUtil_JQuery::enableView($view);
-                
-        $view->jQuery()->addOnLoad('        
-        // Inline answer loading for click on table
-        $("tr[onclick^=\'javascript:location.href=\']").each(function(e){
-            regex = /[\'"].*[\'"]/
-            hrefvalue = $(this).attr(\'onclick\').match(regex)[0];
-            href = hrefvalue.slice(1, -1);
-            this.attributes.onclick.nodeValue = "loadInline(\'" + href + "\')";
-        });
-    ');
+
+        $view->jQuery()->addOnLoad('jQuery(document).ready(activateLoadInline);');
 
         $br              = \MUtil_Html::create('br');
         $this->columns[] = array('gto_completion_time');

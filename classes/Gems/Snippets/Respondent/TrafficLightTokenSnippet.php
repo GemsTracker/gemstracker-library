@@ -258,7 +258,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         // Now add the scrollTo plugin so we can scroll to today
         $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.scrollTo.min.js');
-
+        $view->headScript()->appendFile($baseUrl . '/gems/js/gems.copyToClipboard.js');
+        
         /*
          * And add some initialization:
          *  - Hide all tokens initially (accessability, when no javascript they should be visible)
@@ -703,7 +704,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                         $summaryIcon, 
                         $this->_overview);
                     $summaryLink->href->add($params);
-                    $summaryLink->target = 'inline';
+                    // $summaryLink->target = 'inline';
                 } else {
                     $summaryLink = \MUtil_Html::create('div', $summaryIcon, array('renderClosingTag' => true));
                 }
@@ -748,6 +749,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     {
         static $correctIcon;
         static $showIcon;
+        static $clipboardIcon;
 
         if (!isset($correctIcon)) {
             $correctIcon = \MUtil_Html::create('i', array(
@@ -761,8 +763,15 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
                     'renderClosingTag' => true
                 ));
-        }        
+        }
 
+        if (!isset($clibboardIcon)) {
+            $clipboardIcon = \MUtil_Html::create('i', array(
+                'class'            => 'fa fa-fw fa-clipboard dropdown-toggle',
+                'renderClosingTag' => true
+            ));
+        }
+        
         // When not completed we have no correct
         if ($this->_isCompleted($token)) {
             $correctLink = $this->createMenuLink($token + ['is_completed' => 1, 'grc_success' => 1], 'track', 'correct', $correctIcon, $this->_tokenCorrect);
@@ -778,6 +787,19 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $dropUp = $toolsDiv->div(array('class' => 'dropdown dropup pull-right', 'renderClosingTag' => true));
             $this->_addTooltip($dropUp, $this->_('Details'));
             $dropUp->append($showLink);
+        }
+        
+        // When not completed and not missed (meaning open or future) we can copy the token
+        if (!$this->_isCompleted($token) && !$this->_isMissed($token)) {
+            // We now use the copy icon to allow copy token to clipboard
+            $dropUp = $toolsDiv->div(array(
+                                         'class' => 'dropdown dropup pull-right clipboard copier-to-clipboard',
+                                         'data-clipboard-text' => $token['gto_id_token'],
+                                         'data-toggle' => 'tooltip',
+                                         'title' => $this->_('Copy'),
+                                         'renderClosingTag' => true
+                                     ));
+            $dropUp->append($clipboardIcon);
         }
     }
 
