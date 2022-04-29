@@ -266,7 +266,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $engine       = $track->getTrackEngine();
         $surveys      = array();
 
-        $table = $this->html->table(array('class' => 'browser table copy-to-clipboard'));
+        $table = $this->html->table(array('class' => 'browser table copy-to-clipboard-before'));
         $table->th($this->_('Survey'));
         $table->th($this->_('Round'));
         $table->th($this->_('Token'));
@@ -366,7 +366,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         $this->html->h4($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
-        $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table copy-to-clipboard'));
+        $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table copy-to-clipboard-before'));
         $bridge->setRepeater(\MUtil_Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
@@ -464,7 +464,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
         }
         $this->escort  = \GemsEscort::getInstance();
-        $this->html    = \MUtil_Html::div(['class' => 'copy-to-clipboard']);
+        $this->html    = \MUtil_Html::div(['class' => 'copy-to-clipboard-before']);
         $this->request = \Zend_Controller_Front::getInstance()->getRequest();
 
         // Do not know why, but for some reason menu is not loaded automatically.
