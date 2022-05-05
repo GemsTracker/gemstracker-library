@@ -30,7 +30,8 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tra
     {
         $snippets = array();
 
-        $data = $this->getModel()->load();
+        $data  = $this->getModel()->load();
+        $token = null;
 
         // Find the first token with answers
         foreach($data as $tokenData) {
@@ -84,6 +85,9 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tra
      */
     public function getConfig($token)
     {
+        if (! $token) {
+            return false;
+        }
         try {
             $trackId = $token->getTrackId();
             $roundId = $token->getRoundId();

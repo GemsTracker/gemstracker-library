@@ -88,15 +88,17 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     protected $tracker;
 
-    public function afterRegistry() {
+    public function afterRegistry() 
+    {
         parent::afterRegistry();
         if (!($this->tracker instanceof \Gems_Tracker)) {
             $this->tracker = $this->loader->getTracker();
         }
+        $this->onEmpty = $this->_('No summary available');
     }
     
-    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) {
-        
+    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) 
+    {
         parent::addBrowseTableColumns($bridge, $model);
         
         $showMenuItems = $this->getShowMenuItems();
@@ -109,11 +111,9 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view) 
+    {
         // Make sure we can use jQuery
-        \MUtil_JQuery::enableView($view);
-
-        $view->jQuery()->addOnLoad('jQuery(document).ready(activateLoadInline);');
 
         $br              = \MUtil_Html::create('br');
         $this->columns[] = array('gto_completion_time');
