@@ -795,6 +795,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $dropUp = $toolsDiv->div(array(
                                          'class' => 'dropdown dropup pull-right clipboard copier-to-clipboard',
                                          'data-clipboard-text' => $token['gto_id_token'],
+                                         'data-clipboard-after' => sprintf($this->_('Copied: %s'), $token['gto_id_token']),
                                          'data-toggle' => 'tooltip',
                                          'title' => $this->_('Copy'),
                                          'renderClosingTag' => true
