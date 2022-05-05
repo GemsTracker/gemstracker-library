@@ -21,7 +21,7 @@ To use Phing to recreate the dbml file:
 1. Find the Phing command (installed with composer, either `..\bin\phing[.bat]` or `..\vendor\bin\phing[.bat]`).
 1. Call Phing with the dbdiagram.io command: `..\bin\phing.bat dbdiagram.io`.
 
-[gemstracker-database.dbml](gemstracker-database.dbml) is now update using the latest table definitions db\tables\*.sql.
+[gemstracker-database.dbml](gemstracker-database.dbml) is now updated using the latest table definitions db\tables\*.sql.
 
 If you want to add (or remove) tables edit the `sql-structural-files` filelist in the [Phing build.xml](../../scripts/build.xml).
 
@@ -30,7 +30,7 @@ The table links overview [gemstracker-database.svg](gemstracker-database.svg) iu
 [DBML Renderer](https://github.com/softwaretechnik-berlin/dbml-renderer).
 
 After installation:
-1. Go to this directory on the command line.
+1. Go to docs/database directory on the command line.
 1. Run `dbml-renderer -i gemstracker-database.dbml -o gemstracker-database.svg`.
 
 ## Recreate the png file
