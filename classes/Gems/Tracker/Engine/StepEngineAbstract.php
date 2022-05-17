@@ -387,8 +387,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
             }
 
             if ($round && $token !== $skipToken) {
-                $changes = $this->checkTokenDates($token, $round, $userId, $respTrack);
-                $changes += $this->checkTokenCondition($token, $round, $userId, $respTrack);
+                $changes = $this->checkTokenCondition($token, $round, $userId, $respTrack);
+                $changes += $this->checkTokenDates($token, $round, $userId, $respTrack);
             }
 
             // If condition changed and dates changed, we only signal one change
