@@ -10,12 +10,12 @@
             "email": "mjong@magnafacta.nl"
         },
         {
-            "name": "Menno Dekker",
-            "email": "menno.dekker@erasmusmc.nl"
-        },
-        {
             "name": "Jasper van Gestel",
             "email": "jvangestel@gmail.com"
+        },
+        {
+            "name": "Menno Dekker",
+            "email": "menno.dekker@erasmusmc.nl"
         },
         {
             "name": "Frank Santegoets",
@@ -24,10 +24,6 @@
         {
             "name": "Roel Faber",
             "email": "r.faber@erasmusmc.nl"
-        },
-        {
-            "name": "Michiel Rook",
-            "email": "mrook@php.net"
         }
     ],
     "autoload": {
@@ -62,21 +58,17 @@
         "lib-libxml": "*",
         "magnafacta/mutil": "dev-master",
         "mlocati/ip-lib": "1.*",
-        "box/spout": "^2.7.1",
-        "laminas/laminas-authentication": "^2.5",
-        "laminas/laminas-db": "^2.8",
-        "bacon/bacon-qr-code": "^1.0.3",
+        "openspout/openspout": "^3.7.4",
+        "laminas/laminas-authentication": "^2.10",
+        "laminas/laminas-db": "^2.15.0",
+        "bacon/bacon-qr-code": "^2.0.7",
         "erusev/parsedown": "~1.7",
-        "ifsnop/mysqldump-php": "^2.6",
-        "symfony/cache": "^3.4.36",
-        "symfony/event-dispatcher": "^3.4"
+        "ifsnop/mysqldump-php": "^2.9",
+        "symfony/cache": "^5.4.9",
+        "symfony/event-dispatcher": "^5.4.9"
     },
     "require-dev": {
-        "zf1s/phpunit": "dev-master",
-        "phing/phing": "^2.11",
-        "phpunit/dbunit": "1.3.*",
-        "phpunit/php-token-stream": "~1.3",
-        "jokkedk/zfdebug": "1.6.2"
+        "phing/phing": "^2.17.3"
     },
     "autoload-dev": {
         "psr-0": {
