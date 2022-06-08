@@ -586,11 +586,11 @@ class GemsEscort extends \MUtil_Application_Escort
     }
 
     /**
-     * @return \Gems\Event\EventDispatcher
+     * @return \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected function _initEvent()
     {
-        $dispatcher = new \Gems\Event\EventDispatcher();
+        $dispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
 
         // Add Gems general Event subscriber.
         // Projects should use their own Event subscriber (or add themselves as module).
@@ -916,7 +916,7 @@ class GemsEscort extends \MUtil_Application_Escort
 
         // Initialize view
         $view = new \Zend_View();
-        
+
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
         $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
@@ -2055,7 +2055,7 @@ class GemsEscort extends \MUtil_Application_Escort
     public function isAllowedHost($fullHost)
     {
         return true;
-        
+
 //        $host = \MUtil_String::stripToHost($fullHost);
 //        $request = $this->request;
 //        if ($request instanceof \Zend_Controller_Request_Http) {
