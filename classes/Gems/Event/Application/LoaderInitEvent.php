@@ -62,11 +62,7 @@ class LoaderInitEvent extends Event
         if ($object instanceof \MUtil_Registry_TargetInterface) {
             $this->applySource($object);
         }
-        if ($this->container instanceof \Zalt\Loader\ProjectOverloader) {
-            $this->container->getServiceManager()->setService($name, $object);
-        } else {
-            $this->container->$name = $object;
-        }
+        $this->container->getServiceManager()->setService($name, $object);
     }
 
     /**

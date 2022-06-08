@@ -79,11 +79,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
             $this->_dirs[$prefix] = $path;
         }
 
-        if ($this->_loader instanceof Zalt\Loader\ProjectOverloader) {
-            $this->_loader->addOverloaders([$prefix]);
-        } else {
-            $this->_loader->addPrefixPath($prefix, $path, $prepend);
-        }
+        $this->_loader->addOverloaders([$prefix]);
 
         return $this;
     }

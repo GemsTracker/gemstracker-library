@@ -144,25 +144,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public static $verbose = false;
 
     /**
-     *
-     * @param type $container A container acting as source fro \MUtil_Registry_Source
-     * @param array $dirs The directories where to look for requested classes
-     */
-    public function __construct($container, array $dirs)
-    {
-        parent::__construct($container, $dirs);
-
-        if ($container instanceof \Zalt\Loader\ProjectOverloader) {
-            return;
-        }
-
-        $events = $container->loader->getEvents();
-
-        // Make sure the tracker is known
-        $this->addRegistryContainer(array('tracker' => $this, 'events' => $events), 'tracker');
-    }
-
-    /**
      * Replaces a null or empty userId with that of the current user
      *
      * @param int $userId
