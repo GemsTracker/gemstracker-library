@@ -67,7 +67,8 @@
         "symfony/cache": "^5.4.9",
         "symfony/event-dispatcher": "^5.4.9",
         "magnafacta/zalt-loader": "dev-psr-11",
-        "laminas/laminas-servicemanager": "^3.11"
+        "laminas/laminas-servicemanager": "^3.11",
+        "monolog/monolog": "^3.0.0"
     },
     "require-dev": {
         "phing/phing": "^2.17.3"
