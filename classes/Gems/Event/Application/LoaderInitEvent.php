@@ -11,6 +11,9 @@
 
 namespace Gems\Event\Application;
 
+
+use Symfony\Contracts\EventDispatcher\Event;
+
 /**
  *
  * @package    Gems
@@ -18,7 +21,7 @@ namespace Gems\Event\Application;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class LoaderInitEvent extends \Symfony\Component\EventDispatcher\Event
+class LoaderInitEvent extends Event
 {
     const NAME = 'gems.loader.init';
 

@@ -4,7 +4,7 @@
  *
  * @package    Gem
  * @subpackage Event\Application
- * @author     Jasper van Gestel <jvangestel@gmail.com> 
+ * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
  * @license    New BSD License
  */
@@ -13,7 +13,7 @@
 namespace Gems\Event\Application;
 
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  *
@@ -27,7 +27,7 @@ class RespondentTrackFieldUpdateEvent extends Event
     use NamedArrayEventTrait;
 
     /**
-     * @var array 
+     * @var array
      */
     protected $fieldData;
 
@@ -78,10 +78,10 @@ class RespondentTrackFieldUpdateEvent extends Event
         if (null === $this->oldFieldData) {
             return [];
         }
-        
+
         return $this->oldFieldData;
     }
-    
+
     /**
      * @return \Gems_Tracker_RespondentTrack
      */

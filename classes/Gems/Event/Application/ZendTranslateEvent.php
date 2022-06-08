@@ -4,7 +4,7 @@
 namespace Gems\Event\Application;
 
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ZendTranslateEvent extends Event
 {

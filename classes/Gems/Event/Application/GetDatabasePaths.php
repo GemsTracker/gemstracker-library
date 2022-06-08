@@ -2,7 +2,7 @@
 
 namespace Gems\Event\Application;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class GetDatabasePaths extends NamedArrayEvent
 {
