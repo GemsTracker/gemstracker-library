@@ -5,6 +5,8 @@ namespace Gems;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+use MezzioHelpers\Factory\MonologFactory;
+use Monolog\Level;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zalt\Loader\ProjectOverloader;
 
@@ -23,6 +25,7 @@ class ConfigProvider
         return [
             'db'           => $this->getDbSettings(),
             'dependencies' => $this->getDependencies(),
+            'log'           => $this->getLoggers(),
             //'templates'    => $this->getTemplates(),
             //'routes'       => $this->getRoutes(),
         ];
@@ -53,9 +56,33 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
+
+                // Log
+                'applicationErrorLogger' => MonologFactory::class,
             ],
             'abstract_factories' => [
                 ReflectionBasedAbstractFactory::class,
+            ],
+        ];
+    }
+
+    /**
+     * Returns the log options
+     * @return mixed[]
+     */
+    public function getLoggers(): array
+    {
+        return [
+            'applicationErrorLogger' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => Level::Debug,
+                        'options' => [
+                            'stream' => 'data/logs/errors.log',
+                        ],
+                    ],
+                ],
             ],
         ];
     }
