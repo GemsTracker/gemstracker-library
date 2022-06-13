@@ -28,11 +28,11 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
 {
     /**
      * Embed specific log
-     * 
+     *
      * @var \Gems_Log
      */
     protected $activityLog;
-    
+
     /**
      *
      * @var \Gems_User_Organization
@@ -44,6 +44,11 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      * @var \Gems_User_User
      */
     public $currentUser;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    public $embeddedLoginLog;
 
     /**
      *
@@ -135,18 +140,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     public function logActivity($message, $priority)
     {
         try {
-            if (! $this->activityLog) {
-                $this->activityLog = new \Zend_Log();
-
-                $logPath = GEMS_ROOT_DIR . '/var/logs';
-                $writer = new \Zend_Log_Writer_Stream($logPath . '/embed-login.log');
-                if ('production' == APPLICATION_ENV) {
-                    $writer->addFilter(new \Zend_Log_Filter_Priority(\Zend_Log::NOTICE));
-                }
-                $this->activityLog->addWriter($writer);
-            }
-
-            $this->activityLog->log($message, $priority);
+            $this->embeddedLoginLog->log($message, $priority);
         } catch(\Exception $e) {
             error_log($e->getMessage());
             error_log($message);
@@ -181,7 +175,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
     {
         $this->logActivity(
             "Login user: $epdUserLogin, end user: $deferredLogin, patient: $patientId, key: $secretKey",
-            \Zend_log::NOTICE
+            \Psr\Log\LogLevel::NOTICE
         );
         $embeddedUser = $this->getUser($epdUserLogin, $organizations);
 
@@ -198,7 +192,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
         }
         $this->logActivity(
             "Failed EPD authentication: login user: $epdUserLogin, end user: $deferredLogin, patient: $patientId, key: $secretKey",
-            \Zend_log::WARN
+            \Psr\Log\LogLevel::WARNING
         );
 
         throw new \Gems_Exception($this->_("Unable to authenticate"));
@@ -237,7 +231,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
 
         $this->logActivity(
             sprintf("Rerouting EPD Login to %s", implode('/', $url)),
-            \Zend_log::DEBUG
+            \Psr\Log\LogLevel::DEBUG
         );
         $this->_helper->redirector->gotoRoute($url, null, true);
     }

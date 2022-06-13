@@ -11,6 +11,8 @@
 
 namespace Gems\Util;
 
+use Psr\Log\LoggerInterface;
+
 /**
  *
  * @package    Gems
@@ -24,7 +26,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
      * @var bool When true this site is automatically blocked when created
      */
     protected $_blockOnCreation = false;
-    
+
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -38,7 +40,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     protected $loader;
 
     /**
-     * @var \Gems_Log
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -46,7 +48,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
      * @var \Gems_Util
      */
     protected $util;
-    
+
     /**
      * Creates the object.
      *
@@ -56,7 +58,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     public function __construct($id, $blockOnCreation = false)
     {
         parent::__construct($id);
-        
+
         $this->_blockOnCreation = $blockOnCreation;
     }
 
@@ -107,7 +109,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
-     * @return boolean Is this organization id allowed for this site 
+     * @return boolean Is this organization id allowed for this site
      */
     public function hasUrlOrganizationsId($orgId)
     {
@@ -115,7 +117,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
-     * @return bool Is the site blocked as input source 
+     * @return bool Is the site blocked as input source
      */
     public function isBlocked()
     {
@@ -129,7 +131,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     {
         return $this->_data['is_new'];
     }
-    
+
     /**
      * @return bool Is this url accessible for all organizations
      */
@@ -144,14 +146,14 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     protected function loadData($id)
     {
         $blockSave = $this->util->getSites()->getSiteLock()->isLocked();
-        
+
         try {
             $model = $this->loader->getModels()->getSiteModel();
             $model->applySettings(true, 'edit');
 
             $data = $model->loadFirst(['gsi_url' => $id]);
             // \MUtil_Echo::track($data);
-            
+
             if ($data) {
                 $data['is_new'] = false;
             } else {
@@ -159,7 +161,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                     $data = $model->loadNew();
                     $data['gsi_url'] = $id;
                     $data['gsi_blocked'] = ($this->_blockOnCreation ? 1 : 0);
-                    
+
                 } else {
                     // Auto insert the site
                     $data = $model->save([
@@ -171,8 +173,8 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 }
                 $data['is_new'] = true;
             }
-            
-            
+
+
         } catch (\Zend_Db_Exception $e) {
             // In case the table does not exist, create temporary data
             $data = [
@@ -186,13 +188,13 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
                 'gsi_active'               => 1,
                 'gsi_blocked'              => 0,     // Never block when the table does not exist
                 'is_new'                   => false, // And we fake this!
-            ]; 
-            
+            ];
+
             // echo $e->getMessage() . "\n";
             // $this->logger->logError($e);
             // \MUtil_Echo::track($e->getMessage());
         }
-        
+
         $namedOrgs = $this->util->getDbLookup()->getOrganizationsForLogin();
         if (isset($data['gsi_select_organizations']) && $data['gsi_select_organizations']) {
             foreach ($data['gsi_organizations'] as $orgId) {
@@ -202,8 +204,8 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
             }
         } else {
             $data['orgs'] = $namedOrgs;
-        } 
-        
+        }
+
         return $data;
     }
 }

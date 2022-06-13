@@ -11,6 +11,9 @@
 
 namespace Gems\Task\Mail;
 
+use Gems\Log\LogHelper;
+use Psr\Log\LoggerInterface;
+
 /**
  *
  * @package    Gems
@@ -39,6 +42,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      *
@@ -183,7 +191,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
                 // Use a gems exception to pass extra information to the log
                 $gemsException = new \Gems_Exception($info, 0, $exception);
-                \Gems_Log::getLogger()->logError($gemsException);
+                $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
                 $errors++;
             }

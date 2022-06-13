@@ -28,7 +28,7 @@ use Gems\Translate\DbTranslateUtilTrait;
 class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
 {
     use DbTranslateUtilTrait;
-    
+
     /**
      *
      * @var array of round_id => \Gems_Tracker_Token
@@ -587,7 +587,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
     public function checkRegistryRequestsAnswers()
     {
         $this->initDbTranslations();
-        
+
         if ($this->_respTrackData) {
             $this->_respTrackData = $this->translateTables($this->_tablesForTranslations, $this->_respTrackData);
             if ($this->currentUser instanceof \Gems_User_User) {
@@ -1339,12 +1339,12 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         try {
             $this->event->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
-            $this->logger->log(sprintf(
+            $this->logger->error(sprintf(
                 "Round changed after event error for token %s on survey '%s': %s",
                 $token->getTokenId(),
                 $token->getSurveyName(),
                 $e->getMessage()
-            ), \Zend_Log::ERR);
+            ));
         }
 
         return 0;

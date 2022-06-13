@@ -10,6 +10,7 @@
  */
 
 use Gems\Event\Application\TokenEvent;
+use Gems\Log\LogHelper;
 use MUtil\Translate\TranslateableTrait;
 
 
@@ -137,7 +138,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Logger instance
      *
-     * @var \Gems_Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -1625,12 +1626,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         try {
             $this->event->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
-            $this->logger->log(sprintf(
+            $this->logger->error(sprintf(
                 "After completion event error for token %s on survey '%s': %s",
                 $this->_tokenId,
                 $this->getSurveyName(),
                 $e->getMessage()
-            ), \Zend_Log::ERR);
+            ));
         }
         if ($completedEvent) {
             // Remove this event to prevent double triggering
@@ -1684,12 +1685,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         try {
             $this->event->dispatch($tokenEvent, $eventName);
         } catch (\Exception $e) {
-            $this->logger->log(sprintf(
+            $this->logger->error(sprintf(
                 "Before answering before event error for token %s on survey '%s': %s",
                 $this->_tokenId,
                 $this->getSurveyName(),
                 $e->getMessage()
-            ), \Zend_Log::ERR);
+            ));
         }
         if ($beforeAnswerEvent) {
             // Remove this event to prevent double triggering
@@ -2211,7 +2212,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                         ));
                     } catch (\Zend_Db_Statement_Exception $e) {
                         error_log($e->getMessage());
-                        \Gems_Log::getLogger()->logError($e);
+
+                        $this->logger->error(LogHelper::getMessageFromException($e));
                     }
                 }
             } else {
@@ -2239,7 +2241,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
             } catch (\Zend_Db_Statement_Exception $e) {
                 error_log($e->getMessage());
-                \Gems_Log::getLogger()->logError($e);
+                $this->logger->error(LogHelper::getMessageFromException($e));
             }
         }
     }

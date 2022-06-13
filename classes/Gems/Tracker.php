@@ -120,12 +120,6 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
     /**
      *
-     * @var \Gems_Log
-     */
-    protected $logger;
-
-    /**
-     *
      * @var \Zend_Translate
      */
     protected $translate;

@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+use Gems\Log\LogHelper;
+
 /**
  * This is the generic Roles class
  *
@@ -52,7 +54,7 @@ class Gems_Roles
     private static $_instanceOfSelf;
 
     /**
-     * @var \Gems_Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $_logger;
 
@@ -87,9 +89,9 @@ class Gems_Roles
 
         $this->setCache($cache);
 
-        if ($logger instanceof \Gems_Log) {
+        if ($logger instanceof \Psr\Log\LoggerInterface) {
             $this->setLogger($logger);
-        } elseif (($cache instanceof \GemsEscort) && ($cache->logger instanceof \Gems_Log)) {
+        } elseif (($cache instanceof \GemsEscort) && ($cache->logger instanceof \Psr\Log\LoggerInterface)) {
             $this->setLogger($cache->logger);
         }
 
@@ -163,7 +165,7 @@ class Gems_Roles
         } catch (\Exception $e) {
 
             if (! \Zend_Session::$_unitTestEnabled) {
-                \Gems_Log::getLogger()->logError($e);
+                $this->_logger->error(LogHelper::getMessageFromException($e));
             }
 
             // Reset all roles
@@ -214,8 +216,8 @@ class Gems_Roles
         try {
             $this->_save();
         } catch (\Gems_Exception $e) {
-            if ($this->_logger instanceof \Gems_Log) {
-                $this->_logger->err($e->getMessage());
+            if ($this->_logger instanceof \Psr\Log\LoggerInterface) {
+                $this->_logger->error($e->getMessage());
             }
         }
     }
@@ -326,9 +328,9 @@ class Gems_Roles
     }
 
     /**
-     * @param Gems_Log $logger
+     * @param \Psr\Log\LoggerInterface $logger
      */
-    public function setLogger(\Gems_Log $logger)
+    public function setLogger(\Psr\Log\LoggerInterface $logger)
     {
         $this->_logger = $logger;
     }

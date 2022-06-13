@@ -6,9 +6,11 @@ namespace Gems\Communication\JobMessenger;
 use Gems\Batch\BatchHandlerTrait;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Exception\ClientException;
+use Gems\Log\LogHelper;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
+use Psr\Log\LoggerInterface;
 
 class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_TargetInterface
 {
@@ -24,6 +26,11 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     protected function getFallbackPhonenumber($job)
     {
@@ -142,7 +149,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
 
                 // Use a gems exception to pass extra information to the log
                 $gemsException = new \Gems_Exception($info, 0, $e);
-                \Gems_Log::getLogger()->logError($gemsException);
+                $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
                 return false;
             }

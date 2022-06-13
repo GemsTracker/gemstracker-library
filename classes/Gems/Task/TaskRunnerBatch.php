@@ -59,12 +59,12 @@ class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
 
     /**
      *
-     * @var \Gems_Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
     public function afterRegistry() {
-        if (!isset($this->log) && $this->logger instanceof \Zend_Log) {
+        if (!isset($this->log) && $this->logger instanceof \Psr\Log\LoggerInterface) {
             $this->log = $this->logger;
         }
         return parent::afterRegistry();

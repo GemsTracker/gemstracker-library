@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Gems\Log\LogHelper;
+
 /**
  * LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
  * installation as survey/answer source for Gems projects.
@@ -110,7 +112,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
     /**
      *
-     * @var \Gems_Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -522,7 +524,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $surveyor_description = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['surveyls_description'])), 0, 100);
             $surveyor_status = '';
             $surveyor_warnings = '';
-            
+
             // AVAILABLE LANGUAGES
             $surveyor_languages = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['language'])), 0, 100);
             $surveyor_additional_languages = mb_substr(\MUtil_Html::removeMarkup(html_entity_decode($lsSurvey['additional_languages'])), 0, 100);
@@ -606,20 +608,20 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                 $surveyor_status .= 'Not active. ';
             }
             $surveyor_active = (0 === strlen($surveyor_status));
-            
+
             // ADDITIONAL WARNINGS
             if ($lsSurvey['autoredirect'] == 'N') {
                 $surveyor_warnings .= "Auto-redirect is disabled. ";
             }
-            
+
             if ($lsSurvey['alloweditaftercompletion'] == 'Y') {
                 $surveyor_warnings .= "Editing after completion is enabled. ";
             }
-            
+
             if ($lsSurvey['allowregister'] == 'Y') {
                 $surveyor_warnings .= "Public registration is enabled. ";
             }
-            
+
             if ($lsSurvey['listpublic']== 'Y') {
                 $surveyor_warnings .= "Public access is enabled. ";
             }
@@ -659,12 +661,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $values['gsu_survey_description'] = $surveyor_description;
                     $messages[] = sprintf($this->_('The description of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_description);
                 }
-                
+
                 if ($survey->getAvailableLanguages() != $surveyor_languages) {
                     $values['gsu_survey_languages'] = $surveyor_languages;
                     $messages[] = sprintf($this->_('The available languages of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_languages);
                 }
-                
+
                 if ($surveyor_warnings) {
                     if ($survey->getSurveyWarnings() != $surveyor_warnings) {
                         $values['gsu_survey_warnings'] = $surveyor_warnings;
@@ -750,7 +752,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         if (!\MUtil_Console::isConsole()) {
             // For optimal use, this assumes that most organizations using a survey use the same url.
             // If not, then this url might change regularly, but things will remain working as the
-            // final url shown is dependent by the token level return url stored in the token table.  
+            // final url shown is dependent by the token level return url stored in the token table.
             $newUrl = $this->_getReturnURI($token->getOrganization());
 
             // Make sure the url is set correctly in surveyor.
@@ -774,9 +776,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
         /****************************************
          * Insert token in table (if not there) *
-         ****************************************/        
+         ****************************************/
         $validDates = $this->getValidDates($token);
-        
+
         // Get the mapped values
         $values = $this->_fillAttributeMap($token) + $validDates;
         // Apparently it is possible to have this value filled without a survey questionnaire.
@@ -1099,7 +1101,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             // getRawTokenAnswerRows() in case of double rows
             $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", $token);
         } catch (\Zend_Db_Statement_Exception $exception) {
-            $this->logger->logError($exception, $this->request);
+            $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
             $values = false;
         }
 
@@ -1329,7 +1331,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             try {
                 $result = $this->getSourceDatabase()->fetchRow($sql, $tokenId);
             } catch (\Zend_Db_Statement_Exception $exception) {
-                $this->logger->logError($exception, $this->request);
+                $this->logger->error(LogHelper::getMessageFromException($exception, $this->request));
                 $result = false;
             }
 
@@ -1369,10 +1371,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         $baseurl = $this->getBaseUrl();
         return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . 'index.php?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
     }
-    
+
     /**
      * Get valid from/to dates to send to LimeSurvey depending on the dates of the token
-     * 
+     *
      * @param \Gems_Tracker_Token $token
      * @return []
      */
@@ -1382,7 +1384,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
         // For extra protection, we add valid from/to dates as needed instead of leaving them in GemsTracker only
         $tokenFrom  = $token->getValidFrom();
         $tokenUntil = $token->getValidUntil();
-        
+
         // Always set all dated, so LimeSurvey will check the token
         if ($tokenFrom) {
             $lsFrom = $tokenFrom;
@@ -1398,7 +1400,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
             $lsFrom  = new \MUtil_Date('1900-01-01');
             $lsUntil = $lsFrom;
         }
-        
+
 //        $lsFrom     = is_null($tokenFrom) ? new \MUtil_Date('1900-01-01') : $gtokenFrom;
 //        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
 //            $lsUntil = $tokenUntil;

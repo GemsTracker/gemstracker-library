@@ -68,7 +68,8 @@
         "symfony/event-dispatcher": "^5.4.9",
         "magnafacta/zalt-loader": "dev-psr-11",
         "laminas/laminas-servicemanager": "^3.11",
-        "monolog/monolog": "^3.0.0"
+        "monolog/monolog": "^3.0.0",
+        "psr/http-message": "^1.0.1"
     },
     "require-dev": {
         "phing/phing": "^2.17.3"

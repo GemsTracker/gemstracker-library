@@ -3,8 +3,10 @@
 namespace Gems\Communication\JobMessenger;
 
 
+use Gems\Log\LogHelper;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
+use Psr\Log\LoggerInterface;
 
 class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_TargetInterface
 {
@@ -20,6 +22,11 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     public function sendCommunication(array $job, array $tokenData, $preview)
     {
@@ -71,7 +78,8 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
 
                 // Use a gems exception to pass extra information to the log
                 $gemsException = new \Gems_Exception($info, 0, $exception);
-                \Gems_Log::getLogger()->logError($gemsException);
+
+                $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
                 return false;
             }

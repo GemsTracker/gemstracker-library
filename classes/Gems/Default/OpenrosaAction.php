@@ -276,8 +276,6 @@ class Gems_Default_OpenrosaAction extends \Gems_Controller_ModelSnippetActionAbs
      */
     private function processReceivedForm($answerXmlFile)
     {
-        //Log what we received
-        $log     = \Gems_Log::getLogger();
         //$log->log(print_r($xmlFile, true), \Zend_Log::ERR);
 
         $xml = simplexml_load_file($answerXmlFile);

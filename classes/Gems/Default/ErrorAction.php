@@ -9,6 +9,8 @@
  * @version    $Id$
  */
 
+use Gems\Log\LogHelper;
+
 /**
  *
  *
@@ -20,6 +22,11 @@
  */
 class Gems_Default_ErrorAction extends \Zend_Controller_Action
 {
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    public $logger;
+
     /**
      * Action for displaying an error, CLI as well as HTTP
      */
@@ -54,7 +61,7 @@ class Gems_Default_ErrorAction extends \Zend_Controller_Action
                 break;
         }
 
-        \Gems_Log::getLogger()->logError($errors->exception, $errors->request);
+        $this->logger->error(LogHelper::getMessageFromException($errors->exception, $errors->request));
 
         if (\MUtil_Console::isConsole()) {
             $this->_helper->viewRenderer->setNoRender(true);

@@ -35,7 +35,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
 
     /**
      *
-     * @var \Gems_Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -74,7 +74,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
     public function checkRegistryRequestsAnswers()
     {
         return $this->db instanceof \Zend_Db_Adapter_Abstract &&
-                $this->logger instanceof \Gems_Log &&
+                $this->logger instanceof \Psr\Log\LoggerInterface &&
                 $this->project instanceof \Gems_Project_ProjectSettings &&
                 $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
                 $this->translate instanceof \Zend_Translate;
@@ -140,9 +140,9 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
 
             // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
-                $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", \Zend_Log::ERR);
+                $this->logger->error("Possible token brute force attack, throttling for $remainingDelay seconds");
 //                $msg = sprintf("Additional brute force info: url was %s from ip address %s.", $_SERVER['REQUEST_URI'], $this->request->getServer('REMOTE_ADDR'));
-//                $this->logger->log($msg, \Zend_Log::ERR);
+//                $this->logger->error($msg);
 
                 $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');
 

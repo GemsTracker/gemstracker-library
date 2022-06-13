@@ -3,8 +3,12 @@
 namespace Gems;
 
 use Gems\Factory\EventDispatcherFactory;
+use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
+use Monolog\Level;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zalt\Loader\ProjectOverloader;
 
@@ -25,6 +29,7 @@ class ConfigProvider
             'dependencies' => $this->getDependencies(),
             //'templates'    => $this->getTemplates(),
             //'routes'       => $this->getRoutes(),
+            'log'           => $this->getLoggers(),
         ];
     }
 
@@ -53,9 +58,26 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
+
+                // Logs
+                'embeddedLoginLog' => MonologFactory::class,
             ],
-            'abstract_factories' => [
-                ReflectionBasedAbstractFactory::class,
+        ];
+    }
+
+    protected function getLoggers(): array
+    {
+        return [
+            'embeddedLoginLog' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::NOTICE,
+                        'options' => [
+                            'stream' =>  'data/logs/embed-logging.log',
+                        ],
+                    ],
+                ],
             ],
         ];
     }
