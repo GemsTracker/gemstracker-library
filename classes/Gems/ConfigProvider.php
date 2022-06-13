@@ -5,9 +5,6 @@ namespace Gems;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Monolog\Level;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zalt\Loader\ProjectOverloader;
@@ -27,9 +24,9 @@ class ConfigProvider
         return [
             'db'           => $this->getDbSettings(),
             'dependencies' => $this->getDependencies(),
+            'log'           => $this->getLoggers(),
             //'templates'    => $this->getTemplates(),
             //'routes'       => $this->getRoutes(),
-            'log'           => $this->getLoggers(),
         ];
     }
 
