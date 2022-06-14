@@ -138,7 +138,9 @@ class Gems_Form_Decorator_Tooltip extends \Zend_Form_Decorator_Abstract
         }
 
         $tooltip = $element->getAttrib('tooltip');
-        $tooltip = trim($tooltip);
+        if (is_string($tooltip)) {
+            $tooltip = trim($tooltip);
+        }
         //$element->removeAttrib('tooltip');
 
         if (empty($tooltip)) {

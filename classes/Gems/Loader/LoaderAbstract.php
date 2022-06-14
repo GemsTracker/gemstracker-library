@@ -186,7 +186,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             return new \MUtil_Lazy_StaticCall($className);
         }
 
-        $mergedArguments = array_merge(['className' => $className], $arguments);
+        $mergedArguments = array_values(array_merge(['className' => $className], $arguments));
         $obj = call_user_func_array([$this->_loader, 'create'], $mergedArguments);
 
         return $obj;
