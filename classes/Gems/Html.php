@@ -77,7 +77,7 @@ class Gems_Html
 
         // \Gems_Util::callProjectClass('Html', 'init', $creator);
         // Allow in-project overruling
-        $projectFile = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/Html.php';
+        /* $projectFile = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/Html.php';
         if (file_exists($projectFile)) {
             include_once($projectFile);
             call_user_func(array(GEMS_PROJECT_NAME_UC . '_Html', 'init'), $creator);
