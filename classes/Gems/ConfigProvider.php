@@ -56,6 +56,7 @@ class ConfigProvider
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
 
                 // Logs
+                'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
             ],
         ];
@@ -64,6 +65,17 @@ class ConfigProvider
     protected function getLoggers(): array
     {
         return [
+            'LegacyLogger' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::NOTICE,
+                        'options' => [
+                            'stream' =>  'data/logs/errors.log',
+                        ],
+                    ],
+                ],
+            ],
             'embeddedLoginLog' => [
                 'writers' => [
                     'stream' => [
