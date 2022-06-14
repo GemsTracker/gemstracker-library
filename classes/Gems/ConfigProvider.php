@@ -2,6 +2,8 @@
 
 namespace Gems;
 
+use Gems\Legacy\LegacyController;
+use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
@@ -26,7 +28,7 @@ class ConfigProvider
             'dependencies' => $this->getDependencies(),
             'log'           => $this->getLoggers(),
             //'templates'    => $this->getTemplates(),
-            //'routes'       => $this->getRoutes(),
+            'routes'       => $this->getRoutes(),
         ];
     }
 
@@ -86,6 +88,25 @@ class ConfigProvider
                         ],
                     ],
                 ],
+            ],
+        ];
+    }
+
+    protected function getRoutes(): array
+    {
+        return [
+            [
+                'name' => 'setup.reception.index',
+                'path' => '/setup/reception/index',
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LegacyController::class,
+                ],
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'controller' => \Gems_Default_ReceptionAction::class,
+                    'action' => 'index',
+                ]
             ],
         ];
     }
