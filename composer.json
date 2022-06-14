@@ -56,7 +56,7 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "lib-libxml": "*",
-        "magnafacta/mutil": "dev-master",
+        "magnafacta/mutil": "2.x-dev",
         "mlocati/ip-lib": "1.*",
         "openspout/openspout": "^3.7.4",
         "laminas/laminas-authentication": "^2.10",
