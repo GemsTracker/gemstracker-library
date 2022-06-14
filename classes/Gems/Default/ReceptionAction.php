@@ -45,6 +45,11 @@ class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAb
     public $cacheTags = array('receptionCode', 'receptionCodes');
 
     /**
+     * @var \Gems_Project_ProjectSettings
+     */
+    public $project;
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
