@@ -83,13 +83,6 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected $request;
 
     /**
-     * Optional, otherwise created from $util
-     *
-     * @var \Gems_Util_RequestCache
-     */
-    public $requestCache;
-
-    /**
      *
      * @var array The input data for the model
      */
@@ -318,13 +311,13 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     {
         parent::afterRegistry();
 
-        if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
+        /*if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
             $this->requestCache = $this->util->getRequestCache();
         }
         if ($this->requestCache) {
             // Do not store searchButtonId
             $this->requestCache->removeParams($this->searchButtonId);
-        }
+        }*/
 
         if (! $this->searchLabel) {
             $this->searchLabel = $this->_('Free search text');
@@ -652,11 +645,11 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             // \MUtil_Echo::track($this->searchData);
             return $this->searchData;
         }
-        if ($this->requestCache) {
+        /*if ($this->requestCache) {
             $filter = $this->requestCache->getProgramParams();
-        } else {
+        } else {*/
             $filter = $this->request->getParams();
-        }
+        //}
 
         if ($this->defaultSearchData) {
             $filter = $filter + $this->defaultSearchData;
