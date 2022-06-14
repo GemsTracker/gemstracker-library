@@ -32,11 +32,6 @@ class Gems_Util_DbLookup extends UtilAbstract
     protected $acl;
 
     /**
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
-
-    /**
      *
      * @var \Gems_Loader
      */
