@@ -25,7 +25,7 @@ class Gems_View_Helper_HeadLink extends \MUtil_Less_View_Helper_HeadLink
     public function __construct()
     {
         parent::__construct();
-        $this->_webroot = GEMS_WEB_DIR;
+        //$this->_webroot = GEMS_WEB_DIR;
     }
 
     /**
@@ -59,7 +59,7 @@ class Gems_View_Helper_HeadLink extends \MUtil_Less_View_Helper_HeadLink
                 $item->href = $item->href . '?' . $version;
             }
         }
-        
+
         return \Zend_View_Helper_HeadLink::itemToString($item);
     }
 
