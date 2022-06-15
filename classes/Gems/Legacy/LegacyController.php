@@ -42,16 +42,12 @@ class LegacyController implements RequestHandlerInterface
                 $controller = $options['controller'];
                 $actionName = $options['action'] . 'Action';
 
-                $legacyRequest = $this->getLegacyRequest($request, $controller, $options['action']);
+                //$legacyRequest = $this->getLegacyRequest($request, $controller, $options['action']);
                 $legacyResponse = new \Zend_Controller_Response_Http();
 
-                $controllerObject = $this->loader->create($controller, $legacyRequest, $legacyResponse, [], false);
+                $controllerObject = $this->loader->create($controller, $request, false);
                 $this->loadControllerDependencies($controllerObject);
-
-                $front = \Zend_Controller_Front::getInstance();
-                $front->setControllerDirectory('controllers');
-                $front->setRequest($legacyRequest);
-
+                
                 $controllerObject->init();
 
                 if (method_exists($controllerObject, $actionName) && is_callable([$controllerObject, $actionName])) {
