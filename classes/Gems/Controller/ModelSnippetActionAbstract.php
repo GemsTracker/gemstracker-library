@@ -33,6 +33,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
+        'menuActionController'  => 'getControllerName',
+        'requestQueryParams'    => 'getRequestQueryParams',
+        'requestPost'           => 'getRequestParsedBody',
+        'isPost'                => 'getRequestIsPost'
         );
 
     /**
@@ -392,7 +396,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
             if ($file && is_array($file) && is_array($file['headers'])) {
                 $this->view->layout()->disableLayout();
                 $this->_helper->viewRenderer->setNoRender(true);
-                
+
                 foreach($file['headers'] as $header) {
                     header($header);
                 }
@@ -402,7 +406,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 readfile($file['file']);
                 // Now clean up the file
                 unlink($file['file']);
-    
+
                 exit;
             }
             $this->addMessage($this->_('Download no longer available.'), 'warning');
@@ -429,6 +433,11 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 return $menuItem;
             }
         }
+    }
+
+    public function getControllerName()
+    {
+        return $this->requestHelper->getControllerName();
     }
 
     /**
@@ -592,9 +601,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     /**
      * Returns a session based message store for adding messages to.
      *
-     * @return \Zend_Controller_Action_Helper_FlashMessenger
+     * @return Mezzio\Flash\FlashMessagesInterface
      */
-    public function getMessenger()
+    public function getMessenger(): Mezzio\Flash\FlashMessagesInterface
     {
         if (! $this->messenger) {
             $this->setMessenger($this->loader->getMessenger());
@@ -633,6 +642,21 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         return sprintf($this->_('Reactivate %s'), $this->getTopic(1));
     }
 
+    public function getRequestIsPost(): bool
+    {
+        return $this->requestHelper->isPost();
+    }
+
+    public function getRequestParsedBody(): array
+    {
+        return $this->request->getParsedBody();
+    }
+
+    public function getRequestQueryParams(): array
+    {
+        return $this->request->getQueryParams();
+    }
+
     /**
      * Helper function to get the title for the show action.
      *
@@ -651,7 +675,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      * @param string $separator
      * @return string
      */
-    public function getTitle($separator = null)
+    public function getTitle(string $separator = null): string
     {
         if ($titleSet = parent::getTitle($separator)) {
             return $titleSet;
@@ -717,7 +741,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      * @param boolean $reset Throws away any existing html output when true
      * @return void
      */
-    public function initHtml($reset = false)
+    public function initHtml(bool $reset = false): void
     {
         if (! $this->html) {
             \Gems_Html::init();
@@ -729,7 +753,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     /**
      * Stub for overruling default snippet loader initiation.
      */
-    protected function loadSnippetLoader()
+    protected function loadSnippetLoader(): void
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
@@ -751,10 +775,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
      * @return \MUtil_Controller_Action
      */
-    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger)
+    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger): self
     {
         $this->messenger = $messenger;
-        $this->view->messenger = $messenger;
 
         return $this;
     }
