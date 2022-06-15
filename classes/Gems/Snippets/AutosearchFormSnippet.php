@@ -76,11 +76,8 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      */
     protected $orgIsMultiCheckbox = true;
 
-    /**
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
+    
+    protected bool $isPost = false;
 
     /**
      *
@@ -415,7 +412,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             }
 
             // \MUtil_Echo::track($data);
-            if ($this->request->isPost()) {
+            if ($this->isPost) {
                 if (! $form->isValid($data)) {
                     $this->addMessage($form->getErrorMessages());
                     $this->addMessage($form->getMessages());
