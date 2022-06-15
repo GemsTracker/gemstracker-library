@@ -303,6 +303,8 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
 
+        return $table;
+
         if (($this->containingId || $this->keyboard) && (! self::$keyboardUsed)) {
             // Assign keyboard tracking only once
             self::$keyboardUsed = true;
