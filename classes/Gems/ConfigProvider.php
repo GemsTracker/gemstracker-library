@@ -8,6 +8,7 @@ use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
@@ -93,6 +94,9 @@ class ConfigProvider
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
                 FlashMessageMiddleware::class => FlashMessageMiddleware::class,
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
+            ],
+            'abstract_factories' => [
+                ReflectionBasedAbstractFactory::class,
             ],
             'aliases' => [
                 // Cache
