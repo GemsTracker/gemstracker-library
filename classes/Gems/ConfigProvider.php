@@ -39,7 +39,8 @@ class ConfigProvider
             'cache'        => $this->getCacheSettings(),
             'db'           => $this->getDbSettings(),
             'dependencies' => $this->getDependencies(),
-            'log'           => $this->getLoggers(),
+            'log'          => $this->getLoggers(),
+            'migrations'   => $this->getMigrations(),
             //'templates'    => $this->getTemplates(),
             'routes'       => $this->getRoutes(),
         ];
@@ -134,6 +135,20 @@ class ConfigProvider
                     ],
                 ],
             ],
+        ];
+    }
+
+    protected function getMigrations(): array
+    {
+        return [
+            'migrations' => [
+                __DIR__ . '/../../configs/db/migrations',
+            ],
+            'seeds' => [
+                __DIR__ . '/../../configs/db/seeds',
+            ],
+
+            ,
         ];
     }
 
