@@ -8,6 +8,16 @@ use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
+use Mezzio\Csrf\CsrfGuardFactoryInterface;
+use Mezzio\Csrf\CsrfMiddleware;
+use Mezzio\Csrf\CsrfMiddlewareFactory;
+use Mezzio\Csrf\FlashCsrfGuardFactory;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Session\Cache\CacheSessionPersistence;
+use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
+use Mezzio\Session\SessionMiddleware;
+use Mezzio\Session\SessionMiddlewareFactory;
+use Mezzio\Session\SessionPersistenceInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Zalt\Loader\ProjectOverloader;
@@ -79,11 +89,18 @@ class ConfigProvider
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
 
                 // Session
-
+                SessionMiddleware::class => SessionMiddlewareFactory::class,
+                CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
+                FlashMessageMiddleware::class => FlashMessageMiddleware::class,
+                CsrfMiddleware::class => CsrfMiddlewareFactory::class,
             ],
             'aliases' => [
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
+
+                // Session
+                SessionPersistenceInterface::class => CacheSessionPersistence::class,
+                CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
             ]
         ];
     }
