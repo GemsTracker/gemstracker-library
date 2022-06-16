@@ -147,8 +147,6 @@ class ConfigProvider
             'seeds' => [
                 __DIR__ . '/../../configs/db/seeds',
             ],
-
-            ,
         ];
     }
 
