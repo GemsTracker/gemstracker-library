@@ -2,6 +2,7 @@
 
 namespace Gems;
 
+use Gems\Cache\CacheFactory;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
@@ -24,11 +25,24 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
+            'cache'        => $this->getCacheSettings(),
             'db'           => $this->getDbSettings(),
             'dependencies' => $this->getDependencies(),
             'log'           => $this->getLoggers(),
             //'templates'    => $this->getTemplates(),
             'routes'       => $this->getRoutes(),
+        ];
+    }
+
+    public function getCacheSettings(): array
+    {
+        $cacheAdapter = null;
+        if ($envAdapter = getenv('CACHE_ADAPTER')) {
+            $cacheAdapter = $envAdapter;
+        }
+
+        return [
+            'adapter' => $cacheAdapter,
         ];
     }
 
@@ -60,7 +74,17 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
+
+                // Cache
+                \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
+
+                // Session
+
             ],
+            'aliases' => [
+                // Cache
+                \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
+            ]
         ];
     }
 
