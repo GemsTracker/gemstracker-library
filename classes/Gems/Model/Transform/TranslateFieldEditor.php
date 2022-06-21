@@ -4,6 +4,7 @@
 namespace Gems\Model\Transform;
 
 
+use Gems\Cache\HelperAdapter;
 use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
@@ -33,7 +34,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     protected $flagExtension = '.png';
 
     /**
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -243,7 +244,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     {
         $result = parent::transformRowAfterSave($model, $row);
         if ($this->_changed) {
-            $this->cache->clean('matchingTag', ['database_translations']);
+            $this->cache->invalidateTags(['database_translations']);
         }
 
         return $result;

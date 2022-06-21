@@ -27,6 +27,12 @@
  */
 class Gems_Default_OpenrosaAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+
+    /**
+     * @var \Gems\Cache\HelperAdapter
+     */
+    public $cache;
+
     /**
      * This holds the path to the location where the form definitions will be stored.
      * Will be set on init to: GEMS_ROOT_DIR . '/var/uploads/openrosa/forms/';
@@ -381,8 +387,7 @@ class Gems_Default_OpenrosaAction extends \Gems_Controller_ModelSnippetActionAbs
                 $addCnt++;
             }
         }
-        $cache = \GemsEscort::getInstance()->cache;
-        $cache->clean();
+        $this->cache->clear();
 
         $this->html[] = sprintf('Checked %s responses and added %s responses', $formCnt, $addCnt);
     }

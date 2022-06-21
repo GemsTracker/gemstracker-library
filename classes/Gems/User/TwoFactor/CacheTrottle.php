@@ -3,12 +3,14 @@
 namespace Gems\User\TwoFactor;
 
 
+use Gems\Cache\HelperAdapter;
 use Gems\Cache\RateLimiter;
+use Psr\Cache\CacheItemPoolInterface;
 
 trait CacheTrottle
 {
     /**
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     public $cache;
 
@@ -30,6 +32,7 @@ trait CacheTrottle
 
     protected function initCacheThrottle($maxSendTimesOfSameOtp = null, $maxSendOtpAttempts = null, $maxSendOtpAttemptsPerPeriod = null)
     {
+        $cache = $this->cache;
         $this->rateLimiter = new RateLimiter($this->cache);
 
         if ($maxSendTimesOfSameOtp !== null) {

@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Cache\HelperAdapter;
+
 /**
  * Displays a toolbox of drop down UL's to assign tracks / surveys to a patient.
  *
@@ -28,7 +30,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -120,7 +122,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             $cacheId .= '_' . $this->locale->getLanguage();
         }
 
-        $tracks  = $this->cache->load($cacheId);
+        $tracks  = $this->cache->getCacheItem($cacheId);
 
         if (! $tracks) {
             switch ($trackType) {
@@ -169,7 +171,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                 $tracks = $this->db->fetchPairs($select);
             }
 
-            $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
+            $this->cache->setCacheItem($cacheId, $tracks, ['surveys', 'tracks']);
         }
 
         if ($trackType != 'tracks') {

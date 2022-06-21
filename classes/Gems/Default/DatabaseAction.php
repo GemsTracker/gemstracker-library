@@ -36,6 +36,11 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         );
 
     /**
+     * @var \Gems\Cache\HelperAdapter
+     */
+    public $cache;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -77,8 +82,8 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
      */
     private function _cleanCache()
     {
-        if ($this->cache instanceof \Zend_Cache_Core) {
-            $this->cache->clean();
+        if ($this->cache instanceof \Gems\Cache\HelperAdapter) {
+            $this->cache->clear();
             $this->addMessage($this->_('Cache cleaned'));
         }
     }
@@ -88,15 +93,15 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
         $db        = isset($tableData['db']) ? $tableData['db'] : $this->db;
         $tableName = $tableData['name'];
         $type      = $tableData['type'];
-        
+
         // We can only use a different db when supplying a \Zend_Db_Table_Abstract
-        if ($type == 'view') {         
-            $table = new \Gems\Db\TableView(['name' => $tableName, 'db'=> $db]);            
+        if ($type == 'view') {
+            $table = new \Gems\Db\TableView(['name' => $tableName, 'db'=> $db]);
         } else {
             $table = new \Zend_Db_Table(['name' => $tableName, 'db'=> $db]);
         }
         $model = new \MUtil_Model_TableModel($table);
-        
+
         // Add labels so they show in the table
         foreach ($model->getItemNames() as $item) {
             $model->set($item, 'label', $item);
@@ -455,7 +460,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
                 $this->addMessage($this->_('Create the patch table!'));
             } elseif ($changed) {
                 $this->addMessage(sprintf($this->_('%d new or changed patch(es).'), $changed));
-                $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('sess_' . session_id()));
+                $this->cache->invalidateTags(['sess_' . session_id()]);
             }
 
             $data['app_level'] = $this->loader->getVersions()->getBuild();
@@ -680,7 +685,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $this->addMessage($this->_('This database object does not exist. You cannot view it.'));
             $this->html->buttonDiv($this->createMenuLinks(1));
 
-        } else {            
+        } else {
             $caption = sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']);
             $this->html->h3(sprintf($this->_('The data in table %s'), $data['name']));
             $this->createDataTable($data, $caption);

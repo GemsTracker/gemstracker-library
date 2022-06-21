@@ -39,7 +39,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected $_titlesMap;
 
     /**
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 
@@ -94,9 +94,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
      * @param \Zend_Translate $translate      A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
-     * @param \Zend_Cache_Core $cache
+     * @param \Gems\Cache\HelperAdapter $cache
      */
-    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, \Zend_Cache_Core $cache, $sourceId)
+    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix, \Gems\Cache\HelperAdapter $cache, $sourceId)
     {
         $this->sourceSurveyId = $sourceSurveyId;
         $this->language       = $language;
@@ -202,7 +202,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected function _getMap()
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
-        $this->_fieldMap = $this->cache->load($cacheId);
+        $this->_fieldMap = $this->cache->getCacheItem($cacheId);
 
         if (false === $this->_fieldMap) {
             $aTable = $this->_getQuestionAttributesTableName();
@@ -381,7 +381,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $this->_fieldMap = $map;
             // \MUtil_Echo::track($map);
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
-            $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
+            // 60*60*24=86400
+            $item = $this->cache->getItem($cacheId);
+            $item->expiresAfter(new \DateInterval('P1D'));
+            $item->set($this->_fieldMap);
+            $this->cache->save($item);
         }
 
         return $this->_fieldMap;

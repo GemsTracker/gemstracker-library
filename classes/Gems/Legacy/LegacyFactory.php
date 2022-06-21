@@ -57,9 +57,6 @@ class LegacyFactory implements FactoryInterface
                 $basePath->setBasePath('/');
                 return $basePath;
 
-            case \Zend_Cache::class:
-                return $this->getCache();
-
             case \Zend_Locale::class:
                 $locale = $this->getLocale();
                 return $locale;
@@ -101,16 +98,6 @@ class LegacyFactory implements FactoryInterface
         }
 
         return $roles->getAcl();
-    }
-
-    protected function getCache(): \Zend_Cache_Core
-    {
-        $cache = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
-        \Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
-        \Zend_Translate::setCache($cache);
-        \Zend_Locale::setCache($cache);
-
-        return $cache;
     }
 
     public function getCurrentUser()

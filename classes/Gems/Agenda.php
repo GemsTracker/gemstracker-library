@@ -50,7 +50,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 
@@ -178,7 +178,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
+        $this->cache->invalidateTags(['activity', 'activities']);
 
         return $result;
     }
@@ -207,7 +207,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
+        $this->cache->invalidateTags(['staff']);
 
         return $result;
     }
@@ -247,7 +247,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
+        $this->cache->invalidateTags(['location', 'locations']);
+
 
         return $result;
     }
@@ -276,7 +277,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
+        $this->cache->invalidateTags(['procedure', 'procedures']);
 
         return $result;
     }
@@ -338,7 +339,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -359,7 +360,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('activities'));
+        $this->cache->setCacheItem($cacheId, $results, ['activities']);
         return $results;
 
     }
@@ -677,7 +678,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        $output = $this->cache->load($cacheId);
+        $output = $this->cache->getCacheItem($cacheId);
         if ($output) {
             return $output;
         }
@@ -685,7 +686,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $output = $this->db->fetchPairs("SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) "
                 . "FROM gems__appointment_filters WHERE gaf_active = 1 ORDER BY gaf_id_order");
 
-        $this->cache->save($output, $cacheId, array('appointment_filters'));
+        $this->cache->setCacheItem($cacheId, $output, ['appointment_filters']);
 
         return $output;
     }
@@ -760,7 +761,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get a filter from the database
      *
-     * @param $filterId Id of a single filter
+     * @param $filterId string|int Id of a single filter
      * @return AppointmentFilterInterface or null
      */
     public function getFilter($filterId)
@@ -818,7 +819,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -834,7 +835,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('staff'));
+        $this->cache->setCacheItem($cacheId, $results, ['staff']);
         return $results;
 
     }
@@ -852,7 +853,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $orgId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -868,7 +869,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('locations'));
+        $this->cache->setCacheItem($cacheId, $results, ['locations']);
         return $results;
     }
 
@@ -881,7 +882,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -912,7 +913,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             }
         }
 
-        $this->cache->save($results, $cacheId, array('locations'));
+        $this->cache->setCacheItem($cacheId, $results, ['locations']);
         return $results;
     }
 
@@ -925,7 +926,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -946,7 +947,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('procedures'));
+        $this->cache->setCacheItem($cacheId, $results, ['procedures']);
         return $results;
     }
 
@@ -1159,7 +1160,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        $output = $this->cache->load($cacheId);
+        $output = $this->cache->getCacheItem($cacheId);
         if ($output) {
             foreach ($output as $key => $filterObject) {
                 // Filterobjects should not serialize anything loaded from a source
@@ -1179,7 +1180,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)
                 ORDER BY gaf_id_order, gtap_id_order, gtap_id_track");
 
-        $this->cache->save($this->_filters, $cacheId, array('appointment_filters', 'tracks'));
+        $this->cache->setCacheItem($cacheId, $this->_filters, ['appointment_filters', 'tracks']);
 
         return $this->_filters;
     }
@@ -1195,7 +1196,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchActivity($name, $organizationId, $create = true)
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->load($cacheId);
+        $matches = $this->cache->getCacheItem($cacheId);
 
         if (! $matches) {
             $matches = array();
@@ -1215,7 +1216,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     $matches[$match][$key] = $row['gaa_filter'] ? false : $row['gaa_id_activity'];
                 }
             }
-            $this->cache->save($matches, $cacheId, array('activities'));
+            $this->cache->setCacheItem($cacheId, $matches, ['activities']);
         }
 
         if (isset($matches[$name])) {
@@ -1280,7 +1281,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchHealthcareStaff($name, $organizationId, $create = true)
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->load($cacheId);
+        $matches = $this->cache->getCacheItem($cacheId);
 
         if (! $matches) {
             $matches = array();
@@ -1294,7 +1295,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     $matches[$match][$row['gas_id_organization']] = $row['gas_filter'] ? false : $row['gas_id_staff'];
                 }
             }
-            $this->cache->save($matches, $cacheId, array('staff'));
+            $this->cache->setCacheItem($cacheId, $matches, ['staff']);
         }
 
         if (isset($matches[$name])) {
@@ -1328,7 +1329,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchLocation($name, $organizationId, $create = true)
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->load($cacheId);
+        $matches = $this->cache->getCacheItem($cacheId);
 
         if (! $matches) {
             $matches = array();
@@ -1344,7 +1345,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     }
                 }
             }
-            $this->cache->save($matches, $cacheId, array('locations'));
+            $this->cache->setCacheItem($cacheId, $matches, ['locations']);
         }
 
         if (isset($matches[$name])) {
@@ -1381,7 +1382,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function matchProcedure($name, $organizationId, $create = true)
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
-        $matches = $this->cache->load($cacheId);
+        $matches = $this->cache->getCacheItem($cacheId);
 
         if (! $matches) {
             $matches = array();
@@ -1401,7 +1402,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     $matches[$match][$key] = $row['gapr_filter'] ? false : $row['gapr_id_procedure'];
                 }
             }
-            $this->cache->save($matches, $cacheId, array('procedures'));
+            $this->cache->setCacheItem($cacheId, $matches, ['procedures']);
         }
 
         if (isset($matches[$name])) {

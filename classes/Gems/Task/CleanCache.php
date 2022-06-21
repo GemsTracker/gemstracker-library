@@ -26,7 +26,7 @@ class Gems_Task_CleanCache extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 
@@ -38,8 +38,8 @@ class Gems_Task_CleanCache extends \MUtil_Task_TaskAbstract
      */
     public function execute($text = null)
     {
-        if ($this->cache instanceof \Zend_Cache_Core) {
-            $this->cache->clean(\Zend_Cache::CLEANING_MODE_ALL);
+        if ($this->cache instanceof \Psr\Cache\CacheItemPoolInterface) {
+            $this->cache->clear();
             $this->getBatch()->addMessage($this->_('Cache cleaned'));
         }
     }

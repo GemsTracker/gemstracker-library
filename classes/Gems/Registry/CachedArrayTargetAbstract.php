@@ -47,7 +47,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
 
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 
@@ -157,7 +157,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
         if ($this->cache && $this->_hasCacheId()) {
             $cacheId     = $this->cleanupForCacheId($this->_getCacheId());
             $cacheLang   = $cacheId . $this->cleanupForCacheId("_" . $this->language);
-            $this->_data = $this->cache->load($cacheLang);
+            $this->_data = $this->cache->getCacheItem($cacheLang);
         } else {
             $cacheId = false;
         }
@@ -166,7 +166,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
             $this->_data = $this->loadData($this->_id);
 
             if ($cacheId) {
-                $this->cache->save($this->_data, $cacheId, $this->_cacheTags);
+                $this->cache->setCacheItem($cacheId, $this->_data, $this->_cacheTags);
             }
 
             if ((! $this->dbTranslationOff) && $this->translationTable && is_array($this->_data)) {
@@ -174,7 +174,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
             }
 
             if ($cacheId) {
-                $this->cache->save($this->_data, $cacheLang, $this->_cacheTags);
+                $this->cache->setCacheItem($cacheLang, $this->_data, $this->_cacheTags);
             }
         }
         // \MUtil_Echo::track($this->_data);
@@ -204,7 +204,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     {
         if ($this->cache) {
             $cacheId = $this->_getCacheId();
-            $this->cache->remove($cacheId);
+            $this->cache->deleteItem($cacheId);
         }
         return $this;
     }

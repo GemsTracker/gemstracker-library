@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Cache\HelperAdapter;
+
 /**
  *
  *
@@ -36,7 +38,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -285,7 +287,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 if ($count == 0) {
                     $this->addMessage($this->_('No export code changed'));
                 } else {
-                    $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys'));
+                    $this->cache->invalidateTags(['surveys']);
                     $this->addMessage(sprintf(
                             $this->plural('%d export code changed', '%d export codes changed', $count),
                             $count
@@ -503,7 +505,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                             'Tracker\\Export\\TrackRoundConditionExportTask',
                             $trackId
                             );
-                
+
                 foreach ($this->formData['rounds'] as $roundId) {
                     $this->_batch->addTask(
                             'Tracker\\Export\\TrackRoundExportTask',

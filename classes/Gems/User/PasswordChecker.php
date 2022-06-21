@@ -33,7 +33,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
     protected $project;
 
     /**
-     * @var \Zend_Cache
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 
@@ -90,7 +90,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         }
 
         if ($this->cache) {
-            $passwordList = $this->cache->load('weakpasswordlist');
+            $passwordList = $this->cache->getCacheItem('weakpasswordlist');
         }
 
         if (empty($passwordList)) {
@@ -103,7 +103,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
             $passwordList = explode("\n", file_get_contents($filename));
 
             if ($this->cache) {
-                $this->cache->save($passwordList, 'weakpasswordlist');
+                $this->cache->setCacheItem('weakpasswordlist', $passwordList);
             }
         }
 
@@ -269,7 +269,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
             unset($rules['maxAge']);
         }
         // \MUtil_Echo::track($rules);
-        
+
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);

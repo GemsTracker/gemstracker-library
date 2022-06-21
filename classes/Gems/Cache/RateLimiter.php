@@ -5,7 +5,7 @@ namespace Gems\Cache;
 class RateLimiter
 {
     /**
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -16,7 +16,7 @@ class RateLimiter
      */
     protected $timerSuffix = '_timer';
 
-    public function __construct(\Zend_Cache_Core $cache)
+    public function __construct(HelperAdapter $cache)
     {
         $this->cache = $cache;
     }
@@ -29,10 +29,8 @@ class RateLimiter
      */
     public function attempts($key)
     {
-        $test = $this->cache->load($key);
-
-        if ($this->cache->test($key) !== false) {
-            return $this->cache->load($key);
+        if ($this->cache->hasItem($key) !== null) {
+            return $this->cache->getCacheItem($key);
         }
         return 0;
     }
@@ -45,7 +43,7 @@ class RateLimiter
      */
     public function availableIn($key)
     {
-        $availableAt = $this->cache->load($key . $this->timerSuffix);
+        $availableAt = $this->cache->getCacheItem($key . $this->timerSuffix);
         if ($availableAt instanceof \DateTimeInterface) {
             return $availableAt->getTimestamp() - time();
         }
@@ -62,7 +60,7 @@ class RateLimiter
     {
         $this->resetAttempts($key);
 
-        $this->cache->remove($key . $this->timerSuffix);
+        $this->cache->deleteItem($key . $this->timerSuffix);
     }
 
     /**
@@ -78,16 +76,16 @@ class RateLimiter
         $addTimeInterval = new \DateInterval('PT'. $decaySeconds . 'S');
 
         $timerKey = $key . $this->timerSuffix;
-        $this->cache->save($now->add($addTimeInterval), $timerKey, $this->tags, $decaySeconds);
+        $this->cache->setCacheItem($now->add($addTimeInterval), $timerKey, $this->tags, $decaySeconds);
 
-        $attempts = $this->cache->load($key);
-        if ($attempts === false) {
+        $attempts = $this->cache->getCacheItem($key);
+        if ($attempts === null) {
             $attempts = 0;
         }
 
         $attempts += 1;
 
-        $this->cache->save($attempts, $key, $this->tags, $decaySeconds);
+        $this->cache->setCacheItem($attempts, $key, $this->tags, $decaySeconds);
 
         return 1;
     }
@@ -100,7 +98,7 @@ class RateLimiter
      */
     public function resetAttempts($key)
     {
-        return $this->cache->remove($key);
+        return $this->cache->deleteItem($key);
     }
 
     /**

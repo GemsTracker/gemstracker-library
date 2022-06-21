@@ -11,6 +11,8 @@
 
 namespace Gems\Util;
 
+use Gems\Cache\HelperAdapter;
+
 /**
  * Abstract utility class containing caching and sql loading function
  *
@@ -24,7 +26,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -38,7 +40,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * @var \Zend_Locale
      */
     protected $locale;
-    
+
     /**
      *
      * @var \Gems_Project_ProjectSettings
@@ -109,7 +111,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     {
         $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
 
-        $result = $this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
 
         if ($result) {
             return $result;
@@ -122,7 +124,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 natsort($result);
             }
 
-            $this->cache->save($result, $cacheId, (array) $tags);
+            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
         } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
             error_log($e->getMessage());
             $result = array();
@@ -145,7 +147,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     {
         $cacheId = strtr(get_class($this) . '_a_' . $cacheId, '\\/', '__');
 
-        $result = $this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
 
         if ($result) {
             return $result;
@@ -158,7 +160,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 natsort($result);
             }
 
-            $this->cache->save($result, $cacheId, (array) $tags);
+            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
         } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
             error_log($e->getMessage());
             $result = [];
@@ -181,7 +183,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
     {
         $cacheId = strtr(get_class($this) . '_p_' . $cacheId, '\\/', '__');
 
-        $result = $this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
 
         if ($result) {
             return $result;
@@ -194,7 +196,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 $this->_sortResult($result, $sort);
             }
 
-            $this->cache->save($result, $cacheId, (array) $tags);
+            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
         } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
             error_log($e->getMessage());
             $result = array();
@@ -237,7 +239,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 }
             }
 
-            $this->cache->save($result, $cacheId, (array) $tags);
+            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
         } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
             error_log($e->getMessage());
             $result = array();
@@ -283,7 +285,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 }
             }
 
-            $this->cache->save($result, $cacheId, (array) $tags);
+            $this->cache->setCacheItem($cacheId, $result, (array) $tags);
         } catch (\Zend_Db_Statement_Mysqli_Exception $e) {
             error_log($e->getMessage());
         }
@@ -301,7 +303,6 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * @param string $where Input for $select->where()
      * @param string Optional function to sort on, only known functions will do
      * @return array
-     * @throws \Zend_Cache_Exception
      */
     protected function _getTranslatedPairsCached($table, $key, $label, $tags = array(), $where = null, $sort = null)
     {
@@ -310,32 +311,32 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         $cacheLang = $cacheId . $this->cleanupForCacheId($lang . "_");
 
         // \MUtil_Echo::track($cacheId, $cacheLang);
-        
-        $result = $this->cache->load($cacheLang);
+
+        $result = $this->cache->getCacheItem($cacheLang);
         if ($result) {
             return $result;
         }
 
-        $result = $this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
         if (! $result) {
             $select = $this->db->select();
             $select->from($table, [$key, $label]);
-            
+
             if ($where) {
                 $select->where($where);
             }
             try {
                 $result = $this->db->fetchPairs($select);
-        
-                $this->cache->save($result, $cacheId, (array) $tags);
-                
+
+                $this->cache->setCacheItem($cacheId, $result, (array) $tags);
+
             } catch (\Zend_Exception $e) {
                 // Do not save on an exception
                 error_log($e->getMessage());
                 return [];
             }
         }
-        
+
         if ($result && $this->project->translateDatabaseFields() && ($lang != $this->project->getLocaleDefault())) {
             $tSelect = $this->db->select();
             $tSelect->from('gems__translations', ['gtrs_keys', 'gtrs_translation'])
@@ -343,10 +344,10 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 ->where('gtrs_field = ?', $label)
                 ->where('gtrs_iso_lang = ?', $lang)
                 ->where('LENGTH(gtrs_translation) > 0');
-                
+
             $translations = $this->db->fetchPairs($tSelect);
             // \MUtil_Echo::track($tSelect->__toString(), $translations);
-            
+
             if ($translations) {
                 foreach ($result as $item => $value) {
                     if (isset($translations[$item])) {
@@ -363,8 +364,8 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         // \MUtil_Echo::track($result);
 
         // Save the translated version
-        $this->cache->save($result, $cacheLang, (array) $tags);
-        
+        $this->cache->setCacheItem($cacheLang, $result, (array) $tags);
+
         return $result ?: [];
     }
 

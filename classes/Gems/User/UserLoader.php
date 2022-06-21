@@ -77,12 +77,6 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     public $allowStaffEmailLogin = false;
 
     /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
      * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -424,7 +418,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     {
         return [self::SYSTEM_NO_ORG => 'create db first'];
     }
-    
+
     /**
      * Returns an organization object, initiated from the database or from
      * self::$_noOrganization when the database does not yet exist.
@@ -575,7 +569,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     public function getUser($login_name, $currentOrganization)
     {
         $user = $this->getUserClass($login_name, $currentOrganization);
-        
+
         if ($this->allowLoginOnWithoutOrganization && (! $currentOrganization)) {
             $user->setCurrentOrganization($user->getBaseOrganizationId());
         } else {

@@ -47,12 +47,6 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
     protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
-     *
-     * @var \Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string

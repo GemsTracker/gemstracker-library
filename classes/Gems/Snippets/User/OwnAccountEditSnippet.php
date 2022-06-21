@@ -12,6 +12,8 @@
 
 namespace Gems\Snippets\User;
 
+use Gems\Cache\HelperAdapter;
+
 /**
  *
  *
@@ -75,8 +77,8 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $this->addMessage($this->_('No changes to save!'));
         }
 
-        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
-            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+        if ($this->cacheTags && ($this->cache instanceof HelperAdapter)) {
+            $this->cache->invalidateTags((array)[$this->cacheTags]);
         }
     }
 

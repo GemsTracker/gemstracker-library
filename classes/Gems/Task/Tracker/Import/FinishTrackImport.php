@@ -12,6 +12,8 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Cache\HelperAdapter;
+
 /**
  *
  *
@@ -25,10 +27,10 @@ class FinishTrackImport extends \MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
-    
+
     /**
      *
      * @var \Gems_User_User
@@ -60,8 +62,10 @@ class FinishTrackImport extends \MUtil_Task_TaskAbstract
         $tracker     = $this->loader->getTracker();
         $trackEngine = $tracker->getTrackEngine($import['trackId']);
         $trackEngine->updateRoundCount($this->currentUser->getUserLoginId());
-        
+
         // Now cleanup the cache
-        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('tracks'));
+        if ($this->cache instanceof HelperAdapter) {
+            $this->cache->invalidateTags(['tracks']);
+        }
     }
 }

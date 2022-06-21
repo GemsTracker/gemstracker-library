@@ -94,7 +94,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
 
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $cache;
 

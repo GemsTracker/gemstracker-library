@@ -30,7 +30,7 @@ class Gems_Roles
 {
     /**
      *
-     * @var \Zend_Cache_Core
+     * @var \Gems\Cache\HelperAdapter
      */
     protected $_cache = null;
 
@@ -81,7 +81,7 @@ class Gems_Roles
 
     /**
      *
-     * @param mixed $cache \Zend_Cache_Core or \GemsEscort
+     * @param mixed $cache HelperAdapter
      */
     public function __construct($cache = null, $logger = null)
     {
@@ -103,9 +103,9 @@ class Gems_Roles
      */
     private function _deleteCache()
     {
-        if ($this->_cache instanceof \Zend_Cache_Core) {
-            $this->_cache->remove($this->_cacheid);
-            $this->_cache->remove($this->_cacheid . 'trans');
+        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
+            $this->_cache->deleteItem($this->_cacheid);
+            $this->_cache->deleteItem($this->_cacheid . 'trans');
         }
     }
 
@@ -194,10 +194,10 @@ class Gems_Roles
      */
     private function _save()
     {
-        if ($this->_cache instanceof \Zend_Cache_Core) {
+        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
             if (! (
-                $this->_cache->save($this->_acl, $this->_cacheid, array('roles'), null) &&
-                $this->_cache->save($this->_roleTranslations, $this->_cacheid . 'trans', array('roles'), null)
+                $this->_cache->setCacheItem($this->_cacheid, $this->_acl, ['roles']) &&
+                $this->_cache->setCacheItem($this->_cacheid . 'trans', $this->_roleTranslations, ['roles'])
             )) {
                 throw new \Gems_Exception('Failed to save acl to cache');
             }
@@ -250,15 +250,15 @@ class Gems_Roles
      */
     public function load()
     {
-        if ($this->_cache instanceof \Zend_Cache_Core) {
+        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
             $cache = $this->_cache;
-            if (! ($cache->test($this->_cacheid) && $cache->test($this->_cacheid . 'trans'))) {
+            if (! ($cache->hasItem($this->_cacheid) && $cache->hasItem($this->_cacheid . 'trans'))) {
                 // cache miss
                 $this->build();
             } else {
                 // cache hit
-                $this->_acl = $cache->load($this->_cacheid);
-                $this->_roleTranslations = $cache->load($this->_cacheid . 'trans');
+                $this->_acl = $cache->getCacheItem($this->_cacheid);
+                $this->_roleTranslations = $cache->getCacheItem($this->_cacheid . 'trans');
             }
         } else {
             $this->build();
@@ -318,13 +318,9 @@ class Gems_Roles
      *
      * @param mixed $cache
      */
-    public function setCache($cache)
+    public function setCache(\Gems\Cache\HelperAdapter $cache)
     {
-        if ($cache instanceof \Zend_Cache_Core) {
-            $this->_cache = $cache;
-        } elseif ($cache instanceof \GemsEscort) {
-            $this->_cache = $cache->cache;
-        }
+        $this->_cache = $cache;
     }
 
     /**

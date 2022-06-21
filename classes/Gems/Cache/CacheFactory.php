@@ -11,7 +11,6 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 class CacheFactory
 {
@@ -56,6 +55,6 @@ class CacheFactory
             }
         }
 
-        return new TagAwareAdapter($cache);
+        return new HelperAdapter($cache);
     }
 }

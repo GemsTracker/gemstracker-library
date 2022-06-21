@@ -4,10 +4,12 @@
 namespace Gems\Db;
 
 
+use Gems\Cache\HelperAdapter;
+
 trait DbTranslateTrait
 {
     /**
-     * @var \Zend_Cache_Core
+     * @var HelperAdapter
      */
     protected $cache;
 
@@ -57,7 +59,7 @@ trait DbTranslateTrait
         $cacheId = 'dataBaseTablesWithTranslations';
 
         if (!$this->translateTables) {
-            $tables = $this->cache->load($cacheId);
+            $tables = $this->cache->getCacheItem($cacheId);
             if ($tables) {
                 $this->translateTables = $tables;
                 return $tables;
@@ -74,7 +76,7 @@ trait DbTranslateTrait
                 $tables[$row['gtrs_table']][] = $row['gtrs_field'];
             }
 
-            $this->cache->save($tables, $cacheId, ['database_translations']);
+            $this->cache->setCacheItem($cacheId, $tables, ['database_translations']);
 
             $this->translateTables = $tables;
         }
@@ -93,7 +95,7 @@ trait DbTranslateTrait
 
             $cacheId = 'dataBaseTranslations' . '_' . $this->locale->getLanguage();
 
-            $translations = $this->cache->load($cacheId);
+            $translations = $this->cache->getCacheItem($cacheId);
             if ($translations) {
                 return $translations;
             }
@@ -110,7 +112,7 @@ trait DbTranslateTrait
 
             $this->translations = $this->db->fetchPairs($select);
 
-            $this->cache->save($this->translations, $cacheId, ['database_translations']);
+            $this->cache->setCacheItem($cacheId, $this->translations, ['database_translations']);
         }
 
         return $this->translations;
