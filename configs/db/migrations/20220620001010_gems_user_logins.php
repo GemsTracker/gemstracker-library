@@ -2,7 +2,7 @@
 
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class GemsUsersLogins extends Phinx\Migration\AbstractMigration
+class GemsUserLogins extends Phinx\Migration\AbstractMigration
 {
     public function change()
     {

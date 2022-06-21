@@ -20,10 +20,10 @@ class DefaultOrganizations extends AbstractSeed
             [
                 'gor_id_organization' => 70,
                 'gor_name' => 'New organization',
-                'gor_changed' => 1,
-                'gor_changed_by' => $now->format('Y-m-d H:i:s'),
-                'gor_created' => 1,
-                'gor_created_by' => $now->format('Y-m-d H:i:s'),
+                'gor_changed' => $now->format('Y-m-d H:i:s'),
+                'gor_changed_by' => 1,
+                'gor_created' => $now->format('Y-m-d H:i:s'),
+                'gor_created_by' => 1,
             ],
         ];
 
