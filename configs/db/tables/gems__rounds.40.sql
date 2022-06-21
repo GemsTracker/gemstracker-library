@@ -12,33 +12,33 @@ CREATE TABLE if not exists gems__rounds (
 
         -- Survey_name is a temp copy from __surveys, needed by me to keep an overview as
         -- long as no track editor exists.
-        gro_survey_name        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gro_survey_name        varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
 
-        gro_round_description  varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gro_icon_file          varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gro_changed_event      varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gro_display_event      varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gro_round_description  varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gro_icon_file          varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gro_changed_event      varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gro_display_event      varchar(128) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         gro_valid_after_id     bigint unsigned null references gems__rounds (gro_id_round),
-        gro_valid_after_source varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tok',
-        gro_valid_after_field  varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null
+        gro_valid_after_source varchar(12) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'tok',
+        gro_valid_after_field  varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null
                                default 'gto_valid_from',
-        gro_valid_after_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',
+        gro_valid_after_unit   char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'M',
         gro_valid_after_length int not null default 0,
 
         gro_valid_for_id       bigint unsigned null references gems__rounds (gro_id_round),
-        gro_valid_for_source   varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'nul',
-        gro_valid_for_field    varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
-        gro_valid_for_unit     char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',
+        gro_valid_for_source   varchar(12) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'nul',
+        gro_valid_for_field    varchar(64) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
+        gro_valid_for_unit     char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'M',
         gro_valid_for_length   int not null default 0,
 
         gro_condition          bigint unsigned null references gems__conditions (gcon_id),
 
         -- Yes, quick and dirty, will correct later (probably)
-        gro_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gro_organizations     varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
         gro_active             boolean not null default 1,
-        gro_code               varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gro_code               varchar(64)  CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
 
         gro_changed            timestamp not null default current_timestamp on update current_timestamp,
         gro_changed_by         bigint unsigned not null,
@@ -52,7 +52,7 @@ CREATE TABLE if not exists gems__rounds (
     )
     ENGINE=InnoDB
     auto_increment = 40000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 
 INSERT ignore INTO gems__rounds (gro_id_track, gro_id_order, gro_id_survey, gro_survey_name, gro_round_description,
     gro_valid_after_id, gro_valid_for_id, gro_active, gro_changed, gro_changed_by, gro_created, gro_created_by)

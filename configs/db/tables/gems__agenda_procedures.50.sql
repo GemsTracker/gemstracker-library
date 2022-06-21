@@ -1,13 +1,13 @@
 
 CREATE TABLE if not exists gems__agenda_procedures (
         gapr_id_procedure    bigint unsigned not null auto_increment,
-        gapr_name            varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gapr_name            varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
         gapr_id_organization bigint unsigned null references gems__organizations (gor_id_organization),
 
-        gapr_name_for_resp   varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gapr_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gapr_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gapr_name_for_resp   varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        gapr_match_to        varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        gapr_code            varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
         gapr_active          boolean not null default 1,
         gapr_filter          boolean not null default 0,
@@ -22,5 +22,5 @@ CREATE TABLE if not exists gems__agenda_procedures (
     )
     ENGINE=InnoDB
     auto_increment = 4000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

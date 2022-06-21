@@ -1,27 +1,27 @@
 
 CREATE TABLE if not exists gems__locations (
         glo_id_location     bigint unsigned not null auto_increment,
-        glo_name            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_name            varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
         -- Yes, quick and dirty, will correct later (probably)
-        glo_organizations   varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_organizations   varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
-        glo_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_match_to        varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_code            varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
-        glo_url             varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_url_route       varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_url             varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_url_route       varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
-        glo_address_1       varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_address_2       varchar(80) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_zipcode         varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_city            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        -- glo_region          varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_iso_country     char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NL',
-        glo_phone_1         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        -- glo_phone_2         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        -- glo_phone_3         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        -- glo_phone_4         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        glo_address_1       varchar(80) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_address_2       varchar(80) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_zipcode         varchar(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_city            varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        -- glo_region          varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        glo_iso_country     char(2) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'NL',
+        glo_phone_1         varchar(25) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        -- glo_phone_2         varchar(25) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        -- glo_phone_3         varchar(25) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
+        -- glo_phone_4         varchar(25) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
         glo_active          boolean not null default 1,
         glo_filter          boolean not null default 0,
@@ -37,4 +37,4 @@ CREATE TABLE if not exists gems__locations (
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 600
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

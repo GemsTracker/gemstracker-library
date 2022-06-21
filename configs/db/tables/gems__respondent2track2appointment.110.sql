@@ -16,5 +16,5 @@ CREATE TABLE if not exists gems__respondent2track2appointment (
         INDEX (gr2t2a_id_appointment)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

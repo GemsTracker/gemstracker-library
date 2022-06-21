@@ -15,30 +15,30 @@ CREATE TABLE if not exists gems__comm_jobs (
         -- S Use site from address
         -- U Use gcj_id_user_as from address
         -- F Fixed gcj_from_fixed
-        gcj_from_method             varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gcj_from_fixed              varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gcj_from_method             varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+        gcj_from_fixed              varchar(254) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         -- A Answerer
         -- O Answerer or Fallback
         -- F Fallback
-        gcj_to_method               varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'R',
+        gcj_to_method               varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' default 'R',
         -- O Use organization from address
         -- S Use site from address
         -- U Use gcj_id_user_as from address
         -- F Fixed gcj_fallback_fixed
-        gcj_fallback_method         varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'O',
-        gcj_fallback_fixed          varchar(254) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gcj_fallback_method         varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' default 'O',
+        gcj_fallback_fixed          varchar(254) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         -- M => multiple per respondent, one for each token
         -- O => One per respondent, mark all tokens as send
         -- A => Send only one token, do not mark
-        gcj_process_method          varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gcj_process_method          varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
 
         -- N => notmailed
         -- R => reminder
         -- B => before exporation
         -- E => reminder before expiration
-        gcj_filter_mode             VARCHAR(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gcj_filter_mode             VARCHAR(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
         gcj_filter_days_between     INT UNSIGNED NOT NULL DEFAULT 7,
         gcj_filter_max_reminders    INT UNSIGNED NOT NULL DEFAULT 3,
 
@@ -48,10 +48,10 @@ CREATE TABLE if not exists gems__comm_jobs (
         -- 2 -> respondent
         -- 3 -> staff
         gcj_target                  tinyint(1) NOT NULL DEFAULT '0',
-        gcj_target_group            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gcj_target_group            varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
         gcj_id_organization         bigint unsigned null references gems__organizations (gor_id_organization),
         gcj_id_track                int unsigned null references gems__tracks (gtr_id_track),
-        gcj_round_description       varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gcj_round_description       varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
         gcj_id_survey               int unsigned null references gems__surveys (gsu_id_survey),
 
         gcj_changed                 timestamp not null default current_timestamp on update current_timestamp,
@@ -63,4 +63,4 @@ CREATE TABLE if not exists gems__comm_jobs (
    )
    ENGINE=InnoDB
    AUTO_INCREMENT = 800
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

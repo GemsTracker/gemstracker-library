@@ -1,13 +1,13 @@
 
 CREATE TABLE if not exists gems__roles (
       grl_id_role bigint unsigned not null auto_increment,
-      grl_name varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-      grl_description varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+      grl_name varchar(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+      grl_description varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
 
-      grl_parents text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+      grl_parents text CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
       -- The grl_parents is a comma-separated list of parents for this role
 
-      grl_privileges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+      grl_privileges text CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
       -- The grl_privilege is a comma-separated list of privileges for this role
 
       grl_changed timestamp not null default current_timestamp on update current_timestamp,
@@ -19,7 +19,7 @@ CREATE TABLE if not exists gems__roles (
    )
    ENGINE=InnoDB
    AUTO_INCREMENT = 800
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 
 -- default roles/privileges
 

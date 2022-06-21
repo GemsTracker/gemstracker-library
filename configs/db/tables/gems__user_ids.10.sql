@@ -9,4 +9,4 @@ CREATE TABLE if not exists gems__user_ids (
         PRIMARY KEY (gui_id_user)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

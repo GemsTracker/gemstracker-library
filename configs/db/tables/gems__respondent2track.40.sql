@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__respondent2track (
         gr2t_id_user                bigint unsigned not null references gems__respondents (grs_id_user),
         gr2t_id_track               int unsigned not null references gems__tracks (gtr_id_track),
 
-        gr2t_track_info             varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gr2t_track_info             varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
         gr2t_start_date             datetime null,
         gr2t_end_date               datetime null,
         gr2t_end_date_manual        boolean not null default 0,
@@ -17,9 +17,9 @@ CREATE TABLE if not exists gems__respondent2track (
         gr2t_count                  int unsigned not null default 0,
         gr2t_completed              int unsigned not null default 0,
 
-        gr2t_reception_code         varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
+        gr2t_reception_code         varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' default 'OK' not null
                                     references gems__reception_codes (grc_id_reception_code),
-        gr2t_comment                varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gr2t_comment                varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         gr2t_changed                timestamp not null default current_timestamp on update current_timestamp,
         gr2t_changed_by             bigint unsigned not null,
@@ -35,4 +35,4 @@ CREATE TABLE if not exists gems__respondent2track (
     )
     ENGINE=InnoDB
     auto_increment = 100000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

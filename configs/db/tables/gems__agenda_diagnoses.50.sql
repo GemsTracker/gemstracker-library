@@ -6,8 +6,8 @@ CREATE TABLE if not exists gems__agenda_diagnoses (
         gad_coding_method   varchar(10) not null default 'DBC',
         gad_code            varchar(40) null default null,
 
-        gad_source          varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual',
-        gad_id_in_source    varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gad_source          varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'manual',
+        gad_id_in_source    varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
 
         gad_active          boolean not null default 1,
         gad_filter          boolean not null default 0,
@@ -21,5 +21,5 @@ CREATE TABLE if not exists gems__agenda_diagnoses (
         INDEX (gad_description)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

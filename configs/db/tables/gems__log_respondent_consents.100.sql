@@ -6,11 +6,11 @@ CREATE TABLE if not exists gems__log_respondent_consents (
         glrc_id_user            bigint unsigned not null references gems__respondents (grs_id_user),
         glrc_id_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
 
-        glrc_consent_field      varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' 
+        glrc_consent_field      varchar(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci'
                                 not null default 'gr2o_consent',
-        glrc_old_consent        varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+        glrc_old_consent        varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null
                                 references gems__consents (gco_description),
-        glrc_new_consent        varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null 
+        glrc_new_consent        varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null
                                 references gems__consents (gco_description),
 
         glrc_created            timestamp not null,
@@ -20,5 +20,5 @@ CREATE TABLE if not exists gems__log_respondent_consents (
     )
     ENGINE=InnoDB
     auto_increment = 2000000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

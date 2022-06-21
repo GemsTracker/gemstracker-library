@@ -5,9 +5,9 @@ CREATE TABLE if not exists gems__track_appointments (
 
         gtap_id_order           int not null default 10,
 
-        gtap_field_name         varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gtap_field_code         varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gtap_field_description  varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gtap_field_name         varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+        gtap_field_code         varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gtap_field_description  varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         gtap_to_track_info      boolean not null default true,
         gtap_track_info_label   boolean not null default false,
@@ -19,10 +19,10 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_after_next         boolean not null default 1,
         -- deprecated
         gtap_min_diff_length    int not null default 1,
-        gtap_min_diff_unit      char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D',
+        gtap_min_diff_unit      char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'D',
         gtap_max_diff_exists    boolean not null default 0,
         gtap_max_diff_length    int not null default 0,
-        gtap_max_diff_unit      char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'D',
+        gtap_max_diff_unit      char(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'D',
         gtap_uniqueness         tinyint unsigned not null default 0,
 
         gtap_create_track       int not null default 0,
@@ -39,5 +39,5 @@ CREATE TABLE if not exists gems__track_appointments (
     )
     ENGINE=InnoDB
 	AUTO_INCREMENT = 80000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

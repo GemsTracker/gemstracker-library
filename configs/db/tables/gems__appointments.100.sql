@@ -6,12 +6,12 @@ CREATE TABLE if not exists gems__appointments (
 
         gap_id_episode          bigint unsigned null references gems__episodes_of_care (gec_episode_of_care_id),
 
-        gap_source              varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'manual',
-        gap_id_in_source        varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gap_source              varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'manual',
+        gap_id_in_source        varchar(40) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
         gap_last_synch          timestamp null default null,
         gap_manual_edit         boolean not null default 0,
 
-        gap_code                varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'A',
+        gap_code                varchar(1) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'A',
         -- one off A => Ambulatory, E => Emergency, F => Field, H => Home, I => Inpatient, S => Short stay, V => Virtual
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
@@ -19,7 +19,7 @@ CREATE TABLE if not exists gems__appointments (
         -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
         -- one of  PRMS Scheduled, ARQ requested but no date, EVN has occurred
 
-        gap_status              varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'AC',
+        gap_status              varchar(2) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'AC',
         -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
         -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
@@ -31,11 +31,11 @@ CREATE TABLE if not exists gems__appointments (
         gap_id_activity         bigint unsigned null references gems__agenda_activities (gaa_id_activity),
         gap_id_procedure        bigint unsigned null references gems__agenda_procedures (gapr_id_procedure),
         gap_id_location         bigint unsigned null references gems__locations (glo_id_location),
-        gap_diagnosis_code      varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+        gap_diagnosis_code      varchar(50) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null
                                 references gems__agenda_diagnoses (gad_diagnosis_code),
 
-        gap_subject             varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
-        gap_comment             TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gap_subject             varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
+        gap_comment             TEXT CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
 
         gap_changed             timestamp not null default current_timestamp on update current_timestamp,
         gap_changed_by          bigint unsigned not null,
@@ -56,4 +56,4 @@ CREATE TABLE if not exists gems__appointments (
     )
     ENGINE=InnoDB
     auto_increment = 2000000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

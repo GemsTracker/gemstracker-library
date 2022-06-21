@@ -7,13 +7,13 @@ CREATE TABLE if not exists gems__log_activity (
 
         gla_by              bigint unsigned null     references gems__staff         (gsf_id_user),
         gla_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
-        gla_role            varchar(20) character set 'utf8' collate 'utf8_general_ci' not null,
+        gla_role            varchar(20) character set 'utf8mb4' collate 'utf8_unicode_ci' not null,
 
         gla_changed         boolean not null default 0,
-        gla_message         text character set 'utf8' collate 'utf8_general_ci' null default null,
-        gla_data            text character set 'utf8' collate 'utf8_general_ci' null default null,
-        gla_method          varchar(10) character set 'utf8' collate 'utf8_general_ci' not null,
-        gla_remote_ip       varchar(64) character set 'utf8' collate 'utf8_general_ci' not null,
+        gla_message         text character set 'utf8mb4' collate 'utf8_unicode_ci' null default null,
+        gla_data            text character set 'utf8mb4' collate 'utf8_unicode_ci' null default null,
+        gla_method          varchar(10) character set 'utf8mb4' collate 'utf8_unicode_ci' not null,
+        gla_remote_ip       varchar(64) character set 'utf8mb4' collate 'utf8_unicode_ci' not null,
 
         gla_created         timestamp not null default current_timestamp,
 
@@ -27,4 +27,4 @@ CREATE TABLE if not exists gems__log_activity (
    )
    ENGINE=InnoDB
    auto_increment = 100000
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

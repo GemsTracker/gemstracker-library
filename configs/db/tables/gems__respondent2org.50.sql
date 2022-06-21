@@ -1,20 +1,20 @@
 
 CREATE TABLE if not exists gems__respondent2org (
-        gr2o_patient_nr         varchar(15) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gr2o_patient_nr         varchar(15) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
         gr2o_id_organization    bigint unsigned not null references gems__organizations (gor_id_organization),
 
         gr2o_id_user            bigint unsigned not null references gems__respondents (grs_id_user),
 
         -- gr2o_id_physician       bigint unsigned null references gems_staff (gsf_id_user),
 
-        -- gr2o_treatment          varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gr2o_email              varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        -- gr2o_treatment          varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gr2o_email              varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
         gr2o_mailable           tinyint not null default 100 references gems__mail_codes (gmc_id),
-        gr2o_comments           text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gr2o_comments           text CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
-        gr2o_consent            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'Unknown'
+        gr2o_consent            varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null default 'Unknown'
                                 references gems__consents (gco_description),
-        gr2o_reception_code     varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
+        gr2o_reception_code     varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' default 'OK' not null
                                 references gems__reception_codes (grc_id_reception_code),
 
         gr2o_opened             timestamp not null default current_timestamp on update current_timestamp,
@@ -35,5 +35,5 @@ CREATE TABLE if not exists gems__respondent2org (
         INDEX (gr2o_consent)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

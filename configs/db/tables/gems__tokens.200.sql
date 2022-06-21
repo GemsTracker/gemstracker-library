@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__tokens (
-        gto_id_token            varchar(9) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gto_id_token            varchar(9) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
 
         gto_id_respondent_track bigint unsigned not null references gems__respondent2track (gr2t_id_respondent_track),
         gto_id_round            bigint unsigned not null references gems__rounds (gro_id_round),
@@ -15,8 +15,8 @@ CREATE TABLE if not exists gems__tokens (
 
         -- values initially filled from gems__rounds, but that might get different values later on, but but not now
         gto_round_order         int not null default 10,
-        gto_icon_file           varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gto_round_description   varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gto_icon_file           varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gto_round_description   varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         --- fields for relations
         gto_id_relationfield    bigint(2) null default null,
@@ -38,13 +38,13 @@ CREATE TABLE if not exists gems__tokens (
         gto_completion_time     datetime,
         gto_duration_in_sec     bigint(20) unsigned NULL,
         -- gto_followup_date       date, -- deprecated
-        gto_result              varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gto_result              varchar(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci',
 
-        gto_comment             text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
-        gto_reception_code      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
+        gto_comment             text CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
+        gto_reception_code      varchar(20) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' default 'OK' not null
                                 references gems__reception_codes (grc_id_reception_code),
 
-        gto_return_url          varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gto_return_url          varchar(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null default null,
 
         gto_changed             timestamp not null default current_timestamp on update current_timestamp,
         gto_changed_by          bigint unsigned not null,
@@ -67,5 +67,5 @@ CREATE TABLE if not exists gems__tokens (
         INDEX (gto_created)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

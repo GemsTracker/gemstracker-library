@@ -2,7 +2,7 @@
 -- Table for keeping track of failed login attempts
 --
 CREATE TABLE if not exists gems__user_login_attempts (
-        gula_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gula_login            varchar(30) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
         gula_id_organization  bigint not null references gems__organizations (gor_id_organization),
 
     	gula_failed_logins    int(11) unsigned not null default 0,
@@ -12,4 +12,4 @@ CREATE TABLE if not exists gems__user_login_attempts (
         PRIMARY KEY (gula_login, gula_id_organization)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';

@@ -2,15 +2,15 @@
 CREATE TABLE if not exists gems__conditions (
         gcon_id                  bigint unsigned not null auto_increment,
 
-        gcon_type                varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gcon_class               varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gcon_name                varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        
+        gcon_type                varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+        gcon_class               varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+        gcon_name                varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+
         -- Generic text fields so the classes can fill them as they please
-        gcon_condition_text1        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gcon_condition_text2        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gcon_condition_text3        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gcon_condition_text4        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gcon_condition_text1        varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gcon_condition_text2        varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gcon_condition_text3        varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
+        gcon_condition_text4        varchar(200) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
         gcon_active              boolean not null default 1,
 
@@ -23,5 +23,5 @@ CREATE TABLE if not exists gems__conditions (
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 1000
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 

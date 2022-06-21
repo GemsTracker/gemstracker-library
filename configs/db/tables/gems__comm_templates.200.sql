@@ -2,9 +2,9 @@
 CREATE TABLE if not exists gems__comm_templates (
       gct_id_template bigint unsigned not null AUTO_INCREMENT,
 
-      gct_name        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-      gct_target      varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-      gct_code        varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+      gct_name        varchar(100) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+      gct_target      varchar(32) CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' not null,
+      gct_code        varchar(64)  CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci' null,
 
       gct_changed     timestamp not null default current_timestamp on update current_timestamp,
       gct_changed_by  bigint unsigned not null,
@@ -16,7 +16,7 @@ CREATE TABLE if not exists gems__comm_templates (
    )
    ENGINE=InnoDB
    AUTO_INCREMENT = 20
-   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+   CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 
 INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
     VALUES

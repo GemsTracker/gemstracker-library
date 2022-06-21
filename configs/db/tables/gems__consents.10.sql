@@ -12,11 +12,11 @@ CREATE TABLE if not exists gems__consents (
       PRIMARY KEY (gco_description)
     )
     ENGINE=InnoDB
-    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+    CHARACTER SET 'utf8mb4' COLLATE 'utf8_unicode_ci';
 
 
-INSERT INTO gems__consents 
-    (gco_description, gco_order, gco_code, gco_changed, gco_changed_by, gco_created, gco_created_by) 
+INSERT INTO gems__consents
+    (gco_description, gco_order, gco_code, gco_changed, gco_changed_by, gco_created, gco_created_by)
     VALUES
     ('Yes', 10, 'consent given', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('No', 20, 'do not use', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
