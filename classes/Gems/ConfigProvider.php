@@ -166,6 +166,32 @@ class ConfigProvider
                     'action' => 'index',
                 ]
             ],
+            [
+                'name' => 'track-builder.source.index',
+                'path' => '/track-builder/source/index',
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LegacyController::class,
+                ],
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'controller' => \Gems_Default_SourceAction::class,
+                    'action' => 'index',
+                ]
+            ],
+            [
+                'name' => 'track-builder.source.create',
+                'path' => '/track-builder/source/create',
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LegacyController::class,
+                ],
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'controller' => \Gems_Default_SourceAction::class,
+                    'action' => 'create',
+                ]
+            ],
         ];
     }
 }
