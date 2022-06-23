@@ -2,10 +2,14 @@
 
 namespace Gems;
 
+use Gems\Auth\Acl\AclFactory;
+use Gems\Auth\Acl\ConfigRoleAdapter;
+use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Config\App;
 use Gems\Config\Survey;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
@@ -13,6 +17,7 @@ use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -61,6 +66,7 @@ class ConfigProvider
 
             'password'      => $this->getPasswordSettings(),
             'routes'        => $this->getRoutes(),
+            'permissions'   => $this->getPermissions(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
@@ -111,6 +117,7 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
+                Acl::class => AclFactory::class,
 
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
@@ -138,6 +145,8 @@ class ConfigProvider
                 // Session
                 SessionPersistenceInterface::class => CacheSessionPersistence::class,
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
+
+                RoleAdapterInterface::class => ConfigRoleAdapter::class,
             ]
         ];
     }
@@ -305,12 +314,14 @@ class ConfigProvider
                 'path' => '/setup/reception/index',
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    AclMiddleware::class,
                     LegacyController::class,
                 ],
                 'allowed_methods' => ['GET'],
                 'options' => [
                     'controller' => \Gems_Default_ReceptionAction::class,
                     'action' => 'index',
+                    'permission' => 'gt.setup',
                 ]
             ],
             ...$this->createBrowseRoutes('track-builder.source', '/track-builder/source', 'pr.track-builder.source', \Gems_Default_SourceAction::class),
@@ -358,5 +369,15 @@ class ConfigProvider
         ];
     }
 
-
+    /**
+     * Returns the permissions defined by this module
+     *
+     * @return mixed[]
+     */
+    protected function getPermissions(): array
+    {
+        return [
+            'gt.setup',
+        ];
+    }
 }
