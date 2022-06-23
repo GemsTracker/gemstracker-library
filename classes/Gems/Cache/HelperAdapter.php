@@ -35,7 +35,7 @@ class HelperAdapter extends TagAwareAdapter
     public function setCacheItem($key, $value, $tag=null)
     {
         $item = $this->pool->getItem($key);
-        if ($tag !== null && $item instanceof ItemInterface) {
+        if ($tag !== null && $item instanceof CacheItem && $item->isTaggable) {
             $item->tag($tag);
         }
         $item->set($value);

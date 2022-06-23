@@ -8,6 +8,7 @@ use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class LegacyConfigProvider
@@ -46,6 +47,7 @@ class LegacyConfigProvider
             'aliases' => [
                 'LegacyAcl' => \Zend_Acl::class,
                 'LegacyBasepath' => \Gems_Util_BasePath::class,
+                'LegacyCache' => CacheItemPoolInterface::class,
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyLoader' => \Gems_Loader::class,
                 'LegacyLocale' => \Zend_Locale::class,

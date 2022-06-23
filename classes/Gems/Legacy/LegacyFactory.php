@@ -7,6 +7,7 @@ namespace Gems\Legacy;
 
 use Gems\View\View;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -93,7 +94,7 @@ class LegacyFactory implements FactoryInterface
     {
         //$roles = $this->loader->create('Roles', $cache, $logger);
         try {
-            $roles = $this->loader->create('Roles', null, $this->container->get('LegacyLogger'));
+            $roles = $this->loader->create('Roles', $this->container->get(CacheItemPoolInterface::class), $this->container->get('LegacyLogger'));
         } catch (\Gems_Exception $e) {
         }
 
