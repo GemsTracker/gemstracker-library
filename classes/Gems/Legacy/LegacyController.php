@@ -67,7 +67,7 @@ class LegacyController implements RequestHandlerInterface
                     ));
                 }
 
-                if ($controllerObject->redirectUrl !== null) {
+                if ($controllerObject->getRedirectUrl() !== null) {
                     return new RedirectResponse($controllerObject->redirectUrl);
                 }
 
