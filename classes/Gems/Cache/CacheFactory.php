@@ -29,7 +29,7 @@ class CacheFactory
             $defaultLifetime = $config['cache']['default_lifetime'];
         }
 
-        if (isset($config['cache'], $config['cache']['adapter'])) {
+        if (isset($config['cache']) && array_key_exists('adapter', $config['cache'])) {
             switch($config['cache']['adapter']) {
                 case 'redis':
                     $dsn = 'redis://localhost';
