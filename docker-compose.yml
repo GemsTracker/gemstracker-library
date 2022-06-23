@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  php:
+    build:
+      context: ./docker
+      dockerfile: php.Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    networks:
+      - webdev
+    volumes:
+      #- ./docker/pulse/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./:/app
+    environment:
+      - APP_ENV=development
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=test123
+      - DB_NAME=pulse
+
+networks:
+  webdev:
+    name: webdev
+
+volumes:
+  mysql_data:

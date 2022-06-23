@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+UNAMEOUT="$(uname -s)"
+
+# Verify operating system is supported...
+case "${UNAMEOUT}" in
+    Linux*)             MACHINE=linux;;
+    Darwin*)            MACHINE=mac;;
+    *)                  MACHINE="UNKNOWN"
+esac
+
+if [ "$MACHINE" == "UNKNOWN" ]; then
+    echo "Unsupported operating system [$(uname -s)]. Script supports macOS, Linux, and Windows (WSL2)." >&2
+
+    exit 1
+fi
+
+# Determine if stdout is a terminal...
+if test -t 1; then
+    # Determine if colors are supported...
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test "$ncolors" -ge 8; then
+        BOLD="$(tput bold)"
+        YELLOW="$(tput setaf 3)"
+        GREEN="$(tput setaf 2)"
+        NC="$(tput sgr0)"
+    fi
+fi
+
+# Source the ".env.example" file so environment variables are available...
+if [ -f ./.env ]; then
+    source ./.env
+fi
+
+export APP_SERVICE=${APP_SERVICE:-"php"}
+export MYSQL_SERVICE=${MYSQL_SERVICE:-"mysql"}
+
+
+ARGS=()
+
+# Proxy PHP commands to the "php" binary on the application container...
+if [ "$1" == "php" ]; then
+    shift 1
+
+    ARGS+=(exec -u dev -w /app)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" "php" "$@")
+
+# Proxy vendor binary commands on the application container...
+elif [ "$1" == "bin" ]; then
+    shift 1
+
+    ARGS+=(exec -u dev -w /app)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" ./vendor/bin/"$@")
+
+# up -d
+elif [ "$1" == "up" ]; then
+    shift 1
+
+    ARGS+=(up -d)
+
+# rebuild
+elif [ "$1" == "rebuild" ]; then
+    shift 1
+
+    ARGS+=(up -d --build)
+
+# bash
+elif [ "$1" == "bash" ]; then
+    shift 1
+
+    ARGS+=(exec)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" "bash" "$@")
+
+# init
+elif [ "$1" == "rebuild-db" ]; then
+    shift 1
+    docker-compose down
+    docker volume rm pulse_mysql_data
+    docker-compose up -d
+    exit
+
+
+# init
+elif [ "$1" == "init" ]; then
+    echo 'INIT!~'
+    shift 1
+    docker-compose exec -u dev -w /app "${APP_SERVICE}" composer install
+    #docker-compose exec -u dev -w /app "${APP_SERVICE}" composer run post-install-cmd
+    exit
+
+# Proxy Composer commands to the "composer" binary on the application container...
+elif [ "$1" == "composer" ]; then
+    shift 1
+
+    ARGS+=(exec -u dev -w /app)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" "composer" "$@")
+
+# Proxy the "phpunit" command to "php vendor/bin/phpunit"...
+elif [ "$1" == "phpunit" ]; then
+    shift 1
+
+    ARGS+=(exec -u dev -w /app)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" php vendor/bin/phpunit "$@")
+
+# Proxy the "phpstan" command to "php vendor/bin/phpstan"...
+elif [ "$1" == "phpstan" ]; then
+    shift 1
+
+    ARGS+=(exec -u dev -w /app)
+    [ ! -t 0 ] && ARGS+=(-T)
+    ARGS+=("$APP_SERVICE" php vendor/bin/phpstan "$@")
+
+# Pass unknown commands to the "docker-compose" binary...
+else
+    ARGS+=("$@")
+fi
+
+# Run Docker Compose with the defined arguments...
+docker-compose "${ARGS[@]}"
