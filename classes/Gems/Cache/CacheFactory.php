@@ -29,6 +29,7 @@ class CacheFactory
             $defaultLifetime = $config['cache']['default_lifetime'];
         }
 
+        $cache = new NullAdapter();
         if (isset($config['cache']) && array_key_exists('adapter', $config['cache'])) {
             switch($config['cache']['adapter']) {
                 case 'redis':
@@ -50,7 +51,7 @@ class CacheFactory
 
                 case 'null':
                 default:
-                    $cache = new NullAdapter();
+                    break;
 
             }
         }
