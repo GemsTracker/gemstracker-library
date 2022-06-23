@@ -164,7 +164,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      */
     protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
     {
-        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
+        //$table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
     }
 
     /**

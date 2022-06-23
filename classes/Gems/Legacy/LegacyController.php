@@ -8,6 +8,8 @@ namespace Gems\Legacy;
 
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,13 +24,15 @@ class LegacyController implements RequestHandlerInterface
     protected ProjectOverloader $loader;
     protected \Zend_View $view;
     protected TemplateRendererInterface $template;
+    private UrlHelper $urlHelper;
 
-    public function __construct(ProjectOverloader $loader, TemplateRendererInterface $template, \Zend_View $view)
+    public function __construct(ProjectOverloader $loader, TemplateRendererInterface $template, \Zend_View $view, UrlHelper $urlHelper)
     {
         $this->container = $loader->getContainer();
         $this->loader = $loader;
         $this->view = $view;
         $this->template = $template;
+        $this->urlHelper = $urlHelper;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -45,7 +49,7 @@ class LegacyController implements RequestHandlerInterface
                 //$legacyRequest = $this->getLegacyRequest($request, $controller, $options['action']);
                 $legacyResponse = new \Zend_Controller_Response_Http();
 
-                $controllerObject = $this->loader->create($controller, $request, false);
+                $controllerObject = $this->loader->create($controller, $request, $this->urlHelper, false);
                 $this->loadControllerDependencies($controllerObject);
                 
                 $controllerObject->init();
@@ -61,6 +65,10 @@ class LegacyController implements RequestHandlerInterface
                         $actionName,
                         $controller,
                     ));
+                }
+
+                if ($controllerObject->redirectUrl !== null) {
+                    return new RedirectResponse($controllerObject->redirectUrl);
                 }
 
                 $content = $controllerObject->html->render($this->view);

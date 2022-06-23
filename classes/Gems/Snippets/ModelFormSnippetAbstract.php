@@ -212,7 +212,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         parent::afterSave($changed);
 
         if ($changed) {
-            $this->accesslog->logChange($this->request, null, $this->formData);
+            //$this->accesslog->logChange($this->request, null, $this->formData);
         }
     }
 
@@ -341,7 +341,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     {
         $links = $this->menu->getMenuList();
 
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
+        $links->addParameterSources($this->menu->getParameterSource());
         $links->addCurrentParent($this->_('Cancel'));
 
         if ($this->menuShowSiblings) {
@@ -398,7 +398,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         if (is_array($this->afterSaveRouteUrl)) {
             // Make sure controller is set
             if (!array_key_exists('controller', $this->afterSaveRouteUrl)) {
-                $this->afterSaveRouteUrl['controller'] = $this->request->getControllerName();
+                $this->afterSaveRouteUrl['controller'] = $this->requestInfo->getCurrentController();
             }
 
             // Search array for menu item

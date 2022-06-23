@@ -4,6 +4,7 @@ namespace Gems;
 
 use Gems\Cache\CacheFactory;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
@@ -184,9 +185,10 @@ class ConfigProvider
                 'path' => '/track-builder/source/create',
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    LegacyCurrentUserMiddleware::class,
                     LegacyController::class,
                 ],
-                'allowed_methods' => ['GET'],
+                'allowed_methods' => ['GET', 'POST'],
                 'options' => [
                     'controller' => \Gems_Default_SourceAction::class,
                     'action' => 'create',
