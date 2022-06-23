@@ -29,12 +29,6 @@ class Gems_Model_Type_EncryptedField
      * @var string 
      */
     protected $maskedValue = '********';
-    
-    /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      * Should the value be masked?
@@ -43,15 +37,17 @@ class Gems_Model_Type_EncryptedField
      */
     protected $valueMask;
 
+    protected  \Gems\Encryption\ValueEncryptor $valueEncryptor;
+
     /**
      *
      * @param \Gems_Project_ProjectSettings $project
      * @param boolean $valueMask
      */
-    public function __construct(\Gems_Project_ProjectSettings $project, $valueMask = true)
+    public function __construct(\Gems\Encryption\ValueEncryptor $valueEncryptor, $valueMask = true)
     {
-        $this->project   = $project;
         $this->valueMask = $valueMask;
+        $this->valueEncryptor = $valueEncryptor;
     }
 
     /**
@@ -109,7 +105,7 @@ class Gems_Model_Type_EncryptedField
             if ($this->valueMask) {
                 return $this->maskedValue;
             } else {
-                return $this->project->decrypt($value);
+                return $this->valueEncryptor->decrypt($value);
             }
         }
 
@@ -132,7 +128,7 @@ class Gems_Model_Type_EncryptedField
     {
         if ($value) {
             // \MUtil_Echo::track($value);
-            return $this->project->encrypt($value);
+            return $this->valueEncryptor->encrypt($value);
         }
     }
 

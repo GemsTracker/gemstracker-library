@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
+use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Laminas\Db\Adapter\Adapter;
@@ -61,6 +62,7 @@ class LegacyConfigProvider
                 'db' => Adapter::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,
                 'LegacyDb2' => Adapter::class,
+                'LegacyValueEncryptor' => ValueEncryptor::class,
             ],
         ];
     }
