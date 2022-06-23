@@ -60,6 +60,11 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     public $summarizedActions = array('index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all');
 
     /**
+     * @var \Gems\Encryption\ValueEncryptor
+     */
+    public $valueEncryptor;
+
+    /**
      * Displays a textual explanation what synchronization does on the page.
      */
     protected function addSynchronizationInformation()
@@ -222,7 +227,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
             } else {
                 $model->set('gso_ls_password', 'description', $this->_('Enter new or remove stars to empty'));
             }
-            $type = new \Gems_Model_Type_EncryptedField($this->project, true);
+            $type = new \Gems_Model_Type_EncryptedField($this->valueEncryptor, true);
             $type->apply($model, 'gso_ls_password');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
