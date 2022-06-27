@@ -133,15 +133,9 @@ class Gems_Default_TrackRoundsAction extends \Gems_Default_TrackMaintenanceWithE
         \MUtil_JQuery::enableView($this->view);
         $this->view->headScript()->appendFile($this->basepath->getBasePath()  .  '/gems/js/jquery.showOnChecked.js');
 
-        if (\MUtil_Bootstrap::enabled()) {
-            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
-                $('input[name=\"organizations[]\"]').closest('div').showOnChecked( { showInput: $('#org_specific_round-1') });
-            });");
-        } else {
-            $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
-                $('input[name=\"organizations[]\"]').closest('tr').showOnChecked( { showInput: $('#org_specific_round-1') });
-            });");
-        }
+        $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
+            $('input[name=\"organizations[]\"]').closest('div').showOnChecked( { showInput: $('#org_specific_round-1') });
+        });");
     }
 
     /**

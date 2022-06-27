@@ -148,31 +148,18 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
         }
 
         $links = $this->getMenuList();
-        if (\MUtil_Bootstrap::enabled()) {
-            if ($links) {
-                $linkContainer = \MUtil_Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
-                $linkContainer[] = $links;
+        if ($links) {
+            $linkContainer = \MUtil_Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
+            $linkContainer[] = $links;
 
-                $element = $this->_form->createElement('html', 'formLinks');
-                $element->setValue($linkContainer)
-                        ->setOrder(999)
-                        ->removeDecorator('HtmlTag')
-                        ->removeDecorator('Label')
-                        ->removeDecorator('DtDdWrapper');
+            $element = $this->_form->createElement('html', 'formLinks');
+            $element->setValue($linkContainer)
+                    ->setOrder(999)
+                    ->removeDecorator('HtmlTag')
+                    ->removeDecorator('Label')
+                    ->removeDecorator('DtDdWrapper');
 
-                $this->_form->addElement($element);
-            }
-        } else {
-            $table = new \MUtil_Html_TableElement(array('class' => $this->class));
-            $table->setAsFormLayout($this->_form, true, true);
-
-            // There is only one row with formLayout, so all in output fields get class.
-            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
-
-            if ($links) {
-                $table->tf(); // Add empty cell, no label
-                $table->tf($links);
-            }
+            $this->_form->addElement($element);
         }
     }
 

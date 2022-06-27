@@ -42,17 +42,6 @@ class Gems_Form_TabSubForm extends \Gems_Form_TableForm
 
         return $this;
     }
-
-    /**
-     * Fix the decorators so we get the table layout we want. Normally this is called
-     * only once when rendering the form.
-     */
-    public function fixDecorators()
-    {
-        if (\MUtil_Bootstrap::enabled() !== true) {
-            parent::fixDecorators();
-        }
-    }
     
     /**
      * Load default decorators
@@ -68,9 +57,6 @@ class Gems_Form_TabSubForm extends \Gems_Form_TableForm
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('FormElements');
-            if (\MUtil_Bootstrap::enabled() !== true) {
-                $this->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>'formTable'));
-            }
             $this->addDecorator(array('tab' => 'HtmlTag'), array('tag' => 'div', 'class' => 'displayGroup'))
                  ->addDecorator('TabPane', array('jQueryParams' => array('containerId' => 'mainForm',
                                                                          'title' => $this->getAttrib('title')),

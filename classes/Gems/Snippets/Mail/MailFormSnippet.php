@@ -169,17 +169,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends \MUtil_Snippets_ModelSnippetAbs
         }
     }
 
-    protected function beforeDisplay()
-    {
-        if (!\MUtil_Bootstrap::enabled()) {
-            $table = new \MUtil_Html_TableElement(array('class' => $this->formClass));
-            $table->setAsFormLayout($this->form, true, true);
-
-            // There is only one row with formLayout, so all in output fields get class.
-            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
-        }
-    }
-
     /**
      *
      * Create a new form instance

@@ -102,7 +102,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
                 $translationName
             );
 
-            if ((!isset($itemSettings['elementClass']) || $itemSettings['elementClass'] == 'text') && \MUtil_Bootstrap::enabled()) {
+            if ((!isset($itemSettings['elementClass']) || $itemSettings['elementClass'] == 'text')) {
                 $model->set($itemName, 'decorators',
                     [
                         'ViewHelper',

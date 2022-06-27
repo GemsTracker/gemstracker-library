@@ -131,11 +131,7 @@ class Gems_Html
 
         // \MUtil_Echo::track($args);
         // \MUtil_Echo::track($panel_args['baseUrl']);
-        if (\MUtil_Bootstrap::enabled()) {
-            $pager = new \MUtil_Bootstrap_Html_PagePanel($panel_args);
-        } else {
-            $pager = new \MUtil_Html_PagePanel($panel_args);
-        }
+        $pager = new \MUtil_Bootstrap_Html_PagePanel($panel_args);
 
         $pager[] = $pager->pageLinks(
             array($translator->_('<< First'),   'class' => new \MUtil_Html_ClassArrayAttribute('browselink', 'keyHome')),

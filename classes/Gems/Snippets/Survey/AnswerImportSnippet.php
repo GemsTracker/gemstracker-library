@@ -176,11 +176,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
                     'multiOptions', $tokenTreatments
                     );
 
-            if (\MUtil_Bootstrap::enabled()) {
-                $this->importModel->set('tokenCompleted', 'separator', '');
-            } else {
-                $this->importModel->set('trans', 'separator', '<br/>');
-            }
+            $this->importModel->set('tokenCompleted', 'separator', '');
         }
 
         return $this->importModel;
@@ -198,7 +194,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
         $model    = $this->getModel();
         $baseform = $this->createForm();
 
-        if ((\MUtil_Bootstrap::enabled() !== true) && ($baseform instanceof \MUtil_Form)) {
+        if ($baseform instanceof \MUtil_Form) {
             $table = new \MUtil_Html_TableElement();
             $table->setAsFormLayout($baseform, true, true);
 

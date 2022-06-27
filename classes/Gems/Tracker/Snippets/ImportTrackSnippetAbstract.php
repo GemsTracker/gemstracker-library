@@ -658,9 +658,6 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     protected function createForm($options = null)
     {
         $form = new \Gems_Form($options);
-        if (\MUtil_Bootstrap::enabled()) {
-            $form->activateBootstrap();
-        }
 
         return $form;
     }
@@ -722,39 +719,6 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $element->$tagName($header);
 
         $bridge->addElement($element);
-    }
-
-    /**
-     * Creates from the model a \Zend_Form using createForm and adds elements
-     * using addFormElements().
-     *
-     * @param int $step The current step
-     * @return \Zend_Form
-     */
-    protected function getFormFor($step)
-    {
-        $baseform = $this->createForm();
-        if ($this->trackEngine &&
-                ($step == 4) &&
-                (\MUtil_Bootstrap::enabled() !== true) &&
-                ($baseform instanceof \MUtil_Form)) {
-            $model = $this->getModel();
-            $table = new \MUtil_Html_DivFormElement();
-            $table->setAsFormLayout($baseform);
-
-            $baseform->setAttrib('class', $this->class);
-
-            $bridge = $model->getBridgeFor('form', $baseform);
-
-            $this->_items = null;
-            $this->initItems();
-
-            $this->addFormElementsFor($bridge, $model, $step);
-
-            return $baseform;
-        } else {
-            return parent::getFormFor($step);
-        }
     }
 
     /**

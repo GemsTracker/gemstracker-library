@@ -45,12 +45,6 @@ class Gems_Form_SubForm extends \Gems_Form
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('FormElements');
-            if (!\MUtil_Bootstrap::enabled()) {
-                $this->addDecorator('HtmlTag', array('tag' => 'dl'))
-                    ->addDecorator('Fieldset')
-                    ->addDecorator('DtDdWrapper');
-            }
-                 
         }
     }
 }

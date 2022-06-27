@@ -60,10 +60,8 @@ class RunSqlFormSnippet extends FormSnippetAbstract
         if (! $this->_form) {
             $options = array();
 
-            if (\MUtil_Bootstrap::enabled()) {
-                //$options['class'] = 'form-horizontal';
-                $options['role'] = 'form';
-            }
+            //$options['class'] = 'form-horizontal';
+            $options['role'] = 'form';
 
             $this->_form = $this->createForm($options);
 

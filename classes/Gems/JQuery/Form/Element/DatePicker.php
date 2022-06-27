@@ -44,16 +44,14 @@ class Gems_JQuery_Form_Element_DatePicker extends \MUtil_JQuery_Form_Element_Dat
     public function loadDefaultDecorators()
     {
         parent::loadDefaultDecorators();
-        if (\MUtil_Bootstrap::enabled() === true) {
-            $this->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
-                 ->addDecorator('HtmlTag', array(
-                     'tag' => 'div',
-                     'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'element-container'
-                 ))
-                 ->addDecorator('Label')
-                 ->addDecorator('BootstrapRow');
-        }
+        $this->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
+             ->addDecorator('HtmlTag', array(
+                 'tag' => 'div',
+                 'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
+                 'class' => 'element-container'
+             ))
+             ->addDecorator('Label')
+             ->addDecorator('BootstrapRow');
         return $this;
     }
 

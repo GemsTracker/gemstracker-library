@@ -45,20 +45,16 @@ class Gems_JQuery_Form_Element_ColorPicker extends \ZendX_JQuery_Form_Element_Co
      */
     public function loadDefaultDecorators()
     {
-        if (\MUtil_Bootstrap::enabled() === true) {
-            $this->addDecorator('UiWidgetElement')
-                 ->addDecorator('Errors')
-                 ->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
-                 ->addDecorator('HtmlTag', array(
-                     'tag' => 'div',
-                     'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'element-container'
-                 ))
-                 ->addDecorator('Label')
-                 ->addDecorator('BootstrapRow');
-        } else {
-            parent::loadDefaultDecorators();
-        }
+        $this->addDecorator('UiWidgetElement')
+             ->addDecorator('Errors')
+             ->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
+             ->addDecorator('HtmlTag', array(
+                 'tag' => 'div',
+                 'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
+                 'class' => 'element-container'
+             ))
+             ->addDecorator('Label')
+             ->addDecorator('BootstrapRow');
         return $this;
     }
 }

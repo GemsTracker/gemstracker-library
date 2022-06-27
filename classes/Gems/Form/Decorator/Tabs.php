@@ -128,8 +128,6 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
      */
     public function render($content)
     {
-        $useBootstrap = \MUtil_Bootstrap::enabled();
-
         if ((null === ($element = $this->getElement())) ||
             (null === ($view = $element->getView()))) {
             return $content;
@@ -152,28 +150,16 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
             $activeTabs = false;
             if (count($subforms) > 1) {
                 $activeTabs = true;
-                if (!$useBootstrap) {
-                    $jquery = $view->jQuery();
+                $jquery = $view->jQuery();
 
-                    $js = sprintf('%1$s("#tabElement").tabs();', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
+                if ($selectedTabElement = $this->getOption('selectedTabElement')) {
+                    $js = sprintf('%1$s(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
+                        var tabtext = $(e.target).text();
+                        %1$s("#%2$s").val(tabtext);
+                })', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);
 
-                    if ($selectedTabElement = $this->getOption('selectedTabElement')) {
-                        $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
-                    }
-                    
                     $jquery->addOnLoad($js);
-                } else {
-                    $jquery = $view->jQuery();
-                    
-                    if ($selectedTabElement = $this->getOption('selectedTabElement')) {
-                        $js = sprintf('%1$s(\'a[data-toggle="tab"]\').on(\'shown.bs.tab\', function (e) {
-                            var tabtext = $(e.target).text();
-                            %1$s("#%2$s").val(tabtext);
-                    })', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);
-                        
-                    $jquery->addOnLoad($js);
-                    }
-                }                   
+                }
 
                 $list = $containerDiv->ul(array('class' => 'nav nav-tabs', 'role' => 'tablist'));
             }
@@ -197,13 +183,8 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
                     $tabPaneOptions = array('id' => $tabId,'class' => 'tab-pane');
                     if ($active && $active == $tabName) {
                         // If a tab is active, select it
-                        if (!$useBootstrap) {
-                            $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
-                            $jquery->addOnLoad($js);
-                        } else {
-                            $js = sprintf('%1$s(\'a[data-toggle="tab"]\').eq(%2$d).tab(\'show\');', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
-                            $jquery->addOnLoad($js);
-                        }
+                        $js = sprintf('%1$s(\'a[data-toggle="tab"]\').eq(%2$d).tab(\'show\');', \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
+                        $jquery->addOnLoad($js);
                             
                         $liOptions['class'] = 'active';
                         $tabPaneOptions['class'] .= ' active';
@@ -211,17 +192,9 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
                     $tabNumber++;
 
                     $list->li($liOptions)->a('#'.$tabId, $tabName, array('role' => 'tab', 'data-toggle' => 'tab'));
-                    if ($useBootstrap) {
-                        $subContainer = $tabContainerDiv->div($tabPaneOptions);
-                    } else {
-                        $subContainer = $tabContainerDiv->div($tabPaneOptions)->table(array('class' => 'formTable'));
-                    }
+                    $subContainer = $tabContainerDiv->div($tabPaneOptions);
                 } else {
-                    if($useBootstrap) {
-                        $subContainer = $tabContainerDiv;
-                    } else {
-                        $subContainer = $tabContainerDiv->table(array('class' => 'formTable'));
-                    }
+                    $subContainer = $tabContainerDiv;
                 }
                 foreach ($subform->getElements() as $subelement) {
 
@@ -229,25 +202,14 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
                         $this->applyDecorators($subelement, array(array('ViewHelper')));
                         $subContainer[] = $subelement;
                     } else {
-                        if ($useBootstrap) {
-                            $subgroup = $subContainer->div(array('class' => 'form-group'));
+                        $subgroup = $subContainer->div(array('class' => 'form-group'));
 
-                            $label = $subgroup->div(array('class' => 'label-container'))->label(array('for' => $subelement->getId()));
-                            $label[] = $subelement->getLabel();
+                        $label = $subgroup->div(array('class' => 'label-container'))->label(array('for' => $subelement->getId()));
+                        $label[] = $subelement->getLabel();
 
-                            $divContainer = $subgroup->div(array('class' => 'element-container'));
+                        $divContainer = $subgroup->div(array('class' => 'element-container'));
 
-                            $divContainer[] = $subelement;
-                        } else {
-                            $row = $subContainer->tr();
-                            $label = $row->td()->label(array('for' => $subelement->getId()));
-
-                            $label[] = $subelement->getLabel();
-
-                            $column = $row->td();
-                            $column[] = $subelement;
-                        }    
-                        
+                        $divContainer[] = $subelement;
                     }
                 }
             }

@@ -51,16 +51,14 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
      * @param mixed $options
      * @return \Gems_Form
      */
-    protected function createForm($options = array())
+    protected function createForm($options = array()): \Zend_Form
     {
-        if (\MUtil_Bootstrap::enabled()) {
-            if (!isset($options['class'])) {
-                $options['class'] = 'form-horizontal';
-            }
+        if (!isset($options['class'])) {
+            $options['class'] = 'form-horizontal';
+        }
 
-            if (!isset($options['role'])) {
-                $options['role'] = 'form';
-            }
+        if (!isset($options['role'])) {
+            $options['role'] = 'form';
         }
         $form = new \Gems_Form($options);
 

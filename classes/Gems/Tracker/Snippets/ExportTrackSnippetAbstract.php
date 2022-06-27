@@ -317,14 +317,12 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function createForm($options = null)
     {
-        if (\MUtil_Bootstrap::enabled()) {
-            if (!isset($options['class'])) {
-                $options['class'] = 'form-horizontal';
-            }
+        if (!isset($options['class'])) {
+            $options['class'] = 'form-horizontal';
+        }
 
-            if (!isset($options['role'])) {
-                $options['role'] = 'form';
-            }
+        if (!isset($options['role'])) {
+            $options['role'] = 'form';
         }
         return new \Gems_Form($options);
     }

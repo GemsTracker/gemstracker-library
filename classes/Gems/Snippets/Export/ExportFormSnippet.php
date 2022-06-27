@@ -46,11 +46,7 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
             $currentType = key($this->exportClasses);
         }
 
-        if (\MUtil_Bootstrap::enabled()) {
-            $form = new \Gems_Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
-        } else {
-            $form = new \Gems_Form_TableForm();
-        }
+        $form = new \Gems_Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
 
         $url = $view->url() . '/step/batch';
         $form->setAction($url);

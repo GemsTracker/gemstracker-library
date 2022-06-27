@@ -44,8 +44,6 @@ class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_Tab
             return $this;
         }
 
-        $useBootstrap = \MUtil_Bootstrap::enabled();
-
         if(!isset($attribs['id'])) {
             $attribs['id'] = $id;
         }
@@ -62,11 +60,7 @@ class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_Tab
         $content = "";
         if(isset($this->_tabs[$id])) {
 
-            if ($useBootstrap) {
-                $list = '<ul class="nav nav-tabs">'.PHP_EOL;
-            } else {
-                $list = '<ul class="ui-tabs-nav">'.PHP_EOL;
-            }
+            $list = '<ul class="nav nav-tabs">'.PHP_EOL;
             $html = '<div class="tab-content">';
             $fragment_counter = 1;
             $tabIndex = 0;
@@ -75,9 +69,6 @@ class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_Tab
                 $opts = $v['options'];
 
                 $class = '';
-                if (!$useBootstrap) {
-                    $class = 'ui-tabs-nav-item ';
-                }
                 $active = '';
                 if (isset($opts['class'])) {
                   $class .= $opts['class'];
@@ -117,24 +108,6 @@ class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_Tab
               . '>'.PHP_EOL
               . $content
               . '</div>'.PHP_EOL;
-
-        //Load the selected tab if jQuery UI tabs
-        if (!$useBootstrap) {
-            $js = sprintf('%s("#%s").tabs(%s);',
-                \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-                $attribs['id'],
-                $params
-            ); 
-            if (isset($selected)) {
-                $js .= sprintf('
-                    %s("#%s").tabs("option", "active", %d);',
-                    \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-                    $attribs['id'],
-                    $selected
-                );
-            }
-            $this->jquery->addOnLoad($js);
-        }
 
         return $html;
     }
