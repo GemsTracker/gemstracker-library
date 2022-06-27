@@ -14,7 +14,6 @@ class TestCurrentUserMiddleware implements \Psr\Http\Server\MiddlewareInterface
 
     public function __construct(CurrentUserRepository $currentUserRepository, array $config)
     {
-
         $this->currentUserRepository = $currentUserRepository;
 
         if (isset($config['dev'])) {
@@ -26,9 +25,9 @@ class TestCurrentUserMiddleware implements \Psr\Http\Server\MiddlewareInterface
     {
         $currentUsername = null;
         $currentOrganizationId = null;
-        if (isset($config['dev']['currentUsername'], $config['dev']['currentOrganizationId'])) {
-            $currentUsername = $config['dev']['currentUsername'];
-            $currentOrganizationId = $config['dev']['currentOrganizationId'];
+        if (isset($this->config['currentUsername'], $this->config['currentOrganizationId'])) {
+            $currentUsername = $this->config['currentUsername'];
+            $currentOrganizationId = $this->config['currentOrganizationId'];
         }
 
         $this->currentUserRepository->setCurrentUserCredentials($currentUsername, $currentOrganizationId);

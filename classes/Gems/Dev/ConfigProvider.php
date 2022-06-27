@@ -23,7 +23,7 @@ class ConfigProvider
     {
         return [
             'currentUsername' => 'jjansen',
-            'currentOrganizationId' => '70',
+            'currentOrganizationId' => 70,
         ];
     }
 

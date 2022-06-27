@@ -25,7 +25,7 @@ class TestUsers extends \Phinx\Seed\AbstractSeed
             [
                 'gul_id_user' => 2001,
                 'gul_login' => 'jjansen',
-                'gul_id_organization' => 80,
+                'gul_id_organization' => 70,
                 'gul_user_class' => 'StaffUser',
                 'gul_can_login' => 1,
                 'gul_two_factor_key' => null,
