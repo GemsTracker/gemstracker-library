@@ -165,14 +165,14 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
                 'description', $this->_('E.g. the name of the project - for single source projects.'),
                 'size', 15,
                 'minlength', 4,
-                'validator', $model->createUniqueValidator('gso_source_name')
+                //'validator', $model->createUniqueValidator('gso_source_name')
                 );
         $model->set('gso_ls_url',      'label', $this->_('Source Url'),
                 'default', 'http://',
                 'description', $this->_('For creating token-survey url.'),
                 'size', 50,
-                'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
-                'validators[url]', new \MUtil_Validate_Url()
+                //'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
+                //'validators[url]', new \MUtil_Validate_Url()
                 );
 
         $sourceClasses = $tracker->getSourceClasses();
