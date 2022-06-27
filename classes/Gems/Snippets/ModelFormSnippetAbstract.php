@@ -246,31 +246,18 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                     $this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER)->addElement($element);
                 }
             }
-        } else {
-            if (\MUtil_Bootstrap::enabled() !== true) {
-                $table = new \MUtil_Html_TableElement(array('class' => $this->class));
-                $table->setAsFormLayout($this->_form, true, true);
+        } elseif($links = $this->getMenuList()) {
+            $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+            $linkContainer[] = $links;
 
-                // There is only one row with formLayout, so all in output fields get class.
-                $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+            $element = $this->_form->createElement('html', 'formLinks');
+            $element->setValue($linkContainer)
+                    ->setOrder(999)
+                    ->removeDecorator('HtmlTag')
+                    ->removeDecorator('Label')
+                    ->removeDecorator('DtDdWrapper');
 
-                if ($links = $this->getMenuList()) {
-                    $table->tf(); // Add empty cell, no label
-                    $table->tf($links);
-                }
-            } elseif($links = $this->getMenuList()) {
-                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
-                $linkContainer[] = $links;
-
-                $element = $this->_form->createElement('html', 'formLinks');
-                $element->setValue($linkContainer)
-                        ->setOrder(999)
-                        ->removeDecorator('HtmlTag')
-                        ->removeDecorator('Label')
-                        ->removeDecorator('DtDdWrapper');
-
-                $this->_form->addElement($element);
-            }
+            $this->_form->addElement($element);
         }
     }
 
@@ -296,14 +283,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         if ($this->useTabbedForm) {
             return new \Gems_TabForm($options);
         }
-        if (\MUtil_Bootstrap::enabled()) {
-            if (!isset($options['class'])) {
-                $options['class'] = 'form-horizontal';
-            }
+        if (!isset($options['class'])) {
+            $options['class'] = 'form-horizontal';
+        }
 
-            if (!isset($options['role'])) {
-                $options['role'] = 'form';
-            }
+        if (!isset($options['role'])) {
+            $options['role'] = 'form';
         }
         return new \Gems_Form($options);
     }

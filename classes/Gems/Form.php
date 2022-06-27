@@ -53,13 +53,6 @@ class Gems_Form extends \MUtil_Form
         $this->activateBootstrap();
     }
 
-
-    public function activateBootstrap() {
-        if (\MUtil_Bootstrap::enabled() === true) {
-            parent::activateBootstrap();
-        }
-    }
-
     protected function _activateJQueryView(\Zend_View_Interface $view = null) {
         parent::_activateJQueryView($view);
 
