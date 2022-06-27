@@ -128,10 +128,8 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
      */
     public function createForm($options = null)
     {
-        if (\MUtil_Bootstrap::enabled()) {
-            $options['class'] = 'form-horizontal';
-            $options['role'] = 'form';
-        }
+        $options['class'] = 'form-horizontal';
+        $options['role'] = 'form';
         return new \Gems_Form($options);
     }
 
@@ -470,17 +468,6 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $data['executed']  = 0;
 
             $form->populate($data);
-        }
-
-        if (! \MUtil_Bootstrap::enabled()) {
-            $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-            $table->setAsFormLayout($form, true, true);
-            $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-
-            if ($links = $this->createMenuLinks(1)) {
-                $table->tf(); // Add empty cell, no label
-                $linksCell = $table->tf($links);
-            }
         }
 
         $this->html[] = $form;

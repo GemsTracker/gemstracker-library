@@ -332,20 +332,13 @@ abstract class Gems_Controller_BrowseEditAction extends \Gems_Controller_ModelAc
                 $form->addDisplayGroup(array('formLinks'), 'form_buttons');
             }
         } else {
-            if (\MUtil_Bootstrap::enabled() !== true) {
-                $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
-                $table->setAsFormLayout($form, true, true);
-                $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+            $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
+            $table->setAsFormLayout($form, true, true);
+            $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-                if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                    $table->tf(); // Add empty cell, no label
-                    $linksCell = $table->tf($links);
-                }
-            } elseif ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                $element = $form->createElement('html', 'menuLinks');
-                $element->setValue($links);
-                $element->setOrder(999);
-                $form->addElement($element);
+            if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
+                $table->tf(); // Add empty cell, no label
+                $linksCell = $table->tf($links);
             }
         }
 
