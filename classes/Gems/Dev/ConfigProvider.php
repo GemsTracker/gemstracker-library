@@ -4,12 +4,16 @@ namespace Gems\Dev;
 
 class ConfigProvider
 {
-    public function __invoke()
+    public function __invoke(): array
     {
-        return [
-            'dev' => $this->getDevSettings(),
-            'migrations'   => $this->getMigrations(),
-        ];
+        if (getenv('APP_ENV') === 'development') {
+            return [
+                'dev' => $this->getDevSettings(),
+                'migrations'   => $this->getMigrations(),
+            ];
+        }
+
+        return [];
     }
 
     /**
