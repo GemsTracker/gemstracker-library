@@ -27,9 +27,14 @@ class AclMiddleware implements MiddlewareInterface
         $route = $routeResult->getMatchedRoute();
         $options = $route->getOptions();
 
-        $userRole = 'role-3'; // TODO fetch from user
+        $userRole = $request->getAttribute('userRole');
 
-        if (!empty($options['permission']) && !$this->acl->isAllowed($userRole, $options['permission'])) {
+        if (
+            !empty($options['permission']) && (
+                $userRole === null
+                || !$this->acl->isAllowed($userRole, $options['permission'])
+            )
+        ) {
             return new HtmlResponse($this->template->render('error::404'), 404);
         }
 
