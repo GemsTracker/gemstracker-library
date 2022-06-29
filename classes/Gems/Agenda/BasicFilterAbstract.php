@@ -24,7 +24,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @since      Class available since version 1.6.5 13-okt-2014 20:13:01
  */
 abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstract
-    implements AppointmentFilterInterface, \Serializable
+    implements AppointmentFilterInterface
 {
     /**
      * Constant for filters that should always trigger
@@ -196,26 +196,27 @@ abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstrac
      * avoid serializing any resource types loaded by
      * \MUtil_Translate_TranslateableAbstract
      *
-     * @return string
+     * @return array
      */
-    public function serialize() {
+    public function __serialize(): array
+    {
         $data = array();
         foreach (get_object_vars($this) as $name => $value) {
             if (! $this->filterRequestNames($name)) {
                 $data[$name] = $value;
             }
         }
-        return serialize($data);
+        return $data;
     }
 
     /**
      * Restore parameter values
      *
-     * @param string $data
+     * @param array $data
      */
-    public function unserialize($data) {
-
-        foreach ((array) unserialize($data) as $name => $value) {
+    public function __unserialize(array $data)
+    {
+        foreach ($data as $name => $value) {
             $this->$name = $value;
         }
     }
