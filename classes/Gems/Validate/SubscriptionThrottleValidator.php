@@ -26,6 +26,11 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
     protected $_messages;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -43,13 +48,6 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
      * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
-
-    /**
-     * Required
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      *
@@ -73,7 +71,6 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
     {
         return $this->db instanceof \Zend_Db_Adapter_Abstract &&
                 $this->logger instanceof \Psr\Log\LoggerInterface &&
-                $this->project instanceof \Gems_Project_ProjectSettings &&
                 $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
                 $this->translate instanceof \Zend_Translate;
     }
@@ -115,7 +112,8 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
      */
     public function isValid($value)
     {
-        if ($throttleSettings = $this->project->getAskThrottleSettings()) {
+        if (isset($this->config['survey']['ask'], $this->config['survey']['ask']['askThrottle'])) {
+            $throttleSettings = $this->config['survey']['ask']['askThrottle'];
 
             // Prune the database for (very) old attempts
             $where = $this->db->quoteInto(

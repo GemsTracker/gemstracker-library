@@ -71,6 +71,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     protected $basepath;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * Required
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -131,12 +136,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         'gla_organization',
         'grco_organization',
         );
-
-    /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      *
@@ -1094,12 +1093,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if ($this->getBaseOrganizationId() != $this->getCurrentOrganizationId()) {
             $sources[] = $this->getCurrentOrganization();
         }
-        $sources[] = $this->project;
 
         foreach ($sources as $source) {
             if ($from = $source->getFrom()) {
                 return $from;
             }
+        }
+
+        if (isset($this->config['email']['site'])) {
+            return $this->config['email']['site'];
         }
 
         // We really don't like it, but sometimes the only way to get a from address.
@@ -1280,7 +1282,6 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         $org         = $this->getBaseOrganization();
         $orgResults  = $org->getMailFields();
-        $projResults = $this->project->getMailFields();
 
         // $result['bcc']            = $projResults['project_bcc'];
         $result['dear']           = $this->getDearGreeting();
@@ -1294,7 +1295,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $result['name']           = $this->getFullName();
         $result['login_name']     = $this->getLoginName();
 
-        $result = $result + $orgResults + $projResults;
+        $result = $result + $orgResults;
 
         $result['reset_ask']      = $orgResults['organization_login_url'] . '/index/resetpassword';
         $result['reset_in_hours'] = $this->definition->getResetKeyDurationInHours();
@@ -2114,9 +2115,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $mail = $this->loader->getMail();
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
-        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getStaffBounce());
-        if ($bcc = $this->project->getEmailBcc()) {
-            $mail->addBcc($bcc);
+
+        $staffBounce = false;
+        if (isset($config['email']['staffBounce'])) {
+            $staffBounce = $config['email']['staffBounce'];
+        }
+
+        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $staffBounce);
+        if (isset($config['email']['bcc'])) {
+            $mail->addBcc($config['email']['bcc']);
         }
 
         if ($useResetFields) {

@@ -33,6 +33,11 @@ class Gems_Mail extends \MUtil_Mail
     protected $_charset = 'utf-8';
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -107,7 +112,10 @@ class Gems_Mail extends \MUtil_Mail
      */
     public function bounceCheck()
     {
-        return $this->project->getEmailBounce();
+        if (isset($config['email']['bounce'])) {
+            return $config['email']['bounce'];
+        }
+        return false;
     }
 
     /**

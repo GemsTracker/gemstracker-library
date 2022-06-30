@@ -20,6 +20,11 @@
 class Gems_Default_ContactAction extends \Gems_Controller_Action
 {
     /**
+     * @var array
+     */
+    public $config;
+
+    /**
      * @var \Gems_Menu
      */
     public $menu;
@@ -64,7 +69,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
                 $html->pInfo()->sprintf(
                         $this->_('Please contact the %s if you have any questions regarding %s.'),
                         $organization['gor_name'],
-                        $this->project->getName()
+                        $this->getProjectName()
                         );
 
                 return $html;
@@ -73,7 +78,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
 
                 $p = $html->pInfo(sprintf(
                         $this->_('%s is a collaboration of these organizations:'),
-                        $this->project->getName()
+                        $this->getProjectName()
                         ));
 
                 $data = \MUtil_Lazy::repeat($organizations);
@@ -86,7 +91,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
 
                 $html->pInfo()->sprintf(
                         $this->_('You can contact any of these organizations if you have questions regarding %s.'),
-                        $this->project->getName()
+                        $this->getProjectName()
                         );
 
                 return $html;
@@ -100,7 +105,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
     {
         $this->initHtml();
 
-        $this->html->h3()->sprintf($this->_('About %s'), $this->project->getName());
+        $this->html->h3()->sprintf($this->_('About %s'), $this->getProjectName());
         $this->html->pInfo(\MUtil_Html_Raw::raw($this->project->getLongDescription($this->locale->getLanguage())));
         $this->html->append($this->_getOrganizationsList());
     }
@@ -125,7 +130,7 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
                 'GemsTracker (GEneric Medical Survey Tracker) is a software package for (complex) distribution of questionnaires and forms during clinical research and for quality registration in healthcare.'));
         $this->html->pInfo()->sprintf(
                 $this->_('%s is a project built using GemsTracker as a foundation.'),
-                $this->project->getName());
+                $this->getProjectName());
         $this->html->pInfo()->sprintf($this->_('GemsTracker is an open source project hosted on %s.'))
                 ->a(
                         'https://github.com/GemsTracker/gemstracker-library',
@@ -140,6 +145,14 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
                         );
     }
 
+    protected function getProjectName(): ?string
+    {
+        if (isset($this->config['app']['name'])) {
+            return $this->config['app']['name'];
+        }
+        return null;
+    }
+
     /**
      * General contact page
      */
@@ -149,7 +162,8 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
 
         $this->html->h3($this->_('Contact'));
 
-        $this->html->h4(sprintf($this->_('The %s project'), $this->project->getName()));
+        $this->html->h4(sprintf($this->_('The %s project'), $this->getProjectName()));
+
         $this->html->append($this->_getOrganizationsList());
 
         $this->html->h4($this->_('Information on this application'));
@@ -171,24 +185,28 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
         $this->html->h3($this->_('Support'));
         $this->html->pInfo()->sprintf(
                 $this->_('There is more than one way to get support for %s.'),
-                $this->project->getName()
+                $this->getProjectName()
                 );
 
-        if ($url = $this->project->getDocumentationUrl()) {
+
+        if (isset($this->config['contact'], $this->config['contact']['docsUrl'])) {
+            $url = $this->config['contact']['docsUrl'];
             $this->html->h4($this->_('Documentation'));
 
             $this->html->pInfo()->sprintf($this->_('All available documentation is gathered at: %s'))
                     ->a($url, array('rel' => 'external', 'target' => 'documentation'));
         }
 
-        if ($url = $this->project->getManualUrl()) {
+        if (isset($this->config['contact'], $this->config['contact']['manualUrl'])) {
+            $url = $this->config['contact']['manualUrl'];
             $this->html->h4($this->_('Manual'));
 
             $this->html->pInfo()->sprintf($this->_('The manual is available here: %s'))
                     ->a($url, array('rel' => 'external', 'target' => 'manual'));
         }
 
-        if ($url = $this->project->getForumUrl()) {
+        if (isset($this->config['contact'], $this->config['contact']['forumUrl'])) {
+            $url = $this->config['contact']['forumUrl'];
             $this->html->h4($this->_('The forum'));
 
             $this->html->pInfo()->sprintf($this->_(
@@ -196,7 +214,8 @@ class Gems_Default_ContactAction extends \Gems_Controller_Action
                     ))->a($url, array('rel' => 'external', 'target' => 'forum'));
         }
 
-        if ($url = $this->project->getSupportUrl()) {
+        if (isset($this->config['contact'], $this->config['contact']['supportUrl'])) {
+            $url = $this->config['contact']['supportUrl'];
             $this->html->h4($this->_('Support site'));
 
             $this->html->pInfo()->sprintf($this->_('Check our support site at %s.'))

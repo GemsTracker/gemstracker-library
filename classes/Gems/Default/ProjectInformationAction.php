@@ -25,6 +25,11 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
      */
     public $accesslog;
 
+    /**
+     * @var array
+     */
+    public $config;
+
     protected $_defaultParameters = array();
     protected $defaultParameters = array();
 
@@ -75,7 +80,12 @@ class Gems_Default_ProjectInformationAction  extends \Gems_Controller_Action
     {
         $versions = $this->loader->getVersions();
 
-        $data[$this->_('Project name')]            = $this->project->getName();
+        $projectName = null;
+        if (isset($this->config['app']['name'])) {
+            return $this->config['app']['name'];
+        }
+
+        $data[$this->_('Project name')]            = $projectName;
         $data[$this->_('Project version')]         = $versions->getProjectVersion();
         $data[$this->_('Gems version')]            = $versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $versions->getBuild();

@@ -38,6 +38,11 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Translate
      */
@@ -74,6 +79,48 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
                     $this->translate->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
                     $len));
         }
+    }
+
+    /**
+     * Add recursively the rules active for this specific set of codes.
+     *
+     * @param array $current The current (part)sub) array of $this->passwords to check
+     * @param array $codes An array of code names that identify rules that should be used only for those codes.
+     * @param array $rules The array that stores the activated rules.
+     * @return void
+     */
+    protected function _getPasswordRules(array $current, array $codes, array &$rules)
+    {
+        foreach ($current as $key => $value) {
+            if (is_array($value)) {
+                // Only act when this is in the set of key values
+                if (isset($codes[strtolower($key)])) {
+                    $this->_getPasswordRules($value, $codes, $rules);
+                }
+            } else {
+                $rules[$key] = $value;
+            }
+        }
+    }
+
+    /**
+     * Get the rules active for this specific set of codes.
+     *
+     * @param array $codes An array of code names that identify rules that should be used only for those codes.
+     * @return array
+     */
+    public function getPasswordRules(array $codes)
+    {
+        // Process the codes array to a format better used for filtering
+        $codes = array_change_key_case(array_flip(array_filter($codes)));
+        // \MUtil_Echo::track($codes);
+
+        $rules = [];
+        if (isset($this->config['passwords']) && is_array($this->config['passwords'])) {
+            $this->_getPasswordRules($this->config['passwords'], $codes, $rules);
+        }
+
+        return $rules;
     }
 
     /**
@@ -263,7 +310,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         $this->user = $user;
         $this->_errors = array();
 
-        $rules = $this->project->getPasswordRules($codes);
+        $rules = $this->getPasswordRules($codes);
 
         if ($skipAge) {
             unset($rules['maxAge']);

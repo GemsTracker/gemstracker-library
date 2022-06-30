@@ -21,6 +21,11 @@ namespace Gems\Model;
  */
 class SurveyMaintenanceModel extends \Gems_Model_JoinModel 
 {
+
+    /**
+     * @var array
+     */
+    protected $config;
     /**
      *
      * @var \Gems_User_User
@@ -127,7 +132,13 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 'elementClass', 'Exhibitor',
                 'formatFunction', array($this, 'formatWarnings')
                 );
-        $this->set('gsu_active', 'label', sprintf($this->_('Active in %s'), $this->project->getName()),
+
+        $message = $this->_('Active');
+        if (isset($config['app']['name'])) {
+            $message = sprintf($this->_('Active in %s'), $config['app']['name']);
+        }
+
+        $this->set('gsu_active', 'label', sprintf($this->_('Active in %s'), $message),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );

@@ -40,6 +40,11 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     protected $bodyText;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -190,13 +195,16 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     { }
 
     /**
-     * Returns true if the "email.bounce" setting exists in the project
+     * Returns true if the "email.bounce" setting exists in the config
      * configuration and is true
      * @return boolean
      */
     public function bounceCheck()
     {
-        return $this->project->getEmailBounce();
+        if (isset($this->config['email']['bounce'])) {
+            return $this->config['email']['bounce'];
+        }
+        return false;
     }
 
     /**
@@ -272,17 +280,46 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         return null;
     }
 
+    public function getDefaultMailFields(): array
+    {
+        $mailFields = [
+            'project' => null,
+            'project_description' => null,
+            'project_from' => null,
+        ];
+
+        if (isset($this->config['app']['name'])) {
+            $mailFields['project'] = $this->config['app']['name'];
+        }
+        if (isset($this->config['app']['description'])) {
+            $mailFields['project'] = $this->config['app']['description'];
+        }
+        if (isset($this->config['email']['site'])) {
+            $mailFields['project_from'] = $this->config['email']['site'];
+        }
+
+        return $mailFields;
+    }
+
     /**
      * Get the prefered template language
      * @return string language code
      */
     public function getLanguage()
     {
-        if ($this->project->getEmailMultiLanguage() && $this->language) {
+        if (isset($this->config['email']['multiLanguage']) && $this->config['email']['multiLanguage'] === true && $this->language) {
             return $this->language;
-        } else {
-            return $this->project->getLocaleDefault();
         }
+
+        return $this->getLocaleDefault();
+    }
+
+    protected function getLocaleDefault()
+    {
+        if (isset($this->config['locale']['default'])) {
+            return $this->config['locale']['default'];
+        }
+        return 'en';
     }
 
     public function getMail()
@@ -374,8 +411,8 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
             return $template;
         }
 
-        if ($language !== $this->project->getLocaleDefault()) {
-            $language = $this->project->getLocaleDefault();
+        if ($language !== $this->getLocaleDefault()) {
+            $language = $this->getLocaleDefault();
             $select = $this->db->select();
             $select->from('gems__comm_template_translations')
                    ->where('gctt_id_template = ?', $templateId)
@@ -406,9 +443,9 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     protected function loadMailFields()
     {
         if ($this->organization) {
-            $this->mailFields = array_merge($this->project->getMailFields(), $this->organization->getMailFields());
+            $this->mailFields = array_merge($this->getDefaultMailFields(), $this->organization->getMailFields());
         } else {
-            $this->mailFields = $this->project->getMailFields();
+            $this->mailFields = $this->getDefaultMailFields();
         }
     }
 
@@ -450,8 +487,8 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         $mail->setFrom($this->from, $this->fromName);
         $mail->addTo($this->to, '', $this->bounceCheck());
 
-        if (isset($this->project->email['bcc'])) {
-            $mail->addBcc($this->project->email['bcc']);
+        if (isset($this->config['email']['bcc'])) {
+            $mail->addBcc($this->config['email']['bcc']);
         }
 
         $mail->setSubject($this->applyFields($this->subject));

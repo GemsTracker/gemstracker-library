@@ -26,16 +26,14 @@ use \MUtil\Util\MonitorJob;
 class Monitor extends UtilAbstract
 {
     /**
+     * @var array
+     */
+    protected $config;
+    /**
      *
      * @var \Zend_Locale
      */
     protected $locale;
-
-    /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      *
@@ -77,7 +75,7 @@ class Monitor extends UtilAbstract
      */
     protected function _getMailTo($monitorName)
     {     
-        $projTo  = explode(',',$this->project->getMonitorTo($monitorName));
+        $projTo  = explode(',',$this->getTo());
         $userTo  = $this->_getUserTo($monitorName);
         $orgTo   = $this->_getOrgTo($monitorName);
         $mailtos = array_merge($projTo, $userTo, $orgTo);
@@ -143,6 +141,14 @@ class Monitor extends UtilAbstract
         return MonitorJob::checkJobs();
     }
 
+    protected function getAppName(): ?string
+    {
+        if (isset($this->config['app']['name'])) {
+            return $this->config['app']['name'];
+        }
+        return null;
+    }
+
     /**
      * Return cron mail monitor
      *
@@ -150,7 +156,7 @@ class Monitor extends UtilAbstract
      */
     public function getCronMailMonitor()
     {
-        return MonitorJob::getJob($this->project->getName() . ' cron mail');
+        return MonitorJob::getJob($this->getAppName() . ' cron mail');
     }
     
     /**
@@ -188,14 +194,40 @@ This messages was send automatically.";
         
         return array($subject, $messageBbText);
     }
-    
+
+    protected function getFrom($name)
+    {
+        if (isset($this->config['monitor'][$name], $this->config['monitor'][$name]['from'])) {
+            return $this->config['monitor'][$name]['from'];
+        }
+
+        if (isset($this->config['monitor']['default'], $this->config['monitor']['default']['from'])) {
+            return $this->config['monitor']['default']['from'];
+        }
+
+        return 'noreply@gemstracker.org';
+    }
+
+    protected function getPeriod(string $name)
+    {
+        if (isset($this->config['monitor'][$name], $this->config['monitor'][$name]['period'])) {
+            return $this->config['monitor'][$name]['period'];
+        }
+
+        if (isset($this->config['monitor']['default'], $this->config['monitor']['default']['period'])) {
+            return $this->config['monitor']['default']['period'];
+        }
+
+        return '25h';
+    }
+
     /**
      * 
      * @return MonitorJob
      */
     public function getReverseMaintenanceMonitor()
     {
-       return MonitorJob::getJob($this->project->getName() . ' maintenance mode');
+       return MonitorJob::getJob($this->getAppName() . ' maintenance mode');
     }
     
     /**
@@ -257,6 +289,19 @@ This messages was send automatically.";
         return array($initSubject, $initBbText, $subject, $messageBbText);
     }
 
+    protected function getTo(string $name)
+    {
+        if (isset($this->config['monitor'][$name], $this->config[$name]['to'])) {
+            return $this->config['monitor'][$name]['to'];
+        }
+
+        if (isset($this->config['monitor']['default'], $this->config['monitor']['default']['to'])) {
+            return $this->config['monitor']['default']['to'];
+        }
+
+        return null;
+    }
+
     /**
      * Start the cron mail monitor
      *
@@ -283,9 +328,11 @@ This messages was send automatically.";
         $locale = $this->project->getLocaleDefault();
         list($initSubject, $initBbText, $subject, $messageBbText) = $this->getReverseMaintenanceMonitorTemplate($locale);
 
-        $job->setFrom($this->project->getMonitorFrom('maintenancemode'))
+        $this->getFrom();
+
+        $job->setFrom($this->getFrom('maintenancemode'))
                 ->setMessage($messageBbText)
-                ->setPeriod($this->project->getMonitorPeriod('maintenancemode'))
+                ->setPeriod($this->getPeriod('maintenancemode'))
                 ->setSubject($subject)
                 ->setTo($to);
 
@@ -314,9 +361,9 @@ This messages was send automatically.";
         $locale = $this->project->getLocaleDefault();
         list($subject, $messageBbText) = $this->getCronMailTemplate($locale);        
 
-        $job->setFrom($this->project->getMonitorFrom('cronmail'))
+        $job->setFrom($this->getFrom('cronmail'))
                 ->setMessage($messageBbText)
-                ->setPeriod($this->project->getMonitorPeriod('cronmail'))
+                ->setPeriod($this->getPeriod('cronmail'))
                 ->setSubject($subject)
                 ->setTo($to)
                 ->start();

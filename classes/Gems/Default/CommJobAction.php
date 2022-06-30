@@ -39,6 +39,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     public $currentUser;
 
     /**
+     * @var array
+     */
+    public $config;
+
+    /**
+     * @var null|Psr\Log\LoggerInterface
+     */
+    public $cronLog = null;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -58,12 +68,6 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     protected $monitorSnippets = 'MonitorSnippet';
 
     /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    public $project;
-
-    /**
      * Query to get the round descriptions for options
      * @var string
      */
@@ -79,7 +83,7 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
     /**
      * The automatically filtered result
      *
-     * @param $resetMvc When true only the filtered resulsts
+     * @param $resetMvc bool When true only the filtered resulsts
      */
     public function autofilterAction($resetMvc = true)
     {
@@ -325,13 +329,16 @@ class Gems_Default_CommJobAction extends \Gems_Controller_ModelSnippetActionAbst
         $jobId = intval($this->getParam(\MUtil_Model::REQUEST_ID));
 
         $batch = $this->loader->getTaskRunnerBatch('commjob-execute-' . $jobId);
-        $batch->setMessageLogFile($this->project->getCronLogfile());
+
+        if ($this->cronLog instanceof \Psr\Log\LoggerInterface) {
+            $batch->setMessageLogger($this->cronLog);
+        }
+
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
         if (!$batch->isLoaded() && !is_null(($jobId))) {
             $batch->addMessage(sprintf(
-                    $this->_('Starting single %s message job %s'),
-                    $this->project->getName(),
+                    $this->_('Starting single message job %s'),
                     $jobId
                     ));
 

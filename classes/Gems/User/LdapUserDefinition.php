@@ -73,7 +73,10 @@ class LdapUserDefinition extends \Gems_User_StaffUserDefinition
      */
     public function getAuthAdapter(\Gems_User_User $user, $password)
     {
-        $config = $this->project->getLdapSettings();
+        $config = [];
+        if (isset($this->config['ldap'])) {
+            $config = $this->config['ldap'];
+        }
 
         $adapter = new LdapAdapter();
 

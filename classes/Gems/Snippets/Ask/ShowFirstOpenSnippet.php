@@ -24,12 +24,7 @@ namespace Gems\Snippets\Ask;
  */
 class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
 {
-    /**
-     * Required
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
+    protected $config;
 
     /**
      * Show this snippet show a thank you screen when there are no more tokens to answer?
@@ -45,19 +40,24 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      */
     protected $showUntil = false;
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
+    protected function getAskDelay(): int
     {
-        if (parent::checkRegistryRequestsAnswers()) {
-            return $this->project instanceof \Gems_Project_ProjectSettings;
-        } else {
-            return false;
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams['delay_cancelled'])) {
+            return -1;
         }
+        if (isset($queryParams['delay'])) {
+            return (int)$queryParams['delay'];
+        }
+        if ($this->wasAnswered) {
+            if (isset($config['survey']['ask'], $config['survey']['ask']['askNextDelay'])) {
+                return (int)$config['survey']['ask']['askNextDelay'];
+            }
+        } elseif (isset($config['survey']['ask'], $config['survey']['ask']['askDelay'])) {
+            return (int)$config['survey']['ask']['askDelay'];
+        }
+
+        return -1;
     }
 
     /**
@@ -79,7 +79,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             return $this->lastCompleted();
         }
 
-        $delay = $this->project->getAskDelay($this->request, $this->wasAnswered);
+        $delay = $this->getAskDelay();
         $href  = $this->getTokenHref($this->showToken);
         $url   = $href->render($view);
         

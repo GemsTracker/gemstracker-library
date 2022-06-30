@@ -23,10 +23,9 @@ namespace Gems\Task\Tracker\Export;
 class ProjectVersionExportTask  extends TrackExportAbstract
 {
     /**
-     *
-     * @var \Gems_Project_ProjectSettings
+     * @var array
      */
-    protected $project;
+    protected $config;
 
     /**
      *
@@ -44,13 +43,18 @@ class ProjectVersionExportTask  extends TrackExportAbstract
     {
         $versions = $this->loader->getVersions();
 
-        $data = array(
+        $data = [
             'gems_version'    => $versions->getGemsVersion(),
-            'project'         => $this->project->getName(),
+            'project'         => null,
             'project_env'     => APPLICATION_ENV,
             'project_url'     => $this->util->getCurrentURI(), 
             'project_version' => $versions->getProjectVersion(),
-        );
+        ];
+
+        if (isset($this->config['app']['name'])) {
+            $data['project'] = $this->config['app']['name'];
+        }
+
 
         // Main version data
         $this->exportTypeHeader('version', false);

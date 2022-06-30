@@ -10,11 +10,11 @@ class ValueEncryptor
 
     public function __construct(array $config)
     {
-        if (isset($this->config['security'])) {
-            $this->config = $config['security'];
+        if (isset($this->config['security'], $this->config['security']['encryption'])) {
+            $this->config = $config['security']['encryption'];
         }
-        if (isset($this->config['salt'])) {
-            $this->salt = $this->config['salt'];
+        if (isset($this->config['app']['salt'])) {
+            $this->salt = $this->config['app']['salt'];
         }
     }
 

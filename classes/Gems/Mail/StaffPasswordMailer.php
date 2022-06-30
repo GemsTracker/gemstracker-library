@@ -58,8 +58,8 @@ class Gems_Mail_StaffPasswordMailer extends \Gems_Mail_StaffMailer
         if ($templateId) {
             $this->setTemplate($this->organization->getCreateAccountTemplate());
             return true;
-        } elseif ($this->project->getEmailCreateAccount()) {
-            $this->setTemplateByCode($this->project->getEmailCreateAccount());
+        } elseif ($this->config['email']['createAccountTemplate']) {
+            $this->setTemplateByCode($this->config['email']['createAccountTemplate']);
             return true;
         } else {
             return false;
@@ -78,8 +78,8 @@ class Gems_Mail_StaffPasswordMailer extends \Gems_Mail_StaffMailer
         if ($templateId) {
             $this->setTemplate($this->organization->getResetPasswordTemplate());
             return true;
-        } elseif ($this->project->getEmailResetPassword()) {
-            if ($this->setTemplateByCode($this->project->getEmailResetPassword())) {
+        } elseif ($this->config['email']['resetPasswordTemplate']) {
+            if ($this->setTemplateByCode($this->config['email']['resetPasswordTemplate'])) {
                 return true;
             } else {
                 return false;

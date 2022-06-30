@@ -60,7 +60,13 @@ class LimeSurvey2m00MultiSource extends LSSingleSource {
         $values = parent::_fillAttributeMap($token);
 
         $values[$this->_attributeMap['site']]     = $this->_getSite();
-        $values[$this->_attributeMap['sitename']] = substr($this->project->getName(), 0, $this->attributeSize);
+
+        $projectName = '';
+        if (isset($this->config['app']['name'])) {
+            $projectName = $this->config['app']['name'];
+        }
+
+        $values[$this->_attributeMap['sitename']] = substr($projectName, 0, $this->attributeSize);
 
         return $values;
     }

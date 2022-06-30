@@ -22,6 +22,11 @@
 class Gems_Pdf extends \Gems_Registry_TargetAbstract
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -127,11 +132,18 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
             }
             $pdf->properties[$name] = $value;
         }
+
+        $projectName = null;
+        if (isset($this->config['app']['name'])) {
+            $projectName = $this->config['app']['name'];
+        }
+
+
         // Acrobat defined date format D:YYYYMMDDHHmmSSOHH'mm
         $pdf->properties['ModDate']  = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
-        $pdf->properties['Producer'] = $this->project->getName();       // Avoid warning on Word with a (R) symbol
-        $pdf->properties['Creator']  = $this->project->getName();       // Avoid warning on Word with a (R) symbol
-        $pdf->properties['Author']   = $this->project->getName();       // Avoid warning on Word with a (R) symbol
+        $pdf->properties['Producer'] = $projectName;       // Avoid warning on Word with a (R) symbol
+        $pdf->properties['Creator']  = $projectName;       // Avoid warning on Word with a (R) symbol
+        $pdf->properties['Author']   = $projectName;       // Avoid warning on Word with a (R) symbol
     }
 
     /**

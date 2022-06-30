@@ -30,6 +30,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     protected $appNamespaceError = false;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * The current version of the code
      *
      * @var int
@@ -574,7 +579,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $escortClass   = get_class($this->escort);
         $foundNone     = true;
-        $projectName   = $this->project->getName();
+        $projectName   = null;
+
+        if (isset($this->config['app']['name'])) {
+            $projectName = $this->config['app']['name'];
+        }
 
         $oldInterfaces = array(
             'Gems_Project_Log_LogRespondentAccessInterface',

@@ -27,6 +27,8 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
      */
     protected $_messages;
 
+    protected $config;
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -45,13 +47,6 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
      * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
-
-    /**
-     * Required
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      *
@@ -75,7 +70,6 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
     {
         return $this->db instanceof \Zend_Db_Adapter_Abstract &&
                 $this->logger instanceof \Psr\Log\LoggerInterface &&
-                $this->project instanceof \Gems_Project_ProjectSettings &&
                 $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
                 $this->translate instanceof \Zend_Translate;
     }
@@ -117,8 +111,8 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
      */
     public function isValid($value)
     {
-        if ($throttleSettings = $this->project->getAskThrottleSettings()) {
-
+        if (isset($this->config['survey']['ask'], $this->config['survey']['ask']['askThrottle'])) {
+            $throttleSettings = $this->config['survey']['ask']['askThrottle'];
             // Prune the database for (very) old attempts
             $where = $this->db->quoteInto(
                     "gta_datetime < DATE_SUB(NOW(), INTERVAL ? second) AND gta_activated = 0",

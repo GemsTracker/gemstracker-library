@@ -40,13 +40,10 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      */
     public $browse = false;
 
-
-
     /**
-     *
-     * @var \Gems_Project_ProjectSettings
+     * @var array
      */
-    protected $project;
+    protected $config;
 
     /**
      * @var \Gems_Util
@@ -143,8 +140,8 @@ class RoundTokenSnippet extends RespondentTokenSnippet
     public function hasHtmlOutput()
     {
         if ($this->menu) {
-            $default = $this->project->getDefaultTrackId();
-            if ($default) {
+            if (isset($this->config['survey']['defaultTrackId'])) {
+                $default = $this->config['survey']['defaultTrackId'];
                 if ($this->respondent->getReceptionCode()->isSuccess()) {
                     $track = $this->loader->getTracker()->getTrackEngine($default);
 

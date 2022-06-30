@@ -99,6 +99,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var string class name for creating field maps
      */
@@ -347,10 +352,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
      */
     protected function _getReturnURIDescription($language)
     {
-        return sprintf(
-            $this->translate->_('Back to %s', $language),
-            $this->project->getName()
-        );
+        $message = $this->translate->_('Back', $language);
+        if (isset($this->config['app']['name'])) {
+            $message = sprintf($this->translate->_('Back to %s', $language), $this->config['app']['name']);
+        }
+
+        return $message;
     }
 
     /**

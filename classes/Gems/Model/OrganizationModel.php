@@ -29,6 +29,11 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     protected $_styles;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var \Gems_Loader
      */
     protected $loader;
@@ -78,8 +83,12 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $dbLookup    = $this->util->getDbLookup();
         $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
         $localized   = $this->util->getLocalized();
-        $projectName = $this->project->getName();
+        $projectName = null;
         $yesNo       = $this->util->getTranslated()->getYesNo();
+
+        if (isset($this->config['app']['name'])) {
+            $projectName = $this->config['app']['name'];
+        }
 
         $this->resetOrder();
         $this->set('gor_name',                  'label', $this->_('Name'), 'tab', $this->_('General'), 'translate', true);

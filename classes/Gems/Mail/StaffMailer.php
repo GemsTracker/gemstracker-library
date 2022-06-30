@@ -89,9 +89,16 @@ class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
      * configuration and is true
      * @return boolean
      */
-    public function bounceCheck()
+    public function bounceCheck(): bool
     {
-        return $this->project->getStaffBounce();
+        if (isset($this->config['email']['staffBounce'])) {
+            return $this->config['email']['staffBounce'];
+        }
+        if (isset($this->config['email']['bounce'])) {
+            return $this->config['email']['bounce'];
+        }
+
+        return false;
     }
 
     public function getDataLoaded()

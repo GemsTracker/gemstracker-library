@@ -84,6 +84,11 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
     protected $cascade = 'User';
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -246,7 +251,7 @@ class Gems_User_UserLoader extends \Gems_Loader_TargetLoaderAbstract
             self::USER_RADIUS => $this->translate->_('Radius storage'),
         );
 
-        if ($this->project->getLdapSettings()) {
+        if (isset($this->config['ldap'])) {
             $output[self::USER_LDAP] = $this->translate->_('LDAP');
         }
         asort($output);

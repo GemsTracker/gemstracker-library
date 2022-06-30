@@ -39,6 +39,11 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
     protected $cascade = 'Mail';
 
     /**
+     * @var null|Psr\Log\LoggerInterface
+     */
+    public $cronLog = null;
+
+    /**
      *
      * @var \Gems_User_User
      */
@@ -61,11 +66,6 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
         'staffPassword' => 'Password reset',
     );
 
-    /**
-     *
-     * @var \Gems_Project_ProjectSettings
-     */
-    protected $project;
 
     /**
      * Perform automatic job mail
@@ -73,7 +73,9 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
     public function getCronBatch($id = 'cron')
     {
         $batch = $this->loader->getTaskRunnerBatch($id);
-        $batch->setMessageLogFile($this->project->getCronLogfile());
+        if ($this->cronLog instanceof \Psr\Log\LoggerInterface) {
+            $batch->setMessageLogger($this->cronLog);
+        }
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
         if (! $batch->isLoaded()) {
@@ -135,7 +137,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     protected function loadCronBatch(\Gems_Task_TaskRunnerBatch $batch)
     {
-       $batch->addMessage(sprintf($this->_("Starting %s mail jobs"), $this->project->getName()));
+       $batch->addMessage(sprintf($this->_("Starting mail jobs")));
        $batch->addTask('Mail\\AddAllMailJobsTask');
 
         // Check for unprocessed tokens, 

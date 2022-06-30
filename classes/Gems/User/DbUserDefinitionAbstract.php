@@ -34,6 +34,11 @@ abstract class Gems_User_DbUserDefinitionAbstract extends \Gems_User_UserDefinit
     public $checkOldHashes = true;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
