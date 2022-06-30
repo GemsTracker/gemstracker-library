@@ -83,7 +83,10 @@
 
     },
     "require-dev": {
-        "phing/phing": "^2.17.3"
+        "phing/phing": "^2.17.3",
+        "phpunit/phpunit": "^9",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "symfony/yaml": "^6.1"
     },
     "autoload-dev": {
         "psr-0": {
@@ -91,12 +94,8 @@
             "MUtil_": "vendor/magnafacta/mutil/tests/"
         },
         "psr-4": {
-            "Gems\\": "tests/classes/Gems",
-            "MUtil\\": "vendor/magnafacta/mutil/tests/MUtil"
+            "GemsTest\\": "tests/"
         }
-    },
-    "config": {
-        "bin-dir": "bin"
     },
     "repositories": [
         {
