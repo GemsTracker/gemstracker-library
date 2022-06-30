@@ -357,6 +357,9 @@ class ConfigProvider
     {
         return [
             'gems' => [__DIR__ . '/../../templates/Auth'],
+            'paths' => [
+                'menu' => [__DIR__ . '/../../templates/menu'],
+            ],
         ];
     }
 
