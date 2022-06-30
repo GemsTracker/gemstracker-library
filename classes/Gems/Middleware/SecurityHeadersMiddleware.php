@@ -11,14 +11,27 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class SecurityHeadersMiddleware implements MiddlewareInterface
 {
+    protected array $config = [];
+
+    public function __construct(array $config)
+    {
+        if (isset($config['security'], $config['security']['headers'])) {
+            $this->config = $config['security']['headers'];
+        }
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response  = $handler->handle($request);
-        return $response
-            ->withHeader('Strict-Transport-Security', 'frame-ancestors \'none\'')
-            ->withHeader('X-Content-Type-Options', 'nosniff')
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', '*')
-            ->withHeader('X-Frame-Options', 'deny');
+
+        foreach($this->config as $responseClass => $headers) {
+            if ($response instanceof $responseClass) {
+                foreach($headers as $name => $value) {
+                    $response = $response->withHeader($name, $value);
+                }
+            }
+        }
+
+        return $response;
     }
 }
