@@ -3,12 +3,14 @@
 namespace Gems;
 
 use Gems\Cache\CacheFactory;
+use Gems\Config\App;
 use Gems\Legacy\LegacyController;
-use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
+use Gems\Route\ModelSnippetActionRouteHelpers;
+use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -26,6 +28,8 @@ use Zalt\Loader\ProjectOverloader;
 
 class ConfigProvider
 {
+    use ModelSnippetActionRouteHelpers;
+
     /**
      * Returns the configuration array
      *
@@ -36,14 +40,26 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
+        $appConfigProvider = new App();
+        $surveyConfigProvider = new Survey();
+
         return [
-            'cache'        => $this->getCacheSettings(),
-            'db'           => $this->getDbSettings(),
-            'dependencies' => $this->getDependencies(),
-            'log'          => $this->getLoggers(),
-            'migrations'   => $this->getMigrations(),
-            //'templates'    => $this->getTemplates(),
-            'routes'       => $this->getRoutes(),
+            'app'           => $appConfigProvider(),
+            'cache'         => $this->getCacheSettings(),
+            'contact'       => $this->getContactSettings(),
+            'db'            => $this->getDbSettings(),
+            'dependencies'  => $this->getDependencies(),
+            'email'         => $this->getEmailSettings(),
+            'locale'        => $this->getLocaleSettings(),
+            'log'           => $this->getLoggers(),
+            'monitor'       => $this->getMonitorSettings(),
+            'survey'        => $surveyConfigProvider(),
+            'migrations'    => $this->getMigrations(),
+
+            'password'      => $this->getPasswordSettings(),
+            'routes'        => $this->getRoutes(),
+            'security'      => $this->getSecuritySettings(),
+            'templates'     => $this->getTemplates(),
         ];
     }
 
@@ -56,6 +72,14 @@ class ConfigProvider
 
         return [
             'adapter' => $cacheAdapter,
+        ];
+    }
+
+    protected function getContactSettings(): array
+    {
+        return [
+            'docsUrl' => 'https://gemstracker.org/wiki/doku.php',
+            'manualUrl' => 'https://gemstracker.org/wiki/doku.php?id=userzone:userdoc:start'
         ];
     }
 
@@ -111,6 +135,56 @@ class ConfigProvider
         ];
     }
 
+    protected function getEmailSettings(): array
+    {
+        return [
+            // BCC every sent mail to this address.
+            'bcc' => null,
+
+            // block any sending of mail.
+            'block' => false,
+
+            /* When set to 1 all mails are not sent to the
+            suplied TO address, but redirects them to
+            the current user or the current FROM address.
+            This allows testing without altering respondent
+            e-mail addresses. */
+            'bounce' => false,
+
+            // Default Template code for a Reset password mail
+            'createAccountTemplate' => 'accountCreate',
+
+            // Have the mail depend on the user's language setting
+            'multiLanguage' => true,
+
+            // Default Template code for a Create account mail
+            'resetPasswordTemplate' => 'passwordReset',
+
+            // Supply a general site FROM address.
+            'site' => null,
+
+            /* When set to 1 all staff mails are not sent to the
+            suplied TO address, but redirects them to
+            the current users or the FROM address. This allows
+            testing without altering staff e-mail addresses.
+            When not set, bounce is used. */
+            'staffBounce' => false,
+        ];
+    }
+
+    protected function getLocaleSettings(): array
+    {
+        return [
+            'availableLocales' => [
+                'en',
+                'nl',
+                'de',
+                'fr',
+            ],
+            'default' => 'en',
+        ];
+    }
+
     protected function getLoggers(): array
     {
         return [
@@ -121,6 +195,17 @@ class ConfigProvider
                         'priority' => LogLevel::NOTICE,
                         'options' => [
                             'stream' =>  'data/logs/errors.log',
+                        ],
+                    ],
+                ],
+            ],
+            'cronLog' => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::NOTICE,
+                        'options' => [
+                            'stream' =>  'data/logs/cron.log',
                         ],
                     ],
                 ],
@@ -151,6 +236,60 @@ class ConfigProvider
         ];
     }
 
+    protected function getMonitorSettings(): array
+    {
+        /*
+         * List is monitor based settings. Each setting has an own array of 3 possible entries:
+         * period:  The default wait period for [name]. When string ending with
+         *          'd', 'h' or 'm' in days, hours or minutes, otherwise
+         *     	    seconds. When not set default.period is used. 'never'
+         *          disables the job, 0 does not.
+         * from:    The from e-mail address to use for [name]. When not specified, the default.from is used.
+         * to:      The to e-mail address(es) to use for [name], multiple
+         *          addresses separated by commas. When not specified,
+         *          default.to is used.
+         *
+         * Add a default setting to fall back to those
+         */
+        return [
+            'cron' => [
+                'period' => '1h',
+                'from' => null,
+                'to' => null,
+            ],
+            'maintenancemode' => [
+                'period' => '1h',
+                'from' => null,
+                'to' => null,
+            ],
+        ];
+    }
+
+    protected function getPasswordSettings(): array
+    {
+        /**
+         *
+         */
+        return [
+            'default' => [
+                'notTheName' => 1,
+                'inPasswordList' => '../library/Gems/docs/weak-lst',
+            ],
+            'guest' => [
+                'capsCount' => 1,
+            ],
+            'staff' => [
+                'capsCount' => 1,
+                'lowerCount' => 1,
+                'minLength' => 8,
+                'numCount' => 0,
+                'notAlphaCount' => 1,
+                'notAlphaNumCount' => 0,
+                'maxAge' => 365,
+            ],
+        ];
+    }
+
     protected function getRoutes(): array
     {
         return [
@@ -167,33 +306,39 @@ class ConfigProvider
                     'action' => 'index',
                 ]
             ],
-            [
-                'name' => 'track-builder.source.index',
-                'path' => '/track-builder/source/index',
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LegacyController::class,
+            ...$this->createBrowseRoutes('track-builder.source', '/track-builder/source', 'pr.track-builder.source', \Gems_Default_SourceAction::class),
+        ];
+    }
+
+    protected function getSecuritySettings(): array
+    {
+        return [
+            'headers' => [
+                JsonResponse::class => [
+                    'Cache-Control' => 'no-store',
+                    'Content-Security-Policy' => 'frame-ancestors \'none\'',
+                    'Referrer-Policy' => 'no-referrer',
+                    'Strict-Transport-Security' => 'max-age=31536000',
+                    'X-Content-Type-Options' => 'nosniff',
+                    'X-Frame-Options' => 'deny',
                 ],
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => \Gems_Default_SourceAction::class,
-                    'action' => 'index',
+                'default' => [
+                    'Content-Security-Policy' => 'default-src \'self\'',
+                    'Feature-Policy' => 'camera \'none\'; microphone \'none\'; autoplay \'none\'',
+                    'Permissions-Policy' => 'camera=(), microphone=(), autoplay=()',
+                    'Referrer-Policy' => 'no-referrer',
+                    'Strict-Transport-Security' => 'max-age=31536000',
+                    'X-Content-Type-Options' => 'nosniff',
+                    'X-Frame-Options' => 'deny',
                 ]
             ],
-            [
-                'name' => 'track-builder.source.create',
-                'path' => '/track-builder/source/create',
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LegacyCurrentUserMiddleware::class,
-                    LegacyController::class,
-                ],
-                'allowed_methods' => ['GET', 'POST'],
-                'options' => [
-                    'controller' => \Gems_Default_SourceAction::class,
-                    'action' => 'create',
-                ]
-            ],
+        ];
+    }
+
+    protected function getTemplates(): array
+    {
+        return [
+            'gems' => [__DIR__ . '/../../templates/Auth'],
         ];
     }
 }
