@@ -48,7 +48,7 @@ class TranslationFactory implements FactoryInterface
                     continue;
                 }
                 $filenameParts = explode('-', $file->getFilenameWithoutExtension());
-                if (count($filenameParts) === 0) {
+                if (count($filenameParts) < 2) {
                     continue;
                 }
                 $domain = $filenameParts[0];
