@@ -351,7 +351,7 @@ class ConfigProvider
     protected function getTranslationSettings(): array
     {
         return [
-            'paths' [
+            'paths' => [
                 'gems' => [__DIR__ . '/../../languages'],
             ],
         ];
