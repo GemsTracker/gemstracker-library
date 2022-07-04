@@ -952,12 +952,6 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         return $setup;
     }
 
-    public function afterRegistry()
-    {
-        $this->initTranslateable();
-        parent::afterRegistry();
-    }
-
     /**
      * Set the visibility of the menu item and any sub items in accordance
      * with the specified user role.

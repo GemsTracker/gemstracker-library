@@ -74,7 +74,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         // This is where module menu changes get loaded
         $event = new \Gems\Event\Application\MenuAdd($this);
-        $event->setTranslatorAdapter($this->translateAdapter);
+        $event->setTranslator($this->translate);
         $this->event->dispatch($event, $event::NAME);
 
         //This is where you plugin your project menu settings

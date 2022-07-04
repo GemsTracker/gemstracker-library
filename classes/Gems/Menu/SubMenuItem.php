@@ -58,7 +58,6 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $this->_parent = $parent;
 
         $this->translate = $parent->translate;
-        $this->translateAdapter = $parent->translateAdapter;
 
         $this->project = $parent->project;
         $this->currentUser = $parent->currentUser;

@@ -47,7 +47,7 @@ class TranslationFactory implements FactoryInterface
                 if ($file->getExtension() === 'po' && file_exists($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilenameWithoutExtension()) . 'mo') {
                     continue;
                 }
-                $filenameParts = explode('.', $file->getFilenameWithoutExtension());
+                $filenameParts = explode('-', $file->getFilenameWithoutExtension());
                 if (count($filenameParts) === 0) {
                     continue;
                 }

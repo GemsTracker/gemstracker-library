@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class MenuAdd extends Event
 {
-    use Zend1TranslatableEventTrait;
+    use SymfonyTranslationEventTrait;
 
     const NAME = 'gems.menu.add';
     /**
