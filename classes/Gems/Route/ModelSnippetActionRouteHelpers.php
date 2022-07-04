@@ -6,7 +6,7 @@ use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 
-class ModelSnippetActionRouteHelpers
+trait ModelSnippetActionRouteHelpers
 {
     protected array $defaultPages = ['index', 'autofilter', 'show', 'create', 'edit', 'delete'];
 
