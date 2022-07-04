@@ -65,7 +65,7 @@
         "box/spout": "^2.7.1",
         "laminas/laminas-authentication": "^2.5",
         "laminas/laminas-db": "^2.8",
-        "bacon/bacon-qr-code": "^1.0.3",
+        "bacon/bacon-qr-code": "^1.0.3|^2.0.1",
         "erusev/parsedown": "~1.7",
         "ifsnop/mysqldump-php": "^2.6",
         "symfony/cache": "^3.4.36",
