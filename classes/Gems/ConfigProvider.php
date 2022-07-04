@@ -4,6 +4,7 @@ namespace Gems;
 
 use Gems\Cache\CacheFactory;
 use Gems\Config\App;
+use Gems\Config\Survey;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
