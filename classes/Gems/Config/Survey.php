@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems;
+namespace Gems\Config;
 
 class Survey
 {
