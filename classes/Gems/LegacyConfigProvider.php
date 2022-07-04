@@ -11,6 +11,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LegacyConfigProvider
 {
@@ -35,7 +36,6 @@ class LegacyConfigProvider
                 \Gems_Util::class => LegacyFactory::class,
                 \Zend_Locale::class => LegacyFactory::class,
                 \Zend_Session_Namespace::class => LegacyFactory::class,
-                \Zend_Translate_Adapter::class => LegacyFactory::class,
                 \Zend_Translate::class => LegacyFactory::class,
                 \Zend_View::class => LegacyFactory::class,
                 Adapter::class => AdapterServiceFactory::class,
@@ -56,8 +56,7 @@ class LegacyConfigProvider
                 'LegacyProject' => \Gems_Project_ProjectSettings::class,
                 'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems_Util::class,
-                'LegacyTranslate' => \Zend_Translate::class,
-                'LegacyTranslateAdapter' => \Zend_Translate_Adapter::class,
+                'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,

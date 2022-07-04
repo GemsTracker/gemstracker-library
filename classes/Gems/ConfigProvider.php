@@ -10,6 +10,7 @@ use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
@@ -24,6 +25,7 @@ use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class ConfigProvider
@@ -60,6 +62,7 @@ class ConfigProvider
             'routes'        => $this->getRoutes(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
+            'translations'  => $this->getTranslationSettings(),
         ];
     }
 
@@ -120,6 +123,9 @@ class ConfigProvider
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
                 FlashMessageMiddleware::class => FlashMessageMiddleware::class,
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
+
+                // Translation
+                TranslatorInterface::class => TranslationFactory::class,
             ],
             'abstract_factories' => [
                 ReflectionBasedAbstractFactory::class,
@@ -341,4 +347,15 @@ class ConfigProvider
             'gems' => [__DIR__ . '/../../templates/Auth'],
         ];
     }
+
+    protected function getTranslationSettings(): array
+    {
+        return [
+            'paths' [
+                'gems' => [__DIR__ . '/../../languages'],
+            ],
+        ];
+    }
+
+
 }
