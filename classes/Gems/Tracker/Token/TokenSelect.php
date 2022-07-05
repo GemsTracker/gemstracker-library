@@ -234,6 +234,13 @@ class Gems_Tracker_Token_TokenSelect
         return $this;
     }
 
+    public function columns($fields = '*')
+    {
+        $this->sql_select->columns($fields);
+
+        return $this;
+    }
+
     /**
      * @return array
      */

@@ -1022,10 +1022,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Get the propper Dear mr./mrs/ greeting of respondent
      * @return string
      */
-    public function getDearGreeting()
+    public function getDearGreeting(string $language = null)
     {
 
-        $genderDears = $this->util->getTranslated()->getGenderDear();
+        $genderDears = $this->util->getTranslated()->getGenderDear($language);
 
         $gender = $this->_getVar('user_gender');
         if (isset($genderDears[$gender])) {
@@ -1079,6 +1079,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $this->_embedderData = $this->loader->getEmbedDataObject($this->getUserId(), $this->db);
 
         return $this->_embedderData;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->_getVar('user_first_name');
     }
 
     /**
@@ -1157,9 +1162,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * In practice: starts uppercase
      *
      * @param string $locale
-     * @return array gender => string
+     * @return string Greeting
      */
-    protected function getGenderHello($locale = null)
+    public function getGenderHello($locale = null)
     {
         $greetings = $this->util->getTranslated()->getGenderHello($locale);
 
@@ -1353,6 +1358,16 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Return a password reset key
+     *
+     * @return int hours valid
+     */
+    public function getPasswordResetKeyDuration(): int
+    {
+        return $this->definition->getResetKeyDurationInHours();
+    }
+
+    /**
      * Return the (unfiltered) phonenumber if the user has one
      *
      * @return string|null
@@ -1493,6 +1508,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     public function getSessionPatientNr()
     {
         return $this->_getVar('current_user_patNr', null);
+    }
+
+    public function getSurnamePrefix(): ?string
+    {
+        return $this->_getVar('user_surname_prefix');
     }
 
     /**

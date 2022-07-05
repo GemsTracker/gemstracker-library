@@ -254,10 +254,13 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * 
      * @return string
      */
-    public function getDearGreeting()
+    public function getDearGreeting(string $language = null): string
     {
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
 
-        $genderDears = $this->util->getTranslated()->getGenderDear($this->getLanguage());
+        $genderDears = $this->util->getTranslated()->getGenderDear($language);
 
         $gender = $this->getGender();
         if (isset($genderDears[$gender])) {
@@ -315,10 +318,13 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * Get the proper greeting of respondent
      * @return string
      */
-    public function getGreeting()
+    public function getGreeting(string $language = null)
     {
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
 
-        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
+        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($language);
 
         $gender = $this->getGender();
         if (isset($genderGreetings[$gender])) {
@@ -475,9 +481,12 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * Get the propper salutation of respondent
      * @return string
      */
-    public function getSalutation()
+    public function getSalutation(string $language = null)
     {
-        return sprintf($this->_('Dear %s', null, $this->getGender()), $this->getGreeting());
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
+        return sprintf($this->_('Dear %s', $language, $this->getGender()), $this->getGreeting());
     }
 
     /**

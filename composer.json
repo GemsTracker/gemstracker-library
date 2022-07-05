@@ -79,7 +79,12 @@
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
-        "robmorgan/phinx": "dev-master"
+        "robmorgan/phinx": "dev-master",
+        "symfony/translation": "^6.1",
+        "symfony/finder": "^6.1",
+        "symfony/mailer": "^6.1",
+        "league/html-to-markdown": "^5.1",
+        "twig/twig": "^3.4"
 
     },
     "require-dev": {

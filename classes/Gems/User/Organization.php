@@ -329,6 +329,11 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         return $this->_get('gor_id_organization');
     }
 
+    public function getLocation(): ?string
+    {
+        return $this->_get('gor_location');
+    }
+
     /**
      * Return org dependent login url
      *
@@ -502,6 +507,11 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
         $this->_tokenAskScreen = $screenLoader->loadTokenAskScreen($this->_get('gor_token_ask'));
 
         return $this->_tokenAskScreen;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->_get('gor_url');
     }
 
     /**
