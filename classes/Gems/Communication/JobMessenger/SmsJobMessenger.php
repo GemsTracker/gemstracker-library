@@ -25,6 +25,11 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
     use TranslateableTrait;
 
     /**
+     * @var CommunicationRepository
+     */
+    protected $communicationRepository;
+
+    /**
      * @var array
      */
     protected $config;
@@ -33,11 +38,6 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
      * @var \Gems_User_User
      */
     protected $currentUser;
-
-    /**
-     * @var Adapter
-     */
-    protected $db2;
 
     /**
      * @var EventDispatcher
@@ -79,13 +79,10 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         $tracker = $this->loader->getTracker();
         $token = $tracker->getToken($tokenData);
         $tokenSelect = $tracker->getTokenSelect();
-        $mailRepository = new CommunicationRepository($this->db2, $this->config);
-        $language = $mailRepository->getCommunicationLanguage($token->getRespondentLanguage());
-
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
         $mailFields = (new TokenMailFields($token, $this->config, $this->translate, $tokenSelect))->getMaiLFields($language);
-        $mailRepository = new CommunicationRepository($this->db2, $this->config);
-        $mailTexts = $mailRepository->getCommunicationTexts($job['gcj_id_message'], $language);
+        $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
 
 
         $twigLoader = new ArrayLoader([

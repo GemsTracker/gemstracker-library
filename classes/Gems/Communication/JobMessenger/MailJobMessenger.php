@@ -24,6 +24,11 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     use TranslateableTrait;
 
     /**
+     * @var CommunicationRepository
+     */
+    protected $communicationRepository;
+
+    /**
      * @var array config
      */
     protected $config;
@@ -32,11 +37,6 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
      * @var \Gems_User_User
      */
     protected $currentUser;
-
-    /**
-     * @var Adapter
-     */
-    protected $db2;
 
     /**
      * @var EventDispatcher
@@ -54,39 +54,27 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     protected $logger;
 
     /**
-     * @var ManualMailerFactory
-     */
-    protected $manualMailerFactory;
-
-    /**
-     * @var TemplateRendererInterface
-     */
-    protected $template;
-
-    /**
      * @var UserRepository
      */
     protected $userRepository;
 
     public function sendCommunication(array $job, array $tokenData, $preview)
     {
-        $mailRepository = new CommunicationRepository($this->db2, $this->config);
         $tracker = $this->loader->getTracker();
         $token = $tracker->getToken($tokenData);
         $tokenSelect = $tracker->getTokenSelect();
 
-        $language = $mailRepository->getCommunicationLanguage($token->getRespondentLanguage());
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
         $mailFields = (new TokenMailFields($token, $this->config, $this->translate, $tokenSelect))->getMaiLFields($language);
-        $mailTexts = $mailRepository->getCommunicationTexts($job['gcj_id_message'], $language);
+        $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
         if ($mailTexts === null) {
             throw new \MailException('No template data found');
         }
 
-        $email = new TemplatedEmail($this->template);
+        $email = $this->communicationRepository->getNewEmail();
         $email->subject($mailTexts['subject'], $mailFields);
 
-        $sendById = $job['gcj_id_user_as'];
         $to = $this->getToEmail($job, $token, $tokenData['can_email']);
 
         if (empty($to)) {
@@ -108,7 +96,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
         $from = $this->getFromEmail($job, $token);
         $fromName = $this->getFromName($job, $token);
 
-        $mailer = $this->manualMailerFactory->getMailer($from);
+        $mailer = $this->communicationRepository->getMailer($from);
 
         if ($preview) {
             $this->addBatchMessage(sprintf(
@@ -118,7 +106,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
             try {
                 $email->addFrom(new Address($from, $fromName));
 
-                $email->htmlTemplate($mailRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
+                $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
                 $mailer->send($email);
 
                 $event = new TokenMailSent($email, $token, $this->currentUser, $job);

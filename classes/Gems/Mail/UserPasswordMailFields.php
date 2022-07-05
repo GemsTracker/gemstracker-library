@@ -4,7 +4,7 @@ namespace Gems\Mail;
 
 class UserPasswordMailFields extends UserMailFields
 {
-    public function getMailFields(): array
+    public function getMailFields(string $language = null): array
     {
         $mailFields = parent::getMailFields();
         $mailFields += [

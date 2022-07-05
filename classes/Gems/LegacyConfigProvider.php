@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
+use Gems\Communication\CommunicationRepository;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
@@ -59,6 +60,7 @@ class LegacyConfigProvider
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
+                'LegacyCommunicationRepository' => CommunicationRepository::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,
                 'LegacyDb2' => Adapter::class,
                 'LegacyValueEncryptor' => ValueEncryptor::class,

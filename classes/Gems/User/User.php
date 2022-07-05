@@ -71,6 +71,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     protected $basepath;
 
     /**
+     * @var \Gems\Communication\CommunicationRepository
+     */
+    protected $communicationRepository;
+
+    /**
      * @var array
      */
     protected $config;
@@ -2126,7 +2131,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * @param string $locale Optional locale
      * @return mixed String or array of warnings when something went wrong
      */
-    public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
+    public function sendMail($subjectTemplate, $bodyTemplate, $useResetFields = false, $locale = null)
     {
         if ($useResetFields && (! $this->canResetPassword())) {
             return $this->_('Trying to send a password reset to a user that cannot be reset.');
@@ -2136,29 +2141,25 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
 
-        $staffBounce = false;
-        if (isset($config['email']['staffBounce'])) {
-            $staffBounce = $config['email']['staffBounce'];
-        }
-
-        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $staffBounce);
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new \Symfony\Component\Mime\Address($this->getEmailAddress(), $this->getFullName()));
         if (isset($config['email']['bcc'])) {
-            $mail->addBcc($config['email']['bcc']);
+            $email->addBcc($config['email']['bcc']);
         }
 
         if ($useResetFields) {
-            $fields = $this->getResetPasswordMailFields($locale);
+            $fields = (new \Gems\Mail\UserPasswordMailFields($this, $this->config))->getMailFields($locale);
         } else {
-            $fields = $this->getMailFields($locale);
+            $fields = (new \Gems\Mail\UserMailFields($this, $this->config))->getMailFields($locale);
         }
-        // \MUtil_Echo::track($fields, $bbBodyTemplate);
-        $fields = \MUtil_Ra::braceKeys($fields, '{', '}');
 
-        $mail->setSubject(strtr($subjectTemplate, $fields));
-        $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
+        $email->htmlTemplate($this->communicationRepository->getTemplate($this->getBaseOrganization()), $bodyTemplate);
+
+        $mailer = $this->communicationRepository->getMailer($this->getFrom());
+
 
         try {
-            $mail->send();
+            $mailer->send($email);
             return null;
 
         } catch (\Exception $e) {

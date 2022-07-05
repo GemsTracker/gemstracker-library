@@ -2,16 +2,27 @@
 
 namespace Gems\Communication;
 
+use Gems\Mail\ManualMailerFactory;
+use Gems\Mail\TemplatedEmail;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
+use Mezzio\Template\TemplateRendererInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 
 class CommunicationRepository
 {
     private Adapter $db;
 
-    public function __construct(Adapter $db, array $config)
+    private array $config;
+
+    private TemplateRendererInterface $template;
+
+    public function __construct(Adapter $db, TemplateRendererInterface $template, array $config)
     {
         $this->db = $db;
+        $this->config = $config;
+        $this->template = $template;
     }
 
     /**
@@ -65,6 +76,17 @@ class CommunicationRepository
         }
 
         return null;
+    }
+
+    public function getMailer(string $from): Mailer
+    {
+        $factory = new ManualMailerFactory($this->db, $this->config);
+        return $factory->getMailer($from);
+    }
+
+    public function getNewEmail(): TemplatedEmail
+    {
+        return new TemplatedEmail($this->template);
     }
 
     public function getTemplate(\Gems_User_Organization $organization): string

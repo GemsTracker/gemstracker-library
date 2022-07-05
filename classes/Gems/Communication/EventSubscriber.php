@@ -43,7 +43,6 @@ class EventSubscriber implements EventSubscriberInterface
 
     public function logRespondentCommunication(RespondentCommunicationInterface $event): void
     {
-
         $respondent = $event->getRespondent();
         $job = $event->getCommunicationJob();
         $currentUser = $event->getCurrentUser();
