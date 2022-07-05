@@ -78,12 +78,10 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
     {
         $tracker = $this->loader->getTracker();
         $token = $tracker->getToken($tokenData);
-        $tokenSelect = $tracker->getTokenSelect();
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        $mailFields = (new TokenMailFields($token, $this->config, $this->translate, $tokenSelect))->getMaiLFields($language);
+        $this->communicationRepository->getTokenMailFields($token, $language);
         $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
-
 
         $twigLoader = new ArrayLoader([
             'message' => $mailTexts['body'],

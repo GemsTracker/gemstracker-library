@@ -3,10 +3,18 @@
 namespace Gems\Communication;
 
 use Gems\Mail\ManualMailerFactory;
+use Gems\Mail\OrganizationMailFields;
+use Gems\Mail\ProjectMailFields;
+use Gems\Mail\RespondentMailFields;
 use Gems\Mail\TemplatedEmail;
+use Gems\Mail\TokenMailFields;
+use Gems\Mail\UserMailFields;
+use Gems\Mail\UserPasswordMailFields;
+use Gems\Tracker\Token\TokenSelect;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Mezzio\Template\TemplateRendererInterface;
+use MUtil\Translate\Translator;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\MailerInterface;
 
@@ -18,11 +26,16 @@ class CommunicationRepository
 
     private TemplateRendererInterface $template;
 
-    public function __construct(Adapter $db, TemplateRendererInterface $template, array $config)
+    private Translator $translator;
+    private TokenSelect $tokenSelect;
+
+    public function __construct(Adapter $db, TemplateRendererInterface $template, Translator $translator, TokenSelect $tokenSelect, array $config)
     {
         $this->db = $db;
-        $this->config = $config;
         $this->template = $template;
+        $this->translator = $translator;
+        $this->tokenSelect = $tokenSelect;
+        $this->config = $config;
     }
 
     /**
@@ -89,6 +102,24 @@ class CommunicationRepository
         return new TemplatedEmail($this->template);
     }
 
+    public function getOrganizationMailFields(\Gems_User_Organization $organization): array
+    {
+        $mailFieldCreator = new OrganizationMailFields($organization, $this->config);
+        return $mailFieldCreator->getMailFields();
+    }
+
+    public function getProjectMailFields(): array
+    {
+        $mailFieldCreator = new ProjectMailFields($this->config);
+        return $mailFieldCreator->getMailFields();
+    }
+
+    public function getRespondentMailFields(\Gems_Tracker_Respondent $respondent, string $language = null): array
+    {
+        $mailFieldCreator = new RespondentMailFields($respondent, $this->config);
+        return $mailFieldCreator->getMailFields($language);
+    }
+
     public function getTemplate(\Gems_User_Organization $organization): string
     {
         $templateName = $organization->getStyle();
@@ -96,5 +127,23 @@ class CommunicationRepository
             return 'mail::' . $organization->getStyle();
         }
         return 'default::mail';
+    }
+
+    public function getTokenMailFields(\Gems_Tracker_Token $token, string $language = null): array
+    {
+        $mailFieldCreator = new TokenMailFields($token, $this->config, $this->translator, $this->tokenSelect);
+        return $mailFieldCreator->getMailFields($language);
+    }
+
+    public function getUserMailFields(\Gems_User_User $user, string $language = null): array
+    {
+        $mailFieldCreator = new UserMailFields($user, $this->config);
+        return $mailFieldCreator->getMailFields($language);
+    }
+
+    public function getUserPasswordMailFields(\Gems_User_User $user, string $language = null): array
+    {
+        $mailFieldCreator = new UserPasswordMailFields($user, $this->config);
+        return $mailFieldCreator->getMailFields($language);
     }
 }

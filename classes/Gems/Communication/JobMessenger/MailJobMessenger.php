@@ -62,11 +62,10 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     {
         $tracker = $this->loader->getTracker();
         $token = $tracker->getToken($tokenData);
-        $tokenSelect = $tracker->getTokenSelect();
 
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        $mailFields = (new TokenMailFields($token, $this->config, $this->translate, $tokenSelect))->getMaiLFields($language);
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
         $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
         if ($mailTexts === null) {
             throw new \MailException('No template data found');
@@ -274,6 +273,6 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
      */
     protected function getUserEmail(int $userId): ?string
     {
-        $this->userRepository->getEmailFromUserId($userId);
+        return $this->userRepository->getEmailFromUserId($userId);
     }
 }

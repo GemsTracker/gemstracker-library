@@ -8,6 +8,7 @@ use Gems\Communication\CommunicationRepository;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
+use Gems\Tracker\Token\TokenSelect;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Psr\Cache\CacheItemPoolInterface;
@@ -57,6 +58,7 @@ class LegacyConfigProvider
                 'LegacyProject' => \Gems_Project_ProjectSettings::class,
                 'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems_Util::class,
+                'LegacyTokenSelect' => TokenSelect::class,
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,

@@ -4,7 +4,7 @@ namespace Gems\Mail;
 
 class OrganizationMailFields extends ProjectMailFields
 {
-    private Gems_User_Organization $organization;
+    private \Gems_User_Organization $organization;
 
     public function __construct(\Gems_User_Organization $organization, array $config)
     {

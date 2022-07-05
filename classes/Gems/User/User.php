@@ -2148,15 +2148,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         if ($useResetFields) {
-            $fields = (new \Gems\Mail\UserPasswordMailFields($this, $this->config))->getMailFields($locale);
+            $fields = $this->communicationRepository->getUserPasswordMailFields($this, $locale);
         } else {
-            $fields = (new \Gems\Mail\UserMailFields($this, $this->config))->getMailFields($locale);
+            $fields = $this->communicationRepository->getUserMailFields($this, $locale);
         }
 
-        $email->htmlTemplate($this->communicationRepository->getTemplate($this->getBaseOrganization()), $bodyTemplate);
+        $email->htmlTemplate($this->communicationRepository->getTemplate($this->getBaseOrganization()), $bodyTemplate, $fields);
 
         $mailer = $this->communicationRepository->getMailer($this->getFrom());
-
 
         try {
             $mailer->send($email);

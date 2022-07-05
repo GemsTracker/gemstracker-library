@@ -2,15 +2,18 @@
 
 namespace Gems\Mail;
 
+use Gems\Tracker\Token\TokenSelect;
+use MUtil\Translate\Translator;
+
 class TokenMailFields extends RespondentMailFields
 {
     private \Gems_Tracker_Token $token;
 
-    private \MUtil\Translate\Translator $translator;
+    private Translator $translator;
 
-    private \Gems_Tracker_Token_TokenSelect $tokenSelect;
+    private TokenSelect $tokenSelect;
 
-    public function __construct(\Gems_Tracker_Token $token, array $config, \MUtil\Translate\Translator $translator, \Gems_Tracker_Token_TokenSelect $tokenSelect)
+    public function __construct(\Gems_Tracker_Token $token, array $config, \MUtil\Translate\Translator $translator, TokenSelect $tokenSelect)
     {
         $this->token = $token;
         parent::__construct($token->getRespondent(), $config);

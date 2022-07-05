@@ -230,7 +230,7 @@ interface Gems_Tracker_TrackerInterface
     /**
      * Create a select statement on the token table
      *
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function getTokenSelect($fields = '*');
 
