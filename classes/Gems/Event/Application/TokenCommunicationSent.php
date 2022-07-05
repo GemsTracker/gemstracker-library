@@ -2,18 +2,16 @@
 
 namespace Gems\Event\Application;
 
-use Symfony\Component\Mime\Email;
-
-class TokenMailSent extends RespondentMailSent implements TokenInterface
+class TokenCommunicationSent extends RespondentCommunicationSent implements TokenInterface
 {
-    public const NAME = 'token.mail.sent';
+    const NAME = 'token.communication.sent';
 
     private \Gems_Tracker_Token $token;
 
-    public function __construct(Email $email, \Gems_Tracker_Token $token, \Gems_User_User $currentUser, array $communicationJob = [], )
+    public function __construct(\Gems_Tracker_Token $token, \Gems_User_User $currentUser, array $communicationJob = [])
     {
+        parent::__construct($token->getRespondent(), $currentUser, $communicationJob);
         $this->token = $token;
-        parent::__construct($email, $token->getRespondent(), $currentUser, $communicationJob);
     }
 
     /**

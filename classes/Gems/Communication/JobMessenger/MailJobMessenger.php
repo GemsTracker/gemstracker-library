@@ -3,10 +3,9 @@
 namespace Gems\Communication\JobMessenger;
 
 
-use Gems\Event\Application\MailSent;
 use Gems\Event\Application\TokenMailSent;
 use Gems\Log\LogHelper;
-use Gems\Mail\MailRepository;
+use Gems\Communication\CommunicationRepository;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\TemplatedEmail;
 use Gems\Mail\TokenMailFields;
@@ -15,7 +14,6 @@ use Laminas\Db\Adapter\Adapter;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
-use MUtil\Translate\Translator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mime\Address;
@@ -72,15 +70,15 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
 
     public function sendCommunication(array $job, array $tokenData, $preview)
     {
-        $mailRepository = new MailRepository($this->db2, $this->config);
+        $mailRepository = new CommunicationRepository($this->db2, $this->config);
         $tracker = $this->loader->getTracker();
         $token = $tracker->getToken($tokenData);
         $tokenSelect = $tracker->getTokenSelect();
 
-        $language = $mailRepository->getMailLanguage($token->getRespondentLanguage());
+        $language = $mailRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
         $mailFields = (new TokenMailFields($token, $this->config, $this->translate, $tokenSelect))->getMaiLFields($language);
-        $mailTexts = $mailRepository->getMailTexts($job['gcj_id_message'], $language);
+        $mailTexts = $mailRepository->getCommunicationTexts($job['gcj_id_message'], $language);
         if ($mailTexts === null) {
             throw new \MailException('No template data found');
         }
@@ -123,7 +121,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 $email->htmlTemplate($mailRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
                 $mailer->send($email);
 
-                $event = new TokenMailSent($email, $token, $job, $this->currentUser);
+                $event = new TokenMailSent($email, $token, $this->currentUser, $job);
                 $this->event->dispatch($event, $event::NAME);
 
             } catch (\Zend_Mail_Exception $exception) {

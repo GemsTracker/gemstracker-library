@@ -1,8 +1,12 @@
 <?php
 
-namespace Gems\Mail;
+namespace Gems\Communication;
 
+use Gems\Event\Application\RespondentCommunicationInterface;
+use Gems\Event\Application\RespondentCommunicationSent;
 use Gems\Event\Application\RespondentMailSent;
+use Gems\Event\Application\TokenCommunicationSent;
+use Gems\Event\Application\TokenInterface;
 use Gems\Event\Application\TokenMailSent;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\TableGateway\TableGateway;
@@ -20,41 +24,64 @@ class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
+            TokenCommunicationSent::NAME => [
+                ['logRespondentCommunication'],
+                ['updateToken'],
+            ],
+            RespondentCommunicationSent::NAME => [
+                ['logRespondentCommunication']
+            ],
             TokenMailSent::NAME => [
-                ['logRespondentMail'],
+                ['logRespondentCommunication'],
                 ['updateToken'],
             ],
             RespondentMailSent::NAME => [
-                ['logRespondentMail']
+                ['logRespondentCommunication']
             ],
         ];
     }
 
-    public function logRespondentMail(RespondentMailSent $event)
+    public function logRespondentCommunication(RespondentCommunicationInterface $event): void
     {
-        $email = $event->getEmail();
+
         $respondent = $event->getRespondent();
-        $job = $event->getMailJob();
+        $job = $event->getCommunicationJob();
         $currentUser = $event->getCurrentUser();
 
         $logData['grco_organization'] = $respondent->getOrganizationId();
         $logData['grco_id_to']        = $respondent->getId();
-        if ($event instanceof TokenMailSent) {
+        if ($event instanceof TokenInterface) {
             $token = $event->getToken();
             $logData['grco_id_token']     = $token->getTokenId();
         }
+        $subject = null;
+        $from = [];
+        $to = [];
+        if ($event instanceof RespondentMailSent) {
+            $email = $event->getEmail();
+            $subject = $email->getSubject();
+            $from = $email->getFrom();
+            $to = $email->getTo();
+        } elseif ($event instanceof RespondentCommunicationSent) {
+            $subject = $event->getSubject();
+            $from = $event->getFrom();
+            $to = $event->getTo();
+        }
 
         $logData['grco_id_by']        = $currentUser->getUserId();
-        $logData['grco_method']       = 'email';
-        $logData['grco_topic']        = substr($email->getSubject(), 0, 120);
+        $logData['grco_method']       = 'unknown';
+        if (isset($job['gcm_type'])) {
+            $logData['grco_method']   = $job['gcm_type'];
+        }
+        $logData['grco_topic']        = substr($subject, 0, 120);
 
         $toAddressArray = array_map(function($from) {
             return $from->getName() . '<'.$from->getAddress().'>';
-        }, $email->getTo());
+        }, $to);
 
         $fromAddressArray = array_map(function($from) {
            return $from->getName() . '<'.$from->getAddress().'>';
-        }, $email->getFrom());
+        }, $from);
 
         $logData['grco_address']      = substr(join(',', $toAddressArray), 0, 120);
         $logData['grco_sender']       = substr(join(',', $fromAddressArray), 0, 120);

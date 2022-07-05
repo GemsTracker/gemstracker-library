@@ -184,7 +184,7 @@ class ConfigProvider
     {
         return [
             EventSubscriber::class,
-            \Gems\Mail\EventSubscriber::class,
+            \Gems\Communication\EventSubscriber::class,
         ];
     }
 

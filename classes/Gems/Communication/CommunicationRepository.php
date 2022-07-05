@@ -1,11 +1,11 @@
 <?php
 
-namespace Gems\Mail;
+namespace Gems\Communication;
 
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 
-class MailRepository
+class CommunicationRepository
 {
     private Adapter $db;
 
@@ -18,7 +18,7 @@ class MailRepository
      * Get the prefered template language
      * @return string language code
      */
-    public function getMailLanguage(string $language = null): string
+    public function getCommunicationLanguage(string $language = null): string
     {
         if (isset($this->config['email']['multiLanguage']) && $this->config['email']['multiLanguage'] === true && $language) {
             return $language;
@@ -36,9 +36,9 @@ class MailRepository
         return 'en';
     }
 
-    public function getMailTexts(int $templateId, ?string $language=null): ?array
+    public function getCommunicationTexts(int $templateId, ?string $language=null): ?array
     {
-        $language = $this->getMailLanguage($language);
+        $language = $this->getCommunicationLanguage($language);
 
         $sql = new Sql($this->db);
         $select = $sql->select('gems__comm_template_translations');
@@ -61,7 +61,7 @@ class MailRepository
         }
 
         if ($language !== $this->getDefaultLanguage()) {
-            return $this->getMailTexts($templateId, $this->getDefaultLanguage());
+            return $this->getCommunicationTexts($templateId, $this->getDefaultLanguage());
         }
 
         return null;
