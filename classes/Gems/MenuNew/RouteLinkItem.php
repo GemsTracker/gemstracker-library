@@ -19,6 +19,17 @@ class RouteLinkItem extends MenuItem
 
     public function open(array $params): void
     {
+        $route = $this->getMenu()->getRoute($this->name);
+        $requiredParams = $route['params'] ?? [];
+
+        $missingParams = array_diff($requiredParams, array_keys($params));
+
+        if (count($missingParams) > 0) {
+            return;
+        }
+
+        $params = array_intersect_key($params, array_flip($requiredParams));
+
         parent::open($params);
 
         $this->openParams = $params;

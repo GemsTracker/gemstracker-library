@@ -11,10 +11,47 @@ class Menu extends MenuNode
     /** @var MenuItem[] */
     private array $items = [];
 
+    private array $routes;
+
     public function __construct(
         public readonly RouterInterface $router,
         public readonly TemplateRendererInterface $templateRenderer,
+        array $config,
     ) {
+        $this->routes = [];
+        foreach ($config['routes'] as $route) {
+            $this->routes[$route['name']] = $route;
+        }
+
+        $this->addFromConfig($this, $config['menu']);
+    }
+
+    public function getRoute(string $name): array
+    {
+        return $this->routes[$name];
+    }
+
+    private function addFromConfig(MenuNode $node, array $items)
+    {
+        foreach ($items as $item) {
+            if ($item['type'] === 'route-link-item') {
+                $object = new RouteLinkItem($item['name'], $item['label']);
+            } else {
+                throw new \Exception('Invalid type: ' . $item['type']);
+            }
+
+            if (isset($item['parent'])) {
+                $parent = $node->getMenu()->find($item['parent']);
+            } else {
+                $parent = $node;
+            }
+
+            $parent->add($object);
+
+            if (!empty($item['children'])) {
+                $this->addFromConfig($object, $item['children']);
+            }
+        }
     }
 
     protected function getMenu(): Menu

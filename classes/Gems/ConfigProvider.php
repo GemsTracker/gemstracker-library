@@ -70,6 +70,7 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
+            'menu'          => $this->getMenu(),
         ];
     }
 
@@ -368,6 +369,70 @@ class ConfigProvider
         return [
             'paths' => [
                 'gems' => [__DIR__ . '/../../languages'],
+            ],
+        ];
+    }
+
+    protected function getMenu(): array
+    {
+        return [
+            [
+                'name' => 'gems.route-a',
+                'label' => 'gems.route-a',
+                'type' => 'route-link-item',
+                'children' => [
+                    [
+                        'name' => 'gems.route-b',
+                        'label' => 'gems.route-b',
+                        'type' => 'route-link-item',
+                        'children' => [],
+                    ],
+                    [
+                        'name' => 'gems.route-c',
+                        'label' => 'gems.route-c',
+                        'type' => 'route-link-item',
+                        'children' => [
+                            [
+                                'name' => 'gems.route-d',
+                                'label' => 'gems.route-d',
+                                'type' => 'route-link-item',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'gems.route-e',
+                        'label' => 'gems.route-e',
+                        'type' => 'route-link-item',
+                    ],
+                ],
+            ],
+            [
+                'name' => 'gems.route-f',
+                'label' => 'gems.route-f',
+                'type' => 'route-link-item',
+            ],
+            [
+                'name' => 'gems.route-g',
+                'label' => 'gems.route-g',
+                'type' => 'route-link-item',
+                'parent' => 'gems.route-e',
+                'children' => [
+                    [
+                        'name' => 'gems.route-g-a',
+                        'label' => 'gems.route-g-a',
+                        'type' => 'route-link-item',
+                    ],
+                    [
+                        'name' => 'gems.route-g-b',
+                        'label' => 'gems.route-g-b',
+                        'type' => 'route-link-item',
+                    ],
+                    [
+                        'name' => 'gems.route-g-c',
+                        'label' => 'gems.route-g-c',
+                        'type' => 'route-link-item',
+                    ],
+                ],
             ],
         ];
     }

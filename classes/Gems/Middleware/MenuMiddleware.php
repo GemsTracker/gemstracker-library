@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gems\Middleware;
 
 use Gems\MenuNew\Menu;
-use Gems\MenuNew\RouteLinkItem;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -16,6 +15,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class MenuMiddleware implements MiddlewareInterface
 {
     public function __construct(
+        private readonly array $config,
         private readonly RouterInterface $router,
         private readonly TemplateRendererInterface $template
     ) {
@@ -26,16 +26,9 @@ class MenuMiddleware implements MiddlewareInterface
         /** @var \Mezzio\Router\RouteResult $routeResult */
         $routeResult = $request->getAttribute('Mezzio\Router\RouteResult');
 
-        $menu = new Menu($this->router, $this->template);
+        $menu = new Menu($this->router, $this->template, $this->config);
 
-        $menu->add($a = new RouteLinkItem('route-a', 'Route a'));
-        $a->add(new RouteLinkItem('route-b', 'Route b'));
-        $a->add($c = new RouteLinkItem('route-c', 'Route c'));
-        $c->add(new RouteLinkItem('route-d', 'Route d'));
-        $a->add(new RouteLinkItem('route-e', 'Route e'));
-        $menu->add(new RouteLinkItem('route-f', 'Route f'));
-
-        $request = $request->withAttribute(Menu::class, $menu);
+        $this->template->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'mainMenu', $menu);
 
         $menu->openRouteResult($routeResult);
 
