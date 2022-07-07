@@ -38,6 +38,19 @@ class CommunicationRepository
         $this->config = $config;
     }
 
+    public function getCreateAccountTemplate(\Gems_User_Organization $organization): ?int
+    {
+        $templateId = $organization->getCreateAccountTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['createAccountTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['createAccountTemplate']);
+        }
+
+        return null;
+    }
+
     /**
      * Get the prefered template language
      * @return string language code
@@ -114,6 +127,19 @@ class CommunicationRepository
         return $mailFieldCreator->getMailFields();
     }
 
+    public function getResetPasswordTemplate(\Gems_User_Organization $organization): ?int
+    {
+        $templateId = $organization->getResetPasswordTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['createAccountTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['createAccountTemplate']);
+        }
+
+        return null;
+    }
+
     public function getRespondentMailFields(\Gems_Tracker_Respondent $respondent, string $language = null): array
     {
         $mailFieldCreator = new RespondentMailFields($respondent, $this->config);
@@ -127,6 +153,24 @@ class CommunicationRepository
             return 'mail::' . $organization->getStyle();
         }
         return 'default::mail';
+    }
+
+    public function getTemplateIdFromCode(string $code): ?int
+    {
+        $sql = new Sql($this->db);
+        $select = $sql->select('gems__comm_templates');
+        $select->where(['gct_code' => $code])
+            ->columns(['gct_id_template']);
+
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        if ($result->valid() && $result->current()) {
+            $template = $result->current();
+            return $template['gct_id_template'];
+        }
+
+        return null;
     }
 
     public function getTokenMailFields(\Gems_Tracker_Token $token, string $language = null): array

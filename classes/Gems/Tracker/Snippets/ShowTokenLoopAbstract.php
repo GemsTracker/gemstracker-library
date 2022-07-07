@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+use Symfony\Component\Mime\Address;
+
 /**
  * Basic class for creating forward loop snippets
  *
@@ -26,6 +28,11 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
      * @var string 
      */
     protected $action = 'forward';
+
+    /**
+     * @var \Gems\Communication\CommunicationRepository
+     */
+    protected $communicationRepository;
     
     /**
      * General date format
@@ -48,9 +55,9 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Required
      *
-     * @var \Zend_Controller_Request_Abstract
+     * @var \MUtil\Request\RequestInfo
      */
-    protected $request;
+    protected $requestInfo;
 
     /**
      * Switch for showing the duration.
@@ -151,19 +158,34 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
 
         $html->h3($this->getHeaderLabel());
 
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new Address($token->getEmail(), $token->getRespondentName()));
+        $email->addFrom(new Address($token->getOrganization()->getEmail()));
+
+        $template = $this->communicationRepository->getTemplate($token->getOrganization());
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
+        $templateId = $this->communicationRepository->getTemplateIdFromCode('continue');
+
         $mailLoader = $this->loader->getMailLoader();
         /** @var \Gems_Mail_TokenMailer $mail */
         $mail       = $mailLoader->getMailer('token', $token->getTokenId());
         $mail->setFrom($token->getOrganization()->getFrom());
         
-        if ($mail->setTemplateByCode('continue')) {
+        if ($templateId) {
+
+            $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+            $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+            $mailer = $this->communicationRepository->getMailer($token->getOrganization()->getEmail());
+            $email->subject($mailTexts['subject'], $mailFields);
+            $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+
             $lastMailedDate = \MUtil_Date::ifDate($token->getMailSentDate(), 'yyyy-MM-dd');
 
             // Do not send multiple mails a day
             if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
                 $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
             } else {
-                $mail->send();
+                $mailer->send($email);
                 $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
             }
 
@@ -192,7 +214,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
 
             $this->wasAnswered = $this->token->isCompleted();
 
-            return ($this->request instanceof \Zend_Controller_Request_Abstract) &&
+            return ($this->requestInfo instanceof \MUtil\Request\RequestInfo) &&
                     ($this->view instanceof \Zend_View) &&
                     parent::checkRegistryRequestsAnswers();
         } else {
@@ -360,7 +382,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
          * Get the url *
          ***************/
         $params = array(
-            $this->request->getActionKey() => 'to-survey',
+            'action' => 'to-survey',
             \MUtil_Model::REQUEST_ID        => $token->getTokenId(),
             'RouteReset'                   => false,
             );

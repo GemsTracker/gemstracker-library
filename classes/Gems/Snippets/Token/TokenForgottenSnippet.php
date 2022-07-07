@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Communication\CommunicationRepository;
+use Symfony\Component\Mime\Address;
+
 /**
  *
  * @package    Gem
@@ -20,6 +23,10 @@ namespace Gems\Snippets\Token;
  */
 class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
 {
+    /**
+     * @var CommunicationRepository
+     */
+    protected $communicationRepository;
     /**
      *
      * @var \Gems_User_Organization
@@ -265,13 +272,19 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
                                 WHERE gct_target = 'respondent' AND gct_code = 'nothingToSend'"
                     );
                     if ($templateId) {
-                        $mailLoader = $this->loader->getMailLoader();
-                        $mailer = $mailLoader->getMailer('respondent', $userData['gr2o_patient_nr'], $orgId, $userData['gr2o_id_user']);
-                        $mailer->setTo($respondent->getEmailAddress(), $respondent->getName());
-                        $mailer->setFrom($respondent->getOrganization()->getEmail());
-                        $mailer->setBy($respondent->getId());
-                        $mailer->setTemplate($templateId);
-                        $mailer->send();
+
+                        $email = $this->communicationRepository->getNewEmail();
+                        $email->addTo(new Address($respondent->getEmailAddress(), $respondent->getName()));
+                        $email->addFrom(new Address($respondent->getOrganization()->getEmail()));
+
+                        $template = $this->communicationRepository->getTemplate($respondent->getOrganization());
+                        $language = $this->communicationRepository->getCommunicationLanguage($respondent->getLanguage());
+                        $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+                        $mailFields = $this->communicationRepository->getRespondentMailFields($respondent, $language);
+                        $mailer = $this->communicationRepository->getMailer($respondent->getOrganization()->getEmail());
+                        $email->subject($mailTexts['subject'], $mailFields);
+                        $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+                        $mailer->send($email);
                     }
                 }
             }
