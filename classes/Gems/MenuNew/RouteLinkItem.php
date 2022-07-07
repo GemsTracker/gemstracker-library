@@ -44,6 +44,7 @@ class RouteLinkItem extends MenuItem
         return $menu->templateRenderer->render('menu::route-link-item', [
             'url' => $url,
             'label' => $this->label,
+            'active' => $this->isActive(),
         ]);
     }
 }

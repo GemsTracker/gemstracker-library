@@ -7,6 +7,7 @@ abstract class MenuItem extends MenuNode
     private ?Menu $menu = null;
     private ?MenuNode $parent = null;
     private bool $open = false;
+    private bool $active = false;
 
     abstract protected function register();
 
@@ -21,6 +22,11 @@ abstract class MenuItem extends MenuNode
         $this->menu = $parent->getMenu();
     }
 
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
     public function isOpen(): bool
     {
         return $this->open;
@@ -29,6 +35,7 @@ abstract class MenuItem extends MenuNode
     public function openPath(array $params): void
     {
         $this->open($params);
+        $this->setActive(true);
 
         if ($this->parent instanceof MenuItem) {
             $this->parent->openPath($params);
@@ -53,5 +60,13 @@ abstract class MenuItem extends MenuNode
         }
 
         return parent::renderNode();
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive(bool $active): void
+    {
+        $this->active = $active;
     }
 }
