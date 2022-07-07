@@ -214,8 +214,6 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
     public function afterRegistry()
     {
         parent::afterRegistry();
-
-        $this->initTranslateable();
     }
 
     /**
