@@ -10,6 +10,7 @@ use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\RouteResult;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -37,6 +38,9 @@ class LegacyController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        /**
+         * @var RouteResult $routeResult
+         */
         $routeResult = $request->getAttribute('Mezzio\Router\RouteResult');
 
         $route  = $routeResult->getMatchedRoute();
@@ -49,6 +53,9 @@ class LegacyController implements RequestHandlerInterface
                 //$legacyRequest = $this->getLegacyRequest($request, $controller, $options['action']);
                 $legacyResponse = new \Zend_Controller_Response_Http();
 
+                /**
+                 * @var \MUtil_Controller_Action $controllerObject
+                 */
                 $controllerObject = $this->loader->create($controller, $request, $this->urlHelper, false);
                 $this->loadControllerDependencies($controllerObject);
                 
