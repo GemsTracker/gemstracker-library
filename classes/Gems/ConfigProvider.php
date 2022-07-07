@@ -8,10 +8,8 @@ use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Config\App;
 use Gems\Config\Menu;
+use Gems\Config\Route;
 use Gems\Config\Survey;
-use Gems\Legacy\LegacyController;
-use Gems\Middleware\AclMiddleware;
-use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
@@ -50,6 +48,7 @@ class ConfigProvider
     public function __invoke(): array
     {
         $appConfigProvider = new App();
+        $routeConfigProvider = new Route();
         $surveyConfigProvider = new Survey();
         $menuConfigProvider = new Menu();
 
@@ -65,10 +64,9 @@ class ConfigProvider
             'monitor'       => $this->getMonitorSettings(),
             'survey'        => $surveyConfigProvider(),
             'migrations'    => $this->getMigrations(),
-
             'password'      => $this->getPasswordSettings(),
-            'routes'        => $this->getRoutes(),
             'permissions'   => $this->getPermissions(),
+            'routes'        => $routeConfigProvider(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
@@ -306,26 +304,6 @@ class ConfigProvider
                 'notAlphaNumCount' => 0,
                 'maxAge' => 365,
             ],
-        ];
-    }
-
-    protected function getRoutes(): array
-    {
-        return [
-            [
-                'name' => 'setup.reception.index',
-                'path' => '/setup/reception/index',
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LegacyController::class,
-                ],
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => \Gems_Default_ReceptionAction::class,
-                    'action' => 'index',
-                ]
-            ],
-            ...$this->createBrowseRoutes('track-builder.source', '/track-builder/source', 'pr.track-builder.source', \Gems_Default_SourceAction::class),
         ];
     }
 

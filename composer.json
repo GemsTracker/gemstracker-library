@@ -80,7 +80,9 @@
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
         "robmorgan/phinx": "dev-master",
-        "laminas/laminas-permissions-acl": "^2.9"
+        "laminas/laminas-permissions-acl": "^2.9",
+        "mezzio/mezzio-router": "^3.8",
+        "mezzio/mezzio-helpers": "^5.8"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
