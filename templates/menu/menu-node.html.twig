@@ -1,0 +1,11 @@
+{{ renderedItem|raw }}
+
+{% if children is not empty %}
+    <div class="menu-children" style="margin-left: 20px;">
+        {% for child in children %}
+            <div class="menu-child">
+                {{ child.renderNode()|raw }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

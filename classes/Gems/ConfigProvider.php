@@ -2,10 +2,15 @@
 
 namespace Gems;
 
+use Gems\Auth\Acl\AclFactory;
+use Gems\Auth\Acl\ConfigRoleAdapter;
+use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Config\App;
+use Gems\Config\Menu;
 use Gems\Config\Survey;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
@@ -13,6 +18,7 @@ use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -45,6 +51,7 @@ class ConfigProvider
     {
         $appConfigProvider = new App();
         $surveyConfigProvider = new Survey();
+        $menuConfigProvider = new Menu();
 
         return [
             'app'           => $appConfigProvider(),
@@ -61,9 +68,11 @@ class ConfigProvider
 
             'password'      => $this->getPasswordSettings(),
             'routes'        => $this->getRoutes(),
+            'permissions'   => $this->getPermissions(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
+            'menu'          => $menuConfigProvider(),
         ];
     }
 
@@ -111,6 +120,7 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
+                Acl::class => AclFactory::class,
 
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
@@ -138,6 +148,8 @@ class ConfigProvider
                 // Session
                 SessionPersistenceInterface::class => CacheSessionPersistence::class,
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
+
+                RoleAdapterInterface::class => ConfigRoleAdapter::class,
             ]
         ];
     }
@@ -346,6 +358,9 @@ class ConfigProvider
     {
         return [
             'gems' => [__DIR__ . '/../../templates/Auth'],
+            'paths' => [
+                'menu' => [__DIR__ . '/../../templates/menu'],
+            ],
         ];
     }
 
@@ -358,5 +373,14 @@ class ConfigProvider
         ];
     }
 
-
+    /**
+     * Returns the permissions defined by this module
+     *
+     * @return mixed[]
+     */
+    protected function getPermissions(): array
+    {
+        return [
+        ];
+    }
 }
