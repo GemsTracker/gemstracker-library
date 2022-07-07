@@ -7,6 +7,7 @@ use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Config\App;
+use Gems\Config\Menu;
 use Gems\Config\Survey;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\AclMiddleware;
@@ -50,6 +51,7 @@ class ConfigProvider
     {
         $appConfigProvider = new App();
         $surveyConfigProvider = new Survey();
+        $menuConfigProvider = new Menu();
 
         return [
             'app'           => $appConfigProvider(),
@@ -70,7 +72,7 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
-            'menu'          => $this->getMenu(),
+            'menu'          => $menuConfigProvider(),
         ];
     }
 
@@ -315,14 +317,12 @@ class ConfigProvider
                 'path' => '/setup/reception/index',
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
-                    AclMiddleware::class,
                     LegacyController::class,
                 ],
                 'allowed_methods' => ['GET'],
                 'options' => [
                     'controller' => \Gems_Default_ReceptionAction::class,
                     'action' => 'index',
-                    'permission' => 'gt.setup',
                 ]
             ],
             ...$this->createBrowseRoutes('track-builder.source', '/track-builder/source', 'pr.track-builder.source', \Gems_Default_SourceAction::class),
@@ -373,70 +373,6 @@ class ConfigProvider
         ];
     }
 
-    protected function getMenu(): array
-    {
-        return [
-            [
-                'name' => 'gems.route-a',
-                'label' => 'gems.route-a',
-                'type' => 'route-link-item',
-                'children' => [
-                    [
-                        'name' => 'gems.route-b',
-                        'label' => 'gems.route-b',
-                        'type' => 'route-link-item',
-                        'children' => [],
-                    ],
-                    [
-                        'name' => 'gems.route-c',
-                        'label' => 'gems.route-c',
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'gems.route-d',
-                                'label' => 'gems.route-d',
-                                'type' => 'route-link-item',
-                            ],
-                        ],
-                    ],
-                    [
-                        'name' => 'gems.route-e',
-                        'label' => 'gems.route-e',
-                        'type' => 'route-link-item',
-                    ],
-                ],
-            ],
-            [
-                'name' => 'gems.route-f',
-                'label' => 'gems.route-f',
-                'type' => 'route-link-item',
-            ],
-            [
-                'name' => 'gems.route-g',
-                'label' => 'gems.route-g',
-                'type' => 'route-link-item',
-                'parent' => 'gems.route-e',
-                'children' => [
-                    [
-                        'name' => 'gems.route-g-a',
-                        'label' => 'gems.route-g-a',
-                        'type' => 'route-link-item',
-                    ],
-                    [
-                        'name' => 'gems.route-g-b',
-                        'label' => 'gems.route-g-b',
-                        'type' => 'route-link-item',
-                    ],
-                    [
-                        'name' => 'gems.route-g-c',
-                        'label' => 'gems.route-g-c',
-                        'type' => 'route-link-item',
-                    ],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Returns the permissions defined by this module
      *
@@ -445,7 +381,6 @@ class ConfigProvider
     protected function getPermissions(): array
     {
         return [
-            'gt.setup',
         ];
     }
 }
