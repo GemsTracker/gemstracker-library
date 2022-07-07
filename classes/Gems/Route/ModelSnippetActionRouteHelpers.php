@@ -4,20 +4,61 @@ namespace Gems\Route;
 
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 
 trait ModelSnippetActionRouteHelpers
 {
-    protected array $defaultPages = ['index', 'autofilter', 'show', 'create', 'edit', 'delete'];
+    protected array $defaultPages = [
+        'index',
+        'autofilter',
+        'show',
+        'create',
+        'edit',
+        'delete'
+    ];
+
+    protected array $defaultParameters = [
+        'id' => '\d+',
+    ];
+
+    protected array $defaultParameterRoutes = [
+        'show',
+        'edit',
+        'delete',
+    ];
+
+    protected array $defaultPostRoutes = [
+        'create',
+        'edit',
+    ];
 
     protected array $modelSnippetCustomFirmware = [
         SecurityHeadersMiddleware::class,
         LegacyCurrentUserMiddleware::class,
+        MenuMiddleware::class,
         LegacyController::class,
     ];
 
-    public function createBrowseRoutes(string $baseName, string $basePath, string $basePrivilege, string $controllerClass, ?array $pages = null, ?array $customMiddleware = null): array
+    public function createBrowseRoutes(string $baseName,
+                                       string $controllerClass,
+                                       ?string $basePath = null,
+                                       ?string $basePrivilege = null,
+                                       ?array $pages = null,
+                                       ?array $customMiddleware = null,
+                                       ?array $parameters = null,
+                                       ?array $parameterRoutes = null,
+                                       ?array $postRoutes = null,
+                                       ?array $parentParameters = null): array
     {
+        if ($basePath === null) {
+            $basePath = '/' . str_replace('.', '/', $baseName);
+        }
+
+        if ($basePrivilege === null) {
+            $basePrivilege = 'pr.' . $baseName;
+        }
+
         if ($pages === null) {
             $pages = $this->defaultPages;
         }
@@ -28,116 +69,61 @@ trait ModelSnippetActionRouteHelpers
 
         $routes = [];
 
-        if (in_array('index', $pages)) {
-            $routes[$baseName . '.index'] = [
-                'name' => $baseName . '.index',
-                'path' => $basePath . '/index',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET', 'POST'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'index',
-                    'privilege' => $basePrivilege . '.index',
-                ]
-            ];
+        if ($parameters === null) {
+            $parameters = $this->defaultParameters;
         }
 
-        if (in_array('autofilter', $pages)) {
-            $routes[$baseName . '.autofilter'] = [
-                'name' => $baseName . '.autofilter',
-                'path' => $basePath . '/autofilter',
+        if ($parameterRoutes === null) {
+            $parameterRoutes = $this->defaultParameterRoutes;
+        }
+
+        if ($postRoutes === null) {
+            $postRoutes = $this->defaultPostRoutes;
+        }
+
+        $combinedParameters = [];
+        foreach ($parameters as $parameterName => $parameterRegex) {
+            $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
+        }
+
+        $parameterString = join('/', $combinedParameters);
+
+        foreach($pages as $pageName) {
+            $route = [
+                'name' => $baseName . '.' . $pageName,
+                'path' => $basePath . '/' . $pageName,
                 'middleware' => $customMiddleware,
                 'allowed_methods' => ['GET'],
                 'options' => [
                     'controller' => $controllerClass,
-                    'action' => 'autofilter',
-                    'privilege' => $basePrivilege . '.autofilter',
-                ]
+                    'action' => $pageName,
+                    'privilege' => $basePrivilege . '.' . $pageName,
+                ],
             ];
-        }
 
-        if (in_array('show', $pages)) {
-            $routes[$baseName . '.show'] = [
-                'name' => $baseName . '.show',
-                'path' => $basePath . '/show/{id:\d+}',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'show',
-                    'privilege' => $basePrivilege . '.show',
-                ]
-            ];
-        }
+            if ($pageName === 'index' || $pageName === 'show') {
+                $route['path'] = $basePath;
+            }
 
-        if (in_array('create', $pages)) {
-            $routes[$baseName . '.create'] = [
-                'name' => $baseName . '.create',
-                'path' => $basePath . '/create',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'create',
-                    'privilege' => $basePrivilege . '.create',
-                ]
-            ];
-        }
+            if ($parentParameters !== null) {
+                $route['params'] = $parentParameters;
+            }
 
-        if (in_array('edit', $pages)) {
-            $routes[$baseName . '.edit'] = [
-                'name' => $baseName . '.edit',
-                'path' => $basePath . '/edit/{id:\d+}',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'edit',
-                    'privilege' => $basePrivilege . '.edit',
-                ]
-            ];
-        }
+            if (in_array($pageName, $parameterRoutes)) {
+                $route['path'] .= '/' . $parameterString;
 
-        if (in_array('delete', $pages)) {
-            $routes[$baseName . '.delete'] = [
-                'name' => $baseName . '.delete',
-                'path' => $basePath . '/delete/{id:\d+}',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'delete',
-                    'privilege' => $basePrivilege . '.delete',
-                ]
-            ];
-        }
+                if (!array_key_exists('params', $route)) {
+                    $route['params'] = [];
+                }
+                $route['params'] += array_keys($parameters);
 
-        if (in_array('export', $pages)) {
-            $routes[$baseName . '.export'] = [
-                'name' => $baseName . '.export',
-                'path' => $basePath . '/export',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'export',
-                    'privilege' => $basePrivilege . '.export',
-                ]
-            ];
-        }
+            }
 
-        if (in_array('import', $pages)) {
-            $routes[$baseName . '.import'] = [
-                'name' => $baseName . '.import',
-                'path' => $basePath . '/import',
-                'middleware' => $customMiddleware,
-                'allowed_methods' => ['GET'],
-                'options' => [
-                    'controller' => $controllerClass,
-                    'action' => 'import',
-                    'privilege' => $basePrivilege . '.import',
-                ]
-            ];
+            if (in_array($pageName, $postRoutes)) {
+                $route['allowed_methods'][] = 'POST';
+            }
+
+            $routes[$baseName . '.' . $pageName] = $route;
         }
 
         return $routes;
