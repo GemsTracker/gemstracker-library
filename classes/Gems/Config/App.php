@@ -9,6 +9,7 @@ class App
         return [
             'name' => 'GemsTracker',
             'description' => 'GEneric Medical Survey Tracker',
+            'env' => getenv('APP_ENV'),
         ];
     }
 }
