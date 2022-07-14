@@ -6,6 +6,7 @@ use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
+use Gems\Command\ClearConfigCache;
 use Gems\Config\App;
 use Gems\Config\Menu;
 use Gems\Config\Route;
@@ -13,6 +14,7 @@ use Gems\Config\Survey;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
+use Gems\OAuth2\Command\GenerateApplicationKey;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -47,30 +49,26 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
-        $appConfigProvider = new App();
-        $routeConfigProvider = new Route();
-        $surveyConfigProvider = new Survey();
-        $menuConfigProvider = new Menu();
-
         return [
-            'app'           => $appConfigProvider(),
+            'app'           => new App(),
             'cache'         => $this->getCacheSettings(),
             'contact'       => $this->getContactSettings(),
+            'console'       => $this->getConsoleSettings(),
             'db'            => $this->getDbSettings(),
             'dependencies'  => $this->getDependencies(),
             'email'         => $this->getEmailSettings(),
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'monitor'       => $this->getMonitorSettings(),
-            'survey'        => $surveyConfigProvider(),
+            'survey'        => new Survey(),
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
             'permissions'   => $this->getPermissions(),
-            'routes'        => $routeConfigProvider(),
+            'routes'        => new Route(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
-            'menu'          => $menuConfigProvider(),
+            'menu'          => new Menu(),
         ];
     }
 
@@ -83,6 +81,19 @@ class ConfigProvider
 
         return [
             'adapter' => $cacheAdapter,
+        ];
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getConsoleSettings(): array
+    {
+        return [
+            'commands' => [
+                ClearConfigCache::class,
+                GenerateApplicationKey::class,
+            ],
         ];
     }
 
