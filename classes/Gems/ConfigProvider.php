@@ -49,8 +49,13 @@ class ConfigProvider
      */
     public function __invoke(): array
     {
+        $appSettings = new App();
+        $menuSettings = new Menu();
+        $routeSettings = new Route();
+        $surveySettings = new Survey(); 
+
         return [
-            'app'           => new App(),
+            'app'           => $appSettings(),
             'cache'         => $this->getCacheSettings(),
             'contact'       => $this->getContactSettings(),
             'console'       => $this->getConsoleSettings(),
@@ -60,15 +65,15 @@ class ConfigProvider
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'monitor'       => $this->getMonitorSettings(),
-            'survey'        => new Survey(),
+            'survey'        => $surveySettings(),
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
             'permissions'   => $this->getPermissions(),
-            'routes'        => new Route(),
+            'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
-            'menu'          => new Menu(),
+            'menu'          => $menuSettings(),
         ];
     }
 
