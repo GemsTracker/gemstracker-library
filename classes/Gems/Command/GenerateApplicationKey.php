@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\OAuth2\Command;
+namespace Gems\Command;
 
 use Defuse\Crypto\Key;
 use Symfony\Component\Console\Attribute\AsCommand;

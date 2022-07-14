@@ -14,7 +14,7 @@ use Gems\Config\Survey;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
-use Gems\OAuth2\Command\GenerateApplicationKey;
+use Gems\Command\GenerateApplicationKey;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
