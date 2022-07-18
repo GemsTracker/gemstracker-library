@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1p8]
+### Fixed
+- Date fields use dates from inactive appointments (#731)
+- Use of currentUser in DbLookup kills the API (#730)
+
 ## [1.9.1p7]
 ### Added user functionality
 - One click copy of token in traffic light view (#723)

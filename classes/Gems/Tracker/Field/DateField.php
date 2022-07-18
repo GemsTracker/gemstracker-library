@@ -127,7 +127,13 @@ class DateField extends FieldAbstract
                 $appointment = $agenda->getAppointment($value);
 
                 if ($appointment->exists) {
-                    return $appointment->getAdmissionTime();
+                    if ($appointment->isActive()) {
+                        return $appointment->getAdmissionTime();
+                    } else {
+                        // Empty the Date field if there are appointments, but these
+                        // are not active 
+                        $currentValue = null;
+                    }
                 }
             }
         }
