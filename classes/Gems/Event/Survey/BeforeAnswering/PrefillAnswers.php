@@ -194,14 +194,18 @@ class PrefillAnswers extends \MUtil_Translate_TranslateableAbstract implements \
         $respondentTrack = $token->getRespondentTrack();
         $fieldCodes      = $respondentTrack->getCodeFields();
         $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
-        $keysMixed       = array_keys($fieldCodes);
-        $keysUpper       = array_change_key_case($fieldCodes, CASE_UPPER);
-        $fieldCodesMap   = array_combine(array_keys($keysUpper), $keysMixed);
+//        $keysMixed       = array_keys($fieldCodes);
+//        $keysUpper       = array_change_key_case($fieldCodes, CASE_UPPER);
+//        $fieldCodesMap   = array_combine(array_keys($keysUpper), $keysMixed);
+        $fieldCodesMap   = [];
+        foreach ($fieldCodes as $code => $value) {
+            $fieldCodesMap[strtoupper($code)] = $code;
+        }
 
         foreach ($requests as $original => $upperField) {
             if (array_key_exists($upperField, $fieldCodesMap)) {
-                $trackField         = $fieldCodesMap[$upperField];
-                $value              = $fieldCodes[$trackField];
+                $trackField = $fieldCodesMap[$upperField];
+                $value      = $fieldCodes[$trackField];
                 // If it is a date(/time) field export it in ISO format
                 if (array_key_exists($trackField, $rawFieldData) && $rawFieldData[$trackField] instanceof \MUtil_Date) {
                     $value = $rawFieldData[$trackField]->get('yyyy-MM-dd HH:mm:ss');

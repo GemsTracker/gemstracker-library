@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.1p8]
 ### Fixed
 - Date fields use dates from inactive appointments (#731)
+- Prefill answers array_combine() notice in Pulse
 - Use of currentUser in DbLookup kills the API (#730)
 
 ## [1.9.1p7]
