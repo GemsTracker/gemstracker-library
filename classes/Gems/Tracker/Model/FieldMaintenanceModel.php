@@ -142,7 +142,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with localenote
      *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */

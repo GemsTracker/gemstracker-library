@@ -15,7 +15,7 @@ trait EventCalculationsTrait
      */
     public static function addWhenChanged($name, $value, array &$results, array $tokenAnswers)
     {
-        if ($value != $tokenAnswers[$name]) {
+        if (array_key_exists($name, $tokenAnswers) && $value != $tokenAnswers[$name]) {
             $results[$name] = $value;
             return true;
         } else {
@@ -81,7 +81,7 @@ trait EventCalculationsTrait
         $results = array();
 
         foreach($values as $name => $result) {
-            if (! ((null === $result) && (null === $tokenAnswers[$name]))) {
+            if (array_key_exists($name, $tokenAnswers) && (! ((null === $result) && (null === $tokenAnswers[$name])))) {
                 $result = round(floatval($result), 13);
                 if (((string) $tokenAnswers[$name] != (string) $result) || (null === $tokenAnswers[$name])) {
                     // Round to a number the LS database can hold

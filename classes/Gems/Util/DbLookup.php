@@ -32,11 +32,6 @@ class Gems_Util_DbLookup extends UtilAbstract
     protected $acl;
 
     /**
-     * @var \Gems_User_User
-     */
-    protected $currentUser;
-
-    /**
      *
      * @var \Gems_Loader
      */
@@ -55,7 +50,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      */
     public function getActiveOrganizations()
     {
-        // DO NOT USE $this->>currentUser or currentOrganization as this will not work
+        // DO NOT USE $this->currentUser or currentOrganization as this will not work
         // in the API
         $currentOrganizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
 
@@ -665,12 +660,16 @@ class Gems_Util_DbLookup extends UtilAbstract
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
 
+        // DO NOT USE $this->currentUser or currentOrganization as this will not work
+        // in the API
+        $currentUser = $this->loader->getCurrentUser();
+        
         // Fetch all surveys
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
             ->where('gsu_allow_export = 1')
-            ->where($this->util->getTokenData()->getShowAnswersExpression($this->currentUser->getGroupId(true)))
+            ->where($this->util->getTokenData()->getShowAnswersExpression($currentUser->getGroupId(true)))
             //->where('gsu_surveyor_active = 1')
             // Leave inactive surveys, we toss out the inactive ones for limesurvey
             // as it is no problem for OpenRosa to have them in
