@@ -16,13 +16,12 @@ use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
+use Gems\Factory\ReflectionFactory;
 use Gems\Messenger\MessengerFactory;
-use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
@@ -40,7 +39,6 @@ use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -176,7 +174,7 @@ class ConfigProvider
 
             ],
             'abstract_factories' => [
-                ReflectionBasedAbstractFactory::class,
+                ReflectionFactory::class,
             ],
             'aliases' => [
                 EventDispatcherInterface::class => EventDispatcher::class,
