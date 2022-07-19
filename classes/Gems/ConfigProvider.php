@@ -7,6 +7,7 @@ use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
+use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Config\App;
 use Gems\Config\Menu;
 use Gems\Config\Messenger;
@@ -171,6 +172,8 @@ class ConfigProvider
                 // message.bus.other => [MessengerFactory::class, 'message.bus.other'],
 
                 // message.transport.name => TransportFactory::class,
+
+                ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
 
             ],
             'abstract_factories' => [
