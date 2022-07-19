@@ -16,7 +16,7 @@ use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
-use Gems\Factory\ReflectionFactory;
+use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
@@ -174,7 +174,7 @@ class ConfigProvider
 
             ],
             'abstract_factories' => [
-                ReflectionFactory::class,
+                ReflectionAbstractFactory::class,
             ],
             'aliases' => [
                 EventDispatcherInterface::class => EventDispatcher::class,

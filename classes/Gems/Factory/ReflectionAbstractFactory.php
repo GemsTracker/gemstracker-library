@@ -4,12 +4,12 @@ namespace Gems\Factory;
 
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionParameter;
 
-class ReflectionFactory implements FactoryInterface
+class ReflectionAbstractFactory implements AbstractFactoryInterface
 {
 
     /**
@@ -44,6 +44,14 @@ class ReflectionFactory implements FactoryInterface
         $results = $this->resolveDependencies($askedDependencies, $container);
 
         return new $requestedName(...$results);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function canCreate(ContainerInterface $container, $requestedName)
+    {
+        return class_exists($requestedName);
     }
 
     protected function resolveDependencies(array $askedDependencies, ContainerInterface $container)
