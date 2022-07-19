@@ -15,7 +15,14 @@ class DebugMessageCommandFactory implements FactoryInterface
         if (isset($config['messenger'], $config['messenger']['buses'])) {
             foreach($config['messenger']['buses'] as $busName => $busSettings) {
                 if (isset($busSettings['handlers'])) {
-                    $handlersPerBus[$busName] = $busSettings['handlers'];
+                    foreach($busSettings['handlers'] as $messageName => $handlers) {
+                        foreach((array)$handlers as $handlerName) {
+                            $handlersPerBus[$busName][$messageName][] = [
+                                $handlerName,
+                                [],
+                            ];
+                        }
+                    }
                 }
             }
         }
