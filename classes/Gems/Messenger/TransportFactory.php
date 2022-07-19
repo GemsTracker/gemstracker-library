@@ -31,7 +31,7 @@ class TransportFactory implements FactoryInterface
         }
         $dsnParts = explode('://', $transportConfig['dsn']);
 
-        switch($dsnParts) {
+        switch($dsnParts[0]) {
             case 'in-memory':
                 return $this->getInMemoryTransport($transportConfig);
             case 'redis':
