@@ -13,7 +13,12 @@ class ProjectOverloaderFactory implements FactoryInterface
     /**
      * @var array|string[]
      */
-    protected array $defaultOverloaderPaths = ['Gems', 'MUtil'];
+    protected array $defaultOverLoaderPaths;
+
+    public function __construct(array $defaultOverLoaderPaths = ['Gems', 'MUtil'])
+    {
+        $this->defaultOverLoaderPaths = $defaultOverLoaderPaths;
+    }
 
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
@@ -21,7 +26,7 @@ class ProjectOverloaderFactory implements FactoryInterface
          * @var mixed[]
          */
         $config = $container->get('config');
-        $overloaderPaths = $this->defaultOverloaderPaths;
+        $overloaderPaths = $this->defaultOverLoaderPaths;
         if (isset($config['overLoaderPaths']) && is_array($config['overLoaderPaths'])) {
             $overloaderPaths = $config['overLoaderPaths'];
         }
