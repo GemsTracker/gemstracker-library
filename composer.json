@@ -84,7 +84,10 @@
         "mezzio/mezzio-router": "^3.8",
         "mezzio/mezzio-helpers": "^5.8",
         "defuse/php-encryption": "^2.3",
-        "symfony/console": "^6.1"
+        "symfony/console": "^6.1",
+        "symfony/messenger": "^6.1",
+        "symfony/redis-messenger": "^6.1",
+        "symfony/doctrine-messenger": "^6.1"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
