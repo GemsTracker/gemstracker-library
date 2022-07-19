@@ -24,7 +24,7 @@ class TranslationFactory implements FactoryInterface
      */
     protected $config;
 
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Translator
     {
         $this->config = $container->get('config');
 
