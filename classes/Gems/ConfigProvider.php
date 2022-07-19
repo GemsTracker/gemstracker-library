@@ -178,6 +178,7 @@ class ConfigProvider
             ],
             'aliases' => [
                 EventDispatcherInterface::class => EventDispatcher::class,
+                \Symfony\Component\EventDispatcher\EventDispatcherInterface::class => EventDispatcher::class,
 
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
