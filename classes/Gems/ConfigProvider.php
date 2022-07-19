@@ -9,12 +9,15 @@ use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
 use Gems\Config\App;
 use Gems\Config\Menu;
+use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
+use Gems\Messenger\MessengerFactory;
+use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -30,8 +33,14 @@ use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
+use Symfony\Component\Messenger\Command\DebugCommand;
+use Symfony\Component\Messenger\Command\StopWorkersCommand;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -51,8 +60,9 @@ class ConfigProvider
     {
         $appSettings = new App();
         $menuSettings = new Menu();
+        $messengerSettings = new Messenger();
         $routeSettings = new Route();
-        $surveySettings = new Survey(); 
+        $surveySettings = new Survey();
 
         return [
             'app'           => $appSettings(),
@@ -64,6 +74,7 @@ class ConfigProvider
             'email'         => $this->getEmailSettings(),
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
+            'messenger'     => $messengerSettings(),
             'monitor'       => $this->getMonitorSettings(),
             'survey'        => $surveySettings(),
             'migrations'    => $this->getMigrations(),
@@ -98,6 +109,11 @@ class ConfigProvider
             'commands' => [
                 ClearConfigCache::class,
                 GenerateApplicationKey::class,
+
+                // Messenger
+                ConsumeMessagesCommand::class,
+                StopWorkersCommand::class,
+                DebugCommand::class,
             ],
         ];
     }
@@ -151,11 +167,20 @@ class ConfigProvider
 
                 // Translation
                 TranslatorInterface::class => TranslationFactory::class,
+
+                // Messenger
+                MessageBusInterface::class => MessengerFactory::class,
+                // message.bus.other => [MessengerFactory::class, 'message.bus.other'],
+
+                // message.transport.name => TransportFactory::class,
+
             ],
             'abstract_factories' => [
                 ReflectionBasedAbstractFactory::class,
             ],
             'aliases' => [
+                EventDispatcherInterface::class => EventDispatcher::class,
+
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
 

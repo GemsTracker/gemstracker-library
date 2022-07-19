@@ -14,6 +14,10 @@ class GenerateApplicationKey extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $key = Key::createNewRandomKey();
-        return $key->saveToAsciiSafeString();
+
+        $output->writeln('<fg=green>Generated key:</>');
+        $output->writeln($key->saveToAsciiSafeString());
+
+        return static::SUCCESS;
     }
 }
