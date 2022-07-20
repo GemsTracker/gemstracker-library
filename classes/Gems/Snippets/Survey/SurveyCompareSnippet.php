@@ -2,6 +2,8 @@
 
 namespace Gems\Snippets\Survey;
 
+use MUtil\Validate\NotEqualTo;
+
 class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
     /**
@@ -218,7 +220,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         }
 
         $this->nextDisabled = true;
-        
+
         $batch = $this->getUpdateBatch();
         $form  = $bridge->getForm();
 
@@ -360,7 +362,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             $surveyOptions = $empty + $surveys;
 
             $model->set('source_survey', 'label', $this->_('Source Survey'), 'multiOptions', $surveyOptions, 'required', true);
-            $validator = new \MUtil_Validate_NotEqualTo(['source_survey'], ['source_survey' => $this->_('Source and target survey can not be the same')]);
+            $validator = new NotEqualTo(['source_survey'], ['source_survey' => $this->_('Source and target survey can not be the same')]);
             $model->set('target_survey', 'label', $this->_('Target Survey'), 'multiOptions', $surveyOptions, 'required', true, 'validator', $validator);
 
             $model->set('track_replace', 'label', $this->_('Replace in track definitions'), 'description', $this->_('Replace all occurances of old survey in all tracks with the new survey'),
@@ -818,7 +820,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         if ($batch->isFinished() || $batch->isLoaded()) {
             return $batch;
         }
-        
+
         if ($this->formData['track_replace'] == 1) {
             $batch->addTask('Survey\\TrackReplaceTask');
         }
