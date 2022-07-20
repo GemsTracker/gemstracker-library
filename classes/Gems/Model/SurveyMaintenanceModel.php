@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use MUtil\Validate\RequireOtherField;
+
 /**
  *
  * @package    Gems
@@ -19,7 +21,7 @@ namespace Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class SurveyMaintenanceModel extends \Gems_Model_JoinModel 
+class SurveyMaintenanceModel extends \Gems_Model_JoinModel
 {
 
     /**
@@ -37,25 +39,25 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
-    
+
     /**
      *
      * @var \Gems_Loader
      */
     public $loader;
-    
+
     /**
      *
      * @var \Gems_Project_ProjectSettings
      */
     public $project;
-    
+
     /**
      *
      * @var \Gems_Util
      */
     public $util;
-    
+
     /**
      *
      * @param string $name
@@ -80,7 +82,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $survey     = null;
         $translated = $this->util->getTranslated();
         $yesNo      = $translated->getYesNo();
-        
+
         $this->addColumn(
                 "CASE WHEN gsu_survey_pdf IS NULL OR CHAR_LENGTH(gsu_survey_pdf) = 0 THEN 0 ELSE 1 END",
                 'gsu_has_pdf'
@@ -111,10 +113,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 'elementClass', 'Exhibitor',
                 'formatFunction', array($this, 'formatDescription')
                 );
-        
+
         $this->set('gsu_survey_languages',        'label', $this->_('Available languages'),
                 'elementClass', 'Exhibitor');
-        
+
         $this->set('gso_source_name',        'label', $this->_('Source'),
                 'elementClass', 'Exhibitor'
                 );
@@ -156,7 +158,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                    'elementClass', 'Checkbox',
                    'multiOptions', $yesNo
         );
-        
+
         $mailCodes = $dbLookup->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
             $this->set('gsu_mail_code', 'label', $this->_('Mail code'),
@@ -166,14 +168,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         } elseif (1 == count($mailCodes)) {
             reset($mailCodes);
             $this->set('gsu_mail_code', 'default', key($mailCodes));
-        } 
+        }
 
         $this->set('gsu_insertable',         'label', $this->_('Insertable'),
                 'description', $this->_('Can this survey be manually inserted into a track?'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
-        
+
         if ($addCount) {
             $this->set('track_count',          'label', ' ',
                     'elementClass', 'Exhibitor',
@@ -182,7 +184,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                     );
             $this->setOnLoad('track_count', array($this, 'calculateTrackCount'));
         }
-        
+
         $this->set('gsu_code',                 'label', $this->_('Survey code'),
                 'description', $this->_('Optional code name to link the survey to program code.'),
                 'size', 10);
@@ -194,7 +196,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         if ($this->project->translateDatabaseFields() && ! $editing) {
             $this->loader->getModels()->addDatabaseTranslations($this);
         }
-        
+
         return $this;
     }
 
@@ -210,9 +212,9 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $this->applyBrowseSettings(false, $editing);
         $translated = $this->util->getTranslated();
         $dbLookup   = $this->util->getDbLookup();
-        
+
         $this->resetOrder();
-        
+
         $this->setMulti([
             'gsu_survey_name',
             'gsu_external_description',
@@ -229,7 +231,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             'gsu_answer_groups',
             'gsu_allow_export',
             'gsu_mail_code',
-            'gsu_insertable'            
+            'gsu_insertable'
             ]);
 
         $this->set('gsu_survey_languages', 'itemDisplay', array($this, 'formatLanguages'));
@@ -243,14 +245,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                    'required', false
         );
         $ct->apply($this, 'gsu_answer_groups');
-        
+
         $this->set('gsu_active',
-                'validators[group]', new \MUtil_Validate_Require(
+                'validators[group]', new RequireOtherField(
                         $this->get('gsu_active', 'label'),
                         'gsu_id_primary_group',
                         $this->get('gsu_id_primary_group', 'label')
                         ));
-                
+
         $this->set('gsu_valid_for_length', 'label', $this->_('Add to inserted end date'),
                 'description', $this->_('Add to the start date to calculate the end date when inserting.'),
                 'filter', 'Int'
@@ -276,7 +278,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             'toggleOrg'                => $hideElement,
         ],];
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');
-        
+
         $this->set('track_usage',          'label', $this->_('Usage'),
                 'elementClass', 'Exhibitor',
                 'noSort', true,
@@ -292,14 +294,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $this->setOnLoad('calc_duration', array($this, 'calculateDuration'));
 
         $this->set('gsu_duration',         'label', $this->_('Duration description'),
-                'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'), 
+                'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'),
                 'translate', true
                 );
-        
+
         if ($surveyId) {
             $survey = $this->loader->getTracker()->getSurvey($surveyId);
         }
-        
+
         if ($survey instanceof \Gems_Tracker_Survey) {
             $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
                 $survey->getQuestionList(null);
@@ -308,10 +310,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                     );
             // $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
         }
-        
+
         $this->set('gsu_code');
         $this->set('gsu_export_code');
-        
+
         $events = $this->loader->getEvents();
         $beforeOptions = $events->listSurveyBeforeAnsweringEvents();
         if (count($beforeOptions) > 1) {
@@ -357,30 +359,30 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
 
         $order = $this->getOrder('gsu_insert_organizations') + 1;
-        
+
         $this->set('toggleOrg',
                     'elementClass', 'ToggleCheckboxes',
                     'selectorName', 'gsu_insert_organizations',
                     'order', $order
                     );
-        
-        $this->set('gsu_survey_pdf', 'label', 'Pdf',	
-                        'accept', 'application/pdf',	
-                        'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),	
-                        'elementClass', 'File',	
-                        'extension', 'pdf',	
-                        'filename', $surveyId,	
-                        'required', false,	
-                        'validators[pdf]', new \MUtil_Validate_Pdf()	
+
+        $this->set('gsu_survey_pdf', 'label', 'Pdf',
+                        'accept', 'application/pdf',
+                        'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),
+                        'elementClass', 'File',
+                        'extension', 'pdf',
+                        'filename', $surveyId,
+                        'required', false,
+                        'validators[pdf]', new \MUtil_Validate_Pdf()
                         );
 
         if ($this->project->translateDatabaseFields()) {
             $this->loader->getModels()->addDatabaseTranslationEditFields($this);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
      * dateformat read from the database to a \Zend_Date format
@@ -546,7 +548,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         }
     }
 
-    
+
     /**
      * Strip all the tags, but keep the escaped characters
      *
@@ -557,7 +559,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     {
         return \MUtil_Html::raw(strip_tags($value));
     }
-    
+
     /**
      * Divide available languages between base and additional languages and format output
      *
@@ -568,7 +570,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     public function formatLanguages($value, $native = false)
     {
         $split = explode(', ', $value);
-        
+
         foreach ($split as $key => $locale) {
             $localized = '';
             if (\Zend_Locale::isLocale($locale, false)) {
@@ -580,7 +582,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             }
             $split[$key] = $localized ? $localized : $locale;
         }
-        
+
         $seq = new \MUtil_Html_Sequence();
         $seq->setGlue(\MUtil_Html::create('br'));
 
@@ -588,10 +590,10 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         if (isset($split[1])) {
             $seq->append(sprintf($this->_('Additional: %s'), implode(', ', array_slice($split, 1))));
         }
-        
+
         return $seq;
     }
-    
+
     /**
      * Return string on empty value
      *
@@ -603,7 +605,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         if (is_null($value)) {
             $value = new \MUtil_Html_HtmlElement('em', '(none)');
         }
-        
+
         return $value;
     }
 }
