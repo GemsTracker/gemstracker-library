@@ -157,7 +157,7 @@ class LegacyFactory implements FactoryInterface
 
         $projectArray = $this->includeFile(GEMS_ROOT_DIR . '/config/project');
 
-        $project = $this->loader->create('Project_ProjectSettings', $projectArray);
+        $project = $this->loader->create('Project\\ProjectSettings', $projectArray);
 
         /* Testing if the supplied projectSettings is a class is supported in Gemstracker, but not used. For now it's disabled.
         /*if ($projectArray instanceof \Gems_Project_ProjectSettings) {
