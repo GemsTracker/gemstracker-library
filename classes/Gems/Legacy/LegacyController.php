@@ -48,7 +48,7 @@ class LegacyController implements RequestHandlerInterface
             $options = $route->getOptions();
             if (isset($options['controller'], $options['action'])) {
                 $controller = $options['controller'];
-                $actionName = $options['action'] . 'Action';
+                $actionName = $this->getActionName($options['action']);
 
                 //$legacyRequest = $this->getLegacyRequest($request, $controller, $options['action']);
                 $legacyResponse = new \Zend_Controller_Response_Http();
@@ -58,7 +58,7 @@ class LegacyController implements RequestHandlerInterface
                  */
                 $controllerObject = $this->loader->create($controller, $request, $this->urlHelper, false);
                 $this->loadControllerDependencies($controllerObject);
-                
+
                 $controllerObject->init();
 
                 if (method_exists($controllerObject, $actionName) && is_callable([$controllerObject, $actionName])) {
@@ -97,6 +97,13 @@ class LegacyController implements RequestHandlerInterface
         }
 
         return new EmptyResponse(404);
+    }
+
+    protected function getActionName(string $action): string
+    {
+        $actionParts = explode('-', $action);
+        $capitalizedActionParts = array_map('ucfirst', $actionParts);
+        return join('', $capitalizedActionParts) . 'Action';
     }
 
     protected function getLegacyRequest(ServerRequestInterface $request, $controllerName, $actionName): \Zend_Controller_Request_Http
