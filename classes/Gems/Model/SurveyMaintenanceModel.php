@@ -298,6 +298,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 'translate', true
                 );
 
+        $survey = null;
         if ($surveyId) {
             $survey = $this->loader->getTracker()->getSurvey($surveyId);
         }
