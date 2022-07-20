@@ -570,7 +570,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      */
     public function formatLanguages($value, $native = false)
     {
-        $split = explode(', ', $value);
+        $split = explode(', ', (string)$value);
 
         foreach ($split as $key => $locale) {
             $localized = '';
