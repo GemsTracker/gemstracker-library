@@ -7,7 +7,7 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2017 Erasmus MC
  * @license    New BSD License
- * @version    
+ * @version
  */
 
 /**
@@ -24,6 +24,14 @@ class Gems_Default_UpdateSurveyAction extends \Gems_Controller_Action
     public function runAction()
     {
         $this->initHtml();
-        $this->addSnippets('Survey\\SurveyCompareSnippet');
+        $this->addSnippets('Survey\\SurveyCompareSnippet', [
+            'requestInfo' => $this->getRequestInfo(),
+        ]);
+    }
+
+    public function getRequestInfo(): \MUtil\Request\RequestInfo
+    {
+        $factory = new \MUtil\Request\RequestInfoFactory($this->request);
+        return $factory->getRequestInfo();
     }
 }
