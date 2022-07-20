@@ -103,7 +103,7 @@ class LegacyController implements RequestHandlerInterface
     {
         $actionParts = explode('-', $action);
         $capitalizedActionParts = array_map('ucfirst', $actionParts);
-        return join('', $capitalizedActionParts) . 'Action';
+        return lcfirst(join('', $capitalizedActionParts)) . 'Action';
     }
 
     protected function getLegacyRequest(ServerRequestInterface $request, $controllerName, $actionName): \Zend_Controller_Request_Http
