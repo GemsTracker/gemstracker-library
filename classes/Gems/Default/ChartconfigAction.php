@@ -41,8 +41,8 @@ class Gems_Default_ChartconfigAction extends \Gems_Controller_ModelSnippetAction
 
         $roundStatement = 'SELECT gro_id_round, concat_ws(" ", gro_id_order, gro_survey_name, gro_round_description) FROM gems__rounds ORDER BY gro_id_order;';
         if ($detailed) {
-            if ($this->getRequest()->isPost()) {
-                $data = $this->getRequest()->getParams();
+            if ($this->requestHelper->isPost()) {
+                $data = $this->request->getParsedBody();
                 if (array_key_exists('gcc_tid', $data) && !empty($data['gcc_tid'])) {
                     $trackId = (int) $data['gcc_tid'];
                     $roundStatement = 'SELECT gro_id_round, concat_ws(" ", gro_id_order, gro_survey_name, gro_round_description) FROM gems__rounds WHERE gro_id_track = ' . $trackId . ' ORDER BY gro_id_order;';
