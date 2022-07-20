@@ -64,7 +64,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
      *
      * @return \Zend_Controller_Action_Helper_FlashMessenger
      */
-    public function getMessenger()
+    public function getMessenger(): \Mezzio\Flash\FlashMessagesInterface
     {
         if (! $this->messenger) {
             $this->setMessenger($this->loader->getMessenger());
@@ -79,7 +79,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
      * @param boolean $reset Throws away any existing html output when true
      * @return void
      */
-    public function initHtml($reset = false)
+    public function initHtml(bool $reset = false): void
     {
         if (! $this->html) {
             \Gems_Html::init();
@@ -91,7 +91,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
     /**
      * Stub for overruling default snippet loader initiation.
      */
-    protected function loadSnippetLoader()
+    protected function loadSnippetLoader(): void
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
@@ -103,7 +103,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
      * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
      * @return \MUtil_Controller_Action
      */
-    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger)
+    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger): self
     {
         $this->messenger = $messenger;
         $this->view->messenger = $messenger;
