@@ -579,7 +579,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     public function getIndexTitle()
     {
-        return ucfirst($this->getTopic(100));
+        return ucfirst((string) $this->getTopic(100));
     }
 
     /**
