@@ -178,8 +178,6 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     public function afterRegistry()
     {
         parent::afterRegistry();
-
-        $this->initTranslateable();
     }
 
     /**
