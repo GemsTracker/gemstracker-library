@@ -31,9 +31,9 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('gso_source_name' => SORT_ASC),
-        );
+    protected $autofilterParameters = [
+        'extraSort'   => ['gso_source_name' => SORT_ASC],
+    ];
 
     /**
      *
@@ -57,7 +57,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all');
+    public $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
 
     /**
      * @var \Gems\Encryption\ValueEncryptor
