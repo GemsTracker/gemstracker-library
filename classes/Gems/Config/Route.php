@@ -4,6 +4,7 @@ namespace Gems\Config;
 
 use Gems\Actions\TrackBuilderAction;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
@@ -65,10 +66,9 @@ class Route
                     ...$this->defaultPages,
                     'check-all',
                     'answer-imports',
-                    'update-survey',
                     'check',
                     'answer-import',
-                    'export-codebook',
+                    //'export-codebook',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
@@ -77,6 +77,37 @@ class Route
                     'export-codebook',
                 ],
             ),
+            [
+                'name' => 'track-builder.survey-maintenance.update-survey',
+                'path' => '/track-builder/survey-maintenance/update-survey',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LegacyCurrentUserMiddleware::class,
+                    MenuMiddleware::class,
+                    LegacyController::class,
+                ],
+                'options' => [
+                    'controller' => \Gems_Default_UpdateSurveyAction::class,
+                    'action' => 'run',
+                ],
+            ],
+            [
+                'name' => 'track-builder.survey-maintenance.export-codebook',
+                'path' => '/track-builder/survey-maintenance/export-codebook/{id:\d+}',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LegacyCurrentUserMiddleware::class,
+                    MenuMiddleware::class,
+                    LegacyController::class,
+                ],
+                'options' => [
+                    'controller' => \Gems_Default_SurveyCodeBookExportAction::class,
+                    'action' => 'export',
+                ],
+            ],
+
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance',
                 controllerClass: \Gems_Default_TrackMaintenanceAction::class,
                 pages: [
