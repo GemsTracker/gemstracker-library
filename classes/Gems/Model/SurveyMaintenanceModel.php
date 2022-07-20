@@ -558,7 +558,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      */
     public static function formatDescription($value)
     {
-        return \MUtil_Html::raw(strip_tags($value));
+        return \MUtil_Html::raw(strip_tags((string)$value));
     }
 
     /**
