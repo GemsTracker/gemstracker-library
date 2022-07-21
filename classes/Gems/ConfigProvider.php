@@ -390,6 +390,7 @@ class ConfigProvider
     protected function getTranslationSettings(): array
     {
         return [
+            'databaseFields' => false,
             'paths' => [
                 'gems' => [__DIR__ . '/../../languages'],
             ],
