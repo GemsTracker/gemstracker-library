@@ -335,7 +335,7 @@ class LegacyFactory implements FactoryInterface
         $overloaders = $this->loader->getOverloaders();
         foreach($overloaders as $overloader) {
             if (strpos($requestedName, $overloader) === 0 || strpos($requestedName, '\\'.$overloader) === 0) {
-                $requestedName = str_replace([$overloader.'_', $overloader], '', $requestedName);
+                $requestedName = str_replace([$overloader.'_', $overloader.'\\', $overloader], '', $requestedName);
                 return $requestedName;
             }
         }
