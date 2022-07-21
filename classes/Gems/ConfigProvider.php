@@ -10,7 +10,6 @@ use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
 use Gems\Config\App;
-use Gems\Config\Menu;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
@@ -59,7 +58,6 @@ class ConfigProvider
     public function __invoke(): array
     {
         $appSettings = new App();
-        $menuSettings = new Menu();
         $messengerSettings = new Messenger();
         $routeSettings = new Route();
         $surveySettings = new Survey();
@@ -84,7 +82,6 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
             'translations'  => $this->getTranslationSettings(),
-            'menu'          => $menuSettings(),
         ];
     }
 
