@@ -56,6 +56,7 @@ class LegacyConfigProvider
                 'LegacyProject' => \Gems_Project_ProjectSettings::class,
                 'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems_Util::class,
+                'LegacyTracker' => \Gems_Tracker::class,
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
