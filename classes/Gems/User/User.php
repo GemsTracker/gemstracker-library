@@ -2490,7 +2490,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         }
 
         $this->locale->setLocale($locale);
-        $this->translateAdapter->setLocale($locale);
+        $this->translate->setLocale($locale);
 
         return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
     }
