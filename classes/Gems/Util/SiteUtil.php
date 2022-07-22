@@ -12,6 +12,7 @@
 namespace Gems\Util;
 
 use Gems\Snippets\Ask\RedirectUntilGoodbyeSnippet;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -25,9 +26,9 @@ class SiteUtil extends UtilAbstract
     CONST ORG_SEPARATOR = '|';
 
     /**
-     * @var \MUtil_Registry_Source
+     * @var ProjectOverloader
      */
-    protected $source;
+    protected $overLoader;
 
     /**
      * @var \Gems_Util
@@ -45,27 +46,12 @@ class SiteUtil extends UtilAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     * /
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->loadUrlCache();
-    } // */
-
-    /**
      * @return \Gems\Util\SiteConsole A console only url
      */
     public function getConsoleUrl()
     {
         $site = new SiteConsole();
-        $this->source->applySource($site);
+        $this->overLoader->applyToLegacyTarget($site);
         return $site;
     }
 
@@ -120,10 +106,7 @@ class SiteUtil extends UtilAbstract
     public function getSiteForCurrentUrl($blockOnCreation = false)
     {
         if (\MUtil_Console::isConsole()) {
-            $site = new SiteConsole('https://console', false);
-            $this->source->applySource($site);
-            return $site;
-
+            return $this->getConsoleUrl();
         } elseif (\Zend_Session::$_unitTestEnabled) {
             $url = 'https://test.example.site';
             $blockOnCreation = false;
@@ -177,7 +160,7 @@ class SiteUtil extends UtilAbstract
     public function getSiteForUrl($url, $blockOnCreation = false)
     {
         $site = new SiteUrl($url, $blockOnCreation);
-        $this->source->applySource($site);
+        $this->overLoader->applyToLegacyTarget($site);
 
         return $site;
     }
