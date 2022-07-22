@@ -12,6 +12,7 @@ use Laminas\Db\Adapter\AdapterServiceFactory;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
 
 class LegacyConfigProvider
 {
@@ -53,6 +54,7 @@ class LegacyConfigProvider
                 'LegacyLoader' => \Gems_Loader::class,
                 'LegacyLocale' => \Zend_Locale::class,
                 'LegacyMenu' => \Gems_Menu::class,
+                'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyProject' => \Gems_Project_ProjectSettings::class,
                 'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems_Util::class,
