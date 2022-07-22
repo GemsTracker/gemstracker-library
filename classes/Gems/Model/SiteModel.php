@@ -81,10 +81,9 @@ class SiteModel extends  \Gems_Model_JoinModel
         );
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gsi_select_organizations');
 
-        $escort = \GemsEscort::getInstance();
-        if (method_exists($escort, 'getStyles')) {
-            $styles = $escort->getStyles();
-            
+        $styles = null;
+        // TODO: Add styles in a different way!
+        if ($styles) {
             $this->set('gsi_style', 'label', $this->_('Style'),
                        'multiOptions', $styles
             );
