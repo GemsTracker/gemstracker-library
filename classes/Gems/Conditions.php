@@ -88,9 +88,9 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util_Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     public function __construct($container, array $dirs) {
         parent::__construct($container, $dirs);
@@ -144,7 +144,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $classType = $this->_getConditionClass($conditionType);
         $paths     = $this->_getConditionDirs($conditionType);
 
-        return $this->util->getTranslated()->getEmptyDropdownArray() + $this->listClasses($classType, $paths);
+        return $this->translatedUtil->getEmptyDropdownArray() + $this->listClasses($classType, $paths);
     }
 
     /**
@@ -199,7 +199,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $model->get('gcon_name');
         $conditions = $model->load($filter, ['gcon_name']);
 
-        $output = $this->util->getTranslated()->getEmptyDropdownArray();
+        $output = $this->translatedUtil->getEmptyDropdownArray();
 
         foreach($conditions as $condition) {
             $output[$condition['gcon_id']] = $condition['gcon_name'];

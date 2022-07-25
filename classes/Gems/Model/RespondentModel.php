@@ -91,6 +91,11 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     protected $project;
 
     /**
+     * @var \Gems_Util_Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * @var \Gems_Util
      */
     protected $util;
@@ -260,7 +265,6 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     public function applyBrowseSettings()
     {
         $dbLookup   = $this->util->getDbLookup();
-        $translated = $this->util->getTranslated();
 
         $this->resetOrder();
 
@@ -296,7 +300,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('gr2o_opened',
                 'label', $this->_('Opened'),
-                'formatFunction', $translated->describeDateFromNow);
+                'formatFunction', $this->translatedUtil->describeDateFromNow);
         $this->setIfExists('gr2o_consent',
                 'label', $this->_('Consent'),
                 'multiOptions', $dbLookup->getUserConsents()
@@ -316,7 +320,6 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         $dbLookup   = $this->util->getDbLookup();
         $localized  = $this->util->getLocalized();
-        $translated = $this->util->getTranslated();
 
         if ($this->loginCheck) {
             $this->addLoginCheck();
@@ -357,7 +360,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_partner_last_name',   'label', $this->_('Partner last name'));
 
         $this->setIfExists('grs_gender',      'label', $this->_('Gender'),
-                'multiOptions', $translated->getGenderHello()
+                'multiOptions', $this->translatedUtil->getGenderHello()
                 );
 
         $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
@@ -406,7 +409,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
                 'elementClass', 'None',  // Has little use to show: is usually editor
-                'formatFunction', array($translated, 'describeDateFromNow')
+                'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
                 );
         $this->setIfExists('gr2o_opened_by',  'label', $this->_('Opened'),
                 'elementClass', 'None',  // Has little use to show: is usually editor
@@ -415,7 +418,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_changed',    'label', $this->_('Changed on'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
-                'formatFunction', array($translated, 'describeDateFromNow')
+                'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
                 );
         $this->setIfExists('gr2o_changed_by', 'label', $this->_('Changed by'),
                 'multiOptions', $changers
@@ -423,7 +426,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_created',    'label', $this->_('Creation date'),
                 'dateFormat', \Zend_Date::DATE_MEDIUM,
                 'default', '',
-                'formatFunction', array($translated, 'describeDateFromNow')
+                'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
                 );
         $this->setIfExists('gr2o_created_by', 'label', $this->_('Creation by'),
                 'multiOptions', $changers
@@ -443,8 +446,12 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->applyDetailSettings();
         $this->copyKeys(); // The user can edit the keys.
 
-        $translated = $this->util->getTranslated();
-        $ucfirst    = new \Zend_Filter_Callback('ucfirst');
+        $ucfirst = new \Zend_Filter_Callback(function($value) {
+            if (is_string($value)) {
+                return ucfirst($value);
+            }
+            return null;
+        });
 
         if ($create && ($this->hashSsn !== self::SSN_HIDE)) {
             $onblur = new \MUtil_Html_JavascriptArrayAttribute('onblur');
@@ -467,7 +474,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                         array('gr2o_patient_nr', 'gr2o_id_organization'),
                         array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
                         ),
-                'validators[regex]', new Zend_Validate_Regex('/^[^\/\\%&]*$/'), // Between start and end no \/%& allowed
+                'validators[regex]', new \Laminas\Validator\Regex('/^[^\/\\%&]*$/'), // Between start and end no \/%& allowed
                 'validators[csvinj]', 'NoCsvInjectionChars'
                 );
         $this->set('grs_id_user');
@@ -516,7 +523,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_gender',
                 'elementClass', 'Radio',
                 'separator', '',
-                'multiOptions', $translated->getGenders(),
+                'multiOptions', $this->translatedUtil->getGenders(),
                 'tab', $this->_('Medical data')
                 );
 
@@ -524,7 +531,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 // 'dateFormat', 'dd-MM-yyyy',
                 'elementClass', 'Date',
-                'validator', new \MUtil_Validate_Date_DateBefore()
+                // TODO: re-enable validator after it has been updated to Laminas Validator and DateTimeInterface dates
+                //'validator', new \MUtil_Validate_Date_DateBefore()
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);

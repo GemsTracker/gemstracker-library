@@ -16,8 +16,10 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
+class Gems_Util_Translated
 {
+    use \MUtil\Translate\TranslateableTrait;
+
     /**
      * Format string usaed by this project date output to site users
      *
@@ -60,6 +62,13 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public static $emptyDropdownArray;
 
+    public function __construct(\MUtil\Translate\Translator $translator)
+    {
+        $this->translate = $translator;
+
+        self::$emptyDropdownArray = ['' => $this->_('-')];
+    }
+
     /**
      * Returns a callable if a method is called as a variable
      *
@@ -84,9 +93,6 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public function afterRegistry()
     {
-        parent::afterRegistry();
-
-        self::$emptyDropdownArray = array('' => $this->_('-'));
     }
 
     /**
@@ -418,7 +424,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public function getGenders($locale = null)
     {
-        return array('M' => $this->_('Male', $locale), 'F' => $this->_('Female', $locale), 'U' => $this->_('Unknown', $locale));
+        return array('M' => $this->_('Male',locale: $locale), 'F' => $this->_('Female',locale: $locale), 'U' => $this->_('Unknown',locale: $locale));
     }
 
     /**
@@ -431,7 +437,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public function getGenderDear($locale = null)
     {
-        return array('M' => $this->_('Dear mr.', $locale), 'F' => $this->_('Dear mrs.', $locale), 'U' => $this->_('Dear mr./mrs.', $locale));
+        return array('M' => $this->_('Dear mr.',locale: $locale), 'F' => $this->_('Dear mrs.',locale: $locale), 'U' => $this->_('Dear mr./mrs.',locale: $locale));
     }
 
     /**
@@ -444,7 +450,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public function getGenderGreeting($locale = null)
     {
-        return array('M' => $this->_('mr.', $locale), 'F' => $this->_('mrs.', $locale), 'U' => $this->_('mr./mrs.', $locale));
+        return array('M' => $this->_('mr.',locale: $locale), 'F' => $this->_('mrs.',locale: $locale), 'U' => $this->_('mr./mrs.',locale: $locale));
     }
 
     /**
@@ -457,7 +463,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      */
     public function getGenderHello($locale = null)
     {
-        return array('M' => $this->_('Mr.', $locale), 'F' => $this->_('Mrs.', $locale), 'U' => $this->_('Mr./Mrs.', $locale));
+        return array('M' => $this->_('Mr.', locale: $locale), 'F' => $this->_('Mrs.', locale: $locale), 'U' => $this->_('Mr./Mrs.', locale: $locale));
     }
 
     /**
@@ -500,7 +506,7 @@ class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
      * Mark empty data as empty
      *
      * @param string $subject
-     * @return mxied
+     * @return mixed
      */
     public function markEmpty($value)
     {

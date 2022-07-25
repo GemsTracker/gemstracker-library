@@ -60,6 +60,7 @@ class LegacyConfigProvider
                 'LegacyUtil' => \Gems_Util::class,
                 'LegacyTracker' => \Gems_Tracker::class,
                 'LegacyTranslate' => TranslatorInterface::class,
+                'LegacyTranslatedUtil' => \Gems_Util_Translated::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,

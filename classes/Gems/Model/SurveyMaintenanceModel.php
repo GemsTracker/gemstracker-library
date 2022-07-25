@@ -53,6 +53,11 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     public $project;
 
     /**
+     * @var \Gems_Util_Translated
+     */
+    protected $translatedUtil;
+
+    /**
      *
      * @var \Gems_Util
      */
@@ -80,8 +85,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     {
         $dbLookup   = $this->util->getDbLookup();
         $survey     = null;
-        $translated = $this->util->getTranslated();
-        $yesNo      = $translated->getYesNo();
+        $yesNo      = $this->translatedUtil->getYesNo();
 
         $this->addColumn(
                 "CASE WHEN gsu_survey_pdf IS NULL OR CHAR_LENGTH(gsu_survey_pdf) = 0 THEN 0 ELSE 1 END",
@@ -210,7 +214,6 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     public function applyDetailSettings($surveyId = null, $editing = false)
     {
         $this->applyBrowseSettings(false, $editing);
-        $translated = $this->util->getTranslated();
         $dbLookup   = $this->util->getDbLookup();
 
         $this->resetOrder();
@@ -259,7 +262,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 );
         $this->set('gsu_valid_for_unit',   'label', $this->_('Inserted end date unit'),
                 'description', $this->_('The unit used to calculate the end date when inserting the survey.'),
-                'multiOptions', $translated->getPeriodUnits()
+                'multiOptions', $this->translatedUtil->getPeriodUnits()
                 );
         $this->set('gsu_insert_organizations', 'label', $this->_('Insert organizations'),
                 'description', $this->_('The organizations where the survey may be inserted.'),
@@ -304,7 +307,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         }
 
         if ($survey instanceof \Gems_Tracker_Survey) {
-            $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
+            $surveyFields = $this->translatedUtil->getEmptyDropdownArray() +
                 $survey->getQuestionList(null);
             $this->set('gsu_result_field', 'label', $this->_('Result field'),
                     'multiOptions', $surveyFields

@@ -27,11 +27,16 @@ class Gems_Default_ChartconfigAction extends \Gems_Controller_ModelSnippetAction
      */
     public $db;
 
+    /**
+     * @var \Gems_Util_Translated
+     */
+    public $translatedUtil;
+
     protected function createModel($detailed, $action)
     {
         $model = new \Gems_Model_JoinModel('chartconfig', 'gems__chart_config', 'gcc');
 
-        $empty = $this->loader->getUtil()->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
 
         $model->set('gcc_tid', 'label', $this->_('Track'), 'multiOptions', $empty + $this->db->fetchPairs('SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name;'), 'onchange', 'this.form.submit();');
         $model->set('gcc_rid', 'label', $this->_('Round'));

@@ -60,6 +60,11 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
     public $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
 
     /**
+     * @var \Gems_Util_Translated
+     */
+    public $translatedUtil;
+
+    /**
      * @var \Gems\Encryption\ValueEncryptor
      */
     public $valueEncryptor;
@@ -236,7 +241,7 @@ class Gems_Default_SourceAction extends \Gems_Controller_ModelSnippetActionAbstr
                     );
             $model->set('gso_active',         'label', $this->_('Active'),
                     'default', 0,
-                    'multiOptions', $this->util->getTranslated()->getYesNo()
+                    'multiOptions', $this->translatedUtil->getYesNo(),
                     );
         }
 

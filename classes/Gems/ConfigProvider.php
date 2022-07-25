@@ -34,6 +34,7 @@ use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
+use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -193,6 +194,9 @@ class ConfigProvider
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
 
                 RoleAdapterInterface::class => ConfigRoleAdapter::class,
+
+                // Translation
+                Translator::class => TranslatorInterface::class,
             ]
         ];
     }
