@@ -2,6 +2,7 @@
 
 namespace Gems\MenuNew;
 
+use Laminas\Permissions\Acl\Acl;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
@@ -17,6 +18,8 @@ class Menu extends MenuNode
         public readonly RouterInterface $router,
         public readonly TemplateRendererInterface $templateRenderer,
         \Gems\Config\Menu $menuConfig,
+        private readonly Acl $acl,
+        private readonly ?string $userRole,
         array $config,
     ) {
         $this->routes = [];
@@ -63,6 +66,11 @@ class Menu extends MenuNode
     public function registerItem(string $name, MenuItem $menuItem)
     {
         $this->items[$name] = $menuItem;
+    }
+
+    public function isAllowed(string $resource): bool
+    {
+        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource);
     }
 
     public function find(string $name): MenuItem

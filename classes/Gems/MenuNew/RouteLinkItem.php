@@ -17,7 +17,17 @@ class RouteLinkItem extends MenuItem
         $this->getMenu()->registerItem($this->name, $this);
     }
 
-    public function open(array $params): void
+    protected function hasPermission(): bool
+    {
+        $route = $this->getMenu()->getRoute($this->name);
+        if (empty($route['options']['permission'])) {
+            return true;
+        }
+
+        return $this->getMenu()->isAllowed($route['options']['permission']);
+    }
+
+    public function open(array $params): bool
     {
         $route = $this->getMenu()->getRoute($this->name);
         $requiredParams = $route['params'] ?? [];
@@ -25,14 +35,17 @@ class RouteLinkItem extends MenuItem
         $missingParams = array_diff($requiredParams, array_keys($params));
 
         if (count($missingParams) > 0) {
-            return;
+            return false;
         }
 
         $params = array_intersect_key($params, array_flip($requiredParams));
 
-        parent::open($params);
+        if (!parent::open($params)) {
+            return false;
+        }
 
         $this->openParams = $params;
+        return true;
     }
 
     public function renderContent(): string

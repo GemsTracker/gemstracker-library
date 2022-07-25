@@ -4,9 +4,11 @@ namespace GemsTest\MenuNew;
 
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\MenuItemNotFoundException;
+use Laminas\Permissions\Acl\Acl;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Mezzio\Twig\TwigRenderer;
 use Psr\Http\Server\MiddlewareInterface;
 
@@ -30,6 +32,8 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $menuConfig = $this->createMock(\Gems\Config\Menu::class);
         $menuConfig->method('getItems')->willReturn($menu);
 
+        $acl = $this->createMock(Acl::class);
+
         $config = [
             'routes' => $routes ?? [
                 [
@@ -50,7 +54,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        return new Menu($router, $template, $menuConfig, $config);
+        return new Menu($router, $template, $menuConfig, $acl, null, $config);
     }
 
     public function testCanRenderEmptyMenu()
@@ -489,5 +493,149 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('route-b-c', $html);
         $this->assertStringContainsString('route-b-c-a', $html);
         $this->assertStringContainsString('route-b-d', $html);
+    }
+
+    private function buildMenuPermissions(?string $userRole): Menu
+    {
+        $routes = [
+            [
+                'name' => 'route-a',
+                'path' => '/route-a',
+                'allowed_methods' => ['GET'],
+            ],
+            [
+                'name' => 'route-b',
+                'path' => '/route-b',
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'permission' => 'permission-b',
+                ],
+            ],
+            [
+                'name' => 'route-c',
+                'path' => '/route-c',
+                'allowed_methods' => ['GET'],
+            ],
+            [
+                'name' => 'route-d',
+                'path' => '/route-d',
+                'allowed_methods' => ['GET'],
+            ],
+            [
+                'name' => 'route-e',
+                'path' => '/route-e',
+                'allowed_methods' => ['GET'],
+            ],
+            [
+                'name' => 'route-f',
+                'path' => '/route-f',
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'permission' => 'permission-c',
+                ],
+            ],
+        ];
+
+        $menu = [
+            [
+                'name' => 'route-a',
+                'label' => 'route-a',
+                'type' => 'route-link-item',
+                'children' => [
+                    [
+                        'name' => 'route-b',
+                        'label' => 'route-b',
+                        'type' => 'route-link-item',
+                        'children' => [
+                            [
+                                'name' => 'route-c',
+                                'label' => 'route-c',
+                                'type' => 'route-link-item',
+                                'children' => [
+                                    [
+                                        'name' => 'route-d',
+                                        'label' => 'route-d',
+                                        'type' => 'route-link-item',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'route-e',
+                        'label' => 'route-e',
+                        'type' => 'route-link-item',
+                    ],
+                ],
+            ],
+            [
+                'name' => 'route-f',
+                'label' => 'route-f',
+                'type' => 'route-link-item',
+            ],
+        ];
+
+
+        $router = $this->createMock(RouterInterface::class);
+        $template = $this->createMock(TemplateRendererInterface::class);
+
+        $menuConfig = $this->createMock(\Gems\Config\Menu::class);
+        $menuConfig->method('getItems')->willReturn($menu);
+
+        $acl = new Acl();
+        $acl->addResource('permission-b');
+        $acl->addResource('permission-c');
+        $acl->addRole('role-a');
+        $acl->addRole('role-b');
+
+        $acl->allow('role-b', 'permission-b');
+
+        $config = [
+            'routes' => $routes,
+        ];
+
+        return new Menu($router, $template, $menuConfig, $acl, $userRole, $config);
+    }
+
+    public function dataProviderPermissionRoutes()
+    {
+        return [
+            [null, false],
+            ['role-a', false],
+            ['role-b', true],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderPermissionRoutes
+     */
+    public function testIsAllowed(?string $userRole, bool $outcome)
+    {
+        $menu = $this->buildMenuPermissions($userRole);
+
+        $this->assertSame($outcome, $menu->isAllowed('permission-b'));
+        $this->assertFalse($menu->isAllowed('permission-c'));
+    }
+
+    /**
+     * @dataProvider dataProviderPermissionRoutes
+     */
+    public function testFollowsRoutePermissions(?string $userRole, bool $outcome)
+    {
+        $menu = $this->buildMenuPermissions($userRole);
+
+        $middlewareInterface = $this->createMock(MiddlewareInterface::class);
+        $routeResult = RouteResult::fromRoute(new Route('route-d', $middlewareInterface));
+
+        $menu->openRouteResult($routeResult);
+
+        $menu->renderMenu();
+
+        $this->assertTrue($menu->find('route-a')->isOpen());
+        $this->assertSame($outcome, $menu->find('route-b')->isOpen());
+        $this->assertSame($outcome, $menu->find('route-c')->isOpen());
+        $this->assertSame($outcome, $menu->find('route-d')->isOpen());
+        $this->assertTrue($menu->find('route-e')->isOpen());
+        $this->assertFalse($menu->find('route-f')->isOpen());
     }
 }
