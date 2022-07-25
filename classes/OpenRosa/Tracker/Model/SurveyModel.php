@@ -20,7 +20,7 @@ namespace OpenRosa\Tracker\Model;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class SurveyModel extends \Gems_Tracker_SurveyModel
+class SurveyModel extends \Gems\Tracker\SurveyModel
 {
     protected $mainTablePrefix = 'orf';
 
@@ -32,18 +32,18 @@ class SurveyModel extends \Gems_Tracker_SurveyModel
      * You get a nested join where a set of rows is placed in the $name field
      * of each row of the parent model.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $joins The join fields for the sub model
      * @param string $name Optional 'field' name, otherwise model name is used
-     * @return \MUtil_Model_Transform_NestedTransformer The added transformer
+     * @return \MUtil\Model\Transform\NestedTransformer The added transformer
      */
-    public function addListModel(\MUtil_Model_ModelAbstract $model, array $joins, $name = null)
+    public function addListModel(\MUtil\Model\ModelAbstract $model, array $joins, $name = null)
     {
         if (null === $name) {
             $name = $model->getName();
         }
 
-        $trans = new \MUtil_Model_Transform_NestedTransformer();
+        $trans = new \MUtil\Model\Transform\NestedTransformer();
         $trans->skipSave = true;
         $trans->addModel($model, $joins);
 
@@ -51,7 +51,7 @@ class SurveyModel extends \Gems_Tracker_SurveyModel
         $this->set($name,
             'model', $model,
             'elementClass', 'FormTable',
-            'type', \MUtil_Model::TYPE_CHILD_MODEL
+            'type', \MUtil\Model::TYPE_CHILD_MODEL
         );
 
         $bridge = $model->getBridgeFor('table');
@@ -66,18 +66,18 @@ class SurveyModel extends \Gems_Tracker_SurveyModel
      * You get a nested join where a set of rows is placed in the $name field
      * of each row of the parent model.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $joins The join fields for the sub model
      * @param string $name Optional 'field' name, otherwise model name is used
-     * @return \MUtil_Model_Transform_NestedTransformer The added transformer
+     * @return \MUtil\Model\Transform\NestedTransformer The added transformer
      */
-    public function addModel(\MUtil_Model_ModelAbstract $model, array $joins, $name = null)
+    public function addModel(\MUtil\Model\ModelAbstract $model, array $joins, $name = null)
     {
         if (null === $name) {
             $name = $model->getName();
         }
 
-        $trans = new \MUtil_Model_Transform_NestedTransformer();
+        $trans = new \MUtil\Model\Transform\NestedTransformer();
         $trans->skipSave = true;
         $trans->addModel($model, $joins);
 
@@ -85,7 +85,7 @@ class SurveyModel extends \Gems_Tracker_SurveyModel
         $this->set($name,
             'model', $model,
             'elementClass', 'FormTable',
-            'type', \MUtil_Model::TYPE_CHILD_MODEL
+            'type', \MUtil\Model::TYPE_CHILD_MODEL
         );
 
         $bridge = $model->getBridgeFor('table');
@@ -144,7 +144,7 @@ class SurveyModel extends \Gems_Tracker_SurveyModel
         }
 
         if (!isset($row['gto_completion_time']) || $row['gto_completion_time']) {
-            $row['gto_completion_time'] = new \MUtil_Date;
+            $row['gto_completion_time'] = new \MUtil\Date;
         }
 
         $row = parent::processBeforeSave($row);

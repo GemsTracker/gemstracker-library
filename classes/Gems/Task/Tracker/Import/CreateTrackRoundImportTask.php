@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CreateTrackRoundImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -23,11 +22,11 @@ use Gems\Tracker\Engine\FieldsDefinition;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 18, 2016 7:34:00 PM
  */
-class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
+class CreateTrackRoundImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -164,8 +163,8 @@ class CreateTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         }        
         if (isset($roundData[$validSource], $roundData[$validField])) {
             switch ($roundData[$validSource]) {
-                case \Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE:
-                case \Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE:
+                case \Gems\Tracker\Engine\StepEngineAbstract::APPOINTMENT_TABLE:
+                case \Gems\Tracker\Engine\StepEngineAbstract::RESPONDENT_TRACK_TABLE:
                     if (isset($this->_fieldCodes[$roundData[$validField]])) {
                         $roundData[$validField] = $this->_fieldCodes[$roundData[$validField]];
                     }

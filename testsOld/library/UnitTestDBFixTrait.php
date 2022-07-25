@@ -17,7 +17,7 @@ trait UnitTestDBFixTrait {
         foreach ($this->getDateFields() as $name => $type) {
             switch ($type) {
                 case 'date':
-                    $finfo['type']          = \MUtil_Model::TYPE_DATE;
+                    $finfo['type']          = \MUtil\Model::TYPE_DATE;
                     $finfo['storageFormat'] = 'yyyy-MM-dd';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));
@@ -25,14 +25,14 @@ trait UnitTestDBFixTrait {
 
                 case 'datetime':
                 case 'timestamp':
-                    $finfo['type']          = \MUtil_Model::TYPE_DATETIME;
+                    $finfo['type']          = \MUtil\Model::TYPE_DATETIME;
                     $finfo['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'time':
-                    $finfo['type']          = \MUtil_Model::TYPE_TIME;
+                    $finfo['type']          = \MUtil\Model::TYPE_TIME;
                     $finfo['storageFormat'] = 'HH:mm:ss';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));

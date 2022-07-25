@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
  * Prepares displays of respondent information
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snippets_MenuSnippetAbstract
+abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippetAbstract
 {
     /**
      * Add the children of the current menu item
@@ -65,27 +67,27 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     protected $model;
 
     /**
      * Optional: href for onclick
      *
-     * @var \MUtil_Html_HrefArrayAttribute
+     * @var \MUtil\Html\HrefArrayAttribute
      */
     protected $onclick;
 
     /**
      * Optional: repeater respondent data
      *
-     * @var \MUtil_Lazy_RepeatableInterface
+     * @var \MUtil\Lazy\RepeatableInterface
      */
     protected $repeater;
 
@@ -99,7 +101,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     /**
      * Optional
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -119,7 +121,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -131,10 +133,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
     /**
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addButtons(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    protected function addButtons(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
         if ($this->showButtons) {
             if ($this->buttons) {
@@ -147,10 +149,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
     /**
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addOnClick(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    protected function addOnClick(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
         if ($this->onclick) {
             $bridge->tbody()->onclick = array('location.href=\'', $this->onclick, '\';');
@@ -160,10 +162,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     /**
      * Place to set the data to display
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    abstract protected function addTableCells(\MUtil_Model_Bridge_VerticalTableBridge $bridge);
+    abstract protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge);
 
     /**
      * Called after the check that all required registry values
@@ -175,7 +177,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
     {
         parent::afterRegistry();
 
-        if (! $this->model instanceof \Gems_Model_RespondentModel) {
+        if (! $this->model instanceof \Gems\Model\RespondentModel) {
             $this->model = $this->loader->getModels()->getRespondentModel(true);
         }
     }
@@ -206,10 +208,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
 
             if ($this->view instanceof \Zend_View) {
                 $url[$this->request->getControllerKey()] = 'respondent';
-                $url[\MUtil_Model::REQUEST_ID1]          = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
-                $url[\MUtil_Model::REQUEST_ID2]          = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+                $url[\MUtil\Model::REQUEST_ID1]          = $this->request->getParam(\MUtil\Model::REQUEST_ID1);
+                $url[\MUtil\Model::REQUEST_ID2]          = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
 
-                // \MUtil_Echo::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
+                // \MUtil\EchoOut\EchoOut::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
                 if ($this->menu->findAllowedController('respondent', 'change-consent')) {
                     $url[$this->request->getActionKey()] = 'change-consent';
                     $urlString = $this->view->url($url);
@@ -220,7 +222,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
                 }
             }
             if ($urlString) {
-                $this->addMessage(\MUtil_Html::create()->a($urlString, $msg));
+                $this->addMessage(\MUtil\Html::create()->a($urlString, $msg));
             } else {
                 $this->addMessage($msg);
             }
@@ -237,7 +239,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      */
     protected function getCaption($onlyNotCurrent = false)
     {
-        $orgId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $orgId = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
         if ($orgId == $this->loader->getCurrentUser()->getCurrentOrganizationId()) {
             if ($onlyNotCurrent) {
                 return;
@@ -255,7 +257,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -279,17 +281,17 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 
-        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $container = \MUtil\Html::create()->div(array('class' => 'table-container'));
         $container[] = $bridge->getTable();
         return $container;
     }
 
     /**
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @return \Gems_Menu_MenuList
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    protected function getMenuList(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
         $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
         $menuList->addParameterSources($bridge);
@@ -316,14 +318,14 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
         if ($this->model) {
-            $this->model->setIfExists('gr2o_email', 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
+            $this->model->setIfExists('gr2o_email', 'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'));
             $this->model->setIfExists('gr2o_comments', 'rowspan', 2);
 
             if ($this->showConsentWarning && $this->model->has('gr2o_consent')) {
@@ -336,7 +338,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends \Gems_Snipp
                 } else {
                     $data = array($this->respondent->getArrayCopy());
 
-                    $this->repeater = \MUtil_Lazy::repeat($data);
+                    $this->repeater = \MUtil\Lazy::repeat($data);
                 }
             }
 

@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ErrorController extends Gems_Default_ErrorAction
+class ErrorController extends \Gems\Actions\ErrorAction
 {
 }

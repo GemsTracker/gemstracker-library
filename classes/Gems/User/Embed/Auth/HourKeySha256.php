@@ -75,11 +75,11 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * Authenticate embedded user
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $secretKey
      * @return bool
      */
-    public function authenticate(\Gems_User_User $user, $secretKey)
+    public function authenticate(\Gems\User\User $user, $secretKey)
     {
         return in_array(
             $this->checkKey($secretKey), 
@@ -127,10 +127,10 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
     /**
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems_User_User $user)
+    public function getExampleKey(\Gems\User\User $user)
     {
         $keys = $this->getValidKeys($user);
 
@@ -143,14 +143,14 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * Return the authentication string for the user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @return string Preferably containing %s
      */
-    protected function getKeysStart(\Gems_User_User $embeddedUser)
+    protected function getKeysStart(\Gems\User\User $embeddedUser)
     {
         $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
 
-        if (! \MUtil_String::contains($key, '%s')) {
+        if (! \MUtil\StringUtil\StringUtil::contains($key, '%s')) {
             $key .= '%s';
         }
 
@@ -159,7 +159,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getLabel()
     {
@@ -171,7 +171,7 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      *
      * @param int $i The "start" interval
      * @return string
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     protected function getTimePeriodString($i = 1)
     {
@@ -200,21 +200,21 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
         }
 
-        throw new \Gems_Exception_Coding("Invalid last keyTimeFormat character '$timeChar' set.");
+        throw new \Gems\Exception\Coding("Invalid last keyTimeFormat character '$timeChar' set.");
     }
 
     /**
      * Return an array of valid key values for this user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @return array
      */
-    public function getValidKeys(\Gems_User_User $embeddedUser)
+    public function getValidKeys(\Gems\User\User $embeddedUser)
     {
         $keyStart = $this->getKeysStart($embeddedUser);
-        // \MUtil_Echo::track($keyStart);
+        // \MUtil\EchoOut\EchoOut::track($keyStart);
 
-        if (! \MUtil_String::contains($keyStart, '%s')) {
+        if (! \MUtil\StringUtil\StringUtil::contains($keyStart, '%s')) {
             return [$keyStart];
         }
 
@@ -229,9 +229,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
         }
 
         if ($this->debug) {
-            \MUtil_Echo::track($keys);
+            \MUtil\EchoOut\EchoOut::track($keys);
         }
-        // \MUtil_Echo::track(hash_algos());
+        // \MUtil\EchoOut\EchoOut::track(hash_algos());
 
         return $keys;
     }

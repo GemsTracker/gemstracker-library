@@ -5,8 +5,9 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Checks a respondentTrack for changes, mostly started by \Gems_Task_ProcessTokenCompletion
@@ -17,10 +18,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_CheckTrackTokens extends \MUtil_Task_TaskAbstract
+class CheckTrackTokens extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

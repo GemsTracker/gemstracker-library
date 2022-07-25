@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AutosearchOrganizationSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Organization;
@@ -21,11 +20,11 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 11-mei-2015 18:35:49
  */
-class AutosearchOrganizationSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class AutosearchOrganizationSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,7 +42,7 @@ class AutosearchOrganizationSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

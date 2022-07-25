@@ -19,10 +19,10 @@ namespace Gems\Task\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 12-Mar-2019 17:47:50
  */
-class UpdateRespondentTask extends \MUtil_Task_TaskAbstract
+class UpdateRespondentTask extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

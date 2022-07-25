@@ -1,19 +1,21 @@
 <?php
 
 /**
- * Description of Gems_UtilTest
+ * Description of \Gems\UtilTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class Gems_UtilTest extends \Gems_Test_TestAbstract
+namespace Gems;
+
+class UtilTest extends \Gems\Test\TestAbstract
 {
     /**
-     * @var Gems_Util
+     * @var \Gems\Util
      */
     protected $object;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -25,7 +27,7 @@ class Gems_UtilTest extends \Gems_Test_TestAbstract
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $settings = $settings->toArray();
         $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-        $project = new \Gems_Project_ProjectSettings($settings);
+        $project = new \Gems\Project\ProjectSettings($settings);
         $this->project = $project;
         $this->loader->addRegistryContainer(array('project' => $project));
         $this->object = $this->loader->getUtil();

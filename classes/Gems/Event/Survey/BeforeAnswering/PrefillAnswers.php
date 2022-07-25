@@ -33,7 +33,7 @@ class PrefillAnswers extends FillBirthDayGender
     protected $prefixLength = 2;
 
     /**
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -51,9 +51,9 @@ class PrefillAnswers extends FillBirthDayGender
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
-    protected function processOutput(\Gems_Tracker_Token $token)
+    protected function processOutput(\Gems\Tracker\Token $token)
     {
         // TF TrackField part
         $this->log("Setting TF track fields");
@@ -79,7 +79,7 @@ class PrefillAnswers extends FillBirthDayGender
         $this->addCheckedValue('rdAge', $respondent->getAge());
         $this->addCheckedValue('rdSex', $respondent->getGender());
         $birthDate = $respondent->getBirthday();
-        if (!is_null($birthDate) && $birthDate instanceof \MUtil_Date) {
+        if (!is_null($birthDate) && $birthDate instanceof \MUtil\Date) {
             $this->addCheckedValue('rdBirthDate', $birthDate->get('yyyy-MM-dd'));
         }
         

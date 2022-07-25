@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Round.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Tracker;
@@ -33,13 +32,13 @@ class Round extends RaObject
 
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $_survey = false;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -122,7 +121,7 @@ class Round extends RaObject
     /**
      * Get the survey id for this round
      *
-     * @return \Gems_Tracker_Survey
+     * @return \Gems\Tracker\Survey
      */
     public function getSurvey()
     {

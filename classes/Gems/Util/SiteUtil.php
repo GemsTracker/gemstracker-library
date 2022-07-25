@@ -31,7 +31,7 @@ class SiteUtil extends UtilAbstract
     protected $overLoader;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -42,7 +42,7 @@ class SiteUtil extends UtilAbstract
      */
     protected function _hostToUrl($host, $basePath)
     {
-        return (\MUtil_Https::on() ? 'https' : 'http') . '://' . $host . $basePath;
+        return (\MUtil\Https::on() ? 'https' : 'http') . '://' . $host . $basePath;
     }
 
     /**
@@ -101,11 +101,11 @@ class SiteUtil extends UtilAbstract
     /**
      * @param false $blockOnCreation
      * @return \Gems\Util\SiteUrl
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     public function getSiteForCurrentUrl($blockOnCreation = false)
     {
-        if (\MUtil_Console::isConsole()) {
+        if (\MUtil\Console::isConsole()) {
             return $this->getConsoleUrl();
         } elseif (\Zend_Session::$_unitTestEnabled) {
             $url = 'https://test.example.site';
@@ -113,7 +113,7 @@ class SiteUtil extends UtilAbstract
 
         } elseif (\Zend_Controller_Front::getInstance()->getResponse() instanceof \Zend_Controller_Request_Abstract) {
             // I found myself trying to do this so here we prefent this the hard way.
-            throw new \Gems_Exception_Coding(
+            throw new \Gems\Exception\Coding(
                 __CLASS__ . '->' . __FUNCTION__ . "() cannot be called before the request object is initialized."
             );
 
@@ -137,7 +137,7 @@ class SiteUtil extends UtilAbstract
                         WHERE ? LIKE CONCAT(gsi_url, '%') 
                         ORDER BY gsi_order, gsi_id";
 
-            // \MUtil_Echo::track(str_replace('?', "'$url'", $sql));
+            // \MUtil\EchoOut\EchoOut::track(str_replace('?', "'$url'", $sql));
             $foundUrl = $this->db->fetchOne($sql, $url);
 
             if ($foundUrl) {
@@ -168,7 +168,7 @@ class SiteUtil extends UtilAbstract
     /**
      * Returns the cron job lock
      *
-     * @return \Gems_Util_LockFile
+     * @return \Gems\Util\LockFile
      */
     public function getSiteLock()
     {
@@ -181,7 +181,7 @@ class SiteUtil extends UtilAbstract
      */
     public function getUsedHost(\Zend_Controller_Request_Abstract $request)
     {
-        return \MUtil_String::stripToHost($request->getServer(
+        return \MUtil\StringUtil\StringUtil::stripToHost($request->getServer(
             'HTTP_ORIGIN',
             $request->getServer(
                 'HTTP_REFERER',
@@ -219,7 +219,7 @@ class SiteUtil extends UtilAbstract
      */
     public function isRequestFromAllowedHost(\Zend_Controller_Request_Abstract $request)
     {
-        if (\MUtil_Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
+        if (\MUtil\Console::isConsole() || \Zend_Session::$_unitTestEnabled) {
             return null;
         }
 
@@ -240,7 +240,7 @@ class SiteUtil extends UtilAbstract
             $hosts[] = $_SERVER['SERVER_NAME'];
         }
         // $hosts[] = 'www.evilsite.com';
-        // \MUtil_Echo::track($hosts);
+        // \MUtil\EchoOut\EchoOut::track($hosts);
         foreach (array_unique($hosts) as $host) {
             $url  = $this->_hostToUrl($host, $basePath);
             $site = $this->getSiteForUrl($url, $isPost);
@@ -262,16 +262,16 @@ class SiteUtil extends UtilAbstract
             // $referrers[] = 'http://www.evilsite.com/';
             // $referrers[] = 'http://www.evilsite.com/pulse/id/1?attack=mode';
             // $referrers[] = 'http://www.evilsite2.com/';
-            //\MUtil_Echo::track($referrers);
+            //\MUtil\EchoOut\EchoOut::track($referrers);
             foreach (array_unique(array_filter($referrers)) as $referrer) {
-                if (!empty($basePath) && !\MUtil_String::contains($referrer, $basePath)) {
+                if (!empty($basePath) && !\MUtil\StringUtil\StringUtil::contains($referrer, $basePath)) {
                     $referrer = rtrim($referrer, '/') . $basePath;
                 }
                 $site = $this->getSiteByFullUrl($referrer, $isPost);
                 if ($site) {
                     if ($site->isNew()) {
                         if ($isPost) {
-                            return \MUtil_String::beforeChars($referrer, '?&<>=');
+                            return \MUtil\StringUtil\StringUtil::beforeChars($referrer, '?&<>=');
                         }
                     } elseif ($site->isBlocked()) {
                         return $site->getUrl();

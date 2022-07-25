@@ -46,7 +46,7 @@ class OrganizationTest extends \PHPUnit_Framework_TestCase
      */
     protected function _getRespondentTrackMock($orgId)
     {
-        $respTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
             ->disableOriginalConstructor()
             ->getMock();
 

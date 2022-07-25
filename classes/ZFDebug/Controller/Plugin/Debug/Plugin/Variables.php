@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -27,7 +26,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Variables extends ZFDebug_Controlle
     protected $_identifier = 'variables';
 
     /**
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $_request;
 
@@ -78,8 +77,8 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Variables extends ZFDebug_Controlle
      */
     public function getPanel()
     {
-        $this->_request = Zend_Controller_Front::getInstance()->getRequest();
-        $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+        $this->_request = \Zend_Controller_Front::getInstance()->getRequest();
+        $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
         if ($viewRenderer->view && method_exists($viewRenderer->view, 'getVars')) {
             $viewVars = $this->_cleanData($viewRenderer->view->getVars());
         } else {
@@ -102,7 +101,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Variables extends ZFDebug_Controlle
         ksort($constants['user']);
         $vars .= '<div id="ZFDebug_constants" style="margin-left:-22px">' . $this->_cleanData($constants['user']) . '</div>';
 
-        $registry = Zend_Registry::getInstance();
+        $registry = \Zend_Registry::getInstance();
         $vars .= '<h4>Zend Registry</h4>';
         $registry->ksort();
         $vars .= '<div id="ZFDebug_registry" style="margin-left:-22px">' . $this->_cleanData($registry) . '</div>';

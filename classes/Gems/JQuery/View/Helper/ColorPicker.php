@@ -6,9 +6,10 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_JQuery_View_Helper_ColorPicker extends \ZendX_JQuery_View_Helper_ColorPicker
+namespace Gems\JQuery\View\Helper;
+
+class ColorPicker extends \ZendX_JQuery_View_Helper_ColorPicker
 {
     public function colorPicker($id, $value='', array $params=array(), array $attribs=array())
     {
@@ -35,7 +36,7 @@ class Gems_JQuery_View_Helper_ColorPicker extends \ZendX_JQuery_View_Helper_Colo
 
         $this->jquery->addOnLoad($js);
 
-        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
+        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath();
         $this->view->headScript()->appendFile($baseUrl . '/gems/spectrum/spectrum.js');
         $this->view->headLink()->appendStylesheet($baseUrl . '/gems/spectrum/spectrum.css');
         //$z = new \Zend_View_Helper_HeadStyle()->append($baseUrl)

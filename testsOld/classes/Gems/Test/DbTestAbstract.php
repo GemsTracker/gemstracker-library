@@ -2,7 +2,7 @@
 
 /**
  *
- * Base test class for Gems object test cases
+ * Base test class for \Gems object test cases
  *
  * @package    Gems
  * @subpackage Test
@@ -10,16 +10,17 @@
  * @license    New BSD License
  */
 
+namespace Gems\Test;
+
 /**
- * Base test class for Gems object test cases that involve a database test
+ * Base test class for \Gems object test cases that involve a database test
  *
  * @package    Gems
  * @subpackage Test
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TestAbstract.php 925 2012-09-05 09:59:13Z mennodekker $
  */
-abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestCase
+abstract class DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestCase
 {
     /**
      *
@@ -38,7 +39,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
     protected $db = null;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader = null;
 
@@ -128,7 +129,7 @@ abstract class Gems_Test_DbTestAbstract extends \Zend_Test_PHPUnit_DatabaseTestC
         $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $timeFormOptions['dateFormat']   = 'HH:mm';
 
-        \MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
+        \MUtil\Model\Bridge\FormBridge::setFixedOptions(array(
                                                             'date'     => $dateFormOptions,
                                                             'datetime' => $datetimeFormOptions,
                                                             'time'     => $timeFormOptions,

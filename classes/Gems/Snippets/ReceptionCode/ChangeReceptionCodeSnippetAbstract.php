@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ChangeReceptionCodeSnippetAbstract.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\ReceptionCode;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\ReceptionCode;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 7-mei-2015 11:17:41
  */
-abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
+abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      * Array of items that should be shown to the user
@@ -53,7 +52,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -86,7 +85,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
     protected $unDeleteRight;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -163,10 +162,10 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
 
         $this->unDelete = $this->isUndeleting();
         $receptionCodes = $this->getReceptionCodes();
-        // \MUtil_Echo::track($this->unDelete, $receptionCodes);
+        // \MUtil\EchoOut\EchoOut::track($this->unDelete, $receptionCodes);
 
         if (! $receptionCodes) {
-            throw new \Gems_Exception($this->_('No reception codes exist.'));
+            throw new \Gems\Exception($this->_('No reception codes exist.'));
         }
 
         if ($this->unDelete) {
@@ -182,9 +181,9 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems_Snippets_ModelFo
         if ($this->fixedReceptionCode) {
             if (! isset($receptionCodes[$this->fixedReceptionCode])) {
                 if ($this->fixedReceptionCode == $this->formData[$this->receptionCodeItem]) {
-                    throw new \Gems_Exception($this->_('Already set to this reception code.'));
+                    throw new \Gems\Exception($this->_('Already set to this reception code.'));
                 } else {
-                    throw new \Gems_Exception(sprintf(
+                    throw new \Gems\Exception(sprintf(
                             $this->_('Reception code %s does not exist.'),
                             $this->fixedReceptionCode
                             ));

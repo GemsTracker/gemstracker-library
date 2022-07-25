@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Token;
 
 /**
  * Checks whether a token kan be used for the ask/forward loop
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract implements \Zend_Validate_Interface
+class TokenValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Validate_Interface
 {
     /**
      *
@@ -50,7 +51,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
 
     /**
      *
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
@@ -70,7 +71,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
     {
         return $this->db instanceof \Zend_Db_Adapter_Abstract &&
                 $this->logger instanceof \Psr\Log\LoggerInterface &&
-                $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
+                $this->tracker instanceof \Gems\Tracker\TrackerInterface &&
                 $this->translate instanceof \Zend_Translate;
     }
 
@@ -132,7 +133,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
 
-            // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
+            // \MUtil\EchoOut\EchoOut::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->logger->error("Possible token brute force attack, throttling for $remainingDelay seconds");
 //                $msg = sprintf("Additional brute force info: url was %s from ip address %s.", $_SERVER['REQUEST_URI'], $this->request->getServer('REMOTE_ADDR'));
@@ -186,7 +187,7 @@ class Gems_Tracker_Token_TokenValidator extends \MUtil_Registry_TargetAbstract i
 
         $token = $this->tracker->getToken($value);
         if ($token && $token->exists && $token->getReceptionCode()->isSuccess()) {
-            $currentDate = new \MUtil_Date();
+            $currentDate = new \MUtil\Date();
 
             if ($completionTime = $token->getCompletionTime()) {
                 // Reuse means a user can use an old token to check for new surveys

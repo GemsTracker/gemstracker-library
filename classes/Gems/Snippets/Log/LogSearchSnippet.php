@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogSearchSnippet.php $
  */
 
 namespace Gems\Snippets\Log;
@@ -27,7 +26,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

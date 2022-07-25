@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
+class StaffMailer extends \Gems\Mail\MailerAbstract
 {
     /**
      *
@@ -27,7 +29,7 @@ class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
     public $dataLoaded;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -55,7 +57,7 @@ class Gems_Mail_StaffMailer extends \Gems_Mail_MailerAbstract
     protected $staffId;
 
     /**
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $user;
 

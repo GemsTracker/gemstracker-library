@@ -1,34 +1,36 @@
 <?php
 
-class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
+namespace Gems\Model;
+
+class EncryptedFieldModelTest extends MUtil\Model_AbstractModelTest
 {
     /**
      *
-     * @var MUtil_Model_TableModel
+     * @var \MUtil\Model\TableModel
      */
     private $_model;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     private $project;
 
     /**
      * Create the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function getModel()
     {
         if (! $this->_model) {
-            $this->_model = new MUtil_Model_TableModel('t1');
+            $this->_model = new MUtil\Model\TableModel('t1');
 
-            $settings = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+            $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
             $settings = $settings->toArray();
             $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-            $this->project  = new Gems_Project_ProjectSettings($settings);
-            $encryptedField = new Gems_Model_Type_EncryptedField($this->project, false);
+            $this->project  = new Gems\Project\ProjectSettings($settings);
+            $encryptedField = new Gems\Model\Type\EncryptedField($this->project, false);
             $encryptedField->apply($this->_model, 'c1');
         }
 
@@ -79,7 +81,7 @@ class Gems_Model_EncryptedFieldModelTest extends MUtil_Model_AbstractModelTest
         $result = $model->save(array('id' => null, 'c1' => "myvisiblepassword", 'c2' => "myvisiblepassword"));
         $this->assertEquals(2, $result['id']);
 
-        $model->remove('c1', \MUtil_Model_ModelAbstract::LOAD_TRANSFORMER);
+        $model->remove('c1', \MUtil\Model\ModelAbstract::LOAD_TRANSFORMER);
         $row = $model->loadFirst(array('id'=>2));
         $this->assertNotEquals($row['c1'], $row['c2']);
     }

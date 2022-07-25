@@ -19,7 +19,7 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:03:26
  */
-abstract class RedirectAbstract extends \MUtil_Translate_TranslateableAbstract implements RedirectInterface
+abstract class RedirectAbstract extends \MUtil\Translate\TranslateableAbstract implements RedirectInterface
 {
     /**
      * @var \Zend_Controller_Request_Abstract
@@ -28,14 +28,14 @@ abstract class RedirectAbstract extends \MUtil_Translate_TranslateableAbstract i
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     // abstract public function getLabel();
 
     /**
      * @return array redirect route
      */
-    // abstract public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations);
+    // abstract public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations);
 
     public function setRequest(\Zend_Controller_Request_Abstract $request)
     {

@@ -143,11 +143,11 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
      *
      * This is the actual implementation of the condition
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
     {
         $minAge  = $this->_data['gcon_condition_text2'];
         $ageUnit = $this->_data['gcon_condition_text3'];
@@ -160,7 +160,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
         }
         switch ($this->_data['gcon_condition_text1']) {
             case 'NOW':
-                $validFrom = new \MUtil_Date();
+                $validFrom = new \MUtil\Date();
                 break;
             case 'TS':
             default:

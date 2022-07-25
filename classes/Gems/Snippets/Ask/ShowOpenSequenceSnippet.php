@@ -18,12 +18,12 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class ShowOpenSequenceSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     /**
      * Return a welcome greeting depending on showlastName switch
      *
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function formatWelcome()
     {
@@ -40,7 +40,7 @@ class ShowOpenSequenceSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstra
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -91,7 +91,7 @@ class ShowOpenSequenceSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstra
         return $open + 1;
     }
     
-    public function showLink(\Gems_Tracker_Token $token)
+    public function showLink(\Gems\Tracker\Token $token)
     {
         $href   = $this->getTokenHref($token);
         $html   = $this->getHtmlSequence();

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveyMaintenanceSearchSnippet.php 2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Survey;
@@ -21,10 +20,10 @@ namespace Gems\Snippets\Survey;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 20-feb-2015 13:22:48
  */
-class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -66,7 +65,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
         
-        $elements[] = \MUtil_Html::create('br');
+        $elements[] = \MUtil\Html::create('br');
 
         $warnings     = array(
             'withwarning'              => $this->_('(with warnings)'),
@@ -88,11 +87,11 @@ class SurveyMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippe
         
         $events = $this->loader->getEvents();
         $eList['!Gems_Event_Survey'] = $this->_('(any event)');
-        $eList['!Gems_Event_SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
+        $eList['!Gems\Event\SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
         $eList += $events->listSurveyBeforeAnsweringEvents();
-        $eList['!Gems_Event_SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
+        $eList['!Gems\Event\SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
         $eList += $events->listSurveyCompletionEvents();
-        $eList['!Gems_Event_SurveyDisplayEventInterface'] = $this->_('(any display event)');
+        $eList['!Gems\Event\SurveyDisplayEventInterface'] = $this->_('(any display event)');
         $eList += $events->listSurveyDisplayEvents();
         $elements[] = $this->_createSelectElement('events', $eList, $this->_('(all surveys)'));
 

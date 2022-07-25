@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class LogMaintenanceController extends Gems_Default_LogMaintenanceAction
+class LogMaintenanceController extends \Gems\Actions\LogMaintenanceAction
 {
 }

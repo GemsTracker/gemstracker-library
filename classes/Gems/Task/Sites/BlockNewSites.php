@@ -18,10 +18,10 @@ namespace Gems\Task\Sites;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class BlockNewSites extends \MUtil_Task_TaskAbstract
+class BlockNewSites extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     

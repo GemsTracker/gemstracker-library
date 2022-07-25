@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SelectField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -25,7 +24,7 @@ class SelectField extends FieldAbstract
 {
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

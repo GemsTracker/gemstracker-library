@@ -18,7 +18,7 @@ namespace Gems\Tracker\Model;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class LogFieldDataModel extends \Gems_Model_JoinModel
+class LogFieldDataModel extends \Gems\Model\JoinModel
 {
     /**
      * LogFieldDataModel constructor.

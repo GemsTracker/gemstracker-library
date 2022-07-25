@@ -1,4 +1,4 @@
 <?php
 
-class PrivilegesController extends Gems_Default_PrivilegesAction
+class PrivilegesController extends \Gems\Actions\PrivilegesAction
 { }

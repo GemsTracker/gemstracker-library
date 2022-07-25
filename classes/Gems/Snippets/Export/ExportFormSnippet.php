@@ -4,17 +4,17 @@ namespace Gems\Snippets\Export;
 
 use MUtil\Snippets\SnippetAbstract;
 
-class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
+class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Export
+     * @var \Gems\Export
      */
     protected $export;
 
@@ -46,7 +46,7 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
             $currentType = key($this->exportClasses);
         }
 
-        $form = new \Gems_Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
+        $form = new \Gems\Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
 
         $url = $view->url() . '/step/batch';
         $form->setAction($url);
@@ -77,10 +77,10 @@ class ExportFormSnippet extends \MUtil_Snippets_SnippetAbstract
             $form->populate($post);
         }
 
-        $container = \MUtil_Html::div(array('id' => 'export-form'));
+        $container = \MUtil\Html::div(array('id' => 'export-form'));
         $container->append($form);
         $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => $this->request->getActionName())), 'export-form', true);
+        $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->request->getActionName())), 'export-form', true);
 
         return $container;
     }

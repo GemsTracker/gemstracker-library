@@ -57,7 +57,7 @@ class Contains extends ComparatorAbstract
     public function isValid($value)
     {
         foreach ((array) $value as $val) {
-            if (\MUtil_String::contains($val, $this->_options[0])) {
+            if (\MUtil\StringUtil\StringUtil::contains($val, $this->_options[0])) {
                 return true;
             }
         }

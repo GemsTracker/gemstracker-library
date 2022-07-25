@@ -21,7 +21,7 @@ use MUtil\Util\MonitorJob;
  * @license    New BSD License
  * @since      Class available since version 1.8.3
  */
-class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
+class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     public $caption;
     
@@ -68,8 +68,8 @@ class MonitorSnippet extends \MUtil_Snippets_SnippetAbstract
         if (empty($data)) {
             $seq[] = sprintf($this->_('No monitorjob found for %s'), $this->monitorJob->getName());
         } else {
-            $tableContainer   = \MUtil_Html::create()->div(array('class' => 'table-container'));
-            $table            = \MUtil_Html_TableElement::createArray($data, $this->caption);
+            $tableContainer   = \MUtil\Html::create()->div(array('class' => 'table-container'));
+            $table            = \MUtil\Html\TableElement::createArray($data, $this->caption);
             $table->class     = 'browser table';
             $tableContainer[] = $table;
             $seq[]            = $tableContainer;

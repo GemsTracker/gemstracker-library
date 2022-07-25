@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Task\Updates;
+
 /**
  *
  *
@@ -19,7 +21,7 @@
  * @since      Class available since version 1.6.3  19-feb-2014 20:42:40
  * @deprecated since version 1.9.1 After cleanup of old version upgrades            
  */
-class Gems_Task_Updates_UpdateRoleIds extends \MUtil_Task_TaskAbstract
+class UpdateRoleIds extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -34,10 +36,10 @@ class Gems_Task_Updates_UpdateRoleIds extends \MUtil_Task_TaskAbstract
      */
     public function execute()
     {
-        $role    = \Gems_Roles::getInstance();
+        $role    = \Gems\Roles::getInstance();
         $parents = $this->db->fetchPairs("SELECT grl_id_role, grl_parents FROM gems__roles");
         
-        // \MUtil_Echo::track($parents);
+        // \MUtil\EchoOut\EchoOut::track($parents);
         if ($parents) {
             foreach ($parents as $id => $priv) {
                 $values['grl_parents'] = implode(',', $role->translateToRoleIds($priv));

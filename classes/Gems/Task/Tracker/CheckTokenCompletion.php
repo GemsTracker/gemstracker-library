@@ -4,8 +4,9 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Check token completion in a batch job
@@ -19,22 +20,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
+class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -61,7 +62,7 @@ class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
         $wasAnswered = $token->isCompleted();
 
         if ($result = $token->checkTokenCompletion($userId)) {
-            if ($result & \Gems_Tracker_Token::COMPLETION_DATACHANGE) {
+            if ($result & \Gems\Tracker\Token::COMPLETION_DATACHANGE) {
                 $i = $batch->addToCounter('resultDataChanges');
                 $batch->setMessage('resultDataChanges', sprintf(
                         $this->_('Results and timing changed for %d tokens.'),
@@ -88,7 +89,7 @@ class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
                         );
 
             }
-            if ($result & \Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
+            if ($result & \Gems\Tracker\Token::COMPLETION_EVENTCHANGE) {
                 $i = $batch->addToCounter('surveyCompletionChanges');
                 $batch->setMessage('surveyCompletionChanges', sprintf(
                         $this->_('Answers changed by survey completion event for %d tokens.'),
@@ -98,7 +99,7 @@ class Gems_Task_Tracker_CheckTokenCompletion extends \MUtil_Task_TaskAbstract
         }
 
         if ($token->isCompleted()) {
-            $batch->setTask('Tracker_ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
+            $batch->setTask('Tracker\\ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
         }
 
         $batch->setMessage('checkedTokens', sprintf(

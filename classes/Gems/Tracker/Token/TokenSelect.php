@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Token;
+
 /**
  * Helps building select statements for the Token model
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Token_TokenSelect
+class TokenSelect
 {
     /**
      *
@@ -34,7 +36,7 @@ class Gems_Tracker_Token_TokenSelect
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -43,7 +45,7 @@ class Gems_Tracker_Token_TokenSelect
      * @param \Zend_Db_Adapter_Abstract $db Adapter to use
      * @param string|array $fields Optional select fieldlist
      */
-    public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*", \Gems_Util $util)
+    public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*", \Gems\Util $util)
     {
         $this->db   = $db;
         $this->util = $util;
@@ -102,7 +104,7 @@ class Gems_Tracker_Token_TokenSelect
      * Add consent descriptions to the select statement
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andConsents($fields = '*') 
     {
@@ -118,7 +120,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @param string|array $fields
      * @param bool   $addStatus When true the token status column is added (default)
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      * @throws \Zend_Db_Select_Exception
      */
     public function andReceptionCodes($fields = '*', $addStatus = true)
@@ -138,7 +140,7 @@ class Gems_Tracker_Token_TokenSelect
      * Add Respondent info to the select statement
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andRespondents($fields = '*') 
     {
@@ -153,7 +155,7 @@ class Gems_Tracker_Token_TokenSelect
      * Add RespondentOrganization info to the select statement
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andRespondentOrganizations($fields = '*') 
     {
@@ -169,7 +171,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @param string|array $fields
      * @param boolean $groupBy Optional, add these fields to group by statement
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andRespondentTracks($fields = '*', $groupBy = false) 
     {
@@ -188,7 +190,7 @@ class Gems_Tracker_Token_TokenSelect
      * Adds round info to the select statement
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andRounds($fields = '*') 
     {
@@ -203,7 +205,7 @@ class Gems_Tracker_Token_TokenSelect
      * Add survey info to the select statement
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andSurveys($fields = '*') 
     {
@@ -219,7 +221,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @param string|array $fields
      * @param boolean $groupBy Optional, add these fields to group by statement
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function andTracks($fields = '*', $groupBy = false)
     {
@@ -265,8 +267,8 @@ class Gems_Tracker_Token_TokenSelect
     /**
      * Select only a specific group
      *
-     * @param int $groupId Gems group id
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @param int $groupId \Gems group id
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forGroupId($groupId) {
 
@@ -281,7 +283,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select the token before the current token
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forNextTokenId($tokenId)
     {
@@ -304,7 +306,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select the token before the current token
      *
      * @param string|array $fields
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forPreviousTokenId($tokenId) {
         $this->sql_select->join('gems__tokens as ct',
@@ -327,7 +329,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @param string $respondentId
      * @param string $organizationId Optional
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forRespondent($respondentId, $organizationId = null) 
     {
@@ -345,7 +347,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select only for a specific Respondent Track ID
      *
      * @param int $respTrackId Respondent Track ID
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forRespondentTrack($respTrackId) 
     {
@@ -361,7 +363,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select only for a specific Round ID
      *
      * @param int $roundId Round ID
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forRound($roundId) 
     {
@@ -374,7 +376,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select only a specific surveyId
      *
      * @param string $surveyId
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forSurveyCode($surveyCode) 
     {
@@ -387,7 +389,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select only a specific surveyId
      *
      * @param string $surveyId
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forSurveyId($surveyId) 
     {
@@ -400,7 +402,7 @@ class Gems_Tracker_Token_TokenSelect
      * Select only a specific tokenId
      *
      * @param string $tokenId
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forTokenId($tokenId) 
     {
@@ -414,7 +416,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * @param string $cond SQL Where condition.
      * @param mixed $bind optional bind values
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function forWhere($cond, $bind = null)
     {
@@ -439,7 +441,7 @@ class Gems_Tracker_Token_TokenSelect
      * Active is token already in surveyor and completiondate is null
      *
      * @param boolean $recentCheck Check only tokens with recent gto_start_time's
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function onlyActive($recentCheck = false) 
     {
@@ -460,7 +462,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * Comleted is token has a completiondate
      *
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function onlyCompleted() 
     {
@@ -473,7 +475,7 @@ class Gems_Tracker_Token_TokenSelect
     /**
      * Select tokens with receptioncodes with the success status 1
      *
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function onlySucces()
     {
@@ -487,7 +489,7 @@ class Gems_Tracker_Token_TokenSelect
      *
      * Not answered, and valid_from/to in right range
      *
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function onlyValid() 
     {
@@ -501,7 +503,7 @@ class Gems_Tracker_Token_TokenSelect
     /**
      *
      * @param mixed $spec The column(s) and direction to order by.
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function order($spec)
     {
@@ -514,7 +516,7 @@ class Gems_Tracker_Token_TokenSelect
      * Do not select the current token
      *
      * @param string $tokenId
-     * @return \Gems_Tracker_Token_TokenSelect
+     * @return \Gems\Tracker\Token\TokenSelect
      */
     public function withoutToken($tokenId) 
     {

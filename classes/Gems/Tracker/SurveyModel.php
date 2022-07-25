@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker;
+
 use Gems\Tracker\Model\AddAnswersTransformer;
 
 /**
@@ -20,7 +22,7 @@ use Gems\Tracker\Model\AddAnswersTransformer;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
+class SurveyModel extends \Gems\Model\JoinModel
 {
     /**
      * Constant containing css classname for main questions
@@ -34,22 +36,22 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Tracker_Source_SourceInterface
+     * @var \Gems\Tracker\Source\SourceInterface
      */
     protected $source;
 
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $survey;
 
     /**
      *
-     * @param \Gems_Tracker_Survey $survey
-     * @param \Gems_Tracker_Source_SourceInterface $source
+     * @param \Gems\Tracker\Survey $survey
+     * @param \Gems\Tracker\Source\SourceInterface $source
      */
-    public function __construct(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source)
+    public function __construct(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
 
@@ -65,13 +67,13 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
         // Add relation itself
         $this->addLeftTable('gems__respondent_relations', array('gto_id_relation' => 'grr_id', 'gto_id_respondent' => 'grr_id_respondent'));
 
-        $this->addColumn(new Zend_Db_Expr(
+        $this->addColumn(new \Zend_Db_Expr(
                 'CONCAT_WS(" ", gems__respondent_relations.grr_first_name, gems__respondent_relations.grr_last_name)'
                 ), 'grr_name');
-        $this->addColumn(new Zend_Db_Expr(
+        $this->addColumn(new \Zend_Db_Expr(
                 'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END'
                 ), 'can_be_taken');
-        $this->addColumn(new Zend_Db_Expr(
+        $this->addColumn(new \Zend_Db_Expr(
                 "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END"
                 ), 'row_class');
 
@@ -93,7 +95,7 @@ class Gems_Tracker_SurveyModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @return \Gems_Tracker_Survey
+     * @return \Gems\Tracker\Survey
      */
     public function getSurvey()
     {

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Adds basic token editing snippet parameter processing and checking.
@@ -21,12 +22,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
+abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,7 +44,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
      *
      * The token shown
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -70,13 +71,13 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
         $model = $this->token->getModel();
 
-        if ($model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+        if ($model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model->addEditTracking();
 
             if ($this->createData) {
@@ -93,7 +94,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -129,7 +130,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -139,7 +140,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends \Gems_Snip
             if ($this->token) {
                 $this->tokenId = $this->token->getTokenId();
             } elseif ($this->request) {
-                $this->tokenId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+                $this->tokenId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
             }
         }
 

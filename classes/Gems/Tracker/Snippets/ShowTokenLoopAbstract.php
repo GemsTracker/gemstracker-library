@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Snippets;
+
 /**
  * Basic class for creating forward loop snippets
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_SnippetAbstract
+class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
 {
     const CONTINUE_LATER_PARAM = 'continueLater';
 
@@ -35,13 +37,13 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -74,13 +76,13 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Required, the current token, possibly already answered
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -99,17 +101,17 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     protected $wasAnswered;
 
     /**
-     * @param \MUtil_Html_HtmlInterface $html
-     * @param \Gems_Tracker_Token|null  $token
+     * @param \MUtil\Html\HtmlInterface $html
+     * @param \Gems\Tracker\Token|null  $token
      */
-    public function addContinueLink(\MUtil_Html_HtmlInterface $html, \Gems_Tracker_Token $token = null)
+    public function addContinueLink(\MUtil\Html\HtmlInterface $html, \Gems\Tracker\Token $token = null)
     {
         if (null == $token) {
             $token = $this->token;
         }
         if (! $token->isCompleted()) {
             $mailLoader = $this->loader->getMailLoader();
-            /** @var \Gems_Mail_TokenMailer $mailer */
+            /** @var \Gems\Mail\TokenMailer $mailer */
             $mailer     = $mailLoader->getMailer('token', $token->getTokenId());
             $orgEmail   = $token->getOrganization()->getFrom();
             $respEmail  = $token->getEmail();
@@ -136,7 +138,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Handle the situation when the continue later link was clicked
      *
-     * @return \MUtil_Html_HtmlInterface
+     * @return \MUtil\Html\HtmlInterface
      */
     public function continueClicked()
     {
@@ -152,12 +154,12 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         $html->h3($this->getHeaderLabel());
 
         $mailLoader = $this->loader->getMailLoader();
-        /** @var \Gems_Mail_TokenMailer $mail */
+        /** @var \Gems\Mail\TokenMailer $mail */
         $mail       = $mailLoader->getMailer('token', $token->getTokenId());
         $mail->setFrom($token->getOrganization()->getFrom());
         
         if ($mail->setTemplateByCode('continue')) {
-            $lastMailedDate = \MUtil_Date::ifDate($token->getMailSentDate(), 'yyyy-MM-dd');
+            $lastMailedDate = \MUtil\Date::ifDate($token->getMailSentDate(), 'yyyy-MM-dd');
 
             // Do not send multiple mails a day
             if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
@@ -188,7 +190,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         if(! $this->tracker) {
             $this->tracker = $this->loader->getTracker();
         }
-        if ($this->token instanceof \Gems_Tracker_Token) {
+        if ($this->token instanceof \Gems\Tracker\Token) {
 
             $this->wasAnswered = $this->token->isCompleted();
 
@@ -203,10 +205,10 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Formats an completion date for this display
      *
-     * @param \MUtil_Date $dateTime
+     * @param \MUtil\Date $dateTime
      * @return string
      */
-    public function formatCompletion(\MUtil_Date $dateTime)
+    public function formatCompletion(\MUtil\Date $dateTime)
     {
         $days = abs($dateTime->diffDays());
 
@@ -244,21 +246,21 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Return a no further questions statement (or nothing) 
      *
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function formatNoFurtherQuestions()
     {
-        return \MUtil_Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));    
+        return \MUtil\Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));    
     }
 
     /**
      * Return a thanks greeting depending on showlastName switch
      * 
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function formatThanks() 
     {
-        $output = \MUtil_Html::create('pInfo'); 
+        $output = \MUtil\Html::create('pInfo'); 
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
             $output->sprintf($this->_('Thank you %s,'), $this->token->getRespondentName());
@@ -271,10 +273,10 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Formats an until date for this display
      *
-     * @param \MUtil_Date $dateTime
+     * @param \MUtil\Date $dateTime
      * @return string
      */
-    public function formatUntil(\MUtil_Date $dateTime = null)
+    public function formatUntil(\MUtil\Date $dateTime = null)
     {
         if (false === $this->showUntil) { return; }
         
@@ -287,14 +289,14 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         switch ($days) {
             case 0:
                 return [
-                    \MUtil_Html::create('strong', $this->_('Warning!!!')),
+                    \MUtil\Html::create('strong', $this->_('Warning!!!')),
                     ' ',
                     $this->_('This survey must be answered today!')
                     ];
 
             case 1:
                 return [
-                    \MUtil_Html::create('strong', $this->_('Warning!!')),
+                    \MUtil\Html::create('strong', $this->_('Warning!!')),
                     ' ',
                     $this->_('This survey can only be answered until tomorrow!')
                     ];
@@ -318,11 +320,11 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Return a welcome greeting depending on showlastName switch
      *
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function formatWelcome()
     {
-        $output = \MUtil_Html::create('pInfo');
+        $output = \MUtil\Html::create('pInfo');
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
             $output->sprintf($this->_('Welcome %s,'), $this->token->getRespondentName());
@@ -332,7 +334,7 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
         if ($this->token->hasRelation() && $this->showLastName) {
             return [
                 $output,
-                \MUtil_Html::create('pInfo', sprintf(
+                \MUtil\Html::create('pInfo', sprintf(
                     $this->_('We kindly ask you to answer a survey about %s.'), 
                     $this->token->getRespondent()->getName()
                 ))];
@@ -351,27 +353,27 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends \MUtil_Snippets_Snippe
     /**
      * Get the href for a token
      *
-     * @param \Gems_Tracker_Token $token
-     * @return \MUtil_Html_HrefArrayAttribute
+     * @param \Gems\Tracker\Token $token
+     * @return \MUtil\Html\HrefArrayAttribute
      */
-    protected function getTokenHref(\Gems_Tracker_Token $token)
+    protected function getTokenHref(\Gems\Tracker\Token $token)
     {
         /***************
          * Get the url *
          ***************/
         $params = array(
             $this->request->getActionKey() => 'to-survey',
-            \MUtil_Model::REQUEST_ID        => $token->getTokenId(),
+            \MUtil\Model::REQUEST_ID        => $token->getTokenId(),
             'RouteReset'                   => false,
             );
 
-        return new \MUtil_Html_HrefArrayAttribute($params);
+        return new \MUtil\Html\HrefArrayAttribute($params);
     }
 
     /**
      * The last token was answered, there are no more tokens to answer
      *
-     * @return \MUtil_Html_HtmlInterface
+     * @return \MUtil\Html\HtmlInterface
      */
     public function lastCompleted()
     {

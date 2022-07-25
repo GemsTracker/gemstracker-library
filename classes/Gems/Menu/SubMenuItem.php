@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Menu;
+
 /**
  * Sub menu items are all menu items except the main Menu item.
  *
@@ -25,15 +27,15 @@
  *
  * The parameter values must be supplied when requesting to
  * draw a menu item. Valid sources for parameter values are:
- * - \Gems_Menu_ParameterSourceInterface objects
+ * - \Gems\Menu\ParameterSourceInterface objects
  * - \Zend_Controller_Request_Abstract objects
- * - \MUtil_Lazy_RepeatableInterface objects
+ * - \MUtil\Lazy\RepeatableInterface objects
  * - array's
  *
  * Button items are only displayed through toActionLink()
  *
- * @see \Gems_Menu
- * @see \Gems_Menu_ParameterSourceInterface
+ * @see \Gems\Menu
+ * @see \Gems\Menu\ParameterSourceInterface
  *
  * @package    Gems
  * @subpackage Menu
@@ -41,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
+class SubMenuItem extends \Gems\Menu\MenuAbstract
 {
     private $_hiddenOrgId;
     private $_hiddenParameters = array();  // Added to $request by applyHiddenParameters
@@ -51,7 +53,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     private $_parent;
     private $_requiredParameters = array();
 
-    public function __construct(\Gems_Menu_MenuAbstract $parent, array $options)
+    public function __construct(\Gems\Menu\MenuAbstract $parent, array $options)
     {
         parent::__construct();
 
@@ -76,38 +78,38 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Return true when then $source does NOT contain all items in the parameterFilter
      *
-     * @param \Gems_Menu_ParameterCollector $source
+     * @param \Gems\Menu\ParameterCollector $source
      * @param boolean $raiseConditions
      * @param mixed $condition
      * @return boolean
      */
-    private function _applyParameterFilter(\Gems_Menu_ParameterCollector $source, $raiseConditions, &$condition)
+    private function _applyParameterFilter(\Gems\Menu\ParameterCollector $source, $raiseConditions, &$condition)
     {
         foreach ($this->_parameterFilter as $name => $testValue) {
             $paramValue = $source->getMenuParameter($name);
             $testValue  = (array) $testValue;
 
-            if ($paramValue instanceof \MUtil_Lazy_LazyInterface) {
+            if ($paramValue instanceof \MUtil\Lazy\LazyInterface) {
                 if (!$raiseConditions) {
-                    $newCondition = new \MUtil_Lazy_Call('in_array', array($paramValue, $testValue));
-                    if ($condition instanceof \MUtil_Lazy_LazyInterface) {
-                        if ($condition instanceof \MUtil_Lazy_LazyAnd) {
+                    $newCondition = new \MUtil\Lazy\Call('in_array', array($paramValue, $testValue));
+                    if ($condition instanceof \MUtil\Lazy\LazyInterface) {
+                        if ($condition instanceof \MUtil\Lazy\LazyAnd) {
                             $condition->add($newCondition);
                         } else {
-                            $condition = new \MUtil_Lazy_LazyAnd($condition, $newCondition);
+                            $condition = new \MUtil\Lazy\LazyAnd($condition, $newCondition);
                         }
                     } else {
                         $condition = $newCondition;
                     }
                     continue;
                 }
-                $paramValue = \MUtil_Lazy::rise($paramValue);
+                $paramValue = \MUtil\Lazy::rise($paramValue);
             }
 
             if (!in_array($paramValue, $testValue)) {
-                if (\Gems_Menu::$verbose) {
+                if (\Gems\Menu::$verbose) {
                     // Mutil_Echo::backtrace();
-                    \MUtil_Echo::r($name . ' => ' . print_r($testValue,true) . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                    \MUtil\EchoOut\EchoOut::r($name . ' => ' . print_r($testValue,true) . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                 }
                 return true;
             }
@@ -116,13 +118,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return false;
     }
 
-    private function _applyParameterSource(\Gems_Menu_ParameterCollector $source, array &$parameters)
+    private function _applyParameterSource(\Gems\Menu\ParameterCollector $source, array &$parameters)
     {
         // Fill in required parameters
         foreach ($this->_parameters as $param => $name) {
             $parameters[$param] = $source->getMenuParameter($name, $param);
-            if (\Gems_Menu::$verbose) {
-                \MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
+            if (\Gems\Menu::$verbose) {
+                \MUtil\EchoOut\EchoOut::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
             }
         }
     }
@@ -131,15 +133,15 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * A function that determines the parameters that this menu item should have using these paramter
      * sources.
      *
-     * @param \Gems_Menu_ParameterCollector $source A source of parameter values
+     * @param \Gems\Menu\ParameterCollector $source A source of parameter values
      * @param array $parameters A usually empty array of parameters that is filled from the sources
      * @param boolean $raiseConditions When true, no lazyness is returned
      * @return boolean Or lazy condition. When true menu item is enabled otherwise false
      */
-    private function _applyParameterSources(\Gems_Menu_ParameterCollector $source, array &$parameters, $raiseConditions)
+    private function _applyParameterSources(\Gems\Menu\ParameterCollector $source, array &$parameters, $raiseConditions)
     {
-        // \Gems_Menu::$verbose = true;
-        // \MUtil_Echo::r($this->get('label'));
+        // \Gems\Menu::$verbose = true;
+        // \MUtil\EchoOut\EchoOut::r($this->get('label'));
         $condition = true;
 
         if ($this->_applyParameterFilter($source, $raiseConditions, $condition)) {
@@ -150,9 +152,9 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         // Test required parameters
         foreach ($this->_requiredParameters as $param => $name) {
             if (! isset($parameters[$param])) {
-                if (\Gems_Menu::$verbose) {
-                    // \MUtil_Echo::backtrace();
-                    \MUtil_Echo::r('<b>Not found:</b> ' . $param . '/' . $name, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                if (\Gems\Menu::$verbose) {
+                    // \MUtil\EchoOut\EchoOut::backtrace();
+                    \MUtil\EchoOut\EchoOut::r('<b>Not found:</b> ' . $param . '/' . $name, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                 }
                 return false;
             }
@@ -160,10 +162,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
         if ($this->_hiddenOrgId && $raiseConditions) {
             // Remove org parameter that should remain hidden when conditions have been raised.
-            if (isset($parameters[\MUtil_Model::REQUEST_ID1], $parameters[\MUtil_Model::REQUEST_ID2]) &&
-                    ($parameters[\MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
-                $parameters[\MUtil_Model::REQUEST_ID] = $parameters[\MUtil_Model::REQUEST_ID1];
-                unset($parameters[\MUtil_Model::REQUEST_ID1], $parameters[\MUtil_Model::REQUEST_ID2]);
+            if (isset($parameters[\MUtil\Model::REQUEST_ID1], $parameters[\MUtil\Model::REQUEST_ID2]) &&
+                    ($parameters[\MUtil\Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
+                $parameters[\MUtil\Model::REQUEST_ID] = $parameters[\MUtil\Model::REQUEST_ID1];
+                unset($parameters[\MUtil\Model::REQUEST_ID1], $parameters[\MUtil\Model::REQUEST_ID2]);
             }
         }
 
@@ -173,11 +175,11 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Generate a hrf attribute using these sources
      *
-     * @param \Gems_Menu_ParameterCollector $source A parameter source collection
+     * @param \Gems\Menu\ParameterCollector $source A parameter source collection
      * @param boolean $condition When true the system may create a Lazy condition for the url
-     * @return \MUtil_Html_HrefArrayAttribute
+     * @return \MUtil\Html\HrefArrayAttribute
      */
-    private function _toHRef(\Gems_Menu_ParameterCollector $source, &$condition)
+    private function _toHRef(\Gems\Menu\ParameterCollector $source, &$condition)
     {
         if ($this->get('allowed')) {
             $parameters = array();
@@ -185,19 +187,19 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             if ($condition = $this->_applyParameterSources($source, $parameters, ! $condition)) {
 
                 if ($this->_hiddenOrgId) {
-                    $url = new \Gems_Menu_HiddenOrganizationHrefAttribute($parameters);
+                    $url = new \Gems\Menu\HiddenOrganizationHrefAttribute($parameters);
                     $url->setHiddenOrgId($this->_hiddenOrgId);
                 } else {
-                    $url = new \MUtil_Html_HrefArrayAttribute($parameters);
+                    $url = new \MUtil\Html\HrefArrayAttribute($parameters);
                 }
                 $url->setRouteReset($this->get('reset_param', true));
 
                 foreach (array('module', 'controller', 'action', 'route') as $name) {
                     if ($this->has($name)) {
                         $url->add($name, $this->get($name));
-                        // \MUtil_Echo::r($name . '-' . $this->get($name));
+                        // \MUtil\EchoOut\EchoOut::r($name . '-' . $this->get($name));
                     // } else {
-                        // \MUtil_Echo::r($name);
+                        // \MUtil\EchoOut\EchoOut::r($name);
                     }
                 }
                 return $url;
@@ -205,11 +207,11 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         }
     }
 
-    private function _toLi(\Gems_Menu_ParameterCollector $source)
+    private function _toLi(\Gems\Menu\ParameterCollector $source)
     {
         $condition = false;
         if ($href = $this->_toHRef($source, $condition)) {
-            $li = \MUtil_Html::create()->li();
+            $li = \MUtil\Html::create()->li();
 
             $li->a($href, $this->get('label'));
 
@@ -221,10 +223,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * Returns a \Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
-     * @param \Gems_Menu_ParameterCollector $source
+     * @param \Gems\Menu\ParameterCollector $source
      * @return array
      */
-    protected function _toNavigationArray(\Gems_Menu_ParameterCollector $source)
+    protected function _toNavigationArray(\Gems\Menu\ParameterCollector $source)
     {
         $result = $this->_itemOptions;
 
@@ -245,10 +247,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     }
 
     /**
-     * @param \Gems_Menu_ParameterCollector $source
+     * @param \Gems\Menu\ParameterCollector $source
      * @return array|null
      */
-    protected function _toRouteArray(\Gems_Menu_ParameterCollector $source)
+    protected function _toRouteArray(\Gems\Menu\ParameterCollector $source)
     {
         if ($this->get('allowed')) {
             $result = array();
@@ -302,7 +304,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * @param string $privilege     The privilege for the item
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addAction($label, $privilege = null, $action = 'index', array $other = array())
     {
@@ -328,7 +330,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * @param string $privilege     The privilege for the item
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addActionButton($label, $privilege = null, $action = 'index', array $other = array())
     {
@@ -340,7 +342,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Add invisible autofilet action to the current subMenuItem
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addAutofilterAction()
     {
@@ -352,7 +354,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *
      * @param string $privilege The privilege for the item, defaults to parent + .create when not specified
      * @param array  $other     Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addCreateAction($privilege = null, array $other = array())
     {
@@ -380,7 +382,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
      * @param array  $otherReact    Array of extra options for reactivate item, e.g. 'visible', 'allowed', 'class',
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
-     * @return \Gems_Menu_SubmenuItem[]
+     * @return \Gems\Menu_SubmenuItem[]
      */
     public function addDeReactivateAction($checkField, $deactivateOn = 1, $reactivateOn = 1, array $otherDeact = array(), array $otherReact = array())
     {
@@ -421,7 +423,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * @param string $privilege A privilege name, defaults to parent + .delete when not specified
      * @param array $other      Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon',
      *                          target', 'type', 'button_only'.
-     * @return \Gems_Menu_SubmenuItem
+     * @return \Gems\Menu_SubmenuItem
      */
     public function addDeleteAction($privilege = null, array $other = array())
     {
@@ -447,7 +449,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .edit when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubmenuItem
+     * @return \Gems\Menu_SubmenuItem
      */
     public function addEditAction($privilege = null, array $other = array())
     {
@@ -471,7 +473,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Add a standard edit action to the current menu item
      *
-     * @return \Gems_Menu_SubmenuItem
+     * @return \Gems\Menu_SubmenuItem
      */
     public function addExportAction()
     {
@@ -492,7 +494,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *
      * @param string $name Name of parameter
      * @param mixed $value
-     * @return \Gems_Menu_SubMenuItem (continuation pattern
+     * @return \Gems\Menu\SubMenuItem (continuation pattern
      */
     public function addHiddenParameter($name, $value = null)
     {
@@ -510,7 +512,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .import  when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubmenuItem
+     * @return \Gems\Menu_SubmenuItem
      */
     public function addImportAction($privilege = null, array $other = array())
     {
@@ -537,13 +539,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * Numeric array keys are changed into the same string as the
      * array value.
      *
-     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs named array
+     * @param mixed $arrayOrKey1 \MUtil\Ra::pairs named array
      * @param mixed $key2
-     * @return \Gems_Menu_SubMenuItem (continuation pattern)
+     * @return \Gems\Menu\SubMenuItem (continuation pattern)
      */
     public function addNamedParameters($arrayOrKey1 = null, $altName1 = null)
     {
-        $params = \MUtil_Ra::pairs(func_get_args());
+        $params = \MUtil\Ra::pairs(func_get_args());
 
         foreach ($params as $param => $name) {
             if (is_int($param)) {
@@ -557,7 +559,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function addOptionalParameters($arrayOrKey1 = null, $altName1 = null)
     {
-        $params = \MUtil_Ra::pairs(func_get_args());
+        $params = \MUtil\Ra::pairs(func_get_args());
 
         foreach ($params as $param => $name) {
             if (is_int($param)) {
@@ -571,7 +573,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function addParameterFilter($arrayOrKey1 = null, $value1 = null)
     {
-        $filter = \MUtil_Ra::pairs(func_get_args());
+        $filter = \MUtil\Ra::pairs(func_get_args());
 
         $this->_parameterFilter = $filter + (array) $this->_parameterFilter;
 
@@ -580,7 +582,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function addParameters($arrayOrKey1 = null, $key2 = null)
     {
-        $param = \MUtil_Ra::args(func_get_args());
+        $param = \MUtil\Ra::args(func_get_args());
 
         $this->addNamedParameters($param);
 
@@ -593,7 +595,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         static $pdfImg;
 
         if (null === $pdfImg) {
-            $pdfImg = \MUtil_Html::create()->img(array(
+            $pdfImg = \MUtil\Html::create()->img(array(
                 'class'  => 'rightFloat',
                 'src'    => 'pdf_small.gif',
                 // 'width'  => 17,  // Removed as HCU layout uses smaller icon.
@@ -621,7 +623,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .show when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubmenuItem
+     * @return \Gems\Menu_SubmenuItem
      */
     public function addShowAction($privilege = null, array $other = array())
     {
@@ -638,7 +640,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         return $menu;
     }
 
-    public function applyHiddenParameters(\Zend_Controller_Request_Abstract $request, \Gems_Menu_ParameterSource $source)
+    public function applyHiddenParameters(\Zend_Controller_Request_Abstract $request, \Gems\Menu\ParameterSource $source)
     {
         foreach ($this->_hiddenParameters as $key => $value) {
             $request->setParam($key, $value);
@@ -646,13 +648,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         }
         if ($this->_hiddenOrgId) {
             if ($this->currentUser->getSessionPatientNr() && $this->currentUser->getSessionOrganizionId()) {
-                $request->setParam(\MUtil_Model::REQUEST_ID1, $this->currentUser->getSessionPatientNr());
-                $request->setParam(\MUtil_Model::REQUEST_ID2, $this->currentUser->getSessionOrganizionId());
-            } elseif ($patientId = $request->getParam(\MUtil_Model::REQUEST_ID)) {
-                $request->setParam(\MUtil_Model::REQUEST_ID1, $patientId);
-                $request->setParam(\MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
+                $request->setParam(\MUtil\Model::REQUEST_ID1, $this->currentUser->getSessionPatientNr());
+                $request->setParam(\MUtil\Model::REQUEST_ID2, $this->currentUser->getSessionOrganizionId());
+            } elseif ($patientId = $request->getParam(\MUtil\Model::REQUEST_ID)) {
+                $request->setParam(\MUtil\Model::REQUEST_ID1, $patientId);
+                $request->setParam(\MUtil\Model::REQUEST_ID2, $this->_hiddenOrgId);
             }
-            $request->setParam(\MUtil_Model::REQUEST_ID,  null);
+            $request->setParam(\MUtil\Model::REQUEST_ID,  null);
         }
 
         return $this;
@@ -666,7 +668,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $request->setParam('controller', $this->get('controller'));
         $request->setModuleName($this->get('module'));
 
-        // \MUtil_Echo::r($request);
+        // \MUtil\EchoOut\EchoOut::r($request);
 
         return $this;
     }
@@ -700,16 +702,16 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      * Check if a menu item contains these parameter settings
      *
-     * @param mixed $arrayOrKey1 \MUtil_Ra:pairs() name => value argument pairs
+     * @param mixed $arrayOrKey1 \MUtil\Ra:pairs() name => value argument pairs
      * @param mixed $value1 The value should be identical or when null, should not exist or be null
      * @return boolean True if all values where set
      */
     public function checkParameterFilter($arrayOrKey1, $value1 = null)
     {
-        $checks = \MUtil_Ra::pairs(func_get_args());
+        $checks = \MUtil\Ra::pairs(func_get_args());
 
         foreach($checks as $name => $value) {
-            // \MUtil_Echo::track($name, $value, $this->_parameterFilter[$name]);
+            // \MUtil\EchoOut\EchoOut::track($name, $value, $this->_parameterFilter[$name]);
 
             if (null === $value) {
                 if (isset($this->_parameterFilter[$name])) {
@@ -760,7 +762,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     {
         parent::findItems($options, $results);
 
-        // \MUtil_Echo::r($options);
+        // \MUtil\EchoOut\EchoOut::r($options);
         if ($this->check($options)) {
             $results[] = $this;
         }
@@ -791,7 +793,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     /**
      *
-     * @return \Gems_Menu_MenuAbstract
+     * @return \Gems\Menu\MenuAbstract
      */
     public function getParent()
     {
@@ -820,7 +822,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function is($key, $value)
     {
-        // \MUtil_Echo::track($key, $value);
+        // \MUtil\EchoOut\EchoOut::track($key, $value);
         $target = $this->get($key);
 
         if (is_array($value)) {
@@ -886,7 +888,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * Set the organization id of the org parameter that can remain hidden.
      *
      * @param type $orgId
-     * @return \Gems_Menu_SubMenuItem (continuation pattern)
+     * @return \Gems\Menu\SubMenuItem (continuation pattern)
      */
     public function setHiddenOrgId($orgId)
     {
@@ -901,16 +903,16 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * @see setNamedParamenters()
      *
      * @param int $idCount The number of parameters to define
-     * @return \Gems_Menu_SubMenuItem (continuation pattern)
+     * @return \Gems\Menu\SubMenuItem (continuation pattern)
      */
     public function setModelParameters($idCount)
     {
         $params = array();
         if (1 == $idCount) {
-            $params[\MUtil_Model::REQUEST_ID] = \MUtil_Model::REQUEST_ID;
+            $params[\MUtil\Model::REQUEST_ID] = \MUtil\Model::REQUEST_ID;
         } else {
             for ($idx = 1; $idx <= $idCount; $idx++) {
-                $params[\MUtil_Model::REQUEST_ID . $idx] = \MUtil_Model::REQUEST_ID . $idx;
+                $params[\MUtil\Model::REQUEST_ID . $idx] = \MUtil\Model::REQUEST_ID . $idx;
             }
         }
         $this->setNamedParameters($params);
@@ -925,13 +927,13 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
      * Numeric array keys are changed into the same string as the
      * array value.
      *
-     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs named array
+     * @param mixed $arrayOrKey1 \MUtil\Ra::pairs named array
      * @param mixed $key2
-     * @return \Gems_Menu_SubMenuItem (continuation pattern)
+     * @return \Gems\Menu\SubMenuItem (continuation pattern)
      */
     public function setNamedParameters($arrayOrKey1 = null, $key2 = null)
     {
-        $params = \MUtil_Ra::pairs(func_get_args());
+        $params = \MUtil\Ra::pairs(func_get_args());
 
         $this->removeParameters();
         $this->addNamedParameters($params);
@@ -941,7 +943,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
     public function setParameterFilter($arrayOrKey1 = null, $value1 = null)
     {
-        $filter = \MUtil_Ra::pairs(func_get_args());
+        $filter = \MUtil\Ra::pairs(func_get_args());
 
         $this->_parameterFilter = $filter;
 
@@ -951,7 +953,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      *
      * @param mixed $parameterSources_args
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function toActionLink($parameterOrLabelSources_args = null)
     {
@@ -963,7 +965,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $label            = $this->get('label');
         $showDisabled     = false;
         foreach ($parameterSources as $key => $source) {
-            if (is_string($source) || ($source instanceof \MUtil_Html_HtmlInterface)) {
+            if (is_string($source) || ($source instanceof \MUtil\Html\HtmlInterface)) {
                 $label = $source;
                 unset($parameterSources[$key]);
             }
@@ -978,25 +980,25 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
         $condition = true;
         $element   = null;
-        if ($href = $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition)) {
+        if ($href = $this->_toHRef(new \Gems\Menu\ParameterCollector($parameterSources), $condition)) {
 
-            if ($condition instanceof \MUtil_Lazy_LazyInterface) {
+            if ($condition instanceof \MUtil\Lazy\LazyInterface) {
                 if ($showDisabled) {
                     // There is a (lazy) condition and disabled buttons should show
                     // so make the link an if
-                    $element = \MUtil_Html::create()->actionLink(\MUtil_Lazy::iff($condition, $href), $label);
+                    $element = \MUtil\Html::create()->actionLink(\MUtil\Lazy::iff($condition, $href), $label);
 
                     // and make the tagName an if
-                    $element->tagName = \MUtil_Lazy::iff($condition, 'a', 'span');
-                    $element->appendAttrib('class', \MUtil_Lazy::iff($condition, '', 'disabled'));
+                    $element->tagName = \MUtil\Lazy::iff($condition, 'a', 'span');
+                    $element->appendAttrib('class', \MUtil\Lazy::iff($condition, '', 'disabled'));
                 } else {
                     // There is a (lazy) condition and nothing should show when not there
                     // so make the label an if
-                    $label   = \MUtil_Lazy::iff($condition, $label);
-                    $element = \MUtil_Html::create()->actionLink($href, $label);
+                    $label   = \MUtil\Lazy::iff($condition, $label);
+                    $element = \MUtil\Html::create()->actionLink($href, $label);
                 }
             } else {
-                $element = \MUtil_Html::create()->actionLink($href, $label);
+                $element = \MUtil\Html::create()->actionLink($href, $label);
             }
             if ($title = $this->get('title')) {
                 $element->title = $title;
@@ -1014,8 +1016,8 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
                         $value = $href[$value];
                     }
 
-                    if (($condition instanceof \MUtil_Lazy_LazyInterface) && $showDisabled) {
-                        $element->$name = \MUtil_Lazy::iff($condition, $value);
+                    if (($condition instanceof \MUtil\Lazy\LazyInterface) && $showDisabled) {
+                        $element->$name = \MUtil\Lazy::iff($condition, $value);
                     } else {
                         $element->$name = $value;
                     }
@@ -1023,8 +1025,8 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
             }
 
         } elseif ($showDisabled) {
-            // \MUtil_Echo::r($label, 'No href');
-            $element = \MUtil_Html::create()->actionDisabled($label);
+            // \MUtil\EchoOut\EchoOut::r($label, 'No href');
+            $element = \MUtil\Html::create()->actionDisabled($label);
         }
 
         if ($element && $class = $this->get('class')) {
@@ -1036,7 +1038,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      *
      * @param mixed $parameterSourcesArgs
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function toActionLinkLower($parameterSourcesArgs = null)
     {
@@ -1053,7 +1055,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     /**
      *
      * @param mixed $parameterSourcesArgs
-     * @return \MUtil_Html_HrefArrayAttribute
+     * @return \MUtil\Html\HrefArrayAttribute
      */
     public function toHRefAttribute($parameterSourcesArgs = null)
     {
@@ -1061,7 +1063,7 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
         $parameterSources = func_get_args();
 
         $condition = true;
-        return $this->_toHRef(new \Gems_Menu_ParameterCollector($parameterSources), $condition);
+        return $this->_toHRef(new \Gems\Menu\ParameterCollector($parameterSources), $condition);
     }
 
     /**
@@ -1072,12 +1074,12 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
     {
         $parameterSources = func_get_args();
 
-        return $this->_toRouteArray(new \Gems_Menu_ParameterCollector($parameterSources));
+        return $this->_toRouteArray(new \Gems\Menu\ParameterCollector($parameterSources));
     }
 
     /**
      * @param null $actionController
-     * @return \MUtil_Html_ListElement|null
+     * @return \MUtil\Html\ListElement|null
      */
     public function toUl($actionController = null)
     {
@@ -1087,10 +1089,10 @@ class Gems_Menu_SubMenuItem extends \Gems_Menu_MenuAbstract
 
         $parameterSources = func_get_args();
 
-        $ul = \MUtil_Html_ListElement::ul();
+        $ul = \MUtil\Html\ListElement::ul();
 
         foreach ($this->getChildren() as $menuItem) {
-            if ($li = $menuItem->_toLi(new \Gems_Menu_ParameterCollector($parameterSources))) {
+            if ($li = $menuItem->_toLi(new \Gems\Menu\ParameterCollector($parameterSources))) {
                 $ul->append($li);
             }
         }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ContentTitleSnippet.php 2534 2015-05-05 18:07:37Z matijsdejong $
  */
 
 namespace Gems\Snippets\Generic;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ContentTitleSnippet extends \MUtil_Snippets_SnippetAbstract
+class ContentTitleSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * The title to display
@@ -43,12 +42,12 @@ class ContentTitleSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         if ($this->contentTitle) {
-            return \MUtil_Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
+            return \MUtil\Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
         }
     }
 
@@ -59,7 +58,7 @@ class ContentTitleSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

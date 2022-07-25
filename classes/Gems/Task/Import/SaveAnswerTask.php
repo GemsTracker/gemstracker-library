@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Import;
 
 /**
  *
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
+class SaveAnswerTask extends \MUtil\Task\TaskAbstract
 {    
     /**
      *
@@ -28,7 +29,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -40,19 +41,19 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelTranslatorInterface
+     * @var \MUtil\Model\ModelTranslatorInterface
      */
     protected $modelTranslator;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $targetModel;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -64,7 +65,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->targetModel instanceof \MUtil_Model_ModelAbstract) &&
+        return ($this->targetModel instanceof \MUtil\Model\ModelAbstract) &&
                 parent::checkRegistryRequestsAnswers();
     }
 
@@ -77,10 +78,10 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
      * @param array $row Row to save
      */
     public function execute($row = null,
-            $noToken = \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
-            $tokenCompletion = \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR)
+            $noToken = \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,
+            $tokenCompletion = \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR)
     {
-        // \MUtil_Echo::track($row);
+        // \MUtil\EchoOut\EchoOut::track($row);
         if ($this->iterator instanceof \Iterator && !is_array($row) && is_int($row)) {
             $key = $row;
             if ($key < $this->iterator->key()) { $this->iterator->rewind(); }
@@ -102,7 +103,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
             $tracker     = $this->loader->getTracker();
             $userId      = $this->loader->getCurrentUser()->getUserId();
 
-            // \Gems_Tracker::$verbose = true;
+            // \Gems\Tracker::$verbose = true;
 
             $batch = $this->getBatch();
             $batch->addToCounter('imported');
@@ -136,7 +137,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
 
             if ($answers) {
                 if ($prevAnswers) {
-                    if (\Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
+                    if (\Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
                         $code = $this->util->getReceptionCode('redo');
 
                         $oldComment = "";
@@ -210,7 +211,7 @@ class Gems_Task_Import_SaveAnswerTask extends \MUtil_Task_TaskAbstract
                 if (isset($row['completion_date']) && $row['completion_date']) {
                     $token->setCompletionTime($row['completion_date'], $userId);
                 } elseif (! $token->isCompleted()) {
-                    $token->setCompletionTime(new \MUtil_Date(), $userId);
+                    $token->setCompletionTime(new \MUtil\Date(), $userId);
                 }
                 $token->getRespondentTrack()->checkTrackTokens($userId, $token);
 

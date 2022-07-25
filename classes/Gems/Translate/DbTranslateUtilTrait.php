@@ -43,7 +43,7 @@ trait DbTranslateUtilTrait
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -98,11 +98,11 @@ trait DbTranslateUtilTrait
 
         try {
             $translations = $this->db->fetchPairs($tSelect);
-            // \MUtil_Echo::track($tSelect->__toString(), $translations);
+            // \MUtil\EchoOut\EchoOut::track($tSelect->__toString(), $translations);
         } catch (\Zend_Db_Statement_Mysqli_Exception $sme) {
             // Ignore: as can be setup error
             $translations = [];
-            \MUtil_Echo::r("Translations table required, but does not exist.");
+            \MUtil\EchoOut\EchoOut::r("Translations table required, but does not exist.");
             error_log($sme->getMessage());
         } 
         

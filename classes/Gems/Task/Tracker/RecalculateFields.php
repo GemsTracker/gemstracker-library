@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Task\Tracker;
+
 /**
  *
  *
@@ -18,10 +20,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 9-okt-2014 13:18:02
  */
-class Gems_Task_Tracker_RecalculateFields extends \MUtil_Task_TaskAbstract
+class RecalculateFields extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

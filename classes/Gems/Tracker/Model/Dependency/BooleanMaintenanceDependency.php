@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ValuesMaintenanceDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;

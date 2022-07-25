@@ -4,12 +4,12 @@
 namespace Gems\Snippets\Token;
 
 
-class EditTokenSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
+class EditTokenSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
 {
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {

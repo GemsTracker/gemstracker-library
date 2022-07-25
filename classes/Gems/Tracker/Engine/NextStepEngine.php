@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Engine;
+
 /**
  * Step engine that uses a begin date from the previous round and calculates the end date using the token itself.
  *
@@ -18,16 +20,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngineAbstract
+class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
 {
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil\Model\ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidAfter(\MUtil_Model_ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidAfter(\MUtil\Model\ModelAbstract $model, array &$itemData)
     {
         $this->_ensureRounds();
 
@@ -49,11 +51,11 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
     /**
      * Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)
      *
-     * @param \MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil\Model\ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applySurveyListValidFor(\MUtil_Model_ModelAbstract $model, array &$itemData)
+    protected function applySurveyListValidFor(\MUtil\Model\ModelAbstract $model, array &$itemData)
     {
         if (! (isset($itemData['gro_id_round']) && $itemData['gro_id_round'])) {
             $itemData['gro_id_round'] = '';
@@ -137,11 +139,11 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
      * @param int $prevRoundId Id from round
-     * @param \Gems_Tracker_Token $token
-     * @param \Gems_Tracker_RespondentTrack $respTrack
-     * @return \MUtil_Date date time or null
+     * @param \Gems\Tracker\Token $token
+     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @return \MUtil\Date date time or null
      */
-    protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack)
+    protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack)
     {
         $date = null;
 
@@ -177,12 +179,12 @@ class Gems_Tracker_Engine_NextStepEngine extends \Gems_Tracker_Engine_StepEngine
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
      * @param int $prevRoundId Id from round
-     * @param \Gems_Tracker_Token $token
-     * @param \Gems_Tracker_RespondentTrack $respTrack
-     * @param \MUtil_Date $validFrom The calculated new valid from value or null
-     * @return \MUtil_Date date time or null
+     * @param \Gems\Tracker\Token $token
+     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param \MUtil\Date $validFrom The calculated new valid from value or null
+     * @return \MUtil\Date date time or null
      */
-    protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack, $validFrom)
+    protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom)
     {
         $date = null;
 

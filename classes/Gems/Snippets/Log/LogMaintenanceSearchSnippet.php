@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogSearchSnippet.php 2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Log;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-feb-2015 19:46:34
  */
-class LogMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class LogMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.

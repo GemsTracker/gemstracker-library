@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event;
 
 /**
  * Survey completion event interface.
@@ -20,15 +21,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface Gems_Event_SurveyCompletedEventInterface extends \Gems_Event_EventInterface
+interface SurveyCompletedEventInterface extends \Gems\Event\EventInterface
 {
     /**
      * Process the data and return the answers that should be changed.
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems_Tracker_Token $token);
+    public function processTokenData(\Gems\Tracker\Token $token);
 }

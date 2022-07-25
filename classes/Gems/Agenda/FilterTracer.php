@@ -55,10 +55,10 @@ class FilterTracer
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
      * @param boolean $createTrack
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return $this
      */
-    public function addFilter(AppointmentFilterInterface $filter, $createTrack, \Gems_Tracker_RespondentTrack $respTrack = null)
+    public function addFilter(AppointmentFilterInterface $filter, $createTrack, \Gems\Tracker\RespondentTrack $respTrack = null)
     {
         $this->filters[$filter->getFilterId()] = [
             'filterName'  => $filter->getName(),
@@ -76,12 +76,12 @@ class FilterTracer
 
     /**
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @param boolean $fieldsChanged
      * @param int $tokensChanged
      * @return $this
      */
-    public function addTrackChecked(\Gems_Tracker_RespondentTrack $respTrack, $fieldsChanged, $tokensChanged)
+    public function addTrackChecked(\Gems\Tracker\RespondentTrack $respTrack, $fieldsChanged, $tokensChanged)
     {
         $this->tracks[$respTrack->getRespondentTrackId()] = [
             'trackName'     => $respTrack->getTrackName(),

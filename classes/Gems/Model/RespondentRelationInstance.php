@@ -8,8 +8,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentRelationInstance.php 2763 2015-10-30 18:33:48Z matijsdejong $
  */
+
+namespace Gems\Model;
 
 /**
  *
@@ -19,12 +20,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstract 
+class RespondentRelationInstance extends \Gems\Registry\TargetAbstract 
 {
     /**
      * The model this instance is designed for
      *
-     * @var \Gems_Model_RespondentRelationModel
+     * @var \Gems\Model\RespondentRelationModel
      */
     protected $_model;
 
@@ -44,21 +45,21 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     public function __construct($model, $data) 
     {
         // Sanity check:
-        if (!($model instanceof Gems_Model_RespondentRelationModel)) {
-            throw new \Gems_Exception_Coding('Please provide the correct type of model');
+        if (!($model instanceof \Gems\Model\RespondentRelationModel)) {
+            throw new \Gems\Exception\Coding('Please provide the correct type of model');
         }
 
         $this->_model = $model;
@@ -96,16 +97,16 @@ class Gems_Model_RespondentRelationInstance extends \Gems_Registry_TargetAbstrac
     /**
      * Returns current age or at a given date when supplied
      *
-     * @param \MUtil_Date|null $date
+     * @param \MUtil\Date|null $date
      * @return int
      */
     public function getAge($date = NULL)
     {
         if (is_null($date)) {
-            $date = new \MUtil_Date();
+            $date = new \MUtil\Date();
         }
 
-        if ($date instanceof \MUtil_Date) {
+        if ($date instanceof \MUtil\Date) {
             // Now calculate age
             $birthDate = $this->getBirthDate();
             if ($birthDate instanceof \Zend_Date) {

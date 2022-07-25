@@ -17,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.8.6 15-Aug-2019 12:00:25
  */
-class EmbedController extends \Gems_Default_EmbedAction
+class EmbedController extends \Gems\Actions\EmbedAction
 {
 
 }

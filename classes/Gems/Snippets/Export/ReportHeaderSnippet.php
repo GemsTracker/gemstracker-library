@@ -4,8 +4,9 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Export;
 
 /**
  * Header for html/pdf export of a respondent
@@ -16,17 +17,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_Export_ReportHeaderSnippet extends \MUtil_Snippets_SnippetAbstract
+class ReportHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 

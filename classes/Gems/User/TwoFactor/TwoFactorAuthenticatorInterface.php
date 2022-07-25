@@ -27,10 +27,10 @@ interface TwoFactorAuthenticatorInterface
      * Add the elements to the setup form
      *
      * @param \Zend_Form $form
-     * @param \Gems_User_User $user The user to setup for
+     * @param \Gems\User\User $user The user to setup for
      * @param array $formData Current form data
      */
-    public function addSetupFormElements(\Zend_Form $form, \Gems_User_User $user, array &$formData);
+    public function addSetupFormElements(\Zend_Form $form, \Gems\User\User $user, array &$formData);
 
     /**
      * Create new secret.

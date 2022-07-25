@@ -25,7 +25,7 @@ class AndCondition extends RoundConditionAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -104,7 +104,7 @@ class AndCondition extends RoundConditionAbstract
         return join($this->_(' AND '), $text);
     }
 
-    public function isRoundValid(\Gems_Tracker_Token $token)
+    public function isRoundValid(\Gems\Tracker\Token $token)
     {
         $conditions = $this->getConditions();
         $valid = true;

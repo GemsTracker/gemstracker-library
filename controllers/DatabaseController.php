@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class DatabaseController extends Gems_Default_DatabaseAction
+class DatabaseController extends \Gems\Actions\DatabaseAction
 {
 }

@@ -19,11 +19,11 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.8.1 Oct 24, 2016 6:35:29 PM
  */
-class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstract
+class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -35,7 +35,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -55,25 +55,25 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -89,10 +89,10 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->saveLabel = $this->_('Change organization');
 
@@ -116,7 +116,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         $disabled               = array();
         $existingOrgs           = $this->db->fetchPairs($sql, $this->respondent->getId());
         foreach ($availableOrganizations as $orgId => &$orgName) {
-            $orglabel = \MUtil_Html::create('spaced');
+            $orglabel = \MUtil\Html::create('spaced');
             $orglabel->strong($orgName);
             if ($orgId == $this->formData['orig_org_id']) {
                 $disabled[] = $orgId;
@@ -191,7 +191,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
             }
             $this->addMessage(sprintf(
                     $message,
-                    $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
                     $this->loader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
                     $this->formData['gr2o_patient_nr']
                     ));
@@ -206,15 +206,15 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Model_RespondentModel) {
+        if ($this->model instanceof \Gems\Model\RespondentModel) {
             $model = $this->model;
 
         } else {
-            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
                 $model = $this->respondent->getRespondentModel();
 
             } else {
@@ -233,7 +233,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function getTitle()
     {
-        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
             if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf(
                         $this->_('Change organization of respondent nr %s'),
@@ -261,7 +261,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         if (! isset($this->formData['change_method'])) {
             $this->formData['change_method'] = null;
         }
-        $this->formData['orig_org_id'] = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $this->formData['orig_org_id'] = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
     }
 
     /**
@@ -275,8 +275,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     {
         $this->beforeSave();
 
-        $fromOrgId   = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
-        $fromPid     = $this->request->getParam(\MUtil_Model::REQUEST_ID1);
+        $fromOrgId   = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+        $fromPid     = $this->request->getParam(\MUtil\Model::REQUEST_ID1);
         $fromRespId  = $this->respondent->getId();
         $toOrgId     = $this->formData['gr2o_id_organization'];
         $toPatientId = $this->formData['gr2o_patient_nr'];
@@ -332,14 +332,14 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
         );
 
         $changed   = 0;
-        $currentTs = new \MUtil_Db_Expr_CurrentTimestamp();
+        $currentTs = new \MUtil\Db\Expr\CurrentTimestamp();
         $userId    = $this->currentUser->getUserId();
 
         foreach ($tables as $tableName => $settings) {
             list($respIdField, $orgIdField, $change) = $settings;
 
             if ($change) {
-                $start = \MUtil_String::beforeChars($respIdField, '_');
+                $start = \MUtil\StringUtil\StringUtil::beforeChars($respIdField, '_');
 
                 $values = [
                     $orgIdField            => $toOrgId,
@@ -368,7 +368,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function saveShare($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
-        /** @var \Gems_Model_RespondentModel $model */
+        /** @var \Gems\Model\RespondentModel $model */
         $model = $this->getModel();
         try {
             $result = $model->copyToOrg($fromOrgId, $fromPatientId, $toOrgId, $toPatientId, $this->keepConsent);
@@ -408,7 +408,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
      */
     protected function saveTo($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
-        /** @var \Gems_Model_RespondentModel $model */
+        /** @var \Gems\Model\RespondentModel $model */
         $model = $this->getModel();
         try {
             $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId);    
@@ -440,7 +440,7 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {
@@ -453,8 +453,8 @@ class ChangeRespondentOrganization extends \Gems_Snippets_ModelFormSnippetAbstra
                 );
 
             if ($this->afterSaveRouteKeys) {
-                $this->afterSaveRouteUrl[\MUtil_Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];
-                $this->afterSaveRouteUrl[\MUtil_Model::REQUEST_ID2] = $this->formData['gr2o_id_organization'];
+                $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];
+                $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID2] = $this->formData['gr2o_id_organization'];
             }
         }
 

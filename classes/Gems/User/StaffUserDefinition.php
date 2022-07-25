@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User;
 
 /**
  * A standard, database stored and authenticate staff user as of version 1.5.
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
+class StaffUserDefinition extends \Gems\User\DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.
@@ -84,7 +85,7 @@ class Gems_User_StaffUserDefinition extends \Gems_User_DbUserDefinitionAbstract
                ->where('gul_id_organization = ?')
                ->limit(1);
 
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
 
         return $select;
     }

@@ -4,15 +4,17 @@
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class Gems_Pdf_PdfTest extends Gems_Test_TestAbstract {
+namespace Gems\Pdf;
+
+class PdfTest extends \Gems\Test\TestAbstract {
 
     public function setUp() {
         parent::setUp();
 
-        $settings         = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+        $settings         = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $settings         = $settings->toArray();
         $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-        $project          = new Gems_Project_ProjectSettings($settings);
+        $project          = new Gems\Project\ProjectSettings($settings);
 
         \Zend_Registry::set('project', $project);
     }

@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 use Gems\Log\LogHelper;
 
 /**
@@ -26,7 +28,7 @@ use Gems\Log\LogHelper;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Roles
+class Roles
 {
     /**
      *
@@ -43,13 +45,13 @@ class Gems_Roles
 
     /**
      *
-     * @var \MUtil_Acl
+     * @var \MUtil\Acl
      */
     protected $_acl;
 
     /**
      *
-     * @var \Gems_Roles
+     * @var \Gems\Roles
      */
     private static $_instanceOfSelf;
 
@@ -66,7 +68,7 @@ class Gems_Roles
     private $_roleTranslations = array();
 
     /**
-     * Pass any strange call to \MUtil_Acl
+     * Pass any strange call to \MUtil\Acl
      *
      * @param stringethod
      * @param mixed $args
@@ -91,7 +93,7 @@ class Gems_Roles
 
         if ($logger instanceof \Psr\Log\LoggerInterface) {
             $this->setLogger($logger);
-        } elseif (($cache instanceof \GemsEscort) && ($cache->logger instanceof \Psr\Log\LoggerInterface)) {
+        } elseif (($cache instanceof \Gems\Escort) && ($cache->logger instanceof \Psr\Log\LoggerInterface)) {
             $this->setLogger($cache->logger);
         }
 
@@ -153,10 +155,10 @@ class Gems_Roles
      */
     private function _initAcl()
     {
-        $this->_acl = new \MUtil_Acl();
+        $this->_acl = new \MUtil\Acl();
 
-        if (get_class(self::$_instanceOfSelf)!=='Gems_Roles') {
-            throw new \Gems_Exception_Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
+        if (get_class(self::$_instanceOfSelf)!=='Gems\\Roles') {
+            throw new \Gems\Exception\Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
         }
         // Probeer eerst uit db in te lezen met fallback als dat niet lukt
         try {
@@ -170,7 +172,7 @@ class Gems_Roles
 
             // Reset all roles
             unset($this->_acl);
-            $this->_acl = new \MUtil_Acl();
+            $this->_acl = new \MUtil\Acl();
 
             //Voeg standaard rollen en privileges in
             $this->loadDefaultRoles();
@@ -190,7 +192,7 @@ class Gems_Roles
     /**
      * Save to cache
      *
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
     private function _save()
     {
@@ -199,7 +201,7 @@ class Gems_Roles
                 $this->_cache->setCacheItem($this->_cacheid, $this->_acl, ['roles']) &&
                 $this->_cache->setCacheItem($this->_cacheid . 'trans', $this->_roleTranslations, ['roles'])
             )) {
-                throw new \Gems_Exception('Failed to save acl to cache');
+                throw new \Gems\Exception('Failed to save acl to cache');
             }
         }
     }
@@ -215,7 +217,7 @@ class Gems_Roles
         $this->_initAcl();
         try {
             $this->_save();
-        } catch (\Gems_Exception $e) {
+        } catch (\Gems\Exception $e) {
             if ($this->_logger instanceof \Psr\Log\LoggerInterface) {
                 $this->_logger->error($e->getMessage());
             }
@@ -224,7 +226,7 @@ class Gems_Roles
 
     /**
      *
-     * @return \MUtil_Acl
+     * @return \MUtil\Acl
      */
     public function getAcl()
     {
@@ -234,7 +236,7 @@ class Gems_Roles
     /**
      * Static acces function
      *
-     * @return \Gems_Roles
+     * @return \Gems\Roles
      */
     public static function getInstance()
     {

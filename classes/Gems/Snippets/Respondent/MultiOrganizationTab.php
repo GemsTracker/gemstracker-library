@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MultiOrganizationTab.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Respondent;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
+class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
 {
     protected $href = array();
 
@@ -41,14 +40,14 @@ class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -75,7 +74,7 @@ class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
         $this->defaultTab = $user->getCurrentOrganizationId();
-        $this->currentTab = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+        $this->currentTab = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
 
         $allowedOrgs  = $user->getRespondentOrganizations();
         $existingOrgs = $this->db->fetchPairs($sql, $this->respondent->getId());
@@ -85,8 +84,8 @@ class MultiOrganizationTab extends \MUtil_Snippets_TabSnippetAbstract
             if (isset($existingOrgs[$orgId])) {
                 $tabs[$orgId] = $name;
                 $this->hrefs[$orgId] = array(
-                    \MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId],
-                    \MUtil_Model::REQUEST_ID2 => $orgId,
+                    \MUtil\Model::REQUEST_ID1 => $existingOrgs[$orgId],
+                    \MUtil\Model::REQUEST_ID2 => $orgId,
                     'RouteReset' => true,
                     );
             }

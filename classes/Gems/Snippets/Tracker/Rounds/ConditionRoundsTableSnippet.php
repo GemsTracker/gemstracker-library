@@ -22,7 +22,7 @@ use Gems\Tracker\Model\RoundModel;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 27-Nov-2018 11:57:15
  */
-class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -38,16 +38,16 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
 
     /**
      *
-     * @var \Gems_Model_JoinModel
+     * @var \Gems\Model\JoinModel
      */
     protected $_model;
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
     /**
      * @var \Gems\Condition\ConditionInterface
@@ -57,7 +57,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -70,7 +70,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -92,7 +92,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -130,7 +130,7 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -146,17 +146,17 @@ class ConditionRoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstra
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->condition) {
             $conditionId = $this->condition->getConditionId();
         } else {
-            $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+            $conditionId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
         }
 
-        //\MUtil_Model::$verbose = true;
+        //\MUtil\Model::$verbose = true;
         if ($conditionId) {
             $model->addFilter(['gro_condition' => $conditionId]);
         }

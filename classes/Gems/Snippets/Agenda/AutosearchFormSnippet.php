@@ -10,7 +10,7 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems_Snippets_AutosearchFormSnippet;
+use Gems\Snippets\AutosearchFormSnippet;
 
 /**
  *
@@ -21,7 +21,7 @@ use Gems_Snippets_AutosearchFormSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.8.5
  */
-class AutosearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
+class AutosearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      * Array of model name => empty text to allow adding select boxes in a flexible way

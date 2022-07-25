@@ -12,17 +12,17 @@ class MenuAdd extends Event
 
     const NAME = 'gems.menu.add';
     /**
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
-    public function __construct(\Gems_Menu $menu)
+    public function __construct(\Gems\Menu $menu)
     {
         $this->menu = $menu;
     }
 
     /**
-     * @return \Gems_Menu
+     * @return \Gems\Menu
      */
     public function getMenu()
     {

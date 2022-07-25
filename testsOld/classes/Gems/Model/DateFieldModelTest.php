@@ -5,17 +5,18 @@
  * Description of RespondentModelTest
  *
  * @package    Gems
- * @subpackage Gems
+ * @subpackage \Gems
  * @author     175780
  * @copyright  Copyright (c) 2014
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
+namespace Gems\Model;
+
+class DateFieldModelTest extends MUtil\Model_AbstractModelTest
 {
     /**
      *
-     * @var MUtil_Model_TableModel
+     * @var \MUtil\Model\TableModel
      */
     private $_model;
 
@@ -28,7 +29,7 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
         $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $timeFormOptions['dateFormat']   = 'HH:mm';
 
-        MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
+        \MUtil\Model\Bridge\FormBridge::setFixedOptions(array(
             'date'     => $dateFormOptions,
             'datetime' => $datetimeFormOptions,
             'time'     => $timeFormOptions,
@@ -38,14 +39,14 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
     /**
      * Create the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function getModel()
     {
         if (! $this->_model) {
-            $this->_model = new MUtil_Model_TableModel('dfmt');
+            $this->_model = new MUtil\Model\TableModel('dfmt');
             $this->_model->set('grs_birthday', 'storageFormat', 'yyyy-MM-dd');
-            $this->_model->set('grs_birthday', 'dateFormat', Zend_Date::DATE_MEDIUM);
+            $this->_model->set('grs_birthday', 'dateFormat', \Zend_Date::DATE_MEDIUM);
             $this->_model->setOnSave('grs_birthday', array($this->_model, 'formatSaveDate'));
             $this->_model->setOnLoad('grs_birthday', array($this->_model, 'formatLoadDate'));
         }
@@ -67,8 +68,8 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
 
     protected function setLocaleTo($locale)
     {
-        $locale = new Zend_Locale($locale);
-        Zend_Registry::set('Zend_Locale', $locale);
+        $locale = new \Zend_Locale($locale);
+        \Zend_Registry::set('Zend_Locale', $locale);
     }
 
     /**
@@ -79,7 +80,7 @@ class Gems_Model_DateFieldModelTest extends MUtil_Model_AbstractModelTest
         $model = $this->getModel();
         $row = $model->loadFirst();
 
-        $this->assertEquals($row['grs_birthday'], new MUtil_Date("2014-04-02", 'yyyy-MM-dd'));
+        $this->assertEquals($row['grs_birthday'], new MUtil\Date("2014-04-02", 'yyyy-MM-dd'));
     }
 
     /**

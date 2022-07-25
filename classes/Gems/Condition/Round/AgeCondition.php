@@ -111,7 +111,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function isRoundValid(\Gems_Tracker_Token $token)
+    public function isRoundValid(\Gems\Tracker\Token $token)
     {
         $minAge  = $this->_data['gcon_condition_text1'];
         $maxAge  = $this->_data['gcon_condition_text3'];

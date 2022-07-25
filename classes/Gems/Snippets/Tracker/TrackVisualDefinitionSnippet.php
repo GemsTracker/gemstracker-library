@@ -20,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -38,11 +38,11 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
     protected $_model;
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
     
     protected $class = 'browser table visualtrack';
     
@@ -70,7 +70,7 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
         parent::afterRegistry();
         
         if (empty($this->trackId)) {
-            throw new Gems_Exception_Coding('Provide a trackId to this snippet!');
+            throw new Gems\Exception\Coding('Provide a trackId to this snippet!');
         }
 
         $model = $this->getModel();
@@ -79,11 +79,11 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (!$this->_model instanceof \MUtil_Model_SelectModel) {
+        if (!$this->_model instanceof \MUtil\Model\SelectModel) {
             $trackId = $this->trackId;
 
             $db     = $this->db;
@@ -108,7 +108,7 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
                     ->group(['gro_id_survey', 'filler'])
                     ->columns($fields);
 
-            $model = new \MUtil_Model_SelectModel($sql, 'track-plan');
+            $model = new \MUtil\Model\SelectModel($sql, 'track-plan');
             //$model->setKeys(array('gsu_survey_name'));
             $model->resetOrder();
             $model->set('filler', 'label', $this->_('Filler'));
@@ -134,11 +134,11 @@ class TrackVisualDefinitionSnippet extends \Gems_Snippets_ModelTableSnippetAbstr
             case 'X':
                 // yes
 
-                return \MUtil_Html::create()->i(['class' => 'fa fa-check', 'style' => 'color: green;', 'title' => $this->_('Yes')]);
+                return \MUtil\Html::create()->i(['class' => 'fa fa-check', 'style' => 'color: green;', 'title' => $this->_('Yes')]);
                 break;
             case 'C':
                 // Condition
-                return \MUtil_Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
+                return \MUtil\Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
                 break;
             default:
                 return null;

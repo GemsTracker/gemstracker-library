@@ -9,19 +9,21 @@
  * @license    New BSD License
  */
 
+namespace Gems\Loader;
+
 /**
- * LoaderAbstract is used for classes that chain from \Gems_Loader and that thus allow
+ * LoaderAbstract is used for classes that chain from \Gems\Loader and that thus allow
  * projects to overrule the original implementation.
  *
  * I.e if you create a class <Project_name>_Model or <Project_name>_Util, that class is loaded
- * automatically instead of \Gems_Model or \Gems_Util. <Project_name>_Model should be a subclass
- * of \Gems_Model.
+ * automatically instead of \Gems\Model or \Gems\Util. <Project_name>_Model should be a subclass
+ * of \Gems\Model.
  *
  * You can set more than one overrule level. I.e. you can specify the class chain Demopulse,
- * Pulse, Gems. The loader will then always look first in Demopulse, then in Pulse and
- * lastly in Gems.
+ * Pulse, \Gems. The loader will then always look first in Demopulse, then in Pulse and
+ * lastly in \Gems.
  *
- * The class inherits from \MUtil_Registry_Source as the chained classes may have values
+ * The class inherits from \MUtil\Registry\Source as the chained classes may have values
  * that should be set automatically, e.g. from \Zend_Registry.
  *
  *
@@ -31,19 +33,19 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
+class LoaderAbstract extends \MUtil\Registry\Source
 {
     /**
      * The prefix/path location to look for classes.
      *
      * The standard value is
      * - <Project_name> => application/classes
-     * - Gems => library/Gems/classes
+     * - \Gems => library/Gems/classes
      *
      * But an alternative could be:
      * - Demopulse => application/classes
      * - Pulse => application/classes
-     * - Gems => library/Gems/classes
+     * - \Gems => library/Gems/classes
      *
      * @var array Of prefix => path strings for class lookup
      */
@@ -51,12 +53,12 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
 
     /**
      *
-     * @var \MUtil_Loader_PluginLoader
+     * @var \MUtil\Loader\PluginLoader
      */
     protected $_loader;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -64,7 +66,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
 
     /**
      *
-     * @param mixed $container A container acting as source for \MUtil_Registry_Source
+     * @param mixed $container A container acting as source for \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)
@@ -83,8 +85,8 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
         }
         $this->_loader->setSource($this);
 
-        if (\MUtil_Registry_Source::$verbose) {
-            \MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
+        if (\MUtil\Registry\Source::$verbose) {
+            \MUtil\EchoOut\EchoOut::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
         }
     }
 
@@ -95,7 +97,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             return array($this, $name);
         }
 
-        throw new \Gems_Exception_Coding("Unknown property '$name' requested.");
+        throw new \Gems\Exception\Coding("Unknown property '$name' requested.");
     }
 
     /**
@@ -151,19 +153,19 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
      * Create or loads the class. When only loading, this function returns a StaticCall object that
      * can be invoked lazely.
      *
-     * @see \MUtil_Lazy_StaticCall
-     * @see \MUtil_Registry_TargetInterface
+     * @see \MUtil\Lazy\StaticCall
+     * @see \MUtil\Registry\TargetInterface
      *
      * @param string $name The class name, minus the part in $this->_dirs.
-     * @param boolean $create Create the object, or only when an \MUtil_Registry_TargetInterface instance.
+     * @param boolean $create Create the object, or only when an \MUtil\Registry\TargetInterface instance.
      * @param array $arguments Class initialization arguments.
-     * @return mixed A class instance or a \MUtil_Lazy_StaticCall object
+     * @return mixed A class instance or a \MUtil\Lazy\StaticCall object
      */
     protected function _loadClass($name, $create = false, array $arguments = array())
     {
         $className = $this->_loader->find($name);
 
-        // \MUtil_Echo::track($className);
+        // \MUtil\EchoOut\EchoOut::track($className);
 
         if (is_subclass_of($className, __CLASS__)) {
             $create    = true;
@@ -178,12 +180,12 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
             $arguments[] = $this->_dirs;
             $arguments[] = $this->_loader;
 
-        } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
+        } elseif (is_subclass_of($className, '\\MUtil\\Registry\\TargetInterface')) {
             $create = true;
         }
 
         if (! $create) {
-            return new \MUtil_Lazy_StaticCall($className);
+            return new \MUtil\Lazy\StaticCall($className);
         }
 
         $mergedArguments = array_values(array_merge(['className' => $className], $arguments));
@@ -198,7 +200,7 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
      * @param string $prefix
      * @param mixed $paths String or an array of strings
      * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
-     * @return \Gems_Loader_LoaderAbstract (continuation pattern)
+     * @return \Gems\Loader\LoaderAbstract (continuation pattern)
      */
     public function addPrefixPath($prefix, $path, $prepend = true)
     {
@@ -218,8 +220,8 @@ class Gems_Loader_LoaderAbstract extends \MUtil_Registry_Source
 
         $this->_loader->addOverloaders([$newPrefix]);
 
-        if (\MUtil_Registry_Source::$verbose) {
-            \MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
+        if (\MUtil\Registry\Source::$verbose) {
+            \MUtil\EchoOut\EchoOut::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
         }
 
         return $this;

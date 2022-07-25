@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Util;
 
 /**
  * A simple file based locking mechanism.
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Util_LockFile
+class LockFile
 {
     /**
      *
@@ -39,12 +40,12 @@ class Gems_Util_LockFile
     /**
      * Last time the lock was set.
      *
-     * @return \MUtil_Date or null when not locked.
+     * @return \MUtil\Date or null when not locked.
      */
     public function getLockTime()
     {
         if ($this->isLocked()) {
-            return new \MUtil_Date(filectime($this->lockFileName));
+            return new \MUtil\Date(filectime($this->lockFileName));
         }
     }
 
@@ -61,7 +62,7 @@ class Gems_Util_LockFile
     /**
      * Lock this file and updates lock time.
      *
-     * @return \Gems_Util_LockFile (continuation pattern)
+     * @return \Gems\Util\LockFile (continuation pattern)
      */
     public function lock()
     {
@@ -72,7 +73,7 @@ class Gems_Util_LockFile
     /**
      * Switches from lock to unlocked state.
      *
-     * @return \Gems_Util_LockFile (continuation pattern)
+     * @return \Gems\Util\LockFile (continuation pattern)
      */
     public function reverse()
     {
@@ -87,7 +88,7 @@ class Gems_Util_LockFile
     /**
      * Unlocks this lock file  by deleting it
      *
-     * @return \Gems_Util_LockFile (continuation pattern)
+     * @return \Gems\Util\LockFile (continuation pattern)
      */
     public function unlock()
     {

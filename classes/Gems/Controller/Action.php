@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Controller;
 
 /**
  * Action controller, initialises the html object
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Controller_Action extends \MUtil_Controller_Action
+class Action extends \MUtil\Controller\Action
 {
     /**
      *
@@ -29,7 +30,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -41,7 +42,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
@@ -49,7 +50,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
      * Adds one or more messages to the session based message store.
      *
      * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
-     * @return \MUtil_Controller_Action
+     * @return \MUtil\Controller\Action
      */
     public function addMessage($message, $status=null)
     {
@@ -82,7 +83,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
     public function initHtml(bool $reset = false): void
     {
         if (! $this->html) {
-            \Gems_Html::init();
+            \Gems\Html::init();
         }
 
         parent::initHtml();
@@ -101,7 +102,7 @@ class Gems_Controller_Action extends \MUtil_Controller_Action
      * Set the session based message store.
      *
      * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
-     * @return \MUtil_Controller_Action
+     * @return \MUtil\Controller\Action
      */
     public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger): self
     {

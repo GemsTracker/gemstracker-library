@@ -12,7 +12,7 @@ use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 use Psr\Log\LoggerInterface;
 
-class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_TargetInterface
+class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\TargetInterface
 {
     use TargetTrait;
     use TranslateableTrait;
@@ -23,7 +23,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -37,7 +37,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         return $job['gcj_fallback_fixed'];
     }
 
-    protected function getFrom(array $job, \Gems_Tracker_Token $token)
+    protected function getFrom(array $job, \Gems\Tracker\Token $token)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -48,7 +48,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
                 return $job['gcj_from_fixed'];
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
         }
     }
 
@@ -61,7 +61,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         return $mailer->getBodyText();
     }
 
-    protected function getPhonenumber(array $job, \Gems_Tracker_Token $token, $canBeMessaged)
+    protected function getPhonenumber(array $job, \Gems\Tracker\Token $token, $canBeMessaged)
     {
         $phoneNumber = null;
 
@@ -88,7 +88,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
                 return $this->getFallbackPhonenumber($job);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
         }
 
 
@@ -105,7 +105,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
                 return $this->getFallbackPhonenumber($job);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
         }
     }
 
@@ -120,7 +120,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
         $smsClient = $communicationLoader->getSmsClient($clientId);
 
         if (!($smsClient instanceof SmsClientInterface)) {
-            throw new \Gems_Communication_Exception(sprintf('No Sms Client with id %s found', $clientId));
+            throw new \Gems\Communication\Exception(sprintf('No Sms Client with id %s found', $clientId));
         }
 
         $number = $this->getPhoneNumber($job, $token, $tokenData['can_email']);
@@ -148,7 +148,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
                 );
 
                 // Use a gems exception to pass extra information to the log
-                $gemsException = new \Gems_Exception($info, 0, $e);
+                $gemsException = new \Gems\Exception($info, 0, $e);
                 $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
                 return false;
@@ -159,12 +159,12 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
     /**
      * Log the communication for the respondent.
      */
-    protected function logRespondentCommunication(\Gems_Tracker_Token $token, $job, $number, $from)
+    protected function logRespondentCommunication(\Gems\Tracker\Token $token, $job, $number, $from)
     {
         $respondent = $token->getRespondent();
 
         $currentUserId                = $this->loader->getCurrentUser()->getUserId();
-        $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
+        $changeDate                   = new \MUtil\Db\Expr\CurrentTimestamp();
 
         $logData['grco_id_to']        = $respondent->getId();
 

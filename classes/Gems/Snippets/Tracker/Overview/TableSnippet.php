@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Tracker\Overview;
 
 /**
  * Display a tabel that links to the track maintenance
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class Gems_Snippets_Tracker_Overview_TableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     /**
      * Menu actions to show in Show box.

@@ -81,7 +81,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
 
         $element = $this->_form->createElement('html', 'reset');
         $element->setLabel(html_entity_decode('&nbsp;'));
-        $element->setValue(\Gems_Html::actionLink($cancelUrl, $this->_('Cancel login')));
+        $element->setValue(\Gems\Html::actionLink($cancelUrl, $this->_('Cancel login')));
         $this->_form->addElement($element);
     }
 
@@ -120,7 +120,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -137,7 +137,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -200,7 +200,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      * Set what to do when the form is 'finished'.
      *
      * #param array $params Url items to set for this route
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute(array $params = array())
     {

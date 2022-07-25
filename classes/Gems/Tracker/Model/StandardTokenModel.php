@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Model;
+
 use Gems\Date\Period;
 use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use MUtil\Model\Dependency\OffOnElementsDependency;
@@ -31,10 +33,10 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * - gems__surveys
  * - gems__tracks
  *
- * The \MUtil_Registry_TargetInterface is implemented so that
+ * The \MUtil\Registry\TargetInterface is implemented so that
  * these models can take care of their own formatting.
  *
- * @see \Gems_Tracker_Engine_TrackEngineInterface
+ * @see \Gems\Tracker\Engine\TrackEngineInterface
  *
  * @package    Gems
  * @subpackage Tracker
@@ -42,11 +44,11 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizationModel
+class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -98,7 +100,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
     protected $saveRespondentTracks = false;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -166,7 +168,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
                     )
                 END",
             'assigned_by');
-        $this->addColumn(new \Zend_Db_Expr("'token'"), \Gems_Model::ID_TYPE);
+        $this->addColumn(new \Zend_Db_Expr("'token'"), \Gems\Model::ID_TYPE);
         /*    TRIM(CONCAT(
                 CASE WHEN gto_created = gto_changed OR DATEDIFF(CURRENT_TIMESTAMP, gto_changed) > 0 THEN '' ELSE 'changed' END,
                 ' ',
@@ -219,13 +221,13 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         if ($context['gto_valid_from'] instanceof \Zend_Date) {
             $start = $context['gto_valid_from'];
         } else {
-            $start = new \MUtil_Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
+            $start = new \MUtil\Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
         }
 
         if ($context['gto_mail_sent_date'] instanceof \Zend_Date) {
             $sent = $context['gto_mail_sent_date'];
         } else {
-            $sent = new \MUtil_Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
+            $sent = new \MUtil\Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
         }
 
         return $start->isLater($sent);
@@ -235,7 +237,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      * Add tracking off manual date changes by the user
      *
      * @param mixed $value The value to store when the tracked field has changed
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function addEditTracking()
     {
@@ -246,7 +248,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
         $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until', 'readonly', $this));
 
         $this->set('gto_valid_until', 'validators[dateAfter]',
-              new \MUtil_Validate_Date_DateAfter('gto_valid_from')
+              new \MUtil\Validate\Date\DateAfter('gto_valid_from')
               );
 
         return $this;
@@ -293,7 +295,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
     /**
      * Sets the labels, format functions, etc...
      *
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function applyFormatting()
     {
@@ -404,7 +406,7 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
     /**
      * Sets the labels, format functions, etc...
      *
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function applyInsertionFormatting()
     {
@@ -431,14 +433,14 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|null
+     * @return \MUtil\Date|\Zend_Db_Expr|null
      */
     public function formatValidFromDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -458,14 +460,14 @@ class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizati
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|null
+     * @return \MUtil\Date|\Zend_Db_Expr|null
      */
     public function formatValidUntilDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {

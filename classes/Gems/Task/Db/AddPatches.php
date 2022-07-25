@@ -4,8 +4,9 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Db;
 
 /**
  * Execute a certain patchlevel
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_AddPatches extends \Gems_Task_Db_PatchAbstract
+class AddPatches extends \Gems\Task\Db\PatchAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

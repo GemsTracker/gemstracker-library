@@ -5,8 +5,9 @@
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ColorPicker.php Jasper van Gestel $
  */
+
+namespace Gems\JQuery\Form\Element;
 
 /**
  *
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class Gems_JQuery_Form_Element_ColorPicker extends \ZendX_JQuery_Form_Element_ColorPicker
+class ColorPicker extends \ZendX_JQuery_Form_Element_ColorPicker
 {
     /**
      * Constructor

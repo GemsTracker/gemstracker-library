@@ -4,8 +4,9 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form\Decorator;
 
 /**
  * Takes care of adding css or javascript when the form is rendered
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Form_Decorator_Form extends \Zend_Form_Decorator_Form
+class Form extends \Zend_Form_Decorator_Form
 {
     protected $localScriptFiles = '/gems/js/autoSubmitForm.js';
     protected $localScriptName = 'autoSubmitForm';
@@ -44,7 +45,7 @@ class Gems_Form_Decorator_Form extends \Zend_Form_Decorator_Form
             $jquery->enable();  //Just to make sure
 
             $params = $form->getAutoSubmit();
-            if (($view instanceof \Zend_View_Abstract) && ($params['submitUrl'] instanceof \MUtil_Html_HtmlInterface)) {
+            if (($view instanceof \Zend_View_Abstract) && ($params['submitUrl'] instanceof \MUtil\Html\HtmlInterface)) {
                 $params['submitUrl'] = $params['submitUrl']->render($view);
             }
 

@@ -4,8 +4,9 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Db;
 
 /**
  * Execute a certain patch command
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_ExecuteOnePatch extends \Gems_Task_Db_PatchAbstract
+class ExecuteOnePatch extends \Gems\Task\Db\PatchAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -36,7 +37,7 @@ class Gems_Task_Db_ExecuteOnePatch extends \Gems_Task_Db_PatchAbstract
         $db = $this->patcher->getPatchDatabase($location);
 
         $data['gpa_executed'] = 1;
-        $data['gpa_changed']  = new \MUtil_Db_Expr_CurrentTimestamp();
+        $data['gpa_changed']  = new \MUtil\Db\Expr\CurrentTimestamp();
 
         try {
             $stmt = $db->query($sql);
@@ -52,11 +53,11 @@ class Gems_Task_Db_ExecuteOnePatch extends \Gems_Task_Db_PatchAbstract
             $message = $e->getMessage();
 
             // Make sure these do not remain uncompleted
-            if (\MUtil_String::contains($message, 'Duplicate column name')) {
+            if (\MUtil\StringUtil\StringUtil::contains($message, 'Duplicate column name')) {
                 $data['gpa_result'] = 'Column exists in table';
                 $data['gpa_completed'] = 1;
-            } elseif (\MUtil_String::contains($message, "DROP") &&
-                    \MUtil_String::contains($message, 'check that column/key exists')) {
+            } elseif (\MUtil\StringUtil\StringUtil::contains($message, "DROP") &&
+                    \MUtil\StringUtil\StringUtil::contains($message, 'check that column/key exists')) {
                 $data['gpa_result'] = 'Column does not exists in table';
                 $data['gpa_completed'] = 1;
             } else {
@@ -68,7 +69,7 @@ class Gems_Task_Db_ExecuteOnePatch extends \Gems_Task_Db_PatchAbstract
 
         // $this->db, not the database the patch was executed on
         $this->db->update('gems__patches', $data, $this->db->quoteInto('gpa_id_patch = ?', $patchId));
-        // \MUtil_Echo::track($data, $patchId);
+        // \MUtil\EchoOut\EchoOut::track($data, $patchId);
 
         $batch->addToCounter('executed');
         $batch->setMessage('executed', sprintf($this->_('%d patch(es) executed.'), $batch->getCounter('executed')));

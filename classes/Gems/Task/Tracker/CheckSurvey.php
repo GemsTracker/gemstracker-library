@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Task\Tracker;
+
 /**
  *
  * @package    Gems
@@ -17,10 +19,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Tracker_CheckSurvey extends \MUtil_Task_TaskAbstract
+class CheckSurvey extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

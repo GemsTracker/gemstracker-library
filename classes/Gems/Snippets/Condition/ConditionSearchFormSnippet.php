@@ -18,11 +18,11 @@ namespace Gems\Snippets\Condition;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class ConditionSearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class ConditionSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

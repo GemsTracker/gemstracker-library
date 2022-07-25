@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event;
 
 /**
  * Abstract class for defining filters on answer displays
@@ -19,8 +20,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-abstract class Gems_Event_SurveyAnswerFilterAbstract extends \MUtil_Translate_TranslateableAbstract
-    implements \Gems_Event_SurveyDisplayEventInterface, \Gems_Tracker_Snippets_AnswerNameFilterInterface
+abstract class SurveyAnswerFilterAbstract extends \MUtil\Translate\TranslateableAbstract
+    implements \Gems\Event\SurveyDisplayEventInterface, \Gems\Tracker\Snippets\AnswerNameFilterInterface
 {
     /**
      *
@@ -30,19 +31,19 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends \MUtil_Translate_Tr
 
     /**
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
-    // public function filterAnswers(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames);
+    // public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames);
 
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
     {
         $this->token = $token;
 
@@ -58,16 +59,16 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends \MUtil_Translate_Tr
     /**
      * Returns only the headers
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function getHeaders(\MUtil_Model_ModelAbstract $model, array $currentNames)
+    protected function getHeaders(\MUtil\Model\ModelAbstract $model, array $currentNames)
     {
         $lastParent = null;
         $results    = array();
         foreach ($currentNames as $name) {
-            if ($model->is($name, 'type', \MUtil_Model::TYPE_NOVALUE)) {
+            if ($model->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
                 $results[$name] = $name;
 
             } elseif ($parent = $model->get($name, 'parent_question')) {
@@ -91,16 +92,16 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends \MUtil_Translate_Tr
      * to their sub-questions position. (NOTE: As in LimeSurvey their are no question
      * headers with values we leave it at this for the moment.)
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function restoreHeaderPositions(\MUtil_Model_ModelAbstract $model, array $currentNames)
+    protected function restoreHeaderPositions(\MUtil\Model\ModelAbstract $model, array $currentNames)
     {
         $lastParent = null;
         $results    = array();
         foreach ($currentNames as $name) {
-            if ($model->is($name, 'type', \MUtil_Model::TYPE_NOVALUE)) {
+            if ($model->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
                 // Skip header types that contain no value
                 continue;
             }

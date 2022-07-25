@@ -31,14 +31,14 @@ class LegacyFactory implements FactoryInterface
         $this->init();
 
         switch ($requestedName) {
-            case \Gems_Loader::class:
-            case \Gems_Util::class:
-            case \Gems_Tracker::class:
-            case \Gems_Events::class:
-            case \Gems_Agenda::class:
-            case \Gems_Model::class:
-            case \Gems_Menu::class:
-            case \Gems_User_UserLoader::class:
+            case \Gems\Loader::class:
+            case \Gems\Util::class:
+            case \Gems\Tracker::class:
+            case \Gems\Events::class:
+            case \Gems\Agenda::class:
+            case \Gems\Model::class:
+            case \Gems\Menu::class:
+            case \Gems\User\UserLoader::class:
                 $requestedName = $this->stripOverloader($requestedName);
                 return $this->loader->create($requestedName, $this->loader, []);
 
@@ -48,11 +48,11 @@ class LegacyFactory implements FactoryInterface
             case \Zend_Acl::class:
                 return $this->getAcl();
 
-            case \Gems_Project_ProjectSettings::class:
+            case \Gems\Project\ProjectSettings::class:
                 $project = $this->getProjectSettings();
                 return $project;
 
-            case \Gems_Util_BasePath::class:
+            case \Gems\Util\BasePath::class:
                 $requestedName = $this->stripOverloader($requestedName);
                 $basePath = $this->loader->create($requestedName, $this->loader, []);
                 $basePath->setBasePath('/');
@@ -95,7 +95,7 @@ class LegacyFactory implements FactoryInterface
         //$roles = $this->loader->create('Roles', $cache, $logger);
         try {
             $roles = $this->loader->create('Roles', $this->container->get(CacheItemPoolInterface::class), $this->container->get('LegacyLogger'));
-        } catch (\Gems_Exception $e) {
+        } catch (\Gems\Exception $e) {
         }
 
         return $roles->getAcl();
@@ -160,10 +160,10 @@ class LegacyFactory implements FactoryInterface
         $project = $this->loader->create('Project\\ProjectSettings', $projectArray);
 
         /* Testing if the supplied projectSettings is a class is supported in Gemstracker, but not used. For now it's disabled.
-        /*if ($projectArray instanceof \Gems_Project_ProjectSettings) {
+        /*if ($projectArray instanceof \Gems\Project\ProjectSettings) {
             $project = $projectArray;
         } else {
-            $project = $this->loader->create('Project_ProjectSettings', $projectArray);
+            $project = $this->loader->create('Project\\ProjectSettings', $projectArray);
         }*/
 
         return $project;
@@ -204,7 +204,7 @@ class LegacyFactory implements FactoryInterface
         $translate = new \Zend_Translate($options);
         // If we don't find the needed language, use a fake translator to disable notices
         if (! $translate->isAvailable($language)) {
-            $translate = \MUtil_Translate_Adapter_Potemkin::create();
+            $translate = \MUtil\Translate\Adapter\Potemkin::create();
         }
 
         $translate->setLocale($language);
@@ -228,7 +228,7 @@ class LegacyFactory implements FactoryInterface
         // Initialize view
         $view = new View();
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
-        $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');
+        $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil\Less_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
         $view->headTitle($project->getName());
         $view->setEncoding('UTF-8');

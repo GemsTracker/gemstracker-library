@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
  *
@@ -20,11 +22,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
+abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\ModelYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -45,14 +47,14 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -62,11 +64,11 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -81,7 +83,7 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function findMenuItem($controller, $action = 'index')
     {
@@ -91,7 +93,7 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItem()
     {
@@ -104,13 +106,13 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         if ($table = parent::getHtmlOutput($view)) {
             if ($title = $this->getTitle()) {
-                $htmlDiv = \MUtil_Html::div();
+                $htmlDiv = \MUtil\Html::div();
 
                 $htmlDiv->h3($title);
 
@@ -154,11 +156,11 @@ abstract class Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract extends \MUtil_
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 

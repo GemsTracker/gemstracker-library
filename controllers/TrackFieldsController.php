@@ -6,7 +6,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -18,6 +17,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class TrackFieldsController extends Gems_Default_TrackFieldsAction
+class TrackFieldsController extends \Gems\Actions\TrackFieldsAction
 {
 }

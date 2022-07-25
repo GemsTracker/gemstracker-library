@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is kept for reference after deleting the obsolete Zend_Db_Statement replacement
+ * This file is kept for reference after deleting the obsolete \Zend_Db_Statement replacement
  * Only change was in the regular expression in the _stripQuoted() method
  * OLD
  * $regex = "/$q([^$q{$escapeChar}]*|($qe)*)*$q/s"

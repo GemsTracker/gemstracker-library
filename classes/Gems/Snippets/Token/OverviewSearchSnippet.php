@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OverviewSearchSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Token;
@@ -46,9 +45,9 @@ class OverviewSearchSnippet extends PlanSearchSnippet
         // Has no function here
         unset($elements['token_status']);
 
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_FACTOR);
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_GROUP);
-        $elements[] = new \Zend_Form_Element_Hidden(\Gems_Selector_DateSelectorAbstract::DATE_TYPE);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems\Selector\DateSelectorAbstract::DATE_FACTOR);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems\Selector\DateSelectorAbstract::DATE_GROUP);
+        $elements[] = new \Zend_Form_Element_Hidden(\Gems\Selector\DateSelectorAbstract::DATE_TYPE);
 
         return $elements;
     }

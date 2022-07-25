@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -29,7 +28,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache
     protected $_identifier = 'cache';
 
     /**
-     * @var Zend_Cache_Backend_ExtendedInterface
+     * @var \Zend_Cache_Backend_ExtendedInterface
      */
     protected $_cacheBackends = array();
 
@@ -42,11 +41,11 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache
     public function __construct(array $options = array())
     {
         if (!isset($options['backend'])) {
-            throw new Zend_Exception("ZFDebug: Cache plugin needs 'backend' parameter");
+            throw new \Zend_Exception("ZFDebug: Cache plugin needs 'backend' parameter");
         }
         is_array($options['backend']) || $options['backend'] = array($options['backend']);
         foreach ($options['backend'] as $name => $backend) {
-            if ($backend instanceof Zend_Cache_Backend_ExtendedInterface ) {
+            if ($backend instanceof \Zend_Cache_Backend_ExtendedInterface ) {
                 $this->_cacheBackends[$name] = $backend;
             }
         }

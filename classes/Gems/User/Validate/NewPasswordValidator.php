@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Validate;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Validate_NewPasswordValidator implements \Zend_Validate_Interface
+class NewPasswordValidator implements \Zend_Validate_Interface
 {
     /**
      * The reported problems with the password.
@@ -29,15 +31,15 @@ class Gems_User_Validate_NewPasswordValidator implements \Zend_Validate_Interfac
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     private $_user;
 
     /**
      *
-     * @param \Gems_User_User $user The user to check
+     * @param \Gems\User\User $user The user to check
      */
-    public function __construct(\Gems_User_User $user)
+    public function __construct(\Gems\User\User $user)
     {
         $this->_user = $user;
     }
@@ -62,7 +64,7 @@ class Gems_User_Validate_NewPasswordValidator implements \Zend_Validate_Interfac
             $report = ucfirst($report) . '.';
         }
 
-        // \MUtil_Echo::track($value, $this->_report);
+        // \MUtil\EchoOut\EchoOut::track($value, $this->_report);
 
         return ! (boolean) $this->_report;
     }

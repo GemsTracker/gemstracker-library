@@ -24,11 +24,11 @@ use MUtil\Model\Type\JsonData;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 16:53:36
  */
-class LogModel extends \Gems_Model_HiddenOrganizationModel
+class LogModel extends \Gems\Model\HiddenOrganizationModel
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -48,7 +48,7 @@ class LogModel extends \Gems_Model_HiddenOrganizationModel
                 ->addLeftTable('gems__respondents', array('gla_respondent_id' => 'grs_id_user'))
                 ->addLeftTable('gems__staff', array('gla_by' => 'gsf_id_user'));
 
-        $this->setKeys(array(\Gems_Model::LOG_ITEM_ID => 'gla_id'));
+        $this->setKeys(array(\Gems\Model::LOG_ITEM_ID => 'gla_id'));
     }
 
     /**

@@ -4,18 +4,19 @@
 /**
  * A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.
  *
- * @version $Id$
  * @author 175780
  * @filesource
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_TabGroup extends \Zend_Form_DisplayGroup {
+namespace Gems\Form;
+
+class TabGroup extends \Zend_Form_DisplayGroup {
 
     private $_alternate = null;
 
     public function  __construct($name, \Zend_Loader_PluginLoader $loader, $options = null) {
-        $this->_alternate = new \MUtil_Lazy_Alternate(array('odd','even'));
+        $this->_alternate = new \MUtil\Lazy\Alternate(array('odd','even'));
         parent::__construct($name, $loader, $options);
     }
 

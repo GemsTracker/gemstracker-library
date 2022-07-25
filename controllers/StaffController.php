@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -19,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class StaffController extends Gems_Default_StaffAction
+class StaffController extends \Gems\Actions\StaffAction
 { }

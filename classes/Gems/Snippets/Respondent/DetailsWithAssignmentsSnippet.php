@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Respondent;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class DetailsWithAssignmentsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbstract
+class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbstract
 {
     /**
      * Require
@@ -32,21 +31,21 @@ class DetailsWithAssignmentsSnippet extends \Gems_Snippets_RespondentDetailSnipp
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
     /**
      * Place to set the data to display
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addTableCells(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
         $bridge->setColumnCount(1);
 
-        $HTML = \MUtil_Html::create();
+        $HTML = \MUtil\Html::create();
 
         $bridge->tdh($this->getCaption(), array('colspan' => 2));
 
@@ -68,7 +67,7 @@ class DetailsWithAssignmentsSnippet extends \Gems_Snippets_RespondentDetailSnipp
 
         // Column for tracks
         $tracksModel = $this->model->getRespondentTracksModel();
-        $tracksData  = \MUtil_Lazy::repeat(
+        $tracksData  = \MUtil\Lazy::repeat(
             $tracksModel->load(
                 array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization),
                 array('gr2t_created' => SORT_DESC)));
@@ -84,7 +83,7 @@ class DetailsWithAssignmentsSnippet extends \Gems_Snippets_RespondentDetailSnipp
         $tracksTarget[] = ' ';
         $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
         $tracksTarget[] = ' ';
-        $tracksTarget[] = \MUtil_Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
+        $tracksTarget[] = \MUtil\Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
         $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
 
         // OTHER ROWS

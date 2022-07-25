@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 class AnswerFilterEvent extends Event
 {
     /**
-     * @var \MUtil_Model_Bridge_TableBridge
+     * @var \MUtil\Model\Bridge\TableBridge
      */
     protected $bridge;
 
@@ -19,17 +19,17 @@ class AnswerFilterEvent extends Event
     protected $currentNames;
 
     /**
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * AnswerFilterEvent constructor.
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames
      */
-    public function __construct(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function __construct(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
     {
         $this->bridge = $bridge;
         $this->model = $model;

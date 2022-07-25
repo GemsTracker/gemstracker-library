@@ -16,7 +16,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteMaintenanceController extends \Gems_Default_SiteMaintenanceAction
+class SiteMaintenanceController extends \Gems\Actions\SiteMaintenanceAction
 {
 
 }

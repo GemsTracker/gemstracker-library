@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Tracker\Fields;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Tracker_Fields_FieldsAutosearchForm extends \Gems_Snippets_AutosearchFormSnippet
+class FieldsAutosearchForm extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -34,9 +35,9 @@ class Gems_Snippets_Tracker_Fields_FieldsAutosearchForm extends \Gems_Snippets_A
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID);
         $elements[] = $this->_createSelectElement('gtf_field_type', $this->model, $this->_('(all types)'));
-        $elements[] = \MUtil_Html::create('br');
+        $elements[] = \MUtil\Html::create('br');
 
         return $elements;
     }
@@ -52,7 +53,7 @@ class Gems_Snippets_Tracker_Fields_FieldsAutosearchForm extends \Gems_Snippets_A
     {
         $neededParams = parent::getFixedParams();
         
-        $neededParams[] = \MUtil_Model::REQUEST_ID;
+        $neededParams[] = \MUtil\Model::REQUEST_ID;
         
         return $neededParams;
         

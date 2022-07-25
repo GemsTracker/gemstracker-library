@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  *
  * @package    Gems
@@ -17,125 +19,125 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Loader extends \Gems_Loader_LoaderAbstract
+class Loader extends \Gems\Loader\LoaderAbstract
 {
     /**
      *
-     * @var array of arrays of \Gems_Tracker_Respondent
+     * @var array of arrays of \Gems\Tracker\Respondent
      */
     private $_respondents = array();
 
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_Events
+     * @var \Gems\Events
      */
     protected $events;
 
     /**
      *
-     * @var \Gems_Export
+     * @var \Gems\Export
      */
     protected $export;
 
     /**
      *
-     * @var \Gems_Import_ImportLoader
+     * @var \Gems\Import\ImportLoader
      */
     protected $importLoader;
 
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Model
+     * @var \Gems\Model
      */
     protected $models;
 
     /**
      *
-     * @var \Gems_Pdf
+     * @var \Gems\Pdf
      */
     protected $pdf;
 
     /**
      *
-     * @var \Gems_Export_RespondentExport
+     * @var \Gems\Export\RespondentExport
      */
     protected $respondentexport;
 
     /**
      *
-     * @var \Gems_Roles
+     * @var \Gems\Roles
      */
     protected $roles;
 
     /**
      *
-     * @var \Gems_Selector
+     * @var \Gems\Selector
      */
     protected $selector;
 
     /**
      *
-     * @var \Gems_Snippets_SnippetLoader
+     * @var \Gems\Snippets\SnippetLoader
      */
     protected $snippetLoader;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var \Gems_Upgrades
+     * @var \Gems\Upgrades
      */
     protected $upgrades;
 
     /**
      *
-     * @var \Gems_User_UserLoader
+     * @var \Gems\User\UserLoader
      */
     protected $userLoader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      *
-     * @var \Gems_Versions
+     * @var \Gems\Versions
      */
     protected $versions;
 
     /**
-     * Load project specific menu or general Gems menu otherwise
+     * Load project specific menu or general \Gems menu otherwise
      *
-     * @param \GemsEscort $escort
-     * @return \Gems_Menu
+     * @param \Gems\Escort $escort
+     * @return \Gems\Menu
      */
-    public function createMenu(\GemsEscort $escort)
+    public function createMenu(\Gems\Escort $escort)
     {
         return $this->_getClass('menu', 'Menu', func_get_args());
     }
 
     /**
      *
-     * @return \Gems_Agenda
+     * @return \Gems\Agenda
      */
     public function getAgenda()
     {
@@ -162,7 +164,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getCurrentUser()
     {
@@ -200,7 +202,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Events
+     * @return \Gems\Events
      */
     public function getEvents()
     {
@@ -209,7 +211,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Export
+     * @return \Gems\Export
      */
     public function getExport()
     {
@@ -218,7 +220,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Export_ModelSource_ExportModelSourceAbstract
+     * @return \Gems\Export\ModelSource\ExportModelSourceAbstract
      */
     public function getExportModelSource($exportModelSourceName)
     {
@@ -232,7 +234,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      * fixed there and code completion would work like desired
      *
      * @param string $name
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @return mixed
      */
@@ -245,15 +247,15 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Import_ImportLoader
+     * @return \Gems\Import\ImportLoader
      */
     public function getImportLoader()
     {
-        return $this->_getClass('importLoader', 'Import_ImportLoader');
+        return $this->_getClass('importLoader', 'Import\\ImportLoader');
     }
 
     /**
-     * @return \Gems_Mail
+     * @return \Gems\Mail
      */
     public function getMail($charset = null)
     {
@@ -261,11 +263,11 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
-     * @return \Gems_Mail_MailLoader
+     * @return \Gems\Mail\MailLoader
      */
     public function getMailLoader()
     {
-        return $this->_getClass('mailLoader', 'Mail_MailLoader');
+        return $this->_getClass('mailLoader', 'Mail\\MailLoader');
     }
 
     /**
@@ -279,9 +281,9 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     }
 
     /**
-     * Get the project specific menu or general Gems menu otherwise
+     * Get the project specific menu or general \Gems menu otherwise
      *
-     * @return \Gems_Menu
+     * @return \Gems\Menu
      */
     public function getMenu()
     {
@@ -294,12 +296,12 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      */
     public function getMessenger()
     {
-        return $this->_getClass('flashMessenger', 'Controller_Action_Helper_FlashMessenger');
+        return $this->_getClass('flashMessenger', 'Controller\\Action\\Helper\\FlashMessenger');
     }
 
     /**
      *
-     * @return \Gems_Model
+     * @return \Gems\Model
      */
     public function getModels()
     {
@@ -310,7 +312,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      * Returns an organization object, initiated from the database.
      *
      * @param int $organizationId Optional, uses current user when empty
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getOrganization($organizationId = null)
     {
@@ -321,7 +323,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Pdf
+     * @return \Gems\Pdf
      */
     public function getPdf()
     {
@@ -334,7 +336,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      * @param string $patientId   Patient number, you can use $respondentId instead
      * @param int $organizationId Organization id
      * @param int $respondentId   Optional respondent id, used when patient id is empty
-     * @return \Gems_Tracker_Respondent
+     * @return \Gems\Tracker\Respondent
      */
     public function getRespondent($patientId, $organizationId, $respondentId = null)
     {
@@ -343,7 +345,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
                 return $this->_respondents[$organizationId][$patientId];
             }
         }
-        $newResp = $this->_loadClass('Tracker_Respondent', true, array($patientId, $organizationId, $respondentId));
+        $newResp = $this->_loadClass('Tracker\\Respondent', true, array($patientId, $organizationId, $respondentId));
         $patientId = $newResp->getPatientNumber();
 
         if (! isset($this->_respondents[$organizationId][$patientId])) {
@@ -356,21 +358,21 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
     /**
      * Get a new respondentExport
      *
-     * @return \Gems_Export_RespondentExport
+     * @return \Gems\Export\RespondentExport
      */
     public function getRespondentExport()
     {
-        $class = $this->_loadClass('Export_RespondentExport', true);
+        $class = $this->_loadClass('Export\\RespondentExport', true);
 
         return $class;
     }
 
     /**
      *
-     * @param GemsEscort $escort
-     * @return \Gems_Roles
+     * @param \Gems\Escort $escort
+     * @return \Gems\Roles
      */
-    public function getRoles(\GemsEscort $escort)
+    public function getRoles(\Gems\Escort $escort)
     {
         return $this->_getClass('roles', null, array($escort, $escort->logger));
     }
@@ -386,7 +388,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Selector
+     * @return \Gems\Selector
      */
     public function getSelector()
     {
@@ -395,11 +397,11 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Snippets_SnippetLoader
+     * @return \Gems\Snippets\SnippetLoader
      */
     public function getSnippetLoader($container)
     {
-        $class = $this->_getClass('snippetLoader', 'Snippets_SnippetLoader');
+        $class = $this->_getClass('snippetLoader', 'Snippets\\SnippetLoader');
 
         //now add the calling class as a container
         $class->getSource()->addRegistryContainer($container);
@@ -412,16 +414,16 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      */
     public function getSubscriptionThrottleValidator()
     {
-        return $this->_loadClass('Validate_SubscriptionThrottleValidator', true);
+        return $this->_loadClass('Validate\\SubscriptionThrottleValidator', true);
     }
 
     /**
      *
      * @param string $id
-     * @param \MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
-     * @return \Gems_Task_TaskRunnerBatch
+     * @param \MUtil\Batch\Stack\Stackinterface $stack Optional different stack than session stack
+     * @return \Gems\Task\TaskRunnerBatch
      */
-    public function getTaskRunnerBatch($id, \MUtil_Batch_Stack_Stackinterface $stack = null)
+    public function getTaskRunnerBatch($id, \MUtil\Batch\Stack\Stackinterface $stack = null)
     {
         $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
 
@@ -430,12 +432,12 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
             // Make sure the cache is caching
             if (($cache instanceof \Zend_Cache_Core) && $cache->getOption('caching')) {
-                $stack = new \MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
+                $stack = new \MUtil\Batch\Stack\CacheStack($id, $this->_containers[0]->cache);
             }
         }
-        $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array_filter(array($id, $stack)));
+        $taskBatch = $this->_loadClass('Task\\TaskRunnerBatch', true, array_filter(array($id, $stack)));
 
-        if ($taskBatch instanceof \MUtil_Task_TaskBatch) {
+        if ($taskBatch instanceof \MUtil\Task\TaskBatch) {
             $taskBatch->setSource($this);
             $taskBatch->addTaskLoaderPrefixDirectories($this->_cascadedDirs($this->_dirs, 'Task'));
         }
@@ -445,7 +447,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Tracker_TrackerInterface
+     * @return \Gems\Tracker\TrackerInterface
      */
     public function getTracker()
     {
@@ -454,7 +456,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Upgrades
+     * @return \Gems\Upgrades
      */
     public function getUpgrades()
     {
@@ -465,7 +467,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getUser($login_name, $organization)
     {
@@ -476,11 +478,11 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_User_UserLoader
+     * @return \Gems\User\UserLoader
      */
     public function getUserLoader()
     {
-        return $this->_getClass('userLoader', 'User_UserLoader');
+        return $this->_getClass('userLoader', 'User\\UserLoader');
     }
 
     /**
@@ -494,7 +496,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Util
+     * @return \Gems\Util
      */
     public function getUtil()
     {
@@ -503,7 +505,7 @@ class Gems_Loader extends \Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return \Gems_Versions
+     * @return \Gems\Versions
      */
     public function getVersions()
     {

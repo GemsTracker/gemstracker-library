@@ -19,11 +19,11 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 18-Apr-2018 18:40:08
  */
-class TrackTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -42,7 +42,7 @@ class TrackTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -52,9 +52,9 @@ class TrackTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         parent::processFilterAndSort($model);
 

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  *
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Tracker_RefreshQuestion extends \MUtil_Task_TaskAbstract
+class RefreshQuestion extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -27,7 +28,7 @@ class Gems_Task_Tracker_RefreshQuestion extends \MUtil_Task_TaskAbstract
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -50,13 +51,13 @@ class Gems_Task_Tracker_RefreshQuestion extends \MUtil_Task_TaskAbstract
 
         // Now save the questions
         $answerModel   = $survey->getAnswerModel('en');
-        $questionModel = new \MUtil_Model_TableModel('gems__survey_questions');
+        $questionModel = new \MUtil\Model\TableModel('gems__survey_questions');
 
-        \Gems_Model::setChangeFieldsByPrefix($questionModel, 'gsq');
+        \Gems\Model::setChangeFieldsByPrefix($questionModel, 'gsq');
 
         $label = $answerModel->get($questionId, 'label');
         /*
-        if ($label instanceof \MUtil_Html_HtmlInterface) {
+        if ($label instanceof \MUtil\Html\HtmlInterface) {
             $label = $label->render($this->view);
         }
         // */
@@ -65,13 +66,13 @@ class Gems_Task_Tracker_RefreshQuestion extends \MUtil_Task_TaskAbstract
         $question['gsq_name']        = $questionId;
         $question['gsq_name_parent'] = $answerModel->get($questionId, 'parent_question');
         $question['gsq_order']       = $order;
-        $question['gsq_type']        = $answerModel->getWithDefault($questionId, 'type', \MUtil_Model::TYPE_STRING);
+        $question['gsq_type']        = $answerModel->getWithDefault($questionId, 'type', \MUtil\Model::TYPE_STRING);
         $question['gsq_class']       = $answerModel->get($questionId, 'thClass');
         $question['gsq_group']       = $answerModel->get($questionId, 'group');
         $question['gsq_label']       = $label;
         $question['gsq_description'] = $answerModel->get($questionId, 'description');
 
-        // \MUtil_Echo::track($question);
+        // \MUtil\EchoOut\EchoOut::track($question);
         try {
             $questionModel->save($question);
         } catch (\Exception $e) {
@@ -94,14 +95,14 @@ class Gems_Task_Tracker_RefreshQuestion extends \MUtil_Task_TaskAbstract
 
         $options = $answerModel->get($questionId, 'multiOptions');
         if ($options) {
-            $optionModel   = new \MUtil_Model_TableModel('gems__survey_question_options');
-            \Gems_Model::setChangeFieldsByPrefix($optionModel, 'gsqo');
+            $optionModel   = new \MUtil\Model\TableModel('gems__survey_question_options');
+            \Gems\Model::setChangeFieldsByPrefix($optionModel, 'gsqo');
 
             $option['gsqo_id_survey'] = $surveyId;
             $option['gsqo_name']      = $questionId;
             $i = 0;
 
-            // \MUtil_Echo::track($options);
+            // \MUtil\EchoOut\EchoOut::track($options);
             foreach ($options as $key => $label) {
                 $option['gsqo_order'] = $i;
                 $option['gsqo_key']   = $key;

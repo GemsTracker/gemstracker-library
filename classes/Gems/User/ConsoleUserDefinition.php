@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User;
 
 /**
  * The user used when GemsTracker is called form the console
@@ -19,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_ConsoleUserDefinition extends \Gems_User_UserDefinitionAbstract
+class ConsoleUserDefinition extends \Gems\User\UserDefinitionAbstract
 {
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -35,11 +36,11 @@ class Gems_User_ConsoleUserDefinition extends \Gems_User_UserDefinitionAbstract
     /**
      * Returns an initialized \Zend_Auth_Adapter_Interface
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password
      * @return \Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter(\Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems\User\User $user, $password)
     {
         return (boolean) $this->project->getConsoleRole();
     }
@@ -74,7 +75,7 @@ class Gems_User_ConsoleUserDefinition extends \Gems_User_UserDefinitionAbstract
         }
 
         return array(
-            'user_id'                => \Gems_User_UserLoader::SYSTEM_USER_ID,
+            'user_id'                => \Gems\User\UserLoader::SYSTEM_USER_ID,
             'user_login'             => $login_name,
             'user_name'              => $login_name,
             'user_group'             => 800,

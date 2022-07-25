@@ -6,8 +6,9 @@
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery\View\Helper;
 
 require_once "ZendX/JQuery/View/Helper/TabContainer.php";
 
@@ -19,7 +20,7 @@ require_once "ZendX/JQuery/View/Helper/TabContainer.php";
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_JQuery_View_Helper_TabContainer extends \ZendX_JQuery_View_Helper_TabContainer
+class TabContainer extends \ZendX_JQuery_View_Helper_TabContainer
 {
 
     /**

@@ -16,7 +16,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class MailCodeController extends \Gems_Default_MailCodeAction
+class MailCodeController extends \Gems\Actions\MailCodeAction
 {
 
 }

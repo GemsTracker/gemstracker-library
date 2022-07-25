@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SaveRespondentTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
+
+namespace Gems\Task\Import;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1 13-jul-2015 18:01:44
  */
-class Gems_Task_Import_SaveRespondentTask extends \MUtil_Task_Import_SaveToModel
+class SaveRespondentTask extends \MUtil\Task\Import\SaveToModel
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -39,10 +40,10 @@ class Gems_Task_Import_SaveRespondentTask extends \MUtil_Task_Import_SaveToModel
         if ($row) {
             if ((! isset($row['grs_id_user'])) &&
                     isset($row['grs_ssn']) &&
-                    $this->targetModel instanceof \Gems_Model_RespondentModel &&
-                    $this->targetModel->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
+                    $this->targetModel instanceof \Gems\Model\RespondentModel &&
+                    $this->targetModel->hashSsn !== \Gems\Model\RespondentModel::SSN_HIDE) {
 
-                if (\Gems_Model_RespondentModel::SSN_HASH === $this->targetModel->hashSsn) {
+                if (\Gems\Model\RespondentModel::SSN_HASH === $this->targetModel->hashSsn) {
                     $search = $this->targetModel->saveSSN($row['grs_ssn']);
                 } else {
                     $search = $row['grs_ssn'];
@@ -54,7 +55,7 @@ class Gems_Task_Import_SaveRespondentTask extends \MUtil_Task_Import_SaveToModel
                 // Check for change in patient ID
                 if ($id) {
                     if (isset($row['gr2o_id_organization']) &&
-                            $this->targetModel instanceof \MUtil_Model_DatabaseModelAbstract) {
+                            $this->targetModel instanceof \MUtil\Model\DatabaseModelAbstract) {
 
                         $sql = 'SELECT gr2o_patient_nr
                                 FROM gems__respondent2org

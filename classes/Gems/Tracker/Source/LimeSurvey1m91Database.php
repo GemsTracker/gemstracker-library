@@ -6,8 +6,9 @@
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Source;
 
 /**
  * Class description of LimeSurvey1m91Database
@@ -21,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.1
  */
-class Gems_Tracker_Source_LimeSurvey1m91Database extends \Gems_Tracker_Source_LimeSurvey1m9Database
+class LimeSurvey1m91Database extends \Gems\Tracker\Source\LimeSurvey1m9Database
 {
     /**
      * In 1.91 the field private = y was changed to anonymized = y
@@ -35,10 +36,10 @@ class Gems_Tracker_Source_LimeSurvey1m91Database extends \Gems_Tracker_Source_Li
      *
      * Added the usesleft value.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of fieldname => value type
      */
-    protected function _fillAttributeMap(\Gems_Tracker_Token $token)
+    protected function _fillAttributeMap(\Gems\Tracker\Token $token)
     {
         $values = parent::_fillAttributeMap($token);
 

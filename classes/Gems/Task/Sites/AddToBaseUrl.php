@@ -18,10 +18,10 @@ namespace Gems\Task\Sites;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class AddToBaseUrl extends \MUtil_Task_TaskAbstract
+class AddToBaseUrl extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

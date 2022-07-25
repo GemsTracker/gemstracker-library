@@ -22,7 +22,7 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 24-sep-2015 11:37:10
  */
-class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
+class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
@@ -43,13 +43,13 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \MUtil_Registry_Source
+     * @var \MUtil\Registry\Source
      */
     protected $source;
 
@@ -57,16 +57,16 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
      * Returns a callable if a method is called as a variable
      *
      * @param string $name
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
     public function __get($name)
     {
         if (method_exists($this, $name)) {
             // Return a callable
-            return \MUtil_Lazy::call(array($this, $name));
+            return \MUtil\Lazy::call(array($this, $name));
         }
 
-        throw new \Gems_Exception_Coding("Unknown method '$name' requested as callable.");
+        throw new \Gems\Exception\Coding("Unknown method '$name' requested as callable.");
     }
 
     /**
@@ -310,7 +310,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         $cacheId   = $this->cleanupForCacheId("__trans $table $key $label $where ");
         $cacheLang = $cacheId . $this->cleanupForCacheId($lang . "_");
 
-        // \MUtil_Echo::track($cacheId, $cacheLang);
+        // \MUtil\EchoOut\EchoOut::track($cacheId, $cacheLang);
 
         $result = $this->cache->getCacheItem($cacheLang);
         if ($result) {
@@ -346,7 +346,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
                 ->where('LENGTH(gtrs_translation) > 0');
 
             $translations = $this->db->fetchPairs($tSelect);
-            // \MUtil_Echo::track($tSelect->__toString(), $translations);
+            // \MUtil\EchoOut\EchoOut::track($tSelect->__toString(), $translations);
 
             if ($translations) {
                 foreach ($result as $item => $value) {
@@ -361,7 +361,7 @@ class UtilAbstract extends \MUtil_Translate_TranslateableAbstract
         if ($result && $sort) {
             $this->_sortResult($result, $sort);
         }
-        // \MUtil_Echo::track($result);
+        // \MUtil\EchoOut\EchoOut::track($result);
 
         // Save the translated version
         $this->cache->setCacheItem($cacheLang, $result, (array) $tags);

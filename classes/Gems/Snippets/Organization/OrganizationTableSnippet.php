@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OrganizationTableSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Organization;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     /**
      * Set a fixed model sort.
@@ -38,11 +37,11 @@ class OrganizationTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->tr()->class = $bridge->row_class;
 
@@ -53,15 +52,15 @@ class OrganizationTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        $br = \MUtil_Html::create()->br();
+        $br = \MUtil\Html::create()->br();
 
-        $orgName[] = \MUtil_Lazy::iff($bridge->gor_url,
-                \MUtil_Html_AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank', 'class' => 'globe')),
+        $orgName[] = \MUtil\Lazy::iff($bridge->gor_url,
+                \MUtil\Html\AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank', 'class' => 'globe')),
                 $bridge->gor_name);
         $orgName[] = $bridge->createSortLink('gor_name');
 
-        $mailName[] = \MUtil_Lazy::iff($bridge->gor_contact_email,
-                \MUtil_Html_AElement::email(\MUtil_Lazy::first($bridge->gor_contact_name, $bridge->gor_contact_email), array('href' => array('mailto:', $bridge->gor_contact_email))),
+        $mailName[] = \MUtil\Lazy::iff($bridge->gor_contact_email,
+                \MUtil\Html\AElement::email(\MUtil\Lazy::first($bridge->gor_contact_name, $bridge->gor_contact_email), array('href' => array('mailto:', $bridge->gor_contact_email))),
                 $bridge->gor_contact_name);
         $mailName[] = $bridge->createSortLink('gor_contact_name');
 

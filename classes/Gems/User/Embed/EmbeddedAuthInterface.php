@@ -24,16 +24,16 @@ interface EmbeddedAuthInterface extends HelperInterface
     /**
      * Authenticate embedded user
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(\Gems_User_User $user, $secretKey);
+    public function authenticate(\Gems\User\User $user, $secretKey);
 
     /**
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems_User_User $user);
+    public function getExampleKey(\Gems\User\User $user);
 }

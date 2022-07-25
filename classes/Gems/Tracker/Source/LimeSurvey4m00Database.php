@@ -1,7 +1,9 @@
 <?php
 
 
-class Gems_Tracker_Source_LimeSurvey4m00Database extends \Gems_Tracker_Source_LimeSurvey3m00Database
+namespace Gems\Tracker\Source;
+
+class LimeSurvey4m00Database extends \Gems\Tracker\Source\LimeSurvey3m00Database
 {
 
     /**

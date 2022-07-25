@@ -22,7 +22,7 @@ class LegacyZendDatabaseFactory implements FactoryInterface
         $databaseConfig = $config['db'];
 
         /**
-         * Zend\Db (2.x) uses other configuration names vs Zend_Db:
+         * Zend\Db (2.x) uses other configuration names vs \Zend_Db:
          * adapter => driver
          * dbname  => database
          */

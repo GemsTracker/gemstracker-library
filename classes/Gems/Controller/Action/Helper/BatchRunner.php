@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Controller\Action\Helper;
+
 /**
  * This helper provides an easy method for running tasks in batch.
  *
@@ -18,15 +20,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_Helper_Abstract
+class BatchRunner extends \Zend_Controller_Action_Helper_Abstract
 {
     /**
      *
-     * @param \MUtil_Batch_BatchAbstract $batch
+     * @param \MUtil\Batch\BatchAbstract $batch
      * @param string $title
-     * @param \Gems_AccessLog $accessLog
+     * @param \Gems\AccessLog $accessLog
      */
-    public function direct(\MUtil_Batch_BatchAbstract $batch, $title, $accessLog = null)
+    public function direct(\MUtil\Batch\BatchAbstract $batch, $title, $accessLog = null)
     {
 
         if ($batch->isConsole()) {
@@ -35,12 +37,12 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
             $messages = array_values($batch->getMessages(true));
             echo implode("\n", $messages) . "\n";
 
-            $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::out())));
+            $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil\EchoOut\EchoOut::out())));
             if ($echo) {
                 echo "\n\n================================================================\nECHO OUTPUT:\n\n";
                 echo implode("\n", $echo);
             }
-            if ($accessLog instanceof \Gems_AccessLog) {
+            if ($accessLog instanceof \Gems\AccessLog) {
                 array_unshift($messages, $title);
                 $accessLog->logChange($this->getRequest(), $messages, $echo);
             }
@@ -56,9 +58,9 @@ class Gems_Controller_Action_Helper_BatchRunner extends \Zend_Controller_Action_
                 $messages = array_values($batch->getMessages(true));
                 $controller->addMessage($messages, 'info');
                 $batchContainer->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
-                if ($accessLog instanceof \Gems_AccessLog) {
+                if ($accessLog instanceof \Gems\AccessLog) {
                     array_unshift($messages, $title);
-                    $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil_Echo::getOutput())));
+                    $echo = array_filter(array_map('trim', preg_split('/<[^>]+>/', \MUtil\EchoOut\EchoOut::getOutput())));
                     $accessLog->logChange($this->getRequest(), $messages, $echo);
                 }
             } else {

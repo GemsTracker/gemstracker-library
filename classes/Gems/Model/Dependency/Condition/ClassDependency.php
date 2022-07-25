@@ -67,13 +67,13 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $util;
 
@@ -105,7 +105,7 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
             try {
                 $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
                 $changes = [
-                        'condition_help' => ['value' => \MUtil_Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
+                        'condition_help' => ['value' => \MUtil\Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
                     ] + $condition->getModelFields($context, $new);
             } catch (ConditionLoadException $cle) {
                 $changes = [

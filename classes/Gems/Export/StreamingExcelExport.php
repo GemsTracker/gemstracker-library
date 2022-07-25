@@ -46,7 +46,7 @@ class StreamingExcelExport extends ExportAbstract
 
     /**
      * form elements for extra options for this particular export option
-     * @param  \MUtil_Form $form Current form to add the form elements
+     * @param  \MUtil\Form $form Current form to add the form elements
      * @param  array $data current options set in the form
      * @return array Form elements
      */
@@ -297,12 +297,12 @@ class StreamingExcelExport extends ExportAbstract
         if (isset($this->data[$exportName]) &&
                 isset($this->data[$exportName]['format']) &&
                 in_array('formatDate', (array) $this->data[$exportName]['format'])) {
-            if ($value instanceof \MUtil_Date) {
+            if ($value instanceof \MUtil\Date) {
                 $date = new \DateTime();
                 $date->setTimestamp($value->getTimestamp());
                 return $this->createExcelDate($date);
-            } elseif ($this->validateDate($value, \MUtil_Date::$zendToPhpFormats[$dateFormat])) {
-                $date = \DateTime::createFromFormat(\MUtil_Date::$zendToPhpFormats[$dateFormat], $value);
+            } elseif ($this->validateDate($value, \MUtil\Date::$zendToPhpFormats[$dateFormat])) {
+                $date = \DateTime::createFromFormat(\MUtil\Date::$zendToPhpFormats[$dateFormat], $value);
                 return $this->createExcelDate($date);
             }
         }
@@ -462,25 +462,25 @@ class StreamingExcelExport extends ExportAbstract
             $options = array();
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'yyyy-MM-dd';
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     $options['dateFormat']    = 'yyyy-MM-dd HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     $options['dateFormat']    = 'HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     break;
 
                 //When no type set... assume string
-                /*case \MUtil_Model::TYPE_STRING:
+                /*case \MUtil\Model::TYPE_STRING:
                 default:
-                    $type                      = \MUtil_Model::TYPE_STRING;
+                    $type                      = \MUtil\Model::TYPE_STRING;
                     $options['formatFunction'] = 'formatString';
                     break;*/
             }

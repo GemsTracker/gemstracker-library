@@ -11,14 +11,14 @@
  *
  * @author 175780
  */
-class CommtemplateModelTest extends MUtil_Model_AbstractModelTest
+class CommtemplateModelTest extends MUtil\Model_AbstractModelTest
 {
 
     protected $allLanguages = ['en', 'nl'];
 
     /**
      *
-     * @var Gems_Model_CommtemplateModel
+     * @var \Gems\Model\CommtemplateModel
      */
     protected $model;
 
@@ -30,13 +30,13 @@ class CommtemplateModelTest extends MUtil_Model_AbstractModelTest
 
         $this->fixUser();
 
-        $this->model = new \Gems_Model_CommtemplateModel();
+        $this->model = new \Gems\Model\CommtemplateModel();
     }
 
     protected function fixUser()
     {
         // Fix user
-        $escort              = \GemsEscort::getInstance();
+        $escort              = \Gems\Escort::getInstance();
         $escort->currentUser = 1;
     }
 
@@ -85,9 +85,9 @@ class CommtemplateModelTest extends MUtil_Model_AbstractModelTest
 
     protected function addLoadTransformer()
     {
-        $translationModel = new \MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
+        $translationModel = new \MUtil\Model\TableModel('gems__comm_template_translations', 'gctt');
 
-        $transformer  = new \MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer  = new \MUtil\Model\Transform\RequiredRowsTransformer();
         $requiredRows = array();
         foreach ($this->allLanguages as $code) {
             $requiredRows[]['gctt_lang'] = $code;

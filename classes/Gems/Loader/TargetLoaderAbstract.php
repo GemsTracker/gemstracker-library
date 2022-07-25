@@ -8,8 +8,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Loader;
+
 /**
- * TargetLoaderAbstract is used for classes that chain from \Gems_Loader but are
+ * TargetLoaderAbstract is used for classes that chain from \Gems\Loader but are
  * also a target themselves.
  *
  * As these classes may need setting of values this subclass implements the
@@ -21,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract implements \MUtil_Registry_TargetInterface
+class TargetLoaderAbstract extends \Gems\Loader\LoaderAbstract implements \MUtil\Registry\TargetInterface
 {
     /**
      * Called after the check that all required registry values
@@ -127,13 +129,13 @@ class Gems_Loader_TargetLoaderAbstract extends \Gems_Loader_LoaderAbstract imple
                 $class = new $className();
 
                 if ($class instanceof $classType) {
-                    if ($class instanceof \MUtil_Registry_TargetInterface) {
+                    if ($class instanceof \MUtil\Registry\TargetInterface) {
                         $this->applySource($class);
                     }
 
                     $results[$className] = trim($class->$nameMethod()) . ' (' . $className . ')';
                 }
-                // \MUtil_Echo::track($eventName);
+                // \MUtil\EchoOut\EchoOut::track($eventName);
             }
 
         }

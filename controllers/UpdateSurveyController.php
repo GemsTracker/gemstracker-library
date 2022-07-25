@@ -7,7 +7,6 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2017 Erasmus MC
  * @license    New BSD License
- * @version    
  */
 
 /**
@@ -19,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-class UpdateSurveyController extends \Gems_Default_UpdateSurveyAction
+class UpdateSurveyController extends \Gems\Actions\UpdateSurveyAction
 {
 }

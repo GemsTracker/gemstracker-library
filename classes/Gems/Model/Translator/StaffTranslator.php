@@ -7,8 +7,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model\Translator;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.2
  */
-class Gems_Model_Translator_StaffTranslator extends \Gems_Model_Translator_StraightTranslator
+class StaffTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
      * The name of the field to store the organization id in
@@ -30,13 +31,13 @@ class Gems_Model_Translator_StaffTranslator extends \Gems_Model_Translator_Strai
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $_organization;
         

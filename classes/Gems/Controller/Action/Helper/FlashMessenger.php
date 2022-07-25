@@ -7,8 +7,9 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FlashMessenger.php 1849 2014-03-21 16:12:53Z matijsdejong $
  */
+
+namespace Gems\Controller\Action\Helper;
 
 /**
  * An extension to Zend Flashmessenger to allow for status updates in a flash message.
@@ -19,6 +20,6 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Controller_Action_Helper_FlashMessenger extends \MUtil_Controller_Action_Helper_FlashMessenger
+class FlashMessenger extends \MUtil\Controller\Action\Helper\FlashMessenger
 {
 }

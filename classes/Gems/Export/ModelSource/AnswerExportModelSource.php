@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export\ModelSource;
+
 /**
  *
  * @package    Gems
@@ -17,17 +19,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_ModelSource_ExportModelSourceAbstract
+class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSourceAbstract
 {
     /**
      *
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     private $_respModel;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -40,12 +42,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @var \Gems_Form
+     * @var \Gems\Form
      */
     protected $form;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
 	protected $loader;
 
@@ -56,18 +58,18 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Add the default fields and optionally joins to the model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addDefaultFieldsToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addDefaultFieldsToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (!$model->checkJoinExists('gems__respondent2org.gr2o_id_user', 'gems__tokens.gto_id_respondent')) {
             $model->addTable('gems__respondent2org', array(
@@ -92,18 +94,18 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 ), 'grs');
         }
 
-        $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-        $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil_Model::TYPE_NUMERIC,
+        $model->set('respondentid',        'label', $this->_('Respondent ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
+        $model->set('organizationid',      'label', $this->_('Organization'), 'type', \MUtil\Model::TYPE_NUMERIC,
             'multiOptions', $this->currentUser->getAllowedOrganizations()
         );
 
         // Add relation fields
-        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
-        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil_Model::TYPE_STRING);
+        $model->set('gto_id_relation', 'label', $this->_('Relation ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
+        $model->set('forgroup', 'label', $this->_('Filler'), 'type', \MUtil\Model::TYPE_STRING);
 
         // Add Consent
-        $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil_Model::TYPE_STRING);
-        $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil_Model::TYPE_NUMERIC);
+        $model->set('consentcode',              'label', $this->_('Consent'), 'type', \MUtil\Model::TYPE_STRING);
+        $model->set('resptrackid',              'label', $this->_('Respondent track ID'), 'type', \MUtil\Model::TYPE_NUMERIC);
         $model->set('gto_round_order',          'label', $this->_('Round order'));
         $model->set('gto_round_description',    'label', $this->_('Round description'));
         $model->set('gtr_track_name',           'label', $this->_('Track name'));
@@ -127,11 +129,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     /**
      * Extensible function for added project specific data extensions
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraDataToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraDataToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         $this->_addExtraTokenReceptionCode($model, $data, $prefixes);
         $this->_addExtraTrackReceptionCode($model, $data, $prefixes);
@@ -145,16 +147,16 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraGenderAge(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraGenderAge(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if ($this->currentUser->hasPrivilege('pr.export.gender-age')) {
             if (isset($data['export_resp_gender']) && $data['export_resp_gender']) {
                 $model->set('grs_gender', 'label', $this->getRespondentModel()->get('grs_gender', 'label'),
-                        'type', \MUtil_Model::TYPE_STRING
+                        'type', \MUtil\Model::TYPE_STRING
                         );
 
                 $prefixes['P'][] = 'grs_gender';
@@ -163,7 +165,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 if (! $model->has('grs_birthyear')) {
                     $model->addColumn('YEAR(grs_birthday)', 'grs_birthyear');
                 }
-                $model->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil_Model::TYPE_NUMERIC);
+                $model->set('grs_birthyear', 'label', $this->_('Birth year'), 'type', \MUtil\Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthyear';
             }
@@ -171,7 +173,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 if (! $model->has('grs_birthmonth')) {
                     $model->addColumn('MONTH(grs_birthday)', 'grs_birthmonth');
                 }
-                $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil_Model::TYPE_NUMERIC);
+                $model->set('grs_birthmonth', 'label', $this->_('Birth month'), 'type', \MUtil\Model::TYPE_NUMERIC);
 
                 $prefixes['P'][] = 'grs_birthmonth';
             }
@@ -179,7 +181,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
                 if (! $model->has('grs_birthyearmonth')) {
                     $model->addColumn("CONCAT(YEAR(grs_birthday), '/', LPAD(MONTH(grs_birthday), 2, '0'))", 'grs_birthyearmonth');
                 }
-                $model->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil_Model::TYPE_STRING);
+                $model->set('grs_birthyearmonth', 'label', $this->_('Birth year/month'), 'type', \MUtil\Model::TYPE_STRING);
 
                 $prefixes['P'][] = 'grs_birthyearmonth';
             }
@@ -188,16 +190,16 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraRespondentNumber(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraRespondentNumber(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if ($this->currentUser->hasPrivilege('pr.export.add-resp-nr')) {
             if (isset($data['export_resp_nr']) && $data['export_resp_nr']) {
                 $model->set('gr2o_patient_nr', 'label', $this->getRespondentModel()->get('gr2o_patient_nr', 'label'),
-                        'type', \MUtil_Model::TYPE_STRING
+                        'type', \MUtil\Model::TYPE_STRING
                         );
 
                 $prefixes['P'][] = 'gr2o_patient_nr';
@@ -207,11 +209,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTokenReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTokenReceptionCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_token_reception_code']) && $data['export_token_reception_code']) {
             $model->set('gto_reception_code', 'label', $this->_('Token reception code'));
@@ -221,11 +223,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackFields(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackFields(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['gto_id_track']) && $data['gto_id_track'] && isset($data['add_track_fields']) && $data['add_track_fields'] == 1) {
             $engine = $this->loader->getTracker()->getTrackEngine($data['gto_id_track']);
@@ -238,11 +240,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     }
 
     /**
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackFieldsByCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackFieldsByCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_trackfield_codes'])) {
             $includeCodes = array_map('trim', explode(',', $data['export_trackfield_codes']));
@@ -266,11 +268,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addExtraTrackReceptionCode(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addExtraTrackReceptionCode(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['export_track_reception_code']) && $data['export_track_reception_code']) {
             $model->set('gr2t_reception_code', 'label', $this->_('Track reception code'));
@@ -281,11 +283,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     /**
      * Add manual order of fields
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addManualFields(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addManualFields(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         if (isset($data['manualFields'])) {
             $manualFields = $data['manualFields'];
@@ -331,11 +333,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     /**
      * Add nested model fields to the export model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addNestedFieldsToExportModel(\MUtil_Model_ModelAbstract $model, array $data, array &$prefixes)
+    protected function _addNestedFieldsToExportModel(\MUtil\Model\ModelAbstract $model, array $data, array &$prefixes)
     {
         // Set labels in the main model for the submodel fields
         if ($model->getMeta('nested', false)) {
@@ -355,12 +357,12 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     /**
      * Add all survey answers to the export model
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param Gems_Tracker_Survey $survey
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Tracker\Survey $survey
      * @param array $data
      * @param array $prefixes
      */
-    protected function _addSurveyAnswersToExportModel(\MUtil_Model_ModelAbstract $model, \Gems_Tracker_Survey $survey, array $data, array &$prefixes)
+    protected function _addSurveyAnswersToExportModel(\MUtil\Model\ModelAbstract $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
     {
         $prefixes['A'] = [];
         $language = $this->locale->getLanguage();
@@ -368,7 +370,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
         $questionInformation = $survey->getQuestionInformation($language);
         foreach($questions as $questionName => $label) {
             if ($parent = $model->get($questionName, 'parent_question')) {
-                if ($model->get($parent, 'type') === \MUtil_Model::TYPE_NOVALUE) {
+                if ($model->get($parent, 'type') === \MUtil\Model::TYPE_NOVALUE) {
                     if (isset($data['subquestions']) && $data['subquestions'] == 'prefix_child') {
                         $cleanLabel = strip_tags($label);
                         $model->set($questionName, 'label', $cleanLabel);
@@ -401,13 +403,13 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
     /**
      * Add the survey source attributes to the export model that have not yet been set.
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param Gems_Tracker_Survey $survey
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Tracker\Survey $survey
      * @param array $data
      * @param array $prefixes
-     * @throws Gems_Exception
+     * @throws \Gems\Exception
      */
-    protected function _addSurveySourceAttributesToExportModel(\MUtil_Model_ModelAbstract $model, \Gems_Tracker_Survey $survey, array $data, array &$prefixes)
+    protected function _addSurveySourceAttributesToExportModel(\MUtil\Model\ModelAbstract $model, \Gems\Tracker\Survey $survey, array $data, array &$prefixes)
     {
         $source = $survey->getSource();
         $attributes = $source->getAttributes();
@@ -448,11 +450,11 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 	/**
 	 * Get form elements for the specific Export
      *
-	 * @param  \Gems_Form $form existing form type
+	 * @param  \Gems\Form $form existing form type
 	 * @param  array data existing options set in the form
 	 * @return array of form elements
 	 */
-	public function getExtraDataFormElements(\Gems_Form $form, $data)
+	public function getExtraDataFormElements(\Gems\Form $form, $data)
 	{
         $this->form = $form;
         $elements   = [];
@@ -516,7 +518,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
      * Get the model to export
      * @param  array  $filter Filter for the model
      * @param  array  $data   Data from the form options
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
 	public function getModel($filter = array(), $data = array())
 	{
@@ -576,7 +578,7 @@ class Gems_Export_ModelSource_AnswerExportModelSource extends \Gems_Export_Model
 
     /**
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     protected function getRespondentModel()
     {

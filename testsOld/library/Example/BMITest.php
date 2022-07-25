@@ -1,13 +1,13 @@
 <?php
-class BMITest extends \Gems_Test_EventSurveyCompletedAbstract {
+class BMITest extends \Gems\Test\EventSurveyCompletedAbstract {
 
     /**
      * Return the Event to test
      * 
-     * @return \Gems_Event_SurveyCompletedEventInterface
+     * @return \Gems\Event\SurveyCompletedEventInterface
      */
     public function getEventClass() {
-        return new \Gems_Event_Survey_Completed_BmiCalculation();
+        return new \Gems\Event\Survey\Completed\BmiCalculation();
     }
 
     /**

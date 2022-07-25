@@ -9,7 +9,7 @@ use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 
-class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer implements \MUtil_Registry_TargetInterface
+class TranslateFieldEditor extends \MUtil\Model\Transform\NestedTransformer implements \MUtil\Registry\TargetInterface
 {
     use TargetTrait;
     use TranslateableTrait;
@@ -39,16 +39,16 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     protected $cache;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
-    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil\Model\ModelAbstract $model)
     {
         $items = $model->getColNames('translate');
 
@@ -61,9 +61,9 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
 
                 $keys = new \Zend_Db_Expr('CONCAT(' . $keysString . ')');
             }
-            $translationModel = new \MUtil_Model_TableModel('gems__translations');
+            $translationModel = new \MUtil\Model\TableModel('gems__translations');
 
-            \Gems_Model::setChangeFieldsByPrefix($translationModel, 'gtrs');
+            \Gems\Model::setChangeFieldsByPrefix($translationModel, 'gtrs');
 
             $emptyValue = function($value) { echo ''; };
 
@@ -90,7 +90,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
             $translationModel->addFilter($subFilter);
 
             $translationName = 'translations_' . $itemName;
-            if ($model instanceof \MUtil_Model_DatabaseModelAbstract) {
+            if ($model instanceof \MUtil\Model\DatabaseModelAbstract) {
                 $model->addColumn(new \Zend_Db_Expr($keys), 'table_keys');
             }
 
@@ -148,7 +148,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
                         ]
                     ]
                 ],
-                'type', \MUtil_Model::TYPE_CHILD_MODEL,
+                'type', \MUtil\Model::TYPE_CHILD_MODEL,
                 'order', $model->getOrder($itemName)+1
             );
 
@@ -160,8 +160,8 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param \MUtil_Model_ModelAbstract $model Parent model
-     * @param \MUtil_Model_ModelAbstract $sub Sub model
+     * @param \MUtil\Model\ModelAbstract $model Parent model
+     * @param \MUtil\Model\ModelAbstract $sub Sub model
      * @param array $data The nested data rows
      * @param array $join The join array
      * @param string $name Name of sub model
@@ -169,7 +169,7 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
     protected function transformLoadSubModel(
-        \MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+        \MUtil\Model\ModelAbstract $model, \MUtil\Model\ModelAbstract $sub, array &$data, array $join,
         $name, $new, $isPostData)
     {
         $allLanguages = $this->getLocales();
@@ -236,11 +236,11 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
      * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
     {
         $result = parent::transformRowAfterSave($model, $row);
         if ($this->_changed) {
@@ -253,14 +253,14 @@ class TranslateFieldEditor extends \MUtil_Model_Transform_NestedTransformer impl
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \MUtil_Model_ModelAbstract $sub
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $sub
      * @param array $data
      * @param array $join
      * @param string $name
      */
     protected function transformSaveSubModel(
-        \MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
+        \MUtil\Model\ModelAbstract $model, \MUtil\Model\ModelAbstract $sub, array &$row, array $join, $name)
     {
         if (!isset($row['table_keys'])) {
             $tableKeys = $model->getKeys();

@@ -22,7 +22,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
  */
-class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
+class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
 {
     /**
      *
@@ -32,7 +32,7 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -44,17 +44,17 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @param \Gems_Loader; $loader
+     * @param \Gems\Loader; $loader
      * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
      * @param mixed $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
-    public function __construct(\Gems_Loader $loader, FieldsDefinition $fieldsDefinition, $respTrackIdField = false)
+    public function __construct(\Gems\Loader $loader, FieldsDefinition $fieldsDefinition, $respTrackIdField = false)
     {
         $this->loader = $loader;
         $this->fieldsDefinition = $fieldsDefinition;
@@ -79,21 +79,21 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @return array Of field name => set() values
      */
-    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil\Model\ModelAbstract $model)
     {
         // Many definitions use load transformers
-        $model->setMeta(\MUtil_Model_ModelAbstract::LOAD_TRANSFORMER, true);
+        $model->setMeta(\MUtil\Model\ModelAbstract::LOAD_TRANSFORMER, true);
 
         $settings = $this->fieldsDefinition->getDataModelSettings();
         foreach ($settings as $field => &$setting) {
             $setting['noSort'] = true;
             $setting['no_text_search'] = true;
             
-            if (isset($setting[\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER])) {
-                $model->setMeta(\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER, true);
+            if (isset($setting[\MUtil\Model\ModelAbstract::SAVE_TRANSFORMER])) {
+                $model->setMeta(\MUtil\Model\ModelAbstract::SAVE_TRANSFORMER, true);
             }
         }
         
@@ -104,13 +104,13 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         if ($isPostData) {
             return $data;
@@ -142,11 +142,11 @@ class AddTrackFieldsTransformer extends \MUtil_Model_ModelTransformerAbstract
      * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
             if (! $this->tracker) {

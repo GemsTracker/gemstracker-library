@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 use Gems\Util\UtilAbstract;
 
 /**
@@ -20,7 +22,7 @@ use Gems\Util\UtilAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Util_TrackData extends UtilAbstract
+class TrackData extends UtilAbstract
 {
     /**
      * When displaying tokens for a respondent only those of
@@ -50,12 +52,12 @@ class Gems_Util_TrackData extends UtilAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 

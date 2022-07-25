@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
@@ -22,7 +21,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TokenNotFoundSnippet extends \MUtil_Snippets_SnippetAbstract
+class TokenNotFoundSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Optional: id of the selected token to show
@@ -39,7 +38,7 @@ class TokenNotFoundSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

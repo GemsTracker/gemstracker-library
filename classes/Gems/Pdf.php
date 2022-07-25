@@ -7,11 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems;
+
 /**
- * Gems standaard Pdf utility functions
+ * \Gems standaard Pdf utility functions
  *
  * @package    Gems
  * @subpackage PDf
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Pdf extends \Gems_Registry_TargetAbstract
+class Pdf extends \Gems\Registry\TargetAbstract
 {
     /**
      * @var array
@@ -82,7 +83,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -206,7 +207,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
      */
     public function echoPdfContent($content, $filename, $download = false)
     {
-        // \MUtil_Echo::track($filename);
+        // \MUtil\EchoOut\EchoOut::track($filename);
         if ($download) {
             $disposition = 'attachment';
         } else {
@@ -275,7 +276,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
         $filepath = $this->getSurveysDir() . '/' . $filename;
 
         if (! file_exists($filepath)) {
-            // \MUtil_Echo::r($filepath);
+            // \MUtil\EchoOut\EchoOut::r($filepath);
             $this->throwLastError(sprintf($this->translate->_("PDF Source File '%s' not found!"), $filename));
         }
 
@@ -319,7 +320,7 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
         }
 
         if (! is_dir($dir)) {
-            \MUtil_File::ensureDir($dir);
+            \MUtil\File::ensureDir($dir);
         }
 
         return $dir;
@@ -329,14 +330,14 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
      * Helper function for error handling
      *
      * @param string $msg
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     protected function throwLastError($msg)
     {
-        if ($last = \MUtil_Error::getLastPhpErrorMessage()) {
+        if ($last = \MUtil\Error::getLastPhpErrorMessage()) {
             $msg .= sprintf($this->translate->_(' The error message is: %s'), $last);
         }
-        throw new \Gems_Exception_Coding($msg);
+        throw new \Gems\Exception\Coding($msg);
     }
 
     /**
@@ -348,16 +349,16 @@ class Gems_Pdf extends \Gems_Registry_TargetAbstract
      */
     public function convertFromHtml($content)
     {
-        \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
+        \MUtil\File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
 
         $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
         $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
 
-        if (\MUtil_File::isOnWindows()) {
+        if (\MUtil\File::isOnWindows()) {
             // Running on Windows, remove drive letter as that will not work with some
             // html to pdf converters.
-            $tempInputFilename  = strtr(\MUtil_File::removeWindowsDriveLetter($tempInputFilename), '\\', '/');
-            $tempOutputFilename = strtr(\MUtil_File::removeWindowsDriveLetter($tempOutputFilename), '\\', '/');
+            $tempInputFilename  = strtr(\MUtil\File::removeWindowsDriveLetter($tempInputFilename), '\\', '/');
+            $tempOutputFilename = strtr(\MUtil\File::removeWindowsDriveLetter($tempOutputFilename), '\\', '/');
         }
 
         file_put_contents($tempInputFilename, $content);

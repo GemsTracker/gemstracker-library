@@ -8,8 +8,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Token;
 
 /**
  * Utility functions for token string functions
@@ -20,19 +21,19 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Token_TokenFilter implements \Zend_Filter_Interface
+class TokenFilter implements \Zend_Filter_Interface
 {
     /**
      *
-     * @var \Gems_Tracker_Token_TokenLibrary
+     * @var \Gems\Tracker\Token\TokenLibrary
      */
     private $_library;
 
     /**
      *
-     * @param \Gems_Tracker_Token_TokenLibrary $library
+     * @param \Gems\Tracker\Token\TokenLibrary $library
      */
-    public function __construct(\Gems_Tracker_Token_TokenLibrary $library)
+    public function __construct(\Gems\Tracker\Token\TokenLibrary $library)
     {
         $this->_library = $library;
     }

@@ -70,7 +70,7 @@ class StreamingStataExport extends ExportAbstract
             do {
                 $filter['limit'] = array($this->rowsPerBatch, $currentRow);
                 if ($this->batch) {
-                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
+                    $this->batch->addTask('Export\\ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
                 } else {
                     $this->addRows($data, $modelId, $this->tempFilename, $filter);
                 }
@@ -78,7 +78,7 @@ class StreamingStataExport extends ExportAbstract
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
+                $this->batch->addTask('Export\\ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
@@ -218,18 +218,18 @@ class StreamingStataExport extends ExportAbstract
             $variableName = $this->model->get($columnName, 'variableName');
             $type = $this->model->get($columnName, 'type');
 
-            if (($type == \MUtil_Model::TYPE_DATE || $type == \MUtil_Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
+            if (($type == \MUtil\Model::TYPE_DATE || $type == \MUtil\Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
 
                 if (!empty($exportRow[$columnName])) {
                     if ($exportRow[$columnName] instanceof \Zend_Date) {
-                        if ($type == \MUtil_Model::TYPE_DATE) {
+                        if ($type == \MUtil\Model::TYPE_DATE) {
                             $exportRow[$columnName] = floor(($exportRow[$columnName]->getTimestamp() + 315619200) / 86400);
                         } else {
                             $exportRow[$columnName] = ($exportRow[$columnName]->getTimestamp() + 315619200) * 1000;
                         }
 
                     } else {
-                        if ($type == \MUtil_Model::TYPE_DATE) {
+                        if ($type == \MUtil\Model::TYPE_DATE) {
                             $exportRow[$columnName] = floor((strtotime($exportRow[$columnName] . ' GMT') + 315619200) / 86400);
                         } else {
                             $exportRow[$columnName] = (strtotime($exportRow[$columnName] . ' GMT') + 315619200) * 1000 ;
@@ -237,7 +237,7 @@ class StreamingStataExport extends ExportAbstract
                     }
                 }
             }
-            if ($type == \MUtil_Model::TYPE_STRING && !$this->model->get($columnName, 'multiOptions')) {
+            if ($type == \MUtil\Model::TYPE_STRING && !$this->model->get($columnName, 'multiOptions')) {
                 $size = strlen($exportRow[$columnName]);
 
                 if ((!isset($stringSizes[$variableName]) || ($stringSizes[$variableName] < $size)) && $size > 0) {
@@ -522,7 +522,7 @@ class StreamingStataExport extends ExportAbstract
 
         $result = parent::filterHtml($result);
 
-        if ($result instanceof \MUtil_Date) {
+        if ($result instanceof \MUtil\Date) {
             $result = $result->toString('yyyy-MM-dd hh:mm:ss');
         }
 
@@ -603,28 +603,28 @@ class StreamingStataExport extends ExportAbstract
             $type = $model->get($colname, 'type');
 
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     $type = 'double';
                     $format = '%tdDDmonCCYY';
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     $type = 'double';
                     $format = '%tcDDmonCCYY';
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     $type = 'double';
                     $format = '%tcDDmonCCYY';
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     $type        = 'double';
                     $format      = '%10.0g';
                     break;
 
                 //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
+                case \MUtil\Model::TYPE_STRING:
                 default:
 
                     if (isset($stringSizes[$variableName])) {
@@ -668,25 +668,25 @@ class StreamingStataExport extends ExportAbstract
             $this->model->remove($columnName, 'dateFormat');
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     break;
 
-                case \MUtil_Model::TYPE_CHILD_MODEL;
+                case \MUtil\Model::TYPE_CHILD_MODEL;
                     break;
 
                 //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
+                case \MUtil\Model::TYPE_STRING:
                 default:
-                    $type                      = \MUtil_Model::TYPE_STRING;
+                    $type                      = \MUtil\Model::TYPE_STRING;
                     $options['formatFunction'] = 'formatString';
                     break;
             }

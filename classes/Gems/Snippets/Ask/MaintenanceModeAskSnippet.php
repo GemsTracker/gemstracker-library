@@ -19,11 +19,11 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Aug 10, 2017 12:51:46 PM
  */
-class MaintenanceModeAskSnippet extends \MUtil_Snippets_SnippetAbstract
+class MaintenanceModeAskSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -33,7 +33,7 @@ class MaintenanceModeAskSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -41,7 +41,7 @@ class MaintenanceModeAskSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $html->h3($this->_('System is in maintenance mode'));
 
-        if ($this->token instanceof \Gems_Tracker_Token) {
+        if ($this->token instanceof \Gems\Tracker\Token) {
             if ($this->token->isCompleted()) {
                 if ($this->token->getNextUnansweredToken()) {
                     $html->pInfo()->strong($this->_('Your answers were processed correctly.'));

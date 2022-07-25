@@ -47,11 +47,11 @@ class OrganizationControllerTest extends ControllerTestAbstract
      */
     public function testExport($expectedFile, $type, $options)
     {
-        \Zend_Session::$_unitTestEnabled = false; // Run cli @see \MUtil_Console
-        $cache                           = \GemsEscort::getInstance()->cache;
+        \Zend_Session::$_unitTestEnabled = false; // Run cli @see \MUtil\Console
+        $cache                           = \Gems\Escort::getInstance()->cache;
         /* @var $cache \Zend_Cache_Core */
         $cache->clean();
-        \MUtil_Batch_BatchAbstract::unload('export_data');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('export_data');  // Make sure there are no leftovers
 
         $params = [
             'step'     => 'batch',

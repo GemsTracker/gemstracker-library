@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Survey\Display;
 
 /**
  * Show a chart for each 'score' element in a survey
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
+class ScoreChartsSnippet extends \Gems\Snippets\Tracker\Answers\TrackAnswersModelSnippet  {
 
     /**
      * Copied from parent, but insert chart instead of table after commented out part
@@ -43,7 +44,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tra
         }
 
         // Some spacing with previous elements
-        $snippets[] = \MUtil_Html::create()->p(\MUtil_Html::raw('&nbsp;'), array('style'=>'clear:both;'));
+        $snippets[] = \MUtil\Html::create()->p(\MUtil\Html::raw('&nbsp;'), array('style'=>'clear:both;'));
 
         $config = $this->getConfig($token);
         // Fallback to all score elements in one chart when no config found
@@ -67,11 +68,11 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tra
         // Add all configured charts
         foreach ($config as $chartOptions) {
             $chartOptions = $chartOptions + $defaultOptions;
-            $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey_Display_BarChartSnippet', $chartOptions);
+            $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey\\Display\\BarChartSnippet', $chartOptions);
         }
 
         // Clear the floats
-        $snippets[] = \MUtil_Html::create()->p(array('class'=>'chartfooter'));
+        $snippets[] = \MUtil\Html::create()->p(array('class'=>'chartfooter'));
 
         return $snippets;
     }
@@ -81,7 +82,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends \Gems_Snippets_Tra
      *
      * Order of reading is track/round, survey, survey code
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
     public function getConfig($token)
     {

@@ -22,14 +22,14 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.9,1
  */
-class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
+class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
 {
 
     use TranslateableTrait;
     
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -40,7 +40,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -56,7 +56,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
     protected $surveyId;
 
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     public $tracker;
 
@@ -78,7 +78,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
      */
     public function afterRegistry()
     {
-        if (! $this->tracker instanceof \Gems_Tracker) {
+        if (! $this->tracker instanceof \Gems\Tracker) {
             $this->tracker = $this->loader->getTracker();
         }
 
@@ -112,7 +112,7 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
         // Remove dot if it starts with one
         $filename = trim($filename, '.');
 
-        return \MUtil_File::cleanupName($filename);
+        return \MUtil\File::cleanupName($filename);
     }
 
     /**

@@ -19,11 +19,11 @@ namespace Gems\Snippets\Login;
  * @license    New BSD License
  * @since      Class available since version 1.8.3 Jun 28, 2018 12:18:30 PM
  */
-class SetAsCurrentUserSnippet extends \MUtil_Snippets_SnippetAbstract
+class SetAsCurrentUserSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -46,7 +46,7 @@ class SetAsCurrentUserSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

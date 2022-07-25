@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
+class TrackUsageTextDetailsSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
@@ -52,7 +51,7 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * Optional, can be source of the $trackId
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -71,7 +70,7 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -91,15 +90,15 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
             $html->pInfo(
                 sprintf(
                     $this->_('This track can be assigned from %s until %s.'),
-                    \MUtil_Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG),
-                    \MUtil_Date::format($this->trackData['gtr_date_until'], \Zend_Date::DATE_LONG))
+                    \MUtil\Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG),
+                    \MUtil\Date::format($this->trackData['gtr_date_until'], \Zend_Date::DATE_LONG))
                 );
 
         } else {
             $html->pInfo(
                 sprintf(
                     $this->_('This track can be assigned since %s.'),
-                    \MUtil_Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG))
+                    \MUtil\Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG))
                 );
         }
 
@@ -113,7 +112,7 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -125,14 +124,14 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
 
         if (! $this->trackData) {
             if (! $this->trackId) {
-                if ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+                if ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                     $this->trackId = $this->trackEngine->getTrackId();
                 } else {
                     return false;
                 }
             }
 
-            $trackModel = new \MUtil_Model_TableModel('gems__tracks');
+            $trackModel = new \MUtil\Model\TableModel('gems__tracks');
             $this->trackData = $trackModel->loadFirst(array('gtr_id_track' => $this->trackId));
             
         } elseif (! $this->trackId) {

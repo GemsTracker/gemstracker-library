@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Validate;
+
 use IPLib\Factory as IpFactory;
 use IPLib\Range\RangeInterface;
 
@@ -20,7 +22,7 @@ use IPLib\Range\RangeInterface;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Validate_IPRanges extends \Zend_Validate_Abstract
+class IPRanges extends \Zend_Validate_Abstract
 {
     /**
      * Error constants

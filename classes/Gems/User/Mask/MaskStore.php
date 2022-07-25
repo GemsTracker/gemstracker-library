@@ -21,7 +21,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Dec 25, 2016 4:36:18 PM
  */
-class MaskStore extends \Gems_Loader_TargetLoaderAbstract
+class MaskStore extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
@@ -52,7 +52,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     protected $_settings;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -217,16 +217,16 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param string $storageField
      * @return $this
      */
-    public function addMaskSettingsToModel(\MUtil_Model_ModelAbstract $model, $storageField)
+    public function addMaskSettingsToModel(\MUtil\Model\ModelAbstract $model, $storageField)
     {
         $model->set($storageField, 'elementClass', 'Hidden');
         $model->setOnSave($storageField, [$this, 'saveSettings']);
 
-        $html = \MUtil_Html::create()->h4($this->_('Privacy settings'));
+        $html = \MUtil\Html::create()->h4($this->_('Privacy settings'));
         $model->set($storageField . '__HEADER', 'label', ' ',
                 'default', $html,
                 'elementClass', 'Html',
@@ -292,18 +292,18 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return $this
      */
-    public function applyMaskDataToModel(\MUtil_Model_ModelAbstract $model, $hideWhollyMasked = false)
+    public function applyMaskDataToModel(\MUtil\Model\ModelAbstract $model, $hideWhollyMasked = false)
     {
         if ($hideWhollyMasked) {
             $compiled = $this->_compiledHiddenModelSettings;
         } else {
             $compiled = $this->_compiledNormalModelSettings;
         }
-        // \MUtil_Echo::track($hideWhollyMasked, (boolean) $compiled);
+        // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (boolean) $compiled);
         if (! is_array($compiled)) {
             $compiled = [];
             foreach ($this->_settings as $name => $setting) {
@@ -313,10 +313,10 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
 
                         $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked);
 
-                        // \MUtil_Echo::track($name, count($dataOptions));
+                        // \MUtil\EchoOut\EchoOut::track($name, count($dataOptions));
                         if ($dataOptions) {
                             foreach ($dataOptions as $field => $options) {
-                                // \MUtil_Echo::track($hideWhollyMasked, $name, $field, array_keys($options));
+                                // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, $name, $field, array_keys($options));
                                 $compiled[$field] = $options;
                             }
                         }
@@ -341,7 +341,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
      * A ModelAbstract->setOnLoad() function that takes care of decoding the json settings
      * to an array value
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -465,7 +465,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
      * A ModelAbstract->setOnLoad() function that takes care of transforming settings
      * to values
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -530,7 +530,7 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     /**
      * A ModelAbstract->setOnSave() function that returns fields as a single storage string
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -545,11 +545,11 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
         foreach ($context as $key => $value) {
             $setting = $this->getSettingsField($key);
             if ($setting) {
-                // \MUtil_Echo::track($setting, $value);
+                // \MUtil\EchoOut\EchoOut::track($setting, $value);
                 $output[$setting] = $value;
             }
         }
-        // \MUtil_Echo::track($name, $output, json_encode($output));
+        // \MUtil\EchoOut\EchoOut::track($name, $output, json_encode($output));
 
         return json_encode($output);
     }

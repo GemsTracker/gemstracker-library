@@ -22,7 +22,7 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     protected $config;
 
@@ -66,7 +66,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -158,10 +158,10 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     /**
      * Count the number of other surveys not yet answered
      * 
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return int
      */
-    protected function getOtherTokenCountUnanswered(\Gems_Tracker_Token $token)
+    protected function getOtherTokenCountUnanswered(\Gems\Tracker\Token $token)
     {
         $count = $token->getTokenCountUnanswered();
         
@@ -172,10 +172,10 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     /**
      * Allow for overruling
      * 
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return string
      */
-    public function getSurveyName(\Gems_Tracker_Token $token)
+    public function getSurveyName(\Gems\Tracker\Token $token)
     {
         return $token->getSurvey()->getExternalName();
     }
@@ -187,7 +187,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -199,7 +199,7 @@ class ShowFirstOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $this->showToken = $this->token;
         }
 
-        $validToken = ($this->showToken instanceof \Gems_Tracker_Token) && $this->showToken->exists;
+        $validToken = ($this->showToken instanceof \Gems\Tracker\Token) && $this->showToken->exists;
 
         if (!$validToken && $this->wasAnswered) {
             // The token was answered, but there are no more tokens to show

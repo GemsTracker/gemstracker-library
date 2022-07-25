@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 use Gems\User\Group;
 
 /**
@@ -22,7 +24,7 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAbstract implements \Gems_User_UserDefinitionInterface
+abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract implements \Gems\User\UserDefinitionInterface
 {
     /**
      * The time period in hours a reset key is valid for this definition.
@@ -37,10 +39,10 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(\Gems_User_User $user = null)
+    public function canResetPassword(\Gems\User\User $user = null)
     {
         return false;
     }
@@ -61,10 +63,10 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(\Gems_User_User $user = null)
+    public function canSetPassword(\Gems\User\User $user = null)
     {
         return false;
     }
@@ -72,12 +74,12 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     /**
      * Return a password reset key
      *
-     * @param \Gems_User_User $user The user to create a key for.
+     * @param \Gems\User\User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems_User_User $user)
+    public function getPasswordResetKey(\Gems\User\User $user)
     {
-        throw new \Gems_Exception_Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
+        throw new \Gems\Exception\Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
     }
 
     /**
@@ -93,10 +95,10 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     /**
      * Return true if the user has a password.
      *
-     * @param \Gems_User_User $user The user to check
+     * @param \Gems\User\User $user The user to check
      * @return boolean
      */
-    public function hasPassword(\Gems_User_User $user)
+    public function hasPassword(\Gems\User\User $user)
     {
         return false;
     }
@@ -132,25 +134,25 @@ abstract class Gems_User_UserDefinitionAbstract extends \MUtil_Registry_TargetAb
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems_User_User $user The user whose password to change
+     * @param \Gems\User\User $user The user whose password to change
      * @param string $password
-     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(\Gems_User_User $user, $password)
+    public function setPassword(\Gems\User\User $user, $password)
     {
-        throw new \Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
+        throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
         return $this;
     }
 
     /**
      *
-     * @param \Gems_User_User $user The user whose password to change
+     * @param \Gems\User\User $user The user whose password to change
      * @param string $newKey
      * @return $this
      */
-    public function setTwoFactorKey(\Gems_User_User $user, $newKey)
+    public function setTwoFactorKey(\Gems\User\User $user, $newKey)
     {
-        throw new \Gems_Exception_Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
+        throw new \Gems\Exception\Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
         return $this;
     }
 }

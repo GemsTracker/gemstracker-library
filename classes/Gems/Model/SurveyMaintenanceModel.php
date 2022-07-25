@@ -21,7 +21,7 @@ use MUtil\Validate\RequireOtherField;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class SurveyMaintenanceModel extends \Gems_Model_JoinModel
+class SurveyMaintenanceModel extends \Gems\Model\JoinModel
 {
 
     /**
@@ -30,7 +30,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     protected $config;
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -42,19 +42,19 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
@@ -236,7 +236,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
 
         $this->set('gsu_survey_languages', 'itemDisplay', array($this, 'formatLanguages'));
 
-        $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
+        $ct = new \MUtil\Model\Type\ConcatenatedRow('|', $this->_(', '));
 
         $this->set('gsu_answer_groups', 'label', $this->_('Answer groups'),
                    'description', $this->_('The groups that may see the answers or none.'),
@@ -303,7 +303,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             $survey = $this->loader->getTracker()->getSurvey($surveyId);
         }
 
-        if ($survey instanceof \Gems_Tracker_Survey) {
+        if ($survey instanceof \Gems\Tracker\Survey) {
             $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
                 $survey->getQuestionList(null);
             $this->set('gsu_result_field', 'label', $this->_('Result field'),
@@ -374,7 +374,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                         'extension', 'pdf',
                         'filename', $surveyId,
                         'required', false,
-                        'validators[pdf]', new \MUtil_Validate_Pdf()
+                        'validators[pdf]', new \MUtil\Validate\Pdf()
                         );
 
         if ($this->project->translateDatabaseFields()) {
@@ -391,14 +391,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|string
+     * @return \MUtil\Date|\Zend_Db_Expr|string
      */
     public function calculateDuration($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -420,8 +420,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $row = $select->fetchRow();
         if ($row) {
             $trs = $this->util->getTranslated();
-            $seq = new \MUtil_Html_Sequence();
-            $seq->setGlue(\MUtil_Html::create('br'));
+            $seq = new \MUtil\Html\Sequence();
+            $seq->setGlue(\MUtil\Html::create('br'));
 
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
@@ -458,7 +458,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
                 if ($med) {
                     $seq->sprintf($this->_('Median value: %s.'), $trs->formatTimeUnknown($med));
                 }
-                // \MUtil_Echo::track($row, $med, $sql, $select->getSelect()->__toString());
+                // \MUtil\EchoOut\EchoOut::track($row, $med, $sql, $select->getSelect()->__toString());
             } else {
                 $seq->append(sprintf($this->_('Median value: %s.'), $this->_('n/a')));
             }
@@ -474,14 +474,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|string
+     * @return \MUtil\Date|\Zend_Db_Expr|string
      */
     public function calculateTrackCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -510,14 +510,14 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|string
+     * @return \MUtil\Date|\Zend_Db_Expr|string
      */
     public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -534,8 +534,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
         $usage = $this->db->fetchPairs($select);
 
         if ($usage) {
-            $seq = new \MUtil_Html_Sequence();
-            $seq->setGlue(\MUtil_Html::create('br'));
+            $seq = new \MUtil\Html\Sequence();
+            $seq->setGlue(\MUtil\Html::create('br'));
             foreach ($usage as $track => $count) {
                 $seq[] = sprintf($this->plural(
                         '%d time in %s track.',
@@ -554,11 +554,11 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
      * Strip all the tags, but keep the escaped characters
      *
      * @param string $value
-     * @return \MUtil_Html_Raw
+     * @return \MUtil\Html\Raw
      */
     public static function formatDescription($value)
     {
-        return \MUtil_Html::raw(strip_tags((string)$value));
+        return \MUtil\Html::raw(strip_tags((string)$value));
     }
 
     /**
@@ -584,8 +584,8 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
             $split[$key] = $localized ? $localized : $locale;
         }
 
-        $seq = new \MUtil_Html_Sequence();
-        $seq->setGlue(\MUtil_Html::create('br'));
+        $seq = new \MUtil\Html\Sequence();
+        $seq->setGlue(\MUtil\Html::create('br'));
 
         $seq->append(sprintf($this->_('Base: %s'), $split[0]));
         if (isset($split[1])) {
@@ -604,7 +604,7 @@ class SurveyMaintenanceModel extends \Gems_Model_JoinModel
     public static function formatWarnings($value)
     {
         if (is_null($value)) {
-            $value = new \MUtil_Html_HtmlElement('em', '(none)');
+            $value = new \MUtil\Html\HtmlElement('em', '(none)');
         }
 
         return $value;

@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -27,9 +26,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Auth implements ZFDebug_Controller_
     protected $_identifier = 'auth';
 
     /**
-     * Contains Zend_Auth object
+     * Contains \Zend_Auth object
      *
-     * @var Zend_Auth
+     * @var \Zend_Auth
      */
     protected $_auth;
 
@@ -50,7 +49,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Auth implements ZFDebug_Controller_
     /**
      * Contains Acls for this application
      *
-     * @var Zend_Acl
+     * @var \Zend_Acl
      */
     protected $_acl;
 
@@ -63,7 +62,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Auth implements ZFDebug_Controller_
      */
     public function __construct(array $options = array())
     {
-        $this->_auth = Zend_Auth::getInstance();
+        $this->_auth = \Zend_Auth::getInstance();
         if (isset($options['user'])) {
             $this->_user = $options['user'];
         }

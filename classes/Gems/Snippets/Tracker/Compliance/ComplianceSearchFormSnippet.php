@@ -1,5 +1,7 @@
 <?php
 
+namespace Gems\Snippets\Tracker\Compliance;
+
 use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
 
 /**
@@ -20,7 +22,7 @@ use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
+class ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
 {
 
     /**

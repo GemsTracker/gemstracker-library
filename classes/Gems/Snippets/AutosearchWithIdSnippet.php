@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AutosearchWithIdSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets;
@@ -21,7 +20,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:28:39
  */
-class AutosearchWithIdSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class AutosearchWithIdSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -35,7 +34,7 @@ class AutosearchWithIdSnippet extends \Gems_Snippets_AutosearchFormSnippet
     protected function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID);
 
         return $elements;
     }
@@ -51,7 +50,7 @@ class AutosearchWithIdSnippet extends \Gems_Snippets_AutosearchFormSnippet
     {
         $neededParams = parent::getFixedParams();
         
-        $neededParams[] = \MUtil_Model::REQUEST_ID;
+        $neededParams[] = \MUtil\Model::REQUEST_ID;
         
         return $neededParams;
         

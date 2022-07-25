@@ -26,7 +26,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
@@ -108,11 +108,11 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Get the field value from an appointment object
      *
-     * @param \Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Appointment $appointment
      * @param string $field
      * @return mixed
      */
-    public function getAppointmentFieldValue(\Gems_Agenda_Appointment $appointment, $field)
+    public function getAppointmentFieldValue(\Gems\Agenda\Appointment $appointment, $field)
     {
         switch ($field) {
             case 'gap_id_organization':
@@ -211,10 +211,10 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
     {
         $result1 = $this->matchSingle(
                 $this->_data['gaf_filter_text1'],
@@ -237,7 +237,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param $field
      * @param $searchTxt
      * @param $fieldList
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
     protected function matchSingle($field, $searchTxt, $fieldList, $appointment)

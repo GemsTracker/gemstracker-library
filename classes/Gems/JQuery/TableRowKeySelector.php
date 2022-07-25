@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery;
 
 /**
  * @package    Gems
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_JQuery_TableRowKeySelector extends \Gems_JQuery_JQueryExtenderAbstract
+class TableRowKeySelector extends \Gems\JQuery\JQueryExtenderAbstract
 {
     protected $id;
     protected $jqueryParams = array('currentClass' => 'currentRow');
@@ -25,10 +26,10 @@ class Gems_JQuery_TableRowKeySelector extends \Gems_JQuery_JQueryExtenderAbstrac
 
     public function __construct($elementOrId = null, $args = null)
     {
-        $args = \MUtil_Ra::args(func_get_args(),
+        $args = \MUtil\Ra::args(func_get_args(),
             array(
-                'element' => 'MUtil_Html_ElementInterface',
-                'attrib'  => 'MUtil_Html_AttributeInterface',
+                'element' => '\\MUtil\\Html\\ElementInterface',
+                'attrib'  => '\\MUtil\\Html\\AttributeInterface',
                 'id'      => 'is_string'
                 ), null, false);
 
@@ -40,13 +41,13 @@ class Gems_JQuery_TableRowKeySelector extends \Gems_JQuery_JQueryExtenderAbstrac
         return '#' . $this->id;
     }
 
-    public function setAttrib(\MUtil_Html_AttributeInterface $attribute)
+    public function setAttrib(\MUtil\Html\AttributeInterface $attribute)
     {
         $this->setId($attribute->get());
         return $this;
     }
 
-    public function setElement(\MUtil_Html_ElementInterface $element)
+    public function setElement(\MUtil\Html\ElementInterface $element)
     {
         $this->setId($element->id);
         return $this;

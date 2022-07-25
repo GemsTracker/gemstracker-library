@@ -1,5 +1,5 @@
 <?php
 
-class SurveyCodeBookMultiExportController extends \Gems_Default_SurveyCodeBookMultiExportAction
+class SurveyCodeBookMultiExportController extends \Gems\Actions\SurveyCodeBookMultiExportAction
 {
 }

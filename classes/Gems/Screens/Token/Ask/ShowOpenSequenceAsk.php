@@ -22,10 +22,10 @@ class ShowOpenSequenceAsk extends \Gems\Screens\AskScreenAbstract
 {
     /**
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of snippets or false to use original
      */
-    public function getSnippets(\Gems_Tracker_Token $token)
+    public function getSnippets(\Gems\Tracker\Token $token)
     {
         return ['Gems\\Snippets\\Ask\\ShowOpenSequenceSnippet'];
     }

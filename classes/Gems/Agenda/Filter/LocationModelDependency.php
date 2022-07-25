@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LocationModelDependency.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -29,7 +28,7 @@ class LocationModelDependency extends FilterModelDependencyAbstract
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

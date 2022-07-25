@@ -72,9 +72,9 @@ class TrackControllerTest extends \ControllerTestAbstract
         $req->setMethod('post');
         $this->dispatch('/track/create');
         // echo __FUNCTION__ . "\n" . $this->getResponse()->getBody();
-        $loader   = \GemsEscort::getInstance()->getLoader();
+        $loader   = \Gems\Escort::getInstance()->getLoader();
 
-        // print_r(\GemsEscort::getInstance()->db->fetchAll("SELECT * FROM gems__respondent2track"));
+        // print_r(\Gems\Escort::getInstance()->db->fetchAll("SELECT * FROM gems__respondent2track"));
         $actual   = $loader->getTracker()->getRespondentTrack(2)->getFieldData();
         $expected = [
             'f__1'     => 'default',
@@ -83,7 +83,7 @@ class TrackControllerTest extends \ControllerTestAbstract
             'datecode' => null,
         ];
         $this->assertEquals($expected, $actual);
-        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /*public function testCorrect() {

@@ -4,8 +4,9 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems;
 
 /**
  * Creates a form using tab-layout where each tab is a subform
@@ -15,7 +16,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_TabForm extends \Gems_Form
+class TabForm extends \Gems\Form
 {
     /**
      * Group ID for elements below form
@@ -25,7 +26,7 @@ class Gems_TabForm extends \Gems_Form
     /**
      * Holds the last tab we added information to
      *
-     * @var \Gems_Form_TabSubForm
+     * @var \Gems\Form\TabSubForm
      */
     private $currentTab = null;
 
@@ -83,7 +84,7 @@ class Gems_TabForm extends \Gems_Form
      * @param  string $name
      * @param  array|\Zend_Config $options
      * @throws \Zend_Form_Exception on invalid element
-     * @return \Gems_TabForm|\Gems_Form_TabSubForm
+     * @return \Gems\TabForm|\Gems\Form\TabSubForm
      */
     public function addElement($element, $name = null, $options = null)
     {
@@ -108,7 +109,7 @@ class Gems_TabForm extends \Gems_Form
 
                 $element->removeDecorator('DtDdWrapper');
 
-                if ($element instanceof \MUtil_Form_Element_Html) {
+                if ($element instanceof \MUtil\Form\Element\Html) {
                     $element->removeDecorator('HtmlTag');
                     $element->removeDecorator('Label');
                 }
@@ -128,14 +129,14 @@ class Gems_TabForm extends \Gems_Form
      *
      * @param string $name
      * @param string $title
-     * @return \Gems_Form_TabSubForm
+     * @return \Gems\Form\TabSubForm
      */
     public function addTab($name, $title)
     {
-        if ($title instanceof \MUtil_Html_HtmlInterface) {
+        if ($title instanceof \MUtil\Html\HtmlInterface) {
             $title = $title->render($this->getView());
         }
-        $tab = new \Gems_Form_TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
+        $tab = new \Gems\Form\TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
         $this->currentTab = $tab;
         $this->addSubForm($tab, $name);
         return $tab;
@@ -145,7 +146,7 @@ class Gems_TabForm extends \Gems_Form
      * Add to the group all non-tab elements are in
      *
      * @param mixed $element
-     * @return \Gems_TabForm
+     * @return \Gems\TabForm
      */
     public function addToOtherGroup($element)
     {
@@ -166,7 +167,7 @@ class Gems_TabForm extends \Gems_Form
      * @param  array $elements
      * @param  string $name
      * @param  array|\Zend_Config $options
-     * @return \Gems_TabForm|\Gems_Form_TabSubForm
+     * @return \Gems\TabForm|\Gems\Form\TabSubForm
      * @throws \Zend_Form_Exception if no valid elements provided
      */
     public function addDisplayGroup(array $elements, $name, $options = null) {
@@ -233,7 +234,7 @@ class Gems_TabForm extends \Gems_Form
      * Retrieve a named tab (subform) and set the active tab to this one
      *
      * @param string $name
-     * @return \Gems_Form_TabSubForm
+     * @return \Gems\Form\TabSubForm
      */
     public function getTab($name)
     {
@@ -303,7 +304,7 @@ class Gems_TabForm extends \Gems_Form
      * Set the view object
      *
      * @param \Zend_View_Interface $view
-     * @return \Gems_TabForm
+     * @return \Gems\TabForm
      */
     public function setView(\Zend_View_Interface $view = null) {
         /**

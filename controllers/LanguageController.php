@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class LanguageController extends Gems_Default_LanguageAction
+class LanguageController extends \Gems\Actions\LanguageAction
 {
 }

@@ -55,13 +55,13 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $util;
 
@@ -105,7 +105,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
                         'validator' => $validator
                     ]
                 ];
-            } catch (\Gems_Exception_Coding $exc) {
+            } catch (\Gems\Exception\Coding $exc) {
                 return [
                     'condition_display' => [
                         'elementClass' => 'Exhibitor',

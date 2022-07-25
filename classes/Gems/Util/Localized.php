@@ -8,8 +8,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Util;
 
 /**
  * Localization class, allowing for project specific overrides
@@ -19,7 +20,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_Localized extends \Gems_Registry_TargetAbstract
+class Localized extends \Gems\Registry\TargetAbstract
 {
     /**
      *
@@ -29,7 +30,7 @@ class Gems_Util_Localized extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 

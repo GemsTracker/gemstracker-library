@@ -43,7 +43,7 @@ class AppointmentField extends FieldAbstract
      *
      * Shared among all field instances saving to the same respondent track id
      *
-     * @var array of \Gems_Agenda_Appointment)
+     * @var array of \Gems\Agenda\Appointment)
      */
     protected static $_lastActiveAppointment = array();
 
@@ -73,13 +73,13 @@ class AppointmentField extends FieldAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -92,7 +92,7 @@ class AppointmentField extends FieldAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -153,7 +153,7 @@ class AppointmentField extends FieldAbstract
                 $fromDate   = false;
                 $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
 
-                if (($lastActive instanceof \Gems_Agenda_Appointment) && $lastActive->isActive()) {
+                if (($lastActive instanceof \Gems\Agenda\Appointment) && $lastActive->isActive()) {
                     $fromDate = $lastActive->getAdmissionTime();
                 }
 
@@ -162,13 +162,13 @@ class AppointmentField extends FieldAbstract
                     if ($trackData['gr2t_start_date'] instanceof \Zend_Date) {
                         $fromDate = $trackData['gr2t_start_date'];
                     } else {
-                        $fromDate = new \MUtil_Date($trackData['gr2t_start_date'], \Gems_Tracker::DB_DATETIME_FORMAT);
+                        $fromDate = new \MUtil\Date($trackData['gr2t_start_date'], \Gems\Tracker::DB_DATETIME_FORMAT);
                     }
                     // Always use start of the day for start date comparisons
                     $fromDate->setTime('00:00:00');
                 }
 
-                if ($fromDate instanceof \MUtil_Date) {
+                if ($fromDate instanceof \MUtil\Date) {
                     $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
                     $select->onlyActive()
                             ->forFilterId($this->_fieldDefinition['gtf_filter_id'])
@@ -321,13 +321,13 @@ class AppointmentField extends FieldAbstract
         if (! $value) {
             return $this->_('Unknown');
         }
-        if ($value instanceof \Gems_Agenda_Appointment) {
+        if ($value instanceof \Gems\Agenda\Appointment) {
             $appointment = $value;
         } else {
             $appointment = $this->loader->getAgenda()->getAppointment($value);
         }
-        if ($appointment instanceof \Gems_Agenda_Appointment) {
-            if (! $this->menu instanceof \Gems_Menu) {
+        if ($appointment instanceof \Gems\Agenda\Appointment) {
+            if (! $this->menu instanceof \Gems\Menu) {
                 $this->menu = $this->loader->getMenu();
             }
             $menuItem = $this->menu->findAllowedController('appointment', 'show');
@@ -340,7 +340,7 @@ class AppointmentField extends FieldAbstract
                         $this->request
                         );
                 if ($href) {
-                    return \MUtil_Html::create('a', $href, $appointment->getDisplayString());
+                    return \MUtil\Html::create('a', $href, $appointment->getDisplayString());
                 }
             }
             return $appointment->getDisplayString();

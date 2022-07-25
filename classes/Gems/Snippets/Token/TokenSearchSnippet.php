@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TokenSearchSnippet.php 2508 2015-04-22 17:11:44Z matijsdejong $
  */
 
 namespace Gems\Snippets\Token;
@@ -38,8 +37,8 @@ class TokenSearchSnippet extends PlanSearchSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID1);
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID2);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID1);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID2);
 
         return $elements;
     }
@@ -219,8 +218,8 @@ class TokenSearchSnippet extends PlanSearchSnippet
     {
         $neededParams = parent::getFixedParams();
 
-        $neededParams[] = \MUtil_Model::REQUEST_ID1;
-        $neededParams[] = \MUtil_Model::REQUEST_ID2;
+        $neededParams[] = \MUtil\Model::REQUEST_ID1;
+        $neededParams[] = \MUtil\Model::REQUEST_ID2;
 
         return $neededParams;
 

@@ -25,25 +25,25 @@ class UserLoginFormSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_User_Form_LoginForm
+     * @var \Gems\User\Form\LoginForm
      */
     protected $loginForm;
 
@@ -64,7 +64,7 @@ class UserLoginFormSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -147,8 +147,8 @@ class UserLoginFormSnippet extends FormSnippetAbstract
                 return false;
             }
 
-            $errors = \MUtil_Ra::flatten($this->loginForm->getMessages());
-            // \MUtil_Echo::track($errors);
+            $errors = \MUtil\Ra::flatten($this->loginForm->getMessages());
+            // \MUtil\EchoOut\EchoOut::track($errors);
 
             // Also log the error to the log table  when the project has logging enabled
             $logErrors = join(' - ', $errors);

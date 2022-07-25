@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * Loads "selector tables" i.e. table whose purpose it is to have
  * the user click a cell to select a value.
@@ -19,19 +21,19 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Selector extends \Gems_Loader_TargetLoaderAbstract
+class Selector extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected $cascade = 'Selector';
 
     /**
-     * Load project specific model or general Gems model otherwise
+     * Load project specific model or general \Gems model otherwise
      *
-     * @return \Gems_Selector_TokenDateSelector
+     * @return \Gems\Selector\TokenDateSelector
      */
     public function getTokenDateSelector()
     {

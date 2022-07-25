@@ -18,19 +18,19 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class AllOfSurveyButOnlyAnswered extends \Gems_Event_Survey_Display_OnlyAnswered
+class AllOfSurveyButOnlyAnswered extends \Gems\Event\Survey\Display\OnlyAnswered
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
     {
         $this->token = $token;
 
-        $snippets[] = 'Tracker_Answers_SurveyAnswersModelSnippet';
+        $snippets[] = 'Tracker\\Answers\\SurveyAnswersModelSnippet';
         $snippets['answerFilter'] = $this;
 
         return $snippets;

@@ -4,27 +4,26 @@
  * Description of EncryptedFieldTest
  *
  * @package    Gems
- * @subpackage Gems
+ * @subpackage \Gems
  * @author     175780
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 class EncryptedFieldTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var Gems_Model_Type_EncryptedField
+     * @var \Gems\Model\Type\EncryptedField
      */
     protected $maskedType;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     private $project;
 
     /**
-     * @var Gems_Model_Type_EncryptedField
+     * @var \Gems\Model\Type\EncryptedField
      */
     protected $unmaskedType;
 
@@ -34,12 +33,12 @@ class EncryptedFieldTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $model         = new MUtil_Model_NestedArrayModel('text', array());
-        $settings      = new Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
-        $this->project = new Gems_Project_ProjectSettings($settings);
+        $model         = new MUtil\Model\NestedArrayModel('text', array());
+        $settings      = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
+        $this->project = new Gems\Project\ProjectSettings($settings);
 
-        $this->maskedType   = new Gems_Model_Type_EncryptedField($this->project, true);
-        $this->unmaskedType = new Gems_Model_Type_EncryptedField($this->project, false);
+        $this->maskedType   = new Gems\Model\Type\EncryptedField($this->project, true);
+        $this->unmaskedType = new Gems\Model\Type\EncryptedField($this->project, false);
 
         $this->maskedType->apply($model, 'f1');
         $this->unmaskedType->apply($model, 'f1');

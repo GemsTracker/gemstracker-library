@@ -6,8 +6,9 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Communication;
 
 /**
  * Reads respondents from a data source
@@ -17,13 +18,13 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-interface Gems_Communication_RespondentReader
+interface RespondentReader
 {
     /**
      * Read a single respondent
      * @param  int $id
-     * @return \Gems_Communication_RespondentContainer
-     * @throws \Gems_Communication_Exception
+     * @return \Gems\Communication\RespondentContainer
+     * @throws \Gems\Communication\Exception
      */
     public function getRespondentById($id);
 }

@@ -26,12 +26,12 @@ class GenderCondition extends RoundConditionAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
     
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     public $tracker;
     
@@ -127,7 +127,7 @@ class GenderCondition extends RoundConditionAbstract
         return $comparatorDescription;
     }
 
-    public function isRoundValid(\Gems_Tracker_Token $token)
+    public function isRoundValid(\Gems\Tracker\Token $token)
     {
         $subject    = $this->_data['gcon_condition_text1'];
         $comparator = $this->_data['gcon_condition_text2'];

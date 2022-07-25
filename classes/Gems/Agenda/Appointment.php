@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Agenda;
+
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\EpisodeOfCare;
 use Gems\Agenda\FilterTracer;
@@ -21,7 +23,7 @@ use Gems\Agenda\FilterTracer;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
+class Appointment extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
@@ -37,13 +39,13 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -68,7 +70,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -82,7 +84,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if (is_array($appointmentData)) {
             $this->_gemsData      = $appointmentData;
             $this->_appointmentId = $appointmentData['gap_id_appointment'];
-            if ($this->currentUser instanceof \Gems_User_User) {
+            if ($this->currentUser instanceof \Gems\User\User) {
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
         } else {
@@ -95,7 +97,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Create a new track for this appointment and the given filter
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker $tracker
+     * @param \Gems\Tracker $tracker
      */
     protected function _createTrack($filter, $tracker)
     {
@@ -132,13 +134,13 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 
             $respId = $this->_gemsData['gap_id_user'];
             $orgId  = $this->_gemsData['gap_id_organization'];
-            // \MUtil_Echo::track($this->_gemsData);
+            // \MUtil\EchoOut\EchoOut::track($this->_gemsData);
 
             if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
                 $this->_gemsData = $this->_gemsData + $row;
             } else {
                 $appId = $this->_appointmentId;
-                throw new \Gems_Exception("Respondent data missing for appointment id $appId.");
+                throw new \Gems\Exception("Respondent data missing for appointment id $appId.");
             }
         }
     }
@@ -148,7 +150,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      *
      * @param \Gems\Agenda\AppointmentFilterInterface[] $filters
      * @param array $existingTracks Of $trackId => [RespondentTrack objects]
-     * @param \Gems_Tracker $tracker
+     * @param \Gems\Tracker $tracker
      *
      * @return int Number of tokenchanges
      */
@@ -170,7 +172,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             $tracks      = array_key_exists($trackId, $existingTracks) ? $existingTracks[$trackId] : [];
 
             foreach($tracks as $respTrack) {
-                /* @var $respTrack \Gems_Tracker_RespondentTrack */
+                /* @var $respTrack \Gems\Tracker\RespondentTrack */
                 if (!$respTrack->hasSuccesCode()) { continue; }
 
                 $createTrack = $this->$method($filter, $respTrack);
@@ -186,7 +188,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 }
             }
 
-            // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
+            // \MUtil\EchoOut\EchoOut::track($trackId, $createTrack, $filter->getName(), $filter->getSqlAppointmentsWhere(), $filter->getFilterId());
             if ($createTrack) {
                 $respTrack = $this->_createTrack($filter, $tracker);
                 $existingTracks[$trackId][] = $respTrack;
@@ -220,7 +222,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Has the track ended <wait days> ago?
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -268,7 +270,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Always report the track should be created
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -287,7 +289,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Always report the track should be created
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -300,7 +302,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Always report the track should be created
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @return boolean
      */
     public function createFromStart($filter, $respTrack)
@@ -350,7 +352,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * to make sure calling without checking has the correct result
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -366,7 +368,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Only return true when no open track exists
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -390,7 +392,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Create when current appointment is not assigned to this field already
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -417,7 +419,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Only return true when no open track exists
      *
      * @param \Gems\Agenda\AppointmentFilterInterface $filter
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      *
      * @return boolean
      */
@@ -477,14 +479,14 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     /**
      * Return the admission time
      *
-     * @return \MUtil_Date Admission time as a date or null
+     * @return \MUtil\Date Admission time as a date or null
      */
     public function getAdmissionTime()
     {
         if (isset($this->_gemsData['gap_admission_time']) && $this->_gemsData['gap_admission_time']) {
-            if (! $this->_gemsData['gap_admission_time'] instanceof \MUtil_Date) {
+            if (! $this->_gemsData['gap_admission_time'] instanceof \MUtil\Date) {
                 $this->_gemsData['gap_admission_time'] =
-                        new \MUtil_Date($this->_gemsData['gap_admission_time'], \Gems_Tracker::DB_DATETIME_FORMAT);
+                        new \MUtil\Date($this->_gemsData['gap_admission_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
             }
             // Clone to make sure calculations can be performed without changing this object
             return clone $this->_gemsData['gap_admission_time'];
@@ -535,7 +537,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get a general description of this appointment
      *
-     * @see \Gems_Agenda->getAppointmentDisplay()
+     * @see \Gems\Agenda->getAppointmentDisplay()
      *
      * @return string
      */
@@ -683,7 +685,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     /**
      * Return the respondent object
      *
-     * @return \Gems_Tracker_Respondent
+     * @return \Gems\Tracker\Respondent
      */
     public function getRespondent()
     {
@@ -758,7 +760,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems_Agenda_Appointment (continuation pattern)
+     * @return \Gems\Agenda\Appointment (continuation pattern)
      */
     public function refresh(array $gemsData = null)
     {
@@ -777,7 +779,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         }
         $this->exists = isset($this->_gemsData['gap_id_appointment']);
 
-        if ($this->currentUser instanceof \Gems_User_User) {
+        if ($this->currentUser instanceof \Gems\User\User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
 
@@ -825,22 +827,22 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 return $value->getTrackId();
             }, $filters);
 
-            // \MUtil_Echo::track(array_keys($filters), $ids);
+            // \MUtil\EchoOut\EchoOut::track(array_keys($filters), $ids);
             $respId = $this->getRespondentId();
             $orgId  = $this->getOrganizationId();
             $select->orWhere(
                     "gr2t_id_user = $respId AND gr2t_id_organization = $orgId AND gr2t_id_track IN (" .
                     implode(', ', $ids) . ")"
                     );
-            // \MUtil_Echo::track($this->getId(), implode(', ', $ids));
+            // \MUtil\EchoOut\EchoOut::track($this->getId(), implode(', ', $ids));
         }
 
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
 
         // Now find all the existing tracks that should be checked
         $respTracks = $this->db->fetchPairs($select);
 
-        // \MUtil_Echo::track($respTracks);
+        // \MUtil\EchoOut\EchoOut::track($respTracks);
         $existingTracks = array();
         if ($respTracks) {
             foreach ($respTracks as $respTrackId => $trackId) {
@@ -864,7 +866,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         }
 
         // Only check if we need to create when this appointment is active and today or later
-        if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil_Date())) {
+        if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil\Date())) {
             $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
         } else {
             if ($this->filterTracer) {

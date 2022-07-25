@@ -3,20 +3,21 @@
 /**
  * A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.
  *
- * @version $Id$
  * @author 175780
  * @filesource
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_TabSubForm extends \Gems_Form_TableForm
+namespace Gems\Form;
+
+class TabSubForm extends \Gems\Form\TableForm
 {
     /**
-     * For backward compatibility, allow \MUtil_Html calls to set or append to the title
+     * For backward compatibility, allow \MUtil\Html calls to set or append to the title
      *
      * @param type $method
      * @param type $args
-     * @return \Gems_Form_TabSubForm
+     * @return \Gems\Form\TabSubForm
      */
     public function __call($method, $args)
     {
@@ -24,7 +25,7 @@ class Gems_Form_TabSubForm extends \Gems_Form_TableForm
             return parent::__call($method, $args);
         }
 
-        $elem = \MUtil_Html::createArray($method, $args);
+        $elem = \MUtil\Html::createArray($method, $args);
 
         $value = $this->getAttrib('title');
 
