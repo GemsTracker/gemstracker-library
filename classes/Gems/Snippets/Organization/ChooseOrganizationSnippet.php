@@ -63,8 +63,8 @@ class ChooseOrganizationSnippet extends \MUtil_Snippets_SnippetAbstract
         $html->h3($this->_('Choose an organization'));
 
         $user = $this->loader->getCurrentUser();
-        $url[$this->request->getControllerKey()] = 'organization';
-        $url[$this->request->getActionKey()]     = 'change-ui';
+        $url['controller'] = 'organization';
+        $url['action']     = 'change-ui';
 
         if ($orgs = $user->getRespondentOrganizations()) {
             $html->pInfo($this->_('This organization cannot have any respondents, please choose one that does:'));

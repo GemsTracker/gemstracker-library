@@ -236,9 +236,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      */
     public function createModel($detailed, $action)
     {
-        $tracker = $this->loader->getTracker();
-
-        $model = $tracker->getTrackModel();
+        $model = $this->tracker->getTrackModel();
         $model->applyFormatting($detailed);
         $model->addFilter(array("gtr_track_class != 'SingleSurveyEngine'"));
 
@@ -250,7 +248,7 @@ class Gems_Default_TrackMaintenanceAction extends \Gems_Default_TrackMaintenance
      */
     public function editAction()
     {
-        $this->createEditSnippets = $this->loader->getTracker()->getTrackEngineEditSnippets();
+        $this->createEditSnippets = $this->tracker->getTrackEngineEditSnippets();
 
         parent::editAction();
     }

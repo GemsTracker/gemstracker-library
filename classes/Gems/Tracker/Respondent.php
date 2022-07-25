@@ -127,7 +127,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         if ($this->addLoginCheck) {
             $this->model->addLoginCheck();
         }
-        $this->initTranslateable();
+        $this->initGenderTranslations();
         // Load the data
         $this->refresh();
     }

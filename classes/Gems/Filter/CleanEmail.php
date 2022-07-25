@@ -26,6 +26,9 @@ class Gems_Filter_CleanEmail implements \Zend_Filter_Interface
      */
     public function filter($value)
     {
+        if ($value === null) {
+            return $value;
+        }
         // Add elements to be removed from $value to array $cleanup
         $cleanup[] = 'mailto:';
 

@@ -86,8 +86,15 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
     public function getRespondent()
     {
         if (! $this->_respondent) {
-            $patientNumber  = $this->_getParam(\MUtil_Model::REQUEST_ID1);
-            $organizationId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+            $queryParams = $this->request->getQueryParams();
+            $patientNumber  = null;
+            if (isset($queryParams[\MUtil_Model::REQUEST_ID1])) {
+                $patientNumber = $queryParams[\MUtil_Model::REQUEST_ID1];
+            }
+            $organizationId  = null;
+            if (isset($queryParams[\MUtil_Model::REQUEST_ID2])) {
+                $organizationId = $queryParams[\MUtil_Model::REQUEST_ID2];
+            }
 
             $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
@@ -115,9 +122,12 @@ abstract class Gems_Default_RespondentChildActionAbstract extends \Gems_Controll
      */
     public function getRespondentId()
     {
-        if ($this->_getParam(\MUtil_Model::REQUEST_ID1)) {
+        $queryParams = $this->request->getQueryParams();
+        if (isset($queryParams[\MUtil_Model::REQUEST_ID1])) {
             return $this->getRespondent()->getId();
         }
+
+        return null;
     }
 
     /**

@@ -21,7 +21,7 @@ use Gems\Screens\ProcessModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-abstract class Gems_Default_RespondentNewAction extends \Gems_Default_RespondentChildActionAbstract
+class Gems_Default_RespondentNewAction extends \Gems_Default_RespondentChildActionAbstract
 {
     /**
      *
@@ -34,11 +34,11 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gr2o_opened' => SORT_DESC),
+        'extraSort'   => ['gr2o_opened' => SORT_DESC],
         'respondent'  => null,
-        );
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -57,13 +57,13 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $changeConsentParameters = array(
+    protected $changeConsentParameters = [
         'editMailable'     => true,
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
         'resetRoute'       => true,
         'useTabbedForm'    => false,
-        );
+    ];
 
     /**
      * The snippets used for the change consent action.
@@ -85,9 +85,9 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $changeOrganizationParameters = array(
+    protected $changeOrganizationParameters = [
         'keepConsent' => false,
-        );
+    ];
 
     /**
      * The snippets used for the change organization action.
@@ -106,12 +106,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array(
+    protected $createEditParameters = [
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
         'resetRoute'       => true,
         'useTabbedForm'    => true,
-        );
+    ];
 
     /**
      * The snippets used for the create and edit actions.
@@ -134,13 +134,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = array('respondent' => null);
-
-    /**
-     *
-     * @var \Gems_User_Organization
-     */
-    public $currentOrganization;
+    protected $createParameters = ['respondent' => null];
 
     /**
      *
@@ -149,11 +143,16 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public $currentUser;
 
     /**
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
      * The default search data to use.
      *
      * @var array()
      */
-    protected $defaultSearchData = array('grc_success' => 1);
+    protected $defaultSearchData = ['grc_success' => 1];
 
     /**
      * The parameters used for the delete action.
@@ -165,20 +164,20 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = array(
+    protected $deleteParameters = [
         'baseUrl'        => 'getItemUrlArray',
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
         // 'respondentData' => 'getRespondentData',
         'showButtons'    => false,
-        );
+    ];
 
     /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    public $deleteSnippets = array('Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet');
+    public $deleteSnippets = ['Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet'];
 
     /**
      *
@@ -191,7 +190,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var mixed String or array of snippets name
      */
-    public $exportSnippets = array('Respondent\\RespondentDetailsSnippet');
+    public $exportSnippets = ['Respondent\\RespondentDetailsSnippet'];
 
     /**
      * Array of the actions that use the model in form version.
@@ -200,14 +199,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array $formActions Array of the actions that use the model with a form.
      */
-    public $formActions = array('create', 'delete', 'edit', 'import', 'simpleApi');
+    public $formActions = ['create', 'delete', 'edit', 'import', 'simpleApi'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet'];
 
     /**
      *
@@ -225,14 +224,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $overviewParameters = array();
+    protected $overviewParameters = [];
 
     /**
      * The snippets used for the overview action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $overviewSnippets   = array('Respondent\\RespondentOverviewSnippet');
+    protected $overviewSnippets   = ['Respondent\\RespondentOverviewSnippet'];
 
     /**
      * The parameters used for the show action
@@ -244,28 +243,28 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'addCurrentParent' => true,
         'baseUrl'          => 'getItemUrlArray',
         'forOtherOrgs'     => 'getOtherOrgs',
         'onclick'          => 'getEditLink',
         // 'respondentData'   => 'getRespondentData',
         '-run-once'        => 'openedRespondent',
-    );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Respondent\\MultiOrganizationTab',
         'Respondent\\RespondentDetailsSnippet',
     	'Tracker\\AddTracksSnippet',
         'Token\\TokenTabsSnippet',
         'Token\\RespondentTokenSnippet',
-    );
+    ];
 
     /**
      *
@@ -278,10 +277,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @var array
      */
-    protected $tokenReturnActions = array(
+    protected $tokenReturnActions = [
         'index',
         'show',
-    );
+    ];
 
     /**
      * The automatically filtered result
@@ -382,7 +381,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             $edit = false;
             $org  = $this->getRespondent()->getOrganization();
             if (! $org) {
-                $org = $this->currentOrganization;
+                $org = $this->currentUser->getCurrentOrganization();
             }
 
             if ($org) {
@@ -511,22 +510,32 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
         //Now show the export form
         $export = $this->loader->getRespondentExport();
         $form   = $export->getForm();
-        $div    = $this->html->div(array('id' => 'mainform'));
+        $div    = $this->html->div(['id' => 'mainform']);
         $div[]  = $form;
 
-        $request = $this->getRequest();
+        $params = $this->request->getQueryParams() + $this->request->getParsedBody();
 
-        $form->populate($request->getParams());
+        $form->populate($params);
 
-        if ($request->isPost()) {
+        if ($this->requestHelper->isPost()) {
             $respondent = $this->getRespondent();
-            $patients   = array(
-                array(
+            $patients   = [
+                [
                     'gr2o_id_organization' => $respondent->getOrganizationId(),
                     'gr2o_patient_nr'      => $respondent->getPatientNumber()
-                    )
-                );
-            $export->render($patients, $request->getParam('group'), $request->getParam('format'));
+                ]
+            ];
+
+            $group = null;
+            if (isset($params['group'])) {
+                $group = $params['group'];
+            }
+            $format = null;
+            if (isset($params['format'])) {
+                $format = $params['format'];
+            }
+
+            $export->render($patients, $group, $format);
         }
     }
 
@@ -547,16 +556,14 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function getEditLink()
     {
-        $request = $this->getRequest();
-
-        $item = $this->menu->find(array(
-            $request->getControllerKey() => $request->getControllerName(),
+        /*$item = $this->menu->find(array(
+            'controller' => $this->requestHelper->getControllerName(),
             $request->getActionKey() => 'edit',
             'allowed' => true));
 
         if ($item) {
             return $item->toHRefAttribute($request);
-        }
+        }*/
     }
 
     /**
@@ -597,10 +604,10 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     public function getItemUrlArray()
     {
-        return array(
+        return [
             \MUtil_Model::REQUEST_ID1 => $this->_getParam(\MUtil_Model::REQUEST_ID1),
             \MUtil_Model::REQUEST_ID2 => $this->_getParam(\MUtil_Model::REQUEST_ID2),
-            );
+        ];
     }
 
     /**
@@ -680,11 +687,12 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
     public function getSearchDefaults()
     {
         if (! isset($this->defaultSearchData[\MUtil_Model::REQUEST_ID2])) {
+            $currentOrganization = $this->currentUser->getCurrentOrganization();
             if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') &&
-                    (! $this->currentOrganization->canHaveRespondents())) {
+                    (! $currentOrganization->canHaveRespondents())) {
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = '';
             } else {
-                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $this->currentOrganization->getId();
+                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $currentOrganization->getId();
             }
         }
 
@@ -719,11 +727,11 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                     if (! $model->hasAlias('gems__respondent2track')) {
                         $model->addTable(
                                 'gems__respondent2track',
-                                array('gr2o_id_user' => 'gr2t_id_user', 'gr2o_id_organization' => 'gr2t_id_organization')
+                                ['gr2o_id_user' => 'gr2t_id_user', 'gr2o_id_organization' => 'gr2t_id_organization']
                                 );
                     }
                     if (! $model->hasAlias('gems__tracks')) {
-                        $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
+                        $model->addTable('gems__tracks', ['gr2t_id_track' => 'gtr_id_track']);
                     }
                     if (! isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
                         unset($filter['gr2t_id_track']);
@@ -786,7 +794,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
             }
         }
         if ($this->currentUser->hasPrivilege('pr.respondent.multiorg') ||
-                $this->currentOrganization->canHaveRespondents()) {
+                $this->currentUser->getCurrentOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization\\ChooseOrganizationSnippet');
@@ -800,15 +808,13 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
-        $request = $this->getRequest();
-
-        if (in_array($request->getActionName(), $this->tokenReturnActions)) {
+        if (in_array($this->requestHelper->getActionName(), $this->tokenReturnActions)) {
             // Tell the system where to return to after a survey has been taken
-            $this->currentUser->setSurveyReturn($request);
+            $this->currentUser->setSurveyReturn($this->request->getQueryParams());
         }
     }
 
@@ -818,8 +824,15 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
      */
     protected function openedRespondent()
     {
-        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+        $queryParams = $this->request->getQueryParams();
+        $orgId = null;
+        if (isset($queryParams[\MUtil_Model::REQUEST_ID2])) {
+            $orgId = $queryParams[\MUtil_Model::REQUEST_ID2];
+        }
+        $patientNr = null;
+        if (isset($queryParams[\MUtil_Model::REQUEST_ID1])) {
+            $patientNr = $queryParams[\MUtil_Model::REQUEST_ID1];
+        }
 
         if ($patientNr && $orgId) {
             $where['gr2o_patient_nr = ?']      = $patientNr;
@@ -902,7 +915,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Default_Respondent
                 ->startImport();
 
         $raw    = $translator->translateRowValues($data, 1);
-        $errors = array();
+        $errors = [];
 
         // First check if we need to merge
         if (array_key_exists('oldpid', $raw)) {

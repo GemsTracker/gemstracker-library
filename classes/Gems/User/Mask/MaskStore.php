@@ -264,8 +264,6 @@ class MaskStore extends \Gems_Loader_TargetLoaderAbstract
     {
         parent::afterRegistry();
 
-        $this->initTranslateable();
-
         $this->_ensureSettings();
 
         // Load the masker classes

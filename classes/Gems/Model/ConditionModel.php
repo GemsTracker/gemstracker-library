@@ -37,9 +37,9 @@ class ConditionModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems_Util_Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -60,16 +60,16 @@ class ConditionModel extends \Gems_Model_JoinModel
     {
         $conditions = $this->loader->getConditions();
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $types = $conditions->getConditionTypes();
         reset($types);
         $default = key($types);
         $this->set('gcon_type', 'label', $this->_('Type'),
-                'description', $this->_('Determines where the condition can be applied.'),
-                'multiOptions', $types,
-                'default', $default
-                );
+            'description', $this->_('Determines where the condition can be applied.'),
+            'multiOptions', $types,
+            'default', $default
+        );
 
         $conditionsClasses = [];
         if ($addCount) { // Are we in a browse mode
@@ -78,25 +78,25 @@ class ConditionModel extends \Gems_Model_JoinModel
             }
         }
         $this->set('gcon_class', 'label', $this->_('Condition'),
-                'multiOptions', $conditionsClasses
-                );
+            'multiOptions', $conditionsClasses
+        );
 
         $this->set('gcon_name', 'label', $this->_('Name'));
         $this->set('gcon_active', 'label', $this->_('Active'),
-                'multiOptions', $yesNo
-                );
+            'multiOptions', $yesNo
+        );
 
         $this->addColumn("CASE WHEN gcon_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         if ($addCount) {
             $this->addColumn(
-                    "(SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gcon_id = gro_condition)",
-                    'usage'
-                    );
+                "(SELECT COUNT(gro_id_round) FROM gems__rounds WHERE gcon_id = gro_condition)",
+                'usage'
+            );
             $this->set('usage', 'label', $this->_('Rounds'),
-                    'description', $this->_('The number of rounds using this condition.'),
-                    'elementClass', 'Exhibitor'
-                    );
+                'description', $this->_('The number of rounds using this condition.'),
+                'elementClass', 'Exhibitor'
+            );
 
             $this->addColumn(new \Zend_Db_Expr(
                 "(SELECT COUNT(*)
@@ -109,11 +109,11 @@ class ConditionModel extends \Gems_Model_JoinModel
                             gems__conditions.gcon_id = other.gcon_condition_text4
                         )
                 )"
-                ), 'usecondition');
+            ), 'usecondition');
             $this->set('usecondition', 'label', $this->_('Conditions'),
                 'description', $this->_('The number of uses of this condition in other conditions.'),
                 'elementClass', 'Exhibitor'
-                );
+            );
         }
         if (! $addCount) {
             $this->addDependency('Condition\\TypeDependency');
@@ -131,7 +131,7 @@ class ConditionModel extends \Gems_Model_JoinModel
     {
         $this->applyBrowseSettings(false);
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $this->resetOrder();
 
@@ -148,8 +148,8 @@ class ConditionModel extends \Gems_Model_JoinModel
         $this->set('gcon_condition_text4');
 
         $this->set('gcon_active', 'label', $this->_('Active'),
-                'multiOptions', $yesNo
-                );
+            'multiOptions', $yesNo
+        );
 
         $this->addDependency('Condition\\ClassDependency');
 

@@ -19,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Validate_OneOf extends \Zend_Validate_Abstract
+class Gems_Validate_OneOf extends \Laminas\Validator\AbstractValidator
 {
     /**
      * Error codes
@@ -27,32 +27,32 @@ class Gems_Validate_OneOf extends \Zend_Validate_Abstract
      */
     const NEITHER  = 'neither';
 
-    protected $_messageTemplates = array(
+    protected array $messageTemplates = [
         self::NEITHER => "Either '%description%' or '%fieldDescription%' must be entered.",
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $_messageVariables = array(
+    protected array $messageVariables = [
         'description' => '_description',
         'fieldDescription' => '_fieldDescription'
-    );
+    ];
 
 
-    protected $_description;
+    protected string $description;
 
     /**
      * The field name against which to validate
      * @var string
      */
-    protected $_fieldName;
+    protected string $fieldName;
 
     /**
      * Description of field name against which to validate
      * @var string
      */
-    protected $_fieldDescription;
+    protected string $fieldDescription;
 
     /**
      * Sets validator options
@@ -61,11 +61,12 @@ class Gems_Validate_OneOf extends \Zend_Validate_Abstract
      * $param string $fieldDescription  Description of field name against which to validate
      * @return void
      */
-    public function __construct($description, $fieldName, $fieldDescription)
+    public function __construct(string $description, string $fieldName, string $fieldDescription)
     {
-        $this->_description = $description;
-        $this->_fieldName = $fieldName;
-        $this->_fieldDescription = $fieldDescription;
+        parent::__construct();
+        $this->description = $description;
+        $this->fieldName = $fieldName;
+        $this->fieldDescription = $fieldDescription;
     }
 
     /**
@@ -77,11 +78,11 @@ class Gems_Validate_OneOf extends \Zend_Validate_Abstract
      * @param  mixed $value
      * @return boolean
      */
-    public function isValid($value, $context = array())
+    public function isValid($value, $context = [])
     {
-        $this->_setValue((string) $value);
+        $this->setValue((string) $value);
 
-        $fieldSet = (boolean) isset($context[$this->_fieldName]) && $context[$this->_fieldName];
+        $fieldSet = isset($context[$this->_fieldName]) && $context[$this->_fieldName];
         $valueSet = (boolean) $value;
 
         if ($valueSet && (! $fieldSet))  {
@@ -92,7 +93,7 @@ class Gems_Validate_OneOf extends \Zend_Validate_Abstract
             return true;
         }
 
-        $this->_error(self::NEITHER);
+        $this->error(self::NEITHER);
         return false;
     }
 }

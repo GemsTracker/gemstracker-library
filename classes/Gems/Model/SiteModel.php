@@ -28,6 +28,11 @@ class SiteModel extends  \Gems_Model_JoinModel
     protected $project;
 
     /**
+     * @var \Gems_Util_Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * @var \Gems_Util
      */
     protected $util;
@@ -54,7 +59,7 @@ class SiteModel extends  \Gems_Model_JoinModel
      */
     public function applySettings($detailed, $action)
     {
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $this->set('gsi_url', 'label', $this->_('Site'),
             'validators[unique]', $this->createUniqueValidator('gsi_url'));

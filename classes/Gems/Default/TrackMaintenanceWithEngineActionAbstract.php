@@ -45,6 +45,11 @@ abstract class Gems_Default_TrackMaintenanceWithEngineActionAbstract extends \Ge
     protected $trackEngine;
 
     /**
+     * @var \Gems_Tracker
+     */
+    public $tracker;
+
+    /**
      *
      * @return \Gems_Tracker_Engine_TrackEngineInterface
      * @throws \Gems_Exception
@@ -61,7 +66,7 @@ abstract class Gems_Default_TrackMaintenanceWithEngineActionAbstract extends \Ge
         }
 
         $menuSource = $this->menu->getParameterSource();
-        $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
+        $this->trackEngine = $this->tracker->getTrackEngine($trackId);
         $this->trackEngine->applyToMenuSource($menuSource);
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 

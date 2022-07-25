@@ -50,7 +50,7 @@ class RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
     {
         parent::loadFormData();
 
-        if ($this->createData && ($this->request->isPost() && (! isset($this->formData[$this->saveButtonId])))) {
+        if ($this->createData && ($this->requestInfo->isPost() && (! isset($this->formData[$this->saveButtonId])))) {
             if ((! $this->_saveButton) || (! $this->_saveButton->isChecked())) {
                 if (isset($this->formData['grs_ssn']) && $this->formData['grs_ssn'])  {
                     $filter = array(

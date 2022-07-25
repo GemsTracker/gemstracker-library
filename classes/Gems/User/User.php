@@ -2427,7 +2427,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         } elseif (! is_array($return)) {
             $return = \MUtil_Ra::to($return);
         }
-        if ('autofilter' == $return['action']) {
+        if (array_key_exists('action', $return) && 'autofilter' == $return['action']) {
             $return['action'] = 'index';
         }
 
