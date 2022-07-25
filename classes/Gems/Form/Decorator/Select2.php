@@ -1,5 +1,6 @@
 <?php
 
+namespace Gems\Form\Decorator;
 
 class Select2 extends \MUtil\Form\Decorator\Select2
 {

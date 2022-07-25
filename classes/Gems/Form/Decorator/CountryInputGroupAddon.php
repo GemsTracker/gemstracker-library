@@ -1,5 +1,6 @@
 <?php
 
+namespace Gems\Form\Decorator;
 
 class CountryInputGroupAddon extends \Gems\Form\Decorator\InputGroupAddon
 {

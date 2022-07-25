@@ -1,5 +1,6 @@
 <?php
 
+namespace Gems\Form\Decorator;
 
 class InputGroupAddon extends \Zend_Form_Decorator_ViewHelper
 {
