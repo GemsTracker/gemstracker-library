@@ -14,10 +14,21 @@ class MenuTest extends \PHPUnit\Framework\TestCase
 {
     private function buildMenuABC(?array $routes = null, ?array $menu = null): Menu
     {
+        $menu ??= [
+            [
+                'name' => 'route-b',
+                'label' => 'Route b',
+                'type' => 'route-link-item',
+            ]
+        ];
+
         $router = $this->createMock(RouterInterface::class);
 
         $template = new TwigRenderer(null, 'html.twig');
         $template->addPath(__DIR__ . '/../../templates/menu', 'menu');
+
+        $menuConfig = $this->createMock(\Gems\Config\Menu::class);
+        $menuConfig->method('getItems')->willReturn($menu);
 
         $config = [
             'routes' => $routes ?? [
@@ -37,16 +48,9 @@ class MenuTest extends \PHPUnit\Framework\TestCase
                     'allowed_methods' => ['GET'],
                 ],
             ],
-            'menu' => $menu ?? [
-                [
-                    'name' => 'route-b',
-                    'label' => 'Route b',
-                    'type' => 'route-link-item',
-                ],
-            ],
         ];
 
-        return new Menu($router, $template, $config);
+        return new Menu($router, $template, $menuConfig, $config);
     }
 
     public function testCanRenderEmptyMenu()

@@ -2,19 +2,26 @@
 
 namespace Gems\Config;
 
+use Gems\EventNew\MenuBuildItemsEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Menu
 {
-    public function __construct(private readonly TranslatorInterface $translator)
-    {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        private readonly EventDispatcher $eventDispatcher,
+    ) {
     }
 
     public function getItems(): array
     {
         $items = $this->buildItems();
 
-        return $items;
+        $event  = new MenuBuildItemsEvent($items);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->getItems();
     }
 
     private function buildItems(): array
