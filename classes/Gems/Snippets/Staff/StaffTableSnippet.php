@@ -20,7 +20,7 @@ namespace Gems\Snippets\Staff;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 24-sep-2015 16:23:26
  */
-class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -33,7 +33,7 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -46,7 +46,7 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -56,14 +56,14 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if (! $this->columns) {
-            $br = \MUtil_Html::create('br');
+            $br = \MUtil\Html::create('br');
             
             $this->columns = array(
                 10 => array('gsf_login', $br, 'gsf_id_primary_group'),
@@ -79,11 +79,11 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Model_StaffModel) {
+        if ($this->model instanceof \Gems\Model\StaffModel) {
             $model = $this->model;
         } else {
             $model = $this->loader->getModels()->getStaffModel();
@@ -96,13 +96,13 @@ class StaffTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItems()
     {
         $resets = $this->findMenuItems($this->menuActionController, 'reset');
         foreach ($resets as $resetPw) {
-            if ($resetPw instanceof \Gems_Menu_SubMenuItem) {
+            if ($resetPw instanceof \Gems\Menu\SubMenuItem) {
                 $resetPw->set('label', $this->_('password'));
             }
         }

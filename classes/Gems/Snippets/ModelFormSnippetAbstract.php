@@ -9,13 +9,15 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
- * Adds Gems specific display details and helper functions:
+ * Adds \Gems specific display details and helper functions:
  *
  * Items set are:
  * = Default route: 'show'
  * - Display class: 'formTable'
- * - \Gems_Form use: createForm()
+ * - \Gems\Form use: createForm()
  * - Table display: beforeDispay()
  *
  * Extra helpers are:
@@ -28,11 +30,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_ModelFormSnippetAbstract
+abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -60,7 +62,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -78,7 +80,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -102,12 +104,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        if (! $bridge->getForm() instanceof \Gems_TabForm) {
+        if (! $bridge->getForm() instanceof \Gems\TabForm) {
             parent::addFormElements($bridge, $model);
             return;
         }
@@ -116,16 +118,16 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         $this->initItems();
 
         // Add 'tooltip' to the allowed displayoptions
-        $displayOptions = $bridge->getAllowedOptions(\MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS);
+        $displayOptions = $bridge->getAllowedOptions(\MUtil\Model\Bridge\FormBridge::DISPLAY_OPTIONS);
         if (!array_search('tooltip', $displayOptions)) {
             $displayOptions[] = 'tooltip';
-            $bridge->setAllowedOptions(\MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS, $displayOptions);
+            $bridge->setAllowedOptions(\MUtil\Model\Bridge\FormBridge::DISPLAY_OPTIONS, $displayOptions);
         }
 
         $tab    = 0;
         $group  = 0;
         $oldTab = null;
-        // \MUtil_Echo::track($model->getItemsOrdered());
+        // \MUtil\EchoOut\EchoOut::track($model->getItemsOrdered());
         foreach ($model->getItemsOrdered() as $name) {
             // Get all options at once
             $modelOptions = $model->get($name);
@@ -179,7 +181,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
      */
     protected function addSaveButton()
     {
-        if ($this->_form instanceof \Gems_TabForm) {
+        if ($this->_form instanceof \Gems\TabForm) {
             $this->_form->resetContext();
         }
         parent::addSaveButton();
@@ -195,7 +197,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     {
         parent::afterRegistry();
 
-        if ($this->project instanceof \Gems_Project_ProjectSettings) {
+        if ($this->project instanceof \Gems\Project\ProjectSettings) {
             $this->useCsrf = $this->project->useCsrfCheck();
         }
     }
@@ -225,9 +227,9 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
      */
     public function beforeDisplay()
     {
-        if ($this->_form instanceof \Gems_TabForm) {
+        if ($this->_form instanceof \Gems\TabForm) {
             if ($links = $this->getMenuList()) {
-                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer = \MUtil\Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
@@ -240,14 +242,14 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                 $this->_form->resetContext();
                 $this->_form->addElement($element);
 
-                if (is_null($this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER))) {
-                    $this->_form->addDisplayGroup(array($element), \Gems_TabForm::GROUP_OTHER);
+                if (is_null($this->_form->getDisplayGroup(\Gems\TabForm::GROUP_OTHER))) {
+                    $this->_form->addDisplayGroup(array($element), \Gems\TabForm::GROUP_OTHER);
                 } else {
-                    $this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER)->addElement($element);
+                    $this->_form->getDisplayGroup(\Gems\TabForm::GROUP_OTHER)->addElement($element);
                 }
             }
         } elseif($links = $this->getMenuList()) {
-            $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+            $linkContainer = \MUtil\Html::create()->div(array('class' => 'element-container-labelless'));
             $linkContainer[] = $links;
 
             $element = $this->_form->createElement('html', 'formLinks');
@@ -281,7 +283,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     protected function createForm($options = null)
     {
         if ($this->useTabbedForm) {
-            return new \Gems_TabForm($options);
+            return new \Gems\TabForm($options);
         }
         if (!isset($options['class'])) {
             $options['class'] = 'form-horizontal';
@@ -290,7 +292,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
         if (!isset($options['role'])) {
             $options['role'] = 'form';
         }
-        return new \Gems_Form($options);
+        return new \Gems\Form($options);
     }
 
     /**
@@ -299,11 +301,11 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $htmlDiv = \MUtil_Html::div();
+        $htmlDiv = \MUtil\Html::div();
 
         $title = $this->getTitle();
         if ($title) {
@@ -320,7 +322,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -374,7 +376,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
     /**
      * If menu item does not exist or is not allowed, redirect to index
      *
-     * @return \Gems_Snippets_ModelFormSnippetAbstract
+     * @return \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {
@@ -396,7 +398,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_Mo
                 $this->resetRoute = true;
             }
         }
-        // \MUtil_Echo::track($this->routeAction, $this->resetRoute);
+        // \MUtil\EchoOut\EchoOut::track($this->routeAction, $this->resetRoute);
 
         return $this;
     }

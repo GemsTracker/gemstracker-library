@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Menu;
+
 /**
  * A container item is one that gathers multiple sub menu
  * items, but does not have it's own controller/action pair
@@ -20,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
+class ContainerItem extends \Gems\Menu\SubMenuItem
 {
     /**
      *
@@ -48,10 +50,10 @@ class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
      * Returns a \Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
-     * @param \Gems_Menu_ParameterCollector $source
+     * @param \Gems\Menu\ParameterCollector $source
      * @return array
      */
-    protected function _toNavigationArray(\Gems_Menu_ParameterCollector $source)
+    protected function _toNavigationArray(\Gems\Menu\ParameterCollector $source)
     {
         $result = parent::_toNavigationArray($source);
 
@@ -113,9 +115,9 @@ class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
      *
      * @param \Zend_Acl $acl
      * @param string $userRole
-     * @return \Gems_Menu_MenuAbstract (continuation pattern)
+     * @return \Gems\Menu\MenuAbstract (continuation pattern)
      */
-    protected function applyAcl(\MUtil_Acl $acl, $userRole)
+    protected function applyAcl(\MUtil\Acl $acl, $userRole)
     {
         parent::applyAcl($acl, $userRole);
 
@@ -141,8 +143,8 @@ class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
     /**
      * Make sure only the active branch is visible
      *
-     * @param array $activeBranch Of \Gems_Menu_Menu Abstract items
-     * @return \Gems_Menu_MenuAbstract (continuation pattern)
+     * @param array $activeBranch Of \Gems\Menu_Menu Abstract items
+     * @return \Gems\Menu\MenuAbstract (continuation pattern)
      */
     protected function setBranchVisible(array $activeBranch)
     {

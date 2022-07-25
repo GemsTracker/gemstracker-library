@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SubjectAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -43,10 +42,10 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
     {
         if (! $this->_data['gaf_filter_text1']) {
             return ! $appointment->getSubject();

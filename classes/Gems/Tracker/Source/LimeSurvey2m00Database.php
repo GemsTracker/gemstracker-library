@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Source;
+
 /**
  * Difference with 1.9 version:
  *   - private field was renamed to anonymized
@@ -19,13 +21,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_LimeSurvey1m91Database
+class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
      *
      * @var string class name for creating field maps
      */
-    protected $fieldMapClass = '\Gems_Tracker_Source_LimeSurvey2m00FieldMap';
+    protected $fieldMapClass = '\\Gems\\Tracker\\Source\\LimeSurvey2m00FieldMap';
 
     /**
      * Check a token table for any changes needed by this version.
@@ -45,10 +47,10 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
      *
      * Adds the fields without default new in 2.00
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of fieldname => value type
      */
-    protected function _fillAttributeMap(\Gems_Tracker_Token $token)
+    protected function _fillAttributeMap(\Gems\Tracker\Token $token)
     {
         $values = parent::_fillAttributeMap($token);
 
@@ -58,7 +60,7 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
     /**
      * Adds the fields without default new in 2.00
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of fieldname => value type
      */
     public static function addnewAttributeDefaults(array $values)
@@ -92,13 +94,13 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends \Gems_Tracker_Source_Li
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @param string $language
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
+    public function getTokenUrl(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);

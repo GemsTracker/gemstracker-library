@@ -21,7 +21,7 @@ use Gems\Conditions;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ConditionModel extends \Gems_Model_JoinModel
+class ConditionModel extends \Gems\Model\JoinModel
 {
     /**
      *
@@ -31,13 +31,13 @@ class ConditionModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

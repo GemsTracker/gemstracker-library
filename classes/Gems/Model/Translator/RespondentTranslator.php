@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model\Translator;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_StraightTranslator
+class RespondentTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -30,7 +32,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
      *
      * @var string
      */
-    protected $saveTask = 'Import_SaveRespondentTask';
+    protected $saveTask = 'Import\\SaveRespondentTask';
 
     /**
      * Should be called after answering the request to allow the Target
@@ -47,7 +49,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws \MUtil_Model_ModelException
+     * @throws \MUtil\Model\ModelException
      */
     public function getFieldsTranslations()
     {
@@ -65,11 +67,11 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
     /**
      * Prepare for the import.
      *
-     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
      */
     public function startImport()
     {
-        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+        if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
             $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
         }
 
@@ -107,7 +109,7 @@ class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_
         if (empty($row['gr2o_email'])) {
             $row['calc_email'] = 1;
         }
-        // \MUtil_Echo::track($row);
+        // \MUtil\EchoOut\EchoOut::track($row);
 
         return $row;
     }

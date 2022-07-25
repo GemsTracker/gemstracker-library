@@ -6,18 +6,19 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 
+namespace Gems\Communication;
+
 /**
- * @see \Gems_Exception
+ * @see \Gems\Exception
  *
  * @package    Gems
  * @subpackage Communication
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Communication_Exception extends \Gems_Exception
+class Exception extends \Gems\Exception
 {
 }

@@ -84,7 +84,7 @@ trait GenderTranslation
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil\Translate\Adapter\Potemkin();
 
         $this->initGenderTranslations();
     }
@@ -138,7 +138,7 @@ trait GenderTranslation
 
         // If we don't find the needed language, use a fake translator to disable notices
         if (! $translate->isAvailable($language)) {
-            $translate = \MUtil_Translate_Adapter_Potemkin::create();
+            $translate = \MUtil\Translate\Adapter\Potemkin::create();
         }
 
         // Add other languages through Event (e.g. Modules)

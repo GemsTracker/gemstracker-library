@@ -7,8 +7,9 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Adds the ability to add a variable value to a select form element based on another form elements value
@@ -35,14 +36,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_ModelFormVariableFieldSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
+class ModelFormVariableFieldSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
 {
 
     protected $ajaxEvents;
     protected $db;
     protected $util;
 
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         parent::addFormElements($bridge, $model);
 
@@ -141,14 +142,14 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends \Gems_Snippets_ModelFo
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
 
         if ($script = $this->getAjaxEventScript()) {
-            $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
-            \MUtil_JQuery::enableView($view);
+            $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath();
+            \MUtil\JQuery::enableView($view);
             $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.getSelectOptions.js');
             $view->inlineScript()->appendScript($script);
         }

@@ -20,7 +20,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
     public $menuLinks;
 
     /**
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     public $model;
 
@@ -35,8 +35,8 @@ class RunSqlFormSnippet extends FormSnippetAbstract
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
     protected function addFormElements(\Zend_Form $form)
     {
@@ -75,7 +75,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -90,7 +90,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -103,7 +103,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
     /**
      * Get the current model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function getModel()
     {
@@ -113,12 +113,12 @@ class RunSqlFormSnippet extends FormSnippetAbstract
     /**
      * Return an array attribute with the current resultset
      *
-     * @return \MUtil_Html_ArrayAttribute
+     * @return \MUtil\Html\ArrayAttribute
      */
     protected function getResultTable($results)
     {
         $resultSet = 1;
-        $resultTable     = \MUtil_Html::create()->array();
+        $resultTable     = \MUtil\Html::create()->array();
         foreach ($results as $result) {
             if (is_string($result)) {
                 $this->addMessage($result);
@@ -165,7 +165,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
      * Set what to do when the form is 'finished'.
      *
      * #param array $params Url items to set for this route
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute(array $params = array())
     {

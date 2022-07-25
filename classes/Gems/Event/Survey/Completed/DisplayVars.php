@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Event\Survey\Completed;
+
 /**
  * Displays the variables and their values to help create a new calculation
  *
@@ -20,8 +22,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-class Gems_Event_Survey_Completed_DisplayVars extends \Gems_Event_EventCalculations
-    implements \Gems_Event_SurveyCompletedEventInterface
+class DisplayVars extends \Gems\Event\EventCalculations
+    implements \Gems\Event\SurveyCompletedEventInterface
 {
 
     /**
@@ -39,13 +41,13 @@ class Gems_Event_Survey_Completed_DisplayVars extends \Gems_Event_EventCalculati
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems_Tracker_Token $token)
+    public function processTokenData(\Gems\Tracker\Token $token)
     {
         $result = var_export($token->getRawAnswers(), true);
-        \MUtil_Echo::r($result, $token->getTokenId());
+        \MUtil\EchoOut\EchoOut::r($result, $token->getTokenId());
         return false;
     }
 }

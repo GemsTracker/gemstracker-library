@@ -4,8 +4,9 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task;
 
 /**
  * Cleans the cache during a batch job
@@ -22,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_CleanCache extends \MUtil_Task_TaskAbstract
+class CleanCache extends \MUtil\Task\TaskAbstract
 {
     /**
      *

@@ -13,12 +13,12 @@ namespace Gems\Export;
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class TrackExportTest extends \Gems_Test_DbTestAbstract
+class TrackExportTest extends \Gems\Test\DbTestAbstract
 {
     protected function fixUser()
     {
         // Fix user
-        $escort              = \GemsEscort::getInstance();
+        $escort              = \Gems\Escort::getInstance();
         $escort->currentUser = 1;
     }
     
@@ -116,10 +116,10 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract
         \Zend_Registry::getInstance()->set('util', $util);
         
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
-        $project = new \Gems_Project_ProjectSettings($settings);
+        $project = new \Gems\Project\ProjectSettings($settings);
         \Zend_Registry::getInstance()->set('project', $project);
         
-        $translate = new \MUtil_Translate_Adapter_Potemkin();
+        $translate = new \MUtil\Translate\Adapter\Potemkin();
         \Zend_Registry::getInstance()->set('translate', $translate);
         
         \Zend_Controller_Front::getInstance()->setRequest(new \Zend_Controller_Request_HttpTestCase());
@@ -138,7 +138,7 @@ class TrackExportTest extends \Gems_Test_DbTestAbstract
             'rounds' => [10, 20, 30, 40],
             'surveys' => [1,2]
         ];        
-        $filename = \MUtil_File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
+        $filename = \MUtil\File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
         
         $batch->setSessionVariable('filename', $filename);
 

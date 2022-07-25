@@ -19,7 +19,7 @@ namespace Gems\Exception;
  * @license    default
  * @since      Class available since version 
  */
-class RespondentAlreadyExists extends \Gems_Exception {
+class RespondentAlreadyExists extends \Gems\Exception {
     const SAME = 'same uid and pid exists';
     const OTHERUID = 'exists with other uid';
     const OTHERPID = 'exists with other pid';

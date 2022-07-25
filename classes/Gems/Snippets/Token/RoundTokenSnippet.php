@@ -46,7 +46,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
     protected $config;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -56,23 +56,23 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
         //
         // Initiate data retrieval for stuff needed by links
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
         $bridge->gr2t_id_respondent_track;
 
-        $HTML = \MUtil_Html::create();
+        $HTML = \MUtil\Html::create();
 
-        $roundIcon[] = \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
         $bridge->addMultiSort('gsu_survey_name', $roundIcon);
         $bridge->addSortable('ggp_name');
@@ -109,7 +109,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -133,7 +133,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -152,7 +152,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
                                         )
                                 ->addParameterSources(
                                         array(
-                                            \Gems_Model::TRACK_ID  => $default,
+                                            \Gems\Model::TRACK_ID  => $default,
                                             'gtr_id_track'         => $default,
                                             'track_can_be_created' => 1,
                                             ),
@@ -169,7 +169,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
                             ->addParameterSources($this->request);
                     $this->onEmpty = $list->getActionLink('track', 'show-track');
                 } else {
-                    $this->onEmpty = \MUtil_Html::create('em', $this->_('No valid tokens found'));
+                    $this->onEmpty = \MUtil\Html::create('em', $this->_('No valid tokens found'));
                 }
             }
         }

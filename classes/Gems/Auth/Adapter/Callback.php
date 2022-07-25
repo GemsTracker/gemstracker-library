@@ -4,8 +4,9 @@
  * @subpackage Auth
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Auth\Adapter;
 
 use Laminas\Authentication\Adapter\AdapterInterface;
 use Laminas\Authentication\Result;
@@ -19,7 +20,7 @@ use Laminas\Authentication\Result;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Auth_Adapter_Callback implements AdapterInterface
+class Callback implements AdapterInterface
 {
     /**
      * The callback to use

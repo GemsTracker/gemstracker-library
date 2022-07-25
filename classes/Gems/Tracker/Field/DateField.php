@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DateField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -37,7 +36,7 @@ class DateField extends FieldAbstract
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -53,7 +52,7 @@ class DateField extends FieldAbstract
      *
      * @var int
      */
-    protected $type = \MUtil_Model::TYPE_DATE;
+    protected $type = \MUtil\Model::TYPE_DATE;
 
     /**
      * The format string for outputting dates
@@ -88,7 +87,7 @@ class DateField extends FieldAbstract
     {
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
-                \MUtil_String::startsWith($currentValue, 'current_', true)) {
+                \MUtil\StringUtil\StringUtil::startsWith($currentValue, 'current_', true)) {
             return null;
         }
 
@@ -132,11 +131,11 @@ class DateField extends FieldAbstract
             }
         }
 
-        if ($currentValue instanceof \MUtil_Date) {
+        if ($currentValue instanceof \MUtil\Date) {
             return $currentValue;
         }
         if ($currentValue) {
-            return \MUtil_Date::ifDate($currentValue, $this->allowedDateFormats);
+            return \MUtil\Date::ifDate($currentValue, $this->allowedDateFormats);
         }
 
         return $currentValue;
@@ -149,7 +148,7 @@ class DateField extends FieldAbstract
      */
     protected function getDateFormat()
     {
-        return \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        return \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
     }
 
     /**
@@ -159,7 +158,7 @@ class DateField extends FieldAbstract
      */
     protected function getStorageFormat()
     {
-        return \Gems_Tracker::DB_DATE_FORMAT;
+        return \Gems\Tracker::DB_DATE_FORMAT;
     }
 
     /**
@@ -175,7 +174,7 @@ class DateField extends FieldAbstract
             return null;
         }
 
-        return new \MUtil_Date($currentValue, $this->getStorageFormat());
+        return new \MUtil\Date($currentValue, $this->getStorageFormat());
     }
 
     /**
@@ -189,7 +188,7 @@ class DateField extends FieldAbstract
     {
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||
-                \MUtil_String::startsWith($currentValue, 'current_', true)) {
+                \MUtil\StringUtil\StringUtil::startsWith($currentValue, 'current_', true)) {
             return $currentValue;
         }
 
@@ -201,7 +200,7 @@ class DateField extends FieldAbstract
         } else {
             $displayFormat = $this->getDateFormat();
 
-            $saveDate = \MUtil_Date::ifDate($currentValue, array($displayFormat, $saveFormat, \Gems_Tracker::DB_DATETIME_FORMAT));
+            $saveDate = \MUtil\Date::ifDate($currentValue, array($displayFormat, $saveFormat, \Gems\Tracker::DB_DATETIME_FORMAT));
             if ($saveDate instanceof \Zend_Date) {
                 return $saveDate->toString($saveFormat);
             }

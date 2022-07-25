@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\JQuery\View\Helper;
+
 /**
  * Short description for ToggleCheckboxes
  *
@@ -19,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_JQuery_View_Helper_ToggleCheckboxes extends \ZendX_JQuery_View_Helper_UiWidget
+class ToggleCheckboxes extends \ZendX_JQuery_View_Helper_UiWidget
 {
     //put your code here
     public function toggleCheckboxes($id, $value = null, array $params = array())

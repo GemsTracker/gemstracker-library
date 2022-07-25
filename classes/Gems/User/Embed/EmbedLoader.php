@@ -21,7 +21,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 15:55:10
  */
-class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
+class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
@@ -84,7 +84,7 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
         if (isset($this->_helperClasses[$helperType])) {
             return $this->_helperClasses[$helperType];
         } else {
-            throw new \Gems_Exception_Coding("No embedded helper class exists for helper type '$helperType'.");
+            throw new \Gems\Exception\Coding("No embedded helper class exists for helper type '$helperType'.");
         }
     }
 
@@ -115,10 +115,10 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
         $helper = new $helperName();
 
         if (! $helper instanceof $helperClass) {
-            throw new \Gems_Exception_Coding("The class '$helperName' of type '$helperType' is not an instance of '$helperClass'.");
+            throw new \Gems\Exception\Coding("The class '$helperName' of type '$helperType' is not an instance of '$helperClass'.");
         }
 
-        if ($helper instanceof \MUtil_Registry_TargetInterface) {
+        if ($helper instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($helper);
         }
 
@@ -210,9 +210,9 @@ class EmbedLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listStyles()
     {
-        $escort = \GemsEscort::getInstance();
+        $escort = \Gems\Escort::getInstance();
 
-        if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
             $styles[GEMS_PROJECT_NAME_UC] = $escort->getStyles();
         } else {
             $styles = [];

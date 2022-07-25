@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentExportSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Export;
@@ -21,11 +20,11 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 6-mei-2015 11:09:12
  */
-class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
+class RespondentExportSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Export_RespondentExport
+     * @var \Gems\Export\RespondentExport
      */
     protected $export;
 
@@ -44,7 +43,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -58,7 +57,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * The respondent
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -71,7 +70,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * Optional, required when editing or $respondentTrackId should be set
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -80,7 +79,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
      *
      * The display data of the token shown
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -118,7 +117,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -129,7 +128,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
                     $this->request->getParam('format')
                     );
         } else {
-            $seq = new \MUtil_Html_Sequence();
+            $seq = new \MUtil\Html\Sequence();
 
             if ($this->formTitle) {
                 $seq->h2($this->formTitle);
@@ -137,7 +136,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
 
             $form = $this->export->getForm($this->hideGroup);
             $div  = $seq->div(array('id' => 'mainform'), $form);
-            $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
+            $table = new \MUtil\Html\TableElement(array('class' => 'formTable'));
             $table->setAsFormLayout($form);
 
             $form->populate($this->request->getParams());
@@ -159,7 +158,7 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $this->export = $this->loader->getRespondentExport();
 
-        if ($this->token instanceof \Gems_Tracker_Token) {
+        if ($this->token instanceof \Gems\Tracker\Token) {
             $this->addRespondent(
                     $this->token->getPatientNumber(),
                     $this->token->getOrganizationId()
@@ -167,14 +166,14 @@ class RespondentExportSnippet extends \MUtil_Snippets_SnippetAbstract
             $this->export->addRespondentTrackFilter($this->token->getRespondentTrackId());
             $this->export->addTokenFilter($this->token->getTokenId());
 
-        } elseif ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+        } elseif ($this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
             $this->addRespondent(
                     $this->respondentTrack->getPatientNumber(),
                     $this->respondentTrack->getOrganizationId()
                     );
             $this->export->addRespondentTrackFilter($this->respondentTrack->getRespondentTrackId());
 
-        } elseif ($this->respondent instanceof \Gems_Tracker_Respondent) {
+        } elseif ($this->respondent instanceof \Gems\Tracker\Respondent) {
             $this->addRespondent(
                     $this->respondent->getPatientNumber(),
                     $this->respondent->getOrganizationId()

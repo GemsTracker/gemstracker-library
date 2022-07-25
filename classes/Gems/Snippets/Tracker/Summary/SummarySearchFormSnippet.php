@@ -20,7 +20,7 @@ use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends TrackSearchFormSnippetAbstract
+class SummarySearchFormSnippet extends TrackSearchFormSnippetAbstract
 {
 
     /**

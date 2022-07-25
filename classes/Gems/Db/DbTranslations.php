@@ -4,7 +4,7 @@
 namespace Gems\Db;
 
 
-class DbTranslations extends \MUtil_Registry_TargetAbstract
+class DbTranslations extends \MUtil\Registry\TargetAbstract
 {
     use DbTranslateTrait;
 
@@ -42,7 +42,7 @@ class DbTranslations extends \MUtil_Registry_TargetAbstract
                     $fields = array_intersect(array_keys($row), $tablesWithTranslations[$translateTable]);
                 }
 
-                $model = new \MUtil_Model_TableModel($translateTable);
+                $model = new \MUtil\Model\TableModel($translateTable);
                 $tableKeys = $model->getKeys();
                 $itemNames = $model->getItemNames();
 

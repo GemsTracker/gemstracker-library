@@ -9,9 +9,11 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Source;
+
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
- * separation between the Gems database and the Source database
+ * separation between the \Gems database and the Source database
  *
  * @package    Gems
  * @subpackage Tracker
@@ -19,8 +21,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_TranslateableAbstract
-    implements \Gems_Tracker_Source_SourceInterface
+abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
+    implements \Gems\Tracker\Source\SourceInterface
 {
 
     /**
@@ -31,12 +33,12 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
     /**
      * Holds the current batch if there is any
      *
-     * @var \Gems_Task_TaskRunnerBatch
+     * @var \Gems\Task\TaskRunnerBatch
      * /
     protected $_batch = null;
 
     /**
-     * The database connection to Gems itself
+     * The database connection to \Gems itself
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -58,13 +60,13 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -163,7 +165,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
         $data['gsu_active']          = 0;
         $data['gsu_surveyor_active'] = 0;
         $data['gsu_status']          = 'Survey was removed from source.';
-        $data['gsu_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
+        $data['gsu_changed']         = new \MUtil\Db\Expr\CurrentTimestamp();
         $data['gsu_changed_by']      = $userId;
 
         $this->_gemsDb->update('gems__surveys', $data, $sqlWhere);
@@ -183,16 +185,16 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
         if ($this->tracker->filterChangesOnly($this->_sourceData, $values)) {
 
 
-            if (\Gems_Tracker::$verbose) {
+            if (\Gems\Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $echo .= $key . ': ' . $this->_sourceData[$key] . ' => ' . $val . "\n";
                 }
-                \MUtil_Echo::r($echo, 'Updated values for ' . $this->getId());
+                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->getId());
             }
 
             if (! isset($values['gso_changed'])) {
-                $values['gso_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['gso_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
             }
             if (! isset($values['gso_changed_by'])) {
                 $values['gso_changed_by'] = $userId;
@@ -287,7 +289,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
      * as possible.
      *
      * @param array $filter filter array
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int
      */
@@ -350,7 +352,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
     }
 
     /**
-     * Returns all info from the Gems surveys table for a givens Gems Survey Id
+     * Returns all info from the \Gems surveys table for a givens \Gems Survey Id
      *
      * Uses internal caching to prevent multiple db lookups during a program run (so no caching
      * beyond page generation time)
@@ -383,13 +385,13 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
-     * @param \Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems\Task\TaskRunnerBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveyBatch(\Gems_Task_TaskRunnerBatch $batch, $userId)
+    public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId)
     {
-        // Surveys in Gems
+        // Surveys in \Gems
         $select = $this->_gemsDb->select();
         $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
                 ->where('gsu_id_source = ?', $this->getId())
@@ -412,18 +414,18 @@ abstract class Gems_Tracker_Source_SourceAbstract extends \MUtil_Translate_Trans
         foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
 
             if (isset($sourceSurveys[$sourceSurveyId])) {
-                $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, $surveyId, $userId);
-                $batch->addTask('Tracker_AddRefreshQuestions', $this->getId(), $sourceSurveyId, $surveyId);
+                $batch->addTask('Tracker\\CheckSurvey', $this->getId(), $sourceSurveyId, $surveyId, $userId);
+                $batch->addTask('Tracker\\AddRefreshQuestions', $this->getId(), $sourceSurveyId, $surveyId);
             } else {
                 // Do not pass the source id when it no longer exists
-                $batch->addTask('Tracker_CheckSurvey', $this->getId(), null, $surveyId, $userId);
+                $batch->addTask('Tracker\\CheckSurvey', $this->getId(), null, $surveyId, $userId);
             }
         }
 
         // Now add the new ones
         foreach (array_diff($sourceSurveys, $gemsSurveys) as $sourceSurveyId) {
-            $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, null, $userId);
-            $batch->addTask('Tracker_AddRefreshQuestions', $this->getId(), $sourceSurveyId, null);
+            $batch->addTask('Tracker\\CheckSurvey', $this->getId(), $sourceSurveyId, null, $userId);
+            $batch->addTask('Tracker\\AddRefreshQuestions', $this->getId(), $sourceSurveyId, null);
         }
     }
 

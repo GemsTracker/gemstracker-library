@@ -41,7 +41,7 @@ class Apc extends \Zend_Cache_Backend_Apc
      *
      * @param  string $mode clean mode
      * @param  array  $tags array of tags
-     * @throws Zend_Cache_Exception
+     * @throws \Zend_Cache_Exception
      * @return boolean true if no problem
      */
     public function clean($mode = \Zend_Cache::CLEANING_MODE_ALL, $tags = array())
@@ -95,7 +95,7 @@ class Apc extends \Zend_Cache_Backend_Apc
         foreach ($directives as $name => $value) {
             //while (list($name, $value) = each($directives)) {
             if (!is_string($name)) {
-                Zend_Cache::throwException("Incorrect option name : $name");
+                \Zend_Cache::throwException("Incorrect option name : $name");
             }
             $name = strtolower($name);
             if (array_key_exists($name, $this->_directives)) {

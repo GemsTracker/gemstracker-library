@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UpdateFieldCalculationTask.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 21, 2016 2:14:29 PM
  */
-class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
+class UpdateFieldCalculationTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -65,7 +64,7 @@ class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
                 $saveData['gtf_calculate_using'][] = $fieldCodes[$field];
             } else {
                 // Actually this code currently is PULSE specific
-                if (\MUtil_String::startsWith($field, '{r')) {
+                if (\MUtil\StringUtil\StringUtil::startsWith($field, '{r')) {
                     $roundOrder = substr($field, 2, -1);
 
                     if (isset($roundOrders[$roundOrder]) && $roundOrders[$roundOrder]) {
@@ -76,7 +75,7 @@ class UpdateFieldCalculationTask extends \MUtil_Task_TaskAbstract
                 }
             }
         }
-        \MUtil_Echo::track($saveData, $fieldId);
+        \MUtil\EchoOut\EchoOut::track($saveData, $fieldId);
         $fieldModel->save($saveData);
     }
 }

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Basic snippet for editing track engines instances
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets_ModelFormSnippetAbstract
+class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
@@ -36,19 +37,19 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -60,7 +61,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
     protected $trackId;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -70,10 +71,10 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
@@ -140,7 +141,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
         }
         $bridge->add('gtr_organizations');
 
-        $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
+        $element = new \MUtil\Bootstrap\Form\Element\ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
 
         $element->setLabel($this->_('Toggle'));
         $bridge->addElement($element);
@@ -160,7 +161,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -172,7 +173,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
 
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      * /
     protected function getMenuList()
     {
@@ -217,7 +218,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

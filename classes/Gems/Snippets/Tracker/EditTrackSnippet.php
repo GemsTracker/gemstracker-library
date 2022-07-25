@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -20,11 +19,11 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
+class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
 {
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {

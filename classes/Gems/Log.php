@@ -6,8 +6,9 @@
  * @subpackage Log
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems;
 
 /**
  * @package    Gems
@@ -15,22 +16,22 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Log extends \Zend_Log
+class Log extends \Zend_Log
 {
     /**
      * Static instance
-     * @var \Gems_Log
+     * @var \Gems\Log
      */
     private static $_instance = null;
 
     /**
      * Returns static instance
-     * @return \Gems_Log
+     * @return \Gems\Log
      */
     public static function getLogger()
     {
         if (empty(self::$_instance)) {
-            self::$_instance = new \Gems_Log();
+            self::$_instance = new \Gems\Log();
         }
 
         return self::$_instance;
@@ -59,7 +60,7 @@ class Gems_Log extends \Zend_Log
         $info[] = 'Class:     ' . get_class($exception);
         $info[] = 'Message:   ' . $this->stripHtml($exception->getMessage());
 
-        if (($exception instanceof \Gems_Exception) && ($text = $exception->getInfo())) {
+        if (($exception instanceof \Gems\Exception) && ($text = $exception->getInfo())) {
             $info[] = 'Info:      ' . $this->stripHtml($text);
         }
 
@@ -70,7 +71,7 @@ class Gems_Log extends \Zend_Log
                 $info[] = '';
                 $info[] = 'Chained class:   ' . get_class($chained);
                 $info[] = 'Changed message: ' . $this->stripHtml($chained->getMessage());
-                if (($chained instanceof \Gems_Exception) && ($text = $chained->getInfo())) {
+                if (($chained instanceof \Gems\Exception) && ($text = $chained->getInfo())) {
                     $info[] = 'Changed info:    ' . $this->stripHtml($text);
                 }
             }
@@ -80,7 +81,7 @@ class Gems_Log extends \Zend_Log
             $info[] = '';
             $info[] = 'Previous class:   ' . get_class($previous);
             $info[] = 'Previous message: ' . $this->stripHtml($previous->getMessage());
-            if (($previous instanceof \Gems_Exception) && ($text = $previous->getInfo())) {
+            if (($previous instanceof \Gems\Exception) && ($text = $previous->getInfo())) {
                 $info[] = 'Previous info:    ' . $this->stripHtml($text);
             }
             $previous = $previous->getPrevious();
@@ -113,7 +114,7 @@ class Gems_Log extends \Zend_Log
 
         $priority = \Zend_Log::DEBUG;
         if (($exception instanceof \Zend_Db_Exception) ||
-                ($exception instanceof \Gems_Exception_Coding)
+                ($exception instanceof \Gems\Exception\Coding)
                 ){
             $priority = \Zend_Log::ERR;
         }

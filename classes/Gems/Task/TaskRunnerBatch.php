@@ -5,16 +5,17 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task;
 
 /**
  * Handles running tasks independent on the kind of task
  *
- * Continues on the \MUtil_Batch_BatchAbstract, exposing some methods to allow the task
+ * Continues on the \MUtil\Batch\BatchAbstract, exposing some methods to allow the task
  * to interact with the batch queue.
  *
- * Tasks added to the queue should be loadable via \Gems_Loader and implement the \MUtil_Task_TaskInterface
+ * Tasks added to the queue should be loadable via \Gems\Loader and implement the \MUtil\Task\TaskInterface
  *
  * @package    Gems
  * @subpackage Task
@@ -22,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_TaskRunnerBatch extends \MUtil_Task_TaskBatch
+class TaskRunnerBatch extends \MUtil\Task\TaskBatch
 {
 
     /**

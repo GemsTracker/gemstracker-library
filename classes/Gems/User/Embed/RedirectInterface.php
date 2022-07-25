@@ -24,5 +24,5 @@ interface RedirectInterface extends HelperInterface
     /**
      * @return array redirect route
      */
-    public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations);
+    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations);
 }

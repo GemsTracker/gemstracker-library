@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UpdateRoundValidTask.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,7 +20,7 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 21, 2016 12:51:01 PM
  */
-class UpdateRoundValidTask extends \MUtil_Task_TaskAbstract
+class UpdateRoundValidTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
  * Display a search form that selects on typed text only
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstract
+class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Field name for period filters
@@ -53,19 +55,19 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
 
     /**
      *
-     * @var \Gems_Form
+     * @var \Gems\Form
      */
     protected $form;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -93,7 +95,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -150,7 +152,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         $type = 'date';
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
-            list($dateFormat, $separator, $timeFormat) = \MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = \MUtil\Date\Format::splitDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -161,12 +163,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             }
         }
         $options['label'] = $fromLabel;
-        \MUtil_Model_Bridge_FormBridge::applyFixedOptions($type, $options);
+        \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
 
-        $elements['datefrom'] = new \Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
+        $elements['datefrom'] = new \Gems\JQuery\Form\Element\DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new \Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
+        $elements['dateuntil'] = new \Gems\JQuery\Form\Element\DatePicker('dateuntil', $options);
     }
 
     /**
@@ -205,7 +207,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * @param mixed         $separator   Optional separator string
      * @param string        $toggleLabel Optional text for toggle all button, when false no button is added
      * @param boolean       $breakBeforeToggle Enter a newline before the toggle button
-     * @return array Of [\Zend_Form_Element_MultiCheckbox, [\MUtil_Bootstrap_Form_Element_ToggleCheckboxes]]
+     * @return array Of [\Zend_Form_Element_MultiCheckbox, [\MUtil\Bootstrap\Form\Element\ToggleCheckboxes]]
      */
     protected function _createMultiCheckBoxElements($name, $options, $separator = null, $toggleLabel = null, $breakBeforeToggle = false)
     {
@@ -225,7 +227,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         }
 
         if ($breakBeforeToggle) {
-            $elements['break_' . $name] = \MUtil_Html::create('br');
+            $elements['break_' . $name] = \MUtil\Html::create('br');
         }
 
         $tName = 'toggle_' . $name;
@@ -251,7 +253,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof \MUtil_Model_ModelAbstract) {
+        if ($options instanceof \MUtil\Model\ModelAbstract) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options)) {
             $options = $this->db->fetchPairs($options);
@@ -325,11 +327,11 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * Creates the form itself
      *
      * @param array $options
-     * @return \Gems_Form
+     * @return \Gems\Form
      */
     protected function createForm($options = null)
     {
-        $form = new \Gems_Form($options);
+        $form = new \Gems\Form($options);
 
         return $form;
     }
@@ -354,12 +356,12 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     /**
      * Creates an autosearch form for indexAction.
      *
-     * @return \Gems_Form|null
+     * @return \Gems\Form|null
      */
     protected function getAutoSearchForm()
     {
         $data = $this->getSearchData();
-        // \MUtil_Echo::track($data);
+        // \MUtil\EchoOut\EchoOut::track($data);
 
         $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
 
@@ -383,7 +385,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             }
 
             $prev = null;
-            foreach (\MUtil_Ra::flatten($elements) as $element) {
+            foreach (\MUtil\Ra::flatten($elements) as $element) {
                 if ($element instanceof \Zend_Form_Element) {
                     $appendLabel = false;
                     if ($element->getLabel()) {
@@ -401,7 +403,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                     if ($appendLabel) {
                         $span->label($element);
                     }
-                    // TODO: Elementen automatisch toevoegen in \MUtil_Form
+                    // TODO: Elementen automatisch toevoegen in \MUtil\Form
                     $form->addElement($element);
                 } elseif (null === $element && $prev !== null) {
                     $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
@@ -411,7 +413,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
                 $prev = $element;
             }
 
-            // \MUtil_Echo::track($data);
+            // \MUtil\EchoOut\EchoOut::track($data);
             if ($this->isPost) {
                 if (! $form->isValid($data)) {
                     $this->addMessage($form->getErrorMessages());
@@ -443,7 +445,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         $searchData   = $this->getSearchData();
         $fixedParams  = array_intersect_key($searchData, array_flip($neededParams));
         $href = array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true) + $fixedParams;
-        return \MUtil_Html::attrib('href', $href);
+        return \MUtil\Html::attrib('href', $href);
     }
 
     /**
@@ -456,7 +458,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
         if ($menuItem = $this->menu->getCurrent()) {
             $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
 
-            $element = new \MUtil_Form_Element_Html('reset');
+            $element = new \MUtil\Form\Element\Html('reset');
             $element->setValue($link);
 
             return $element;
@@ -491,7 +493,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -523,16 +525,16 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
             $outFormat = 'yyyy-MM-dd';
         }
         if (null === $inFormat) {
-            $inFormat  = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $inFormat  = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         if ($from && \Zend_Date::isDate($from,  $inFormat)) {
-            $datefrom = $db->quote(\MUtil_Date::format($from, $outFormat, $inFormat));
+            $datefrom = $db->quote(\MUtil\Date::format($from, $outFormat, $inFormat));
         } else {
             $datefrom = null;
         }
         if ($until && \Zend_Date::isDate($until,  $inFormat)) {
-            $dateuntil = $db->quote(\MUtil_Date::format($until, $outFormat, $inFormat));
+            $dateuntil = $db->quote(\MUtil\Date::format($until, $outFormat, $inFormat));
         } else {
             $dateuntil = null;
         }
@@ -639,7 +641,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected function getSearchData()
     {
         if (false !== $this->searchData) {
-            // \MUtil_Echo::track($this->searchData);
+            // \MUtil\EchoOut\EchoOut::track($this->searchData);
             return $this->searchData;
         }
         /*if ($this->requestCache) {

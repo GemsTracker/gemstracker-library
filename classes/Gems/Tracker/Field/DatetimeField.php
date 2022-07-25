@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DateTimeField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -28,7 +27,7 @@ class DateTimeField extends DateField
      *
      * @var int
      */
-    protected $type = \MUtil_Model::TYPE_DATETIME;
+    protected $type = \MUtil\Model::TYPE_DATETIME;
 
     /**
      * The format string for outputting dates
@@ -51,7 +50,7 @@ class DateTimeField extends DateField
      */
     protected function getDateFormat()
     {
-        return \MUtil_Model_Bridge_FormBridge::getFixedOption('datetime', 'dateFormat');
+        return \MUtil\Model\Bridge\FormBridge::getFixedOption('datetime', 'dateFormat');
     }
 
     /**
@@ -61,6 +60,6 @@ class DateTimeField extends DateField
      */
     protected function getStorageFormat()
     {
-        return \Gems_Tracker::DB_DATETIME_FORMAT;
+        return \Gems\Tracker::DB_DATETIME_FORMAT;
     }
 }

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Form;
+
 /**
  *
  *
@@ -18,18 +20,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Form_AskTokenForm extends \Gems_Form_AutoLoadFormAbstract
+class AskTokenForm extends \Gems\Form\AutoLoadFormAbstract
 {
     /**
      * The field name for the token element.
      *
      * @var string
      */
-    protected $_tokenFieldName = \MUtil_Model::REQUEST_ID;
+    protected $_tokenFieldName = \MUtil\Model::REQUEST_ID;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -85,7 +87,7 @@ class Gems_Tracker_Form_AskTokenForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * The function loads the elements for this form
      *
-     * @return \Gems_Form_AutoLoadFormAbstract (continuation pattern)
+     * @return \Gems\Form\AutoLoadFormAbstract (continuation pattern)
      */
     public function loadDefaultElements()
     {

@@ -20,7 +20,7 @@ namespace Gems\Snippets\Track;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 12:17:12 PM
  */
-class RecalcFieldsInformation extends \MUtil_Snippets_SnippetAbstract
+class RecalcFieldsInformation extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Create the snippets content
@@ -28,7 +28,7 @@ class RecalcFieldsInformation extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

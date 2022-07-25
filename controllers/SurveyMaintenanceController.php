@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class SurveyMaintenanceController extends Gems_Default_SurveyMaintenanceAction
+class SurveyMaintenanceController extends \Gems\Actions\SurveyMaintenanceAction
 {
 }

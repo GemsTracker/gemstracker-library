@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CurrentSiblingsButtonRowSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Generic;
@@ -22,7 +21,7 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.7.2
  */
-class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
+class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Add the children of the current menu item
@@ -57,7 +56,7 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -71,9 +70,9 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * Set the menu items (allows for overruling in subclasses)
      *
-     * @param \Gems_Menu_MenuList $menuList
+     * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(\Gems_Menu_MenuList $menuList)
+    protected function addButtons(\Gems\Menu\MenuList $menuList)
     {
         if ($this->addCurrentParent) {
             $menuList->addCurrentParent($this->_('Cancel'));
@@ -84,7 +83,7 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
         if ($this->addCurrentChildren) {
             $menuList->addCurrentChildren();
         }
-        // \MUtil_Echo::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
+        // \MUtil\EchoOut\EchoOut::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
     }
 
     /**
@@ -93,7 +92,7 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -101,12 +100,12 @@ class ButtonRowSnippet extends \MUtil_Snippets_SnippetAbstract
 
         $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        // \MUtil_Echo::track($this->request->getParams(), $this->menu->getParameterSource()->getArrayCopy());
+        // \MUtil\EchoOut\EchoOut::track($this->request->getParams(), $this->menu->getParameterSource()->getArrayCopy());
 
         $this->addButtons($menuList);
 
         if ($menuList->render($view)) {
-            return \MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+            return \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
         }
     }
 }

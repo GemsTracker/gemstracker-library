@@ -2,7 +2,7 @@
 
 namespace Test\Tracker\Model;
 
-use Gems_Tracker_Model_RespondentTrackModel;
+use Gems\Tracker\Model\RespondentTrackModel;
 use UnitTestDBFixTrait;
 
 /**
@@ -12,7 +12,7 @@ use UnitTestDBFixTrait;
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class RespondentTrackModel extends Gems_Tracker_Model_RespondentTrackModel {
+class RespondentTrackModel extends \Gems\Tracker\Model\RespondentTrackModel {
     
     use UnitTestDBFixTrait;
     

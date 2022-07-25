@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Project\Log;
 
 /**
  * Marker interface for Pulse Projects logging access to respondent data and their tokens
@@ -20,5 +21,5 @@
  * @since      Class available since version 1.1
  * @deprecated Since 1.7.1 code included for all projects
  */
-interface Gems_Project_Log_LogRespondentAccessInterface
+interface LogRespondentAccessInterface
 {}

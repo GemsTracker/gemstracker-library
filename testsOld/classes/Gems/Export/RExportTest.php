@@ -2,7 +2,7 @@
 
 namespace Gems\Export;
 
-class RExportTest extends \Gems_Test_DbTestAbstract
+class RExportTest extends \Gems\Test\DbTestAbstract
 {
 
     protected function setUp()
@@ -16,7 +16,7 @@ class RExportTest extends \Gems_Test_DbTestAbstract
         $tablePrefix    = '';
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
 
-        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
+        $this->fieldmap = new \Gems\Tracker\Source\LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
     }
 
     /**
@@ -79,7 +79,7 @@ class RExportTest extends \Gems_Test_DbTestAbstract
                 'list2' => 'a'                
             ]
         ];
-        $model = new \Gems_Model_PlaceholderModel('test', $array, $data); 
+        $model = new \Gems\Model\PlaceholderModel('test', $array, $data); 
         $this->fieldmap->applyToModel($model);
         
         $export = $this->loader->getExport()->getExport('RExport');

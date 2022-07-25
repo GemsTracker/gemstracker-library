@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: GroupDeleteSnippet.php 0002 2015-04-30 16:33:05Z matijsdejong $
  */
+
+namespace Gems\Snippets\Group;
 
 /**
  *
@@ -19,24 +20,24 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class Gems_Snippets_Group_GroupDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract
+class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -50,7 +51,7 @@ class Gems_Snippets_Group_GroupDeleteSnippet extends \Gems_Snippets_ModelItemYes
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -60,7 +61,7 @@ class Gems_Snippets_Group_GroupDeleteSnippet extends \Gems_Snippets_ModelItemYes
         $data  = $model->loadFirst();
         $roles = $this->currentUser->getAllowedRoles();
 
-        //\MUtil_Echo::track($data);
+        //\MUtil\EchoOut\EchoOut::track($data);
 
         // Perform access check here, before anything has happened!!!
         if (isset($data['ggp_role']) && (! isset($roles[$data['ggp_role']]))) {

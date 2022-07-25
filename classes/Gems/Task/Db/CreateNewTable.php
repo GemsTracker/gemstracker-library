@@ -4,8 +4,9 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Db;
 
 /**
  * Create a single new table
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Db_CreateNewTable extends \MUtil_Task_TaskAbstract
+class CreateNewTable extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -26,17 +27,17 @@ class Gems_Task_Db_CreateNewTable extends \MUtil_Task_TaskAbstract
     protected $db;
 
     /**
-     * @var \Gems_Model_DbaModel
+     * @var \Gems\Model\DbaModel
      */
     protected $dbaModel;
 
     /**
-     * @var GemsEscort
+     * @var \Gems\Escort
      */
     protected $escort;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -77,10 +78,10 @@ class Gems_Task_Db_CreateNewTable extends \MUtil_Task_TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $this->escort = \GemsEscort::getInstance();
+        $this->escort = \Gems\Escort::getInstance();
 
         //Load the dbaModel
-        $model = new \Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems\Model\DbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

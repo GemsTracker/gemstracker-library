@@ -23,7 +23,7 @@ use OpenRosa\Tracker\Model\SurveyModel;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
+class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
 {
     protected $_attributeMap = array(
         'gto_id_respondent',
@@ -60,7 +60,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -97,7 +97,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
             // Dir does probably not exist
             if (!is_dir($directory)) {
                 if (false === @mkdir($directory, 0777, true)) {
-                    \MUtil_Echo::pre(sprintf($this->translate->_('Directory %s not found and unable to create'), $directory), 'OpenRosa ERROR');
+                    \MUtil\EchoOut\EchoOut::pre(sprintf($this->translate->_('Directory %s not found and unable to create'), $directory), 'OpenRosa ERROR');
                 } else {
                     $eDir = @dir($directory);
                 }
@@ -108,7 +108,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     }
 
     /**
-     * Returns the source surveyId for a given Gems survey Id
+     * Returns the source surveyId for a given \Gems survey Id
      *
      * @param type $surveyId
      * @return type
@@ -163,8 +163,8 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
                         $newValues['gof_form_title']   = $form->getTitle();
                         $newValues['gof_form_xml']     = $filename;
                         $newValues                     = $model->save($newValues);
-                        if (\Gems_Tracker::$verbose) {
-                            \MUtil_Echo::r($newValues, 'added form');
+                        if (\Gems\Tracker::$verbose) {
+                            \MUtil\EchoOut\EchoOut::r($newValues, 'added form');
                         }
                         $addCnt++;
                     }
@@ -199,10 +199,10 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Create Open Rosa Model
      *
-     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems\Tracker\Survey $survey
      * @return Model
      */
-    protected function createModel(\Gems_Tracker_Survey $survey)
+    protected function createModel(\Gems\Tracker\Survey $survey)
     {
         return new SurveyModel($survey, $this, $this->tracker);
     }
@@ -210,14 +210,14 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @param string $language
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws \Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function copyTokenToSource(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null)
+    public function copyTokenToSource(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId = null)
     {
         // Maybe insert meta data  here?
     }
@@ -227,7 +227,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      *
      * @param $filename absolute filename
      * @return \OpenRosa\Tracker\Source\OpenRosa\Form
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     protected function createForm($filename)
     {
@@ -240,21 +240,21 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * A seperate function as only the source knows what format the date/time value has.
      *
      * @param string $fieldName Name of answer field
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil_Date date time or null
+     * @return \MUtil\Date date time or null
      */
-    public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
             if (\Zend_Date::isDate($answers[$fieldName], \Zend_Date::ISO_8601)) {
-                return new \MUtil_Date($answers[$fieldName], \Zend_Date::ISO_8601);
+                return new \MUtil\Date($answers[$fieldName], \Zend_Date::ISO_8601);
             }
-            if (\Gems_Tracker::$verbose)  {
-                \MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
+            if (\Gems\Tracker::$verbose)  {
+                \MUtil\EchoOut\EchoOut::r($answers[$fieldName], 'Missed answer date value:');
             }
         }
     }
@@ -268,15 +268,15 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * Gets the time the survey was completed according to the source
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil_Date date time or null
+     * @return \MUtil\Date date time or null
      */
-    public function getCompletionTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getCompletionTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
@@ -294,7 +294,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * Used in dropdown list etc..
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array fieldname => label
      */
@@ -329,7 +329,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      *                  nothing for no answer
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Nested array
      * @deprecated since version 1.8.4 remove in 1.8.5
@@ -372,7 +372,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      *                  nothing for no answer
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Nested array
      */
@@ -386,7 +386,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
             // We have a nested model, add the nested questions
             $nestedNames = $model->getMeta('nestedNames');
             foreach($nestedNames as $nestedName) {
-                if ($nestedName instanceof \Gems_Model_JoinModel) {
+                if ($nestedName instanceof \Gems\Model\JoinModel) {
                     $nestedModel = $nestedName;
                 } else {
                     $nestedModel = $model->get($nestedName, 'model');
@@ -403,7 +403,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * Returns an array containing fieldname => label for dropdown list etc..
      *
      * @param string $language   (ISO) language string
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array fieldname => label
      */
@@ -439,8 +439,8 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      *
      * Function may return more fields than just the answers.
      *
-     * @param string $tokenId Gems Token Id
-     * @param int $surveyId Gems Survey Id
+     * @param string $tokenId \Gems Token Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Field => Value array
      */
@@ -472,7 +472,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * while a filter of [organizationid] => 70 will return all results for this organization.
      *
      * @param array $filter filter array
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
@@ -497,7 +497,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * Returns the recordcount for a given filter
      *
      * @param array $filter filter array
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int
      */
@@ -534,15 +534,15 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      * Gets the time the survey was started according to the source.
      *
      * A source always return null when it does not know this time (or does not know
-     * it well enough). In the case \Gems_Tracker_Token will do it's best to keep
+     * it well enough). In the case \Gems\Tracker\Token will do it's best to keep
      * track by itself.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil_Date date time or null
+     * @return \MUtil\Date date time or null
      */
-    public function getStartTime(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function getStartTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
@@ -592,12 +592,12 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Returns a model for the survey answers
      *
-     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems\Tracker\Survey $survey
      * @param string $language Optional (ISO) language string
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
-    public function getSurveyAnswerModel(\Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null)
+    public function getSurveyAnswerModel(\Gems\Tracker\Survey $survey, $language = null, $sourceSurveyId = null)
     {
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($survey->getSurveyId());
@@ -659,7 +659,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
             foreach($nestedNames as $nestedName) {
 
                 $nestedModel = $surveyModel->get($nestedName, 'model');
-                if ($nestedModel instanceof \MUtil_Model_ModelAbstract) {
+                if ($nestedModel instanceof \MUtil\Model\ModelAbstract) {
                     $model->addListModel($nestedModel, array('orf_id' => 'orfr_response_id'));
                     $model->set($nestedName, 'label', $surveyModel->get($nestedName, 'label'),
                         'elementClass', 'FormTable'
@@ -674,10 +674,10 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     }
 
     /**
-     * Returns a Gems Tracker token from a token ID
+     * Returns a \Gems Tracker token from a token ID
      *
-     * @param string $tokenId Gems Token Id
-     * @return \Gems_Tracker_Token
+     * @param string $tokenId \Gems Token Id
+     * @return \Gems\Tracker\Token
      * @deprecated
      */
     public function getToken($tokenId)
@@ -690,16 +690,16 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @param string $language
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId)
+    public function getTokenUrl(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId)
     {
         // There is no url, so return null
-        $basePath = \GemsEscort::getInstance()->basePath->__toString();
+        $basePath = \Gems\Escort::getInstance()->basePath->__toString();
         return $basePath . '/open-rosa-form/edit/id/' . $token->getTokenId();
     }
     
@@ -710,12 +710,12 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
         
         if(is_null($typeList)) {
             $typeList = [
-                \MUtil_Model::TYPE_DATETIME => $this->_('Date and time'),
-                \MUtil_Model::TYPE_DATE => $this->_('Date'),
-                \MUtil_Model::TYPE_TIME => $this->_('Time'),
-                \MUtil_Model::TYPE_NUMERIC => $this->_('Free number'),
-                \MUtil_Model::TYPE_STRING => $this->_('Free text'),
-                \MUtil_Model::TYPE_NOVALUE => $this->_('None')
+                \MUtil\Model::TYPE_DATETIME => $this->_('Date and time'),
+                \MUtil\Model::TYPE_DATE => $this->_('Date'),
+                \MUtil\Model::TYPE_TIME => $this->_('Time'),
+                \MUtil\Model::TYPE_NUMERIC => $this->_('Free number'),
+                \MUtil\Model::TYPE_STRING => $this->_('Free text'),
+                \MUtil\Model::TYPE_NOVALUE => $this->_('None')
                     ];
                 
             $default = $this->_('Unknown');
@@ -731,12 +731,12 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Checks whether the token is in the source.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean
      */
-    public function inSource(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function inSource(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         // The token is always in source
         return true;
@@ -745,12 +745,12 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean True if the token has completed
      */
-    public function isCompleted(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
+    public function isCompleted(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $result = $this->getRawTokenAnswerRow($token->getTokenId(), $surveyId);
         $completed = !empty($result);
@@ -847,12 +847,12 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
     /**
      * Sets the answers passed on.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @param $answers array Field => Value array
-     * @param int $surveyId Gems Survey Id
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
-    public function setRawTokenAnswers(\Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null)
+    public function setRawTokenAnswers(\Gems\Tracker\Token $token, array $answers, $surveyId, $sourceSurveyId = null)
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
@@ -868,14 +868,14 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      /**
      * Sets the completion time.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @param \Zend_Date|null $completionTime \Zend_Date or null
-     * @param int $surveyId Gems Survey Id (actually required)
+     * @param int $surveyId \Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
-    public function setTokenCompletionTime(\Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
+    public function setTokenCompletionTime(\Gems\Tracker\Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
     {
-        // Nothing to do, time is kept in Gems
+        // Nothing to do, time is kept in \Gems
     }
 
     /**
@@ -920,7 +920,7 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
             $openRosaSurveyIds = array_combine(array_keys($openRosaSurveys), array_keys($openRosaSurveys));
         }
 
-        // Surveys in Gems
+        // Surveys in \Gems
         $gemsSurveys = $this->_getGemsSurveysForSynchronisation();
 
         foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
@@ -958,13 +958,13 @@ class OpenRosa extends \Gems_Tracker_Source_SourceAbstract
      /**
      * Updates the consent code of the the token in the source (if needed)
      *
-     * @param \Gems_Tracker_Token $token
-     * @param int $surveyId Gems Survey Id
+     * @param \Gems\Tracker\Token $token
+     * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-   public function updateConsent(\Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null)
+   public function updateConsent(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null)
     {
 
     }

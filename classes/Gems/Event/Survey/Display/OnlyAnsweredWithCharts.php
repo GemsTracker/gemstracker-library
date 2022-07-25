@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ToggleCharts.php 1835 2014-03-14 10:35:06Z matijsdejong $
  */
+
+namespace Gems\Event\Survey\Display;
 
 /**
  * Display survey answers with a toggle for full or compact view and add a barchart
@@ -19,22 +20,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Event_Survey_Display_OnlyAnsweredWithCharts extends \Gems_Event_Survey_Display_OnlyAnswered
+class OnlyAnsweredWithCharts extends \Gems\Event\Survey\Display\OnlyAnswered
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
     {
         $snippets = parent::getAnswerDisplaySnippets($token);
         if (!is_array($snippets)) {
         	$snippets = array($snippets);
         }
         // Add the ScoreChartsSnippet
-        $snippets[] = 'Survey_Display_ScoreChartsSnippet';
+        $snippets[] = 'Survey\\Display\\ScoreChartsSnippet';
         return $snippets;
     }
 

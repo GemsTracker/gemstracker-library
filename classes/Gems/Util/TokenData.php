@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 /**
  * Class that bundles information on tokens
  *
@@ -18,30 +20,30 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
+class TokenData extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @staticvar \Gems_Menu_SubMenuItem $menuItem
-     * @return \Gems_Menu_SubMenuItem
+     * @staticvar \Gems\Menu\SubMenuItem $menuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function _getAnswerMenuItem()
     {
@@ -56,8 +58,8 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @staticvar \Gems_Menu_SubMenuItem $menuItem
-     * @return \Gems_Menu_SubMenuItem
+     * @staticvar \Gems\Menu\SubMenuItem $menuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function _getAskMenuItem()
     {
@@ -72,8 +74,8 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @staticvar \Gems_Menu_SubMenuItem $menuItem
-     * @return \Gems_Menu_SubMenuItem
+     * @staticvar \Gems\Menu\SubMenuItem $menuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function _getEmailMenuItem()
     {
@@ -88,8 +90,8 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @staticvar \Gems_Menu_SubMenuItem $menuItem
-     * @return \Gems_Menu_SubMenuItem
+     * @staticvar \Gems\Menu\SubMenuItem $menuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function _getShowMenuItem()
     {
@@ -264,35 +266,35 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         static $status;
 
         if (is_null($status)) {
-            $spanU = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanU = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanU->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanU->i(array('class' => 'fa fa-question fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanW = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanW = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanW->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanW->i(array('class' => 'fa fa-ellipsis-h fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanO = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanO = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanO->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanO->i(array('class' => 'fa fa-play fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanA = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanA = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanA->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanA->i(array('class' => 'fa fa-check fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanP = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanP = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanP->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanP->i(array('class' => 'fa fa-pause fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanI = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanI = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanI->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanI->i(array('class' => 'fa fa-stop fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanM = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanM = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanM->i(array('class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true));
             $spanM->i(array('class' => 'fa fa-lock fa-stack-1x fa-inverse', 'renderClosingTag' => true));
 
-            $spanD = \MUtil_Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
+            $spanD = \MUtil\Html::create('span', array('class' => 'fa-stack', 'renderClosingTag' => true));
             $spanD->i(array('class' => 'fa fa-times fa-stack-2x', 'renderClosingTag' => true));
 
             $status = array(
@@ -321,7 +323,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      * @param string $tokenStatus
      * @param boolean $keepCaps Keep the capital letters in the label
      * @param boolean $showAnswers
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getTokenAnswerLink($tokenId, $tokenStatus, $keepCaps, $showAnswers = true)
     {
@@ -334,7 +336,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                 [
                     'gto_id_token' => $tokenId,
                     'gto_in_source' => 1,
-                    \Gems_Model::ID_TYPE => 'token',
+                    \Gems\Model::ID_TYPE => 'token',
                     'show_answers' => $showAnswers,
                 ]);
 
@@ -350,17 +352,17 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy answer link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
      * @param boolean $keepCaps Keep the capital letters in the label
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenAnswerLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $keepCaps = false)
+    public function getTokenAnswerLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $keepCaps = false)
     {
         if (! $this->currentUser->hasPrivilege($this->_getAnswerMenuItem()->getPrivilege())) {
             return null;
         }
 
-        return \MUtil_Lazy::method($this, 'getTokenAnswerLink',
+        return \MUtil\Lazy::method($this, 'getTokenAnswerLink',
                 $bridge->getLazy('gto_id_token'),
                 $bridge->getLazy('token_status'),
                 $keepCaps,
@@ -375,7 +377,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      * @param string $tokenStatus
      * @param boolean $staffToken Is token answerable by staff
      * @param boolean $keepCaps Keep the capital letters in the label
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getTokenAskButton($tokenId, $tokenStatus, $staffToken, $keepCaps)
     {
@@ -393,7 +395,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                     [
                         'gto_id_token' => $tokenId,
                         'can_be_taken' => 1,
-                        \Gems_Model::ID_TYPE => 'token',
+                        \Gems\Model::ID_TYPE => 'token',
                     ]);
 
                 if ($link) {
@@ -410,24 +412,24 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy answer link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
      * @param boolean $forceButton Always show a button
      * @param boolean $keepCaps Keep the capital letters in the label
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenAskButtonForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
+    public function getTokenAskButtonForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
     {
         if (! $this->currentUser->hasPrivilege($this->_getAskMenuItem()->getPrivilege())) {
             return null;
         }
 
         if ($forceButton) {
-            return \MUtil_Lazy::method($this, 'getTokenAskButton',
+            return \MUtil\Lazy::method($this, 'getTokenAskButton',
                     $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), true, $keepCaps
                     );
         }
 
-        return \MUtil_Lazy::method($this, 'getTokenAskButton',
+        return \MUtil\Lazy::method($this, 'getTokenAskButton',
                 $bridge->getLazy('gto_id_token'),
                 $bridge->getLazy('token_status'),
                 $bridge->getLazy('ggp_staff_members'),
@@ -438,24 +440,24 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy answer link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
      * @param boolean $forceButton Always show a button
      * @param boolean $keepCaps Keep the capital letters in the label
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenAskLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
+    public function getTokenAskLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
     {
         $method = $this->getTokenAskButtonForBridge($bridge, $forceButton, $keepCaps);
 
         if (! $method) {
-            $method = \MUtil_Lazy::method($this, 'getTokenCopyLink',
+            $method = \MUtil\Lazy::method($this, 'getTokenCopyLink',
                     $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status')
                     );
         }
 
         return [
             $method,
-            'class' => \MUtil_Lazy::method($this, 'getTokenCopyLinkClass',
+            'class' => \MUtil\Lazy::method($this, 'getTokenCopyLinkClass',
                     $bridge->getLazy('token_status'), $bridge->getLazy('ggp_staff_members')
                     ),
             ];
@@ -496,7 +498,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      * @param string $tokenId
      * @param string $tokenStatus
      * @param boolean $canMail
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getTokenEmailLink($tokenId, $tokenStatus, $canMail)
     {
@@ -507,7 +509,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
                 'gto_id_token' => $tokenId,
                 'can_be_taken' => 1,
                 'can_email'    => 1,
-                \Gems_Model::ID_TYPE => 'token',
+                \Gems\Model::ID_TYPE => 'token',
             ]);
 
             if ($link) {
@@ -521,16 +523,16 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy answer link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
-     * @return \MUtil_Lazy_Call
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenEmailLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    public function getTokenEmailLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge)
     {
         if (! $this->currentUser->hasPrivilege($this->_getEmailMenuItem()->getPrivilege())) {
             return null;
         }
 
-        return \MUtil_Lazy::method($this, 'getTokenEmailLink',
+        return \MUtil\Lazy::method($this, 'getTokenEmailLink',
                 $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), $bridge->getLazy('can_email')
                 );
     }
@@ -540,7 +542,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      *
      * @param string $tokenId
      * @param boolean $plusLabel Show plus instead of label
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getTokenShowLink($tokenId, $plusLabel)
     {
@@ -548,16 +550,16 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
 
         if ($plusLabel) {
             $link = $menuItem->toActionLink(
-                    \MUtil_Html::create()->strong($this->_('+')),
+                    \MUtil\Html::create()->strong($this->_('+')),
                     [
                         'gto_id_token' => $tokenId,
-                        \Gems_Model::ID_TYPE => 'token',
+                        \Gems\Model::ID_TYPE => 'token',
                     ]
                     );
         } else {
             $link = $menuItem->toActionLinkLower([
                 'gto_id_token' => $tokenId,
-                \Gems_Model::ID_TYPE => 'token',
+                \Gems\Model::ID_TYPE => 'token',
             ]);
         }
 
@@ -571,29 +573,29 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy show link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
      * @param boolean $plusLabel Show plus instead of label
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenShowLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $plusLabel = true)
+    public function getTokenShowLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $plusLabel = true)
     {
         if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
             return null;
         }
 
-        return \MUtil_Lazy::method($this, 'getTokenShowLink', $bridge->getLazy('gto_id_token'), $plusLabel);
+        return \MUtil\Lazy::method($this, 'getTokenShowLink', $bridge->getLazy('gto_id_token'), $plusLabel);
     }
 
     /**
      * De a lazy status description text for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
      * @param boolean $addDescription Add the description after the icon
-     * @return \MUtil_Lazy_Call
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenStatusDescriptionForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge, $addDescription = false)
+    public function getTokenStatusDescriptionForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $addDescription = false)
     {
-        return \MUtil_Lazy::method($this, 'getStatusDescription', $bridge->getLazy('token_status'));
+        return \MUtil\Lazy::method($this, 'getStatusDescription', $bridge->getLazy('token_status'));
     }
 
     /**
@@ -605,7 +607,7 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
      * @param string $roundDescr
      * @param string $surveyName
      * @param string $result
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getTokenStatusLink($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result)
     {
@@ -614,16 +616,16 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
         if ($tokenId && $menuItem) {
             $href = $menuItem->toHRefAttribute([
                 'gto_id_token' => $tokenId,
-                \Gems_Model::ID_TYPE => 'token',
+                \Gems\Model::ID_TYPE => 'token',
             ]);
 
-            $link = \MUtil_Html::create('a', $href, [
+            $link = \MUtil\Html::create('a', $href, [
                 'onclick' => 'event.cancelBubble = true;',
             ]);
 
             // $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
         } else {
-            $link = \MUtil_Html::create('span', [
+            $link = \MUtil\Html::create('span', [
                 'onclick' => 'event.cancelBubble = true;',
             ]);
         }
@@ -639,16 +641,16 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy status show link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
-     * @return \MUtil_Lazy_Call
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenStatusLinkForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    public function getTokenStatusLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge)
     {
         if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
             return $this->getTokenStatusShowForBridge($bridge);
         }
 
-        return \MUtil_Lazy::method($this, 'getTokenStatusLink',
+        return \MUtil\Lazy::method($this, 'getTokenStatusLink',
                 $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'),
                 $bridge->getLazy('gr2o_patient_nr'), $bridge->getLazy('gto_round_description'),
                 $bridge->getLazy('gsu_survey_name'), $bridge->getLazy('gto_result')
@@ -658,8 +660,8 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy status show link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
-     * @return \MUtil_Lazy_Call
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
+     * @return \MUtil\Lazy\Call
      */
     public function getTokenStatusLinkForTokenId($tokenId)
     {
@@ -679,12 +681,12 @@ class Gems_Util_TokenData extends \MUtil_Translate_TranslateableAbstract
     /**
      * De a lazy status show link for bridges
      *
-     * @param \MUtil_Model_Bridge_TableBridgeAbstract $bridge
-     * @return \MUtil_Lazy_Call
+     * @param \MUtil\Model\Bridge\TableBridgeAbstract $bridge
+     * @return \MUtil\Lazy\Call
      */
-    public function getTokenStatusShowForBridge(\MUtil_Model_Bridge_TableBridgeAbstract $bridge)
+    public function getTokenStatusShowForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge)
     {
-        return \MUtil_Lazy::method($this, 'getStatusIcon', $bridge->getLazy('token_status'));
+        return \MUtil\Lazy::method($this, 'getStatusIcon', $bridge->getLazy('token_status'));
     }
 
     /**

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Db;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_UpdatePatchLevel extends \MUtil_Task_TaskAbstract
+class UpdatePatchLevel extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract

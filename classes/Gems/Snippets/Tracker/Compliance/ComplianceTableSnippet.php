@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Tracker\Compliance;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     /**
      * Menu actions to show in Edit box.
@@ -42,7 +44,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -52,11 +54,11 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->applyTextMarker();
 
@@ -64,11 +66,11 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
             $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
                 $href = $menuItem->toHRefAttribute($bridge);
 
                 if ($href) {
-                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem = new \MUtil\Html\AElement($href);
                     $aElem->setOnEmpty('');
 
                     // Make sure org is known
@@ -97,7 +99,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
         }
 
         // Initialize alter
-        $alternateClass = new \MUtil_Lazy_Alternate(array('odd', 'even'));
+        $alternateClass = new \MUtil\Lazy\Alternate(array('odd', 'even'));
 
         foreach($model->getItemsOrdered() as $name) {
             $label = $model->get($name, 'label');
@@ -116,7 +118,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                     $span    = 1;
                     $cRound  = $round;
                     if ($cIcon = $model->get($name, 'roundIcon')) {
-                        $cDesc = \MUtil_Html_ImgElement::imgFile($cIcon, array(
+                        $cDesc = \MUtil\Html\ImgElement::imgFile($cIcon, array(
                             'alt'   => $cRound,
                             'title' => $cRound
                         ));
@@ -133,7 +135,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snip
                     $token  = 'tok_' . substr($name, 5);
 
                     $tds   = $bridge->addColumn(
-                            \MUtil_Lazy::method($tUtil, 'getTokenStatusLinkForTokenId', $bridge->$token),
+                            \MUtil\Lazy::method($tUtil, 'getTokenStatusLinkForTokenId', $bridge->$token),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
                 } else {

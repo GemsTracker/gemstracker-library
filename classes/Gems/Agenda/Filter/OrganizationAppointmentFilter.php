@@ -76,10 +76,10 @@ class OrganizationAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
     {
         if ($this->_organizations) {
             return isset($this->_organizations[$appointment->getOrganizationId()]);

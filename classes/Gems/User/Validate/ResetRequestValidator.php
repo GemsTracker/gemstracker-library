@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Validate;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_User_Validate_ResetRequestValidator implements \Zend_Validate_Interface
+class ResetRequestValidator implements \Zend_Validate_Interface
 {
     /**
      * The error message
@@ -29,7 +31,7 @@ class Gems_User_Validate_ResetRequestValidator implements \Zend_Validate_Interfa
 
     /**
      *
-     * @var \Gems_User_Validate_GetUserInterface
+     * @var \Gems\User\Validate\GetUserInterface
      */
     private $_userSource;
 
@@ -41,10 +43,10 @@ class Gems_User_Validate_ResetRequestValidator implements \Zend_Validate_Interfa
 
     /**
      *
-     * @param \Gems_User_Validate_GetUserInterface $userSource The source for the user
+     * @param \Gems\User\Validate\GetUserInterface $userSource The source for the user
      * @param \Zend_Translate $translate
      */
-    public function __construct(\Gems_User_Validate_GetUserInterface $userSource, \Zend_Translate $translate)
+    public function __construct(\Gems\User\Validate\GetUserInterface $userSource, \Zend_Translate $translate)
     {
         $this->_userSource = $userSource;
         $this->translate   = $translate;

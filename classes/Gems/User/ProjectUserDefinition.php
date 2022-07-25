@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 use Gems\User\Group;
 
 /**
@@ -20,11 +22,11 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
+class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
 {
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -35,20 +37,20 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
-     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
+     * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password
-     * @return Laminas\Authentication\Adapter\AdapterInterface
+     * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems\User\User $user, $password)
     {
-        $adapter = new \Gems_Auth_Adapter_Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
+        $adapter = new \Gems\Auth\Adapter\Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
         return $adapter;
     }
 
@@ -70,13 +72,13 @@ class Gems_User_ProjectUserDefinition extends \Gems_User_UserDefinitionAbstract
         }
         if (! $orgs) {
             // Table might not exist or be empty, so do something failsafe
-            $orgs = \Gems_User_UserLoader::getNotOrganizationArray();
+            $orgs = \Gems\User\UserLoader::getNotOrganizationArray();
         }
         $login     = $this->project->getSuperAdminName();
         $twoFactor = $this->project->getSuperAdminTwoFactorKey();
 
         return array(
-            'user_id'                => \Gems_User_UserLoader::SYSTEM_USER_ID,
+            'user_id'                => \Gems\User\UserLoader::SYSTEM_USER_ID,
             'user_login'             => $login,
             'user_two_factor_key'    => $twoFactor,
             'user_enable_2factor'    => $twoFactor ? 1 : 0,

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event;
 
 /**
  * Helper class containing calculation functions for use in event classes.
@@ -20,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Event_EventCalculations extends \MUtil_Translate_TranslateableAbstract
+class EventCalculations extends \MUtil\Translate\TranslateableAbstract
 {
-    use \Gems\Event\EventCalculationsTrait;
+    use Gems\Event\EventCalculationsTrait;
 }

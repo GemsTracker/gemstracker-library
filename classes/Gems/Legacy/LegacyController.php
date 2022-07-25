@@ -54,7 +54,7 @@ class LegacyController implements RequestHandlerInterface
                 $legacyResponse = new \Zend_Controller_Response_Http();
 
                 /**
-                 * @var \MUtil_Controller_Action $controllerObject
+                 * @var \MUtil\Controller\Action $controllerObject
                  */
                 $controllerObject = $this->loader->create($controller, $request, $this->urlHelper, false);
                 $this->loadControllerDependencies($controllerObject);

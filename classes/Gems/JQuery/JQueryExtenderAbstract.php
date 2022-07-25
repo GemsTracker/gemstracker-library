@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery;
 
 /**
  * @package    Gems
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class Gems_JQuery_JQueryExtenderAbstract implements \MUtil_Html_HtmlInterface
+abstract class JQueryExtenderAbstract implements \MUtil\Html\HtmlInterface
 {
     protected $basepath;
     protected $jqueryParams;
@@ -26,7 +27,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements \MUtil_Html_HtmlInt
 
     public function __construct(array $options = null)
     {
-        $args = \MUtil_Ra::args(func_get_args());
+        $args = \MUtil\Ra::args(func_get_args());
 
         foreach ($args as $name => $arg) {
             if (! is_int($name)) {
@@ -132,7 +133,7 @@ abstract class Gems_JQuery_JQueryExtenderAbstract implements \MUtil_Html_HtmlInt
             $this->setBasePath($view->request->getBasePath());
         }
 
-        if (! \MUtil_JQuery::usesJQuery($view)) {
+        if (! \MUtil\JQuery::usesJQuery($view)) {
             \ZendX_JQuery::enableView($view);
         }
 

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User;
 
 /**
  *
@@ -19,16 +20,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_NoLoginDefinition extends \Gems_User_UserDefinitionAbstract
+class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
 {
     /**
-     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
+     * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password
-     * @return Laminas\Authentication\Adapter\AdapterInterface
+     * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems\User\User $user, $password)
     {
         return false;
     }

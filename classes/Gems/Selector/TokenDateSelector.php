@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Selector;
+
 /**
  *
  * @package    Gems
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstract
+class TokenDateSelector extends \Gems\Selector\DateSelectorAbstract
 {
     /**
      * The name of the database table to use as the main table.
@@ -49,7 +51,7 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
     /**
      *
      * @param string $name
-     * @return \Gems_Selector_SelectorField
+     * @return \Gems\Selector\SelectorField
      */
     public function addSubField($name)
     {

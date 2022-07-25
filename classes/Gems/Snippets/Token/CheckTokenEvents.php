@@ -20,10 +20,10 @@ use Gems\Tracker\Mock\TokenReadonly;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
+class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
 {
     /**
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -33,12 +33,12 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
     protected $locale;
     
     /**
-     * @var \MUtil_Registry_Source
+     * @var \MUtil\Registry\Source
      */
     protected $source;
     
     /**
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
     
@@ -50,7 +50,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->token instanceof \Gems_Tracker_Token;
+        return $this->token instanceof \Gems\Tracker\Token;
     }
 
     /**
@@ -59,7 +59,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -96,7 +96,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
             $currentAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
             $currentLog     = $checkToken->getMockChanges('log');
 
-            // \MUtil_Echo::track($checkToken->getMockChanges());
+            // \MUtil\EchoOut\EchoOut::track($checkToken->getMockChanges());
             $html->h3($this->_('Data changed by this event'));
             if ($currentAnswers) {
                 $html->div($this->showArrayTable($currentAnswers), ['class' => 'leftFloat']);
@@ -112,7 +112,7 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
                 $div->pInfo($this->_('Actions currently taken by this event:'));
                 $div->ol($currentLog);
             }
-            // \MUtil_Echo::track($checkToken->getMockChanges());
+            // \MUtil\EchoOut\EchoOut::track($checkToken->getMockChanges());
             
             $checkToken->unsetRawAnswers();
             $checkToken->getUrl($this->locale, $this->currentUser->getUserId());
@@ -130,21 +130,21 @@ class CheckTokenEvents extends \MUtil_Snippets_SnippetAbstract
                     $div->ol($emptyLog);
                 }
             }
-            // \MUtil_Echo::track($checkToken->getMockChanges());
+            // \MUtil\EchoOut\EchoOut::track($checkToken->getMockChanges());
             
         } else {
             $html->pInfo($this->_('This token has no before answering event.'));
         }
         $html->div(['style' => 'clear: both;', 'renderClosingTag' => true,]);
 
-        // \MUtil_Echo::track($checkToken->getMockChanges());
+        // \MUtil\EchoOut\EchoOut::track($checkToken->getMockChanges());
         
         return $html;
     }
     
     protected function showArrayTable(array $data, $caption = false)
     {
-        $table = new \MUtil_Html_TableElement();
+        $table = new \MUtil\Html\TableElement();
         $table->class = 'displayer table table-condensed table-bordered';
         
         if ($caption) {

@@ -21,7 +21,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
+class TokenDateSelectorSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -32,7 +32,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \Gems_Selector_DateSelectorAbstract
+     * @var \Gems\Selector\DateSelectorAbstract
      */
     protected $dateSelector;
 
@@ -70,7 +70,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -104,7 +104,7 @@ class TokenDateSelectorSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

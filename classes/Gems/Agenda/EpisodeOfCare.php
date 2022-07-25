@@ -19,7 +19,7 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 16-May-2018 17:55:13
  */
-class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
+class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
@@ -41,13 +41,13 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -66,7 +66,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -80,7 +80,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
         if (is_array($episodeData)) {
             $this->_gemsData      = $episodeData;
             $this->_episodeId     = $episodeData['gec_episode_of_care_id'];
-            if ($this->currentUser instanceof \Gems_User_User) {
+            if ($this->currentUser instanceof \Gems\User\User) {
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
         } else {
@@ -147,7 +147,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get a general description of this appointment
      *
-     * @see \Gems_Agenda->getAppointmentDisplay()
+     * @see \Gems\Agenda->getAppointmentDisplay()
      *
      * @return string
      */
@@ -199,7 +199,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     /**
      * Return the respondent object
      *
-     * @return \Gems_Tracker_Respondent
+     * @return \Gems\Tracker\Respondent
      */
     public function getRespondent()
     {
@@ -222,14 +222,14 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     /**
      * Return the start date
      *
-     * @return \MUtil_Date Start date as a date or null
+     * @return \MUtil\Date Start date as a date or null
      */
     public function getStartDate()
     {
         if (isset($this->_gemsData['gec_startdate']) && $this->_gemsData['gec_startdate']) {
-            if (! $this->_gemsData['gec_startdate'] instanceof \MUtil_Date) {
+            if (! $this->_gemsData['gec_startdate'] instanceof \MUtil\Date) {
                 $this->_gemsData['gec_startdate'] =
-                        new \MUtil_Date($this->_gemsData['gec_startdate'], \Gems_Tracker::DB_DATE_FORMAT);
+                        new \MUtil\Date($this->_gemsData['gec_startdate'], \Gems\Tracker::DB_DATE_FORMAT);
             }
             return $this->_gemsData['gec_startdate'];
         }
@@ -248,7 +248,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
     /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems_Agenda_Appointment (continuation pattern)
+     * @return \Gems\Agenda\Appointment (continuation pattern)
      */
     public function refresh(array $gemsData = null)
     {
@@ -267,7 +267,7 @@ class EpisodeOfCare extends \MUtil_Translate_TranslateableAbstract
         }
         $this->exists = isset($this->_gemsData['gec_episode_of_care_id']);
 
-        if ($this->currentUser instanceof \Gems_User_User) {
+        if ($this->currentUser instanceof \Gems\User\User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
         $this->_appointments = false;

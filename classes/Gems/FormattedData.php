@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * Format and array of data according to a provided model
  *
@@ -17,10 +19,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_FormattedData extends \IteratorIterator
+class FormattedData extends \IteratorIterator
 {
     /**
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     private $model;
 
@@ -41,11 +43,11 @@ class Gems_FormattedData extends \IteratorIterator
     /**
      *
      * @param array $data
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $formatted
-     * @return \Gems_FormattedData
+     * @return \Gems\FormattedData
      */
-    public function __construct($data, \MUtil_Model_ModelAbstract $model, $formatted = true)
+    public function __construct($data, \MUtil\Model\ModelAbstract $model, $formatted = true)
     {
         $this->data  = parent::__construct(new \ArrayObject($data));
         $this->model = $model;
@@ -69,7 +71,7 @@ class Gems_FormattedData extends \IteratorIterator
      * rowset, use the class and iterate
      *
      * @param array $row
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @return array The formatted array
      */
     public function format($row, $model) {
@@ -84,7 +86,7 @@ class Gems_FormattedData extends \IteratorIterator
      *
      * @param type $name
      * @param type $result
-      *@param \MUtil_Model_ModelAbstract $model
+      *@param \MUtil\Model\ModelAbstract $model
      * @return type
      */
     private function _format($name, $result, $model)
@@ -139,7 +141,7 @@ class Gems_FormattedData extends \IteratorIterator
 
                     $dateFormat = $value;
                     $storageFormat = $model->get($name, 'storageFormat');
-                    $result = \MUtil_Date::format($result, $dateFormat, $storageFormat);
+                    $result = \MUtil\Date::format($result, $dateFormat, $storageFormat);
                     break;
 
                 case 'itemDisplay':
@@ -147,14 +149,14 @@ class Gems_FormattedData extends \IteratorIterator
                     if (is_callable($function)) {
                         $result = call_user_func($function, $result);
                     } elseif (is_object($function)) {
-                        if (($function instanceof \MUtil_Html_ElementInterface)
+                        if (($function instanceof \MUtil\Html\ElementInterface)
                             || method_exists($function, 'append')) {
                             $object = clone $function;
                             $result = $object->append($result);
                         }
                     } elseif (is_string($function)) {
                         // Assume it is a html tag when a string
-                        $result = \MUtil_Html::create($function, $result);
+                        $result = \MUtil\Html::create($function, $result);
                     }
 
                 default:
@@ -164,12 +166,12 @@ class Gems_FormattedData extends \IteratorIterator
 
         if (is_object($result)) {
             // If it is Lazy, execute it
-            if ($result instanceof \MUtil_Lazy_LazyInterface) {
-                $result = \MUtil_Lazy::rise($result);
+            if ($result instanceof \MUtil\Lazy\LazyInterface) {
+                $result = \MUtil\Lazy::rise($result);
             }
 
             // If it is Html, render it
-            if ($result instanceof \MUtil_Html_HtmlInterface) {
+            if ($result instanceof \MUtil\Html\HtmlInterface) {
 
                 if (is_null($view)) {
                     $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');

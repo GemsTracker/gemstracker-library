@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ContactController extends Gems_Default_ContactAction
+class ContactController extends \Gems\Actions\ContactAction
 {
 }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FinishTrackImport.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -23,7 +22,7 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 21, 2016 2:09:59 PM
  */
-class FinishTrackImport extends \MUtil_Task_TaskAbstract
+class FinishTrackImport extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -33,13 +32,13 @@ class FinishTrackImport extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

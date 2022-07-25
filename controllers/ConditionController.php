@@ -17,6 +17,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ConditionController extends Gems_Default_ConditionAction
+class ConditionController extends \Gems\Actions\ConditionAction
 {
 }

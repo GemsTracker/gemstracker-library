@@ -20,7 +20,7 @@ namespace Gems\Snippets\Database;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 8:16:38 PM
  */
-class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
+class StructuralChanges extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
@@ -50,11 +50,11 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
     /**
      * The form for selecting the patch level
      *
-     * @return \Gems_Form
+     * @return \Gems\Form
      */
     protected function _getSelectForm()
     {
-        $form = new \Gems_Form(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
+        $form = new \Gems\Form(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
 
         $form->setHtml('div');
         $div = $form->getHtml();
@@ -90,7 +90,7 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -151,9 +151,9 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
                 );
 
         foreach ($patches as $patchId => $patch) {
-            if (\MUtil_String::startsWith(trim($patch['gpa_sql']), 'INSERT', true) ||
-                    \MUtil_String::startsWith(trim($patch['gpa_sql']), 'UPDATE', true) ||
-                    \MUtil_String::startsWith(trim($patch['gpa_sql']), 'DELETE', true)) {
+            if (\MUtil\StringUtil\StringUtil::startsWith(trim($patch['gpa_sql']), 'INSERT', true) ||
+                    \MUtil\StringUtil\StringUtil::startsWith(trim($patch['gpa_sql']), 'UPDATE', true) ||
+                    \MUtil\StringUtil\StringUtil::startsWith(trim($patch['gpa_sql']), 'DELETE', true)) {
                 unset($patches[$patchId]);
             }
         }
@@ -164,7 +164,7 @@ class StructuralChanges extends \MUtil_Snippets_SnippetAbstract
     /**
      * Get the content as text
      *
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getTextOutput()
     {

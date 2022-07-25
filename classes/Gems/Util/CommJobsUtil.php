@@ -22,7 +22,7 @@ namespace Gems\Util;
 class CommJobsUtil extends UtilAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -175,7 +175,7 @@ class CommJobsUtil extends UtilAbstract
         }
         $binds[] = $roundDescription;
 
-        $cacheId .= '_' . \MUtil_String::toCacheId($roundDescription);
+        $cacheId .= '_' . \MUtil\StringUtil\StringUtil::toCacheId($roundDescription);
 
         return $this->_getSelectColCached($cacheId, $sql, $binds, ['round', 'rounds', 'track', 'tracks'], false);
     }
@@ -447,8 +447,8 @@ class CommJobsUtil extends UtilAbstract
             $filter[] = $this->db->quoteinto('(ggp_name = ? AND gto_id_relationfield IS NULL) or gtf_field_name = ?', $job['gcj_target_group']);
         }
 
-        // \MUtil_Echo::track($filter);
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\EchoOut\EchoOut::track($filter);
+        // \MUtil\Model::$verbose = true;
 
         return $filter;
     }

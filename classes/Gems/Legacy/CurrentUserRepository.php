@@ -29,7 +29,7 @@ class CurrentUserRepository
 
     public function getCurrentUser()
     {
-        if (!$this->currentUser instanceof \Gems_User_User) {
+        if (!$this->currentUser instanceof \Gems\User\User) {
             /*if ($this->loginName === null || $this->organizationId === null) {
                 throw new \Exception('No user credentials set');
             }*/
@@ -49,7 +49,7 @@ class CurrentUserRepository
             $defName = 'User_' . $this->session->__get('__user_definition') . 'Definition';
 
             $userLoader = $this->getUserLoader();
-            $this->currentUser = $this->loader->create('User_User', $this->session, $this->loader->create($defName));
+            $this->currentUser = $this->loader->create('User\\User', $this->session, $this->loader->create($defName));
             if ($this->currentUser) {
                 $this->currentUser->answerRegistryRequest('userLoader', $userLoader);
                 return $this->currentUser;
@@ -62,8 +62,8 @@ class CurrentUserRepository
 
     protected function getUserLoader()
     {
-        if (!$this->userLoader instanceof \Gems_User_UserLoader) {
-            $this->userLoader = $this->loader->create('User_UserLoader', $this->loader, ['User']);
+        if (!$this->userLoader instanceof \Gems\User\UserLoader) {
+            $this->userLoader = $this->loader->create('User\\UserLoader', $this->loader, ['User']);
         }
 
         return $this->userLoader;

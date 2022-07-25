@@ -7,8 +7,9 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Mail;
 
 use MUtil\Translate\TranslateableTrait;
 
@@ -21,7 +22,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
+class MailLoader extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
@@ -32,7 +33,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
     protected $db;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -45,13 +46,13 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -87,7 +88,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      * Return the mail elements helper class
-     * @return \Gems_Mail_MailElements
+     * @return \Gems\Mail\MailElements
      */
     public function getMailElements()
     {
@@ -98,7 +99,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
      * Get the correct mailer class from the given target
      * @param  [type] $target      mailtarget (lowercase)
      * @param  array  $identifiers the identifiers needed for the specific mailtargets
-     * @return \Gems_Mail_MailerAbstract class
+     * @return \Gems\Mail\MailerAbstract class
      */
     public function getMailer($target = null, $id = false, $orgId = false)
     {
@@ -123,7 +124,7 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get default mailform
      *
-     * @return \Gems_Mail_MailForm
+     * @return \Gems\Mail_MailForm
      */
     public function getMailForm()
     {
@@ -133,9 +134,9 @@ class Gems_Mail_MailLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Perform the actions and load the tasks needed to start the cron batch
      *
-     * @param \Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems\Task\TaskRunnerBatch $batch
      */
-    protected function loadCronBatch(\Gems_Task_TaskRunnerBatch $batch)
+    protected function loadCronBatch(\Gems\Task\TaskRunnerBatch $batch)
     {
        $batch->addMessage(sprintf($this->_("Starting mail jobs")));
        $batch->addTask('Mail\\AddAllMailJobsTask');

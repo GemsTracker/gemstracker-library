@@ -9,7 +9,7 @@ use Gems\Tracker\Field\FieldAbstract;
 class BooleanField extends FieldAbstract
 {
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

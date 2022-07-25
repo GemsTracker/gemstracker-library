@@ -25,7 +25,7 @@ class StaffAccountPage extends RedirectAbstract
 {
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getLabel()
     {
@@ -35,7 +35,7 @@ class StaffAccountPage extends RedirectAbstract
     /**
      * @return array redirect route
      */
-    public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
+    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
     {
         return [
             $this->request->getControllerKey()  => 'option',

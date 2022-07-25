@@ -20,7 +20,7 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.5.4
  */
-class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ShowAllOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     /**
      *
@@ -36,7 +36,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $lookbackInHours = 24;
 
     /**
-     * @return array tokenId => \Gems_Tracker_Token
+     * @return array tokenId => \Gems\Tracker\Token
      * @throws \Zend_Date_Exception
      */
     protected function getDisplayTokens()
@@ -75,7 +75,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -101,7 +101,7 @@ class ShowAllOpenSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
             $pStart    = $html->pInfo();
 
             foreach ($tokens as $token) {
-                if ($token instanceof \Gems_Tracker_Token) {
+                if ($token instanceof \Gems\Tracker\Token) {
                     if ($token->getTrackEngine()->getExternalName() !== $lastTrack) {
                         $lastTrack = $token->getTrackEngine()->getExternalName();
 

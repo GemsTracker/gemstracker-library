@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -20,7 +22,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
+class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
 {
     use TranslateableTrait;
 
@@ -118,7 +120,7 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function hasRedoCopyCode()
     {
-        return \Gems_Util_ReceptionCodeLibrary::REDO_COPY == $this->_get('grc_redo_survey');
+        return \Gems\Util\ReceptionCodeLibrary::REDO_COPY == $this->_get('grc_redo_survey');
     }
 
     /**
@@ -148,7 +150,7 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isForSurveys()
     {
-        return $this->_get('grc_for_surveys') > \Gems_Util_ReceptionCodeLibrary::APPLY_NOT;
+        return $this->_get('grc_for_surveys') > \Gems\Util\ReceptionCodeLibrary::APPLY_NOT;
     }
 
     /**
@@ -170,8 +172,8 @@ class Gems_Util_ReceptionCode extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isStopCode()
     {
-        // \MUtil_Echo::track($this->_data);
-        return $this->_get('grc_for_surveys') === \Gems_Util_ReceptionCodeLibrary::APPLY_STOP;
+        // \MUtil\EchoOut\EchoOut::track($this->_data);
+        return $this->_get('grc_for_surveys') === \Gems\Util\ReceptionCodeLibrary::APPLY_STOP;
     }
 
     /**

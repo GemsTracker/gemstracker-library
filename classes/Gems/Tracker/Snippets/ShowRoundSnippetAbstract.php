@@ -8,8 +8,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Short description for class
@@ -22,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
+class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -34,19 +35,19 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 
     /**
      *
-     * @var int Gems round id
+     * @var int \Gems round id
      */
     protected $roundId;
 
@@ -67,7 +68,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -79,7 +80,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
     protected $trackId;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -97,7 +98,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -110,12 +111,12 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         if ($this->roundId) {
-            $htmlDiv   = \MUtil_Html::div();
+            $htmlDiv   = \MUtil\Html::div();
 
             if ($this->showTitle) {
                 $htmlDiv->h3(sprintf($this->_('%s round'), $this->trackEngine->getName()));
@@ -152,25 +153,25 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        $source = new \Gems_Menu_ParameterSource(array(
+        $source = new \Gems\Menu\ParameterSource(array(
             'gro_id_track' => $this->trackId,
             'gro_id_round' => $this->trackEngine->getPreviousRoundId($this->roundId),
             ));
 
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil_Html::raw($this->_('&lt; Previous')), $source));
+        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('&lt; Previous')), $source));
         $links->addCurrentParent($this->_('Cancel'));
         $links->addCurrentChildren();
         $links->addCurrentSiblings();
 
         $source->offsetSet('gro_id_round', $this->trackEngine->getNextRoundId($this->roundId));
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil_Html::raw($this->_('Next &gt;')), $source));
+        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('Next &gt;')), $source));
 
         return $links;
     }
@@ -182,7 +183,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -204,7 +205,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends \MUtil_Snippets_Mod
         }
 
         if (! $this->roundId) {
-            $this->roundId = $this->request->getParam(\Gems_Model::ROUND_ID);
+            $this->roundId = $this->request->getParam(\Gems\Model::ROUND_ID);
         }
 
         return $this->roundId && parent::hasHtmlOutput();

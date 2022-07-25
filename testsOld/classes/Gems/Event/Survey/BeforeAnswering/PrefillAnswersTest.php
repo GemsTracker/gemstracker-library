@@ -18,7 +18,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
 
     /**
      *
-     * @var \Gems_Event_SurveyBeforeAnsweringEventInterface
+     * @var \Gems\Event\SurveyBeforeAnsweringEventInterface
      */
     public $event;
 
@@ -32,24 +32,24 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
      */
     public function testScore($data, $trackFields, $trackFieldsRaw, $respondentData, $result)
     {
-        // Create a stub for the \Gems_Tracker_Token class.
-        $token = $this->getMockBuilder('Gems_Tracker_Token')
+        // Create a stub for the \Gems\Tracker\Token class.
+        $token = $this->getMockBuilder('\\Gems\\Tracker\\Token')
                 ->disableOriginalConstructor()
                 ->getMock();
 
-        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
+        $survey = $this->getMockBuilder('\\Gems\\Tracker\\Survey')
                 ->disableOriginalConstructor()
                 ->getMock();
 
-        $respondentTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respondentTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
                 ->disableOriginalConstructor()
                 ->getMock();
 
-        $respondent = $this->getMockBuilder('Gems_Tracker_Respondent')
+        $respondent = $this->getMockBuilder('\\Gems\\Tracker\\Respondent')
                 ->disableOriginalConstructor()
                 ->getMock();
         
-        $receptionCode = $this->getMockBuilder('Gems_Util_ReceptionCode')
+        $receptionCode = $this->getMockBuilder('\\Gems\\Util\\ReceptionCode')
                 ->disableOriginalConstructor()
                 ->getMock();
         
@@ -63,7 +63,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
 
         $respondent->expects($this->any())
                 ->method('getBirthday')
-                ->will($this->returnValue(new \MUtil_Date($respondentData['Dob'], 'yyyy-MM-dd')));
+                ->will($this->returnValue(new \MUtil\Date($respondentData['Dob'], 'yyyy-MM-dd')));
 
         $survey->expects($this->any())
                 ->method('getQuestionList')
@@ -116,12 +116,12 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
                 // Raw track fields
                 [
                     'TEst' => 'waarde',
-                    'OKDate' => new \MUtil_Date('2019-05-10 10:11:12', 'yyyy-MM-dd HH:mm:ss')
+                    'OKDate' => new \MUtil\Date('2019-05-10 10:11:12', 'yyyy-MM-dd HH:mm:ss')
                 ],
                 // RespondentFields
                 [
                     'Sex' => 'M', 
-                    'Dob' => new \MUtil_Date('15-12-2008', 'dd-MM-yyyy')
+                    'Dob' => new \MUtil\Date('15-12-2008', 'dd-MM-yyyy')
                 ],
                 // Result
                 [

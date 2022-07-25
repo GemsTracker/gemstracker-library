@@ -1,12 +1,12 @@
 <?php
 
 
-class Gems_Form_Decorator_TabbedTranslations extends \Zend_Form_Decorator_Abstract
+class TabbedTranslations extends \Zend_Form_Decorator_Abstract
 {
     /**
      * @param string $content
      * @return string
-     * @throws Zend_Form_Decorator_Exception
+     * @throws \Zend_Form_Decorator_Exception
      */
     public function render($content)
     {

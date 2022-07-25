@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ValuesMaintenanceDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;
@@ -53,7 +52,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -61,11 +60,11 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      * Put each value on a separate line
      *
      * @param string $values
-     * @return \MUtil_Html_Sequence
+     * @return \MUtil\Html\Sequence
      */
     public function formatValues($values)
     {
-        return new \MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
+        return new \MUtil\Html\Sequence(array('glue' => '<br/>'), explode('|', $values));
     }
 
     /**

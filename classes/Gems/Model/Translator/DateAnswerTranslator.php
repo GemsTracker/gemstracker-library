@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model\Translator;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3 24-apr-2014 14:46:04
  */
-class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_RespondentAnswerTranslator
+class DateAnswerTranslator extends \Gems\Model\Translator\RespondentAnswerTranslator
 {
     /**
      * The name of the field to (temporarily) store the patient nr in
@@ -43,7 +44,7 @@ class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_
                 $row[$this->completionField]) {
 
             if ($row[$this->completionField] instanceof \Zend_Date) {
-                $compl = $row[$this->completionField]->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                $compl = $row[$this->completionField]->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
             } else {
                 $compl = $row[$this->completionField];
             }
@@ -139,14 +140,14 @@ class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws \MUtil_Model_ModelException
+     * @throws \MUtil\Model\ModelException
      */
     public function getRespondentAnswerTranslations()
     {
         $this->_targetModel->set($this->completionField, 'label', $this->_('Patient ID'),
                 'order', 8,
                 'required', true,
-                'type', \MUtil_Model::TYPE_DATETIME
+                'type', \MUtil\Model::TYPE_DATETIME
                 );
         return parent::getRespondentAnswerTranslations();
     }

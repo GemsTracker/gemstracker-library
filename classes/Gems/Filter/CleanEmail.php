@@ -6,8 +6,9 @@
  * @author     Andries Bezem <abezem@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Filter;
 
 /**
  * @package    Gems
@@ -15,7 +16,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Filter_CleanEmail implements \Zend_Filter_Interface
+class CleanEmail implements \Zend_Filter_Interface
 {
     /**
      * Returns the result of filtering $value

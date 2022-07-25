@@ -1,6 +1,6 @@
 <?php
 
 
-class OpenRosaFormController extends \Gems_Default_OpenRosaFormAction
+class OpenRosaFormController extends \Gems\Actions\OpenRosaFormAction
 {
 }

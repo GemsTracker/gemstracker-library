@@ -7,13 +7,14 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Project\Layout;
 
 /**
  * Marker interface for Pulse Projects using only a single layout
  *
- * @see \Gems_Project_Layout_MultiLayoutInterface
+ * @see \Gems\Project\Layout\MultiLayoutInterface
  *
  * @package    Gems
  * @subpackage Project
@@ -21,6 +22,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-interface Gems_Project_Layout_SingleLayoutInterface
+interface SingleLayoutInterface
 {
 }

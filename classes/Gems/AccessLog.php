@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * Logging class to log access to certaint controller/actions
  *
@@ -16,17 +18,17 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_AccessLog
+class AccessLog
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     private static $_log;
 
     /**
      *
-     * @var \Gems_Util_AccessLogActions
+     * @var \Gems\Util_AccessLogActions
      */
     private $_actions = false;
 
@@ -50,7 +52,7 @@ class Gems_AccessLog
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     private $_loader;
 
@@ -118,7 +120,7 @@ class Gems_AccessLog
      *
      * @param string $name
      * @param array $arguments
-     * @return \Gems_AccessLog
+     * @return \Gems\AccessLog
      * @deprecated Since 1.7.1
      */
     public function __call($name, array $arguments)
@@ -141,12 +143,12 @@ class Gems_AccessLog
      *
      * @param \Zend_Cache_Core $cache
      * @param \Zend_Db_Adapter_Abstract $db
-     * @param \Gems_Loader $loader
+     * @param \Gems\Loader $loader
      */
-    public function __construct(\Zend_Cache_Core $cache, \Zend_Db_Adapter_Abstract $db, \Gems_Loader $loader)
+    public function __construct(\Zend_Cache_Core $cache, \Zend_Db_Adapter_Abstract $db, \Gems\Loader $loader)
     {
         $this->_cache        = $cache;
-        $this->_cacheId      = \MUtil_String::toCacheId(GEMS_PROJECT_NAME . APPLICATION_PATH . '__gems__' . __CLASS__);
+        $this->_cacheId      = \MUtil\StringUtil\StringUtil::toCacheId(GEMS_PROJECT_NAME . APPLICATION_PATH . '__gems__' . __CLASS__);
         $this->_db           = $db;
         $this->_loader       = $loader;
         $this->_sessionStore = new \Zend_Session_Namespace($this->_cacheId);
@@ -188,7 +190,7 @@ class Gems_AccessLog
             $output[$row['gls_name']] = $row;
         }
 
-        // \MUtil_Echo::track($output);
+        // \MUtil\EchoOut\EchoOut::track($output);
         $this->_cache->save($output, $this->_cacheId, array('accesslog_actions'));
 
         return $output;
@@ -235,7 +237,7 @@ class Gems_AccessLog
             $this->_db->insert('gems__log_activity', $row);
             return true;
         } catch (\Exception $exc) {
-            \Gems_Log::getLogger()->logError($exc, $request);
+            \Gems\Log::getLogger()->logError($exc, $request);
             $this->_warn();
             return false;
         }
@@ -283,10 +285,10 @@ class Gems_AccessLog
             } else {
                 if (is_string($value)) {
                     // Filter passwords from the log
-                    if (\MUtil_String::contains($key, 'password', true) || \MUtil_String::contains($key, 'pwd', true)) {
+                    if (\MUtil\StringUtil\StringUtil::contains($key, 'password', true) || \MUtil\StringUtil\StringUtil::contains($key, 'pwd', true)) {
                         $value = '****';
                     }
-                } elseif ($value instanceof Zend_Date) {
+                } elseif ($value instanceof \Zend_Date) {
                     // Output iso representation for date objects
                     $value = $value->getIso();
                 }
@@ -324,7 +326,7 @@ class Gems_AccessLog
         static $warn = true;
 
         if ($warn) {
-            \MUtil_Echo::r('Database needs to be updated, tables missing!');
+            \MUtil\EchoOut\EchoOut::r('Database needs to be updated, tables missing!');
             $warn = false;
         }
     }
@@ -355,8 +357,8 @@ class Gems_AccessLog
                 $action
                 );
 
-        $values['gls_changed']      = $values['gls_created']    = new \MUtil_Db_Expr_CurrentTimestamp();
-        $values['gls_changed_by']   = $values['gls_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
+        $values['gls_changed']      = $values['gls_created']    = new \MUtil\Db\Expr\CurrentTimestamp();
+        $values['gls_changed_by']   = $values['gls_created_by'] = \Gems\User\UserLoader::SYSTEM_USER_ID;
 
         try {
             $this->_db->insert('gems__log_setup', $values);
@@ -383,13 +385,13 @@ class Gems_AccessLog
      * Return an instance of the \Gems_AccesLog class
      *
      * @param \Zend_Db_Adapter_Abstract $db
-     * @return \Gems_AccessLog
+     * @return \Gems\AccessLog
      * @deprecated since 1.7.1 Use accessLog source variable instead
      */
     public static function getLog()
     {
         if (! self::$_log) {
-            throw new \Gems_Exception_Coding("AccessLog::getLog called before initialization.");
+            throw new \Gems\Exception\Coding("AccessLog::getLog called before initialization.");
         }
 
         return self::$_log;
@@ -402,8 +404,8 @@ class Gems_AccessLog
      */
     protected function getMessages()
     {
-        if (! $this->_messenger instanceof \MUtil_Controller_Action_Helper_FlashMessenger) {
-            $this->_messenger = new \MUtil_Controller_Action_Helper_FlashMessenger();
+        if (! $this->_messenger instanceof \MUtil\Controller\Action\Helper\FlashMessenger) {
+            $this->_messenger = new \MUtil\Controller\Action\Helper\FlashMessenger();
         }
 
         return $this->_messenger->getMessagesOnly();
@@ -417,7 +419,7 @@ class Gems_AccessLog
      * @param string  $message   An optional message to log with the action
      * @param int     $respondentId
      * @param boolean $force     Should we force the logentry to be inserted or should we try to skip duplicates? Default = false
-     * @return \Gems_AccessLog
+     * @return \Gems\AccessLog
      * @deprecated Since version 1.7.1: use logChange or logRequest
      */
     public function log($action, \Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
@@ -545,13 +547,13 @@ class Gems_AccessLog
      * @param \Zend_Controller_Request_Abstract $request
      * @param mixed $message
      * @param mixed $data
-     * @param int|\Gems_Tracker_Respondent $respondentId
+     * @param int|\Gems\Tracker\Respondent $respondentId
      * @return boolean True when a log entry was stored
      */
     public function logRequest(\Zend_Controller_Request_Abstract $request, $message = null, $data = null, $respondentId = null)
     {
         $action = $request->getControllerName() . '.' . $request->getActionName();
-        if ($respondentId instanceof \Gems_Tracker_Respondent) {
+        if ($respondentId instanceof \Gems\Tracker\Respondent) {
             if ($respondentId->exists) {
                 $data = (array) $data;
                 $data['gr2o_id_organization'] = $respondentId->getOrganizationId();

@@ -9,7 +9,6 @@ use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldReportSearchSnippet.php $
  */
 
 /**
@@ -21,7 +20,7 @@ use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 18:11:58
  */
-class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends \Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet
+class FieldReportSearchSnippet extends \Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.

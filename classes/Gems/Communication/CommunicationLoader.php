@@ -9,10 +9,10 @@ use Gems\Communication\JobMessenger\MailJobMessenger;
 use Gems\Communication\JobMessenger\SmsJobMessenger;
 use GuzzleHttp\Client;
 
-class CommunicationLoader extends \Gems_Loader_TargetLoaderAbstract
+class CommunicationLoader extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -69,7 +69,7 @@ class CommunicationLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      * @return SmsClientInterface
-     * @throws \Gems_Exception|
+     * @throws \Gems\Exception|
      */
     public function getSmsClient($clientId='sms')
     {
@@ -84,7 +84,7 @@ class CommunicationLoader extends \Gems_Loader_TargetLoaderAbstract
                     $smsClient = $this->_getClass('smsClient', $config[$clientId]['class'], [$config[$clientId], $httpClient]);
                 }
                 if (!($smsClient instanceof SmsClientInterface)) {
-                    throw new \Gems_Exception('Sms client could not be loaded from config');
+                    throw new \Gems\Exception('Sms client could not be loaded from config');
                 }
                 $this->smsClient = $smsClient;
             }

@@ -18,7 +18,7 @@ namespace Gems\Task\Import;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class CancelAppointmentsNotImportedTask extends \MUtil_Task_TaskAbstract
+class CancelAppointmentsNotImportedTask extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -40,7 +40,7 @@ class CancelAppointmentsNotImportedTask extends \MUtil_Task_TaskAbstract
                 $where .= " AND gap_admission_time > CURRENT_TIMESTAMP";
             }
             
-            // \MUtil_Echo::track($values, $where);            
+            // \MUtil\EchoOut\EchoOut::track($values, $where);            
             $deleted = $this->db->update('gems__appointments', $values, $where);
             
             $this->getBatch()->addMessage(sprintf($this->_('%s appointment(s) deleted.'), $deleted));

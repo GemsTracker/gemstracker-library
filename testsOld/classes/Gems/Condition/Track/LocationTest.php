@@ -20,7 +20,7 @@ use PHPUnit_Extensions_Database_DataSet_IDataSet;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class LocationTest extends \Gems_Test_DbTestAbstract
+class LocationTest extends \Gems\Test\DbTestAbstract
 {
     /**
      * @var \Gems\Conditions
@@ -34,7 +34,7 @@ class LocationTest extends \Gems_Test_DbTestAbstract
     public $condition;
 
     /**
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     public $tracker;
 

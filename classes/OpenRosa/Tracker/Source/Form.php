@@ -10,7 +10,6 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Form.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 namespace OpenRosa\Tracker\Source;
@@ -30,7 +29,7 @@ namespace OpenRosa\Tracker\Source;
 class Form
 {
     /**
-     * @var \Gems_Model_JoinModel
+     * @var \Gems\Model\JoinModel
      */
     private $model;
 
@@ -74,13 +73,13 @@ class Form
         $this->translate = $translate;
 
         if (!file_exists($file)) {
-            throw new \Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
+            throw new \Gems\Exception\Coding(sprintf($this->translate->_('File not found: %s'), $file));
         }
 
         //We read the xml file
         $xml = simplexml_load_file($file);
         if ($xml === false) {
-            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
+            throw new \Gems\Exception\Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
         $this->_xml = $xml;
 
@@ -88,7 +87,7 @@ class Form
         $bindElement = $hChildren->head->children()->model->instance->children();
         $this->bindRoot = '/' . $bindElement->getName() . '/';
 
-        //\MUtil_Echo::track($xml->asXML());
+        //\MUtil\EchoOut\EchoOut::track($xml->asXML());
         //For working with the namespaces:
         //$xml->children('h', true)->head->children()->model->bind
         //use namespace h children for the root element, and find h:head, then use no namespace children
@@ -330,7 +329,7 @@ class Form
             }
         }
 
-        return new \Gems_Model_JoinModel($this->getFormID(), $mainTableName, $mainTablePrefix);
+        return new \Gems\Model\JoinModel($this->getFormID(), $mainTableName, $mainTablePrefix);
     }
 
     private function flattenAnswers($xml, $parent = '')
@@ -549,13 +548,13 @@ class Form
     }
 
     /**
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function getModel()
     {
         if (empty($this->model)) {
             try {
-                $model = new \Gems_Model_JoinModel($this->getFormID(), $this->getTableName(), 'orf');
+                $model = new \Gems\Model\JoinModel($this->getFormID(), $this->getTableName(), 'orf');
             } catch (\Exception $exc) {
                 //Failed, now create the table as it obviously doesn't exist
                 $model = $this->createTable();
@@ -592,16 +591,16 @@ class Form
 
                         try {
                             $nestedTable = $this->getRelatedTableName($nestedName);
-                            $relatedModels[$nestedName] = new \Gems_Model_JoinModel($nestedName, $nestedTable, 'orfr');
+                            $relatedModels[$nestedName] = new \Gems\Model\JoinModel($nestedName, $nestedTable, 'orfr');
                         } catch (\Exception $exc) {
                             $nestedTable = $this->getRelatedTableName();
-                            $relatedModels[$nestedName] = new \Gems_Model_JoinModel($nestedName, $nestedTable, 'orfr');
+                            $relatedModels[$nestedName] = new \Gems\Model\JoinModel($nestedName, $nestedTable, 'orfr');
                         }
 
                         $relatedModels[$nestedName]->setSort(array('orfr_id' => SORT_ASC));
                         $relatedNames[$nestedTable] = $nestedName;
 
-                        $groupKey = substr($bindName, 0, -strlen(\MUtil_String::stripStringLeft($name, $nestedName)));
+                        $groupKey = substr($bindName, 0, -strlen(\MUtil\StringUtil\StringUtil::stripStringLeft($name, $nestedName)));
                         if (isset($this->groupLabels[$groupKey])) {
                             $model->set($nestedName, 'label', $this->groupLabels[$groupKey]);
                         }
@@ -646,13 +645,13 @@ class Form
                         $modelToUse->set($modelName, 'label', $label);
                         if ($bindInfo['type'] == 'date') {
                             $modelToUse->set($modelName,
-                                'type', \MUtil_Model::TYPE_DATE,
+                                'type', \MUtil\Model::TYPE_DATE,
                                 'dateFormat', 'dd-MM-yyyy',
                                 'storageFormat', 'yyyy-MM-dd',
                                 'elementClass', 'date');
                         } else {
                             $modelToUse->set($modelName,
-                                'type', \MUtil_Model::TYPE_DATETIME,
+                                'type', \MUtil\Model::TYPE_DATETIME,
                                 'dateFormat', 'dd-MM-yyyy HH:mm',
                                 'storageFormat', 'yyyy-MM-dd HH:mm:ss',
                                 'elementClass', 'date');
@@ -780,19 +779,19 @@ class Form
     public function saveAnswer($file, $remove = true)
     {
         if (!file_exists($file)) {
-            throw new \Gems_Exception_Coding(sprintf($this->translate->_('File not found: %s'), $file));
+            throw new \Gems\Exception\Coding(sprintf($this->translate->_('File not found: %s'), $file));
         }
 
         //We read the xml file
         $xml = simplexml_load_file($file);
         if ($xml === false) {
-            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
+            throw new \Gems\Exception\Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
 
         $formId = (string) $xml->attributes()->id;
         if ($formId != $this->getFormID()) {
             //Can not save to this object as it is a different form!
-            throw new \Gems_Exception_Coding(sprintf($this->translate->_('Response is for a different formId: %s <-> %s'), $formId, $this->getFormID()));
+            throw new \Gems\Exception\Coding(sprintf($this->translate->_('Response is for a different formId: %s <-> %s'), $formId, $this->getFormID()));
         }
 
         $model   = $this->getModel();
@@ -831,14 +830,14 @@ class Form
         $answers = $model->save($output);
 
         if ($model->getChanged() && $remove) {
-            $log     = \Gems_Log::getLogger();
+            $log     = \Gems\Log::getLogger();
             $log->log($file .  '-->' .  substr($file, 0, -4) . '.bak', \Zend_Log::ERR);
             rename($file, substr($file, 0, -4) . '.bak');
         }
         // @@TODO: make hook for respondentID lookup too
         if (isset($answers['token'])) {
             // We receveid a form linked to a token, signal the 'inSource' for this token.
-            $loader = \GemsEscort::getInstance()->getLoader();
+            $loader = \Gems\Escort::getInstance()->getLoader();
             $token = $loader->getTracker()->getToken($answers['token']);
             $token->getUrl($loader->getCurrentUser()->getLocale(), $loader->getCurrentUser()->getUserId());
         }
@@ -851,7 +850,7 @@ class Form
         // TODO: Find a way to build an url that identifies the form so we can download the attachted image
         //       and still check if one is logged in
         if (!empty($value)) {
-            return \MUtil_Html_ImgElement::img(array(
+            return \MUtil\Html\ImgElement::img(array(
                 'src' => array(
                     'controller' => 'openrosa',
                     'action'     => 'image',

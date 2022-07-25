@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
+class AppointmentModel extends \Gems\Model\JoinModel
 {
     /**
      * The number of tokens changed by the last save
@@ -29,13 +31,13 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -53,18 +55,18 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -83,8 +85,8 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                 false
                 );
 
-        $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems_Model::ID_TYPE);
-        $this->setKeys(array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'));
+        $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems\Model::ID_TYPE);
+        $this->setKeys(array(\Gems\Model::APPOINTMENT_ID => 'gap_id_appointment'));
     }
 
     /**
@@ -181,7 +183,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyBrowseSettings()
     {
@@ -227,7 +229,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * Set those settings needed for the detailed display
      *
      * @param boolean $setMulti When false organization dependent multi options are nor filled.
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyDetailSettings($setMulti = true)
     {
@@ -281,7 +283,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * Set those values needed for editing
      *
      * @param int $orgId The id of the current organization
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyEditSettings($orgId = null)
     {
@@ -367,7 +369,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
                 $this->_changedTokenCount += $appointment->updateTracks();
             }
         }
-        // \MUtil_Echo::track($this->_changedTokenCount);
+        // \MUtil\EchoOut\EchoOut::track($this->_changedTokenCount);
 
         return $returnValues;
     }
@@ -376,7 +378,7 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
      * Automatically update linked tracks
      *
      * @param boolean $value
-     * @return \Gems_Model_AppointmentModel (continuation pattern)
+     * @return \Gems\Model\AppointmentModel (continuation pattern)
      */
     public function setAutoTrackUpdate($value = true)
     {
@@ -412,9 +414,9 @@ class Gems_Model_AppointmentModel extends \Gems_Model_JoinModel
             return $episode->getDisplayString();
         }
 
-        $onclick = new \MUtil_Html_OnClickArrayAttribute();
+        $onclick = new \MUtil\Html\OnClickArrayAttribute();
         $onclick->addCancelBubble(true);
-        return \MUtil_Html::create('a', $href, $episode->getDisplayString(), $onclick);
+        return \MUtil\Html::create('a', $href, $episode->getDisplayString(), $onclick);
     }
 
     /**

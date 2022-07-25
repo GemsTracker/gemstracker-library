@@ -2,11 +2,11 @@
 
 namespace Gems\Export;
 
-class CodeBookExportTest extends \Gems_Test_DbTestAbstract
+class CodeBookExportTest extends \Gems\Test\DbTestAbstract
 {
     /**
      *
-     * @var \Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     * @var \Gems\Tracker\Source\LimeSurvey1m9FieldMap
      */
     private $fieldmap;
     
@@ -21,7 +21,7 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
         $tablePrefix    = '';
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
 
-        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
+        $this->fieldmap = new \Gems\Tracker\Source\LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
     }
 
     /**
@@ -47,7 +47,7 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
     
     protected function getModel($questionInformation, $locale = 'en')
     {
-        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
+        $survey = $this->getMockBuilder('\\Gems\\Tracker\\Survey')
                 ->disableOriginalConstructor()
                 ->getMock();
         
@@ -55,7 +55,7 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
                 ->method('getQuestionInformation')
                 ->will($this->returnValue($questionInformation));
         
-        $tracker = $this->getMockBuilder('Gems_Tracker')
+        $tracker = $this->getMockBuilder('\\Gems\\Tracker')
                 ->disableOriginalConstructor()
                 ->getMock();
         
@@ -63,7 +63,7 @@ class CodeBookExportTest extends \Gems_Test_DbTestAbstract
                 ->method('getSurvey')
                 ->will($this->returnValue($survey));
         
-        $currentUser = $this->getMockBuilder('Gems_User_User')
+        $currentUser = $this->getMockBuilder('\\Gems\\User\\User')
                 ->disableOriginalConstructor()
                 ->getMock();
         

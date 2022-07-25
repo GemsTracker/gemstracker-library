@@ -35,7 +35,7 @@ class ModelCreateEvent extends Event
     public $detailed;
 
     /**
-     * @var \MUtil_Model_ModelAbstract the model
+     * @var \MUtil\Model\ModelAbstract the model
      */
     public $model;
 
@@ -47,11 +47,11 @@ class ModelCreateEvent extends Event
     /**
      * ModelCreateEvent constructor.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param string                     $action
      * @param boolean                    $detailed
      */
-    public function __construct(\MUtil_Model_ModelAbstract $model, $action, $detailed, $name = null)
+    public function __construct(\MUtil\Model\ModelAbstract $model, $action, $detailed, $name = null)
     {
         $this->model    = $model;
         $this->action   = $action;
@@ -68,7 +68,7 @@ class ModelCreateEvent extends Event
     }
 
     /**
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getModel()
     {

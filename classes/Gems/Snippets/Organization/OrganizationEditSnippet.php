@@ -20,17 +20,17 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
+class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippetGeneric
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -73,7 +73,7 @@ class OrganizationEditSnippet extends \Gems_Snippets_ModelTabFormSnippetGeneric
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
             $display = join(', ', $allowedOrgs);
             if (! $display) {
-                $display = \MUtil_Html::create('em', $this->_('No access to other organizations.'));
+                $display = \MUtil\Html::create('em', $this->_('No access to other organizations.'));
             }
             $this->formData['allowed'] = $display;
             $model->set('allowed', 'value', $display);

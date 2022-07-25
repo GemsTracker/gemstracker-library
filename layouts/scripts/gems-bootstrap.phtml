@@ -10,8 +10,8 @@
     <?php if ($this->jQuery) {
         echo $this->jQuery()->renderStylesheets();
     }
-    if (\MUtil_Bootstrap::enabled()) {
-        echo \MUtil_Bootstrap::bootstrap()->renderStylesheets();
+    if (\MUtil\Bootstrap::enabled()) {
+        echo \MUtil\Bootstrap::bootstrap()->renderStylesheets();
     }
     ?>
     <?php echo $this->headLink(); ?>
@@ -76,12 +76,12 @@
         //echo
         echo $this->jQuery()->renderJavascript();
     }
-    if (\MUtil_Bootstrap::enabled()) {
-        echo \MUtil_Bootstrap::bootstrap()->renderJavascript();
+    if (\MUtil\Bootstrap::enabled()) {
+        echo \MUtil\Bootstrap::bootstrap()->renderJavascript();
     }
 ?>
 <?php
-echo \MUtil_Echo::out();
+echo \MUtil\EchoOut\EchoOut::out();
 echo $this->headScript();
 echo $this->inlineScript();
 ?>

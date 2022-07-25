@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Validate;
+
 use Laminas\Authentication\Result;
 
 /**
@@ -20,20 +22,20 @@ use Laminas\Authentication\Result;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Validate_GetUserPasswordValidator extends \Gems_User_Validate_PasswordValidatorAbstract
+class GetUserPasswordValidator extends \Gems\User\Validate\PasswordValidatorAbstract
 {
     /**
      *
-     * @var \Gems_User_Validate_GetUserInterface
+     * @var \Gems\User\Validate\GetUserInterface
      */
     private $_userSource;
 
     /**
      *
-     * @param \Gems_User_Validate_GetUserInterface $userSource The source for the user
+     * @param \Gems\User\Validate\GetUserInterface $userSource The source for the user
      * @param string $message Default message for standard login fail.
      */
-    public function __construct(\Gems_User_Validate_GetUserInterface $userSource, $message)
+    public function __construct(\Gems\User\Validate\GetUserInterface $userSource, $message)
     {
         $this->_userSource = $userSource;
 
@@ -55,7 +57,7 @@ class Gems_User_Validate_GetUserPasswordValidator extends \Gems_User_Validate_Pa
     public function isValid($value, $context = array())
     {
         $user = $this->_userSource->getUser();
-        if ($user instanceof \Gems_User_User) {
+        if ($user instanceof \Gems\User\User) {
             $result = $user->authenticate($value);
         } else {
             $result = new Result(Result::FAILURE_UNCATEGORIZED, null);

@@ -46,9 +46,6 @@
  * @author: SysCo/al
  * @since CreationDate: 2008-01-04
  * @copyright (c) 2008 by SysCo systemes de communication sa
- * @version $LastChangedRevision$
- * @version $LastChangedDate$
- * @version $LastChangedBy$
  * @link $HeadURL: radius.class.php $
  * @link http://developer.sysco.ch/php/
  * @link developer@sysco.ch
@@ -176,7 +173,6 @@
  * Creation 2008-01-04
  * Update 2009-01-05
  * @package radius
- * @version v.1.2.2
  * @author SysCo/al
  *
  *********************************************************************/
@@ -217,7 +213,6 @@ class Radius
      *
      * Creation 2008-01-04
      * Update 2009-01-05
-     * @version v.1.2.2
      * @author SysCo/al
      * @param string ip address of the radius server
      * @param string shared secret with the radius server

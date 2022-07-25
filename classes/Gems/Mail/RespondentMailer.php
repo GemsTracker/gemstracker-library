@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
+class RespondentMailer extends \Gems\Mail\MailerAbstract
 {
     /**
      * @var int User ID of user who sent the mail
@@ -27,12 +29,12 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -52,7 +54,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
     protected $patientId;
 
     /**
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -145,7 +147,7 @@ class Gems_Mail_RespondentMailer extends \Gems_Mail_MailerAbstract
     protected function logRespondentCommunication()
     {
         $currentUserId                = $this->loader->getCurrentUser()->getUserId();
-        $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
+        $changeDate                   = new \MUtil\Db\Expr\CurrentTimestamp();
 
         $logData['grco_id_to']        = $this->respondent->getId() ?: 0;
 

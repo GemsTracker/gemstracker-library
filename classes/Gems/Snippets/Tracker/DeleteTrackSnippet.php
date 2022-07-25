@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -49,7 +48,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -63,7 +62,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * Required
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -77,7 +76,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * Optional
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -96,15 +95,15 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Tracker_Model_TrackModel) {
+        if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
             $tracker     = $this->loader->getTracker();
             $this->model = $tracker->getRespondentTrackModel();
 
-            if (! $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+            if (! $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 $this->trackEngine = $this->respondentTrack->getTrackEngine();
             }
             $this->model->applyEditSettings($this->trackEngine);
@@ -120,7 +119,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -177,7 +176,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         $oldCode = $this->respondentTrack->getReceptionCode();
         
-        if (! $newCode instanceof \Gems_Util_ReceptionCode) {
+        if (! $newCode instanceof \Gems\Util\ReceptionCode) {
             $newCode = $this->util->getReceptionCode($newCode);
         }
 

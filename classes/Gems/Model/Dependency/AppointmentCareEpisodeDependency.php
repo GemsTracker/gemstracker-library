@@ -54,13 +54,13 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $util;
 
@@ -91,8 +91,8 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
 
         if (isset($context['gap_id_user'], $context['gap_id_organization'])) {
             if (isset($context['gap_admission_time'])) {
-                if ($context['gap_admission_time'] instanceof \MUtil_Date) {
-                    $admission = $context['gap_admission_time']->toString(\Gems_Tracker::DB_DATE_FORMAT);
+                if ($context['gap_admission_time'] instanceof \MUtil\Date) {
+                    $admission = $context['gap_admission_time']->toString(\Gems\Tracker::DB_DATE_FORMAT);
                 } elseif ($context['gap_admission_time'] instanceof \DateTimeInterface) {
                     $admission = $context['gap_admission_time']->format('Y-m-d');
                 } else {

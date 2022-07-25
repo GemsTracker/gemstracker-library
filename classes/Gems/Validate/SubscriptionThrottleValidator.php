@@ -9,6 +9,8 @@
  * @license    No free license, do not copy
  */
 
+namespace Gems\Validate;
+
 /**
  *
  * @package    Gems
@@ -17,7 +19,7 @@
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8 Jan 9, 2020 1:05:35 PM
  */
-class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_TargetAbstract implements \Zend_Validate_Interface
+class SubscriptionThrottleValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Validate_Interface
 {
     /**
      *
@@ -51,7 +53,7 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
 
     /**
      *
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
@@ -71,7 +73,7 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
     {
         return $this->db instanceof \Zend_Db_Adapter_Abstract &&
                 $this->logger instanceof \Psr\Log\LoggerInterface &&
-                $this->tracker instanceof \Gems_Tracker_TrackerInterface &&
+                $this->tracker instanceof \Gems\Tracker\TrackerInterface &&
                 $this->translate instanceof \Zend_Translate;
     }
 
@@ -134,7 +136,7 @@ class Gems_Validate_SubscriptionThrottleValidator extends \MUtil_Registry_Target
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
 
-             // \MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
+             // \MUtil\EchoOut\EchoOut::track($throttleSettings, $attemptData, $remainingDelay, $select->getPart(\Zend_Db_Select::WHERE));
 
             if ($attemptData['attempts'] >= $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->logger->error("Possible subscription brute force attack, throttling for $remainingDelay seconds");

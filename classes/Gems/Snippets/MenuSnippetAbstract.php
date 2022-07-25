@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
- * Parent class for snippets that need to do something with the \Gems_Menu
+ * Parent class for snippets that need to do something with the \Gems\Menu
  *
  * @package    Gems
  * @subpackage Snippets
@@ -18,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class Gems_Snippets_MenuSnippetAbstract extends \MUtil_Snippets_SnippetAbstract
+abstract class MenuSnippetAbstract extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 
@@ -30,7 +32,7 @@ abstract class Gems_Snippets_MenuSnippetAbstract extends \MUtil_Snippets_Snippet
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function findMenuItem($controller, $action = 'index')
     {

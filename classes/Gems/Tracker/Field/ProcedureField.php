@@ -25,10 +25,10 @@ class ProcedureField  extends AppointmentDerivedFieldAbstract
     /**
      * Return the appropriate Id for the given appointment
      * 
-     * @param \Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    protected function getId(\Gems_Agenda_Appointment$appointment) {
+    protected function getId(\Gems\Agenda\Appointment$appointment) {
         return $appointment->getProcedureId();
     }
 

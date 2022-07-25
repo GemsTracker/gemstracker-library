@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Util;
@@ -21,7 +20,7 @@ namespace Gems\Util;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class ConsentCode extends \Gems_Registry_CachedArrayTargetAbstract
+class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
 {
     /**
      * Variable to add tags to the cache for cleanup.
@@ -47,7 +46,7 @@ class ConsentCode extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  *
@@ -18,22 +19,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
+class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
 {
     /**
-     * The Gems DB
+     * The \Gems DB
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -70,7 +71,7 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
 
         foreach ($answerModel->getItemsOrdered() as $order => $name) {
             if (true === $answerModel->get($name, 'survey_question')) {
-                $batch->addTask('Tracker_RefreshQuestion', $surveyId, $name, $order);
+                $batch->addTask('Tracker\\RefreshQuestion', $surveyId, $name, $order);
             }
         }
 
@@ -82,7 +83,7 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
     
     protected function render($result)
     {
-        if ($result instanceof \MUtil_Html_HtmlInterface) {
+        if ($result instanceof \MUtil\Html\HtmlInterface) {
             $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();
@@ -98,10 +99,10 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
     /**
      * Get a name for the view
      *
-     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems\Tracker\Survey $survey
      * @return string
      */
-    protected function getViewName(\Gems_Tracker_Survey $survey)
+    protected function getViewName(\Gems\Tracker\Survey $survey)
     {
         return 'T' . $survey->getSurveyId();
     }
@@ -109,10 +110,10 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
     /**
      * Handles creating or replacing the view for this survey
      *
-     * @param \Gems_Tracker_Survey       $viewName
-     * @param \MUtil_Model_ModelAbstract $answerModel
+     * @param \Gems\Tracker\Survey       $viewName
+     * @param \MUtil\Model\ModelAbstract $answerModel
      */
-    protected function replaceCreateView(\Gems_Tracker_Survey $survey, \MUtil_Model_ModelAbstract $answerModel)
+    protected function replaceCreateView(\Gems\Tracker\Survey $survey, \MUtil\Model\ModelAbstract $answerModel)
     {
         $viewName = $this->getViewName($survey);
         $responseDb = $this->project->getResponseDatabase();
@@ -121,7 +122,7 @@ class Gems_Task_Tracker_AddRefreshQuestions extends \MUtil_Task_TaskAbstract
         foreach ($answerModel->getItemsOrdered() as $name) {
             if (true === $answerModel->get($name, 'survey_question') && // It should be a question
                     !in_array($name, array('submitdate', 'startdate', 'datestamp')) && // Leave out meta info
-                    !$answerModel->is($name, 'type', \MUtil_Model::TYPE_NOVALUE)) {         // Only real answers
+                    !$answerModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {         // Only real answers
                 $fieldSql .= ',MAX(IF(gdr_answer_id = ' . $responseDb->quote($name) . ', gdr_response, NULL)) AS ' . $responseDb->quoteIdentifier($name);
             }
         }

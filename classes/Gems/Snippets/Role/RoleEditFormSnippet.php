@@ -20,20 +20,20 @@ namespace Gems\Snippets\Role;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 18-feb-2015 15:35:07
  */
-class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Acl
+     * @var \MUtil\Acl
      */
     protected $acl;
 
     /**
      * As it is better for translation utilities to set the labels etc. translated,
-     * the MUtil default is to disable translation.
+     * the \MUtil default is to disable translation.
      *
      * However, this also disables the translation of validation messages, which we
-     * cannot set translated. The MUtil form is extended so it can make this switch.
+     * cannot set translated. The \MUtil form is extended so it can make this switch.
      *
      * @var boolean True
      */
@@ -41,7 +41,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -63,10 +63,10 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->addHidden('grl_id_role');
         $bridge->addText('grl_name');
@@ -94,17 +94,17 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 if ($this->acl->hasRole($this->formData['grl_name']) && $this->acl->inheritsRole($parent, $this->formData['grl_name'])) {
                     $disabled[] = $parent;
                     $possibleParents[$parent] .= ' ' .
-                            \MUtil_Html::create('small', $this->_('child of current role'), $this->view);
+                            \MUtil\Html::create('small', $this->_('child of current role'), $this->view);
                     unset($this->formData['grl_parents'][$parent]);
                 } else {
                     foreach ($this->formData['grl_parents'] as $p2) {
                         if ($this->acl->hasRole($p2) && $this->acl->inheritsRole($p2, $parent)) {
                             $disabled[] = $parent;
-                            $possibleParents[$parent] .= ' ' . \MUtil_Html::create(
+                            $possibleParents[$parent] .= ' ' . \MUtil\Html::create(
                                     'small',
-                                    \MUtil_Html::raw(sprintf(
+                                    \MUtil\Html::raw(sprintf(
                                             $this->_('inherited from %s'),
-                                            \MUtil_Html::create('em', $p2, $this->view)
+                                            \MUtil\Html::create('em', $p2, $this->view)
                                             )),
                                     $this->view);
                             $this->formData['grl_parents'][$parent] = $parent;
@@ -115,7 +115,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $disabled[] = $this->formData['grl_name'];
             if (isset($possibleParents[$this->formData['grl_name']])) {
                 $possibleParents[$this->formData['grl_name']] .= ' ' .
-                        \MUtil_Html::create('small', $this->_('this role'), $this->view);
+                        \MUtil\Html::create('small', $this->_('this role'), $this->view);
             }
         }
 
@@ -166,7 +166,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         if (isset($this->formData['grl_parents']) && is_array($this->formData['grl_parents'])) {
             $this->formData['grl_parents'] = implode(
                     ',',
-                    \Gems_Roles::getInstance()->translateToRoleIds($this->formData['grl_parents'])
+                    \Gems\Roles::getInstance()->translateToRoleIds($this->formData['grl_parents'])
                     );
         }
 
@@ -186,7 +186,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -211,7 +211,7 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             if (isset($rolePrivileges[$parent])) {
                 $inherited = $inherited + array_flip($rolePrivileges[$parent][\Zend_Acl::TYPE_ALLOW]);
                 $inherited = $inherited +
-                        array_flip($rolePrivileges[$parent][\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]);
+                        array_flip($rolePrivileges[$parent][\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]);
             }
         }
         // Sneaks in:
@@ -227,9 +227,9 @@ class RoleEditFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     protected function loadFormData()
     {
-        // \MUtil_Echo::track(file_get_contents('php://input'));
+        // \MUtil\EchoOut\EchoOut::track(file_get_contents('php://input'));
         parent::loadFormData();
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
 
         if ($this->request->isPost()) {
             if (! $this->request->getParam('grl_parents')) {

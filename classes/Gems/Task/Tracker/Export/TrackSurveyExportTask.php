@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackSurveyExportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Export;
@@ -36,10 +35,10 @@ class TrackSurveyExportTask extends TrackExportAbstract
 
         $select->from('gems__surveys', array('gsu_export_code', 'gsu_survey_name', 'gsu_survey_description', 'gsu_surveyor_id'))
                 ->where('gsu_id_survey = ?', $surveyId);
-        // \MUtil_Echo::track($select->__toString(), $roundId);
+        // \MUtil\EchoOut\EchoOut::track($select->__toString(), $roundId);
 
         $data = $this->db->fetchRow($select);
-        // \MUtil_Echo::track($data);
+        // \MUtil\EchoOut\EchoOut::track($data);
 
         if ($data && isset($data['gsu_export_code']) && $data['gsu_export_code']) {
             $count = $batch->addToCounter('surveys_exported');

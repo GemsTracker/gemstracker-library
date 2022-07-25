@@ -1,6 +1,6 @@
 <?php
 
-class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbstract {
+class LimeSurvey1m9FieldMapTest extends \Gems\Test\DbTestAbstract {
 
     protected function setUp() {
         // \Zend_Application: loads the autoloader
@@ -31,7 +31,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
         $this->cache    = $cache;
 
-        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
+        $this->fieldmap = new \Gems\Tracker\Source\LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
         
     }
 
@@ -88,7 +88,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
     public function testSurveyModelDateStorageFormat($fieldName, $expectedStorageFormat) {
         // Create a simple array model to apply to fieldmap to
         $array = array('test' => 123);
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $this->fieldmap->applyToModel($model);
 
         $this->assertEquals($expectedStorageFormat, $model->get($fieldName, 'storageFormat'));
@@ -103,11 +103,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
     public function testNumericOptions() {
         // Create a simple array model to apply to fieldmap to
         $array = array('test' => 123);
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $this->fieldmap->applyToModel($model);
         
-        $this->assertEquals(\MUtil_Model::TYPE_NUMERIC, $model->get('list', 'type'));
-        $this->assertEquals(\MUtil_Model::TYPE_STRING, $model->get('list2', 'type'));
+        $this->assertEquals(\MUtil\Model::TYPE_NUMERIC, $model->get('list', 'type'));
+        $this->assertEquals(\MUtil\Model::TYPE_STRING, $model->get('list2', 'type'));
         $this->assertEquals($model->get('list2', 'formatFunction'), $model->get('list', 'formatFunction'), 'List question should not have a formatfunction');
     }
     
@@ -120,7 +120,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMapTest extends \Gems_Test_DbTestAbs
     public function testExpressionHelpIsQuestion() {
         // Create a simple array model to apply to fieldmap to
         $array = array('test' => 123);
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $this->fieldmap->applyToModel($model);
         
         $this->assertEquals('Expression question', $model->get('expression', 'label'));

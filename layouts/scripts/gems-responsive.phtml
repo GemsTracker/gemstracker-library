@@ -10,8 +10,8 @@
     if ($this->jQuery) {
         echo $this->jQuery()->renderStylesheets();
     }
-    if (\MUtil_Bootstrap::enabled()) {
-        echo \MUtil_Bootstrap::bootstrap()->renderStylesheets();
+    if (\MUtil\Bootstrap::enabled()) {
+        echo \MUtil\Bootstrap::bootstrap()->renderStylesheets();
     }
     echo $this->headLink();
     echo $this->headStyle();
@@ -85,8 +85,8 @@
         //echo
         echo $this->jQuery()->renderJavascript();
     }
-    if (\MUtil_Bootstrap::enabled()) {
-        echo \MUtil_Bootstrap::bootstrap()->renderJavascript();
+    if (\MUtil\Bootstrap::enabled()) {
+        echo \MUtil\Bootstrap::bootstrap()->renderJavascript();
     }
 ?>
 <script type="text/javascript" <?php echo isset($this->nonceString) ? $this->nonceString : ''; ?>>
@@ -110,7 +110,7 @@ $(function() {
 
 </script>
 <?php
-echo \MUtil_Echo::out();
+echo \MUtil\EchoOut\EchoOut::out();
 echo $this->headScript();
 echo $this->inlineScript();
 ?>

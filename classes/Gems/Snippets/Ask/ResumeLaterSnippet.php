@@ -18,7 +18,7 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class ResumeLaterSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     /**
      * @var string
@@ -26,9 +26,9 @@ class ResumeLaterSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
     protected $action = 'resume-later';
     
     /**
-     * @param \MUtil_Html_HtmlInterface $html
+     * @param \MUtil\Html\HtmlInterface $html
      */
-    protected function addContinueNowButton(\MUtil_Html_HtmlInterface $html)
+    protected function addContinueNowButton(\MUtil\Html\HtmlInterface $html)
     {
         $html->actionLink($this->getTokenHref($this->token), sprintf($this->_('Click here to resume %s now'), $this->token->getSurvey()->getExternalName()));           
     }
@@ -47,7 +47,7 @@ class ResumeLaterSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

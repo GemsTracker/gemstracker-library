@@ -25,12 +25,12 @@ use Gems\Condition\TrackConditionInterface;
 class LocationCondition extends ConditionAbstract implements TrackConditionInterface
 {
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -113,7 +113,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
         // Reasons could be:
         //   - no location field(s)
         //   - no location field(s) with field code
-        // \MUtil_Echo::track($value, $context);
+        // \MUtil\EchoOut\EchoOut::track($value, $context);
 
         return '';
     }
@@ -163,11 +163,11 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     }
 
     /**
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return array fieldKey => value
      */
-    protected function getUsedFieldsValues(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
+    protected function getUsedFieldsValues(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
     {
         $defs      = $respTrack->getTrackEngine()->getFieldsDefinition();
         $fields    = $fieldData ? $fieldData : $respTrack->getFieldData();
@@ -204,7 +204,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      */
     public function isValid($value, $context)
     {
-        // \MUtil_Echo::track($value, $context);
+        // \MUtil\EchoOut\EchoOut::track($value, $context);
         // Not used at the moment
         return true;
     }
@@ -214,11 +214,11 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      *
      * This is the actual implementation of the condition
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
     {
         $locations = $this->getUsedLocations();
 

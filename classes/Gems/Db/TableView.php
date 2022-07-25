@@ -30,14 +30,14 @@ class TableView extends \Zend_Db_Table_Abstract {
     }
     
     public function delete($where) {
-        throw new \Gems_Exception('Deleting from this view is not allowed');
+        throw new \Gems\Exception('Deleting from this view is not allowed');
     }
     
     public function insert(array $data) {
-        throw new \Gems_Exception('Inserting in this view is not allowed');
+        throw new \Gems\Exception('Inserting in this view is not allowed');
     }
     
     public function update(array $data, $where) {
-        throw new \Gems_Exception('Updating records in this view is not allowed');
+        throw new \Gems\Exception('Updating records in this view is not allowed');
     }
 }

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form;
 
 /**
  * Adds default element loading to standard form
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-abstract class Gems_Form_AutoLoadFormAbstract extends \Gems_Form
+abstract class AutoLoadFormAbstract extends \Gems\Form
 {
     /**
      * The field name for the submit element.
@@ -98,7 +99,7 @@ abstract class Gems_Form_AutoLoadFormAbstract extends \Gems_Form
     /**
      * The function loads the elements for this form
      *
-     * @return \Gems_Form_AutoLoadFormAbstract (continuation pattern)
+     * @return \Gems\Form\AutoLoadFormAbstract (continuation pattern)
      */
     abstract public function loadDefaultElements();
 
@@ -108,7 +109,7 @@ abstract class Gems_Form_AutoLoadFormAbstract extends \Gems_Form
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $loadDefault
-     * @return \Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems\User\Form\LoginForm (continuation pattern)
      */
     public function setLoadDefault($loadDefault = true)
     {

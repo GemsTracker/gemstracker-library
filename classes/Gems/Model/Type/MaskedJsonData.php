@@ -25,7 +25,7 @@ class MaskedJsonData extends JsonData
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -35,7 +35,7 @@ class MaskedJsonData extends JsonData
      * @param string $separator Separator in table display
      * @param string $more There is more in table display
      */
-    public function __construct(\Gems_User_User $user, $maxTable = 3, $separator = '<br />', $more = '...')
+    public function __construct(\Gems\User\User $user, $maxTable = 3, $separator = '<br />', $more = '...')
     {
         $this->currentUser = $user;
 
@@ -50,7 +50,7 @@ class MaskedJsonData extends JsonData
      */
     public function formatDetailed($value)
     {
-        //\MUtil_Echo::track($value);
+        //\MUtil\EchoOut\EchoOut::track($value);
         if (is_array($value)) {
             $group = $this->currentUser->getGroup();
 

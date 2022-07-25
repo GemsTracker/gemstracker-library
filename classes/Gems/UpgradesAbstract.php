@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -20,7 +22,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
+class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
@@ -53,7 +55,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     protected $upgradeFile;
 
     /**
-     * @var \Gems_Task_TaskRunnerBatch
+     * @var \Gems\Task\TaskRunnerBatch
      */
     protected $_batch;
 
@@ -68,12 +70,12 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     public $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
 
@@ -359,7 +361,7 @@ class Gems_UpgradesAbstract extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Set the batch to use
      *
-     * @param \Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems\Task\TaskRunnerBatch $batch
      */
     public function setBatch($batch)
     {

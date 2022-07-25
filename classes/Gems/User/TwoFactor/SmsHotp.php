@@ -14,7 +14,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
     protected $_codeValidSeconds = 300;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -23,7 +23,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
      */
     protected $smsClient;
 
-    public function addSetupFormElements(\Zend_Form $form, \Gems_User_User $user, array &$formData)
+    public function addSetupFormElements(\Zend_Form $form, \Gems\User\User $user, array &$formData)
     {
         $filter = new DutchPhonenumberFilter();
         $currentValue = '+' . $filter->filter($user->getPhonenumber());
@@ -38,7 +38,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
         parent::addSetupFormElements($form, $user, $formData);
 
         if ($user->getPhonenumber() === null) {
-            throw new \Gems_Exception($this->_('No mobile phonenumber set'));
+            throw new \Gems\Exception($this->_('No mobile phonenumber set'));
         }
     }
 
@@ -49,7 +49,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
         $this->smsClient = $this->loader->getCommunicationLoader()->getSmsClient();
     }
 
-    public function getSentMessage(\Gems_User_User $user)
+    public function getSentMessage(\Gems\User\User $user)
     {
         return $this->_('An authentication code has been sent to your phone by sms');
     }
@@ -64,7 +64,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
         return $this->_('From the sms we sent to your phonenumber.');
     }
 
-    public function sendCode(\Gems_User_User $user)
+    public function sendCode(\Gems\User\User $user)
     {
         if ($this->canSendOtp($user)) {
             $secret = $user->getTwoFactorKey();
@@ -81,7 +81,7 @@ class SmsHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfac
                 return true;
             }
         }
-        throw new \Gems_Exception($this->_('OTP could not be sent'));
+        throw new \Gems\Exception($this->_('OTP could not be sent'));
     }
 
     /**

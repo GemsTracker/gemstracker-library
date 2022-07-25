@@ -21,13 +21,13 @@ namespace Gems\User\Embed\Redirect;
 class RespondentShowCreatePage extends RespondentShowPage
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getLabel()
     {
@@ -37,7 +37,7 @@ class RespondentShowCreatePage extends RespondentShowPage
     /**
      * @return array redirect route
      */
-    public function getRedirectRoute(\Gems_User_User $embeddedUser, \Gems_User_User $deferredUser, $patientId, $organizations)
+    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
     {
         $orgId = $deferredUser->getCurrentOrganizationId();
         
@@ -47,7 +47,7 @@ class RespondentShowCreatePage extends RespondentShowPage
             return parent::getRedirectRoute($embeddedUser, $deferredUser, $patientId, $organizations);
         }
 
-        $staticSession = \GemsEscort::getInstance()->getStaticSession();
+        $staticSession = \Gems\Escort::getInstance()->getStaticSession();
         $staticSession->previousRequestParameters = [
             'gr2o_patient_nr' => $patientId,
             'gr2o_id_organization' => $orgId,

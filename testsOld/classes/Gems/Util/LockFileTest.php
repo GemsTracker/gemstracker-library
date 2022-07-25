@@ -12,7 +12,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Gems_Util_LockFile
+     * @var \Gems\Util\LockFile
      */
     protected $object;
     
@@ -21,7 +21,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->fileName = GEMS_TEST_DIR . '/tmp/locktest.txt';
-        $this->object = new \Gems_Util_LockFile($this->fileName);
+        $this->object = new \Gems\Util\LockFile($this->fileName);
     }
 
     protected function tearDown()
@@ -30,7 +30,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Gems_Util_LockFile::getLockTime
+     * @covers \Gems\Util\LockFile::getLockTime
      * @todo   Implement testGetLockTime().
      */
     public function testGetLockTimeNull()
@@ -40,7 +40,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @covers \Gems_Util_LockFile::getLockTime
+     * @covers \Gems\Util\LockFile::getLockTime
      * @todo   Implement testGetLockTime().
      */
     public function testGetLockTimeNotNull()
@@ -51,7 +51,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Gems_Util_LockFile::isLocked
+     * @covers \Gems\Util\LockFile::isLocked
      * @todo   Implement testIsLocked().
      */
     public function testIsLocked()
@@ -62,7 +62,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @covers \Gems_Util_LockFile::isLocked
+     * @covers \Gems\Util\LockFile::isLocked
      * @todo   Implement testIsLocked().
      */
     public function testIsNotLocked()
@@ -72,7 +72,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Gems_Util_LockFile::lock
+     * @covers \Gems\Util\LockFile::lock
      * @todo   Implement testLock().
      */
     public function testLock()
@@ -85,7 +85,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Gems_Util_LockFile::reverse
+     * @covers \Gems\Util\LockFile::reverse
      * @todo   Implement testReverse().
      */
     public function testReverseLock()
@@ -99,7 +99,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * @covers \Gems_Util_LockFile::reverse
+     * @covers \Gems\Util\LockFile::reverse
      * @todo   Implement testReverse().
      */
     public function testReverseUnLock()
@@ -113,7 +113,7 @@ class LockFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Gems_Util_LockFile::unlock
+     * @covers \Gems\Util\LockFile::unlock
      * @todo   Implement testUnlock().
      */
     public function testUnlock()

@@ -25,12 +25,12 @@ class TrackFieldCondition extends RoundConditionAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     public $tracker;
 
@@ -138,7 +138,7 @@ class TrackFieldCondition extends RoundConditionAbstract
         return $result;
     }
 
-    public function isRoundValid(\Gems_Tracker_Token $token)
+    public function isRoundValid(\Gems\Tracker\Token $token)
     {
         $field      = $this->_data['gcon_condition_text1'];
         $comparator = $this->_data['gcon_condition_text2'];

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Agenda;
+
 /**
  *
  * @package    Gems
@@ -17,11 +19,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -33,18 +35,18 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -60,7 +62,7 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
         parent::afterSave($changed);
 
         $model = $this->getModel();
-        if ($model instanceof \Gems_Model_AppointmentModel) {
+        if ($model instanceof \Gems\Model\AppointmentModel) {
             $count = $model->getChangedTokenCount();
             if ($count) {
                 $this->addMessage(sprintf($this->plural('%d token changed', '%d tokens changed', $count), $count));
@@ -71,11 +73,11 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends \Gems_Snippets_ModelFo
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Model_AppointmentModel) {
+        if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();
             $this->model->applyDetailSettings();
         }

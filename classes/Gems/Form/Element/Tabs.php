@@ -2,12 +2,13 @@
 
 
 /**
- * @version    $Id$
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
+
+namespace Gems\Form\Element;
 
 /**
  * @package    MUtil
@@ -15,7 +16,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Form_Element_Tabs extends \MUtil_Form_Element_Table
+class Tabs extends \MUtil\Form\Element\Table
 {
 
     private $_decoratorOptions;

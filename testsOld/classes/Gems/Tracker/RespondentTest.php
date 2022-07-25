@@ -23,7 +23,7 @@ class RespondentTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAge($respondentData, $date, $months, $expected)
     {
-        $respondent = new \Gems_Tracker_Respondent(1,1);
+        $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
         
         $actual = $respondent->getAge($date, $months);
@@ -32,19 +32,19 @@ class RespondentTest extends \PHPUnit_Framework_TestCase
     
     public function getAgeProvider()
     {
-        $ageNine = new \MUtil_Date();
+        $ageNine = new \MUtil\Date();
         $ageNine->sub(10, 'y');
         $ageNine->addDay(1);
         return [
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-03-15', 'yyyy-MM-dd'), true, 120],  // Happy birthday!
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-03-16', 'yyyy-MM-dd'), true, 120],  // The day after
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-04-14', 'yyyy-MM-dd'), true, 120],  // Almost a month
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-03-14', 'yyyy-MM-dd'), true, 119],  // Tomorrow
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-15', 'yyyy-MM-dd'), true, 120],  // Happy birthday!
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-16', 'yyyy-MM-dd'), true, 120],  // The day after
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-14', 'yyyy-MM-dd'), true, 120],  // Almost a month
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-14', 'yyyy-MM-dd'), true, 119],  // Tomorrow
             
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-03-15', 'yyyy-MM-dd'), false, 10],  // Happy birthday!
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-04-14', 'yyyy-MM-dd'), false, 10],  // Almost another month
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-04-15', 'yyyy-MM-dd'), false, 10],  // One month is nothing
-            [['grs_birthday' => new \MUtil_Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil_Date('2010-03-14', 'yyyy-MM-dd'), false, 9],   // One more day
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-15', 'yyyy-MM-dd'), false, 10],  // Happy birthday!
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-14', 'yyyy-MM-dd'), false, 10],  // Almost another month
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-15', 'yyyy-MM-dd'), false, 10],  // One month is nothing
+            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-14', 'yyyy-MM-dd'), false, 9],   // One more day
             
             [['grs_birthday' => $ageNine], null, false, 9],
             

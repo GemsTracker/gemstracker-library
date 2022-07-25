@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class TrackMaintenanceController extends Gems_Default_TrackMaintenanceAction
+class TrackMaintenanceController extends \Gems\Actions\TrackMaintenanceAction
 {
 }

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Mail;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -20,7 +22,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
+abstract class MailerAbstract extends \MUtil\Registry\TargetAbstract
 {
     use TranslateableTrait;
 
@@ -91,19 +93,19 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
     protected $layout;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * Project Object
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $organization;
 
@@ -133,7 +135,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -257,7 +259,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         }
 
         if ($this->bodyBb) {
-            return \MUtil_Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Html');
+            return \MUtil\Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Html');
         }
 
         if ($this->bodyText) {
@@ -274,7 +276,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
         }
 
         if ($this->bodyBb) {
-            return \MUtil_Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Text');
+            return \MUtil\Markup::render($this->applyFields($this->bodyBb), 'Bbcode', 'Text');
         }
 
         return null;
@@ -341,7 +343,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
 
     /**
      * Get the organization in relation to the current mailtarget
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getOrganization()
     {
@@ -473,7 +475,7 @@ abstract class Gems_Mail_MailerAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function markMailFields($mailFields)
     {
-        $markedMailFields = \MUtil_Ra::braceKeys($mailFields, $this->mailFieldMarkers['start'], $this->mailFieldMarkers['end']);
+        $markedMailFields = \MUtil\Ra::braceKeys($mailFields, $this->mailFieldMarkers['start'], $this->mailFieldMarkers['end']);
         return $markedMailFields;
     }
 

@@ -4,7 +4,6 @@
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Export;
@@ -48,7 +47,7 @@ interface ExportInterface
     
     /**
      * Get the model to export
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getModel();
 
@@ -74,8 +73,8 @@ interface ExportInterface
     /**
      * Set the model when not in batch mode
      * 
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function setModel(\MUtil_Model_ModelAbstract $model);
+    public function setModel(\MUtil\Model\ModelAbstract $model);
 
 }

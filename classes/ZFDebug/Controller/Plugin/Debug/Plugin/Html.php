@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -77,7 +76,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Html
      */
     public function getPanel()
     {
-        $body = Zend_Controller_Front::getInstance()->getResponse()->getBody();
+        $body = \Zend_Controller_Front::getInstance()->getResponse()->getBody();
         $liberrors = libxml_use_internal_errors(true);
         $dom = new DOMDocument();
         $dom->loadHtml($body);

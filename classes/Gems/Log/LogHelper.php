@@ -11,7 +11,7 @@ class LogHelper
          $info[] = 'Class:     ' . get_class($exception);
          $info[] = 'Message:   ' . static::stripHtml($exception->getMessage());
 
-         if (($exception instanceof \Gems_Exception) && ($text = $exception->getInfo())) {
+         if (($exception instanceof \Gems\Exception) && ($text = $exception->getInfo())) {
              $info[] = 'Info:      ' . static::stripHtml($text);
          }
 
@@ -22,7 +22,7 @@ class LogHelper
                  $info[] = '';
                  $info[] = 'Chained class:   ' . get_class($chained);
                  $info[] = 'Changed message: ' . static::stripHtml($chained->getMessage());
-                 if (($chained instanceof \Gems_Exception) && ($text = $chained->getInfo())) {
+                 if (($chained instanceof \Gems\Exception) && ($text = $chained->getInfo())) {
                      $info[] = 'Changed info:    ' . static::stripHtml($text);
                  }
              }
@@ -32,7 +32,7 @@ class LogHelper
              $info[] = '';
              $info[] = 'Previous class:   ' . get_class($previous);
              $info[] = 'Previous message: ' . static::stripHtml($previous->getMessage());
-             if (($previous instanceof \Gems_Exception) && ($text = $previous->getInfo())) {
+             if (($previous instanceof \Gems\Exception) && ($text = $previous->getInfo())) {
                  $info[] = 'Previous info:    ' . static::stripHtml($text);
              }
              $previous = $previous->getPrevious();

@@ -34,7 +34,7 @@ class TestCondition extends \Gems\Condition\RoundConditionAbstract {
         return 'display';
     }
 
-    public function isRoundValid(\Gems_Tracker_Token $token) {
+    public function isRoundValid(\Gems\Tracker\Token $token) {
         return true;
     }
 

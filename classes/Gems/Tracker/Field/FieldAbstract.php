@@ -22,7 +22,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 4-mrt-2015 11:40:28
  */
-abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract implements FieldInterface
+abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract implements FieldInterface
 {
     /**
      * Option separator for fields
@@ -63,7 +63,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

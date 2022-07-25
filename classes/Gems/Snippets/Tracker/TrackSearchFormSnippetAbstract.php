@@ -20,11 +20,11 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.8.5
  */
-class TrackSearchFormSnippetAbstract extends \Gems_Snippets_AutosearchFormSnippet
+class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 

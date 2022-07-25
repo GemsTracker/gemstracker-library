@@ -21,12 +21,12 @@ use Gems\Event\RespondentChangedEventInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 12-Mar-2019 15:29:10
  */
-class CreateDefaultTracks extends \MUtil_Translate_TranslateableAbstract
+class CreateDefaultTracks extends \MUtil\Translate\TranslateableAbstract
     implements RespondentChangedEventInterface
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -38,7 +38,7 @@ class CreateDefaultTracks extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -67,11 +67,11 @@ class CreateDefaultTracks extends \MUtil_Translate_TranslateableAbstract
      *
      * The event has to handle the actual storage of the changes.
      *
-     * @param \Gems_Tracker_Respondent $respondent
+     * @param \Gems\Tracker\Respondent $respondent
      * @param int $userId The current user
      * @return boolean True when something changed
      */
-    public function processChangedRespondent(\Gems_Tracker_Respondent $respondent)
+    public function processChangedRespondent(\Gems\Tracker\Respondent $respondent)
     {
         $changes    = 0;
         $tracker    = $this->loader->getTracker();
@@ -84,25 +84,25 @@ class CreateDefaultTracks extends \MUtil_Translate_TranslateableAbstract
                 gtr_organizations LIKE '%|" . $respondent->getOrganizationId() . "|%'
             ORDER BY gtr_track_name");
 
-        // \MUtil_Echo::track($tracksData);
+        // \MUtil\EchoOut\EchoOut::track($tracksData);
 
         $changes = false;
 
         foreach ($tracksData as $trackData) {
             $trackEngine = $tracker->getTrackEngine($trackData);
-            if ($trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
-                // \MUtil_Echo::track($trackEngine->getTrackCode(), count($respTracks));
+            if ($trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
+                // \MUtil\EchoOut\EchoOut::track($trackEngine->getTrackCode(), count($respTracks));
 
                 $create = true;
                 foreach($respTracks as $respondentTrack) {
-                    if (($respondentTrack instanceof \Gems_Tracker_RespondentTrack) &&
+                    if (($respondentTrack instanceof \Gems\Tracker\RespondentTrack) &&
                             ($respondentTrack->getTrackId() == $trackEngine->getTrackId())) {
                         $create = false;
                         break;
                     }
                 }
 
-                // \MUtil_Echo::track($create);
+                // \MUtil\EchoOut\EchoOut::track($create);
                 if ($create) {
                     $changes = true;
                     $tracker->createRespondentTrack(

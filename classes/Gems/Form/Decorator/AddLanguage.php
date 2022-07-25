@@ -1,7 +1,7 @@
 <?php
 
 
-class Gems_Form_Decorator_AddLanguage extends \Zend_Form_Decorator_Abstract
+class AddLanguage extends \Zend_Form_Decorator_Abstract
 {
     protected $_format = '
     <div class="input-group">

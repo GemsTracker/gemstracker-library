@@ -5,8 +5,9 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Handles completion of a token, mostly started by \Gems_Task_CheckTokenCompletion
@@ -17,10 +18,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_ProcessTokenCompletion extends \MUtil_Task_TaskAbstract
+class ProcessTokenCompletion extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -49,7 +50,7 @@ class Gems_Task_Tracker_ProcessTokenCompletion extends \MUtil_Task_TaskAbstract
             }
 
             $trackId = $respTrack->getRespondentTrackId();
-            $batch->setTask('Tracker_CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
+            $batch->setTask('Tracker\\CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
         }
 
         // Free memory

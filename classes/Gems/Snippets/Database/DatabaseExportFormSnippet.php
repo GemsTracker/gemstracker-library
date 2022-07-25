@@ -4,7 +4,7 @@
 namespace Gems\Snippets\Database;
 
 
-class DatabaseExportFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class DatabaseExportFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.

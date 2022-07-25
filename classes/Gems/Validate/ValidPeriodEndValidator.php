@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ValidPeriodEndValidator.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
+
+namespace Gems\Validate;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1 8-mei-2015 19:55:39
  */
-class Gems_Validate_ValidPeriodEndValidator extends \Zend_Validate_Abstract
+class ValidPeriodEndValidator extends \Zend_Validate_Abstract
 {
     /**
      * Error codes

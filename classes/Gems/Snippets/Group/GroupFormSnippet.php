@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: GroupFormSnippet.php 2532 2015-04-30 16:33:05Z matijsdejong $
  */
+
+namespace Gems\Snippets\Group;
 
 /**
  *
@@ -18,24 +19,24 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 17:41:20
  */
-class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
+class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -65,7 +66,7 @@ class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnipp
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -94,7 +95,7 @@ class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnipp
             $roles     = $model->get('ggp_role', 'multiOptions');
             $userRoles = $this->currentUser->getAllowedRoles();
 
-            // \MUtil_Echo::track($userRoles, $roles);
+            // \MUtil\EchoOut\EchoOut::track($userRoles, $roles);
             // Make sure we get the roles as they are labeled
             foreach ($roles as $role => $label) {
                 if (! isset($userRoles[$role])) {
@@ -125,14 +126,14 @@ class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnipp
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil_Date|\Zend_Db_Expr|string
+     * @return \MUtil\Date|\Zend_Db_Expr|string
      */
     public function loadStaffRespondent($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -153,7 +154,7 @@ class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnipp
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -170,7 +171,7 @@ class Gems_Snippets_Group_GroupFormSnippet extends \Gems_Snippets_ModelFormSnipp
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

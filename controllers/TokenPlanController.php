@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TokenPlanController extends Gems_Default_TokenPlanAction
+class TokenPlanController extends \Gems\Actions\TokenPlanAction
 {
 }

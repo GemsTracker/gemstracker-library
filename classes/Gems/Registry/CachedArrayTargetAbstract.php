@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Registry;
+
 use Gems\Translate\DbTranslateUtilTrait;
 
 /**
@@ -20,7 +22,7 @@ use Gems\Translate\DbTranslateUtilTrait;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_TargetAbstract
+abstract class CachedArrayTargetAbstract extends \Gems\Registry\TargetAbstract
 {
     use DbTranslateUtilTrait;
 
@@ -102,7 +104,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      */
     private function _getCacheId()
     {
-        return \MUtil_String::toCacheId(GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . $this->_id);
+        return \MUtil\StringUtil\StringUtil::toCacheId(GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . $this->_id);
     }
 
     /**
@@ -129,7 +131,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
      *
      * @param string $name
      * @param mixed $value
-     * @return \Gems_Registry_CachedArrayTargetAbstract (continuation pattern)
+     * @return \Gems\Registry\CachedArrayTargetAbstract (continuation pattern)
      */
     protected function _set($name, $value)
     {
@@ -177,7 +179,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
                 $this->cache->setCacheItem($cacheLang, $this->_data, $this->_cacheTags);
             }
         }
-        // \MUtil_Echo::track($this->_data);
+        // \MUtil\EchoOut\EchoOut::track($this->_data);
 
         $this->exists = is_array($this->_data);
 
@@ -198,7 +200,7 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends \Gems_Registry_Ta
     /**
      * Empty the cache of the organization
      *
-     * @return \Gems_User_Organization (continutation pattern)
+     * @return \Gems\User\Organization (continutation pattern)
      */
     public function invalidateCache()
     {

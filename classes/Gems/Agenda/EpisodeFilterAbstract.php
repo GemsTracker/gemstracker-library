@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentFilterAbstract.php $
  */
 
 namespace Gems\Agenda;
@@ -55,10 +54,10 @@ abstract class EpisodeFilterAbstract extends BasicFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
     {
         $episode = $appointment->getEpisode();
 

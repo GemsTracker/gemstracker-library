@@ -5,8 +5,9 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form\Decorator;
 
 /**
  * Takes care of rendering errors in tabbed forms
@@ -16,7 +17,7 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_Decorator_TabErrors extends \Zend_Form_Decorator_Abstract
+class TabErrors extends \Zend_Form_Decorator_Abstract
 {
     /**
      * By default, show verbose error messages in tabforms
@@ -75,7 +76,7 @@ class Gems_Form_Decorator_TabErrors extends \Zend_Form_Decorator_Abstract
         $tabId = 0;
 
         foreach ($form->getSubForms() as $subForm) {
-            if ($subForm instanceof \Gems_Form_TabSubForm) {
+            if ($subForm instanceof \Gems\Form\TabSubForm) {
                 // See if any of the subformelements has an error message
                 foreach ($subForm->getElements() as $subFormElement) {
                     $elementMessages = $subFormElement->getMessages();

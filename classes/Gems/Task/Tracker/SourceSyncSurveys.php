@@ -4,8 +4,9 @@
  * @subpackage Task\Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Executes the syncSurveys method for a given sourceId
@@ -16,10 +17,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_SourceSyncSurveys extends \MUtil_Task_TaskAbstract
+class SourceSyncSurveys extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

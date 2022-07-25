@@ -21,7 +21,7 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.8.1 29-sep-2016 15:46:03
  */
-interface TrackBeforeFieldUpdateEventInterface extends \Gems_Event_EventInterface
+interface TrackBeforeFieldUpdateEventInterface extends \Gems\Event\EventInterface
 {
     /**
      * Process the data and do what must be done
@@ -29,8 +29,8 @@ interface TrackBeforeFieldUpdateEventInterface extends \Gems_Event_EventInterfac
      * Storing the changed $values is handled by the calling function.
      *
      * @param array $fieldData fieldname/codename => value
-     * @param \Gems_Tracker_RespondentTrack $respTrack Gems repsondent track object
+     * @param \Gems\Tracker\RespondentTrack $respTrack \Gems repsondent track object
      * @return array Of changed fields. Codename using items overwrite any key using items
      */
-    public function prepareFieldUpdate(array $fieldData, \Gems_Tracker_RespondentTrack $respTrack);
+    public function prepareFieldUpdate(array $fieldData, \Gems\Tracker\RespondentTrack $respTrack);
 }

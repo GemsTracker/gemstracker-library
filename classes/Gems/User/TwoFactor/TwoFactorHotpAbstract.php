@@ -31,7 +31,7 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
     public function getCode($secret, $timeSlice = null)
     {
         if ($this->userOtpCount === null) {
-            throw new \Gems_Exception('No otp count set');
+            throw new \Gems\Exception('No otp count set');
         }
         $currentOtpCount = $this->userOtpCount;
 
@@ -41,7 +41,7 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
     public function getNewCode($secret)
     {
         if ($this->userOtpCount === null) {
-            throw new \Gems_Exception('No otp count set');
+            throw new \Gems\Exception('No otp count set');
         }
         $currentOtpCount = $this->userOtpCount;
         $newOtpCount = $currentOtpCount + 1;
@@ -54,13 +54,13 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
     protected function saveNewCount($count)
     {
         if ($this->userId === null) {
-            throw new \Gems_Exception('No user ID set');
+            throw new \Gems\Exception('No user ID set');
         }
-        $now = new \MUtil_Date();
+        $now = new \MUtil\Date();
 
         $values = [
             'gul_otp_count' => $count,
-            'gul_otp_requested' => \MUtil_Date::format($now, 'yyyy-MM-dd HH:mm:ss'),
+            'gul_otp_requested' => \MUtil\Date::format($now, 'yyyy-MM-dd HH:mm:ss'),
         ];
 
         $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->userId]);
@@ -79,7 +79,7 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
         $this->userOtpCount = $count;
     }
 
-    public function setUserOtpRequested(\MUtil_Date $requestedTime = null)
+    public function setUserOtpRequested(\MUtil\Date $requestedTime = null)
     {
         $this->userOtpRequested = $requestedTime;
     }
@@ -97,19 +97,19 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
     public function verifyCode($secret, $code, $discrepancy = 0, $currentTimeSlice = null)
     {
         if ($this->userOtpRequested === null) {
-            throw new \Gems_Exception('No otp requested datetime set');
+            throw new \Gems\Exception('No otp requested datetime set');
         }
 
         $currentOtpRequested = $this->userOtpRequested;
 
         $otpValidUntil = $currentOtpRequested->addSecond($this->_codeValidSeconds);
 
-        if ($otpValidUntil->isEarlier(new \MUtil_Date)) {
+        if ($otpValidUntil->isEarlier(new \MUtil\Date)) {
             return false;
         }
 
         if ($this->userOtpCount === null) {
-            throw new \Gems_Exception('No otp count set');
+            throw new \Gems\Exception('No otp count set');
         }
         $currentOtpCount = $this->userOtpCount;
 

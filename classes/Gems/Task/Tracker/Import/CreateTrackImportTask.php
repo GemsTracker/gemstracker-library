@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CreateTrackImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 20, 2016 1:23:22 PM
  */
-class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
+class CreateTrackImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -50,9 +49,9 @@ class CreateTrackImportTask extends \MUtil_Task_TaskAbstract
         $trackData['gtr_track_name'] = $formData['gtr_track_name'];
         $trackData['gtr_organizations'] = $formData['gtr_organizations'];
 
-        // \MUtil_Echo::track($trackData);
+        // \MUtil\EchoOut\EchoOut::track($trackData);
         if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \Zend_Date)) {
-            $trackData['gtr_date_start'] = new \MUtil_Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
+            $trackData['gtr_date_start'] = new \MUtil\Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
         }
         $output = $model->save($trackData);
 

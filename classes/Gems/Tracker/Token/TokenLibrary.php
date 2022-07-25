@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Token;
 
 /**
  * Utility functions for token string functions
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
+class TokenLibrary extends \Gems\Registry\TargetAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -28,7 +29,7 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -63,14 +64,14 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
         if (isset($this->project->tokens['chars'])) {
             $this->tokenChars = $this->project->tokens['chars'];
         } else {
-            throw new \Gems_Exception_Coding('Required project.ini setting "tokens.chars" is missing.');
+            throw new \Gems\Exception\Coding('Required project.ini setting "tokens.chars" is missing.');
         }
 
         if (isset($this->project->tokens['format'])) {
             $this->tokenFormat = $this->project->tokens['format'];
             $this->tokenDisplayFormat = str_replace("\t", '\\', str_replace(array('\\\\', '\\'), array("\t", ''), $this->tokenFormat));
         } else {
-            throw new \Gems_Exception_Coding('Required project.ini setting "tokens.format" is missing.');
+            throw new \Gems\Exception\Coding('Required project.ini setting "tokens.format" is missing.');
         }
 
         if (isset($this->project->tokens['from'])) {
@@ -82,7 +83,7 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
                 $this->tokenTo = null;
             }
             if (strlen($this->tokenFrom) != strlen($this->tokenTo)) {
-                throw new \Gems_Exception_Coding('Project.ini setting "token.from" does not have the same length as argument "token.to".');
+                throw new \Gems\Exception\Coding('Project.ini setting "token.from" does not have the same length as argument "token.to".');
             }
 
         } else {
@@ -114,7 +115,7 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
      */
     public function createToken(array $tokenData, $userId)
     {
-        $current = new \MUtil_Db_Expr_CurrentTimestamp();
+        $current = new \MUtil\Db\Expr\CurrentTimestamp();
 
         $tokenData['gto_changed']    = $current;
         $tokenData['gto_changed_by'] = $userId;
@@ -126,8 +127,8 @@ class Gems_Tracker_Token_TokenLibrary extends \Gems_Registry_TargetAbstract
 
         $this->db->insert('gems__tokens', $tokenData);
 
-        if (\Gems_Tracker::$verbose) {
-            \MUtil_Echo::r($tokenData, 'Created token: ' . $tokenData['gto_id_token']);
+        if (\Gems\Tracker::$verbose) {
+            \MUtil\EchoOut\EchoOut::r($tokenData, 'Created token: ' . $tokenData['gto_id_token']);
         }
 
         return $tokenData['gto_id_token'];

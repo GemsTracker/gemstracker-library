@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ImportTrackSnippetAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Tracker\Snippets;
@@ -27,7 +26,7 @@ use MUtil\Validate\NotEqualExcept;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 15, 2016 3:57:15 PM
  */
-class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstract
+class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstract
 {
     /**
      * Deactivate this current round
@@ -47,7 +46,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -59,31 +58,31 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $importModel;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine = false;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -97,9 +96,9 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      * Add the settings from the transformed import data to the formData and the model
      *
      * @param \ArrayObject $import
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function addExistingRoundsToModel(\ArrayObject $import, \MUtil_Model_ModelAbstract $model)
+    public function addExistingRoundsToModel(\ArrayObject $import, \MUtil\Model\ModelAbstract $model)
     {
         $currentRounds = $this->trackEngine->getRounds();
 
@@ -208,7 +207,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     public function addImportToModelData(\ArrayObject $import)
     {
-        // formDefaults are set in the Gems\Task\Tracker\Import tasks
+        // formDefaults are set in the \Gems\Task\Tracker\Import tasks
         if (isset($import['formDefaults']) && $import['formDefaults']) {
             foreach ($import['formDefaults'] as $name => $default) {
                 if (! (isset($this->formData[$name]) && $this->formData[$name])) {
@@ -217,13 +216,13 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             }
         }
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
 
-        // modelSettings are set in the Gems\Task\Tracker\Import tasks
+        // modelSettings are set in the \Gems\Task\Tracker\Import tasks
         if (isset($import['modelSettings']) && $import['modelSettings']) {
             $model = $this->getModel();
             foreach ($import['modelSettings'] as $name => $settings) {
-                // \MUtil_Echo::track($name, $settings);
+                // \MUtil\EchoOut\EchoOut::track($name, $settings);
                 $model->set($name, $settings);
             }
         }
@@ -232,10 +231,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for file check step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepChangeTrack(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepChangeTrack(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->displayHeader($bridge, $this->_('Change track information.'), 'h3');
 
@@ -245,10 +244,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         // Always add organization select, even when they were not exported
         $this->addItems($bridge, $model->getColNames('respondentData'));
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
         $all = $this->loader->getUtil()->getTrackData()->getAllSurveys();
         $available = array('' => $this->_('(skip rounds)')) + $all;
-        // \MUtil_Echo::track($all);
+        // \MUtil\EchoOut\EchoOut::track($all);
 
         $form = $bridge->getForm();
 
@@ -265,16 +264,16 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
         $this->addItems($bridge, $model->getColNames('isSurvey'));
 
-        // \MUtil_Echo::track($this->_session->uploadFileName, $import->getArrayCopy());
+        // \MUtil\EchoOut\EchoOut::track($this->_session->uploadFileName, $import->getArrayCopy());
     }
 
     /**
      * Add the elements from the model to the bridge for file check step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepCreateTrack(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepCreateTrack(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
@@ -292,7 +291,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil_Registry_Source::$verbose = true;
+        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->request)) {
             exit;
         }
@@ -329,17 +328,17 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $form->activateJQuery();
         $form->addElement($element);
 
-        // \MUtil_Echo::track($this->loadImportData()->getArrayCopy());
+        // \MUtil\EchoOut\EchoOut::track($this->loadImportData()->getArrayCopy());
     }
 
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
+    protected function addStepElementsFor(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model, $step)
     {
         $this->displayHeader($bridge, $this->getFormTitle($step), 'h2');
 
@@ -377,10 +376,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for file check step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepFileCheck(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepFileCheck(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($this->onStartStep() && $this->isNextClicked()) {
             return;
@@ -395,7 +394,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil_Registry_Source::$verbose = true;
+        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->request)) {
             exit;
         }
@@ -425,10 +424,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for file upload step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepFileImport(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepFileImport(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Reset the data
         $this->_session->importData = null;
@@ -453,9 +452,9 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
             // Download the data oon post with filename
             if ($this->request->isPost() && $uploadFileName && $element->isValid(null)) {
-                // \MUtil_Echo::track($element->getFileName(), $element->getFileSize());
+                // \MUtil\EchoOut\EchoOut::track($element->getFileName(), $element->getFileSize());
                 if (!$element->receive()) {
-                    throw new \MUtil_Model_ModelException(sprintf(
+                    throw new \MUtil\Model\ModelException(sprintf(
                         $this->_("Error retrieving file '%s'."),
                         $element->getFileName()
                         ));
@@ -463,7 +462,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
                 $this->_session->importData = null;
                 $this->_session->uploadFileName = basename($uploadFileName);
-                // \MUtil_Echo::track($this->_session->uploadFileName);
+                // \MUtil\EchoOut\EchoOut::track($this->_session->uploadFileName);
             }
         }
     }
@@ -471,10 +470,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for file check step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepMergeTrack(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepMergeTrack(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
@@ -492,7 +491,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil_Registry_Source::$verbose = true;
+        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->request)) {
             exit;
         }
@@ -533,10 +532,10 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for file check step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepRoundMatch(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepRoundMatch(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->displayHeader($bridge, $this->_('Match the current track rounds to import rounds.'), 'h3');
 
@@ -578,8 +577,8 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 }
             }
             if ($saves) {
-                $sModel = new \MUtil_Model_TableModel('gems__surveys');
-                \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+                $sModel = new \MUtil\Model\TableModel('gems__surveys');
+                \Gems\Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
                 $sModel->saveAll($saves);
 
                 $count = $sModel->getChanged();
@@ -657,7 +656,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
      */
     protected function createForm($options = null)
     {
-        $form = new \Gems_Form($options);
+        $form = new \Gems\Form($options);
 
         return $form;
     }
@@ -665,13 +664,13 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->importModel instanceof \MUtil_Model_ModelAbstract) {
+        if (! $this->importModel instanceof \MUtil\Model\ModelAbstract) {
 
-            $model = new \MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
+            $model = new \MUtil\Model\SessionModel('import_for_' . $this->request->getControllerName());
 
             $model->set('trackFile', 'label', $this->_('A .track.txt file'),
                     'count',        1,
@@ -706,11 +705,11 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Display a header
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
+    protected function displayHeader(\MUtil\Model\Bridge\FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
         static $count = 0;
 
@@ -746,7 +745,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @return \Gems_Task_TaskRunnerBatch
+     * @return \Gems\Task\TaskRunnerBatch
      */
     protected function getImportCheckBatch()
     {
@@ -827,7 +826,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @return \Gems_Task_TaskRunnerBatch
+     * @return \Gems\Task\TaskRunnerBatch
      */
     protected function getImportCreateBatch()
     {
@@ -881,7 +880,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @return \Gems_Task_TaskRunnerBatch
+     * @return \Gems\Task\TaskRunnerBatch
      */
     protected function getImportMergeBatch()
     {
@@ -1014,13 +1013,13 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         if (! (isset($this->_session->localfile) && $this->_session->localfile)) {
             $importLoader = $this->loader->getImportLoader();
 
-            $this->_session->localfile = \MUtil_File::createTemporaryIn(
+            $this->_session->localfile = \MUtil\File::createTemporaryIn(
                     $importLoader->getTempDirectory(),
                     $this->request->getControllerName() . '_'
                     );
         }
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
     }
 
     /**
@@ -1156,7 +1155,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $this->afterSaveRouteUrl = array(
                 $this->request->getControllerKey() => $this->request->getControllerName(),
                 $this->request->getActionKey()     => $this->routeAction,
-                \MUtil_Model::REQUEST_ID           => $trackId,
+                \MUtil\Model::REQUEST_ID           => $trackId,
                 );
         }
 
@@ -1173,7 +1172,7 @@ class ImportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         if (2 == $this->currentStep) {
             return true;
         }
-        // Note we use an MUtil_Form
+        // Note we use an \MUtil\Form
         return $this->_form->isValid($this->formData, $this->disableValidatorTranslation);
     }
 }

@@ -36,7 +36,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
      */
     protected function _getTokenMock($fieldData)
     {
-        $respondentTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respondentTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -44,7 +44,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
                 ->method('getCodeFields')
                 ->will($this->returnValue($fieldData));
 
-        $token = $this->getMockBuilder('Gems_Tracker_Token')
+        $token = $this->getMockBuilder('\\Gems\\Tracker\\Token')
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -58,11 +58,11 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
     /**
      *
      * @param type $fields
-     * @return \Gems_Tracker_Engine_AnyStepEngine
+     * @return \Gems\Tracker\Engine\AnyStepEngine
      */
     protected function _getEngineMock($fieldCodes)
     {
-        $trackEngine = $this->getMockBuilder('Gems_Tracker_Engine_AnyStepEngine')
+        $trackEngine = $this->getMockBuilder('\\Gems\\Tracker\\Engine\\AnyStepEngine')
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -93,7 +93,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $trackEngine = $this->_getEngineMock($fieldCodes);
-        $tracker     = $this->getMockBuilder('Gems_Tracker')
+        $tracker     = $this->getMockBuilder('\\Gems\\Tracker')
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -128,7 +128,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $trackEngine = $this->_getEngineMock($fieldCodes);
-        $tracker     = $this->getMockBuilder('Gems_Tracker')
+        $tracker     = $this->getMockBuilder('\\Gems\\Tracker')
                 ->disableOriginalConstructor()
                 ->getMock();
 

@@ -1,9 +1,9 @@
 <?php
 
-class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
+class ExtraMapTest extends \Gems\Test\DbTestAbstract {
     /**
      *
-     * @var \Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     * @var \Gems\Tracker\Source\LimeSurvey1m9FieldMap
      */
     protected $fieldmap;
 
@@ -36,7 +36,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
         $this->cache    = $cache;
 
-        $this->fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
+        $this->fieldmap = new \Gems\Tracker\Source\LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
 
     }
 
@@ -78,7 +78,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
     public function testFieldMapFull() {
         // Create a simple array model to apply to fieldmap to
         $array = [];
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $this->fieldmap->applyToModel($model);
 
         foreach($model->getItemNames() as $name) {
@@ -96,7 +96,7 @@ class Gems_Tracker_Source_ExtraMapTest extends \Gems_Test_DbTestAbstract {
     public function testGetQuestionInformation() {
         // Create a simple array model to apply to fieldmap to
         $array = [];
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $questionInfo = $this->fieldmap->getQuestionInformation();
 
         // To update the stored fieldmap, uncomment the following if you know what you are doing

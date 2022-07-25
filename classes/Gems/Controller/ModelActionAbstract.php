@@ -7,11 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems\Controller;
+
 /**
- * Extends the standard \MUtil_Controller_ModelActionAbstract with parameters
+ * Extends the standard \MUtil\Controller\ModelActionAbstract with parameters
  * and functions for working with loader and menu items.
  *
  * @package    Gems
@@ -20,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_ModelActionAbstract
+abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
 {
     /**
      *
@@ -30,26 +31,26 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
     /**
      *
      * @param mixed $options
-     * @return \Gems_Form
+     * @return \Gems\Form
      */
     protected function createForm($options = array()): \Zend_Form
     {
@@ -60,7 +61,7 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
         if (!isset($options['role'])) {
             $options['role'] = 'form';
         }
-        $form = new \Gems_Form($options);
+        $form = new \Gems\Form($options);
 
         return $form;
     }
@@ -77,7 +78,7 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
 
             if ($parentItem = $currentItem->getParent()) {
                 // Add only if not toplevel.
-                if (($parentItem instanceof \Gems_Menu_SubMenuItem) && $parentItem->has('controller')) {
+                if (($parentItem instanceof \Gems\Menu\SubMenuItem) && $parentItem->has('controller')) {
                     $key = $parentItem->get('controller') . '.' . $parentItem->get('action');
                     if ($parentLabel) {
                         if (true === $parentLabel) {
@@ -122,7 +123,7 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
 
     protected function findAllowedMenuItem($action)
     {
-        $actions = \MUtil_Ra::args(func_get_args());
+        $actions = \MUtil\Ra::args(func_get_args());
         $controller = $this->_getParam('controller');
 
         foreach ($actions as $action) {
@@ -139,13 +140,13 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
      *
      * Overrule this function if the last item in the page title
      * should be something other than te value of
-     * \MUtil_Model::REQUEST_ID.
+     * \MUtil\Model::REQUEST_ID.
      *
      * @return mixed
      */
     public function getInstanceId()
     {
-        if ($id = $this->_getParam(\MUtil_Model::REQUEST_ID)) {
+        if ($id = $this->_getParam(\MUtil\Model::REQUEST_ID)) {
             return $id;
         }
     }
@@ -200,7 +201,7 @@ abstract class Gems_Controller_ModelActionAbstract extends \MUtil_Controller_Mod
     public function initHtml($reset = false)
     {
         if (! $this->html) {
-            \Gems_Html::init();
+            \Gems\Html::init();
         }
 
         parent::initHtml($reset);

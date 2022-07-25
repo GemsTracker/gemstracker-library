@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Menu;
 
 /**
  * ParameterSource is a central class for setting menu parameters.
@@ -22,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Menu_ParameterSource extends \ArrayObject implements \Gems_Menu_ParameterSourceInterface
+class ParameterSource extends \ArrayObject implements \Gems\Menu\ParameterSourceInterface
 {
     /**
      * Helper function to set more than one array key to the same value
@@ -50,7 +51,7 @@ class Gems_Menu_ParameterSource extends \ArrayObject implements \Gems_Menu_Param
      */
     public function getMenuParameter($name, $default)
     {
-        // \MUtil_Echo::track($name, \MUtil_Lazy::raise($this->offsetGet($name)));
+        // \MUtil\EchoOut\EchoOut::track($name, \MUtil\Lazy::raise($this->offsetGet($name)));
         if ($this->offsetExists($name)) {
             return $this->offsetGet($name);
         } else {
@@ -60,60 +61,60 @@ class Gems_Menu_ParameterSource extends \ArrayObject implements \Gems_Menu_Param
 
     public function setAppointmentId($appointmentId)
     {
-        $this->_setMulti($appointmentId, \Gems_Model::APPOINTMENT_ID, 'gap_id_appointment');
+        $this->_setMulti($appointmentId, \Gems\Model::APPOINTMENT_ID, 'gap_id_appointment');
 
         return $this;
     }
 
     public function setPatient($patientNumber, $organizationId)
     {
-        $this->_setMulti($patientNumber,  \MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr');
-        $this->_setMulti($organizationId, \MUtil_Model::REQUEST_ID2, 'gr2o_id_organization');
+        $this->_setMulti($patientNumber,  \MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->_setMulti($organizationId, \MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $this;
     }
 
     public function setRequestId($requestId)
     {
-        $this->_setMulti($requestId, \MUtil_Model::REQUEST_ID);
+        $this->_setMulti($requestId, \MUtil\Model::REQUEST_ID);
 
         return $this;
     }
 
     public function setRespondentTrackId($respTrackId)
     {
-        $this->_setMulti($respTrackId, \Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track');
+        $this->_setMulti($respTrackId, \Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track');
 
         return $this;
     }
 
     public function setRoundId($roundId)
     {
-        $this->_setMulti($roundId, \Gems_Model::ROUND_ID, 'gro_id_round');
+        $this->_setMulti($roundId, \Gems\Model::ROUND_ID, 'gro_id_round');
 
         return $this;
     }
 
     public function setSurveyId($surveyId)
     {
-        $this->_setMulti($surveyId, \Gems_Model::SURVEY_ID);
+        $this->_setMulti($surveyId, \Gems\Model::SURVEY_ID);
 
         return $this;
     }
 
     public function setTokenId($tokenId)
     {
-        $this->_setMulti($tokenId, \MUtil_Model::REQUEST_ID, 'gto_id_token');
+        $this->_setMulti($tokenId, \MUtil\Model::REQUEST_ID, 'gto_id_token');
 
-        // Signal type of \MUtil_Model::REQUEST_ID
-        $this->offsetSet(\Gems_Model::ID_TYPE, 'token');
+        // Signal type of \MUtil\Model::REQUEST_ID
+        $this->offsetSet(\Gems\Model::ID_TYPE, 'token');
 
         return $this;
     }
 
     public function setTrackId($trackId)
     {
-        $this->_setMulti($trackId, \Gems_Model::TRACK_ID, 'gtr_id_track');
+        $this->_setMulti($trackId, \Gems\Model::TRACK_ID, 'gtr_id_track');
 
         return $this;
     }

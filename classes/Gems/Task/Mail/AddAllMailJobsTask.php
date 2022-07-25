@@ -22,7 +22,7 @@ namespace Gems\Task\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.7.3
  */
-class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
+class AddAllMailJobsTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -32,7 +32,7 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -66,7 +66,7 @@ class AddAllMailJobsTask extends \MUtil_Task_TaskAbstract
                 CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";
 
         $jobs = $this->db->fetchAll($sql);
-        // \MUtil_Echo::track($sql, $jobs);
+        // \MUtil\EchoOut\EchoOut::track($sql, $jobs);
 
         $batch = $this->getBatch();
         if ($jobs) {

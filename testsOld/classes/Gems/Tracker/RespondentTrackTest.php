@@ -1,13 +1,13 @@
 <?php
-class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
+class RespondentTrackTest extends \Gems\Test\DbTestAbstract
 {
     /**
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
     /**
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $engine;
 
@@ -75,7 +75,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
 
         $actual = $respondentTrack->getCodeFields();
 
-        $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
+        $date = new MUtil\Date('2010-10-08', 'yyyy-MM-dd');
         $expected = array(
             'code' => 'test',
             'datecode' => $date->toString('dd MMM yyyy'),
@@ -98,9 +98,9 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     public function testGetFields()
     {
         $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
-        $respondentTrack = new \Gems_Tracker_RespondentTrack($trackData);
+        $respondentTrack = new \Gems\Tracker\RespondentTrack($trackData);
         $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
-        $date = new MUtil_Date('2010-10-08', 'yyyy-MM-dd');
+        $date = new MUtil\Date('2010-10-08', 'yyyy-MM-dd');
         $expected = array(
             'f__1' => 'test',
             'code' => 'test',
@@ -121,7 +121,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
 
-        $date = new \MUtil_Date('2010-11-09', 'yyyy-MM-dd');
+        $date = new \MUtil\Date('2010-11-09', 'yyyy-MM-dd');
         $expected = array(
             'f__1' => 'newvalue',
             'code' => 'newvalue',
@@ -162,15 +162,15 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         return [
             'date' => [
                 '2019-03-22',
-                new \MUtil_Date('2019-03-22')
+                new \MUtil\Date('2019-03-22')
             ],
             'datetime' => [
                 '2019-03-23 15:45:59',
-                new \MUtil_Date('2019-03-23')
+                new \MUtil\Date('2019-03-23')
             ],
             'dateshorttime' => [
                 '2019-03-24 15:45',
-                new \MUtil_Date('2019-03-24')
+                new \MUtil\Date('2019-03-24')
             ]
         ];
     }
@@ -184,7 +184,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
         $expected = $respondentTrack->getFieldData();
         $expected['a__1'] = 1;
-        $expected['f__6'] = new \MUtil_Date('2017-10-01', 'yyyy-MM-dd');
+        $expected['f__6'] = new \MUtil\Date('2017-10-01', 'yyyy-MM-dd');
         $expected['f__6__manual'] = 0;
         $actual   = $respondentTrack->setFieldData(array('a__1' => 1));
 
@@ -252,16 +252,16 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
     public function testCreateTrackDefaultFields()
     {
         $trackData = [
-            'gr2t_start_date' => new \MUtil_Date('2000-01-01')
+            'gr2t_start_date' => new \MUtil\Date('2000-01-01')
             ];
-        \MUtil_Batch_BatchAbstract::unload('tmptrack3');
+        \MUtil\Batch\BatchAbstract::unload('tmptrack3');
         $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1, $trackData);
 
         $actual = $expected = $respondentTrack->getFieldData();
         $expected['f__1'] = $expected['code'] = 'default';
 
         $this->assertArrayWithDateMatch($expected, $actual, '', 1, 0);
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
     }
     
     /**
@@ -280,7 +280,7 @@ class Gems_Tracker_RespondentTrackTest extends \Gems_Test_DbTestAbstract
             'gr2t_id_track'        => 1,
             'gr2t_id_user'         => '1234',
             'gr2t_id_organization' => 1,
-            'gr2t_start_date'      => new \MUtil_Date('2000-01-01')
+            'gr2t_start_date'      => new \MUtil\Date('2000-01-01')
         ] + $data;
         
         $newData = $model->save($data);

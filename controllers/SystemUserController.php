@@ -17,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.8.6 02-Sep-2019 17:29:51
  */
-class SystemUserController extends \Gems_Default_SystemUserAction
+class SystemUserController extends \Gems\Actions\SystemUserAction
 {
 
 }

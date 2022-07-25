@@ -16,7 +16,7 @@ namespace Gems\Snippets\Tracker;
  *
  * A snippet is a piece of html output that is reused on multiple places in the code.
  *
- * Variables are intialized using the {@see \MUtil_Registry_TargetInterface} mechanism.
+ * Variables are intialized using the {@see \MUtil\Registry\TargetInterface} mechanism.
  *
  * @package    Gems
  * @subpackage Snippets
@@ -24,7 +24,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
+class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -70,11 +70,11 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $tData = $this->util->getTokenData();
 
@@ -82,7 +82,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
 
-        $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iif(
+        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
                         $bridge->gro_id_round,
                         $bridge->row_class,
                         array($bridge->row_class , ' inserted')
@@ -93,10 +93,10 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         // Columns
         $bridge->addSortable('gsu_survey_name')
-                ->append(\MUtil_Lazy::iif(
+                ->append(\MUtil\Lazy::iif(
                         $bridge->gro_icon_file,
-                        \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                            \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))))
+                        \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                            \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))))
                         ));
         $bridge->addSortable('gto_round_description');
         $bridge->addSortable('ggp_name');
@@ -120,7 +120,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -129,7 +129,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $table->class = $this->class;
         $this->applyHtmlAttributes($table);
         $this->class = false;
-        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'), $table);
+        $tableContainer = \MUtil\Html::create()->div(array('class' => 'table-container'), $table);
 
         return $tableContainer;
     }
@@ -141,7 +141,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -154,7 +154,7 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
             } elseif (isset($this->trackData['gto_id_respondent_track'])) {
                 $this->respondentTrackId = $this->trackData['gto_id_respondent_track'];
 
-            } elseif ($this->request && ($respondentTrackId = $this->request->getParam(\Gems_Model::RESPONDENT_TRACK))) {
+            } elseif ($this->request && ($respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK))) {
                 $this->respondentTrackId = $respondentTrackId;
             }
         }
@@ -168,9 +168,9 @@ class TrackTokenOverviewSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         $model->setFilter(array('gto_id_respondent_track' => $this->respondentTrackId));
 

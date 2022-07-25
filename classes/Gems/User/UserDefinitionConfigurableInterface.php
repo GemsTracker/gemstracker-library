@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User;
 
 /**
  *
@@ -18,14 +19,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-interface Gems_User_UserDefinitionConfigurableInterface
+interface UserDefinitionConfigurableInterface
 {
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param \MUtil_Model_ModelAbstract $orgModel
+     * @param \MUtil\Model\ModelAbstract $orgModel
      */
-    public function addConfigFields(\MUtil_Model_ModelAbstract $orgModel);
+    public function addConfigFields(\MUtil\Model\ModelAbstract $orgModel);
 
     /**
      * Should return the number of changed records for the save performed

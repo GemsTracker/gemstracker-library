@@ -19,7 +19,7 @@ class AppointmentTranslatorTest extends ControllerTestAbstract
 {
 
     /**
-     * @var \Gems_Model_Translator_AppointmentTranslator
+     * @var \Gems\Model\Translator\AppointmentTranslator
      */
     protected $object;
 
@@ -48,7 +48,7 @@ class AppointmentTranslatorTest extends ControllerTestAbstract
     protected function fixUser()
     {
         // Fix user
-        $currentUser = $this->getMockBuilder('Gems_User_User')
+        $currentUser = $this->getMockBuilder('\\Gems\\User\\User')
                 ->disableOriginalConstructor()
                 ->getMock();
         $currentUser->expects($this->any())
@@ -58,7 +58,7 @@ class AppointmentTranslatorTest extends ControllerTestAbstract
                 ->method('getUserId')
                 ->will($this->returnValue(1));
 
-        \GemsEscort::getInstance()->currentUser = $currentUser;
+        \Gems\Escort::getInstance()->currentUser = $currentUser;
         $this->currentUser                      = $currentUser;
     }
 

@@ -4,7 +4,6 @@
  * Unit test bootstrap
  *
  * @author Michiel Rook <michiel@touchdownconsulting.nl>
- * @version $Id: bootstrap.php 361 2011-07-28 14:58:34Z michiel $
  * @package Gems
  */
 //ini_set('xdebug.max_nesting_level', 500);

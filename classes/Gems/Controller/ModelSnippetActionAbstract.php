@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Controller;
+
 /**
- * Class contains Gems specific adaptations to parent class.
+ * Class contains \Gems specific adaptations to parent class.
  *
  * @package    Gems
  * @subpackage Controller
@@ -18,10 +20,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Controller_ModelSnippetActionAbstract
+abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
-     * Gems only parameters used for the autofilter action. Can be overruled
+     * \Gems only parameters used for the autofilter action. Can be overruled
      * by setting $this->autofilterParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -40,7 +42,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the create action. Can be overruled
+     * \Gems only parameters used for the create action. Can be overruled
      * by setting $this->createParameters or $this->createEditParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -51,7 +53,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the deactivate action. Can be overruled
+     * \Gems only parameters used for the deactivate action. Can be overruled
      * by setting $this->deactivateParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -64,7 +66,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the delete action. Can be overruled
+     * \Gems only parameters used for the delete action. Can be overruled
      * by setting $this->deleteParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -77,7 +79,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the edit action. Can be overruled
+     * \Gems only parameters used for the edit action. Can be overruled
      * by setting $this->editParameters or $this->createEditParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -88,7 +90,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the export action. Can be overruled
+     * \Gems only parameters used for the export action. Can be overruled
      * by setting $this->editParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -98,7 +100,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         ];
 
     /**
-     * Gems only parameters used for the import action. Can be overruled
+     * \Gems only parameters used for the import action. Can be overruled
      * by setting $this->inmportParameters
      *
      * @var array Mixed key => value array for snippet initializPdfation
@@ -111,7 +113,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
         );
 
     /**
-     * Gems only parameters used for the deactivate action. Can be overruled
+     * \Gems only parameters used for the deactivate action. Can be overruled
      * by setting $this->deactivateParameters
      *
      * @var array Mixed key => value array for snippet initialization
@@ -125,7 +127,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     public $accesslog;
 
@@ -152,7 +154,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
     /**
      *
-     * @var GemsEscort
+     * @var \Gems\Escort
      */
     public $escort;
 
@@ -177,13 +179,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 
@@ -229,7 +231,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
@@ -346,8 +348,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                     // Export type is needed, use most basic type
                     $post['type'] = 'CsvExport';
                 }
-                $batch->addTask('Export_ExportCommand', $post['type'], 'addExport', $post);
-                $batch->addTask('addTask', 'Export_ExportCommand', $post['type'], 'finalizeFiles', $post);
+                $batch->addTask('Export\\ExportCommand', $post['type'], 'addExport', $post);
+                $batch->addTask('addTask', 'Export\\ExportCommand', $post['type'], 'finalizeFiles', $post);
 
                 $export = $this->loader->getExport()->getExport($post['type']);
                 if ($snippet = $export->getHelpSnippet()) {
@@ -357,7 +359,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 $batch->autoStart = true;
             }
 
-            if (\MUtil_Console::isConsole()) {
+            if (\MUtil\Console::isConsole()) {
                 // This is for unit tests, if we want to be able to really export from
                 // cli we need to place the exported file somewhere.
                 // This is out of scope for now.
@@ -368,7 +370,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
                 $controller = $this;
 
                 if ($batch->isFinished()) {
-                    /*\MUtil_Echo::track('finished');
+                    /*\MUtil\EchoOut\EchoOut::track('finished');
                     $file = $batch->getSessionVariable('file');
                     if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
                         // Forward to download action
@@ -419,11 +421,11 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      *
      * @param string $action
      * @param string $action2
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function firstAllowedMenuItem($action, $action2 = null)
     {
-        $actions = \MUtil_Ra::args(func_get_args());
+        $actions = \MUtil\Ra::args(func_get_args());
         $controller = $this->_getParam('controller');
 
         foreach ($actions as $action) {
@@ -536,13 +538,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      */
     protected function getExportReturnLink()
     {
-       return \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
+       return \MUtil\Html\UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
     }
 
     /**
      * Get an Importer object for this actions
      *
-     * @return \MUtil_Model_Importer
+     * @return \MUtil\Model\Importer
      */
     public function getImporter()
     {
@@ -565,7 +567,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     /**
      * Get the possible translators for the import snippet.
      *
-     * @return \MUtil_Model_ModelTranslatorInterface[]
+     * @return \MUtil\Model\ModelTranslatorInterface[]
      */
     public function getImportTranslators()
     {
@@ -587,13 +589,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      *
      * Overrule this function if the last item in the page title
      * should be something other than te value of
-     * \MUtil_Model::REQUEST_ID.
+     * \MUtil\Model::REQUEST_ID.
      *
      * @return mixed
      */
     public function getInstanceId()
     {
-        if ($id = $this->_getParam(\MUtil_Model::REQUEST_ID)) {
+        if ($id = $this->_getParam(\MUtil\Model::REQUEST_ID)) {
             return $id;
         }
     }
@@ -601,9 +603,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     /**
      * Returns a session based message store for adding messages to.
      *
-     * @return Mezzio\Flash\FlashMessagesInterface
+     * @return \Mezzio\Flash\FlashMessagesInterface
      */
-    public function getMessenger(): Mezzio\Flash\FlashMessagesInterface
+    public function getMessenger(): \Mezzio\Flash\FlashMessagesInterface
     {
         if (! $this->messenger) {
             $this->setMessenger($this->loader->getMessenger());
@@ -744,7 +746,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
     public function initHtml(bool $reset = false): void
     {
         if (! $this->html) {
-            \Gems_Html::init();
+            \Gems\Html::init();
         }
 
         parent::initHtml($reset);
@@ -773,7 +775,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Control
      * Set the session based message store.
      *
      * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
-     * @return \MUtil_Controller_Action
+     * @return \MUtil\Controller\Action
      */
     public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger): self
     {

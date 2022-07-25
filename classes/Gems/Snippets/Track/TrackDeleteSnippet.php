@@ -20,11 +20,11 @@ namespace Gems\Snippets\Track;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract {
+class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract {
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -50,11 +50,11 @@ class TrackDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Tracker_Model_TrackModel) {
+        if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
             $this->model = $this->loader->getTracker()->getTrackModel();
         }
 
@@ -67,13 +67,13 @@ class TrackDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        if ($model instanceof \Gems_Tracker_Model_TrackModel) {
+        if ($model instanceof \Gems\Tracker\Model\TrackModel) {
             $this->useCount = $model->getStartCount($this->trackId);
 
             if ($this->useCount) {

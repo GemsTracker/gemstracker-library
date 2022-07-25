@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_Mail extends \MUtil_Mail
+class Mail extends \MUtil\Mail
 {
     const MAIL_NO_ENCRYPT = 0;
     const MAIL_SSL = 1;
@@ -27,7 +29,7 @@ class Gems_Mail extends \MUtil_Mail
     /**
      * Mail character set
      *
-     * For Gems we use utf-8 as default instead op iso-8859-1
+     * For \Gems we use utf-8 as default instead op iso-8859-1
      * @var string
      */
     protected $_charset = 'utf-8';
@@ -39,12 +41,12 @@ class Gems_Mail extends \MUtil_Mail
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
-     * @var \GemsEscort
+     * @var \Gems\Escort
      */
     public $escort = null;
 
@@ -56,13 +58,13 @@ class Gems_Mail extends \MUtil_Mail
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -96,9 +98,9 @@ class Gems_Mail extends \MUtil_Mail
             }
             $email = $this->getFrom();
             if (! $email) {
-                throw new \Gems_Exception_Coding('Adding bounce To address while From is not set.');
+                throw new \Gems\Exception\Coding('Adding bounce To address while From is not set.');
             }
-            if (($this->currentUser instanceof \Gems_User_User) && $this->currentUser->hasEmailAddress()) {
+            if (($this->currentUser instanceof \Gems\User\User) && $this->currentUser->hasEmailAddress()) {
                 $email = $this->currentUser->getEmailAddress();
             }
         }
@@ -133,7 +135,7 @@ class Gems_Mail extends \MUtil_Mail
             // Always set cache, se we know when not to check for this row.
             $serverData = $this->db->fetchRow($sql, $from);
 
-            // \MUtil_Echo::track($serverData);
+            // \MUtil\EchoOut\EchoOut::track($serverData);
 
             if (isset($serverData['gms_server'])) {
                 $options = array();
@@ -188,14 +190,14 @@ class Gems_Mail extends \MUtil_Mail
      * Set's a html template in which the message content is placed.
      *
      * @param string $template
-     * @return \MUtil_Mail \MUtil_Mail (continuation pattern)
+     * @return \MUtil\Mail \MUtil\Mail (continuation pattern)
      */
     public function setHtmlTemplate($template)
     {
         $matches = [];
         preg_match_all('/src\\s?=\\s?[\'\"]([^\'\"]+)[\'\"]/', $template, $matches);
 
-        // \MUtil_Echo::track($matches[1]);
+        // \MUtil\EchoOut\EchoOut::track($matches[1]);
 
         // {replaceWithSiteUrl}
         foreach (array_unique($matches[1]) as $url) {
@@ -224,7 +226,7 @@ class Gems_Mail extends \MUtil_Mail
      * Set the template using style as basis
      *
      * @param string $style
-     * @return \MUtil_Mail (continuation pattern)
+     * @return \MUtil\Mail (continuation pattern)
      */
     public function setTemplateStyle($style = null)
     {
@@ -239,7 +241,7 @@ class Gems_Mail extends \MUtil_Mail
     public function send($transport = null) {
         $from = $this->getFrom();
         if (empty($from)) {
-            throw new \Gems_Exception('No sender email set!');
+            throw new \Gems\Exception('No sender email set!');
         }
 
         // Get the transport method when it was not set

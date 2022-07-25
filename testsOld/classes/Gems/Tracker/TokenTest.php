@@ -1,19 +1,21 @@
 <?php
 
 /**
- * Description of Gems_Tracker_TokenTest
+ * Description of \Gems\Tracker\TokenTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
+namespace Gems\Tracker;
+
+class TokenTest extends \Gems\Test\DbTestAbstract
 {
     /**
-     * @var Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
     /**
-     * @var Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -26,7 +28,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
         parent::setUp();
 
         $util = $this->loader->getUtil();
-        Zend_Registry::getInstance()->set('util', $util);
+        \Zend_Registry::getInstance()->set('util', $util);
         $this->tracker = $this->loader->getTracker();
         
         $this->token = $this->tracker->getToken(array('gto_id_token' => 500));
@@ -54,8 +56,8 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::cacheGet
-     * @covers Gems_Tracker_Token::cacheSet
+     * @covers \Gems\Tracker\Token::cacheGet
+     * @covers \Gems\Tracker\Token::cacheSet
      */
     public function testCacheSetGet()
     {
@@ -64,7 +66,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::cacheHas
+     * @covers \Gems\Tracker\Token::cacheHas
      */
     public function testCacheHas()
     {
@@ -72,7 +74,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::cacheReset
+     * @covers \Gems\Tracker\Token::cacheReset
      */
     public function testCacheReset()
     {
@@ -82,7 +84,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::getReceptionCode
+     * @covers \Gems\Tracker\Token::getReceptionCode
      */
     public function testGetReceptionCode()
     {
@@ -95,7 +97,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::getRespondentId
+     * @covers \Gems\Tracker\Token::getRespondentId
      * @todo   Implement testGetRespondentId().
      */
     public function testGetRespondentId()
@@ -106,11 +108,11 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
             // This one does not exists and should throw an error
             $this->tracker->getToken('2')->getRespondentId();
         } catch (Exception $e) {}
-        $this->assertInstanceOf('Gems_Exception', $e, 'Token not loaded correctly');
+        $this->assertInstanceOf('\\Gems\\Exception', $e, 'Token not loaded correctly');
     }
 
     /**
-     * @covers Gems_Tracker_Token::isCurrentlyValid
+     * @covers \Gems\Tracker\Token::isCurrentlyValid
      * @dataProvider providerTokenValid
      */
     public function testIsCurrentlyValid($data, $expected)
@@ -120,7 +122,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
     
     /**
-     * @covers Gems_Tracker_Token::isExpired
+     * @covers \Gems\Tracker\Token::isExpired
      * @dataProvider providerTokenValid
      */
     public function testIsExpired($data, $expected)
@@ -130,7 +132,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
     
     /**
-     * @covers Gems_Tracker_Token::isNotYetValid
+     * @covers \Gems\Tracker\Token::isNotYetValid
      * @dataProvider providerTokenValid
      */
     public function testIsNotYetValid($data, $expected)
@@ -141,7 +143,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     
     public function providerTokenValid() 
     {
-        $now = new MUtil_Date();
+        $now = new MUtil\Date();
         $tomorrow = clone $now;
         $yesterday = clone $now;
         $tomorrow->addDay(1);
@@ -175,7 +177,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
     }
 
     /**
-     * @covers Gems_Tracker_Token::setReceptionCode
+     * @covers \Gems\Tracker\Token::setReceptionCode
      * @todo   Implement testSetReceptionCode().
      */
     public function testSetReceptionCode()
@@ -184,7 +186,7 @@ class Gems_Tracker_TokenTest extends Gems_Test_DbTestAbstract
         $receptionCode = 'STOP';
         
         // Create a stub for the survey class, it should be tested on it's own
-        $survey = $this->getMockBuilder('Gems_Tracker_Survey')
+        $survey = $this->getMockBuilder('\\Gems\\Tracker\\Survey')
                       ->disableOriginalConstructor()
                       ->getMock();
         $survey->expects($this->any())

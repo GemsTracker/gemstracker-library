@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 201 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model;
 
 use MUtil\Translate\TranslateableTrait;
 
@@ -24,7 +25,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
+class DbaModel extends \MUtil\Model\ArrayModelAbstract
 {
     use TranslateableTrait;
 
@@ -74,26 +75,26 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
         $this->directories = $directories;
 
         //Grab translate object from the Escort
-        $this->translate = \GemsEscort::getInstance()->translate;
+        $this->translate = \Gems\Escort::getInstance()->translate;
         $this->initTranslateable();
 
-        $this->set('group',       'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('name',        'key', true, 'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('type',        'maxlength', 40, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('order',       'decimals', 0, 'default', self::DEFAULT_ORDER, 'maxlength', 6, 'type', \MUtil_Model::TYPE_NUMERIC);
-        $this->set('defined',     'type', \MUtil_Model::TYPE_NUMERIC);
-        $this->set('exists',      'type', \MUtil_Model::TYPE_NUMERIC);
-        $this->set('state',       'type', \MUtil_Model::TYPE_NUMERIC);
-        /*$this->set('path',        'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('fullPath',    'maxlength', 255, 'type', \MUtil_Model::TYPE_STRING);
-        $this->set('fileName',    'maxlength', 100, 'type', \MUtil_Model::TYPE_STRING);*/
-        $this->set('script',      'type', \MUtil_Model::TYPE_STRING);
-        $this->set('lastChanged', 'type', \MUtil_Model::TYPE_DATETIME);
-        $this->set('location',    'maxlength', 12, 'type', \MUtil_Model::TYPE_STRING);
+        $this->set('group',       'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);
+        $this->set('name',        'key', true, 'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);
+        $this->set('type',        'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);
+        $this->set('order',       'decimals', 0, 'default', self::DEFAULT_ORDER, 'maxlength', 6, 'type', \MUtil\Model::TYPE_NUMERIC);
+        $this->set('defined',     'type', \MUtil\Model::TYPE_NUMERIC);
+        $this->set('exists',      'type', \MUtil\Model::TYPE_NUMERIC);
+        $this->set('state',       'type', \MUtil\Model::TYPE_NUMERIC);
+        /*$this->set('path',        'maxlength', 255, 'type', \MUtil\Model::TYPE_STRING);
+        $this->set('fullPath',    'maxlength', 255, 'type', \MUtil\Model::TYPE_STRING);
+        $this->set('fileName',    'maxlength', 100, 'type', \MUtil\Model::TYPE_STRING);*/
+        $this->set('script',      'type', \MUtil\Model::TYPE_STRING);
+        $this->set('lastChanged', 'type', \MUtil\Model::TYPE_DATETIME);
+        $this->set('location',    'maxlength', 12, 'type', \MUtil\Model::TYPE_STRING);
         $this->set('state',       'multiOptions', array(
-            \Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
-            \Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
-            \Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
+            \Gems\Model\DbaModel::STATE_CREATED => $this->_('created'),
+            \Gems\Model\DbaModel::STATE_DEFINED => $this->_('not created'),
+            \Gems\Model\DbaModel::STATE_UNKNOWN => $this->_('unknown')));
     }
 
     private function _getGroupName($name)
@@ -189,8 +190,8 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
                             /*'path'        => $path,
                             'fullPath'    => $file->getPathname(),
                             'fileName'    => $file->getFilename(),*/
-                            // \MUtil_Lazy does not serialize
-                            // 'script'      => \MUtil_Lazy::call('file_get_contents', $file->getPathname()),
+                            // \MUtil\Lazy does not serialize
+                            // 'script'      => \MUtil\Lazy::call('file_get_contents', $file->getPathname()),
                             'script'      => $fileContent,
                             'lastChanged' => $file->getMTime(),
                             'location'    => $location,
@@ -255,7 +256,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     /**
      *
      * @param \Zend_Db_Adapter_Abstract $db
-     * @throws Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Adapter_Exception
      */
     public function listTablesViews($db)
     {
@@ -302,7 +303,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
     {
         $results = array();
         if ($data['script']) {
-            $queries = \MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
+            $queries = \MUtil\Parser\Sql\WordsParser::splitStatements($data['script'], false);
             $qCount  = count($queries);
 
             $results[] = sprintf($this->_('Executed %2$s creation script %1$s:'), $data['name'], $this->_(strtolower($data['type'])));
@@ -355,7 +356,7 @@ class Gems_Model_DbaModel extends \MUtil_Model_ArrayModelAbstract
      * Set the text encoding of the db definition files
      *
      * @param string $encoding
-     * @return \Gems_Model_DbaModel (continuation pattern)
+     * @return \Gems\Model\DbaModel (continuation pattern)
      */
     public function setFileEncoding($encoding)
     {

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems;
 
 use Gems\Event\RespondentChangedEventInterface;
 
@@ -21,7 +22,7 @@ use Gems\Event\RespondentChangedEventInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
+class Events extends \Gems\Loader\TargetLoaderAbstract
 {
     const RESPONDENT_CHANGE_EVENT       = 'Respondent/Change';
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
@@ -37,25 +38,25 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      * Each event type must implement an event class or interface derived
      * from EventInterface specified in this array.
      *
-     * @see \Gems_Event_EventInterface
+     * @see \Gems\Event\EventInterface
      *
      * @var array containing eventType => eventClass for all event classes
      */
     protected $_eventClasses = array(
         self::RESPONDENT_CHANGE_EVENT       => 'Gems\\Event\\RespondentChangedEventInterface',
-        self::TRACK_CALCULATION_EVENT       => 'Gems_Event_TrackCalculationEventInterface',
-        self::TRACK_COMPLETION_EVENT        => 'Gems_Event_TrackCompletedEventInterface',
+        self::TRACK_CALCULATION_EVENT       => '\\Gems\\Event\\TrackCalculationEventInterface',
+        self::TRACK_COMPLETION_EVENT        => '\\Gems\\Event\\TrackCompletedEventInterface',
         self::TRACK_BEFOREFIELDUPDATE_EVENT => 'Gems\\Event\\TrackBeforeFieldUpdateEventInterface',
-        self::TRACK_FIELDUPDATE_EVENT       => 'Gems_Event_TrackFieldUpdateEventInterface',
-        self::ROUND_CHANGED_EVENT           => 'Gems_Event_RoundChangedEventInterface',
-        self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface',
-        self::SURVEY_COMPLETION_EVENT       => 'Gems_Event_SurveyCompletedEventInterface',
-        self::SURVEY_DISPLAY_EVENT          => 'Gems_Event_SurveyDisplayEventInterface',
+        self::TRACK_FIELDUPDATE_EVENT       => '\\Gems\\Event\\TrackFieldUpdateEventInterface',
+        self::ROUND_CHANGED_EVENT           => '\\Gems\\Event\\RoundChangedEventInterface',
+        self::SURVEY_BEFORE_ANSWERING_EVENT => '\\Gems\\Event\\SurveyBeforeAnsweringEventInterface',
+        self::SURVEY_COMPLETION_EVENT       => '\\Gems\\Event\\SurveyCompletedEventInterface',
+        self::SURVEY_DISPLAY_EVENT          => '\\Gems\\Event\\SurveyDisplayEventInterface',
     );
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -63,7 +64,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
      * Lookup event class for an event type. This class or interface should at the very least
      * implement the EventInterface.
      *
-     * @see \Gems_Event_EventInterface
+     * @see \Gems\Event\EventInterface
      *
      * @param string $eventType The type (i.e. lookup directory) to find the associated class for
      * @return string Class/interface name associated with the type
@@ -73,7 +74,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
         if (isset($this->_eventClasses[$eventType])) {
             return $this->_eventClasses[$eventType];
         } else {
-            throw new \Gems_Exception_Coding("No event class exists for event type '$eventType'.");
+            throw new \Gems\Exception\Coding("No event class exists for event type '$eventType'.");
         }
     }
 
@@ -91,7 +92,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
             $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . 'Event' . DIRECTORY_SEPARATOR . $eventType;
         }
         $paths[''] = APPLICATION_PATH . '/events/' . strtolower($eventType);
-        // \MUtil_Echo::track($paths);
+        // \MUtil\EchoOut\EchoOut::track($paths);
 
         return $paths;
     }
@@ -121,16 +122,16 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     {
         $eventClass = $this->_getEventClass($eventType);
 
-        // \MUtil_Echo::track($eventName);
+        // \MUtil\EchoOut\EchoOut::track($eventName);
         if (! class_exists($eventName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
             $filename = APPLICATION_PATH . '/events/' . strtolower($eventType) . '/' . $eventName . '.php';
 
             if (! file_exists($filename)) {
-                throw new \Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
+                throw new \Gems\Exception\Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
             }
-            // \MUtil_Echo::track($filename);
+            // \MUtil\EchoOut\EchoOut::track($filename);
 
             include($filename);
         }
@@ -138,10 +139,10 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
         $event = new $eventName();
 
         if (! $event instanceof $eventClass) {
-            throw new \Gems_Exception_Coding("The event '$eventName' of type '$eventType' is not an instance of '$eventClass'.");
+            throw new \Gems\Exception\Coding("The event '$eventName' of type '$eventType' is not an instance of '$eventClass'.");
         }
 
-        if ($event instanceof \MUtil_Registry_TargetInterface) {
+        if ($event instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($event);
         }
 
@@ -242,7 +243,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_RoundChangedEventInterface
+     * @return \Gems\Event\RoundChangedEventInterface
      */
     public function loadRoundChangedEvent($eventName)
     {
@@ -252,7 +253,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_SurveyBeforeAnsweringEventInterface
+     * @return \Gems\Event\SurveyBeforeAnsweringEventInterface
      */
     public function loadSurveyBeforeAnsweringEvent($eventName)
     {
@@ -262,7 +263,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_SurveyCompletedEventInterface
+     * @return \Gems\Event\SurveyCompletedEventInterface
      */
     public function loadSurveyCompletionEvent($eventName)
     {
@@ -273,7 +274,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_SurveyDisplayEventInterface
+     * @return \Gems\Event\SurveyDisplayEventInterface
      */
     public function loadSurveyDisplayEvent($eventName)
     {
@@ -293,7 +294,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_TrackCalculationEventInterface
+     * @return \Gems\Event\TrackCalculationEventInterface
      */
     public function loadTrackCalculationEvent($eventName)
     {
@@ -303,7 +304,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_TrackCompletedEventInterface
+     * @return \Gems\Event\TrackCompletedEventInterface
      */
     public function loadTrackCompletionEvent($eventName)
     {
@@ -313,7 +314,7 @@ class Gems_Events extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return \Gems_Event_TrackFieldUpdateEventInterface
+     * @return \Gems\Event\TrackFieldUpdateEventInterface
      */
     public function loadTrackFieldUpdateEvent($eventName)
     {

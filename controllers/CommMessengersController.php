@@ -1,5 +1,5 @@
 <?php
 
-class CommMessengersController extends \Gems_Default_CommMessengersAction
+class CommMessengersController extends \Gems\Actions\CommMessengersAction
 {
 }

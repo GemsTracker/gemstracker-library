@@ -19,7 +19,7 @@ namespace Gems\Snippets\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 08-Jan-2020 11:50:40
  */
-class AppointmentShortSnippet extends \Gems_Snippets_Agenda_AppointmentShowSnippet
+class AppointmentShortSnippet extends \Gems\Snippets\Agenda\AppointmentShowSnippet
 {
     /**
      *
@@ -34,7 +34,7 @@ class AppointmentShortSnippet extends \Gems_Snippets_Agenda_AppointmentShowSnipp
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -58,11 +58,11 @@ class AppointmentShortSnippet extends \Gems_Snippets_Agenda_AppointmentShowSnipp
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Do nothing
     }

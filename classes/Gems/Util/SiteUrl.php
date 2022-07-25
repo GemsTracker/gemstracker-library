@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
+class SiteUrl extends \Gems\Registry\CachedArrayTargetAbstract
 {
     /**
      * @var bool When true this site is automatically blocked when created
@@ -35,7 +35,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     protected $_cacheTags = ['urlsites', 'organization', 'organizations'];
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -45,7 +45,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
     protected $logger;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -152,7 +152,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
             $model->applySettings(true, 'edit');
 
             $data = $model->loadFirst(['gsi_url' => $id]);
-            // \MUtil_Echo::track($data);
+            // \MUtil\EchoOut\EchoOut::track($data);
 
             if ($data) {
                 $data['is_new'] = false;
@@ -192,7 +192,7 @@ class SiteUrl extends \Gems_Registry_CachedArrayTargetAbstract
 
             // echo $e->getMessage() . "\n";
             // $this->logger->logError($e);
-            // \MUtil_Echo::track($e->getMessage());
+            // \MUtil\EchoOut\EchoOut::track($e->getMessage());
         }
 
         $namedOrgs = $this->util->getDbLookup()->getOrganizationsForLogin();

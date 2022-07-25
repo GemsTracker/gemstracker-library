@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
@@ -25,18 +26,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract
+class ModelItemYesNoDeleteSnippetGeneric extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

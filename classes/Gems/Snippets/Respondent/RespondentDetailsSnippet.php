@@ -20,17 +20,17 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class RespondentDetailsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbstract
+class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbstract
 {
     /**
      * Place to set the data to display
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addTableCells(\MUtil_Model_Bridge_VerticalTableBridge $bridge)
+    protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
-        $HTML = \MUtil_Html::create();
+        $HTML = \MUtil\Html::create();
 
         $bridge->caption($this->getCaption());
 
@@ -75,7 +75,7 @@ class RespondentDetailsSnippet extends \Gems_Snippets_RespondentDetailSnippetAbs
         }
         if ($this->model->has('grs_zipcode') && (! $this->currentUser->isFieldMaskedWhole('grs_zipcode'))) {
             $address[] = $bridge->grs_zipcode;
-            $address[] = $bridge->itemIf('grs_zipcode', new \MUtil_Html_Raw('&nbsp;&nbsp;'));
+            $address[] = $bridge->itemIf('grs_zipcode', new \MUtil\Html\Raw('&nbsp;&nbsp;'));
         }
         if ($this->model->has('grs_city') && (! $this->currentUser->isFieldMaskedWhole('grs_city'))) {
             $address[] = $bridge->grs_city;

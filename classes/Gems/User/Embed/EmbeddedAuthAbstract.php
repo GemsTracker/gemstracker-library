@@ -19,7 +19,7 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:04:38
  */
-abstract class EmbeddedAuthAbstract extends \MUtil_Translate_TranslateableAbstract implements EmbeddedAuthInterface
+abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstract implements EmbeddedAuthInterface
 {
     /**
      *
@@ -41,18 +41,18 @@ abstract class EmbeddedAuthAbstract extends \MUtil_Translate_TranslateableAbstra
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     // abstract public function getLabel();
 
     /**
      * Authenticate embedded user
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param $secretKey
      * @return bool
      */
-    // abstract public function authenticate(\Gems_User_User $user, $secretKey);
+    // abstract public function authenticate(\Gems\User\User $user, $secretKey);
 
     /**
      *

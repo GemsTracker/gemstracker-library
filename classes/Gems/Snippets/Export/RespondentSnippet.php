@@ -4,8 +4,9 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Export;
 
 /**
  * Show info about the respondent during html/pdf export
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_Export_RespondentSnippet extends \MUtil_Snippets_SnippetAbstract
+class RespondentSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * The data for the current respondentId
@@ -26,7 +27,7 @@ class Gems_Snippets_Export_RespondentSnippet extends \MUtil_Snippets_SnippetAbst
     public $data;
 
     /**
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     public $model;
 
@@ -52,7 +53,7 @@ class Gems_Snippets_Export_RespondentSnippet extends \MUtil_Snippets_SnippetAbst
         }
 
         $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser table copy-to-clipboard-before'));
-        $bridge->setRepeater(\MUtil_Lazy::repeat(array($respondentData)));
+        $bridge->setRepeater(\MUtil\Lazy::repeat(array($respondentData)));
         $bridge->th($this->_('Respondent information'), array('colspan' => 4));
         $bridge->setColumnCount(2);
         foreach($respondentModel->getItemsOrdered() as $name) {
@@ -61,7 +62,7 @@ class Gems_Snippets_Export_RespondentSnippet extends \MUtil_Snippets_SnippetAbst
             }
         }
 
-        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $tableContainer = \MUtil\Html::create()->div(array('class' => 'table-container'));
         $tableContainer[] = $bridge->getTable();
 
         $html->h3($this->_('Respondent information') . ': ' . $respondentId);

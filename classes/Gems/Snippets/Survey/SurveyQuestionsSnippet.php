@@ -20,7 +20,7 @@ namespace Gems\Snippets\Survey;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
+class SurveyQuestionsSnippet extends \MUtil\Snippets\TableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -43,13 +43,13 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -79,7 +79,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $survey;
 
@@ -93,7 +93,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
     /**
      * Optional: to load from token
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -107,7 +107,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
     /**
      * Optional, alternative way to get $trackId
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -123,9 +123,9 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
      *
      * This is a default implementation, overrule at will
      *
-     * @param \MUtil_Html_TableElement $table
+     * @param \MUtil\Html\TableElement $table
      */
-    protected function addColumns(\MUtil_Html_TableElement $table)
+    protected function addColumns(\MUtil\Html\TableElement $table)
     {
         $table->thhrow($this->_('Group'), ['class' => 'group']);
         $tr = $table->thead()->tr();
@@ -134,9 +134,9 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
         $tr->th($this->_('Question'));
         $tr->th($this->_('Answer options'));
         
-        $cond    = \MUtil_Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
-        $hidden  = \MUtil_Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
-        $visible = \MUtil_Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
+        $cond    = \MUtil\Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
+        $hidden  = \MUtil\Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
+        $visible = \MUtil\Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
 
         $oldGroup = null;
         foreach ($this->data as $key => $row) {
@@ -170,11 +170,11 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $div = \MUtil_Html::create('div');
+        $div = \MUtil\Html::create('div');
 
         if ($this->surveyId && $this->data) {
             $div->h3(sprintf($this->_('Questions in survey %s'), $this->survey->getName()));
@@ -202,7 +202,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -222,7 +222,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
         $this->repeater = null;
 
         if (! $this->surveyId) {
-            if (($this->token instanceof \Gems_Tracker_Token) && $this->token->exists) {
+            if (($this->token instanceof \Gems\Tracker\Token) && $this->token->exists) {
                 $this->surveyId = $this->token->getSurveyId();
                 
             } elseif ($this->trackData && (! $this->trackId)) {
@@ -249,16 +249,16 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
                 $this->surveyId = $this->db->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ? ORDER BY gro_id_order', $this->trackId);
             }
         }
-        // \MUtil_Echo::track($this->surveyId, $this->trackId);
+        // \MUtil\EchoOut\EchoOut::track($this->surveyId, $this->trackId);
 
         // Get the survey
-        if ($this->surveyId && (! $this->survey instanceof \Gems_Tracker_Survey)) {
+        if ($this->surveyId && (! $this->survey instanceof \Gems\Tracker\Survey)) {
             $this->survey = $this->loader->getTracker()->getSurvey($this->surveyId);
         }
         // Load the data
-        if (($this->survey instanceof \Gems_Tracker_Survey) && $this->survey->exists) {
+        if (($this->survey instanceof \Gems\Tracker\Survey) && $this->survey->exists) {
             $this->data = $this->survey->getQuestionInformation($this->locale->getLanguage());
-            //\MUtil_Echo::track($this->data);
+            //\MUtil\EchoOut\EchoOut::track($this->data);
         }
 
         return (boolean) $this->data;
@@ -280,12 +280,12 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
 
                     $answers = $newAnswers;
                 }
-                return \MUtil_Html::raw($this->showAnswersSepStart . implode($this->showAnswersSeparator, $answers) . $this->showAnswersSepEnd);
+                return \MUtil\Html::raw($this->showAnswersSepStart . implode($this->showAnswersSeparator, $answers) . $this->showAnswersSepEnd);
             } else {
-                return \MUtil_Html::raw($this->showAnswerTypeStart . $answers . $this->showAnswerTypeEnd);
+                return \MUtil\Html::raw($this->showAnswerTypeStart . $answers . $this->showAnswerTypeEnd);
             }
         } else {
-            return \MUtil_Html::raw($this->showAnswersNoneStart . $this->showAnswersNone . $this->showAnswersNoneEnd);
+            return \MUtil\Html::raw($this->showAnswersNoneStart . $this->showAnswersNone . $this->showAnswersNoneEnd);
         }
     }
 }

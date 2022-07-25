@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Mail;
+
 /**
  *
  * @package    Gems
@@ -17,14 +19,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
+class CommTemplateShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
 {
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      * Adds rows from the model to the bridge that creates the browse table.
@@ -32,15 +34,15 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $items = $model->getItemsOrdered();
         foreach($items as $name) {
-            if ($model->get($name, 'type') === \MUtil_Model::TYPE_CHILD_MODEL) {
+            if ($model->get($name, 'type') === \MUtil\Model::TYPE_CHILD_MODEL) {
                 $submodel = $model->get($name, 'model');
                 $subitems = $submodel->getItemsOrdered();
             }
@@ -77,14 +79,14 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
 
     /**
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $subModel
-     * @param \MUtil_Html_TdElement $subContainer
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $subModel
+     * @param \MUtil\Html\TdElement $subContainer
      */
-    protected function addSubModelTable(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $subModel, \MUtil_Html_TdElement $subContainer)
+    protected function addSubModelTable(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $subModel, \MUtil\Html\TdElement $subContainer)
     {
         $data         = $bridge->getRow();
-        $itemBridge   = new \MUtil_Model_Bridge_DisplayBridge($subModel);
+        $itemBridge   = new \MUtil\Model\Bridge\DisplayBridge($subModel);
         $submodelName = $subModel->getName();
         $multi        = count($data[$submodelName]) > 1;
 
@@ -111,7 +113,7 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends \Gems_Snippets_ModelIte
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

@@ -20,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 22, 2016 2:16:21 PM
  */
-class CheckVersionImportTask extends \MUtil_Task_TaskAbstract
+class CheckVersionImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

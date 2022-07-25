@@ -71,7 +71,7 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
         foreach (array_reverse($this->_filter) as $filter) {
             $regexp = '{[^}]*' . $this->toRegexp($filter) . '(:{[^}]*:|:)' . $regexp;
         }
-        // \MUtil_Echo::track($regexp);
+        // \MUtil\EchoOut\EchoOut::track($regexp);
 
         return $regexp;
     }

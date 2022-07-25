@@ -21,7 +21,7 @@ use Gems\Model\EpisodeOfCareModel;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 26-Oct-2018 15:14:48
  */
-class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      *
@@ -31,19 +31,19 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -68,13 +68,13 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->caption = $this->_('Example episodes');
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
-                    \MUtil_Model::SORT_DESC_PARAM => 'gec_startdate',
+                    \MUtil\Model::SORT_DESC_PARAM => 'gec_startdate',
                     $this->calSearchFilter->getSqlEpisodeWhere(),
                     'limit' => 10,
                     ];
-                // \MUtil_Echo::track($this->calSearchFilter->getSqlEpisodeWhere());
+                // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter->getSqlEpisodeWhere());
 
-                $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+                $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
             } elseif (false === $this->calSearchFilter) {
                 $this->onEmpty = $this->_('Filter is inactive');
                 $this->searchFilter = ['1=0'];
@@ -85,7 +85,7 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -98,12 +98,12 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
             $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'), 'order', 3);
 
-            \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
+            \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
             $this->model->set('name', 'order', 6);
         }
 
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
         return $this->model;
     }
 
@@ -114,7 +114,7 @@ class EpisodeTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

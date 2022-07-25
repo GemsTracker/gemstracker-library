@@ -20,11 +20,11 @@ use Gems\Exception\ClientException;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
+class ExecuteCommJobTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -36,18 +36,18 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util; 
 
@@ -71,7 +71,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
         $job = $jobsUtil->getJob($jobId);
 
         if (empty($job)) {
-            throw new \Gems_Exception($this->_('Mail job not found!'));
+            throw new \Gems\Exception($this->_('Mail job not found!'));
         }
 
         $multipleTokensData = $jobsUtil->getTokenData($job, $respondentId, $organizationId, $forceSent);
@@ -119,7 +119,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
                     break;
 
                 default:
-                    throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
+                    throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
             }
 
             if ($communicate == true) {
@@ -205,7 +205,7 @@ class ExecuteCommJobTask extends \MUtil_Task_TaskAbstract
     public function incrementTokenCommunicationCount($tokenId)
     {
         $tokenData['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
-        $tokenData['gto_mail_sent_date'] = \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd');
+        $tokenData['gto_mail_sent_date'] = \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd');
 
         $this->db->update('gems__tokens', $tokenData, $this->db->quoteInto('gto_id_token = ?', $tokenId));
     }

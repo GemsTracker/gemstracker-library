@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ValidateSurveyExportCode.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
+
+namespace Gems\Validate;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 12, 2016 12:28:01 PM
  */
-class Gems_Validate_ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
+class ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
 {
     /**
      * Survey id
@@ -72,7 +73,7 @@ class Gems_Validate_ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
      * then it will auto-generate one from the given table,
      * schema, field, and adapter options.
      *
-     * @return Zend_Db_Select The Select object which will be used
+     * @return \Zend_Db_Select The Select object which will be used
      */
     public function getSelect()
     {
@@ -88,7 +89,7 @@ class Gems_Validate_ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
                     ->where('gsu_id_survey NOT IN (?)', implode(', ', $this->_tested))
                     ->limit(1);
 
-            // \MUtil_Echo::track($select->__toString());
+            // \MUtil\EchoOut\EchoOut::track($select->__toString());
             $this->_select = $select;
         }
         return $this->_select;
@@ -111,7 +112,7 @@ class Gems_Validate_ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
         $this->_setValue($value);
 
         foreach ($context as $field => $val) {
-            if (\MUtil_String::startsWith($field, 'survey__')) {
+            if (\MUtil\StringUtil\StringUtil::startsWith($field, 'survey__')) {
                 $sid = intval(substr($field, 8));
                 if (($sid !== $this->_surveyId) && ($value == $val)) {
                     $this->_error(self::ERROR_RECORD_FOUND);

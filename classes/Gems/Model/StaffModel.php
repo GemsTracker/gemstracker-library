@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 use MUtil\Model\Dependency\ValueSwitchDependency;
 
 /**
@@ -23,17 +25,17 @@ use MUtil\Model\Dependency\ValueSwitchDependency;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_StaffModel extends \Gems_Model_JoinModel
+class StaffModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -42,23 +44,23 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
      *
      * @var string
      */
-    protected $defaultStaffDefinition = \Gems_User_UserLoader::USER_STAFF;
+    protected $defaultStaffDefinition = \Gems\User\UserLoader::USER_STAFF;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -169,7 +171,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @return \Gems_Model_StaffModel
+     * @return \Gems\Model\StaffModel
      */
     public function applyOwnAccountEdit()
     {
@@ -213,7 +215,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @param int $defaultOrgId The default organization id or null if current organization
-     * @return \Gems_Model_StaffModel
+     * @return \Gems\Model\StaffModel
      */
     public function applySettings($detailed, $action)
     {
@@ -252,7 +254,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'separator', ' '
                 );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
-                'itemDisplay', array('MUtil_Html_AElement', 'ifmail'),
+                'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'),
                 'size', 30,
                 'validators[email]', 'SimpleEmail'
                 );
@@ -338,7 +340,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \Gems_Model_StaffModel
+     * @return \Gems\Model\StaffModel
      */
     public function applySystemUserSettings($detailed, $action)
     {
@@ -381,7 +383,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'description', $this->_('If checked the user will logoff when answering a survey.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo,
-                'validator', new \Gems_Validate_OneOf(
+                'validator', new \Gems\Validate\OneOf(
                         $this->get('gsf_is_embedded', 'label'),
                         'gsf_is_embedded',
                         $this->_('Logout on survey.')
@@ -467,7 +469,7 @@ class Gems_Model_StaffModel extends \Gems_Model_JoinModel
                 'rows', 3
                 );
         $seeKey = ! ($this->currentUser->hasPrivilege('pr.systemuser.seepwd') || $editing);
-        $type   = new \Gems_Model_Type_EncryptedField($this->project, $seeKey);
+        $type   = new \Gems\Model\Type\EncryptedField($this->project, $seeKey);
         $type->apply($this, 'gsus_secret_key');
 
         $this->set('gsf_active', 'label', $this->_('Active'),

@@ -2,25 +2,25 @@
 
 /**
  *
- * Base test class for Gems object test cases
+ * Base test class for \Gems object test cases
  *
  * @package    Gems
  * @subpackage Test
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TestAbstract.php 925 2012-09-05 09:59:13Z mennodekker $
  */
 
+namespace Gems\Test;
+
 /**
- * Base test class for Gems object test cases that involve a database test
+ * Base test class for \Gems object test cases that involve a database test
  *
  * @package    Gems
  * @subpackage Test
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TestAbstract.php 925 2012-09-05 09:59:13Z mennodekker $
  */
-abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_TestCase
+abstract class Db2TestAbstract extends \PHPUnit_Extensions_Database_TestCase
 {
     /**
      *
@@ -29,12 +29,12 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
     protected $_connectionMock;
 
     /**
-     * @var Laminas\Db\Adapter\Adapter
+     * @var \Laminas\Db\Adapter\Adapter
      */
     protected $db = null;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader = null;
 
@@ -59,7 +59,7 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
 
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
         $sa = $settings->toArray();
-        $this->loader  = new \Gems_Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
+        $this->loader  = new \Gems\Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
 
         \Zend_Registry::set('loader', $this->loader);
     }
@@ -72,7 +72,7 @@ abstract class Gems_Test_Db2TestAbstract extends \PHPUnit_Extensions_Database_Te
     protected function getConnection()
     {
         if($this->_connectionMock == null) {
-            $dbAdapter = new Laminas\Db\Adapter\Adapter(
+            $dbAdapter = new \Laminas\Db\Adapter\Adapter(
                 [
                     'driver' => 'Pdo_Sqlite',
                     'database' => ':memory:',

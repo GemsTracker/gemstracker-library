@@ -7,8 +7,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TableSnippet.php 956 2012-09-25 15:34:45Z matijsdejong $
  */
+
+namespace Gems\Snippets\Respondent\Relation;
 
 /**
  * Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.
@@ -19,18 +20,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Snippets_Respondent_Relation_TableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric {
+class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);

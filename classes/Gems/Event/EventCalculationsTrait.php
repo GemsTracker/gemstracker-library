@@ -40,7 +40,7 @@ trait EventCalculationsTrait
             }
         }
 
-        // \MUtil_Echo::track($results);
+        // \MUtil\EchoOut\EchoOut::track($results);
 
         return $results;
     }

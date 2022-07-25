@@ -20,16 +20,16 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class FieldOverviewTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $menuItem = $this->menu->find(array('controller' => 'respondent', 'action' => 'show', 'allowed' => true));
-        if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+        if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
             $href = $menuItem->toHRefAttribute($bridge);
 
             if ($href) {
-                $aElem = new \MUtil_Html_AElement($href);
+                $aElem = new \MUtil\Html\AElement($href);
                 $aElem->setOnEmpty('');
 
                 // Make sure org is known

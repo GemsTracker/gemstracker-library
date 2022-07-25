@@ -22,7 +22,7 @@ use Gems\Tracker\Model\RoundModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:39:42
  */
-class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -34,11 +34,11 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $_fixedSort = array('gro_id_order' => SORT_ASC);
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -56,7 +56,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Required: the engine of the current track
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -66,11 +66,11 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Make sure these fields are loaded
         $model->get('gro_valid_after_field');
@@ -87,7 +87,7 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
         // We want to markt the row for inactive surveys so it visually stands out
         $model->get('gsu_active');
-        $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iif(
+        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
             $bridge->gsu_active,
             '',
             'inactive'
@@ -97,11 +97,11 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $menuItems = $this->findMenuItems('survey-maintenance', 'edit');
         if ($menuItems) {
             $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
                 $href = $menuItem->toHRefAttribute(['id' => $bridge->getLazy('gro_id_survey')]);
 
                 if ($href) {
-                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem = new \MUtil\Html\AElement($href);
                     $aElem->setOnEmpty('');
 
                     $model->set('gro_id_survey', 'itemDisplay', $aElem);
@@ -124,8 +124,8 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
         $model = $this->getModel();
 
-        $br = \MUtil_Html::create('br');
-        $sp = \MUtil_Html::raw(' ');
+        $br = \MUtil\Html::create('br');
+        $sp = \MUtil\Html::raw(' ');
 
         $this->columns[10] = array('gro_id_order');
         $this->columns[20] = array('gro_id_survey');
@@ -160,13 +160,13 @@ class RoundsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface;
+        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

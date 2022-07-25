@@ -2,18 +2,18 @@
 
 namespace Gems\Tracker\Source;
 
-class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
+class LimeSurveyDatabaseTest extends \Gems\Test\DbTestAbstract
 {
     /**
      *
-     * @var \Gems_Tracker_Source_LimeSurvey1m9Database
+     * @var \Gems\Tracker\Source\LimeSurvey1m9Database
      */
     protected $object;
     public function setUp()
     {
         parent::setUp();
         $sourceData = [];
-        $this->object = new \Gems_Tracker_Source_LimeSurvey1m9Database($sourceData, $this->db);
+        $this->object = new \Gems\Tracker\Source\LimeSurvey1m9Database($sourceData, $this->db);
     }
     
     public function filterKeys($a)
@@ -35,14 +35,14 @@ class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
     
     /**
      * 
-     * @param \MUtil_Date|null $fromDate
-     * @param \MUtil_Date|null $untilDate
+     * @param \MUtil\Date|null $fromDate
+     * @param \MUtil\Date|null $untilDate
      * @param [] $expected
      * @dataProvider validDatesProvider
      */
     public function testValidDates($fromDate, $untilDate, $expected)
     {
-        $token = $this->getMockBuilder('Gems_Tracker_Token')
+        $token = $this->getMockBuilder('\\Gems\\Tracker\\Token')
                 ->disableOriginalConstructor()
                 ->getMock();
                 
@@ -66,7 +66,7 @@ class LimeSurveyDatabaseTest extends \Gems_Test_DbTestAbstract
      */
     public function validDatesProvider()
     {
-        $now = new \MUtil_Date();
+        $now = new \MUtil\Date();
         $now->setTimeToDayStart();
         $nextWeek = clone $now;
         $nextWeek->addDay(7);

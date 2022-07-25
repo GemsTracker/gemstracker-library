@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Tracker\Model;
@@ -22,7 +21,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class FieldDataModel extends \MUtil_Model_UnionModel
+class FieldDataModel extends \MUtil\Model\UnionModel
 {
     /**
      *
@@ -33,12 +32,12 @@ class FieldDataModel extends \MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $modelF = new \MUtil_Model_TableModel('gems__respondent2track2field');
-        \Gems_Model::setChangeFieldsByPrefix($modelF, 'gr2t2f');
+        $modelF = new \MUtil\Model\TableModel('gems__respondent2track2field');
+        \Gems\Model::setChangeFieldsByPrefix($modelF, 'gr2t2f');
         $this->addUnionModel($modelF, null, FieldMaintenanceModel::FIELDS_NAME);
 
-        $modelA = new \MUtil_Model_TableModel('gems__respondent2track2appointment');
-        \Gems_Model::setChangeFieldsByPrefix($modelA, 'gr2t2a');
+        $modelA = new \MUtil\Model\TableModel('gems__respondent2track2appointment');
+        \Gems\Model::setChangeFieldsByPrefix($modelA, 'gr2t2a');
 
         $mapBase = $modelA->getItemsOrdered();
         $map     = array_combine($mapBase, str_replace('gr2t2a_', 'gr2t2f_', $mapBase));
@@ -77,7 +76,7 @@ class FieldDataModel extends \MUtil_Model_UnionModel
 
         $model = $this->_unionModels[$modelName];
 
-        if ($model instanceof \MUtil_Model_TableModel) {
+        if ($model instanceof \MUtil\Model\TableModel) {
             return $model->getTableName();
         }
     }

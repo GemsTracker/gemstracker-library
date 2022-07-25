@@ -1,7 +1,7 @@
 <?php
 
 
-class Gems_Form_Decorator_InputGroupForm extends \Zend_Form_Decorator_ViewHelper
+class InputGroupForm extends \Zend_Form_Decorator_ViewHelper
 {
     /**
      * Change the current decorators
@@ -28,7 +28,7 @@ class Gems_Form_Decorator_InputGroupForm extends \Zend_Form_Decorator_ViewHelper
         $element = $this->getElement();
         $elementId = $element->getId();
 
-        if ($element instanceof \MUtil_Form_Element_Table) {
+        if ($element instanceof \MUtil\Form\Element\Table) {
             $subforms = $element->getSubForms();
         } elseif ($element instanceof \Zend_Form)  {
             $cellDecorators = null;
@@ -43,7 +43,7 @@ class Gems_Form_Decorator_InputGroupForm extends \Zend_Form_Decorator_ViewHelper
             $elementOptions['id'] = $elementId;
         }
 
-        $subformContainer = \MUtil_Html::create()->div($elementOptions);
+        $subformContainer = \MUtil\Html::create()->div($elementOptions);
         $hidden = [];
 
         if ($subforms) {

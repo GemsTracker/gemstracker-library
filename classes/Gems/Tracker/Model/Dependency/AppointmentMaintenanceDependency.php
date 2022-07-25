@@ -64,19 +64,19 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -138,7 +138,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     "SELECT * FROM gems__track_appointments WHERE gtap_id_track = ? AND gtap_id_order < ? ORDER BY gtap_id_order DESC LIMIT 1",
                     [$context['gtf_id_track'], $context['gtf_id_order']]
                 );
-                // \MUtil_Echo::track($previous);
+                // \MUtil\EchoOut\EchoOut::track($previous);
                 if ($previous) {
                     $diffDescription = sprintf(
                         $this->_("Difference with the previous '%s' appointment (order %d), can be negative but not zero"),
@@ -268,6 +268,6 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             return $value;
         }
 
-        return \MUtil_Html_AElement::a($menuFilter->toHRefAttribute([\MUtil_Model::REQUEST_ID => $raw]), $value);
+        return \MUtil\Html\AElement::a($menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]), $value);
     }
 }

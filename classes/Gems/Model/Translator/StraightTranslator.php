@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model\Translator;
+
 /**
- * Make sure a \Gems_Form is used for validation
+ * Make sure a \Gems\Form is used for validation
  *
  * @package    Gems
  * @subpackage Model_Translator
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Model_Translator_StraightTranslator extends \MUtil_Model_Translator_StraightTranslator
+class StraightTranslator extends \MUtil\Model\Translator\StraightTranslator
 {
     /**
      *
@@ -44,11 +46,11 @@ class Gems_Model_Translator_StraightTranslator extends \MUtil_Model_Translator_S
     /**
      * Create an empty form for filtering and validation
      *
-     * @return \MUtil_Form
+     * @return \MUtil\Form
      */
     protected function _createTargetForm()
     {
-        return new \Gems_Form();
+        return new \Gems\Form();
     }
 
     /**
