@@ -73,17 +73,19 @@ class ReflectionAbstractFactory implements AbstractFactoryInterface
             if ($dependencyName === ContainerInterface::class) {
                 return $container;
             }
+            
+            if (null !== $dependencyName) {
+                // Return named parameter
+                if ($container->has($dependencyName)) {
+                    return $container->get($dependencyName);
+                }
 
-            // Return named parameter
-            if ($container->has($dependencyName)) {
-                return $container->get($dependencyName);
+                // Returned aliased service
+                if ($container->has($dependency->getName())) {
+                    return $container->get($dependency->getName());
+                }
             }
-
-            // Returned aliased service
-            if ($container->has($dependency->getName())) {
-                return $container->get($dependency->getName());
-            }
-
+            
             // Try the default value
             return $this->resolveDefault($dependency);
         }, $askedDependencies);

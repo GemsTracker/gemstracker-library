@@ -34,6 +34,7 @@ class LegacyConfigProvider
                 \Gems_Loader::class => LegacyFactory::class,
                 \Gems_Menu::class => LegacyFactory::class,
                 \Gems_Project_ProjectSettings::class => LegacyFactory::class,
+                \Gems_Tracker::class => LegacyFactory::class,
                 \Gems_Util::class => LegacyFactory::class,
                 \Zend_Locale::class => LegacyFactory::class,
                 \Zend_Session_Namespace::class => LegacyFactory::class,
