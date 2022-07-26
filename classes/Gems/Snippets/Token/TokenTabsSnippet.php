@@ -85,7 +85,11 @@ class TokenTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        $reqFilter = $this->request->getParam('filter');
+        $reqFilter = null;
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams['filter'])) {
+            $reqFilter = $queryParams['filter'];
+        }
         switch ($reqFilter) {
             case 'todo':
                 //Only actions valid now that are not already done

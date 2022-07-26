@@ -22,7 +22,7 @@ namespace Gems\Snippets\Respondent;
  */
 class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
 {
-    protected $href = array();
+    protected $href = [];
 
     /**
      * Required
@@ -74,20 +74,24 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
         $this->defaultTab = $user->getCurrentOrganizationId();
-        $this->currentTab = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
+            $this->currentTab = $queryParams[\MUtil\Model::REQUEST_ID2];
+        }
 
         $allowedOrgs  = $user->getRespondentOrganizations();
         $existingOrgs = $this->db->fetchPairs($sql, $this->respondent->getId());
-        $tabs         = array();
+        $tabs         = [];
         
         foreach ($allowedOrgs as $orgId => $name) {
             if (isset($existingOrgs[$orgId])) {
                 $tabs[$orgId] = $name;
-                $this->hrefs[$orgId] = array(
+                $this->hrefs[$orgId] = [
                     \MUtil\Model::REQUEST_ID1 => $existingOrgs[$orgId],
                     \MUtil\Model::REQUEST_ID2 => $orgId,
                     'RouteReset' => true,
-                    );
+                ];
             }
         }
 

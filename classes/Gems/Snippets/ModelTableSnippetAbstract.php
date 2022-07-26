@@ -180,7 +180,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
         parent::afterRegistry();
 
         if (! $this->menuActionController) {
-            $this->menuActionController = $this->request->getControllerName();
+            $this->menuActionController = $this->requestInfo->getCurrentController();
         }
     }
 

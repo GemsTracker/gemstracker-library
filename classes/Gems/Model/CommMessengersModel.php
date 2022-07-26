@@ -5,6 +5,12 @@ namespace Gems\Model;
 
 class CommMessengersModel extends \Gems\Model\JoinModel
 {
+
+    /**
+     * @var \Gems_Util_Translated
+     */
+    protected $translatedUtil;
+
     /**
      * @var \Gems\Util
      */
@@ -22,7 +28,6 @@ class CommMessengersModel extends \Gems\Model\JoinModel
     public function applySetting($detailed = true)
     {
         $commUtil = $this->util->getCommMessengersUtil();
-        $translated = $this->util->getTranslated();
 
         $this->set('gcm_id_order',
             [
@@ -59,7 +64,7 @@ class CommMessengersModel extends \Gems\Model\JoinModel
             [
                 'label' => $this->_('Active'),
                 'elementClass' => 'Checkbox',
-                'multiOptions' => $translated->getYesNo()
+                'multiOptions' => $this->translatedUtil->getYesNo()
             ]
         );
 

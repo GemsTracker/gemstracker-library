@@ -606,9 +606,10 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      */
     public function getItemUrlArray()
     {
+        $queryParams = $this->request->getQueryParams();
         return [
-            \MUtil\Model::REQUEST_ID1 => $this->_getParam(\MUtil\Model::REQUEST_ID1),
-            \MUtil\Model::REQUEST_ID2 => $this->_getParam(\MUtil\Model::REQUEST_ID2),
+            \MUtil\Model::REQUEST_ID1 => isset($queryParams[\MUtil\Model::REQUEST_ID1]) ? $queryParams[\MUtil\Model::REQUEST_ID1] : null,
+            \MUtil\Model::REQUEST_ID2 => isset($queryParams[\MUtil\Model::REQUEST_ID2]) ? $queryParams[\MUtil\Model::REQUEST_ID2] : null,
         ];
     }
 

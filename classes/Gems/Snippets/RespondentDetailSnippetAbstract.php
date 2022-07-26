@@ -92,11 +92,9 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     protected $repeater;
 
     /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
+     * @var \MUtil\Request\RequestInfo
      */
-    protected $request;
+    protected $requestInfo;
 
     /**
      * Optional
@@ -207,17 +205,19 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
             $urlString = '';
 
             if ($this->view instanceof \Zend_View) {
-                $url[$this->request->getControllerKey()] = 'respondent';
-                $url[\MUtil\Model::REQUEST_ID1]          = $this->request->getParam(\MUtil\Model::REQUEST_ID1);
-                $url[\MUtil\Model::REQUEST_ID2]          = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+                $queryParams = $this->requestInfo->getRequestQueryParams();
+
+                $url['controller'] = 'respondent';
+                $url[\MUtil\Model::REQUEST_ID1]          = $queryParams[\MUtil\Model::REQUEST_ID1];
+                $url[\MUtil\Model::REQUEST_ID2]          = $queryParams[\MUtil\Model::REQUEST_ID2];
 
                 // \MUtil\EchoOut\EchoOut::track($this->menu->findAllowedController('respondent', 'change-consent'), $this->menu->findAllowedController('respondent', 'edit'));
                 if ($this->menu->findAllowedController('respondent', 'change-consent')) {
-                    $url[$this->request->getActionKey()] = 'change-consent';
+                    $url['action'] = 'change-consent';
                     $urlString = $this->view->url($url);
 
                 } elseif ($this->menu->findAllowedController('respondent', 'edit')) {
-                    $url[$this->request->getActionKey()] = 'edit';
+                    $url['action'] = 'edit';
                     $urlString = $this->view->url($url) . '#tabContainer-frag-4';
                 }
             }
@@ -239,7 +239,12 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      */
     protected function getCaption($onlyNotCurrent = false)
     {
-        $orgId = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+        $orgId = null;
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = $queryParams[\MUtil\Model::REQUEST_ID2];
+        }
+
         if ($orgId == $this->loader->getCurrentUser()->getCurrentOrganizationId()) {
             if ($onlyNotCurrent) {
                 return;
@@ -293,7 +298,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      */
     protected function getMenuList(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
-        $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+        /*$menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
         $menuList->addParameterSources($bridge);
 
         if ($this->addCurrentParent) {
@@ -308,7 +313,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
             $menuList->addCurrentChildren();
         }
 
-        return $menuList;
+        return $menuList;*/
     }
 
     /**

@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Locale\Locale\Locale;
+use MUtil\Request\RequestInfo;
 
 /**
  * Displays a toolbox of drop down UL's to assign tracks / surveys to a patient.
@@ -35,6 +37,11 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -46,7 +53,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
     public $loader;
 
     /**
-     * @var \Zend_Locale
+     * @var Locale
      */
     public $locale;
 
@@ -57,16 +64,9 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
     protected $menu;
 
     /**
-     * @var \Gems\Project\ProjectSettings
+     * @var RequestInfo
      */
-    protected $project;
-
-    /**
-     * Optional: $request or $tokenData must be set
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
+    protected $requestInfo;
 
     /**
      * When using bootstrap and more than this number of items the dropdowns will
@@ -116,10 +116,19 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
                 $action = 'insert';
                 break;
         }
-        $orgId   = intval($this->request->getParam(\MUtil\Model::REQUEST_ID2));
+        $orgId = null;
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = (int) $queryParams[\MUtil\Model::REQUEST_ID2];
+        }
+
         $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
-        if ($this->project->translateDatabaseFields() && $this->project->getLocaleDefault() != $this->locale->getLanguage()) {
+        $translateDatabaseFields = false;
+        if (isset($this->config['translations'], $this->config['translations']['databaseFields'], $this->config['locale'], $this->config['locale']['default']) &&
+            $this->config['translations']['databaseFields'] && $this->config['locale']['default'] !==  $this->locale->getLanguage()
+        ) {
             $cacheId .= '_' . $this->locale->getLanguage();
+            $translateDatabaseFields = true;
         }
 
         $tracks  = $this->cache->getCacheItem($cacheId);
@@ -164,7 +173,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
                     break;
             }
 
-            if ($this->project->translateDatabaseFields()) {
+            if ($translateDatabaseFields) {
                 $dbTranslations = $this->loader->getDbTranslations();
                 $tracks = $dbTranslations->translatePairsFromSelect($select);
             } else {
@@ -288,7 +297,12 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $pageRef = array(\MUtil\Model::REQUEST_ID => $this->request->getParam(\MUtil\Model::REQUEST_ID));
+        $pageRef = null;
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID])) {
+            $pageRef = [\MUtil\Model::REQUEST_ID => $queryParams[\MUtil\Model::REQUEST_ID]];
+        }
+
         $output  = false;
 
         $addToLists = \MUtil\Html::create()->div(array('class' => 'tooldock'));
