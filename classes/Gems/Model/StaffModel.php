@@ -12,6 +12,7 @@
 
 namespace Gems\Model;
 
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 
 /**
@@ -57,6 +58,11 @@ class StaffModel extends \Gems\Model\JoinModel
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -195,7 +201,7 @@ class StaffModel extends \Gems\Model\JoinModel
                 'validator', $noscript
                 );
         $this->set('gsf_gender',         'label', $this->_('Gender'),
-                'multiOptions', $this->util->getTranslated()->getGenders(),
+                'multiOptions', $this->translatedUtil->getGenders(),
                 'elementClass', 'Radio',
                 'separator', ''
                 );
@@ -223,8 +229,7 @@ class StaffModel extends \Gems\Model\JoinModel
 
         $dbLookup   = $this->util->getDbLookup();
         $editing    = ($action == 'edit') || ($action == 'create');
-        $translated = $this->util->getTranslated();
-        $yesNo      = $translated->getYesNo();
+        $yesNo      = $this->translatedUtil->getYesNo();
 
         $this->_addLoginSettings($editing);
 
@@ -250,7 +255,7 @@ class StaffModel extends \Gems\Model\JoinModel
 
         $this->set('gsf_gender',               'label', $this->_('Gender'),
                 'elementClass', 'Radio',
-                'multiOptions', $translated->getGenders(),
+                'multiOptions', $this->translatedUtil->getGenders(),
                 'separator', ' '
                 );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
@@ -350,8 +355,7 @@ class StaffModel extends \Gems\Model\JoinModel
         $dbLookup       = $this->util->getDbLookup();
         $editing        = ($action == 'edit') || ($action == 'create');
         $embeddedLoader = $this->loader->getEmbedLoader();
-        $translated     = $this->util->getTranslated();
-        $yesNo          = $translated->getYesNo();
+        $yesNo          = $this->translatedUtil->getYesNo();
 
         $this->_addLoginSettings($editing);
 

@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -26,6 +28,11 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
     
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -82,7 +89,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
             $elements[] = $this->_createSelectElement('gsu_mail_code', $mailCodes, $this->_('(all mail codes)'));
         }
         
-        $yesNo      = $this->util->getTranslated()->getYesNo();
+        $yesNo      = $this->translatedUtil->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));
         
         $events = $this->loader->getEvents();

@@ -12,6 +12,8 @@
 
 namespace Gems\Model;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -48,6 +50,11 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -134,7 +141,7 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
      */
     public function getDearGreeting($language)
     {
-        $genderDears = $this->util->getTranslated()->getGenderDear($language);
+        $genderDears = $this->translatedUtil->getGenderDear($language);
 
         $gender = $this->getGender();
         if (isset($genderDears[$gender])) {
@@ -173,7 +180,7 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
 
     public function getGreeting($language)
     {
-        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($language);
+        $genderGreetings = $this->translatedUtil->getGenderGreeting($language);
         $greeting = $genderGreetings[$this->getGender()] . ' ' . ucfirst($this->getLastName());
 
         return $greeting;
@@ -181,7 +188,7 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
 
     public function getHello($language)
     {
-        $genderHello = $this->util->getTranslated()->getGenderHello($language);
+        $genderHello = $this->translatedUtil->getGenderHello($language);
         $hello = $genderHello[$this->getGender()] . ' ' . ucfirst($this->getLastName());
 
         return $hello;

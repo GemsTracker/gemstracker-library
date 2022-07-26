@@ -422,26 +422,25 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
 
         $row = $select->fetchRow();
         if ($row) {
-            $trs = $this->util->getTranslated();
             $seq = new \MUtil\Html\Sequence();
             $seq->setGlue(\MUtil\Html::create('br'));
 
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
                 $this->_('Average answer time: %s.'),
-                $row['cnt'] ? $trs->formatTimeUnknown($row['avg']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['avg']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Standard deviation: %s.'),
-                $row['cnt'] ? $trs->formatTimeUnknown($row['std']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['std']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Minimum time: %s.'),
-                $row['cnt'] ? $trs->formatTimeUnknown($row['min']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['min']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Maximum time: %s.'),
-                $row['cnt'] ? $trs->formatTimeUnknown($row['max']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['max']) : $this->_('n/a')
             );
 
             if ($row['cnt']) {
@@ -459,7 +458,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                             WHERE t1.row_number = floor(total_rows / 2) + 1";
                 $med = $this->db->fetchOne($sql, [$surveyId, $surveyId]);
                 if ($med) {
-                    $seq->sprintf($this->_('Median value: %s.'), $trs->formatTimeUnknown($med));
+                    $seq->sprintf($this->_('Median value: %s.'), $this->translatedUtil->formatTimeUnknown($med));
                 }
                 // \MUtil\EchoOut\EchoOut::track($row, $med, $sql, $select->getSelect()->__toString());
             } else {

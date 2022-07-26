@@ -12,6 +12,8 @@
 
 namespace Gems\Model;
 
+use Gems\Util\Translated;
+
 /**
  * Contains the organization
  *
@@ -52,6 +54,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
     protected $project;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      *
      * @var \Gems\Util
      */
@@ -86,7 +93,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
         $localized   = $this->util->getLocalized();
         $projectName = null;
-        $yesNo       = $this->util->getTranslated()->getYesNo();
+        $yesNo       = $this->translatedUtil->getYesNo();
 
         if (isset($this->config['app']['name'])) {
             $projectName = $this->config['app']['name'];
@@ -258,7 +265,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $this->applyDetailSettings();
         $this->resetOrder();
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         // GENERAL TAB
         $this->set('gor_name',

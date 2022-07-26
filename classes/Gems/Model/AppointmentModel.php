@@ -66,6 +66,11 @@ class AppointmentModel extends \Gems\Model\JoinModel
     protected $menu;
 
     /**
+     * @var \Gems\Util\Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * @var \Gems\Util
      */
     protected $util;
@@ -193,7 +198,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $agenda     = $this->loader->getAgenda();
 
         $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'),
-                // 'formatFunction', array($this->util->getTranslated(), 'describeTimeFromNow'),
+                // 'formatFunction', array($this->translatedUtil, 'describeTimeFromNow'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
                 'description', $this->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
@@ -237,7 +242,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         $agenda     = $this->loader->getAgenda();
         $dbLookup   = $this->util->getDbLookup();
-        $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty      = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gap_admission_time',  'label', $this->_('Appointment'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
@@ -290,7 +295,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->applyDetailSettings(false);
 
         $agenda = $this->loader->getAgenda();
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gap_id_organization', 'default', $orgId ?: $this->currentOrganization->getId());
         $this->setIfExists('gap_admission_time',  'elementClass', 'Date');

@@ -11,6 +11,7 @@
 
 namespace Gems\Model;
 
+use Gems\Util\Translated;
 use MUtil\Model\Type\JsonData;
 
 /**
@@ -34,6 +35,11 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * @var \Gems\Util
@@ -173,7 +179,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
 
         $agenda   = $this->loader->getAgenda();
         $dbLookup = $this->util->getDbLookup();
-        $empty    = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty    = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gec_id_organization', 'label', $this->_('Organization'),
                 'elementClass', 'Exhibitor',
@@ -223,7 +229,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
         $this->applyDetailSettings();
 
         $agenda = $this->loader->getAgenda();
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gec_id_user',         'default', $respId,
                 'elementClass', 'Hidden');

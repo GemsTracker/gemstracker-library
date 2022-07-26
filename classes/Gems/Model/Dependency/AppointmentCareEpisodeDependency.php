@@ -11,6 +11,7 @@
 
 namespace Gems\Model\Dependency;
 
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
@@ -59,6 +60,11 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
     protected $loader;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      *
      * @var \Gems\Loader
      */
@@ -87,7 +93,7 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
     public function getChanges(array $context, $new)
     {
         $agenda  = $this->loader->getAgenda();
-        $options = $this->util->getTranslated()->getEmptyDropdownArray();
+        $options = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($context['gap_id_user'], $context['gap_id_organization'])) {
             if (isset($context['gap_admission_time'])) {

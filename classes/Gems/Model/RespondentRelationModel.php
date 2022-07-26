@@ -12,6 +12,8 @@
 
 namespace Gems\Model;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -26,6 +28,11 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * @var \Gems\Util
@@ -47,12 +54,10 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
 
     public function applyBrowseSettings()
     {
-        $translated = $this->loader->getUtil()->getTranslated();
-                
         $this->addFilter(array('grr_active'=>1));
         $this->set('grr_type',
                 'label', $this->_('Relation type'), 'description', $this->_('Father, mother, etc.'));
-        $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $translated->getGenders());
+        $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $this->translatedUtil->getGenders());
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
         $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM, 'elementClass', 'Date');

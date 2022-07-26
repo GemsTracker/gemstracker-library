@@ -11,6 +11,8 @@
 
 namespace Gems\Model\Dependency\Condition;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -59,10 +61,9 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
     protected $loader;
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -87,7 +88,7 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
     public function getChanges(array $context, $new)
     {
         $conditions = $this->loader->getConditions();
-        $options    = $this->util->getTranslated()->getEmptyDropdownArray();
+        $options    = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($context['gcon_type'])) {
             $options = $conditions->listConditionsForType($context['gcon_type']);
