@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+use MUtil\Translate\TranslateableTrait;
+
 /**
  * Provides translated strings for default options like gender and takes care of date/time formatting
  *
@@ -18,7 +20,7 @@
  */
 class Gems_Util_Translated
 {
-    use \MUtil\Translate\TranslateableTrait;
+    use TranslateableTrait;
 
     /**
      * Format string usaed by this project date output to site users
