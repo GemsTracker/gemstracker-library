@@ -4,10 +4,11 @@ namespace GemsTest\MenuNew;
 
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\MenuItemNotFoundException;
+use Gems\MenuNew\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouteResult;
-use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Mezzio\Twig\TwigRenderer;
 use Psr\Http\Server\MiddlewareInterface;
@@ -23,8 +24,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
                 'type' => 'route-link-item',
             ]
         ];
-
-        $router = $this->createMock(RouterInterface::class);
 
         $template = new TwigRenderer(null, 'html.twig');
         $template->addPath(__DIR__ . '/../../templates/menu', 'menu');
@@ -54,7 +53,9 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        return new Menu($router, $template, $menuConfig, $acl, null, $config);
+        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), null, $config);
+
+        return new Menu($template, $routeHelper, $menuConfig);
     }
 
     public function testCanRenderEmptyMenu()
@@ -62,17 +63,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $menu = $this->buildMenuABC([], []);
 
         $this->assertSame('', trim($menu->renderMenu()));
-    }
-
-    public function testCanGetRoute()
-    {
-        $menu = $this->buildMenuABC(null, []);
-
-        $this->assertSame([
-            'name' => 'route-b',
-            'path' => '/route-b',
-            'allowed_methods' => ['GET'],
-        ], $menu->getRoute('route-b'));
     }
 
     public function testCanFindMenuItem()
@@ -575,8 +565,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-
-        $router = $this->createMock(RouterInterface::class);
         $template = $this->createMock(TemplateRendererInterface::class);
 
         $menuConfig = $this->createMock(\Gems\Config\Menu::class);
@@ -594,7 +582,9 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             'routes' => $routes,
         ];
 
-        return new Menu($router, $template, $menuConfig, $acl, $userRole, $config);
+        $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), $userRole, $config);
+
+        return new Menu($template, $routeHelper, $menuConfig);
     }
 
     public function dataProviderPermissionRoutes()
@@ -604,17 +594,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
             ['role-a', false],
             ['role-b', true],
         ];
-    }
-
-    /**
-     * @dataProvider dataProviderPermissionRoutes
-     */
-    public function testIsAllowed(?string $userRole, bool $outcome)
-    {
-        $menu = $this->buildMenuPermissions($userRole);
-
-        $this->assertSame($outcome, $menu->isAllowed('permission-b'));
-        $this->assertFalse($menu->isAllowed('permission-c'));
     }
 
     /**

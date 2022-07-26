@@ -19,17 +19,12 @@ class RouteLinkItem extends MenuItem
 
     protected function hasPermission(): bool
     {
-        $route = $this->getMenu()->getRoute($this->name);
-        if (empty($route['options']['permission'])) {
-            return true;
-        }
-
-        return $this->getMenu()->isAllowed($route['options']['permission']);
+        return $this->getMenu()->routeHelper->hasAccessToRoute($this->name);
     }
 
     public function open(array $params): bool
     {
-        $route = $this->getMenu()->getRoute($this->name);
+        $route = $this->getMenu()->routeHelper->getRoute($this->name);
         $requiredParams = $route['params'] ?? [];
 
         $missingParams = array_diff($requiredParams, array_keys($params));
@@ -52,7 +47,7 @@ class RouteLinkItem extends MenuItem
     {
         $menu = $this->getMenu();
 
-        $url = $menu->router->generateUri($this->name, $this->openParams);
+        $url = $menu->routeHelper->getRouteUrl($this->name, $this->openParams);
 
         return $menu->templateRenderer->render('menu::route-link-item', [
             'url' => $url,

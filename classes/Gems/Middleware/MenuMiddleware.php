@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Gems\Middleware;
 
 use Gems\MenuNew\Menu;
+use Gems\MenuNew\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
-use Mezzio\Router\RouterInterface;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,8 +18,8 @@ class MenuMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly array $config,
-        private readonly RouterInterface $router,
         private readonly TemplateRendererInterface $template,
+        private readonly UrlHelper $urlHelper,
         private readonly \Gems\Config\Menu $menuConfig,
         private readonly Acl $acl,
     ) {
@@ -31,7 +32,9 @@ class MenuMiddleware implements MiddlewareInterface
 
         $userRole = $request->getAttribute('userRole');
 
-        $menu = new Menu($this->router, $this->template, $this->menuConfig, $this->acl, $userRole, $this->config);
+        $routeHelper = new RouteHelper($this->acl, $this->urlHelper, $userRole, $this->config);
+
+        $menu = new Menu($this->template, $routeHelper, $this->menuConfig);
 
         $this->template->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'mainMenu', $menu);
 
