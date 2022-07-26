@@ -8,6 +8,35 @@ class Menu
     {
         return [
             [
+                'name' => 'respondent.index',
+                'label' => 'Respondent',
+                'type' => 'route-link-item',
+                'children' => [
+                    [
+                        'name' => 'respondent.create',
+                        'label' => 'New',
+                        'type' => 'route-link-item',
+                    ],
+                    [
+                        'name' => 'respondent.show',
+                        'label' => 'Show',
+                        'type' => 'route-link-item',
+                        'children' => [
+                            [
+                                'name' => 'respondent.edit',
+                                'label' => 'Edit',
+                                'type' => 'route-link-item',
+                            ],
+                            [
+                                'name' => 'respondent.delete',
+                                'label' => 'Delete',
+                                'type' => 'route-link-item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
                 'name' => 'track-builder',
                 'label' => 'Track Builder',
                 'type' => 'route-link-item',

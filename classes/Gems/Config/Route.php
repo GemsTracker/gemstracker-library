@@ -13,9 +13,36 @@ class Route
 {
     use ModelSnippetActionRouteHelpers;
 
-    public function __invoke()
+    public function __invoke(): array
     {
-        $routes = [
+        return [
+            ...$this->getRespondentRoutes(),
+            ...$this->getTrackBuilderRoutes(),
+        ];
+    }
+
+    public function getRespondentRoutes(): array
+    {
+        return [
+            ...$this->createBrowseRoutes(baseName: 'respondent',
+                controllerClass: \Gems\Actions\RespondentNewAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                ],
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                ],
+            ),
+        ];
+    }
+
+    public function getTrackBuilderRoutes(): array
+    {
+        return [
             [
                 'name' => 'setup.reception.index',
                 'path' => '/setup/reception/index',
@@ -143,7 +170,5 @@ class Route
             ),
 
         ];
-
-        return $routes;
     }
 }
