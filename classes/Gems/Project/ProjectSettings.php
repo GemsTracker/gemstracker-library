@@ -56,30 +56,21 @@ class ProjectSettings extends \ArrayObject
      *
      * @var array
      */
-    protected $requiredKeys = array(
-        'css' => array('gems'),
-        'locale' => array('default'),
+    protected $requiredKeys = [
+        'css' => ['gems'],
+        'locale' => ['default'],
         'salt',
-        );
+    ];
 
     /**
      * Creates the object and checks for required values.
      *
      * @param mixed $array
      */
-    public function __construct($array)
+    public function __construct(array $config)
     {
-        // Convert to array when needed
-        if ($array instanceof \Zend_Config) {
-            $array = $array->toArray();
-        } elseif ($array instanceof \ArrayObject) {
-            $array = $array->getArrayCopy();
-        } elseif (! is_array($array)) {
-            $array = (array) $array;
-        }
-
         // Now load default values for (new) keys and merge them with the ones provided by project.ini
-        $projectValues = $array + $this->_getDefaultValues();
+        $projectValues = $config + $this->_getDefaultValues();
 
         parent::__construct($projectValues, \ArrayObject::ARRAY_AS_PROPS);
 
@@ -99,7 +90,7 @@ class ProjectSettings extends \ArrayObject
     public function _getDefaultValues()
     {
 
-        return array(
+        return [
             '>>> defaults <<<' => '>>> Below are default settings, since they were not found in your project.ini <<<',
 
             // What to do when user is going to or has answered a survey
@@ -107,22 +98,22 @@ class ProjectSettings extends \ArrayObject
             'askDelay'     => -1, // No auto advance
 
             // How to react to false token attempts
-            'askThrottle'  => array(
+            'askThrottle'  => [
                 'period'    => 15 * 60, // Detection window: 15 minutes
                 'threshold' => 15 * 20, // Threshold: 20 requests per minute
                 'delay'     => 10       // Delay: 10 seconds
-            ),
+            ],
 
             'cache'        => 'apc',   // Use apc cache as default
 
             'logLevel'     => $this->getLogLevelDefault(),  // Depends on application environment
 
-            'organization' => array(
+            'organization' => [
                 'default'   => -1  // No default organization
-            ),
+            ],
 
             'idleTimeout' => $this->defaultSessionTimeout   // Sesison timeout default 1800
-        );
+        ];
     }
 
     /**
@@ -158,11 +149,11 @@ class ProjectSettings extends \ArrayObject
      */
     public function checkRequiredValues()
     {
-        $missing = array();
+        $missing = [];
         foreach ($this->requiredKeys as $key => $names) {
             if (is_array($names)) {
                 if (! ($this->offsetExists($key) && $this->offsetGet($key))) {
-                    $subarray = array();
+                    $subarray = [];
                 } else {
                     $subarray = $this->offsetGet($key);
                 }
