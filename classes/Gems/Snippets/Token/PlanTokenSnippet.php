@@ -20,7 +20,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
+class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -55,23 +55,23 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $br    = \MUtil_Html::create('br');
+        $br    = \MUtil\Html::create('br');
 
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
             $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
                 $href = $menuItem->toHRefAttribute($bridge);
 
                 if ($href) {
-                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem = new \MUtil\Html\AElement($href);
                     $aElem->setOnEmpty('');
 
                     // Make sure org is known
@@ -85,7 +85,7 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
-        $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
+        $bridge->setDefaultRowClass(\MUtil\Html\TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr1 = $bridge->tr();
         $tr1->appendAttrib('class', $bridge->row_class);
         $tr1->appendAttrib('title', $bridge->gto_comment);
@@ -114,10 +114,10 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
             $model->set('gto_round_description', 'tableDisplay', 'smallData');
             $bridge->addMultiSort(
                 'gtr_track_name', 'gr2t_track_info',
-                array($bridge->gtr_track_name->if(\MUtil_Html::raw(' &raquo; ')), ' '),
+                array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),
                 'gsu_survey_name', 'gto_round_description');
         } else {
-            $bridge->addMultiSort('gto_round_description', \MUtil_Html::raw('; '), 'gsu_survey_name');
+            $bridge->addMultiSort('gto_round_description', \MUtil\Html::raw('; '), 'gsu_survey_name');
         }
         $bridge->addSortable('assigned_by');
     }
@@ -125,21 +125,21 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * As this is a common cell setting, this function allows you to overrule it.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addRespondentCell(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addRespondentCell(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $bridge->addMultiSort('gr2o_patient_nr', \MUtil_Html::raw('; '), 'respondent_name');
+        $bridge->addMultiSort('gr2o_patient_nr', \MUtil\Html::raw('; '), 'respondent_name');
     }
 
     /**
      * Return a list of possible action buttons for the token
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
      * @return array of HtmlElements
      */
-    public function createActionButtons(\MUtil_Model_Bridge_TableBridge $bridge)
+    public function createActionButtons(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         $tData = $this->util->getTokenData();
 
@@ -152,7 +152,7 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         foreach ($actionLinks as $key => $actionLink) {
             if ($actionLink) {
                 $output[] = ' ';
-                $output[$key] = \MUtil_Html::create(
+                $output[$key] = \MUtil\Html::create(
                         'div',
                         $actionLink,
                         ['class' => 'rightFloat', 'renderWithoutContent' => false, 'style' => 'clear: right;']
@@ -166,10 +166,10 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * Returns a '+' token button
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @return \MUtil_Html_AElement
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @return \MUtil\Html\AElement
      */
-    protected function createInfoPlusCol(\MUtil_Model_Bridge_TableBridge $bridge)
+    protected function createInfoPlusCol(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         $tData = $this->util->getTokenData();
 
@@ -184,10 +184,10 @@ class PlanTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * Returns a '+' token button
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @return \MUtil_Html_AElement
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @return \MUtil\Html\AElement
      */
-    protected function createShowTokenButton(\MUtil_Model_Bridge_TableBridge $bridge)
+    protected function createShowTokenButton(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         $link = $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
 

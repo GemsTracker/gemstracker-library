@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Util;
 
 /**
  * Keeps and reuse earlier request parameters in session cache
@@ -20,7 +21,7 @@
  * @since      Class available since version 1.2
  * @deprecated since 1.7.2
  */
-class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
+class RequestCache extends \Gems\Registry\TargetAbstract
 {
     /**
      * Url parameter to reset
@@ -62,7 +63,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -138,12 +139,12 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_Menu
+     * @return \Gems\Menu
      */
     protected function getMenu()
     {
         if (! $this->menu) {
-            $escort = \GemsEscort::getInstance();
+            $escort = \Gems\Escort::getInstance();
             $this->setMenu($escort->menu);
         }
 
@@ -181,7 +182,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
 
             $this->setProgramParams($programParams);
 
-            // \MUtil_Echo::track($programParams);
+            // \MUtil\EchoOut\EchoOut::track($programParams);
 
         }
         return $this->_programParams;
@@ -235,11 +236,11 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param string $key_arg1 First of optionally many arguments
-     * @return \Gems_Util_RequestCache
+     * @return \Gems\Util\RequestCache
      */
     public function removeParams($key_arg1)
     {
-        $args = \MUtil_Ra::flatten(func_get_args());
+        $args = \MUtil\Ra::flatten(func_get_args());
 
         $this->_baseUrl = null;
 
@@ -250,7 +251,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
                 unset($params[$key]);
             }
         }
-        // \MUtil_Echo::track($params);
+        // \MUtil\EchoOut\EchoOut::track($params);
 
         $this->setProgramParams($params);
 
@@ -259,10 +260,10 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @param \Gems_Menu $menu
-     * @return \Gems_Util_RequestCache (continuation pattern)
+     * @param \Gems\Menu $menu
+     * @return \Gems\Util\RequestCache (continuation pattern)
      */
-    public function setMenu(\Gems_Menu $menu)
+    public function setMenu(\Gems\Menu $menu)
     {
         $this->menu = $menu;
 
@@ -273,7 +274,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
      * Set the keys stored fot this cache
      *
      * @param array $programParams
-     * @return \Gems_Util_RequestCache (continuation pattern)
+     * @return \Gems\Util\RequestCache (continuation pattern)
      */
     public function setProgramParams(array $programParams)
     {
@@ -291,7 +292,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
      * Makes sure any new values in the request are not written to the cache.
      *
      * @param boolen $value
-     * @return \Gems_Util_RequestCache (continuation pattern)
+     * @return \Gems\Util\RequestCache (continuation pattern)
      */
     public function setReadonly($value = true)
     {
@@ -303,7 +304,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param \Zend_Controller_Request_Abstract $request
-     * @return \Gems_Util_RequestCache (continuation pattern)
+     * @return \Gems\Util\RequestCache (continuation pattern)
      */
     public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
@@ -316,7 +317,7 @@ class Gems_Util_RequestCache extends \Gems_Registry_TargetAbstract
      * Set the actiuon to use instead of the current one.
      *
      * @param string $action
-     * @return \Gems_Util_RequestCache (continuation pattern)
+     * @return \Gems\Util\RequestCache (continuation pattern)
      */
     public function setSourceAction($action)
     {

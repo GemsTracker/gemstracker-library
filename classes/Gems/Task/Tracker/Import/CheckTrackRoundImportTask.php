@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTrackRoundImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 18, 2016 7:34:00 PM
  */
-class CheckTrackRoundImportTask extends \MUtil_Task_TaskAbstract
+class CheckTrackRoundImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -70,7 +69,7 @@ class CheckTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         if (isset($roundData['gro_changed_event']) && $roundData['gro_changed_event']) {
             try {
                 $events->loadRoundChangedEvent($roundData['gro_changed_event']);
-            } catch (\Gems_Exception_Coding $ex) {
+            } catch (\Gems\Exception\Coding $ex) {
                 $batch->addToCounter('import_errors');
                 $batch->addMessage(sprintf(
                         $this->_('Unknown or invalid round changed event "%s" specified on line %d.'),
@@ -82,7 +81,7 @@ class CheckTrackRoundImportTask extends \MUtil_Task_TaskAbstract
         if (isset($roundData['gro_display_event']) && $roundData['gro_display_event']) {
             try {
                 $events->loadSurveyDisplayEvent($roundData['gro_display_event']);
-            } catch (\Gems_Exception_Coding $ex) {
+            } catch (\Gems\Exception\Coding $ex) {
                 $batch->addToCounter('import_errors');
                 $batch->addMessage(sprintf(
                         $this->_('Unknown or invalid round display event "%s" specified on line %d.'),

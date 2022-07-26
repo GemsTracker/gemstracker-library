@@ -22,7 +22,7 @@ class SiteConsole extends SiteUrl
 {
     const CONSOLE_URL = 'https://console';
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 

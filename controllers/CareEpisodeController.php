@@ -18,7 +18,7 @@
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.4 16-May-2018 18:20:19
  */
-class CareEpisodeController extends \Gems_Default_CareEpisodeAction
+class CareEpisodeController extends \Gems\Actions\CareEpisodeAction
 {
 
 }

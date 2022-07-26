@@ -8,8 +8,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OpenRosaFormModel.php 215 2011-07-12 08:52:54Z michiel $
  */
+
+namespace OpenRosa\Model;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class OpenRosa_Model_OpenRosaFormModel extends \Gems_Model_JoinModel
+class OpenRosaFormModel extends \Gems\Model\JoinModel
 {
     /**
      *

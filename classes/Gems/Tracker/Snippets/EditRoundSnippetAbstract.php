@@ -8,8 +8,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Short description for class
@@ -22,12 +23,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
+class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -35,14 +36,14 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
 
     /**
      *
-     * @var int Gems round id
+     * @var int \Gems round id
      */
     protected $roundId;
 
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -54,7 +55,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
     protected $trackId;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -81,7 +82,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -119,7 +120,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -141,7 +142,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends \Gems_Snippets_Mode
         }
 
         if (! $this->roundId) {
-            $this->roundId = $this->request->getParam(\Gems_Model::ROUND_ID);
+            $this->roundId = $this->request->getParam(\Gems\Model::ROUND_ID);
         }
 
         $this->createData = (! $this->roundId);

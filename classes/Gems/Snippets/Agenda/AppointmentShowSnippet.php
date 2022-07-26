@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Agenda;
 
 /**
  *
@@ -19,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
+class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -33,11 +34,11 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends \Gems_Snippets_ModelIt
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      * /
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         parent::addShowTableRows($bridge, $model);
     }
@@ -45,11 +46,11 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends \Gems_Snippets_ModelIt
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Model_AppointmentModel) {
+        if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();
             $this->model->applyDetailSettings();
         }
@@ -64,7 +65,7 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends \Gems_Snippets_ModelIt
         if (! $date instanceof \Zend_Date) {
             return $date;
         }
-        $div = \MUtil_Html::create('div');
+        $div = \MUtil\Html::create('div');
         $div->class = 'calendar';
         if (0 < $date->getYear()->getTimestamp()) {
             $div->span(ucfirst($date->toString(

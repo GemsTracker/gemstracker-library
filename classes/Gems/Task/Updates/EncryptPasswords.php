@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: EncryptPasswords.php $
  */
+
+namespace Gems\Task\Updates;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 3-okt-2014 17:21:55
  */
-class Gems_Task_Updates_EncryptPasswords extends \MUtil_Task_TaskAbstract
+class EncryptPasswords extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -27,7 +28,7 @@ class Gems_Task_Updates_EncryptPasswords extends \MUtil_Task_TaskAbstract
     protected $db;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
 

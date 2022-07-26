@@ -6,8 +6,9 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Communication;
 
 /**
  * Writer implementation to save respondents to the database
@@ -17,35 +18,35 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Communication_RespondentModelWriter implements \Gems_Communication_RespondentWriter
+class RespondentModelWriter implements \Gems\Communication\RespondentWriter
 {
     /**
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     private $_model = null;
 
     public function __construct()
     {
-        $this->_model = \GemsEscort::getInstance()->getLoader()->getModels()->createRespondentModel();
+        $this->_model = \Gems\Escort::getInstance()->getLoader()->getModels()->createRespondentModel();
     }
 
     /**
      * - Fetches respondent based on bsn / reception code and patient nr
      * - Creates the respondent if it does not exist, updates otherwise
      *
-	 * @see \Gems_Model_RespondentModel
-     * @see \Gems_Communication_RespondentWriter::writeRespondent()
+	 * @see \Gems\Model\RespondentModel
+     * @see \Gems\Communication\RespondentWriter::writeRespondent()
 	 *
-	 * @param  \Gems_Communication_RespondentContainer $respondent
+	 * @param  \Gems\Communication\RespondentContainer $respondent
 	 * @param  int $userId
 	 * @return boolean True if a new respondent was added, false if one was updated
      */
-    public function writeRespondent(\Gems_Communication_RespondentContainer $respondent, &$userId)
+    public function writeRespondent(\Gems\Communication\RespondentContainer $respondent, &$userId)
     {
         $parameters = $this->_model->applyParameters(
             array(
                 'grs_ssn' => $respondent->getBsn(),
-                'gr2o_reception_code' => \GemsEscort::RECEPTION_OK,
+                'gr2o_reception_code' => \Gems\Escort::RECEPTION_OK,
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
         );

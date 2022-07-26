@@ -33,19 +33,19 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
 
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -65,7 +65,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
     /**
      * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -87,7 +87,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
     /**
      * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -112,9 +112,9 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
 
     /**
      *
-     * @staticvar \Gems_Menu_SubMenuItem $showMenuItem
+     * @staticvar \Gems\Menu\SubMenuItem $showMenuItem
      * @param int $value
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function displayFilterLink($value, $raw)
     {
@@ -132,15 +132,15 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
             $text  = $raw . ' ' . $this->_('(inactive filter)');
         }
 
-        if ($showMenuItem instanceof \Gems_Menu_SubMenuItem) {
-            return \MUtil_Html_AElement::a(
-                    $showMenuItem->toHRefAttribute([\MUtil_Model::REQUEST_ID => $raw]),
+        if ($showMenuItem instanceof \Gems\Menu\SubMenuItem) {
+            return \MUtil\Html\AElement::a(
+                    $showMenuItem->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]),
                     $text,
                     ['class' => $class]
                     );
         }
 
-        return \MUtil_Html::create('span', $text, ['class' => $class]);
+        return \MUtil\Html::create('span', $text, ['class' => $class]);
     }
 
     /**

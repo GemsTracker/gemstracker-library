@@ -20,10 +20,10 @@ use Gems\Date\Period;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implements \Gems_Event_SurveyCompletedEventInterface
+class RepeatRoundsEvent extends \MUtil\Translate\TranslateableAbstract implements \Gems\Event\SurveyCompletedEventInterface
 {
     /**
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
     
@@ -38,7 +38,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
     /**
      * @inheritDoc
      */
-    public function processTokenData(\Gems_Tracker_Token $token)
+    public function processTokenData(\Gems\Tracker\Token $token)
     {
         if (! $token->isCompleted()) {
             // Do not handel
@@ -69,8 +69,8 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
         $oldRoundDescription = trim($token->getRoundDescription());
         $matches = [];
         if (! preg_match('/(\d+)$/', $oldRoundDescription, $matches)) {
-            // \MUtil_Echo::track($oldRoundDescription, $matches);
-            throw new \Gems_Exception("RepeatRounds event called on round with description not ending in a number!");
+            // \MUtil\EchoOut\EchoOut::track($oldRoundDescription, $matches);
+            throw new \Gems\Exception("RepeatRounds event called on round with description not ending in a number!");
             // Abort on no new description
             return null;
         }
@@ -97,7 +97,7 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
             $roundTokens[$next->getRoundOrder()] = $next->getTokenId();
         }
         
-        // \MUtil_Echo::track($oldRoundDescription, $newRoundDescription);
+        // \MUtil\EchoOut\EchoOut::track($oldRoundDescription, $newRoundDescription);
         foreach ($allTokens as $next) {
             if ($next->getReceptionCode()->isSuccess() && ($next->getRoundDescription() == $oldRoundDescription)) {
                 $newValues = [
@@ -113,9 +113,9 @@ class RepeatRoundsEvent extends \MUtil_Translate_TranslateableAbstract implement
                     ];
                 
                 // Check token exists already
-                // \MUtil_Echo::track($roundTokens, $newOrder);
+                // \MUtil\EchoOut\EchoOut::track($roundTokens, $newOrder);
                 if (! isset($roundTokens[$newOrder])) {
-                    // \MUtil_Echo::track($newValues);
+                    // \MUtil\EchoOut\EchoOut::track($newValues);
                     $next->createReplacement($token->getComment(), $userId, $newValues);
                 }
             }

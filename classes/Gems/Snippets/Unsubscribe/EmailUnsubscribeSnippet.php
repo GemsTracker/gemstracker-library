@@ -25,7 +25,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
@@ -37,7 +37,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -73,7 +73,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
-//        \MUtil_Echo::track('EmailUnsubscribeSnippet');
+//        \MUtil\EchoOut\EchoOut::track('EmailUnsubscribeSnippet');
         // Veld inlognaam
         $element = $form->createElement('text', 'email');
         $element->setLabel($this->_('Your E-Mail address'))
@@ -110,7 +110,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      */
     protected function afterSave($changed)
     {
-        // \MUtil_Echo::track($this->getMessenger()->getCurrentMessages(), $this->formData, $this->userData, $this->realChange);
+        // \MUtil\EchoOut\EchoOut::track($this->getMessenger()->getCurrentMessages(), $this->formData, $this->userData, $this->realChange);
 
         foreach ($this->userData as $userData) {
             $this->accesslog->logEntry(
@@ -138,7 +138,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
             WHERE gr2o_email = ? AND gr2o_id_organization = ?";
 
         $rows = $this->db->fetchAll($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
-        // \MUtil_Echo::track($rows);
+        // \MUtil\EchoOut\EchoOut::track($rows);
         foreach ($rows as $id => $row) {
             // Save respondent & ord id
             $this->userData[$id]['gr2o_id_user']         = $row['gr2o_id_user'];
@@ -146,7 +146,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
 
             if ($row['gr2o_mailable']) {
                 $row['gr2o_mailable'] = $this->unsubscribedValue;
-                $row['gr2o_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
+                $row['gr2o_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
                 $row['gr2o_changed_by'] = $row['gr2o_id_user'];
 
                 $where = $this->db->quoteInto("gr2o_patient_nr = ?", $row['gr2o_patient_nr']) . " AND " .

@@ -38,14 +38,14 @@ class FillTrackFieldAnswers extends BeforeAnsweringAbstract
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
-    protected function processOutput(\Gems_Tracker_Token $token)
+    protected function processOutput(\Gems\Tracker\Token $token)
     {
         $this->log("Setting track fields");
 
         $fields = $this->getTrackFieldValues($token->getRespondentTrack());
-        // \MUtil_Echo::track($fields);
+        // \MUtil\EchoOut\EchoOut::track($fields);
 
         $this->addCheckedArray($fields);
     }

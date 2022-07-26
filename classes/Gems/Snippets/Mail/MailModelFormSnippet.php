@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      * @var string The current selected language tab
@@ -27,13 +29,13 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
     
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -44,31 +46,31 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
     
     /**
      *
-     * @var \Gems_Mail_MailElements
+     * @var \Gems\Mail\MailElements
      */
     protected $mailElements;
 
     /**
      *
-     * @var \Gems_Mail_MailerAbstract
+     * @var \Gems\Mail\MailerAbstract
      */
     protected $mailer;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -82,10 +84,10 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->mailElements->setForm($bridge->getForm());
         $this->initItems();
@@ -171,15 +173,15 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Model_CommtemplateModel) 
+        if ($this->model instanceof \Gems\Model\CommtemplateModel) 
         {
             $sub = $this->model->get('gctt', 'model');
             
-            if ($sub instanceof \MUtil_Model_ModelAbstract && (! $sub->has('preview_html'))) {
+            if ($sub instanceof \MUtil\Model\ModelAbstract && (! $sub->has('preview_html'))) {
                 $sub->set('preview_html', 'label', $this->_('Preview HTML'),
                     'elementClass', 'Html',
                     'noHidden', true
@@ -207,8 +209,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
             $allLanguages = $this->util->getLocalized()->getLanguages();
         }
 
-        $htmlView = \MUtil_Html::create()->div();
-        $textView = \MUtil_Html::create()->div();
+        $htmlView = \MUtil\Html::create()->div();
+        $textView = \MUtil\Html::create()->div();
 
         foreach($templateArray as &$template) {
             $content = '';
@@ -230,10 +232,10 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
                 $content .= "[/i]\n\n";
                 $content .= $this->mailer->applyFields($template['gctt_body']);
 
-                $template['preview_html'] = \MUtil_Html::create()->div(['class' => 'mailpreview']);
-                $template['preview_html']->raw(\MUtil_Markup::render($content, 'Bbcode', 'Html'));
-                $template['preview_text'] = \MUtil_Html::create()->pre(['class' => 'mailpreview']);
-                $template['preview_text']->raw(wordwrap(\MUtil_Markup::render($content, 'Bbcode', 'Text'), 80));
+                $template['preview_html'] = \MUtil\Html::create()->div(['class' => 'mailpreview']);
+                $template['preview_html']->raw(\MUtil\Markup::render($content, 'Bbcode', 'Html'));
+                $template['preview_text'] = \MUtil\Html::create()->pre(['class' => 'mailpreview']);
+                $template['preview_text']->raw(wordwrap(\MUtil\Markup::render($content, 'Bbcode', 'Text'), 80));
 
                 $htmlView->append($template['preview_html']);
                 $textView->append($template['preview_text']);
@@ -324,12 +326,12 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
 
             if (! empty($this->formData['preview'])) {
                 $this->addMessage($this->_('Preview updated'));
-                \MUtil_Echo::track(array_keys($this->formData), $this->formData['select_template']);
+                \MUtil\EchoOut\EchoOut::track(array_keys($this->formData), $this->formData['select_template']);
                 return;
             }
 
             if (! empty($this->formData['sendtest'])) {
-                // \MUtil_Echo::track(array_keys($this->formData['gctt'][1]), $this->formData['send_language']);
+                // \MUtil\EchoOut\EchoOut::track(array_keys($this->formData['gctt'][1]), $this->formData['send_language']);
                 $this->mailer->setTo($this->formData['to']);
 
                 // Make sure at least one template is set (for single language projects)
@@ -342,7 +344,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends \Gems_Snippets_ModelFormSn
                     }
                 }
 
-                // \MUtil_Echo::track($this->formData);
+                // \MUtil\EchoOut\EchoOut::track($this->formData);
                 $errors = false;
                 if (! $template['gctt_subject']) {
                     $this->addMessage(sprintf(

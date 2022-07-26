@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldTypeChangeableDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;
@@ -104,7 +103,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
 
             if (isset($context[$fieldName])) {
                 $sql = $this->getSql($context[$fieldName]);
-                $fid = $this->request->getParam(\Gems_Model::FIELD_ID);
+                $fid = $this->request->getParam(\Gems\Model::FIELD_ID);
 
                 if ($sql && $fid) {
                     $subChange = ! $this->db->fetchOne($sql, $fid);

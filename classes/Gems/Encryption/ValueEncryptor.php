@@ -29,7 +29,7 @@ class ValueEncryptor
 
             if (! isset($methods[$methodKey])) {
                 $error = sprintf("Encryption method '%s' not defined in project.ini.", $methodKey);
-                throw new \Gems_Exception_Coding($error);
+                throw new \Gems\Exception\Coding($error);
             }
 
             $method = $methods[$methodKey];

@@ -51,13 +51,13 @@ class OtherFieldValuesDependency extends DependencyAbstract
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -75,9 +75,9 @@ class OtherFieldValuesDependency extends DependencyAbstract
     /**
      * Use this function for a default application of this dependency to the model
      *
-     * @param \MUtil_Model_ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
+     * @param \MUtil\Model\ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
      */
-    public function applyToModel(\MUtil_Model_ModelAbstract $model)
+    public function applyToModel(\MUtil\Model\ModelAbstract $model)
     {
         $model->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
     }

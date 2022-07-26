@@ -24,8 +24,8 @@ interface ProcessModelInterface
     /**
      * Allow changes to the model
      *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return \MUtil_Model_ModelAbstract
+     * @param \MUtil\Model\ModelAbstract $model
+     * @return \MUtil\Model\ModelAbstract
      */
-    public function processModel(\MUtil_Model_ModelAbstract $model);
+    public function processModel(\MUtil\Model\ModelAbstract $model);
 }

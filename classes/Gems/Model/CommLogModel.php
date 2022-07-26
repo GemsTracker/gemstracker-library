@@ -22,11 +22,11 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 12:55:25
  */
-class CommLogModel extends \Gems_Model_HiddenOrganizationModel
+class CommLogModel extends \Gems\Model\HiddenOrganizationModel
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -38,7 +38,7 @@ class CommLogModel extends \Gems_Model_HiddenOrganizationModel
     protected $request;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -130,12 +130,12 @@ class CommLogModel extends \Gems_Model_HiddenOrganizationModel
         $this->resetOrder();
 
         $this->set('grco_created',    'label', $this->_('Date sent'),
-            'dateFormat', \Gems_Tracker::DB_DATETIME_FORMAT);
+            'dateFormat', \Gems\Tracker::DB_DATETIME_FORMAT);
         $this->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
         $this->set('respondent_name', 'label', $this->_('Receiver'));
-        $this->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
+        $this->set('grco_address',    'label', $this->_('To address'), 'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'));
         $this->set('assigned_by',     'label', $this->_('Sender'));
-        $this->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', array('MUtil_Html_AElement', 'ifmail'));
+        $this->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'));
         $this->set('grco_id_token',   'label', $this->_('Token'), 'itemDisplay', array($this, 'displayToken'));
         $this->set('grco_topic',      'label', $this->_('Subject'));
         $this->set('gtr_track_name',  'label', $this->_('Track'));
@@ -162,30 +162,30 @@ class CommLogModel extends \Gems_Model_HiddenOrganizationModel
     public function formatJob($jobDescr, $jobId = null)
     {
         if ($jobId) {
-            $url = new \MUtil_Html_HrefArrayAttribute(array(
+            $url = new \MUtil\Html\HrefArrayAttribute(array(
                 $this->request->getControllerKey() => 'comm-job',
                 $this->request->getActionKey()     => 'show',
-                \MUtil_Model::REQUEST_ID           => $jobId,
+                \MUtil\Model::REQUEST_ID           => $jobId,
             ));
 
 
-            return \MUtil_Html::create('a', $url, $jobDescr);
+            return \MUtil\Html::create('a', $url, $jobDescr);
         }
 
-        return \MUtil_Html::create('em', $this->_('manual'));
+        return \MUtil\Html::create('em', $this->_('manual'));
     }
 
     public function displayToken($token)
     {
         if ($token) {
-            $url = new \MUtil_Html_HrefArrayAttribute(array(
+            $url = new \MUtil\Html\HrefArrayAttribute(array(
                 $this->request->getControllerKey() => 'track',
                 $this->request->getActionKey()     => 'show',
-                \MUtil_Model::REQUEST_ID           => $token,
+                \MUtil\Model::REQUEST_ID           => $token,
                 ));
 
 
-            return \MUtil_Html::create('a', $url, $token);
+            return \MUtil\Html::create('a', $url, $token);
         }
     }
 

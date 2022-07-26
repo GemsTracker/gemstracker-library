@@ -20,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 23-apr-2015 12:34:48
  */
-class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
@@ -45,7 +45,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -91,26 +91,26 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
     
     /**
      * Required
      *
-     * @var \Gems_Tracker_RespondentTrack The currently selected respondent track, required for save
+     * @var \Gems\Tracker\RespondentTrack The currently selected respondent track, required for save
      */
     protected $respondentTrack;
 
     /**
      * Required
      *
-     * @var array of \Gems_Tracker_RespondentTrack Respondent Track
+     * @var array of \Gems\Tracker\RespondentTrack Respondent Track
      */
     protected $respondentTracks = [];
     
@@ -123,7 +123,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
     /**
      *
-     * @var array of surveyId => \Gems_Tracker_Survey
+     * @var array of surveyId => \Gems\Tracker\Survey
      */
     protected $surveys = [];
 
@@ -136,13 +136,13 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * The newly create token
      *
-     * @var array of \Gems_Tracker_Token
+     * @var array of \Gems\Tracker\Token
      */
     protected $tokens = [];
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -154,7 +154,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -183,8 +183,8 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         parent::afterRegistry();
 
         $this->respondent = $this->loader->getRespondent(
-            $this->request->getParam(\MUtil_Model::REQUEST_ID1), 
-            $this->request->getParam(\MUtil_Model::REQUEST_ID2)
+            $this->request->getParam(\MUtil\Model::REQUEST_ID1), 
+            $this->request->getParam(\MUtil\Model::REQUEST_ID2)
         );
 
         if ($this->insertMultipleSurveys) {
@@ -199,13 +199,13 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
         $model = $this->tracker->getTokenModel();
 
-        if ($model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+        if ($model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model->addEditTracking();
 
             if ($this->createData) {
@@ -306,7 +306,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
         $select->order('round_order');
 
-        // \MUtil_Echo::track((string) $select);
+        // \MUtil\EchoOut\EchoOut::track((string) $select);
         
         return $select;
     }
@@ -328,7 +328,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $groupIds = [];
         if ($this->surveys) {
             foreach ($this->surveys as $survey) {
-                if ($survey instanceof \Gems_Tracker_Survey) {
+                if ($survey instanceof \Gems\Tracker\Survey) {
                     $groupIds[$survey->getGroupId()] = $survey->getGroupId();
                 }
             }
@@ -430,10 +430,10 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     }
 
     /**
-     * @param \Gems_Tracker_RespondentTrack $respondentTrack
+     * @param \Gems\Tracker\RespondentTrack $respondentTrack
      * @return bool
      */
-    protected function includeTrack(\Gems_Tracker_RespondentTrack $respondentTrack)
+    protected function includeTrack(\Gems\Tracker\RespondentTrack $respondentTrack)
     {
         return $respondentTrack->getReceptionCode()->isSuccess(); 
     }
@@ -446,7 +446,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         if (is_null($this->_items)) {
             $this->_items = array_merge(
                     $this->formItems,
-                    $this->getModel()->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                    $this->getModel()->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
@@ -455,7 +455,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     }
 
     /**
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
     protected function initTracks()
     {
@@ -467,7 +467,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $this->tracksList       = [];
         
         foreach ($this->respondentTracks as $respTrack) {
-            if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+            if ($respTrack instanceof \Gems\Tracker\RespondentTrack) {
                 if ($this->includeTrack($respTrack)) {
                     $this->tracksList[$respTrack->getRespondentTrackId()] = substr(sprintf(
                                     $this->_('%s - %s'),
@@ -488,7 +488,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function isAnySurveyTakenByRespondents()
     {
         foreach ($this->surveys as $survey) {
-            if ($survey instanceof \Gems_Tracker_Survey) {
+            if ($survey instanceof \Gems\Tracker\Survey) {
                 if (! $survey->isTakenByStaff()) {
                     return true;
                 }
@@ -505,7 +505,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     protected function loadFormData()
     {
         if ($this->createData && (! $this->request->isPost())) {
-            $surveyId = $this->request->getParam(\Gems_Model::SURVEY_ID);
+            $surveyId = $this->request->getParam(\Gems\Model::SURVEY_ID);
             if ($surveyId) {
                 if ($this->insertMultipleSurveys) {
                     $surveyIds = [$surveyId];
@@ -526,9 +526,9 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 'gto_id_respondent'      => $this->respondent->getId(),
                 'respondent_name'        => $this->respondent->getName(),
                 'gto_id_survey'          => $surveyIds,
-                'gto_id_track'           => $this->request->getParam(\Gems_Model::TRACK_ID),
+                'gto_id_track'           => $this->request->getParam(\Gems\Model::TRACK_ID),
                 'gto_valid_from_manual'  => 1,
-                'gto_valid_from'         => new \MUtil_Date(),
+                'gto_valid_from'         => new \MUtil\Date(),
                 'gto_valid_until_manual' => 0,
                 'gto_valid_until'        => null, // Set in loadSurvey
                 );
@@ -543,7 +543,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         $this->loadTrackSettings();
         $this->loadRoundSettings();
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
     }
 
     /**
@@ -599,7 +599,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
 
             if (!(isset($this->formData['gto_valid_until_manual']) && $this->formData['gto_valid_until_manual'])) {
                 foreach ($this->surveys as $survey) {
-                    if ($survey instanceof \Gems_Tracker_Survey) {
+                    if ($survey instanceof \Gems\Tracker\Survey) {
                         // Just use the date of the first select survey
                         // No theory about this, will usually be 6 months
                         $this->formData['gto_valid_until'] = $survey->getInsertDateUntil($this->formData['gto_valid_from']);
@@ -690,7 +690,7 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
         foreach ((array) $this->formData['gto_id_survey'] as $surveyId) {
             $survey = $this->tracker->getSurvey($surveyId);
             
-            if ($survey instanceof \Gems_Tracker_Survey) {
+            if ($survey instanceof \Gems\Tracker\Survey) {
                 // We may have a mix of relation and non/relation fields
                 if ($survey->isTakenByStaff()) {
                     unset($tokenData['gto_id_relationfield']);
@@ -723,15 +723,15 @@ class InsertSurveySnippet extends \Gems_Snippets_ModelFormSnippetAbstract
                 $this->afterSaveRouteUrl = [
                     $this->request->getControllerKey() => 'track',
                     $this->request->getActionKey()     => $this->routeAction,
-                    \MUtil_Model::REQUEST_ID           => $token->getTokenId(),
+                    \MUtil\Model::REQUEST_ID           => $token->getTokenId(),
                     ];
             } else {
                 // For multiple surveys
                 $this->afterSaveRouteUrl = [
                     $this->request->getControllerKey() => 'respondent',
                     $this->request->getActionKey()     => 'show',
-                    \MUtil_Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
-                    \MUtil_Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
+                    \MUtil\Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
+                    \MUtil\Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
                 ];
             }
         }

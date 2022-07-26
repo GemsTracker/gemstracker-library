@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UpdateSyncDate.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker;
@@ -21,7 +20,7 @@ namespace Gems\Task\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 7-mei-2015 18:33:11
  */
-class UpdateSyncDate extends \MUtil_Task_TaskAbstract
+class UpdateSyncDate extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -37,7 +36,7 @@ class UpdateSyncDate extends \MUtil_Task_TaskAbstract
      */
     public function execute($sourceId = null, $userId = null)
     {
-        $now    = new \MUtil_Db_Expr_CurrentTimestamp();
+        $now    = new \MUtil\Db\Expr\CurrentTimestamp();
         $values = array('gso_last_synch' => $now, 'gso_changed' => $now, 'gso_changed_by' => $userId);
         $where  = $this->db->quoteInto('gso_id_source = ?', $sourceId);
 

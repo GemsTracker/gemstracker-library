@@ -20,8 +20,8 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Apr 6, 2016 11:21:11 AM
  */
-class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
-    implements \Gems_Event_SurveyCompletedEventInterface
+class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
+    implements \Gems\Event\SurveyCompletedEventInterface
 {
     /**
      *
@@ -31,7 +31,7 @@ class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -50,10 +50,10 @@ class SetInformedConsent extends \MUtil_Translate_TranslateableAbstract
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems_Tracker_Token $token)
+    public function processTokenData(\Gems\Tracker\Token $token)
     {
         if (! $token->getReceptionCode()->isSuccess()) {
             return;

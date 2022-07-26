@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Project;
+
 /**
- * Class that extends Array object to add Gems specific functions.
+ * Class that extends Array object to add \Gems specific functions.
  *
  * @package    Gems
  * @subpackage Project
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Project_ProjectSettings extends \ArrayObject
+class ProjectSettings extends \ArrayObject
 {
     /**
      * The db adapter for the responses
@@ -177,9 +179,9 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         }
 
         // Chek for https
-        if (!\MUtil_Https::on()) {
+        if (!\MUtil\Https::on()) {
             if ($this->isHttpsRequired()) {
-                \MUtil_Https::enforce();
+                \MUtil\Https::enforce();
             }
         }
 
@@ -189,7 +191,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             } else {
                 $error = sprintf("Missing required project settings: '%s'.", implode("', '", $missing));
             }
-            throw new \Gems_Exception_Coding($error);
+            throw new \Gems\Exception\Coding($error);
         }
 
         $superPassword = $this->getSuperAdminPassword();
@@ -197,7 +199,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
                 $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
                 $error = sprintf("Project setting 'admin.pwd' is shorter than %d characters. That is not allowed.", $this->minimumSuperPasswordLength);
-                throw new \Gems_Exception_Coding($error);
+                throw new \Gems\Exception\Coding($error);
             }
         }
     }
@@ -232,7 +234,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
 
             if (! isset($methods[$mkey])) {
                 $error = sprintf("Encryption method '%s' not defined in project.ini.", $mkey);
-                throw new \Gems_Exception_Coding($error);
+                throw new \Gems\Exception\Coding($error);
             }
 
             $method = $methods[$mkey];
@@ -507,7 +509,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
         }
 
         $file = trim($this->cron['logfile']);
-        if (\MUtil_File::isRootPath($file)) {
+        if (\MUtil\File::isRootPath($file)) {
             return $file;
         }
         return GEMS_ROOT_DIR . '/var/logs/' . $file;
@@ -783,9 +785,9 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
-     * Get the logLevel to use with the \Gems_Log
+     * Get the logLevel to use with the \Gems\Log
      *
-     * Default settings is for development and testing environment to use \Zend_Log::DEBUG and
+     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
      * for all other environments to use the \Zend_Log::ERR level. This can be overruled by
      * specifying a logLevel in the project.ini
      *
@@ -807,9 +809,9 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     }
 
     /**
-     * Return the default logLevel to use with the \Gems_Log
+     * Return the default logLevel to use with the \Gems\Log
      *
-     * Default settings is for development and testing environment to use \Zend_Log::DEBUG and
+     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
      * for all other environments to use the \Zend_Log::ERR level. This can be overruled by
      * specifying a logLevel in the project.ini
      *
@@ -962,7 +964,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
     {
         // Process the codes array to a format better used for filtering
         $codes = array_change_key_case(array_flip(array_filter($codes)));
-        // \MUtil_Echo::track($codes);
+        // \MUtil\EchoOut\EchoOut::track($codes);
 
         $rules = array();
         if ($this->offsetExists('passwords') && is_array($this->passwords)) {
@@ -1228,7 +1230,7 @@ class Gems_Project_ProjectSettings extends \ArrayObject
             $salted = sprintf($salt, $value);
         }
 
-        // \MUtil_Echo::track($value, md5($salted));
+        // \MUtil\EchoOut\EchoOut::track($value, md5($salted));
         if (null == $algorithm) {
             return md5($salted, false);
         }

@@ -36,7 +36,7 @@ class EmbeddedUserData extends \ArrayObject
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -44,9 +44,9 @@ class EmbeddedUserData extends \ArrayObject
      * Creates the class for this embedded user opject
      *
      * @param mixed $settings Array, \Zend_Session_Namespace or \ArrayObject for this user.
-     * @param \Gems_User_UserDefinitionInterface $definition The user class definition.
+     * @param \Gems\User\UserDefinitionInterface $definition The user class definition.
      */
-    public function __construct($userId, \Zend_Db_Adapter_Abstract $db, \Gems_Loader $loader)
+    public function __construct($userId, \Zend_Db_Adapter_Abstract $db, \Gems\Loader $loader)
     {
         $this->offsetSet('user_id', $userId);
 
@@ -92,11 +92,11 @@ class EmbeddedUserData extends \ArrayObject
     /**
      * Shortcut function to get the deferred user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @param string $deferredLogin name of the user to log in
      * @return \Gems_User_user|null
      */
-    public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
+    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin)
     {
         $userLoader = $this->getUserLoader();
 

@@ -7,7 +7,7 @@ namespace Gems\Util;
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class MonitorTest extends \Gems_Test_DbTestAbstract
+class MonitorTest extends \Gems\Test\DbTestAbstract
 {
 
     /**
@@ -31,12 +31,12 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         $settings         = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $settings         = $settings->toArray();
         $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-        $project          = new \Gems_Project_ProjectSettings($settings);
+        $project          = new \Gems\Project\ProjectSettings($settings);
         $this->project    = $project;
 
         $this->util = $this->loader->getUtil();
         $cache      = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
-        $roles      = new \Gems_Roles($cache);
+        $roles      = new \Gems\Roles($cache);
         $acl        = $roles->getAcl();
 
         $dbLookup = $this->util->getDbLookup();
@@ -54,7 +54,7 @@ class MonitorTest extends \Gems_Test_DbTestAbstract
         \Zend_Mail::setDefaultTransport($this->transport);
         
         // Make sure the lock file can be written, not a problem outside test situations
-        \MUtil_File::ensureDir(GEMS_ROOT_DIR . '/var/settings');
+        \MUtil\File::ensureDir(GEMS_ROOT_DIR . '/var/settings');
     }
     
     public static function tearDownAfterClass()

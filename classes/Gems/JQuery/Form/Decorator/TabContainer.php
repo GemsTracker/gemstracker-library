@@ -4,8 +4,9 @@
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery\Form\Decorator;
 
 /**
  * Takes care of rendering tabs
@@ -18,7 +19,7 @@
  * @package Gems
  * @subpackage JQuery
  */
-class Gems_JQuery_Form_Decorator_TabContainer extends \ZendX_JQuery_Form_Decorator_TabContainer
+class TabContainer extends \ZendX_JQuery_Form_Decorator_TabContainer
 {
     /**
      * Render an jQuery UI Widget element using its associated view helper

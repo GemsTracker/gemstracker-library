@@ -19,17 +19,17 @@ namespace Gems\Snippets\Mail\Log;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -39,11 +39,11 @@ class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -58,9 +58,9 @@ class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
         }
 
         // Newline placeholder
-        $br = \MUtil_Html::create('br');
-        $by = \MUtil_Html::raw($this->_(' / '));
-        $sp = \MUtil_Html::raw('&nbsp;');
+        $br = \MUtil\Html::create('br');
+        $by = \MUtil\Html::raw($this->_(' / '));
+        $sp = \MUtil\Html::raw('&nbsp;');
 
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -76,12 +76,12 @@ class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
         if ($this->showMenu) {
             $items  = $this->findMenuItems('track', 'show');
             $links  = array();
-            $params = array('gto_id_token'  => $bridge->gto_id_token, \Gems_Model::ID_TYPE => 'token');
-            $title  = \MUtil_Html::create('strong', $this->_('+'));
+            $params = array('gto_id_token'  => $bridge->gto_id_token, \Gems\Model::ID_TYPE => 'token');
+            $title  = \MUtil\Html::create('strong', $this->_('+'));
 
 
             foreach ($items as $item) {
-                if ($item instanceof \Gems_Menu_SubMenuItem) {
+                if ($item instanceof \Gems\Menu\SubMenuItem) {
                     $bridge->addItemLink($item->toActionLinkLower($this->request, $params, $title));
                 }
             }
@@ -92,7 +92,7 @@ class MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
         $td = $tbody[0][0];
         $td->appendAttrib(
                 'class',
-                \MUtil_Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->getLazy('status'))
+                \MUtil\Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->getLazy('status'))
                 );
     }
 }

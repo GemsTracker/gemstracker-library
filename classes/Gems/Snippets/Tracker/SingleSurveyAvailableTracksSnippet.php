@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SingleSurveyAvailableTracksSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -33,14 +32,14 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
     /**
      * The respondent2track
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -57,14 +56,14 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
-        return ($this->respondent instanceof \Gems_Tracker_Respondent) &&
+        return ($this->respondent instanceof \Gems\Tracker\Respondent) &&
                 $this->respondent->exists &&
-                (! ($this->multiTracks || ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack)));
+                (! ($this->multiTracks || ($this->respondentTrack instanceof \Gems\Tracker\RespondentTrack)));
     }
 }

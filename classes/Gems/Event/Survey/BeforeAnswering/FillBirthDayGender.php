@@ -34,9 +34,9 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
-    protected function processOutput(\Gems_Tracker_Token $token)
+    protected function processOutput(\Gems\Tracker\Token $token)
     {
         $this->log("Filling gt respondent fields");
 
@@ -44,7 +44,7 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
         $this->addCheckedValue('gtRespondentNr', $respondent->getPatientNumber());
 
         $birthDay   = $respondent->getBirthday();
-        if ($birthDay instanceof \MUtil_Date) {
+        if ($birthDay instanceof \MUtil\Date) {
             $now  = new \DateTimeImmutable();
             $then = $birthDay->getDateTime();
 

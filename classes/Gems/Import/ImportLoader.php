@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ImportLoader.php$
  */
+
+namespace Gems\Import;
 
 /**
  * The import loader is used to gather all the GemsTracker specific knowledge
@@ -20,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
+class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
      *
@@ -29,7 +30,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
     protected $_orgCode;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -39,25 +40,25 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
 
@@ -71,11 +72,11 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * as opposed to the generic answer translators loaded
      * using $this->getTranslators('answers')
      *
-     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems\Tracker\Survey $survey
      * @param string $filename Optional, name of file to import
      * @return array name => translator
      */
-    public function getAnswerImporters(\Gems_Tracker_Survey $survey, $filename = null)
+    public function getAnswerImporters(\Gems\Tracker\Survey $survey, $filename = null)
     {
         return array();
     }
@@ -84,7 +85,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * The model to use with a controller
      *
      * @param string $controller Name of controller (or other id)
-     * @return \MUtil_Model_ModelAbstract or null when not found
+     * @return \MUtil\Model\ModelAbstract or null when not found
      */
     protected function getControllerTargetModel($controller)
     {
@@ -131,7 +132,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $filename Name of file to import
-     * @return \Gems_Import_Importer or null
+     * @return \Gems\Import\Importer or null
      */
     public function getFileImporter($filename)
     {
@@ -193,14 +194,14 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $controller Name of controller (or other id)
-     * @param \MUtil_Model_ModelAbstract $targetModel
-     * @return \Gems_Import_Importer
+     * @param \MUtil\Model\ModelAbstract $targetModel
+     * @return \Gems\Import\Importer
      */
-    public function getImporter($controller, \MUtil_Model_ModelAbstract $targetModel = null)
+    public function getImporter($controller, \MUtil\Model\ModelAbstract $targetModel = null)
     {
         $importer = $this->_loadClass('Importer', true);
 
-        if ($importer instanceof \Gems_Import_Importer) {
+        if ($importer instanceof \Gems\Import\Importer) {
             $importer->setRegistrySource($this);
 
             $importer->setFailureDirectory($this->getFailureDirectory($controller));
@@ -225,7 +226,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
         if (! $this->_orgCode) {
             $this->_orgCode = $this->currentOrganization->getCode();
             if (! $this->_orgCode) {
-                $this->_orgCode = \MUtil_File::cleanupName($this->currentOrganization->getName());
+                $this->_orgCode = \MUtil\File::cleanupName($this->currentOrganization->getName());
             }
 
         }
@@ -237,7 +238,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * The file name to use for final storage, minus the extension
      *
      * @param string $controller Name of controller (or other id)
-     * @param mixed $dateValue Optional date item to use in filename, timestamp, or DateObject or MUtil_Date
+     * @param mixed $dateValue Optional date item to use in filename, timestamp, or DateObject or \MUtil\Date
      * @return string
      */
     public function getLongtermFileName($controller, $dateValue = null)
@@ -245,7 +246,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
         if ($dateValue instanceof \Zend_Date) {
             $date = $dateValue;
         } else {
-            $date = new \MUtil_Date($dateValue);
+            $date = new \MUtil\Date($dateValue);
         }
 
         $name[] = $controller;
@@ -290,7 +291,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
         }
 
         if (! $this->translate instanceof \Zend_Translate_Adapter) {
-            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
+            $this->translate = new \MUtil\Translate\Adapter\Potemkin();
         }
 
         return $this->translate;
@@ -301,7 +302,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $controller Name of controller (or other id)
      * @param string $filename Optional, name of file to import
-     * @return \MUtil_Model_ModelTranslatorInterface[]
+     * @return \MUtil\Model\ModelTranslatorInterface[]
      */
     public function getTranslators($controller, $filename = null)
     {
@@ -309,31 +310,31 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
 
         switch ($controller) {
             case 'answers':
-                $output['default'] = new \Gems_Model_Translator_TokenAnswerTranslator(
+                $output['default'] = new \Gems\Model\Translator\TokenAnswerTranslator(
                         $translator->_('Link by token id')
                         );
-                $output['resp']    = new \Gems_Model_Translator_RespondentAnswerTranslator(
+                $output['resp']    = new \Gems\Model\Translator\RespondentAnswerTranslator(
                         $translator->_('Link by patient id')
                         );
-                $output['date']    = new \Gems_Model_Translator_DateAnswerTranslator(
+                $output['date']    = new \Gems\Model\Translator\DateAnswerTranslator(
                         $translator->_('Link by patient id and completion date')
                         );
                 break;
 
             case 'calendar':
-                $output['default'] = new \Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems\Model\Translator\AppointmentTranslator($translator->_('Direct import'));
                 break;
 
             case 'respondent':
-                $output['default'] = new \Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems\Model\Translator\RespondentTranslator($translator->_('Direct import'));
                 break;
 
             case 'staff':
-                $output['default'] = new \Gems_Model_Translator_StaffTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems\Model\Translator\StaffTranslator($translator->_('Direct import'));
                 break;
 
             default:
-                $output['default'] = new \Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
+                $output['default'] = new \Gems\Model\Translator\StraightTranslator($translator->_('Direct import'));
                 break;
         }
 
@@ -348,7 +349,7 @@ class Gems_Import_ImportLoader extends \Gems_Loader_TargetLoaderAbstract
      * Set the organization name/code used by the long term filename
      *
      * @param string $code
-     * @return \Gems_Import_ImportLoader (continuation pattern)
+     * @return \Gems\Import\ImportLoader (continuation pattern)
      */
     public function setOrganizationCode($code)
     {

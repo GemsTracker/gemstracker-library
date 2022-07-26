@@ -20,11 +20,11 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract {
+class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract {
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -50,7 +50,7 @@ class ConditionDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetA
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -67,11 +67,11 @@ class ConditionDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetA
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($model instanceof \Gems\Model\ConditionModel) {
             $this->useCount = $model->getUsedCount($this->conditionId);

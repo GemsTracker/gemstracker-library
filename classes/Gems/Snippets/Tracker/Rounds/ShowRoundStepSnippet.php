@@ -19,7 +19,7 @@ namespace Gems\Snippets\Tracker\Rounds;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstract
+class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstract
 {
     /**
      *
@@ -28,11 +28,11 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
     private $_roundData;
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      *
@@ -46,7 +46,7 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
      */
     protected $trackUsage = false;
 
-    private function _addIf(array $names, \MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    private function _addIf(array $names, \MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         foreach ($names as $name) {
             if ($model->has($name, 'label')) {
@@ -61,15 +61,15 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->_roundData = $bridge->getRow();
 
-        if ($this->trackEngine instanceof \Gems_Tracker_Engine_StepEngineAbstract) {
+        if ($this->trackEngine instanceof \Gems\Tracker\Engine\StepEngineAbstract) {
             $this->trackEngine->updateRoundModelToItem($model, $this->_roundData, $this->locale->getLanguage());
         }
 
@@ -122,11 +122,11 @@ class ShowRoundStepSnippet extends \Gems_Tracker_Snippets_ShowRoundSnippetAbstra
     /**
      * Function that allows for overruling the repeater loading.
      *
-     * @param \MUtil_Model_ModelAbstract $model
-     * @return \MUtil_Lazy_RepeatableInterface
+     * @param \MUtil\Model\ModelAbstract $model
+     * @return \MUtil\Lazy\RepeatableInterface
      */
-    public function getRepeater(\MUtil_Model_ModelAbstract $model)
+    public function getRepeater(\MUtil\Model\ModelAbstract $model)
     {
-        return new \MUtil_Lazy_Repeatable(array($this->_roundData));
+        return new \MUtil\Lazy\Repeatable(array($this->_roundData));
     }
 }

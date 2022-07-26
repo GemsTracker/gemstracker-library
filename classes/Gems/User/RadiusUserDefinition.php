@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 /**
  * Delegates authentication to the Radius server
  *
@@ -22,21 +24,21 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition implements \Gems_User_UserDefinitionConfigurableInterface
+class RadiusUserDefinition extends \Gems\User\StaffUserDefinition implements \Gems\User\UserDefinitionConfigurableInterface
 {
     /**
-     * @var \Gems_Model_JoinModel
+     * @var \Gems\Model\JoinModel
      */
     protected $_configModel;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -48,9 +50,9 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param \MUtil_Model_ModelAbstract $orgModel
+     * @param \MUtil\Model\ModelAbstract $orgModel
      */
-    public function addConfigFields(\MUtil_Model_ModelAbstract $orgModel)
+    public function addConfigFields(\MUtil\Model\ModelAbstract $orgModel)
     {
         $configModel = $this->getConfigModel(true);
         $order       = $orgModel->getOrder('gor_user_class') + 1;
@@ -67,10 +69,10 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(\Gems_User_User $user = null)
+    public function canResetPassword(\Gems\User\User $user = null)
     {
         return false;
     }
@@ -81,10 +83,10 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(\Gems_User_User $user = null)
+    public function canSetPassword(\Gems\User\User $user = null)
     {
         return false;
     }
@@ -92,23 +94,23 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     /**
      * We never need a rehash
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param type $password
      * @return boolean
      */
-    public function checkRehash(\Gems_User_User $user, $password)
+    public function checkRehash(\Gems\User\User $user, $password)
     {
         return false;
     }
 
     /**
-     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
+     * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password
-     * @return Laminas\Authentication\Adapter\AdapterInterface
+     * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems_User_User $user, $password)
+    public function getAuthAdapter(\Gems\User\User $user, $password)
     {
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
@@ -123,7 +125,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
                 unset($config[$key]);
             }
         }
-        $adapter = new \Gems_User_Adapter_Radius($config);
+        $adapter = new \Gems\User\Adapter\Radius($config);
 
         $adapter->setIdentity($user->getLoginName())
                 ->setCredential($password);
@@ -143,13 +145,13 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
      * Get a model to store the config
      *
      * @param boolean $valueMask MAsk the password or if false decrypt it
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     protected function getConfigModel($valueMask = true)
     {
         if (!$this->_configModel) {
-            $model = new \MUtil_Model_TableModel('gems__radius_config', 'config');
-            // $model = new \Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
+            $model = new \MUtil\Model\TableModel('gems__radius_config', 'config');
+            // $model = new \Gems\Model\JoinModel('config', 'gems__radius_config', 'grcfg');
 
             $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'), 'required', true);
             $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'), 'required', true);
@@ -161,7 +163,7 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
                     'repeatLabel', $this->translate->_('Repeat password')
                     );
 
-            $type = new \Gems_Model_Type_EncryptedField($this->project, $valueMask);
+            $type = new \Gems\Model\Type\EncryptedField($this->project, $valueMask);
             $type->apply($model, 'grcfg_secret');
 
             $this->_configModel = $model;
@@ -173,16 +175,16 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     /**
      * Return a password reset key, never reached as we can not reset the password
      *
-     * @param \Gems_User_User $user The user to create a key for.
+     * @param \Gems\User\User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems_User_User $user)
+    public function getPasswordResetKey(\Gems\User\User $user)
     {
         return null;
     }
 
     /**
-     * Copied from \Gems_User_StaffUserDefinition but left out the password link
+     * Copied from \Gems\User\StaffUserDefinition but left out the password link
      *
      * @param type $login_name
      * @param type $organization
@@ -250,10 +252,10 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
      *
      * Seems to be only used on changing a password, so will probably never be reached
      *
-     * @param \Gems_User_User $user The user to check
+     * @param \Gems\User\User $user The user to check
      * @return boolean
      */
-    public function hasPassword(\Gems_User_User $user)
+    public function hasPassword(\Gems\User\User $user)
     {
        return true;
     }
@@ -296,13 +298,13 @@ class Gems_User_RadiusUserDefinition extends \Gems_User_StaffUserDefinition impl
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems_User_User $user The user whose password to change
+     * @param \Gems\User\User $user The user whose password to change
      * @param string $password
-     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(\Gems_User_User $user, $password)
+    public function setPassword(\Gems\User\User $user, $password)
     {
-        throw new \Gems_Exception_Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
+        throw new \Gems\Exception\Coding(sprintf('The password cannot be set for %s users.', get_class($this)));
         return $this;
     }
 }

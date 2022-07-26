@@ -4,8 +4,9 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form\Decorator;
 
 /**
  * Render a tooltip as a jQuery tooltip
@@ -15,7 +16,7 @@
  * @package Gems
  * @subpackage Form
  */
-class Gems_Form_Decorator_Tooltip extends \Zend_Form_Decorator_Abstract
+class Tooltip extends \Zend_Form_Decorator_Abstract
 {
     /**
      * Whether or not to escape the description
@@ -198,7 +199,7 @@ class Gems_Form_Decorator_Tooltip extends \Zend_Form_Decorator_Abstract
      * Set whether or not to escape tooltip
      *
      * @param  bool $flag
-     * @return \Gems_Form_Decorator_Tooltip
+     * @return \Gems\Form\Decorator\Tooltip
      */
     public function setEscape($flag)
     {

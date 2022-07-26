@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackFieldExportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Export;
@@ -42,7 +41,7 @@ class TrackFieldExportTask extends TrackExportAbstract
 
         $filter['gtf_id_track'] = $trackId;
         $data = $model->loadFirst($filter);
-        // \MUtil_Echo::track($fieldKey, $data);
+        // \MUtil\EchoOut\EchoOut::track($fieldKey, $data);
 
         if ($data) {
             unset($data['sub'], $data['gtf_id_field'], $data['gtf_id_track'],

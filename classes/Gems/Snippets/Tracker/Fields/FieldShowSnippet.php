@@ -20,7 +20,7 @@ use Gems\Tracker\Field\FieldInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
+class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
 {
     /**
      * @return \Zend_Db_Adapter_Abstract
@@ -28,7 +28,7 @@ class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -49,11 +49,11 @@ class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
-//        $fid  = $this->request->getParam(\Gems_Model::FIELD_ID);
+//        $fid  = $this->request->getParam(\Gems\Model::FIELD_ID);
 //        $prev = $this->db->fetchOne(
 //            "SELECT gcj_id_job FROM gems__comm_jobs 
 //                WHERE gcj_id_order < (SELECT gcj_id_order FROM gems__comm_jobs WHERE gcj_id_job = ?) 
@@ -66,9 +66,9 @@ class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
 //            $fid) ?: null;
 //
 //        $this->loader
-        $fid  = $this->request->getParam(\Gems_Model::FIELD_ID);
+        $fid  = $this->request->getParam(\Gems\Model::FIELD_ID);
         $sub  = $this->request->getParam('sub');
-        $tid  = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        $tid  = $this->request->getParam(\MUtil\Model::REQUEST_ID);
 
         $trackEngine = $this->loader->getTracker()->getTrackEngine($tid);
         $fieldDef    = $trackEngine->getFieldsDefinition();
@@ -102,17 +102,17 @@ class FieldShowSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
             }
         }
         
-        // \MUtil_Echo::track($tid, $fid, $prev, $next);
+        // \MUtil\EchoOut\EchoOut::track($tid, $fid, $prev, $next);
         
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil_Html::raw($this->_('&lt; Previous')), $prev));
+        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('&lt; Previous')), $prev));
         $links->addCurrentParent($this->_('Cancel'));
         $links->addCurrentChildren();
         $links->addCurrentSiblings();
 
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil_Html::raw($this->_('Next &gt;')), $next));
+        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('Next &gt;')), $next));
 
         return $links;
     }

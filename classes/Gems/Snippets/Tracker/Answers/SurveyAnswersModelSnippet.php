@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Tracker\Answers;
 
 /**
  * Show all tokens of a certain survey type
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet extends \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class SurveyAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
 {
     /**
      * Set a fixed model sort.
@@ -45,9 +46,9 @@ class Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet extends \Gems_Trac
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

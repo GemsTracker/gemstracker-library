@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LimeSurvey1m9FieldMap.php 2041 2014-07-23 16:17:51Z matijsdejong $
  */
+
+namespace Gems\Tracker\Source;
 
 /**
  * A fieldmap object adds LS source code knowledge and interpretation to the database data
@@ -20,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends \Gems_Tracker_Source_LimeSurvey1m9FieldMap
+class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
 {
 
     /**
@@ -42,13 +43,13 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends \Gems_Tracker_Source_Li
      */
     protected function _getTokenTableName()
     {
-        return $this->tablePrefix . \Gems_Tracker_Source_LimeSurvey1m9Database::TOKEN_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey1m9Database::TOKEN_TABLE . $this->sourceSurveyId;
     }
 
     /**
      * Get the table structure of the token table
      *
-     * @return array List of Zend_DB Table metadata
+     * @return array List of \Zend_DB Table metadata
      */
     public function getTokenTableStructure()
     {

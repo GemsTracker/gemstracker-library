@@ -4,7 +4,7 @@ namespace Gems\Snippets\Survey;
 
 use MUtil\Validate\NotEqualTo;
 
-class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
+class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 
     /**
      *
@@ -14,7 +14,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -24,7 +24,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     public $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -35,7 +35,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
     /**
      *
-     * @var \MUtil_Model
+     * @var \MUtil\Model
      */
     protected $model;
 
@@ -85,7 +85,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     protected $targetSurveyId;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 
@@ -98,11 +98,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step) {
+    protected function addStepElementsFor(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model, $step) {
         $this->displayHeader($bridge, $this->_('Survey replace'), 'h1');
 
         // If we don't copy answers, we skip step 2
@@ -143,10 +143,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepElementsForStep1(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model) {
+    protected function addStepElementsForStep1(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model) {
         $model->set('source_survey', 'elementClass', 'Select');
         $this->addItems($bridge, 'source_survey', 'target_survey');
         $this->addItems($bridge, 'track_replace', 'token_update', 'copy_answers');
@@ -155,10 +155,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepElementsForStep2(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model) {
+    protected function addStepElementsForStep2(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model) {
         $element = $bridge->getForm()->createElement('html', 'table');
         $bridge->addElement($element);
 
@@ -195,10 +195,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepElementsForStep3(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model) {
+    protected function addStepElementsForStep3(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model) {
         //$this->_form->append($this->getSurveyCompareTable());
         //$this->addItems($bridge, 'target_survey', 'source_survey');
         $element = $bridge->getForm()->createElement('html', 'table');
@@ -209,10 +209,10 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepElementsForStep4(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model) {
+    protected function addStepElementsForStep4(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model) {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
         if ($this->isFinishedClicked()) {
@@ -227,7 +227,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil_Registry_Source::$verbose = true;
+        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->request)) {
             exit;
         }
@@ -258,7 +258,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Adds the survey compare form to the current table, showing the matches between different surveys
      *
-     * @param $tableBody \MUtil_Html Table object
+     * @param $tableBody \MUtil\Html Table object
      * @param $post array List of Post data
      */
     public function addSurveyCompareForm($tableBody, $post) {
@@ -267,7 +267,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             $targetSurveyData = $this->getSurveyData($this->targetSurveyId);
             $surveyCompare    = $this->getSurveyCompare($sourceSurveyData, $targetSurveyData, $post);
 
-            $icon = \MUtil_Html::create()->i(['class' => 'fa fa-exclamation-triangle', 'style' => 'color: #d43f3a; margin: 1em;', 'renderClosingTag' => true]);
+            $icon = \MUtil\Html::create()->i(['class' => 'fa fa-exclamation-triangle', 'style' => 'color: #d43f3a; margin: 1em;', 'renderClosingTag' => true]);
 
             foreach ($surveyCompare as $question) {
                 if ($question['status'] == 'missing') {
@@ -325,8 +325,8 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Gets how many times a survey is used in tracks
      *
-     * @param $surveyId int Gems Survey ID
-     * @return array|\MUtil_Html_Sequence translated string with track usage
+     * @param $surveyId int \Gems Survey ID
+     * @return array|\MUtil\Html\Sequence translated string with track usage
      */
     public function calculateTrackUsage($surveyId) {
         $select = $this->db->select();
@@ -337,8 +337,8 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
         $usage  = $this->db->fetchPairs($select);
 
         if ($usage) {
-            $seq = new \MUtil_Html_Sequence();
-            $seq->setGlue(\MUtil_Html::create('br'));
+            $seq = new \MUtil\Html\Sequence();
+            $seq->setGlue(\MUtil\Html::create('br'));
             foreach ($usage as $track => $count) {
                 $seq[] = sprintf($this->plural(
                                 'Used %d time in %s track.',
@@ -352,9 +352,9 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     }
 
     protected function createModel() {
-        if (!$this->model instanceof \MUtil_Model_ModelAbstract) {
-            // $model = new \MUtil_Model_TableModel
-            $model = new \MUtil_Model_SessionModel('updatesurvey');
+        if (!$this->model instanceof \MUtil\Model\ModelAbstract) {
+            // $model = new \MUtil\Model\TableModel
+            $model = new \MUtil\Model\SessionModel('updatesurvey');
 
             $surveys = $this->surveys;
 
@@ -390,11 +390,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Display a header
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2') {
+    protected function displayHeader(\MUtil\Model\Bridge\FormBridgeInterface $bridge, $header, $tagName = 'h2') {
         $element = $bridge->getForm()->createElement('html', 'step_header');
         $element->$tagName($header);
 
@@ -434,11 +434,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Creates a table with warnings about the survey answer transfer
      *
-     * @return bool|\MUtil_Html Table with information
+     * @return bool|\MUtil\Html Table with information
      */
     public function getComments() {
         $comments = false;
-        $table    = \MUtil_Html::create()->table(['class' => 'browser table', 'style' => 'width: auto']);
+        $table    = \MUtil\Html::create()->table(['class' => 'browser table', 'style' => 'width: auto']);
 
         $targetSurveyAnswers = $this->getNumberOfAnswers($this->targetSurveyId);
         if ($targetSurveyAnswers > 0) {
@@ -470,7 +470,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      */
     protected function getCompareResultSummary($post, $sourceSurveyData, $targetSurveyData) {
         $categorizedResults = $this->getCategorizedResults($post, $sourceSurveyData, $targetSurveyData);
-        $table              = \MUtil_Html::create()->table(['class' => 'browser table', 'style' => 'width: auto']);
+        $table              = \MUtil\Html::create()->table(['class' => 'browser table', 'style' => 'width: auto']);
 
         $row = $table->tr(['class' => $this->questionStatusClasses['new']]);
         $row->td(sprintf($this->_('%d new questions'), count($categorizedResults['new'])));
@@ -497,12 +497,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view) {
         $form = parent::getHtmlOutput($view);
 
-        $html = \MUtil_Html::create()->div(['id' => 'survey-compare']);
+        $html = \MUtil\Html::create()->div(['id' => 'survey-compare']);
 
         $html->append($form);
 
@@ -512,7 +512,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Gets the number of answers in a survey
      *
-     * @param $surveyId int Gems Survey ID
+     * @param $surveyId int \Gems Survey ID
      * @return string translated string with number of answers
      */
     public function getNumberOfAnswers($surveyId) {
@@ -528,7 +528,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Get the survey ID in the survey source
      *
-     * @param $surveyId int Gems survey ID
+     * @param $surveyId int \Gems survey ID
      * @return int source survey ID
      */
     public function getSourceSurveyId($surveyId) {
@@ -598,7 +598,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
     /**
      * Get the complete comparison table
      *
-     * @return \MUtil_Html Form nodes
+     * @return \MUtil\Html Form nodes
      */
     public function getSurveyCompareTable($bridge) {
         $post = $this->formData;
@@ -681,7 +681,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * @param $surveyData array List of survey data
      * @param $currentQuestionCode string Current selected question code
      * @param $targetQuestionCode string the target question code used in the name field of the select
-     * @return \MUtil_Html Select object
+     * @return \MUtil\Html Select object
      */
     public function getSurveyQuestionSelect($surveyData, $currentQuestionCode, $targetQuestionCode) {
         $name = 'target[' . $targetQuestionCode . ']';
@@ -689,7 +689,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
             $name = 'notfound[]';
         }
 
-        $select = \MUtil_Html::create()->select(['name' => $name]);
+        $select = \MUtil\Html::create()->select(['name' => $name]);
         $select->class = 'form-control';
 
         $empty = $this->util->getTranslated()->getEmptyDropdownArray();
@@ -710,12 +710,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * Creates a table showing the results of the survey compare
      *
      * @param $post array List of POST data
-     * @return \MUtil_Html Table
+     * @return \MUtil\Html Table
      */
     public function getSurveyResults($post) {
         $comments = $this->getComments();
 
-        $table  = \MUtil_Html::create()->table(['class' => 'browser table']);
+        $table  = \MUtil\Html::create()->table(['class' => 'browser table']);
         $header = $table->thead()->tr();
         $header->th($this->_('Source Survey'));
         $header->th($this->_('Target Survey'));
@@ -752,12 +752,12 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * Create a select element node with all available surveys
      *
      * @param $name string name of the survey select
-     * @return mixed \MUtil_Html node
+     * @return mixed \MUtil\Html node
      */
     public function getSurveySelect($name, $post) {
         $surveys = $this->surveys;
 
-        $select = \MUtil_Html::create()->select(['name' => $name]);
+        $select = \MUtil\Html::create()->select(['name' => $name]);
 
         $empty = $this->util->getTranslated()->getEmptyDropdownArray();
         $select->option(reset($empty), ['value' => '']);
@@ -769,11 +769,11 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
      * Creates a small html block of number of answers and usage in tracks of surveys
      *
      * @param $surveyId int id of the survey
-     * @return \MUtil_Html_Sequence
+     * @return \MUtil\Html\Sequence
      */
     public function getSurveyStatistics($surveyId) {
-        $seq   = new \MUtil_Html_Sequence();
-        $seq->setGlue(\MUtil_Html::create('br'));
+        $seq   = new \MUtil\Html\Sequence();
+        $seq->setGlue(\MUtil\Html::create('br'));
         $seq[] = $this->getNumberOfAnswers($surveyId);
         $seq[] = $this->calculateTrackUsage($surveyId);
 
@@ -804,7 +804,7 @@ class SurveyCompareSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract {
 
     /**
      *
-     * @return \Gems_Task_TaskRunnerBatch
+     * @return \Gems\Task\TaskRunnerBatch
      */
     protected function getUpdateBatch()
     {

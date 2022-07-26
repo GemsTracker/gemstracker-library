@@ -23,18 +23,18 @@ use Gems\Event\RespondentChangedEventInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Sep 6, 2016 3:32:54 PM
  */
-class RecalculateTracks extends \MUtil_Translate_TranslateableAbstract
+class RecalculateTracks extends \MUtil\Translate\TranslateableAbstract
     implements RespondentChangedEventInterface
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     public $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -53,11 +53,11 @@ class RecalculateTracks extends \MUtil_Translate_TranslateableAbstract
      *
      * The event has to handle the actual storage of the changes.
      *
-     * @param \Gems_Tracker_Respondent $respondent
+     * @param \Gems\Tracker\Respondent $respondent
      * @param int $userId The current user
      * @return boolean True when something changed
      */
-    public function processChangedRespondent(\Gems_Tracker_Respondent $respondent)
+    public function processChangedRespondent(\Gems\Tracker\Respondent $respondent)
     {
         $changes    = 0;
         $tracker    = $this->loader->getTracker();
@@ -65,11 +65,11 @@ class RecalculateTracks extends \MUtil_Translate_TranslateableAbstract
         $userId     = $this->currentUser->getUserId();
 
         foreach($respTracks as $respondentTrack) {
-            if ($respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+            if ($respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
                 $changes += $respondentTrack->checkTrackTokens($userId);
             }
         }
-        // \MUtil_Echo::track('Hi there! ' . $changes);
+        // \MUtil\EchoOut\EchoOut::track('Hi there! ' . $changes);
 
         return (boolean) $changes;
     }

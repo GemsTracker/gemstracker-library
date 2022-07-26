@@ -21,7 +21,7 @@ use Gems\Date\Period;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstract
+class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstract
 {
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -29,10 +29,10 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $model->set('reset_mail', [
             'label'        => $this->_('Reset sent mail'),
@@ -52,7 +52,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
 
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -98,7 +98,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
                         'gto_changed',
                         'assigned_by',
                         ),
-                    $this->getModel()->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                    $this->getModel()->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
@@ -117,10 +117,10 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
     {
         $model = $this->getModel();
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
         if ($this->formData['gto_valid_until'] && Period::isDateType($this->formData['gro_valid_for_unit'])) {
             // Make sure date based units are valid until the end of the day.
-            $date = new \MUtil_Date(
+            $date = new \MUtil\Date(
                     $this->formData['gto_valid_until'],
                     $model->get('gto_valid_until', 'dateFormat')
                     );
@@ -141,7 +141,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
         parent::saveData();
         // $this->token->setValidFrom($this->formData['gto_valid_from'], $this->formData['gto_valid_until'], $this->loader->getCurrentUser()->getUserId());
 
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
 
         // Refresh (NOT UPDATE!) token with current form data
         $updateData['gto_valid_from']         = $this->formData['gto_valid_from'];
@@ -149,7 +149,7 @@ class EditTrackTokenSnippet extends \Gems_Tracker_Snippets_EditTokenSnippetAbstr
         $updateData['gto_valid_until']        = $this->formData['gto_valid_until'];
         $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
         $updateData['gto_comment']            = $this->formData['gto_comment'];
-        \MUtil_Echo::track($updateData);
+        \MUtil\EchoOut\EchoOut::track($updateData);
         $this->token->refresh($updateData);
 
         $respTrack = $this->token->getRespondentTrack();

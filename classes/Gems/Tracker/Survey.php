@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker;
+
 use Gems\Date\Period;
 
 /**
@@ -20,7 +22,7 @@ use Gems\Date\Period;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
+class Survey extends \Gems\Registry\CachedArrayTargetAbstract
 {
     /**
      * Variable to add tags to the cache for cleanup.
@@ -31,13 +33,13 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     
     /**
      *
-     * @var \Gems_Tracker_SourceInterface
+     * @var \Gems\Tracker_SourceInterface
      */
     private $_source;
 
     /**
      *
-     * @var \Gems_Events
+     * @var \Gems\Events
      */
     protected $events;
 
@@ -58,7 +60,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -140,23 +142,23 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
             if (is_array($this->_data)) {
                 $values = $values + $this->_data;
             } else {
-                \MUtil_Echo::track($this->_data);
+                \MUtil\EchoOut\EchoOut::track($this->_data);
             }
             $this->_data = [];
         }
         if ($this->tracker->filterChangesOnly($this->_data, $values)) {
 
-            if (\Gems_Tracker::$verbose) {
+            if (\Gems\Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $old = isset($this->_data[$key]) ? $this->_data[$key] : null;
                     $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
-                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_id);
+                \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->_id);
             }
 
             if (! isset($values['gsu_changed'])) {
-                $values['gsu_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['gsu_changed'] = new \MUtil\Db\Expr\CurrentTimestamp();
             }
             if (! isset($values['gsu_changed_by'])) {
                 $values['gsu_changed_by'] = $userId;
@@ -171,7 +173,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
             } else {
                 if (! isset($values['gsu_created'])) {
-                    $values['gsu_created'] = new \MUtil_Db_Expr_CurrentTimestamp();
+                    $values['gsu_created'] = new \MUtil\Db\Expr\CurrentTimestamp();
                 }
                 if (! isset($values['gsu_created_by'])) {
                     $values['gsu_created_by'] = $userId;
@@ -180,7 +182,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
                 // Update values in this object
                 $this->_data = $values + $this->_data;
 
-                // Remove the Gems survey id
+                // Remove the \Gems survey id
                 unset($this->_data['gsu_id_survey']);
 
                 $this->_id = $this->db->insert('gems__surveys', $this->_data);
@@ -239,12 +241,12 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @param string $language
      * @return int 1 of the token was inserted or changed, 0 otherwise
-     * @throws \Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function copyTokenToSource(\Gems_Tracker_Token $token, $language)
+    public function copyTokenToSource(\Gems\Tracker\Token $token, $language)
     {
         $source = $this->getSource();
         return $source->copyTokenToSource($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -254,10 +256,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      * Returns a field from the raw answers as a date object.
      *
      * @param string $fieldName Name of answer field
-     * @param \Gems_Tracker_Token  $token Gems token object
-     * @return \MUtil_Date date time or null
+     * @param \Gems\Tracker\Token  $token \Gems token object
+     * @return \MUtil\Date date time or null
      */
-    public function getAnswerDateTime($fieldName, \Gems_Tracker_Token $token)
+    public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token)
     {
         $source = $this->getSource();
         return $source->getAnswerDateTime($fieldName, $token, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -266,10 +268,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of snippet names
      */
-    public function getAnswerSnippetNames(\Gems_Tracker_Token $token)
+    public function getAnswerSnippetNames(\Gems\Tracker\Token $token)
     {
         if ($this->_has('gsu_display_event') && $this->_get('gsu_display_event')) {
             $event = $this->events->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
@@ -282,7 +284,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      * Returns a model for displaying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getAnswerModel($language)
     {
@@ -302,10 +304,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * The time the survey was completed according to the source
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @return \MUtil_Date date time or null
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @return \MUtil\Date date time or null
      */
-    public function getCompletionTime(\Gems_Tracker_Token $token)
+    public function getCompletionTime(\Gems\Tracker\Token $token)
     {
         $source = $this->getSource();
         return $source->getCompletionTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -385,7 +387,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @return int Gems group id for survey
+     * @return int \Gems group id for survey
      */
     public function getGroupId()
     {
@@ -404,10 +406,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Calculate the until date for single survey insertion
      *
-     * @param \MUtil_Date $from
-     * @return \MUtil_Date
+     * @param \MUtil\Date $from
+     * @return \MUtil\Date
      */
-    public function getInsertDateUntil(\MUtil_Date $from)
+    public function getInsertDateUntil(\MUtil\Date $from)
     {
         return Period::applyPeriod(
                 $from,
@@ -467,7 +469,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
      *
      * Function may return more fields than just the answers.
      *
-     * @param string $tokenId Gems Token Id
+     * @param string $tokenId \Gems Token Id
      * @return array Field => Value array
      */
     public function getRawTokenAnswerRow($tokenId)
@@ -517,10 +519,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * The time the survey was started according to the source
      *
-     * @param \Gems_Tracker_Token $token Gems token object
-     * @return \MUtil_Date date time or null
+     * @param \Gems\Tracker\Token $token \Gems token object
+     * @return \MUtil\Date date time or null
      */
-    public function getStartTime(\Gems_Tracker_Token $token)
+    public function getStartTime(\Gems\Tracker\Token $token)
     {
         $source = $this->getSource();
         return $source->getStartTime($token, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -528,7 +530,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @return \Gems_Tracker_Source_SourceInterface
+     * @return \Gems\Tracker\Source\SourceInterface
      */
     public function getSource()
     {
@@ -536,7 +538,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
             $this->_source = $this->tracker->getSource($this->_get('gsu_id_source'));
 
             if (! $this->_source) {
-                throw new \Gems_Exception('No source for exists for source ' . $this->_get('gsu_id_source') . '.');
+                throw new \Gems\Exception('No source for exists for source ' . $this->_get('gsu_id_source') . '.');
             }
         }
 
@@ -545,7 +547,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @return int Gems survey ID
+     * @return int \Gems survey ID
      */
     public function getSourceSurveyId()
     {
@@ -564,7 +566,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Return the Survey Before Answering event (if any)
      *
-     * @return \Gems_Event_SurveyBeforeAnsweringEventInterface event instance or null
+     * @return \Gems\Event\SurveyBeforeAnsweringEventInterface event instance or null
      */
     public function getSurveyBeforeAnsweringEvent()
     {
@@ -576,7 +578,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Return the Survey Completed event
      *
-     * @return \Gems_Event_SurveyCompletedEventInterface event instance or null
+     * @return \Gems\Event\SurveyCompletedEventInterface event instance or null
      */
     public function getSurveyCompletedEvent()
     {
@@ -587,7 +589,7 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @return int Gems survey ID
+     * @return int \Gems survey ID
      */
     public function getSurveyId()
     {
@@ -597,11 +599,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Returns the url that (should) start the survey for this token
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @param string $language
      * @return string The url to start the survey
      */
-    public function getTokenUrl(\Gems_Tracker_Token $token, $language)
+    public function getTokenUrl(\Gems\Tracker\Token $token, $language)
     {
         $source = $this->getSource();
         return $source->getTokenUrl($token, $language, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -619,10 +621,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Checks whether the token is in the source.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return boolean
      */
-    public function inSource(\Gems_Tracker_Token $token)
+    public function inSource(\Gems\Tracker\Token $token)
     {
         $source = $this->getSource();
         return $source->inSource($token, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -649,10 +651,10 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Returns true if the survey was completed according to the source
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return boolean True if the token has completed
      */
-    public function isCompleted(\Gems_Tracker_Token $token)
+    public function isCompleted(\Gems\Tracker\Token $token)
     {
         $source = $this->getSource();
         return $source->isCompleted($token, $this->_id, $this->_get('gsu_surveyor_id'));
@@ -729,11 +731,11 @@ class Gems_Tracker_Survey extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Updates the consent code of the the token in the source (if needed)
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @param string $consentCode Optional consent code, otherwise code from token is used.
      * @return int 1 of the token was inserted or changed, 0 otherwise
      */
-    public function updateConsent(\Gems_Tracker_Token $token, $consentCode = null)
+    public function updateConsent(\Gems\Tracker\Token $token, $consentCode = null)
     {
         $source = $this->getSource();
         return $source->updateConsent($token, $this->_id, $this->_get('gsu_surveyor_id'), $consentCode);

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
+class MailElements extends \Gems\Registry\TargetAbstract {
 
     /**
      *
@@ -34,7 +36,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
     /**
      *
-     * @var \Gems_Form
+     * @var \Gems\Form
      */
     protected $_form;
 
@@ -46,13 +48,13 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -64,7 +66,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -83,19 +85,19 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * All elements not yet added to the form are added using a new FormBridge
      * instance using the default label / non-label distinction.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $parentBridge
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $parentBridge
      * @param string $name Name of element
-     * @param mixed $arrayOrKey1 \MUtil_Ra::pairs() name => value array
-     * @return \MUtil_Form_Element_Table
+     * @param mixed $arrayOrKey1 \MUtil\Ra::pairs() name => value array
+     * @return \MUtil\Form\Element\Table
      */
     public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null)
     {
         $options = func_get_args();
-        $options = \MUtil_Ra::pairs($options, 2);
+        $options = \MUtil\Ra::pairs($options, 2);
 
         /* $options = $this->_mergeOptions($name, $options,
           self::SUBFORM_OPTIONS); */
-        //\MUtil_Echo::track($options);
+        //\MUtil\EchoOut\EchoOut::track($options);
         if (isset($options['form'])) {
             $form = $options['form'];
             unset($options['form']);
@@ -104,7 +106,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
             $form      = new $formClass();
         }
         $submodel = $parentBridge->getModel()->get($name, 'model');
-        if ($submodel instanceof \MUtil_Model_ModelAbstract) {
+        if ($submodel instanceof \MUtil\Model\ModelAbstract) {
             $bridge = $submodel->getBridgeFor('form', $form);
             foreach ($submodel->getItemsOrdered() as $itemName) {
                 if (!$form->getElement($name)) {
@@ -117,7 +119,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
             }
         }
         $form->activateJQuery();
-        $element = new \Gems_Form_Element_Tabs($form, $name, $options);
+        $element = new \Gems\Form\Element\Tabs($form, $name, $options);
 
         $parentBridge->getForm()->addElement($element);
         return $element;
@@ -127,7 +129,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * Create an HTML Body element with CKEditor
      *
      *
-     * @return \Gems_Form_Element_CKEditor|\Zend_Form_Element_Hidden
+     * @return \Gems\Form\Element\CKEditor|\Zend_Form_Element_Hidden
      */
     public function createBodyElement($name, $label, $required = false, $hidden = false, $mailFields = array(), $mailFieldsLabel = false)
     {
@@ -138,7 +140,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         $options['required'] = $required;
         $options['label']    = $label;
 
-        $mailBody                            = new \Gems_Form_Element_CKEditor($name, $options);
+        $mailBody                            = new \Gems\Form\Element\CKEditor($name, $options);
         $mailBody->config['availablefields'] = $mailFields;
         if ($mailFieldsLabel) {
             $mailBody->config['availablefieldsLabel'] = $mailFieldsLabel;
@@ -149,7 +151,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
         $mailBody->config['extraPlugins'] .= ',availablefields';
         $mailBody->config['toolbar'][]    = array('availablefields');
 
-        return new \Gems_Form_Element_CKEditor($name, $options);
+        return new \Gems\Form\Element\CKEditor($name, $options);
     }
 
     /**
@@ -200,7 +202,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * Create the container that holds the preview Email HTML text.
      *
      * @param bool $noText Is there no preview text button?
-     * @return \MUtil_Form_Element_Exhibitor
+     * @return \MUtil\Form\Element\Exhibitor
      */
     public function createPreviewHtmlElement($label = false)
     {
@@ -217,7 +219,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
     /**
      * Create the container that holds the preview Email Plain text.
      *
-     * @return \MUtil_Form_Element_Exhibitor
+     * @return \MUtil\Form\Element\Exhibitor
      */
     public function createPreviewTextElement()
     {
@@ -270,7 +272,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
     public static function displayMailHtml($text)
     {
-        $div = \MUtil_Html::create()->div(array('class' => 'mailpreview'));
+        $div = \MUtil\Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
 
         return $div;
@@ -280,18 +282,18 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
      * Returns an html element that displays the array of mauilfields
      *
      * @param array $mailFields
-     * @return \MUtil_Html_HtmlElement
-     * @throws \MUtil_Lazy_LazyException
+     * @return \MUtil\Html\HtmlElement
+     * @throws \MUtil\Lazy\LazyException
      */
     public function displayMailFields(array $mailFields)
     {
         ksort($mailFields);
-        $mailFieldsRepeater = new \MUtil_Lazy_RepeatableByKeyValue($mailFields);
-        $mailFieldsHtml     = new \MUtil_Html_TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
+        $mailFieldsRepeater = new \MUtil\Lazy\RepeatableByKeyValue($mailFields);
+        $mailFieldsHtml     = new \MUtil\Html\TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->value, $this->translate->_('Value'));
 
-        $container   = \MUtil_Html::create()->div(['class' => 'table-container']);
+        $container   = \MUtil\Html::create()->div(['class' => 'table-container']);
         $container[] = $mailFieldsHtml;
 
         return $container;
@@ -310,7 +312,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
 
         if ($this->view) {
             if ($disabledTitle) {
-                $element = \MUtil_Html::create()->span($text, array('class' => 'disabled'));
+                $element = \MUtil\Html::create()->span($text, array('class' => 'disabled'));
 
                 if ($menuFind && is_array($menuFind)) {
                     $menuFind['allowed'] = true;
@@ -319,7 +321,7 @@ class Gems_Mail_MailElements extends \Gems_Registry_TargetAbstract {
                         $href = $menuItem->toHRefAttribute($requestData);
 
                         if ($href) {
-                            $element         = \MUtil_Html::create()->a($href, $element);
+                            $element         = \MUtil\Html::create()->a($href, $element);
                             $element->target = $menuItem->get('target', '_BLANK');
                         }
                     }

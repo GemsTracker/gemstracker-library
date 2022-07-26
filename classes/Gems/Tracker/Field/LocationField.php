@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LocationField.php $
  */
 
 namespace Gems\Tracker\Field;
@@ -26,10 +25,10 @@ class LocationField extends AppointmentDerivedFieldAbstract
     /**
      * Return the appropriate Id for the given appointment
      * 
-     * @param \Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    protected function getId(\Gems_Agenda_Appointment$appointment) {
+    protected function getId(\Gems\Agenda\Appointment$appointment) {
         return $appointment->getLocationId();
     }
 

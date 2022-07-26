@@ -23,7 +23,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class MailJobTest extends \Gems_Test_DbTestAbstract
+class MailJobTest extends \Gems\Test\DbTestAbstract
 {
     /**
      * @var \Gems\Util\CommJobsUtil
@@ -31,11 +31,11 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
     protected $commJobsUtil;
     
     /**
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
-    protected function assertTokenAddresses(array $jobData, \Gems_Tracker_Token $token, $from, $fromName, $to, $fallback)
+    protected function assertTokenAddresses(array $jobData, \Gems\Tracker\Token $token, $from, $fromName, $to, $fallback)
     {
         $mailLoader = $this->loader->getMailLoader();
         $mailer     = $mailLoader->getMailer('token', $token->getTokenId());
@@ -56,7 +56,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @param int   $respondentId
      * @param int   $roundOrder
      * @param int   , $relationId Optional
-     * @return \Gems_Tracker_Token|null
+     * @return \Gems\Tracker\Token|null
      */
     protected function assertTokenExists(array $multipleTokensData, $respondentId, $roundOrder, $relationId = null)
     {
@@ -92,7 +92,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @param array $multipleTokensData
      * @param int   $respondentId
      * @param int   $roundOrder
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
     protected function assertTokenNotExists(array $multipleTokensData, $respondentId, $roundOrder)
     {
@@ -106,7 +106,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @param int $organizationsId
      * @param int $subDays The number of days to subtract to get the start date
      * @param null|int $relationId Optional relation Id
-     * @return \Gems_Tracker_RespondentTrack
+     * @return \Gems\Tracker\RespondentTrack
      * @throws \Zend_Date_Exception
      */
     protected function createRespondentTrack($respondentId, $organizationsId, $trackId, $subDays, $relationId = null, $mailCode = 100)
@@ -119,7 +119,7 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
             $respondentTrackid = $this->db->fetchOne("SELECT COALESCE(MAX(gr2t_id_respondent_track), 0) + 1 AS newId FROM gems__respondent2track");
         }
         
-        $startDate = new \MUtil_Date();
+        $startDate = new \MUtil\Date();
         $data      = [
             'gr2t_id_respondent_track' => ++$respondentTrackid,
             'gr2t_start_date'          => $startDate->subDay($subDays),
@@ -139,8 +139,8 @@ class MailJobTest extends \Gems_Test_DbTestAbstract
      * @param int   $respondentId
      * @param int   $roundOrder
      * @param int   $relationId Optional
-     * @return \Gems_Tracker_Token|null
-     * @throws \Gems_Exception
+     * @return \Gems\Tracker\Token|null
+     * @throws \Gems\Exception
      */
     protected function findToken(array $multipleTokensData, $respondentId, $roundOrder, $relationId = null)
     {

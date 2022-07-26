@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * Central storage / access point for working with gems models.
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
+class Model extends \Gems\Loader\TargetLoaderAbstract
 {
     const ID_TYPE = 'id_type';
 
@@ -63,7 +65,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     const TRACK_ID = 'tr';
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -82,12 +84,12 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -111,16 +113,16 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     protected $userIdLen = 8;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      * Add database translations to a model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function addDatabaseTranslations(\MUtil_Model_ModelAbstract $model)
+    public function addDatabaseTranslations(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->project->translateDatabaseFields()) {
             $transformer = $this->_loadClass('Transform\\TranslateDatabaseFields', true);
@@ -131,9 +133,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Add database translation edit to model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function addDatabaseTranslationEditFields(\MUtil_Model_ModelAbstract $model)
+    public function addDatabaseTranslationEditFields(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->project->translateDatabaseFields()) {
             $transformer = $this->_loadClass('Transform\\TranslateFieldEditor', true);
@@ -144,19 +146,19 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Link the model to the user_logins table.
      *
-     * @param \Gems_Model_JoinModel $model
+     * @param \Gems\Model\JoinModel $model
      * @param string $loginField Field that links to login name field.
      * @param string $organizationField Field that links to the organization field.
      */
-    protected function addUserLogin(\Gems_Model_JoinModel $model, $loginField, $organizationField)
+    protected function addUserLogin(\Gems\Model\JoinModel $model, $loginField, $organizationField)
     {
         $model->addTable(
                 'gems__user_logins',
                 array($loginField => 'gul_login', $organizationField => 'gul_id_organization'),
                 'gul',
-                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_INSERT |
-                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
+                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_INSERT |
+                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_DELETE
                 );
 
         if ($model->has('gul_enable_2factor') && $model->has('gul_two_factor_key')) {
@@ -174,10 +176,10 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Link the model to the user_passwords table.
      *
-     * @param \Gems_Model_JoinModel $model
+     * @param \Gems\Model\JoinModel $model
      * @deprecated since version 1.5.4
      */
-    public static function addUserPassword(\Gems_Model_JoinModel $model)
+    public static function addUserPassword(\Gems\Model\JoinModel $model)
     {
         if (! $model->hasAlias('gems__user_passwords')) {
             $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
@@ -185,9 +187,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific application model or general Gems model otherwise
+     * Load project specific application model or general \Gems model otherwise
      *
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function createAppointmentModel()
     {
@@ -195,9 +197,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific application model or general Gems model otherwise
+     * Load project specific application model or general \Gems model otherwise
      *
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function createEpisodeOfCareModel()
     {
@@ -205,9 +207,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Create a Gems project wide unique user id
+     * Create a \Gems project wide unique user id
      *
-     * @see \Gems_Model_RespondentModel
+     * @see \Gems\Model\RespondentModel
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -221,7 +223,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
             return $value;
         }
 
-        $creationTime = new \MUtil_Db_Expr_CurrentTimestamp();
+        $creationTime = new \MUtil\Db\Expr\CurrentTimestamp();
 
         do {
             $out = mt_rand(1, 9);
@@ -244,7 +246,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific model or general Gems model otherwise
+     * Load project specific model or general \Gems model otherwise
      *
      * @return \Gems\Model\LogModel
      */
@@ -254,9 +256,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific model or general Gems model otherwise
+     * Load project specific model or general \Gems model otherwise
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function createRespondentModel()
     {
@@ -285,7 +287,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * Load the Comm Methods model
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @return Gems\Model\CommMessengersModel
+     * @return \Gems\Model\CommMessengersModel
      */
     public function getCommMessengersModel($detailed)
     {
@@ -298,7 +300,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Load the commtemplate model
      *
-     * @return \Gems_Model_CommtemplateModel
+     * @return \Gems\Model\CommtemplateModel
      */
     public function getCommtemplateModel()
     {
@@ -338,11 +340,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * @param mixed   $extensionsOrMask An optional array of extensions or a regex file mask, use of / for directory separator required
      * @param boolean $recursive When true the directory is searched recursively
      * @param boolean $followSymlinks When true symlinks are folloed
-     * @return \MUtil_Model_FolderModel
+     * @return \MUtil\Model\FolderModel
      */
     public function getFileModel($dir, $detailed = true, $extensionsOrMask = null, $recursive = false, $followSymlinks = false)
     {
-        $model = new \MUtil_Model_FolderModel($dir, $extensionsOrMask, $recursive, $followSymlinks);
+        $model = new \MUtil\Model\FolderModel($dir, $extensionsOrMask, $recursive, $followSymlinks);
 
         if ($recursive) {
             $model->set('relpath',  'label', $this->translate->_('File (local)'),
@@ -360,11 +362,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
             $model->set('fullpath',  'label', $this->translate->_('Full name'), 'elementClass', 'Exhibitor');
             $model->set('extension', 'label', $this->translate->_('Type'), 'elementClass', 'Exhibitor');
             $model->set('content',   'label', $this->translate->_('Content'),
-                        'formatFunction', array(\MUtil_Html::create(), 'pre'),
+                        'formatFunction', array(\MUtil\Html::create(), 'pre'),
                         'elementClass', 'TextArea');
         }
         $model->set('size',      'label', $this->translate->_('Size'),
-                    'formatFunction', array('MUtil_File', 'getByteSized'),
+                    'formatFunction', array('\\MUtil\\File', 'getByteSized'),
                     'elementClass', 'Exhibitor');
         $model->set('changed',   'label', $this->translate->_('Changed on'),
                     'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
@@ -378,7 +380,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      *
      * It is special since it can show how many responses each table has
      *
-     * @return \OpenRosa_Model_OpenRosaFormModel
+     * @return \OpenRosa\Model\OpenRosaFormModel
      */
     public function getOpenRosaFormModel()
     {
@@ -391,7 +393,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * Load the organization model
      *
      * @param array|mixed $styles
-     * @return \Gems_Model_OrganizationModel
+     * @return \Gems\Model\OrganizationModel
      */
     public function getOrganizationModel($styles = array())
     {
@@ -401,10 +403,10 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific respondent model or general Gems model otherwise
+     * Load project specific respondent model or general \Gems model otherwise
      *
      * @param boolean $detail When true more information needed for individual item display is added to the model.
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function getRespondentModel($detailed)
     {
@@ -430,7 +432,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get the respondent relation model
      *
-     * @return \Gems_Model_RespondentRelationModel
+     * @return \Gems\Model\RespondentRelationModel
      */
     public function getRespondentRelationModel()
     {
@@ -451,7 +453,7 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
      * Load the staffmodel
      *
      * @param boolean $addLogin Add the login tables to the model
-     * @return \Gems_Model_StaffModel
+     * @return \Gems\Model\StaffModel
      */
     public function getStaffModel($addLogin = true)
     {
@@ -507,10 +509,10 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Set a field in this model as a gems unique user id
      *
-     * @param \MUtil_Model_DatabaseModelAbstract $model
+     * @param \MUtil\Model\DatabaseModelAbstract $model
      * @param string $idField Field that uses global id.
      */
-    public function setAsGemsUserId(\MUtil_Model_DatabaseModelAbstract $model, $idField)
+    public function setAsGemsUserId(\MUtil\Model\DatabaseModelAbstract $model, $idField)
     {
         // Make sure field is added to save when not there
         $model->setAutoSave($idField);
@@ -522,11 +524,11 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Function that automatically fills changed, changed_by, created and created_by fields with a certain prefix.
      *
-     * @param \MUtil_Model_DatabaseModelAbstract $model
+     * @param \MUtil\Model\DatabaseModelAbstract $model
      * @param string $prefix Three letter code
-     * @param int $userid Gems user id
+     * @param int $userid \Gems user id
      */
-    public static function setChangeFieldsByPrefix(\MUtil_Model_DatabaseModelAbstract $model, $prefix, $userid = null)
+    public static function setChangeFieldsByPrefix(\MUtil\Model\DatabaseModelAbstract $model, $prefix, $userid = null)
     {
         $changed_field    = $prefix . '_changed';
         $changed_by_field = $prefix . '_changed_by';
@@ -537,9 +539,9 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
             $model->set($field, 'elementClass', 'none');
         }
 
-        $model->setOnSave($changed_field, new \MUtil_Db_Expr_CurrentTimestamp());
+        $model->setOnSave($changed_field, new \MUtil\Db\Expr\CurrentTimestamp());
         $model->setSaveOnChange($changed_field);
-        $model->setOnSave($created_field, new \MUtil_Db_Expr_CurrentTimestamp());
+        $model->setOnSave($created_field, new \MUtil\Db\Expr\CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
         if (! $userid && self::$currentUserId) {
@@ -547,12 +549,12 @@ class Gems_Model extends \Gems_Loader_TargetLoaderAbstract
         }
 
         if (! $userid) {
-            $escort = \GemsEscort::getInstance();
+            $escort = \Gems\Escort::getInstance();
 
             if ($escort) {
                 $currentUser = $escort->currentUser;
 
-                if ($currentUser instanceof Gems_User_User) {   // During some unit tests this will be null
+                if ($currentUser instanceof \Gems\User\User) {   // During some unit tests this will be null
                     $userid = $currentUser->getUserId();
                 }
 

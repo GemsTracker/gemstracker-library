@@ -10,7 +10,7 @@
 
 namespace Gems\Tracker\Source;
 
-use Gems_Tracker_Source_LimeSurvey2m00Database as LSSingleSource;
+use Gems\Tracker\Source\LimeSurvey2m00Database as LSSingleSource;
 
 /**
  * This source allows to share one LimeSurvey with multiple satellite GemsTracker installations.
@@ -53,10 +53,10 @@ class LimeSurvey2m00MultiSource extends LSSingleSource {
      * 
      * Adding site (GEMS_PROJECT_NAME) and sitename
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of fieldname => value type
      */
-    protected function _fillAttributeMap(\Gems_Tracker_Token $token) {
+    protected function _fillAttributeMap(\Gems\Tracker\Token $token) {
         $values = parent::_fillAttributeMap($token);
 
         $values[$this->_attributeMap['site']]     = $this->_getSite();
@@ -126,7 +126,7 @@ class LimeSurvey2m00MultiSource extends LSSingleSource {
      * @return string
      */
     protected function _getReturnURI() {
-        return substr($this->util->getCurrentURI(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . \MUtil_Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
+        return substr($this->util->getCurrentURI(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . \MUtil\Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
     }
 
     /**

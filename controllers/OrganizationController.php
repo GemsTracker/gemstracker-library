@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class OrganizationController extends Gems_Default_OrganizationAction
+class OrganizationController extends \Gems\Actions\OrganizationAction
 {
 }

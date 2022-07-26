@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 /**
  * This is a simple reference replacement class.
  *
@@ -20,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Util_BasePath
+class BasePath
 {
     /**
      *

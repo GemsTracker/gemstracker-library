@@ -36,17 +36,17 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _getRespondentTrackMock($ageYears, $trackYears)
     {
-        $age = new \MUtil_Date();
+        $age = new \MUtil\Date();
         $age->sub($ageYears, 'y');
 
-        $startDate = new \MUtil_Date();
+        $startDate = new \MUtil\Date();
         $startDate->sub($trackYears, 'y');
 
-        $respondent = new \Gems_Tracker_Respondent(1,1);
+        $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondentData = ['grs_birthday' => $age];
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
 
-        $respTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -122,11 +122,11 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
 
     public function testAgeNull()
     {
-        $respondent = new \Gems_Tracker_Respondent(1,1);
+        $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondentData = ['grs_birthday' => null];
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
 
-        $respTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
             ->disableOriginalConstructor()
             ->getMock();
 

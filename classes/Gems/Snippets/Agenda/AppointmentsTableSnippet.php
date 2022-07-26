@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Agenda;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Date storage format string
@@ -39,19 +41,19 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     /**
      * Image for time display
      *
-     * @var \MUtil_Html_HtmlElement
+     * @var \MUtil\Html\HtmlElement
      * /
     private $_timeImg;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -64,13 +66,13 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -80,11 +82,11 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
@@ -101,7 +103,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
         }
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
-        $br      = \MUtil_Html::create('br');
+        $br      = \MUtil\Html::create('br');
 
         $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -164,11 +166,11 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Model_AppointmentModel) {
+        if ($this->model instanceof \Gems\Model\AppointmentModel) {
             $model = $this->model;
         } else {
             $model = $this->loader->getModels()->createAppointmentModel();
@@ -183,11 +185,11 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
                 // 'dateFormat', 'HH:mm ' . \Zend_Date::WEEKDAY);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
-        // $this->_timeImg           = \MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
+        // $this->_timeImg           = \MUtil\Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
-        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
             $model->addFilter(array(
                 'gap_id_user' => $this->respondent->getId(),
                 'gap_id_organization' => $this->respondent->getOrganizationId(),
@@ -200,14 +202,14 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     /**
      * Display the date field
      *
-     * @param \MUtil_Date $value
+     * @param \MUtil\Date $value
      */
     public function formatDate($value)
     {
-        return \MUtil_Html::create(
+        return \MUtil\Html::create(
                 'span',
                 // array('class' => 'date'),
-                \MUtil_Date::format(
+                \MUtil\Date::format(
                         $value,
                         \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME_SHORT . ' ' . \Zend_Date::YEAR,
                         'yyyy-MM-dd'
@@ -218,28 +220,28 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_Model
     /**
      * Display the time field
      *
-     * @param \MUtil_Date $value
+     * @param \MUtil\Date $value
      */
     public function formatTime($value)
     {
-        return \MUtil_Html::create(
+        return \MUtil\Html::create(
                 'span',
                 ' ',
                 // array('class' => 'time'),
                 // $this->_timeImg,
-                \MUtil_Date::format($value, 'HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
+                \MUtil\Date::format($value, 'HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
     }
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         parent::processFilterAndSort($model);
 
-        $eid = $this->request->getParam(\Gems_Model::EPISODE_ID);
+        $eid = $this->request->getParam(\Gems\Model::EPISODE_ID);
         if ($eid) {
             $model->addFilter(['gap_id_episode' => $eid]);
         }

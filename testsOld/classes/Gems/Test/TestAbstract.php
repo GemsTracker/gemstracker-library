@@ -2,30 +2,30 @@
 
 /**
  *
- * Base test class for Gems object test cases
+ * Base test class for \Gems object test cases
  *
  * @package    Gems
  * @subpackage Test
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems\Test;
+
 /**
- * Base test class for Gems object test cases
+ * Base test class for \Gems object test cases
  *
  * @package    Gems
  * @subpackage Test
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-abstract class Gems_Test_TestAbstract extends \PHPUnit_Framework_TestCase
+abstract class TestAbstract extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader = null;
 
@@ -35,7 +35,7 @@ abstract class Gems_Test_TestAbstract extends \PHPUnit_Framework_TestCase
     protected $db = null;
 
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker = null;
 
@@ -51,7 +51,7 @@ abstract class Gems_Test_TestAbstract extends \PHPUnit_Framework_TestCase
 
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
         $sa = $settings->toArray();
-        $this->loader  = new \Gems_Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
+        $this->loader  = new \Gems\Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
 
         \Zend_Registry::set('loader', $this->loader);
 

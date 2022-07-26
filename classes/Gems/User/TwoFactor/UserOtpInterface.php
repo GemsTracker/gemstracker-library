@@ -10,5 +10,5 @@ interface UserOtpInterface
 
     public function setUserOtpCount($count);
 
-    public function setUserOtpRequested(\MUtil_Date $requestedTime);
+    public function setUserOtpRequested(\MUtil\Date $requestedTime);
 }

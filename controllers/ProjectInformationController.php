@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ProjectInformationController extends Gems_Default_ProjectInformationAction
+class ProjectInformationController extends \Gems\Actions\ProjectInformationAction
 {
 }

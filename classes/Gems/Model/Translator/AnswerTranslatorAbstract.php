@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model\Translator;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3 24-apr-2014 16:08:57
  */
-abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Model_ModelTranslatorAbstract
+abstract class AnswerTranslatorAbstract extends \Gems\Model\ModelTranslatorAbstract
 {
     /**
      * Constant for creating an extra token when a token was already filled in.
@@ -55,7 +56,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
     protected $_skipUnknownPatients = false;
 
     /**
-     * The Gems id of the survey to import to
+     * The \Gems id of the survey to import to
      *
      * @var int
      */
@@ -94,7 +95,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -124,17 +125,17 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      *
      * @var string
      */
-    protected $saveTask = 'Import_SaveAnswerTask';
+    protected $saveTask = 'Import\\SaveAnswerTask';
 
     /**
      * Add the current row to a (possibly separate) batch that does the importing.
      *
-     * @param \MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param \MUtil\Task\TaskBatch $importBatch The import batch to impor this row into
      * @param string $key The current iterator key
      * @param array $row translated and validated row
-     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
      */
-    public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row)
+    public function addSaveTask(\MUtil\Task\TaskBatch $importBatch, $key, array $row)
     {
         $importBatch->setTask(
                 $this->saveTask,
@@ -224,13 +225,13 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws \MUtil_Model_ModelException
+     * @throws \MUtil\Model\ModelException
      */
     public function getFieldsTranslations()
     {
         $this->_targetModel->set('completion_date', 'label', $this->_('Completion date'),
                 'order', 9,
-                'type', \MUtil_Model::TYPE_DATETIME
+                'type', \MUtil\Model::TYPE_DATETIME
                 );
 
         $fieldList = array('completion_date' => 'completion_date');
@@ -301,7 +302,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Get the treatment when no token exists
      *
      * @param string $noToken One of the TOKEN_ constants, but not TOKEN_OVERWRITE.
-     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     * @return \Gems\Model\Translator\AnswerTranslatorAbstract (continuation pattern)
      */
     public function setNoToken($noToken)
     {
@@ -313,7 +314,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Get the treatment when no token exists
      *
      * @param boolean $skip
-     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     * @return \Gems\Model\Translator\AnswerTranslatorAbstract (continuation pattern)
      */
     public function setSkipUnknownPatients($skip = false)
     {
@@ -325,7 +326,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Set the id of the survey to import to
      *
      * @param int $surveyId
-     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     * @return \Gems\Model\Translator\AnswerTranslatorAbstract (continuation pattern)
      */
     public function setSurveyId($surveyId)
     {
@@ -337,7 +338,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Set the treatment for answered or double tokens
      *
      * @param string $tokenCompleted One f the TOKEN_ constants.
-     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     * @return \Gems\Model\Translator\AnswerTranslatorAbstract (continuation pattern)
      */
     public function setTokenCompleted($tokenCompleted)
     {
@@ -349,7 +350,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Mode
      * Set the id of the track to import to or null
      *
      * @param int $trackId
-     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     * @return \Gems\Model\Translator\AnswerTranslatorAbstract (continuation pattern)
      */
     public function setTrackId($trackId)
     {

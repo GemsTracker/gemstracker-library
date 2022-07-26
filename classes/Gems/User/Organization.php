@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 /**
  * Contains information on the organization of the current User
  *
@@ -20,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
+class Organization extends \Gems\Registry\CachedArrayTargetAbstract
 {
     /**
      *
@@ -83,13 +85,13 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Required
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -102,7 +104,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -132,10 +134,10 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Set menu parameters from the organization
      *
-     * @param \Gems_Menu_ParameterSource $source
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @param \Gems\Menu\ParameterSource $source
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
-    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
     {
         $source->offsetSet('can_add_respondents', $this->canCreateRespondents());
     }
@@ -166,7 +168,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * Does nothing if this is already known.
      *
      * @param int $userId The current user
-     * @return \Gems_User_Organization (continuation pattern)
+     * @return \Gems\User\Organization (continuation pattern)
      */
     public function checkHasRespondents($userId, $check = false)
     {
@@ -176,7 +178,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
             ELSE 0
             END";
         $values['gor_has_respondents'] = new \Zend_Db_Expr($sql);
-        $values['gor_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
+        $values['gor_changed']         = new \MUtil\Db\Expr\CurrentTimestamp();
         $values['gor_changed_by']      = $userId;
 
         $where = $this->db->quoteInto('gor_id_organization = ?', $this->_id);
@@ -254,8 +256,8 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     {
         $output = $this->_allowedProjectUserClasses;
 
-        if (\Gems_User_UserLoader::USER_RADIUS !== $this->_get('gor_user_class')) {
-            unset($output[\Gems_User_UserLoader::USER_RADIUS]);
+        if (\Gems\User\UserLoader::USER_RADIUS !== $this->_get('gor_user_class')) {
+            unset($output[\Gems\User\UserLoader::USER_RADIUS]);
         }
         return $output;
     }
@@ -360,7 +362,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
 
         if ((APPLICATION_ENV === 'production') &&
                 preg_match('#^http(s)?://localhost#', $result['organization_login_url'])) {
-            throw new \Gems_Exception("Use of 'localhost' as url not permitted on production system.");
+            throw new \Gems\Exception("Use of 'localhost' as url not permitted on production system.");
         }
 
         return $result;
@@ -571,7 +573,7 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
-        if (\Gems_User_UserLoader::SYSTEM_NO_ORG === $id) {
+        if (\Gems\User\UserLoader::SYSTEM_NO_ORG === $id) {
             $data = false;
         } else {
             try {
@@ -595,18 +597,18 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
     /**
      * Set this organization as the one currently active
      *
-     * @return \Gems_User_Organization (continuation pattern)
+     * @return \Gems\User\Organization (continuation pattern)
      */
     public function setAsCurrentOrganization()
     {
         $organizationId = $this->getId();
 
-        if ($organizationId && (! \Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
+        if ($organizationId && (! \Gems\Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
             throw new \Exception('Cookies must be enabled for this site.');
         }
 
-        $escort = \GemsEscort::getInstance();
-        if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+        $escort = \Gems\Escort::getInstance();
+        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
             $escort->layoutSwitch($this->getStyle());
         }
 
@@ -619,13 +621,13 @@ class Gems_User_Organization extends \Gems_Registry_CachedArrayTargetAbstract
      * Does nothing if this is already known.
      *
      * @param int $userId The current user
-     * @return \Gems_User_Organization (continuation pattern)
+     * @return \Gems\User\Organization (continuation pattern)
      */
     public function setHasRespondents($userId)
     {
         if (! $this->_get('gor_has_respondents')) {
             $values['gor_has_respondents'] = 1;
-            $values['gor_changed']         = new \MUtil_Db_Expr_CurrentTimestamp();
+            $values['gor_changed']         = new \MUtil\Db\Expr\CurrentTimestamp();
             $values['gor_changed_by']      = $userId;
 
             $where = $this->db->quoteInto('gor_id_organization = ?', $this->_id);

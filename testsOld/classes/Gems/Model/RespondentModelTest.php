@@ -8,9 +8,9 @@
 
 namespace Gems\Model;
 
-use Gems_Model_RespondentModel as RespondentModel;
-use GemsEscort;
-use MUtil_Model_AbstractModelTest as AbstractModelTest;
+use Gems\Model\RespondentModel as RespondentModel;
+use Gems\Escort;
+use MUtil\Model_AbstractModelTest as AbstractModelTest;
 use Zend_Application;
 use Zend_Config;
 use Zend_Config_Ini;
@@ -91,17 +91,17 @@ class RespondentModelTest extends AbstractModelTest {
         $this->model = new RespondentModel();
 
         // So loader knows our db too
-        GemsEscort::getInstance()->getContainer()->db = $this->getConnection()->getConnection();
+        \Gems\Escort::getInstance()->getContainer()->db = $this->getConnection()->getConnection();
 
         $this->model->answerRegistryRequest('currentUser', $this->currentUser);
-        $this->model->answerRegistryRequest('loader', GemsEscort::getInstance()->loader);
+        $this->model->answerRegistryRequest('loader', \Gems\Escort::getInstance()->loader);
         $this->model->afterRegistry();
     }
 
     protected function fixUser()
     {
         // Fix user
-        $currentUser = $this->getMockBuilder('Gems_User_User')
+        $currentUser = $this->getMockBuilder('\\Gems\\User\\User')
                 ->disableOriginalConstructor()
                 ->getMock();
         $currentUser->expects($this->any())
@@ -111,7 +111,7 @@ class RespondentModelTest extends AbstractModelTest {
                 ->method('getUserId')
                 ->will($this->returnValue(1));
 
-        GemsEscort::getInstance()->currentUser = $currentUser;
+        \Gems\Escort::getInstance()->currentUser = $currentUser;
         $this->currentUser                     = $currentUser;
     }
 
@@ -123,8 +123,8 @@ class RespondentModelTest extends AbstractModelTest {
         }
 
         // Use a database, can be empty but this speeds up testing a lot
-        $config = new Zend_Config_Ini($iniFile, 'testing', true);
-        $config->merge(new Zend_Config([
+        $config = new \Zend_Config_Ini($iniFile, 'testing', true);
+        $config->merge(new \Zend_Config([
             'resources' => [
                 'db' => [
                     'adapter' => 'Pdo_Sqlite',
@@ -142,7 +142,7 @@ class RespondentModelTest extends AbstractModelTest {
                 $dirs;
 
         // Create application, bootstrap, and run
-        $application = new Zend_Application(APPLICATION_ENV, $config);
+        $application = new \Zend_Application(APPLICATION_ENV, $config);
         $application->bootstrap(['project', 'translate', 'util', 'loader']);
     }
 

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker\Rounds;
@@ -20,7 +19,7 @@ namespace Gems\Snippets\Tracker\Rounds;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditRoundStepSnippet extends \Gems_Tracker_Snippets_EditRoundSnippetAbstract
+class EditRoundStepSnippet extends \Gems\Tracker\Snippets\EditRoundSnippetAbstract
 {
     /**
      *
@@ -37,7 +36,7 @@ class EditRoundStepSnippet extends \Gems_Tracker_Snippets_EditRoundSnippetAbstra
     {
         parent::loadFormData();
 
-        if ($this->trackEngine instanceof \Gems_Tracker_Engine_StepEngineAbstract) {
+        if ($this->trackEngine instanceof \Gems\Tracker\Engine\StepEngineAbstract) {
             if ($this->trackEngine->updateRoundModelToItem($this->getModel(), $this->formData, $this->locale->getLanguage())) {
 
                 if (isset($this->formData[$this->saveButtonId])) {

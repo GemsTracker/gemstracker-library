@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
+class TrackSurveyOverviewSnippet extends \Gems\Snippets\MenuSnippetAbstract
 {
     /**
      *
@@ -31,7 +30,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -45,7 +44,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
     /**
      * Optional, can be source of the $trackId
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -71,7 +70,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -89,7 +88,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
         }
 
         $surveyName[] = $trackRepeater->gsu_survey_name;
-        $surveyName[] = \MUtil_Lazy::iif($trackRepeater->gro_icon_file, \MUtil_Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
+        $surveyName[] = \MUtil\Lazy::iif($trackRepeater->gro_icon_file, \MUtil\Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
 
         $table->addColumn($surveyName,                           $this->_('Survey'));
         $table->addColumn($trackRepeater->gro_round_description, $this->_('Details'));
@@ -101,7 +100,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
 
     private function getRepeater($trackId)
     {
-        if (!($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface)) {
+        if (!($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface)) {
             $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
         }
 
@@ -127,7 +126,7 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -136,14 +135,14 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
         if (! $this->trackId) {
             if (isset($this->trackData['gtr_id_track'])) {
                 $this->trackId = $this->trackData['gtr_id_track'];
-            } elseif ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+            } elseif ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 $this->trackId = $this->trackEngine->getTrackId();
             }
         }
         if (! $this->trackName) {
             if (isset($this->trackData['gtr_track_name'])) {
                 $this->trackName = $this->trackData['gtr_track_name'];
-            } elseif ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+            } elseif ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 $this->trackName = $this->trackEngine->getTrackName();
             }
         }
@@ -161,6 +160,6 @@ class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
             }
         }
 
-        return \MUtil_Html::raw(trim($line));
+        return \MUtil\Html::raw(trim($line));
     }
 }

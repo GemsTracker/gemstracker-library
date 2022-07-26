@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: HideWhenNoAppointment.php 2474 2015-03-19 17:36:51Z matijsdejong  $
  */
+
+namespace Gems\Event\Track\FieldUpdate;
 
 /**
  *
@@ -19,12 +20,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 19-okt-2014 18:32:02
  */
-class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translate_TranslateableAbstract
-    implements \Gems_Event_TrackFieldUpdateEventInterface
+class HideWhenNoAppointment extends \MUtil\Translate\TranslateableAbstract
+    implements \Gems\Event\TrackFieldUpdateEventInterface
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,11 +44,11 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
      *
      * Storing the changed $values is handled by the calling function.
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack Gems respondent track object
+     * @param \Gems\Tracker\RespondentTrack $respTrack \Gems respondent track object
      * @param int   $userId The current userId
      * @return void
      */
-    public function processFieldUpdate(\Gems_Tracker_RespondentTrack $respTrack, $userId)
+    public function processFieldUpdate(\Gems\Tracker\RespondentTrack $respTrack, $userId)
     {
         $agenda = $this->loader->getAgenda();
         $change = false;
@@ -73,15 +74,15 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
                 }
 
                 if ($appointment && $appointment->isActive()) {
-                    $newCode = \GemsEscort::RECEPTION_OK;
+                    $newCode = \Gems\Escort::RECEPTION_OK;
                     $newText = null;
                 } else {
                     $newCode = 'skip';
                     $newText = $this->_('Skipped until appointment is set');
                 }
-                $oldCode = \GemsEscort::RECEPTION_OK === $newCode ? 'skip' : \GemsEscort::RECEPTION_OK;
+                $oldCode = \Gems\Escort::RECEPTION_OK === $newCode ? 'skip' : \Gems\Escort::RECEPTION_OK;
                 $curCode = $token->getReceptionCode()->getCode();
-                // \MUtil_Echo::track($token->getTokenId(), $curCode, $oldCode, $newCode);
+                // \MUtil\EchoOut\EchoOut::track($token->getTokenId(), $curCode, $oldCode, $newCode);
                 if (($oldCode === $curCode) && ($curCode !== $newCode)) {
                     $change = true;
                     $token->setReceptionCode($newCode, $newText, $userId);

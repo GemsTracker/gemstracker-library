@@ -28,24 +28,24 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $br    = \MUtil_Html::create('br');
+        $br    = \MUtil\Html::create('br');
         $tData = $this->util->getTokenData();
 
         // Add link to patient to overview
         $menuItems = $this->findMenuItems('respondent', 'show');
         if ($menuItems) {
             $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems_Menu_SubMenuItem) {
+            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
                 $href = $menuItem->toHRefAttribute($bridge);
 
                 if ($href) {
-                    $aElem = new \MUtil_Html_AElement($href);
+                    $aElem = new \MUtil\Html\AElement($href);
                     $aElem->setOnEmpty('');
 
                     // Make sure org is known
@@ -59,7 +59,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
 
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
-        $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
+        $bridge->setDefaultRowClass(\MUtil\Html\TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr1 = $bridge->tr();
         $tr1->appendAttrib('class', $bridge->row_class);
         $tr1->appendAttrib('title', $bridge->gto_comment);

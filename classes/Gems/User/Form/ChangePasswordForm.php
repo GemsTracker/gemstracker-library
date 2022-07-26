@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User\Form;
 
 /**
  *
@@ -19,8 +20,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
-        implements \Gems_User_Validate_GetUserInterface
+class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
+        implements \Gems\User\Validate\GetUserInterface
 {
     /**
      * The field name for the new password element.
@@ -60,7 +61,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * Layout table
      *
-     * @var \MUtil_Html_TableElements
+     * @var \MUtil\Html\TableElements
      */
     protected $_table;
 
@@ -119,7 +120,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $user;
 
@@ -217,7 +218,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->user instanceof \Gems_User_User) {
+        if ($this->user instanceof \Gems\User\User) {
             return parent::checkRegistryRequestsAnswers();
         } else {
             return false;
@@ -270,7 +271,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
             $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
-            $element->addValidator(new \Gems_User_Validate_NewPasswordValidator($this->user));
+            $element->addValidator(new \Gems\User\Validate\NewPasswordValidator($this->user));
 
             $validator = new \MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->_('Repeat password'));
             $validator->setMessage(
@@ -302,7 +303,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
             $element->setRenderPassword(true);
             $element->setRequired(true);
             $element->addValidator(
-                    new \Gems_User_Validate_UserPasswordValidator($this->user, $this->_('Wrong password.'))
+                    new \Gems\User\Validate\UserPasswordValidator($this->user, $this->_('Wrong password.'))
                     );
 
             $this->addElement($element);
@@ -344,7 +345,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * Returns/sets an element showing the password rules
      *
-     * @return \MUtil_Form_Element_Html
+     * @return \MUtil\Form\Element\Html
      */
     public function getReportNoEnforcementElement()
     {
@@ -352,7 +353,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
 
         if (! $element) {
             // Show no enforcement info
-            $element = new \MUtil_Form_Element_Html($this->_reportNoEnforcementFieldName);
+            $element = new \MUtil\Form\Element\Html($this->_reportNoEnforcementFieldName);
             $element->setLabel($this->_('Rule enforcement'));
 
             $element->div()->strong($this->_('Choose a non-compliant password to force a password change at login.'));
@@ -365,7 +366,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * Returns/sets an element showing the password rules
      *
-     * @return \MUtil_Form_Element_Html
+     * @return \MUtil\Form\Element\Html
      */
     public function getReportRulesElement()
     {
@@ -376,7 +377,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
 
             // Show password info
             if ($info) {
-                $element = new \MUtil_Form_Element_Html($this->_reportRulesFieldName);
+                $element = new \MUtil\Form\Element\Html($this->_reportRulesFieldName);
                 $element->setLabel($this->_('Password rules'));
 
                 if (1 == count($info)) {
@@ -409,7 +410,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * Returns a user
      *
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getUser()
     {
@@ -453,17 +454,17 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil\Translate\Adapter\Potemkin();
     }
 
     /**
      * Validate the form
      *
      * As it is better for translation utilities to set the labels etc. translated,
-     * the MUtil default is to disable translation.
+     * the \MUtil default is to disable translation.
      *
      * However, this also disables the translation of validation messages, which we
-     * cannot set translated. The MUtil form is extended so it can make this switch.
+     * cannot set translated. The \MUtil form is extended so it can make this switch.
      *
      * @param  array   $data
      * @param  boolean $disableTranslateValidators Extra switch
@@ -499,7 +500,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
     /**
      * The function that determines the element load order
      *
-     * @return \Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems\User\Form\LoginForm (continuation pattern)
      */
     public function loadDefaultElements()
     {
@@ -526,7 +527,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
             /****************
              * Display form *
              ****************/
-            $this->_table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
+            $this->_table = new \MUtil\Html\TableElement(array('class' => 'formTable'));
             $this->_table->setAsFormLayout($this, true, true);
             $this->_table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
         }
@@ -560,7 +561,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $askCheck
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setAskCheck($askCheck = true)
     {
@@ -575,7 +576,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $askOld
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setAskOld($askOld = true)
     {
@@ -590,7 +591,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param array $checkFields Of 'label name' => 'required values' or \Zend_Form_Element elements
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setCheckFields(array $checkFields)
     {
@@ -605,7 +606,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $reportRules
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setReportRules($reportRules = true)
     {
@@ -620,7 +621,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $forceRules
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setForceRules($forceRules = true)
     {
@@ -634,10 +635,10 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      *
      * Enables loading of parameter through \Zend_Form::__construct()
      *
-     * @param \Gems_User_User $user
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @param \Gems\User\User $user
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
-    public function setUser(\Gems_User_User $user)
+    public function setUser(\Gems\User\User $user)
     {
         $this->user = $user;
 
@@ -650,7 +651,7 @@ class Gems_User_Form_ChangePasswordForm extends \Gems_Form_AutoLoadFormAbstract
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param boolean $useTableLayout
-     * @return \Gems_User_Form_ChangePasswordForm (continuation pattern)
+     * @return \Gems\User\Form\ChangePasswordForm (continuation pattern)
      */
     public function setUseTableLayout($useTableLayout = true)
     {

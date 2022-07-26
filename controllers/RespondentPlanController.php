@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class RespondentPlanController extends Gems_Default_RespondentPlanAction
+class RespondentPlanController extends \Gems\Actions\RespondentPlanAction
 {
 }

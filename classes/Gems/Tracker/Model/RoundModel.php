@@ -20,7 +20,7 @@ namespace Gems\Tracker\Model;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:43:07
  */
-class RoundModel extends \Gems_Model_JoinModel
+class RoundModel extends \Gems\Model\JoinModel
 {
     /**
      *

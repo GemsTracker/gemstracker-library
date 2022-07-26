@@ -25,13 +25,13 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -43,7 +43,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -60,7 +60,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
     protected $patientNrGenerator;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -71,7 +71,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
-//        \MUtil_Echo::track('EmailSubscribeSnippet');
+//        \MUtil\EchoOut\EchoOut::track('EmailSubscribeSnippet');
         // Veld inlognaam
         $element = $form->createElement('text', 'email');
         $element->setLabel($this->_('Your E-Mail address'))
@@ -112,7 +112,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $values['gr2o_comments']        = $this->_('Created by subscription');
         $values['gr2o_opened_by']       = $this->currentUser->getUserId();
 
-        // \MUtil_Echo::track($userIds, $this->formData['email']);
+        // \MUtil\EchoOut\EchoOut::track($userIds, $this->formData['email']);
         if ($userIds) {
             $values['grs_id_user']     = $userIds['gr2o_id_user'];
             $values['gr2o_id_user']    = $userIds['gr2o_id_user'];
@@ -121,7 +121,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
             $func = $this->patientNrGenerator;
             $values['gr2o_patient_nr'] = $func();
         }
-        // \MUtil_Echo::track($values);
+        // \MUtil\EchoOut\EchoOut::track($values);
 
         $model->save($values);
 

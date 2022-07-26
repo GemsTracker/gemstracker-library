@@ -17,7 +17,7 @@ use Monolog\Handler\RedisHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
-use \Redis;
+use Redis;
 
 class MonologFactory implements FactoryInterface
 {

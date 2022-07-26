@@ -19,11 +19,11 @@ namespace Gems\Task\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 11-Jul-2017 15:47:54
  */
-class CronMailMonitorTask extends \MUtil_Task_TaskAbstract
+class CronMailMonitorTask extends \MUtil\Task\TaskAbstract
 {
    /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     public $util;
 

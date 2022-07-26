@@ -21,18 +21,18 @@ use Gems\Screens\UnsubscribeScreenInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 11:41:08
  */
-class EmailOnlyUnsubscribe extends \MUtil_Translate_TranslateableAbstract implements UnsubscribeScreenInterface
+class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implements UnsubscribeScreenInterface
 {
     /**
      * Use currentUser since currentOrganization may have changed by now
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getScreenLabel()
     {

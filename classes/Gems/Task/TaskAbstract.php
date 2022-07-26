@@ -5,30 +5,31 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task;
 
 /**
  * Abstract class for easier implementation of the \Gems_Task for usage with
- * \Gems_Task_TaskRunnerBatch providing some convenience methods to loading and
+ * \Gems\Task\TaskRunnerBatch providing some convenience methods to loading and
  * translation.
  *
  * @package    Gems
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
- * @deprecated since version 1.6.2 Moved to \MUtil_Task_TaskAbstract (that uses $this->batch, not $this->_batch)
+ * @deprecated since version 1.6.2 Moved to \MUtil\Task\TaskAbstract (that uses $this->batch, not $this->_batch)
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-abstract class Gems_Task_TaskAbstract extends \MUtil_Registry_TargetAbstract implements \MUtil_Task_TaskInterface
+abstract class TaskAbstract extends \MUtil\Registry\TargetAbstract implements \MUtil\Task\TaskInterface
 {
     /**
-     * @var \MUtil_Task_TaskBatch
+     * @var \MUtil\Task\TaskBatch
      */
     protected $_batch;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -61,12 +62,12 @@ abstract class Gems_Task_TaskAbstract extends \MUtil_Registry_TargetAbstract imp
     /**
      * Sets the batch this task belongs to
      *
-     * This method will be called from the \Gems_Task_TaskRunnerBatch upon execution of the
+     * This method will be called from the \Gems\Task\TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
      *
-     * @param \MUtil_Task_TaskBatch $batch
+     * @param \MUtil\Task\TaskBatch $batch
      */
-    public function setBatch(\MUtil_Task_TaskBatch $batch)
+    public function setBatch(\MUtil\Task\TaskBatch $batch)
     {
         $this->_batch = $batch;
     }

@@ -63,7 +63,7 @@ class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstract
      */
     protected function saveData()
     {
-        //\MUtil_Echo::track($this->_fileElement->getFileName());
+        //\MUtil\EchoOut\EchoOut::track($this->_fileElement->getFileName());
         if ($this->_fileElement->isValid(null) && $this->_fileElement->getFileName()) {
             if (! $this->_fileElement->receive()) {
                 throw new \Zend_File_Transfer_Exception(sprintf(
@@ -82,14 +82,14 @@ class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstract
      * Set what to do when the form is 'finished'.
      *
      * #param array $params Url items to set for this route
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute(array $params = array())
     {
         $fileName = $this->_fileElement->getFileName();
         if ($fileName) {
-            $filePath = \MUtil_String::stripStringLeft($fileName, $this->currentDir);
-            return parent::setAfterSaveRoute([\MUtil_Model::REQUEST_ID => ltrim(str_replace(['\\', '/', '.'], ['|', '|', '%2E'], $filePath), '|')]);
+            $filePath = \MUtil\StringUtil\StringUtil::stripStringLeft($fileName, $this->currentDir);
+            return parent::setAfterSaveRoute([\MUtil\Model::REQUEST_ID => ltrim(str_replace(['\\', '/', '.'], ['|', '|', '%2E'], $filePath), '|')]);
         }   
     }
 }

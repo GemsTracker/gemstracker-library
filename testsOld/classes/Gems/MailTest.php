@@ -6,34 +6,36 @@
  * and open the template in the editor.
  */
 
+namespace Gem;
+
 /**
  * Description of mailTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class Gem_MailTest extends \PHPUnit_Framework_TestCase {
+class MailTest extends \PHPUnit_Framework_TestCase {
     
     /**
-     * @var Gems_Mail
+     * @var \Gems\Mail
      */
     public $object;
     
     /**
-     * @var Zend_Mail_Transport_File
+     * @var \Zend_Mail_Transport_File
      */
     public $transport;
     
     public function setUp() {
         parent::setUp();
         
-        $this->object = new Gems_Mail();
+        $this->object = new Gems\Mail();
         
         $options = array(
             'path' => GEMS_TEST_DIR . '/tmp',
             'callback' => array($this, '_getFileName')
             );
         
-        $this->transport = new Zend_Mail_Transport_File($options);
+        $this->transport = new \Zend_Mail_Transport_File($options);
         $this->object->setDefaultTransport($this->transport);        
     }
     
@@ -54,7 +56,7 @@ class Gem_MailTest extends \PHPUnit_Framework_TestCase {
     
     public function testNoFrom()
     {
-        $this->setExpectedException('Gems_Exception', 'No sender email set!');
+        $this->setExpectedException('\\Gems\\Exception', 'No sender email set!');
         $this->object->send();
     }
     

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Survey;
 
 use Gems\Snippets\ModelImportSnippet;
 
@@ -21,23 +22,23 @@ use Gems\Snippets\ModelImportSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.6.3 17-apr-2014 17:12:39
  */
-class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
+class AnswerImportSnippet extends ModelImportSnippet
 {
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $_survey;
 
     /**
      *
-     * @var \Gems_Import_ImportLoader
+     * @var \Gems\Import\ImportLoader
      */
     protected $importLoader;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -49,13 +50,13 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -74,10 +75,10 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStep1(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStep1(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->addItems($bridge, 'survey', 'trans', 'mode', 'track', 'skipUnknownPatients', 'tokenCompleted', 'noToken');
     }
@@ -96,12 +97,12 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->importModel instanceof \MUtil_Model_ModelAbstract) {
-            $surveyId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        if (! $this->importModel instanceof \MUtil\Model\ModelAbstract) {
+            $surveyId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
 
             if ($surveyId) {
                 $this->formData['survey'] = $surveyId;
@@ -143,34 +144,34 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
                     );
 
             $tokenCompleted = array(
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_OVERWRITE =>
                     $this->_('Delete old token and create new'),
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_DOUBLE =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_DOUBLE =>
                     $this->_('Create new extra set of answers'),
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR =>
                     $this->_('Abort the import'),
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_SKIP =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_SKIP =>
                     $this->_('Skip the token'),
             );
 
             $this->importModel->set('tokenCompleted', 'label', $this->_('When token completed'),
-                    'default', \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+                    'default', \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,
                     'description', $this->_('What to do when an imported token has already been completed'),
                     'elementClass', 'Radio',
                     'multiOptions', $tokenCompleted
                     );
 
             $tokenTreatments = array(
-                // \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_DOUBLE =>
+                // \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_DOUBLE =>
                 //     $this->_('Create new token'),
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR =>
                     $this->_('Abort the import'),
-                \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_SKIP =>
+                \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_SKIP =>
                     $this->_('Skip the token'),
             );
 
             $this->importModel->set('noToken', 'label', $this->_('Token does not exist'),
-                    'default', \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+                    'default', \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,
                     'description', $this->_('What to do when no token exist to import to'),
                     'elementClass', 'Radio',
                     'multiOptions', $tokenTreatments
@@ -194,8 +195,8 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
         $model    = $this->getModel();
         $baseform = $this->createForm();
 
-        if ($baseform instanceof \MUtil_Form) {
-            $table = new \MUtil_Html_TableElement();
+        if ($baseform instanceof \MUtil\Form) {
+            $table = new \MUtil\Html\TableElement();
             $table->setAsFormLayout($baseform, true, true);
 
             // There is only one row with formLayout, so all in output fields get class.
@@ -216,23 +217,23 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
     /**
      * Try to get the current translator
      *
-     * @return \MUtil_Model_ModelTranslatorInterface or false if none is current
+     * @return \MUtil\Model\ModelTranslatorInterface or false if none is current
      */
     protected function getImportTranslator()
     {
         $translator = parent::getImportTranslator();
 
-        if ($translator instanceof \Gems_Model_Translator_AnswerTranslatorAbstract) {
+        if ($translator instanceof \Gems\Model\Translator\AnswerTranslatorAbstract) {
             // Set answer specific options
             $surveyId = isset($this->formData['survey']) ? $this->formData['survey'] : null;
             $tokenCompleted = isset($this->formData['tokenCompleted']) ?
                     $this->formData['tokenCompleted'] :
-                    \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
+                    \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR;
             $skipUnknownPatients = isset($this->formData['skipUnknownPatients']) &&
                     $this->formData['skipUnknownPatients'];
             $noToken = isset($this->formData['noToken']) ?
                     $this->formData['noToken'] :
-                    \Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
+                    \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR;
 
             $trackId = isset($this->formData['track']) ? $this->formData['track'] : null;
 
@@ -255,16 +256,16 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
     {
         parent::loadFormData();
 
-        $surveyId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        $surveyId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
 
         if (isset($this->formData['survey']) &&
                 $this->formData['survey'] &&
-                (! $this->_survey instanceof \Gems_Tracker_Survey)) {
+                (! $this->_survey instanceof \Gems\Tracker\Survey)) {
 
             $this->_survey = $this->loader->getTracker()->getSurvey($this->formData['survey']);
         }
 
-        if ($this->_survey instanceof \Gems_Tracker_Survey) {
+        if ($this->_survey instanceof \Gems\Tracker\Survey) {
             // Add (optional) survey specific translators
             $extraTrans  = $this->importLoader->getAnswerImporters($this->_survey);
             if ($extraTrans) {
@@ -276,7 +277,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
             }
         }
 
-        if ($this->_survey instanceof \Gems_Tracker_Survey) {
+        if ($this->_survey instanceof \Gems\Tracker\Survey) {
             $this->targetModel = $this->_survey->getAnswerModel($this->locale->toString());
             $this->importer->setTargetModel($this->targetModel);
 
@@ -284,6 +285,6 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends ModelImportSnippet
             $source->offsetSet('gsu_has_pdf', $this->_survey->hasPdf() ? 1 : 0);
             $source->offsetSet('gsu_active', $this->_survey->isActive() ? 1 : 0);
         }
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
     }
 }

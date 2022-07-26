@@ -9,10 +9,12 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
- * Extension of MUtil model with auto update changed and create fields.
+ * Extension of \MUtil model with auto update changed and create fields.
  *
  * @package    Gems
  * @subpackage Model
@@ -20,7 +22,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
+class JoinModel extends \MUtil\Model\JoinModel
 {
     use TranslateableTrait;
 
@@ -37,7 +39,7 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
         parent::__construct($name, $startTable, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
     }
 
@@ -64,7 +66,7 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
     {
         $matches = [];
         preg_match_all('/([a-z]\w+\.[a-z][1-2a-z]+_\w+|[a-z][1-2a-z]+_\w+)/i', $expression, $matches);
-        // \MUtil_Echo::track($expression, array_unique($matches[0]));
+        // \MUtil\EchoOut\EchoOut::track($expression, array_unique($matches[0]));
         
         foreach (array_unique($matches[0]) as $field) {
             switch (strtoupper($field)) {
@@ -94,7 +96,7 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
     protected function _findFieldTable(array &$tables, $field)
     {
         // Check for tablename.fieldname, unless the field name is an aliased table
-        if ((! $this->has($field)) && \MUtil_String::contains($field, '.')) {
+        if ((! $this->has($field)) && \MUtil\StringUtil\StringUtil::contains($field, '.')) {
             list($table, $newField) = explode('.', $field, 2);
             
             if ($table == $this->get($newField, 'table')) {
@@ -149,14 +151,14 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function addLeftTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addLeftTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;
@@ -170,14 +172,14 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function addRightTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addRightTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;
@@ -191,14 +193,14 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function addTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
         parent::addTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
         return $this;
     }
@@ -247,7 +249,7 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
         $outputSelect = $adapter->select();
 
         $outputSelect->from($from, $cols);
-        // \MUtil_Echo::track($usedTables, $froms, $filter);
+        // \MUtil\EchoOut\EchoOut::track($usedTables, $froms, $filter);
 
         // Join the used tables
         foreach ($usedTables as $table) {
@@ -311,14 +313,14 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
      * @param string $table_name  Does not test for existence
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function setTableSaveable($table_name, $fieldPrefix = null, $saveable = null)
     {
         parent::setTableSaveable($table_name, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
-            \Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
+            \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);
         }
 
         return $this;

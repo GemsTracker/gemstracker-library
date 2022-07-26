@@ -24,9 +24,9 @@ interface DeferredUserLoaderInterface extends HelperInterface
     /**
      * Get the deferred user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @param string $deferredLogin name of the user to log in
      * @return \Gems_User_user|null
      */
-    public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin);
+    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin);
 }

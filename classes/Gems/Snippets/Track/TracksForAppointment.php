@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TracksForAppointment.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Track;
@@ -44,19 +43,19 @@ class TracksForAppointment extends TracksSnippet
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         $filter[] = $this->db->quoteInto(
                 "gr2t_id_respondent_track IN (
                     SELECT gr2t2a_id_respondent_track
                     FROM gems__respondent2track2appointment
                     WHERE gr2t2a_id_appointment = ?)",
-                $this->request->getParam(\Gems_Model::APPOINTMENT_ID)
+                $this->request->getParam(\Gems\Model::APPOINTMENT_ID)
                 );
 
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
 
         $model->setFilter($filter);
         $this->processSortOnly($model);

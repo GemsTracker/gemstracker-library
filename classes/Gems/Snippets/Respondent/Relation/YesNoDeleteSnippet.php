@@ -7,8 +7,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: YesNoDeleteSnippet.php 956 2012-09-25 15:34:45Z matijsdejong $
  */
+
+namespace Gems\Snippets\Respondent\Relation;
 
 /**
  * Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.
@@ -19,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
+class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetGeneric
 {
     public function render(\Zend_View_Abstract $view)
     {
-        // \MUtil_Echo::r(sprintf('Rendering snippet %s.', get_class($this)));
+        // \MUtil\EchoOut\EchoOut::r(sprintf('Rendering snippet %s.', get_class($this)));
         //
         // TODO: Change snippet workings.
         // All forms are processed twice if hasHtmlOutput() is called here. This is
@@ -38,13 +39,13 @@ class Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet extends \Gems_Snippet
             $html = $this->getHtmlOutput($view);
 
             if ($html) {
-                if ($html instanceof \MUtil_Html_HtmlInterface) {
-                    if ($html instanceof \MUtil_Html_HtmlElement) {
+                if ($html instanceof \MUtil\Html\HtmlInterface) {
+                    if ($html instanceof \MUtil\Html\HtmlElement) {
                         $this->applyHtmlAttributes($html);
                     }
                     return $html->render($view);
                 } else {
-                    return \MUtil_Html::renderAny($view, $html);
+                    return \MUtil\Html::renderAny($view, $html);
                 }
             }
         }
@@ -53,10 +54,10 @@ class Gems_Snippets_Respondent_Relation_YesNoDeleteSnippet extends \Gems_Snippet
     /**
      * Use findmenuitem for the abort action so we get the right id appended
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 

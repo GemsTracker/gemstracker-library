@@ -20,22 +20,22 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Mar 21, 2016 3:52:53 PM
  */
-class ModelImportSnippet extends \MUtil_Snippets_Standard_ModelImportSnippet
+class ModelImportSnippet extends \MUtil\Snippets\Standard\ModelImportSnippet
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
     /**
      * Hook for after save
      *
-     * @param \MUtil_Task_TaskBatch $batch that was just executed
-     * @param \MUtil_Form_Element_Html $element Tetx element for display of messages
+     * @param \MUtil\Task\TaskBatch $batch that was just executed
+     * @param \MUtil\Form\Element\Html $element Tetx element for display of messages
      * @return string a message about what has changed (and used in the form)
      */
-    public function afterImport(\MUtil_Task_TaskBatch $batch, \MUtil_Form_Element_Html $element)
+    public function afterImport(\MUtil\Task\TaskBatch $batch, \MUtil\Form\Element\Html $element)
     {
         $text = parent::afterImport($batch, $element);
 

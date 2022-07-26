@@ -26,7 +26,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 {
     /**
      *
-     * @var Gems\User\Embed\EmbeddedUserData
+     * @var \Gems\User\Embed\EmbeddedUserData
      */
     protected $_embedderData;
 
@@ -39,7 +39,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -54,13 +54,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $selectedUser;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -108,7 +108,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $urlOptions = [
             'label'       => $this->_('Example url'),
             'cols'        => 80,
-            'description' => \MUtil_String::contains($this->formData['example_url'], '{') ?
+            'description' => \MUtil\StringUtil\StringUtil::contains($this->formData['example_url'], '{') ?
                 $this->_('Replace {} fields!') :
                 $this->_('Please open in private mode or in other browser.'),
             'rows'        => 5,
@@ -167,7 +167,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -237,13 +237,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
-        if ($this->selectedUser instanceof \Gems_User_User) {
+        if ($this->selectedUser instanceof \Gems\User\User) {
             $this->_embedderData = $this->selectedUser->getEmbedderData();
             if ($this->selectedUser->isActive() && $this->_embedderData instanceof EmbeddedUserData) {
                 return parent::hasHtmlOutput();

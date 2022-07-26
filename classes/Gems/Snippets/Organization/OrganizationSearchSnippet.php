@@ -19,7 +19,7 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 9, 2017 2:44:24 PM
  */
-class OrganizationSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class OrganizationSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *

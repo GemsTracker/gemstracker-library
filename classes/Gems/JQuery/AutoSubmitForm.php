@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery;
 
 /**
  * @package    Gems
@@ -16,7 +17,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
+class AutoSubmitForm extends \Gems\JQuery\JQueryExtenderAbstract
 {
     protected $formId = 'auto';
     protected $jqueryParams = array('submitUrl' => null, 'targetId' => null);
@@ -26,14 +27,14 @@ class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
     public function __construct($submitUrl, $targetId, $formId = null, $args = null)
     {
         // Filter out elements passed by type
-        $args = \MUtil_Ra::args(func_get_args(),
+        $args = \MUtil\Ra::args(func_get_args(),
             array(
-                'submitUrl' => array('MUtil_Html_UrlArrayAttribute', 'is_array', 'is_string'),
-                'targetId'  => array('MUtil_Html_ElementInterface', 'is_string'),
+                'submitUrl' => array('\\MUtil\\Html\\UrlArrayAttribute', 'is_array', 'is_string'),
+                'targetId'  => array('\\MUtil\\Html\\ElementInterface', 'is_string'),
                 'formId'    => array('Zend_Form', 'is_string'),
-                ), null, \MUtil_Ra::STRICT);
+                ), null, \MUtil\Ra::STRICT);
 
-        // \MUtil_Echo::r($args);
+        // \MUtil\EchoOut\EchoOut::r($args);
 
         parent::__construct($args);
     }
@@ -42,10 +43,10 @@ class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
     {
 
         if (null === $this->getSubmitUrl()) {
-            throw new \Gems_Exception_Coding('No submitUrl defined for ' . __CLASS__);
+            throw new \Gems\Exception\Coding('No submitUrl defined for ' . __CLASS__);
         }
         if (null === $this->getTargetId()) {
-            throw new \Gems_Exception_Coding('No targetId defined for ' . __CLASS__);
+            throw new \Gems\Exception\Coding('No targetId defined for ' . __CLASS__);
         }
 
         if ($this->formId) {
@@ -78,7 +79,7 @@ class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
 
     public function setSubmitUrl($value)
     {
-        if (($this->view instanceof \Zend_View_Abstract) && ($value instanceof \MUtil_Html_HtmlInterface)) {
+        if (($this->view instanceof \Zend_View_Abstract) && ($value instanceof \MUtil\Html\HtmlInterface)) {
             $value = $value->render($this->view);
         }
 
@@ -88,7 +89,7 @@ class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
 
     public function setTargetId($value)
     {
-        if ($value instanceof \MUtil_Html_ElementInterface) {
+        if ($value instanceof \MUtil\Html\ElementInterface) {
             $value = isset($value->id) ? '#' . $value->id : (isset($value->class) ? '.' . $value->class: $value->getTagName());
         } else {
             $target = '#' . $value;
@@ -101,7 +102,7 @@ class Gems_JQuery_AutoSubmitForm extends \Gems_JQuery_JQueryExtenderAbstract
     public function setView(\Zend_View_Abstract $view)
     {
         $url = $this->getJQueryParam('submitUrl');
-        if ($url instanceof \MUtil_Html_HtmlInterface) {
+        if ($url instanceof \MUtil\Html\HtmlInterface) {
             $this->setJQueryParam('submitUrl', $url->render($view));
         }
 

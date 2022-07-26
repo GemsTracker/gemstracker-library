@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_MailFormSnippet
+class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
 {
     protected $identifier;
 
@@ -36,7 +38,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
      */
     public function afterRegistry()
     {
-        //\MUtil_Echo::track($this->multipleTokenData);
+        //\MUtil\EchoOut\EchoOut::track($this->multipleTokenData);
         $this->identifier = $this->getSingleTokenData();
 
         parent::afterRegistry();
@@ -48,10 +50,10 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->addElement($this->createToElement());
         $bridge->addElement($this->mailElements->createMethodElement());
@@ -115,7 +117,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
         }
 
         $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-        /* @var $mailer \Gems_Mail_TokenMailer */
+        /* @var $mailer \Gems\Mail\TokenMailer */
         $token = $mailer->getToken();
 
         return $this->createMultiOption($tokenData,
@@ -181,7 +183,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends \Gems_Snippets_Mail_Ma
         foreach($this->multipleTokenData as $tokenData) {
             if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
                 $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-                /* @var $mailer \Gems_Mail_TokenMailer */
+                /* @var $mailer \Gems\Mail\TokenMailer */
                 $token = $mailer->getToken();
                 $email = $token->getEmail();
 

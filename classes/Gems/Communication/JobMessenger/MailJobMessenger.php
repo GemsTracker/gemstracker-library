@@ -8,7 +8,7 @@ use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 use Psr\Log\LoggerInterface;
 
-class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_TargetInterface
+class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\TargetInterface
 {
     use TargetTrait;
     use TranslateableTrait;
@@ -19,7 +19,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -32,7 +32,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     {
         $mailLoader = $this->loader->getMailLoader();
         $mailer     = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
-        /* @var $mailer \Gems_Mail_TokenMailer */
+        /* @var $mailer \Gems\Mail\TokenMailer */
         $token  = $mailer->getToken();
 
         $sendById = $job['gcj_id_user_as'];
@@ -77,7 +77,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 );
 
                 // Use a gems exception to pass extra information to the log
-                $gemsException = new \Gems_Exception($info, 0, $exception);
+                $gemsException = new \Gems\Exception($info, 0, $exception);
 
                 $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
@@ -89,11 +89,11 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    public function getFallbackEmail(array $job, \Gems_Mail_TokenMailer $mailer)
+    public function getFallbackEmail(array $job, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_fallback_method']) {
@@ -111,18 +111,18 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 return $this->project->email['site'];
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
         }
     }
 
     /**
      *
      * @param array $job
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    public function getFromEmail(array $job, \Gems_Mail_TokenMailer $mailer)
+    public function getFromEmail(array $job, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -139,18 +139,18 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 return $this->project->email['site'];
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
         }
     }
 
     /**
      *
      * @param array $job
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    public function getFromName(array $job, \Gems_Mail_TokenMailer $mailer)
+    public function getFromName(array $job, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -165,13 +165,13 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
     /**
      *
      * @param array $job
-     * @param \Gems_Mail_TokenMailer $mailer
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Mail\TokenMailer $mailer
+     * @param \Gems\Tracker\Token $token
      * @param boolean $canBeMailed True when allowed to mail respondent
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    public function getToEmail(array $job, \Gems_Mail_TokenMailer $mailer, \Gems_Tracker_Token $token, $canBeMailed)
+    public function getToEmail(array $job, \Gems\Mail\TokenMailer $mailer, \Gems\Tracker\Token $token, $canBeMailed)
     {
         $email = null;
 
@@ -198,7 +198,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 return $this->getFallbackEmail($job, $mailer);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
         }
 
 
@@ -215,7 +215,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_T
                 return $this->getFallbackEmail($job, $mailer);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
         }
     }
 

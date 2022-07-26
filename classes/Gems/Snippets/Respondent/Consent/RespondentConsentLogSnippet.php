@@ -19,7 +19,7 @@ namespace Gems\Snippets\Respondent\Consent;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 11-Oct-2019 12:26:51
  */
-class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstract
+class RespondentConsentLogSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -30,14 +30,14 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
 
     /**
      *
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     protected $model;
 
     /**
      * Optional
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -51,7 +51,7 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
     {
         parent::afterRegistry();
 
-        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
             $this->caption = sprintf(
                     $this->_('Consent change log for respondent %s, %s at %s'),
                     $this->respondent->getPatientNumber(),
@@ -67,7 +67,7 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -80,9 +80,9 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
             $options      = (array) $respModel->get($field, 'multiOptions');
             $valueOptions = array_merge($valueOptions, $options);
         }
-        // \MUtil_Echo::track($fieldOptions, $valueOptions);
+        // \MUtil\EchoOut\EchoOut::track($fieldOptions, $valueOptions);
 
-        $model = new \MUtil_Model_TableModel('gems__log_respondent_consents');
+        $model = new \MUtil\Model\TableModel('gems__log_respondent_consents');
 
         $model->set('glrc_consent_field', 'label', $this->_('Type'),
                 'multiOptions', $fieldOptions);
@@ -114,14 +114,14 @@ class RespondentConsentLogSnippet extends \MUtil_Snippets_ModelTableSnippetAbstr
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
         return parent::hasHtmlOutput() &&
-                ($this->respondent instanceof \Gems_Tracker_Respondent) &&
+                ($this->respondent instanceof \Gems\Tracker\Respondent) &&
                 $this->respondent->exists;
     }
 }

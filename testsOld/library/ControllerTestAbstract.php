@@ -16,17 +16,17 @@ class ControllerTestAbstract extends \Zend_Test_PHPUnit_ControllerTestCase
 
     protected function _fixUser()
     {
-        $gems       = \GemsEscort::getInstance();
+        $gems       = \Gems\Escort::getInstance();
         $loader     = $gems->getLoader();
         $userLoader = $loader->getUserLoader();
-        $defName    = \Gems_User_UserLoader::USER_CONSOLE;
+        $defName    = \Gems\User\UserLoader::USER_CONSOLE;
         $definition = $userLoader->getUserDefinition($defName);
 
         $values = $definition->getUserData('unittest', $this->organizationIdNr);
         $values['user_locale'] = 'en';
 
         $values = $userLoader->ensureDefaultUserValues($values, $definition, $defName);
-        $user   = new \Gems_User_User($values, $definition);
+        $user   = new \Gems\User\User($values, $definition);
         $user->answerRegistryRequest('basepath', $gems->basepath);
         $user->answerRegistryRequest('db', $gems->db);
         $user->answerRegistryRequest('loader', $loader);

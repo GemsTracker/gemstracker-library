@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CurrentSiblingsButtonRowSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 namespace Gems\Snippets\Generic;

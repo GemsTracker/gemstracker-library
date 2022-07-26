@@ -38,19 +38,19 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     
     /**
      *
-     * @var \Gems_Agenda 
+     * @var \Gems\Agenda 
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -122,7 +122,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     /**
      * Retreive the agenda if not injected
      * 
-     * @return \Gems_Agenda
+     * @return \Gems\Agenda
      */
     protected function getAgenda()
     {
@@ -166,10 +166,10 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     /**
      * Return the appropriate Id for the given appointment
      * 
-     * @param \Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Appointment $appointment
      * @return int
      */
-    abstract protected function getId(\Gems_Agenda_Appointment $appointment);
+    abstract protected function getId(\Gems\Agenda\Appointment $appointment);
             
     /**
      * Return the lookup array for this field

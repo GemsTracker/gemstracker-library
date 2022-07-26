@@ -19,17 +19,17 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 31-Dec-2019 12:20:32
  */
-class FilterSearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class FilterSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -51,8 +51,8 @@ class FilterSearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $elements['gaf_class']  = $this->_createSelectElement('gaf_class',  $this->model, $this->_('(all types)'));
         $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model, $this->_('(any active)'));
 
-        $elements[] = \MUtil_Html::create('br');
-        $elements[] = \MUtil_Html::create('strong', $this->_('Usage'));
+        $elements[] = \MUtil\Html::create('br');
+        $elements[] = \MUtil\Html::create('strong', $this->_('Usage'));
 
         $tracks = [
             -1 => $this->_('(not used in any track)'),

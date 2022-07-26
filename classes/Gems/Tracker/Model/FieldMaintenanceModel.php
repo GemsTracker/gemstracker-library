@@ -26,7 +26,7 @@ use MUtil\Model\Dependency\ValueSwitchDependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FieldMaintenanceModel extends \MUtil_Model_UnionModel
+class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 {
     /**
      * Constant name to id appointment items
@@ -83,13 +83,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -107,7 +107,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -120,18 +120,18 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $model = new \MUtil_Model_TableModel('gems__track_fields');
+        $model = new \MUtil\Model\TableModel('gems__track_fields');
         $model->addColumn(new \Zend_Db_Expr('gtf_field_values'), 'gtf_field_value_keys');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
         $this->addAppointmentsToModel();
 
         $this->setKeys(array(
-            \Gems_Model::FIELD_ID => 'gtf_id_field',
-            \MUtil_Model::REQUEST_ID => 'gtf_id_track',
+            \Gems\Model::FIELD_ID => 'gtf_id_field',
+            \MUtil\Model::REQUEST_ID => 'gtf_id_track',
             ));
-        $this->setClearableKeys(array(\Gems_Model::FIELD_ID => 'gtf_id_field'));
+        $this->setClearableKeys(array(\Gems\Model::FIELD_ID => 'gtf_id_field'));
         $this->setSort(array('gtf_id_order' => SORT_ASC));
     }
 
@@ -193,8 +193,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      */
     protected function addAppointmentsToModel()
     {
-        $model = new \MUtil_Model_TableModel('gems__track_appointments');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
+        $model = new \MUtil\Model\TableModel('gems__track_appointments');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gtap');
 
         $map = $model->getItemsOrdered();
         $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
@@ -258,7 +258,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $this->set('htmlUse',
                 'elementClass', 'Exhibitor', 'nohidden', true,
-                'value', \MUtil_Html::create('h3', $this->_('Field use'))
+                'value', \MUtil\Html::create('h3', $this->_('Field use'))
                 );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),
@@ -281,7 +281,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $this->set('htmlCalc',
                 'elementClass', 'None', 'nohidden', true,
-                'value', \MUtil_Html::create('h3', $this->_('Field calculation'))
+                'value', \MUtil\Html::create('h3', $this->_('Field calculation'))
                 );
 
         $this->set('gtf_calculate_using',
@@ -308,7 +308,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $this->set('htmlCreate',
                    'elementClass', 'None', 'nohidden', true,
-                   'value', \MUtil_Html::create('h3', $this->_('Automatic track creation'))
+                   'value', \MUtil\Html::create('h3', $this->_('Automatic track creation'))
         );
 
         $this->set('gtf_create_track', 'label', $this->_('When not assigned'),
@@ -345,7 +345,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         // But do always transform gtf_calculate_using on load and save
         // as otherwise we might not be sure what to do
-        $contact = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
+        $contact = new \MUtil\Model\Type\ConcatenatedRow(self::FIELD_SEP, '; ', false);
         $contact->apply($this, 'gtf_calculate_using');
 
         $this->set('header_creation', 'elementClass', 'None');
@@ -463,13 +463,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         }
 
         if (isset($row['gtf_id_field']) && $row['gtf_id_field']) {
-            $row[\Gems_Model::FIELD_ID] = $row['gtf_id_field'];
+            $row[\Gems\Model::FIELD_ID] = $row['gtf_id_field'];
         }
 
-        if (isset($row[\Gems_Model::FIELD_ID])) {
+        if (isset($row[\Gems\Model::FIELD_ID])) {
             return $this->db->fetchOne(
                     "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
-                    $row[\Gems_Model::FIELD_ID]
+                    $row[\Gems\Model::FIELD_ID]
                     );
         }
 
@@ -582,14 +582,14 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil\Translate\Adapter\Potemkin();
     }
 
     /**
      * A ModelAbstract->setOnLoad() function that concatenates the
      * value if it is an array.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

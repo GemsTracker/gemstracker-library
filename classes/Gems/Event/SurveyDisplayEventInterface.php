@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event;
 
 /**
  * Survey display event interface.
@@ -21,13 +22,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-interface Gems_Event_SurveyDisplayEventInterface extends \Gems_Event_EventInterface
+interface SurveyDisplayEventInterface extends \Gems\Event\EventInterface
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token);
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token);
 }

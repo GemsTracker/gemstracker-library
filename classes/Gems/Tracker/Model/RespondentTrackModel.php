@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Model;
+
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
@@ -34,7 +36,7 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganizationModel
+class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
 {
     /**
      *
@@ -43,13 +45,13 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     protected $hideWhollyMasked = true;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -107,7 +109,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
      * Add tracking off manual end date changes by the user
      *
      * @param mixed $value The value to store when the tracked field has changed
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function addEditTracking()
     {
@@ -119,7 +121,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_RespondentTrackModel
+     * @return \Gems\Model_RespondentTrackModel
      */
     public function applyBrowseSettings()
     {
@@ -128,9 +130,9 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->resetOrder();
 
         $this->setKeys(array(
-            \Gems_Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
-            \MUtil_Model::REQUEST_ID1     => 'gr2o_patient_nr',
-            \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization',
+            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+            \MUtil\Model::REQUEST_ID1     => 'gr2o_patient_nr',
+            \MUtil\Model::REQUEST_ID2 => 'gr2o_id_organization',
             ));
 
         $this->set('gtr_track_name',    'label', $this->_('Track'));
@@ -158,11 +160,11 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     /**
      * Set those settings needed for the detailed display
      *
-     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
+     * @param \Gems\Tracker\Engine\TrackEngineInterface $trackEngine
      * @param boolean $edit When true the fields are added in edit mode
-     * @return \Gems_Model_RespondentTrackModel
+     * @return \Gems\Model_RespondentTrackModel
      */
-    public function applyDetailSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine, $edit = false)
+    public function applyDetailSettings(\Gems\Tracker\Engine\TrackEngineInterface $trackEngine, $edit = false)
     {
         $this->resetOrder();
 
@@ -213,10 +215,10 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     /**
      * Set those values needed for editing
      *
-     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
-     * @return \Gems_Model_RespondentTrackModel
+     * @param \Gems\Tracker\Engine\TrackEngineInterface $trackEngine
+     * @return \Gems\Model_RespondentTrackModel
      */
-    public function applyEditSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
+    public function applyEditSettings(\Gems\Tracker\Engine\TrackEngineInterface $trackEngine)
     {
         $this->applyDetailSettings($trackEngine, true);
         $this->addEditTracking();
@@ -261,15 +263,15 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     {
         if ($parameters) {
             // Altkey
-            if (isset($parameters[\Gems_Model::RESPONDENT_TRACK])) {
-                $id = $parameters[\Gems_Model::RESPONDENT_TRACK];
-                unset($parameters[\Gems_Model::RESPONDENT_TRACK]);
+            if (isset($parameters[\Gems\Model::RESPONDENT_TRACK])) {
+                $id = $parameters[\Gems\Model::RESPONDENT_TRACK];
+                unset($parameters[\Gems\Model::RESPONDENT_TRACK]);
                 $parameters['gr2t_id_respondent_track'] = $id;
             }
 
-            if (isset($parameters[\Gems_Model::TRACK_ID])) {
-                $id = $parameters[\Gems_Model::TRACK_ID];
-                unset($parameters[\Gems_Model::TRACK_ID]);
+            if (isset($parameters[\Gems\Model::TRACK_ID])) {
+                $id = $parameters[\Gems\Model::TRACK_ID];
+                unset($parameters[\Gems\Model::TRACK_ID]);
                 $parameters['gtr_id_track'] = $id;
             }
 
@@ -338,7 +340,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             }
         }
 
-        // \MUtil_Echo::track($filter, $values);
+        // \MUtil\EchoOut\EchoOut::track($filter, $values);
         $rows = $this->processAfterLoad(array($values), true);
         $row  = reset($rows);
 
@@ -370,12 +372,12 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
             $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
             if ( ! $displayFormat) {
-                $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+                $displayFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
             }
 
             // Of course do not do so when we got a time format
-            if (! \MUtil_Date_Format::getTimeFormat($displayFormat)) {
-                $newValues['gr2t_end_date'] = new \MUtil_Date($newValues['gr2t_end_date'], $displayFormat);
+            if (! \MUtil\Date\Format::getTimeFormat($displayFormat)) {
+                $newValues['gr2t_end_date'] = new \MUtil\Date($newValues['gr2t_end_date'], $displayFormat);
                 $newValues['gr2t_end_date']->setTimeToDayEnd();
             }
         }

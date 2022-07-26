@@ -22,7 +22,7 @@ use Gems\Tracker\Model\RoundModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11
  */
-class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstract
+class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
 {
     /**
      *
@@ -39,7 +39,7 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     /**
      * Required: the engine of the current track
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -59,7 +59,7 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -78,15 +78,15 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
+     * @return \MUtil\Snippets\ModelYesNoDeleteSnippetAbstract
      */
     protected function setAfterDeleteRoute()
     {
         parent::setAfterDeleteRoute();
 
         if (is_array($this->afterSaveRouteUrl)) {
-            $this->afterSaveRouteUrl[\MUtil_Model::REQUEST_ID] = $this->trackId;
-            $this->afterSaveRouteUrl[\Gems_Model::ROUND_ID]    = null;
+            $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID] = $this->trackId;
+            $this->afterSaveRouteUrl[\Gems\Model::ROUND_ID]    = null;
             $this->afterSaveRouteUrl[$this->confirmParameter]  = null;
         }
     }
@@ -97,11 +97,11 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($model instanceof RoundModel) {
             $refCount = $model->getRefCount($this->roundId);
@@ -121,7 +121,7 @@ class RoundDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetAbstr
                 ), $this->useCount));
             }
 
-            \MUtil_Echo::track($refCount, $this->useCount);
+            \MUtil\EchoOut\EchoOut::track($refCount, $this->useCount);
             if ($refCount || $this->useCount) {
                 $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
                 $this->deleteQuestion = $this->_('Do you want to deactivate this round?');

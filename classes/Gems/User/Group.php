@@ -19,7 +19,7 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Dec 23, 2016 4:01:38 PM
  */
-class Group extends \Gems_Registry_CachedArrayTargetAbstract
+class Group extends \Gems\Registry\CachedArrayTargetAbstract
 {
     /**
      * No two factor always allowed
@@ -113,7 +113,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -132,7 +132,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
     
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -166,11 +166,11 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
 
     /**
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
      * @return $this
      */
-    public function applyGroupToModel(\MUtil_Model_ModelAbstract $model, $hideWhollyMasked)
+    public function applyGroupToModel(\MUtil\Model\ModelAbstract $model, $hideWhollyMasked)
     {
         if ($this->enableMasks) {
             $this->maskStore->applyMaskDataToModel($model, $hideWhollyMasked);
@@ -364,7 +364,7 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
      */
     public function isTwoFactorRequired($ipAddress, $hasKey)
     {
-        // \MUtil_Echo::track($ipAddress, $hasKey, $this->_get('ggp_2factor_set'), $this->_get('ggp_2factor_not_set'));
+        // \MUtil\EchoOut\EchoOut::track($ipAddress, $hasKey, $this->_get('ggp_2factor_set'), $this->_get('ggp_2factor_not_set'));
         
         if ($hasKey) {
             switch ($this->_get('ggp_2factor_set')) {
@@ -407,14 +407,14 @@ class Group extends \Gems_Registry_CachedArrayTargetAbstract
         // Translate numeric role id
         if (is_array($data)) {
             if (intval($data['ggp_role'])) {
-                $data['ggp_role'] = \Gems_Roles::getInstance()->translateToRoleName($data['ggp_role']);
+                $data['ggp_role'] = \Gems\Roles::getInstance()->translateToRoleName($data['ggp_role']);
             }
             if (! isset($data['ggp_mask_settings'])) {
                 $data['ggp_mask_settings'] = array();
             } elseif (! is_array($data['ggp_mask_settings'])) {
                 $data['ggp_mask_settings'] = (array) json_decode($data['ggp_mask_settings']);
             }
-            // \MUtil_Echo::track($data['ggp_mask_settings']);
+            // \MUtil\EchoOut\EchoOut::track($data['ggp_mask_settings']);
         }
 
         return $data;

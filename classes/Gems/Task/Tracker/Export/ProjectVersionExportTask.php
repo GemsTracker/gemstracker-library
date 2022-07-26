@@ -29,7 +29,7 @@ class ProjectVersionExportTask  extends TrackExportAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

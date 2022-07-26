@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
- * Gems specific Html elements and settings
+ * \Gems specific Html elements and settings
  *
  * @package    Gems
  * @subpackage Html
@@ -18,13 +20,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Html
+class Html
 {
     public static function actionDisabled($arg_array = null)
     {
         $args = func_get_args();
 
-        $element = \MUtil_Html::createArray('span', $args);
+        $element = \MUtil\Html::createArray('span', $args);
 
         $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
         return $element;
@@ -34,7 +36,7 @@ class Gems_Html
     {
         $args = func_get_args();
 
-        $element = \MUtil_Html::createArray('a', $args);
+        $element = \MUtil\Html::createArray('a', $args);
 
         $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
@@ -44,28 +46,28 @@ class Gems_Html
     {
         $args = func_get_args();
 
-        $element = \MUtil_Html::createArray('div', $args);
+        $element = \MUtil\Html::createArray('div', $args);
 
         $element->appendAttrib('class', 'buttons'); // Keeps existing classes
         return $element;
     }
 
-    public static function init(\MUtil_Html_Creator $creator = null)
+    public static function init(\MUtil\Html\Creator $creator = null)
     {
         if (null === $creator) {
-            $creator = \MUtil_Html::getCreator();
+            $creator = \MUtil\Html::getCreator();
         }
 
-        // \MUtil_Html::$verbose = true;
+        // \MUtil\Html::$verbose = true;
 
         // Set the image directories
-        \MUtil_Html_ImgElement::addImageDir('gems-responsive/images/icons');
-        $escort = \GemsEscort::getInstance();
+        \MUtil\Html\ImgElement::addImageDir('gems-responsive/images/icons');
+        $escort = \Gems\Escort::getInstance();
         if (isset($escort->project->imagedir)) {
-            \MUtil_Html_ImgElement::addImageDir($escort->project->imagedir);
+            \MUtil\Html\ImgElement::addImageDir($escort->project->imagedir);
         }
 
-        // Gems specific element functions
+        // \Gems specific element functions
         $creator->addElementFunction(
             'actionDisabled', array(__CLASS__, 'actionDisabled'),
             'actionLink',     array(__CLASS__, 'actionLink'),
@@ -75,7 +77,7 @@ class Gems_Html
             'smallData',      array(__CLASS__, 'smallData'));
 
 
-        // \Gems_Util::callProjectClass('Html', 'init', $creator);
+        // \Gems\Util::callProjectClass('Html', 'init', $creator);
         // Allow in-project overruling
         /* $projectFile = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/Html.php';
         if (file_exists($projectFile)) {
@@ -89,11 +91,11 @@ class Gems_Html
     /**
      * Create a page panel
      *
-     * @param mixed $paginator \MUtil_Ra::args() arguements
+     * @param mixed $paginator \MUtil\Ra::args() arguements
      * @param mixed $request
      * @param mixed $translator
      * @param mixed $args
-     * @return \MUtil_Html_PagePanel
+     * @return \MUtil\Html\PagePanel
      */
     public static function pagePanel($paginator = null, $request = null, $translator = null, $args = null)
     {
@@ -104,7 +106,7 @@ class Gems_Html
             'view'       => 'Zend_View',
         );
 
-        $args = \MUtil_Ra::args(func_get_args(), $types, null, \MUtil_Ra::STRICT);
+        $args = \MUtil\Ra::args(func_get_args(), $types, null, \MUtil\Ra::STRICT);
 
         $panel_args = array();
         foreach (array('baseUrl', 'paginator', 'request', 'scrollingStyle', 'view', 'itemCount') as $var) {
@@ -120,32 +122,32 @@ class Gems_Html
             $translator = \Zend_Registry::get('Zend_Translate');
         }
         if (isset($args['class'])) {
-            if ($args['class'] instanceof \MUtil_Html_AttributeInterface) {
+            if ($args['class'] instanceof \MUtil\Html\AttributeInterface) {
                 $args['class']->add('browselink');
             } else {
-                $args['class'] = new \MUtil_Html_ClassArrayAttribute('browselink', $args['class']);;
+                $args['class'] = new \MUtil\Html\ClassArrayAttribute('browselink', $args['class']);;
             }
         } else {
-            $args['class'] = new \MUtil_Html_ClassArrayAttribute('browselink');
+            $args['class'] = new \MUtil\Html\ClassArrayAttribute('browselink');
         }
 
-        // \MUtil_Echo::track($args);
-        // \MUtil_Echo::track($panel_args['baseUrl']);
-        $pager = new \MUtil_Bootstrap_Html_PagePanel($panel_args);
+        // \MUtil\EchoOut\EchoOut::track($args);
+        // \MUtil\EchoOut\EchoOut::track($panel_args['baseUrl']);
+        $pager = new \MUtil\Bootstrap\Html\PagePanel($panel_args);
 
         $pager[] = $pager->pageLinks(
-            array($translator->_('<< First'),   'class' => new \MUtil_Html_ClassArrayAttribute('browselink', 'keyHome')),
-            array($translator->_('< Previous'), 'class' => new \MUtil_Html_ClassArrayAttribute('browselink', 'keyPgUp')),
-            array($translator->_('Next >'),     'class' => new \MUtil_Html_ClassArrayAttribute('browselink', 'keyPgDn')),
-            array($translator->_('Last >>'),    'class' => new \MUtil_Html_ClassArrayAttribute('browselink', 'keyEnd')),
+            array($translator->_('<< First'),   'class' => new \MUtil\Html\ClassArrayAttribute('browselink', 'keyHome')),
+            array($translator->_('< Previous'), 'class' => new \MUtil\Html\ClassArrayAttribute('browselink', 'keyPgUp')),
+            array($translator->_('Next >'),     'class' => new \MUtil\Html\ClassArrayAttribute('browselink', 'keyPgDn')),
+            array($translator->_('Last >>'),    'class' => new \MUtil\Html\ClassArrayAttribute('browselink', 'keyEnd')),
             $translator->_(' | '), $args);
 
         $pager->div(
             $pager->uptoOffDynamic(
                 $translator->_('to'),
                 $translator->_('of'),
-                array('-', 'class' => new \MUtil_Html_ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlUp')),
-                array('+', 'class' => new \MUtil_Html_ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlDown')),
+                array('-', 'class' => new \MUtil\Html\ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlUp')),
+                array('+', 'class' => new \MUtil\Html\ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlDown')),
                 null,
                 ' ',
                 $args),
@@ -158,7 +160,7 @@ class Gems_Html
     {
         $args = func_get_args();
 
-        $element = \MUtil_Html::createArray('p', $args);
+        $element = \MUtil\Html::createArray('p', $args);
 
         $element->appendAttrib('class', 'info'); // Keeps existing classes
         return $element;
@@ -168,7 +170,7 @@ class Gems_Html
     {
         $args = func_get_args();
 
-        $element = \MUtil_Lazy::iff($value, \MUtil_Html::createArray('small', array(' [', $args, ']')));
+        $element = \MUtil\Lazy::iff($value, \MUtil\Html::createArray('small', array(' [', $args, ']')));
 
         return $element;
     }

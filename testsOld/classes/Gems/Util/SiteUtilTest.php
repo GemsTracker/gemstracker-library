@@ -23,7 +23,7 @@ use PHPUnit_Extensions_Database_DataSet_IDataSet;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteUtilTest extends \Gems_Test_DbTestAbstract
+class SiteUtilTest extends \Gems\Test\DbTestAbstract
 {
     use SameNameDatasetTrait;
 
@@ -74,12 +74,12 @@ class SiteUtilTest extends \Gems_Test_DbTestAbstract
         $settings         = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/project.example.ini', APPLICATION_ENV);
         $settings         = $settings->toArray();
         $settings['salt'] = 'vadf2646fakjndkjn24656452vqk';
-        $project          = new \Gems_Project_ProjectSettings($settings);
+        $project          = new \Gems\Project\ProjectSettings($settings);
         $this->project    = $project;
 
         $this->util = $this->loader->getUtil();
         $cache      = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
-        $roles      = new \Gems_Roles($cache);
+        $roles      = new \Gems\Roles($cache);
         $acl        = $roles->getAcl();
 
         $this->siteUtil = $this->util->getSites();
@@ -131,7 +131,7 @@ class SiteUtilTest extends \Gems_Test_DbTestAbstract
      */
     public function testIsConsole()
     {
-        // Unit test enabled set \MUtil_Console::isConsole() to false
+        // Unit test enabled set \MUtil\Console::isConsole() to false
         \Zend_Session::$_unitTestEnabled = false;
         $site = $this->siteUtil->getSiteForCurrentUrl();
         \Zend_Session::$_unitTestEnabled = true;

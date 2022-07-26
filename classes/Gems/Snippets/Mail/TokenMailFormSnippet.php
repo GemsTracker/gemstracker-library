@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Mail;
+
 /**
  *
  *
@@ -18,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_TokenMailFormSnippet extends \Gems_Snippets_Mail_MailFormSnippet
+class TokenMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
 {
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -32,10 +34,10 @@ class Gems_Snippets_Mail_TokenMailFormSnippet extends \Gems_Snippets_Mail_MailFo
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->addHtml('to', 'label', $this->_('To'));
 

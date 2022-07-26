@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackUsageOverviewSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -21,11 +20,11 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 30-apr-2015 16:37:27
  */
-class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -66,7 +65,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * The respondent
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -80,7 +79,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * The respondent2track
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -94,7 +93,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Optional, can be source of the $trackId
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -106,7 +105,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
@@ -118,13 +117,13 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->loader instanceof \Gems_Loader;
+        return $this->loader instanceof \Gems\Loader;
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -142,7 +141,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -155,15 +154,15 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         $this->tracker = $this->loader->getTracker();
 
         if (! $this->respondentTrackId) {
-            $this->respondentTrackId = $this->request->getParam(\Gems_Model::RESPONDENT_TRACK);
+            $this->respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK);
         }
 
         if ($this->respondentTrackId) {
-            if (! $this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+            if (! $this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
                 $this->respondentTrack = $this->tracker->getRespondentTrack($this->respondentTrackId);
             }
         }
-        if ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+        if ($this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
             if (! $this->respondentTrackId) {
                 $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
             }
@@ -180,7 +179,7 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
             $this->onEmpty = $this->_('This track is assigned only once to this respondent.');
 
         } else {
-            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
                 if (! $this->respondentId) {
                     $this->respondentId = $this->respondent->getId();
                 }
@@ -193,9 +192,9 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
         }
 
         if (! $this->trackId) {
-            $this->trackId = $this->request->getParam(\Gems_Model::TRACK_ID);
+            $this->trackId = $this->request->getParam(\Gems\Model::TRACK_ID);
         }
-        if ((! $this->trackId) && $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+        if ((! $this->trackId) && $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
             $this->trackId = $this->trackEngine->getTrackId();
         }
 
@@ -205,9 +204,9 @@ class TrackUsageOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         $model->setFilter(array(
             'gr2t_id_track'        => $this->trackId,

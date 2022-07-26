@@ -8,8 +8,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Source;
 
 /**
  * A fieldmap object adds LS source code knowledge and interpretation to the database data
@@ -21,6 +22,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Source_SurveyNotFoundException extends \Gems_Exception
+class SurveyNotFoundException extends \Gems\Exception
 {
 }

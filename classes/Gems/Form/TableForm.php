@@ -6,8 +6,9 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form;
 
 /**
  * Render a Form as a table just by modifying the decorators
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Form_TableForm extends \Gems_Form
+class TableForm extends \Gems\Form
 {
     /**
      * Whether or not form elements are members of an array
@@ -49,7 +50,7 @@ class Gems_Form_TableForm extends \Gems_Form
 
     public static function doRow($content, $label, $class, $element) {
         if ($element->getAttrib('tooltip')) {
-            $dec = new \Gems_Form_Decorator_Tooltip();
+            $dec = new \Gems\Form\Decorator\Tooltip();
             $dec->setElement($element);
             $label .= $dec->render('');
         }
@@ -216,7 +217,7 @@ class Gems_Form_TableForm extends \Gems_Form
      * @param array $elements   Array with names of the fields you want to add
      * @param string $name      The (unique) name for this new group
      * @param array $options    An array of key=>value options to set for the group
-     * @return \Gems_Form_TabSubForm
+     * @return \Gems\Form\TabSubForm
      */
     public function addDisplayGroup(array $elements, $name, $options = null)
     {
@@ -231,10 +232,10 @@ class Gems_Form_TableForm extends \Gems_Form
     public function fixDecorators()
     {
         //Needed for alternating rows
-        $this->_alternate = new \MUtil_Lazy_Alternate(array('odd', 'even'));
+        $this->_alternate = new \MUtil\Lazy\Alternate(array('odd', 'even'));
 
         foreach ($this as $name => $element) {
-            if ($element instanceof \MUtil_Form_Element_Html) {
+            if ($element instanceof \MUtil\Form\Element\Html) {
                 $this->_fixDecoratorHtml($element);
 
             } elseif ($element instanceof \Zend_Form_Element_Hidden || $element instanceof \Zend_Form_Element_Submit) {

@@ -7,7 +7,6 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -19,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class CronController extends Gems_Default_CronAction
+class CronController extends \Gems\Actions\CronAction
 { }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OwnAccountEditSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\User;
@@ -23,29 +22,29 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 15:15:07
  */
-class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -70,7 +69,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
             $user->setCurrentOrganization($currentOrg);
 
             // In case locale has changed, set it in a cookie
-            \Gems_Cookies::setLocale($this->formData['gsf_iso_lang'], $this->basepath);
+            \Gems\Cookies::setLocale($this->formData['gsf_iso_lang'], $this->basepath);
 
             $this->addMessage($this->_('Saved your setup data', $this->formData['gsf_iso_lang']));
         } else {
@@ -98,11 +97,11 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Model_StaffModel) {
+        if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->loader->getModels()->getStaffModel(false);
             $this->model->applyOwnAccountEdit();
         }
@@ -127,7 +126,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if ($this->currentUser->getUserId() == \Gems_User_UserLoader::SYSTEM_USER_ID) {
+        if ($this->currentUser->getUserId() == \Gems\User\UserLoader::SYSTEM_USER_ID) {
             $this->addMessage($this->getNotAllowedMessage());
             return false;
         }
@@ -138,7 +137,7 @@ class OwnAccountEditSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {

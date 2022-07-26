@@ -7,8 +7,9 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model;
 
 /**
  *
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Model_CommtemplateModel extends \Gems_Model_JoinModel
+class CommtemplateModel extends \Gems\Model\JoinModel
 {
 
     protected $locale;
@@ -62,7 +63,7 @@ class Gems_Model_CommtemplateModel extends \Gems_Model_JoinModel
 
         // If we had an ID and the result was that we deleted something, propagate to the other model
         if ($id > 0 && $deleted > 0) {
-            $model = new \MUtil_Model_TableModel('gems__comm_template_translations');
+            $model = new \MUtil\Model\TableModel('gems__comm_template_translations');
             $model->delete(['gctt_id_template' => $id]);
         }
 

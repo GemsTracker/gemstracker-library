@@ -19,7 +19,7 @@ namespace Gems\Snippets\Respondent\Consent;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 11-Oct-2019 15:36:16
  */
-class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstract
+class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
@@ -42,7 +42,7 @@ class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
     protected $model;
 
@@ -56,12 +56,12 @@ class RespondentConsentFormSnippet extends \Gems_Snippets_ModelFormSnippetAbstra
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
         if (in_array('name', $this->exhibit)) {
-            \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
+            \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
             $this->model->set('name', 'order', $this->model->getOrder('gr2o_patient_nr') + 1);
         }
 

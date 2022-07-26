@@ -20,6 +20,6 @@
  * @since      Class available since version 1.0
  */
 
-class GroupController extends Gems_Default_GroupAction
+class GroupController extends \Gems\Actions\GroupAction
 {
 }

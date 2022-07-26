@@ -2,7 +2,7 @@
 
 namespace Gems\Tracker\Model;
 
-class AddTrackFieldsByCodeTransformer extends \MUtil_Model_ModelTransformerAbstract
+class AddTrackFieldsByCodeTransformer extends \MUtil\Model\ModelTransformerAbstract
 {
 
 
@@ -15,7 +15,7 @@ class AddTrackFieldsByCodeTransformer extends \MUtil_Model_ModelTransformerAbstr
     protected $respTrackIdField = 'gr2t_id_respondent_track';
 
     /**
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
@@ -23,11 +23,11 @@ class AddTrackFieldsByCodeTransformer extends \MUtil_Model_ModelTransformerAbstr
 
     /**
      *
-     * @param \Gems_Tracker_TrackerInterface $tracker
+     * @param \Gems\Tracker\TrackerInterface $tracker
      * @param array $includeCodes
       * @param $respTrackIdField Overwrite the default field that contains the respondent track id (gr2t_id_respondent_track)
      */
-    public function __construct(\Gems_Tracker_TrackerInterface $tracker, array $includeCodes, $respTrackIdField = false)   
+    public function __construct(\Gems\Tracker\TrackerInterface $tracker, array $includeCodes, $respTrackIdField = false)   
     {
         $this->includeCodes = $includeCodes;
         $this->tracker = $tracker;
@@ -41,13 +41,13 @@ class AddTrackFieldsByCodeTransformer extends \MUtil_Model_ModelTransformerAbstr
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         foreach($data as $tokenId=>$row) {
             if (isset($row[$this->respTrackIdField])) {

@@ -13,14 +13,14 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
     /**
      * Get a mock for the respondentTrack
      * 
-     * @param \MUtil_Date|null $endDate
-     * @param \MUtil_Date|null $startDate
+     * @param \MUtil\Date|null $endDate
+     * @param \MUtil\Date|null $startDate
      *
-     * @return \Gems_Tracker_RespondentTrack
+     * @return \Gems\Tracker\RespondentTrack
      */
     protected function _getRespondentTrack($endDate = null, $startDate = null)
     {
-        $respTrack = $this->getMockBuilder('Gems_Tracker_RespondentTrack')
+        $respTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -46,7 +46,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
     {
-        $appointmentDate = new \MUtil_Date('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = new \MUtil\Date('2018-01-01', 'yyyy-MM-dd');
 
         if ($endDate) {
             $trackEndDate = clone $appointmentDate;
@@ -56,7 +56,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
             $respTrack = $this->_getRespondentTrack();
         }
 
-        $appointment = new \Gems_Agenda_Appointment([
+        $appointment = new \Gems\Agenda\Appointment([
             'gap_id_appointment' => 1,
             'gap_admission_time' => $appointmentDate
         ]);
@@ -91,7 +91,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromStart($expected, $waitDays, $startDate)
     {
-        $appointmentDate = new \MUtil_Date('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = new \MUtil\Date('2018-01-01', 'yyyy-MM-dd');
 
         if ($startDate) {
             $trackStartDate = clone $appointmentDate;
@@ -101,7 +101,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
             $respTrack = $this->_getRespondentTrack();
         }
 
-        $appointment = new \Gems_Agenda_Appointment([
+        $appointment = new \Gems\Agenda\Appointment([
             'gap_id_appointment' => 1,
             'gap_admission_time' => $appointmentDate
         ]);
@@ -128,7 +128,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
 
     public function testCreateNever()
     {
-        $appointment = new \Gems_Agenda_Appointment(1);
+        $appointment = new \Gems\Agenda\Appointment(1);
         $filter      = new \Gems\Agenda\Filter\SubjectAppointmentFilter();
         $filter->exchangeArray(['gtap_create_track' => 0]);
 

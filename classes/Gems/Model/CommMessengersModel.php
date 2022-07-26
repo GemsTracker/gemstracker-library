@@ -3,10 +3,10 @@
 namespace Gems\Model;
 
 
-class CommMessengersModel extends \Gems_Model_JoinModel
+class CommMessengersModel extends \Gems\Model\JoinModel
 {
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -63,6 +63,6 @@ class CommMessengersModel extends \Gems_Model_JoinModel
             ]
         );
 
-        \Gems_Model::setChangeFieldsByPrefix($this, 'gcm');
+        \Gems\Model::setChangeFieldsByPrefix($this, 'gcm');
     }
 }

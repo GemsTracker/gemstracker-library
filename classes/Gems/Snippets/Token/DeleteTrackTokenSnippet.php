@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
@@ -72,7 +71,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * The token shown
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
@@ -104,7 +103,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -119,7 +118,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -204,7 +203,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 }
 
                 // Fixing #582: autoextend the date
-                $now = new \MUtil_Date();
+                $now = new \MUtil\Date();
                 if ($this->token->getValidUntil() && $this->token->getValidUntil()->isEarlier($now)) {
                     $otherValues = [
                         'gto_valid_until' => $now->addDay(7),
@@ -221,19 +220,19 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 $menuItem = $this->menu->findAllowedController('track', 'show');
                 if ($menuItem) {
                     $paramSource['gto_id_token']       = $this->token->getTokenId();
-                    $paramSource[\Gems_Model::ID_TYPE] = 'token';
+                    $paramSource[\Gems\Model::ID_TYPE] = 'token';
 
                     $href = $menuItem->toHRefAttribute($paramSource);
                     if ($href) {
-                        // \MUtil_Echo::track($oldToken);
-                        $link = \MUtil_Html::create('a', $href, $oldToken);
+                        // \MUtil\EchoOut\EchoOut::track($oldToken);
+                        $link = \MUtil\Html::create('a', $href, $oldToken);
 
                         $oldToken = $link->setView($this->view);
                     }
                 }
 
                 // Tell what the user what happened
-                $this->addMessage(new \MUtil_Html_Raw(sprintf(
+                $this->addMessage(new \MUtil\Html\Raw(sprintf(
                         $this->_('Created this token %s as replacement for token %s.'),
                         strtoupper($this->_replacementTokenId),
                         $oldToken
@@ -280,7 +279,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
             $tokenId = $this->_replacementTokenId ? $this->_replacementTokenId : $this->token->getTokenId();
             $this->afterSaveRouteUrl = array(
                 $this->request->getActionKey() => $this->routeAction,
-                \MUtil_Model::REQUEST_ID       => $tokenId,
+                \MUtil\Model::REQUEST_ID       => $tokenId,
                 );
         }
 

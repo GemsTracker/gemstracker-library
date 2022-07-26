@@ -19,7 +19,7 @@ namespace Gems\Snippets\Tracker\Compliance;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 18-Nov-2019 19:02:35
  */
-class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
+class ComplianceLegenda extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * The factor to divide maxWidth with to get the emWidth
@@ -36,7 +36,7 @@ class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -53,11 +53,11 @@ class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $table    = new \MUtil_Html_TableElement();
+        $table    = new \MUtil\Html\TableElement();
         $table->class = 'compliance timeTable table table-condensed';
 
         $roundStyle = $this->getRoundStyle();
@@ -80,7 +80,7 @@ class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
                         );
             }
             if ($round['icon']) {
-                $icon = \MUtil_Html_ImgElement::imgFile($round['icon'], [
+                $icon = \MUtil\Html\ImgElement::imgFile($round['icon'], [
                     'alt'   => substr($round['survey'], 0, 2),
                     'title' => $round['survey'],
                     ]);
@@ -112,7 +112,7 @@ class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -160,7 +160,7 @@ class ComplianceLegenda extends \MUtil_Snippets_SnippetAbstract
         if ($oldRoundId) {
             $this->output[$oldRoundId]['roundSpan'] = ++$roundSpan;
         }
-        // \MUtil_Echo::track($this->output);
+        // \MUtil\EchoOut\EchoOut::track($this->output);
 
         return (boolean) $this->output;
     }

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model\Translator;
+
 /**
  *
  *
@@ -18,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator_StraightTranslator
+class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $_agenda;
 
@@ -76,7 +78,7 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->loader instanceof \Gems_Loader) &&
+        return ($this->loader instanceof \Gems\Loader) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -84,7 +86,7 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws \MUtil_Model_ModelException
+     * @throws \MUtil\Model\ModelException
      */
     public function getFieldsTranslations()
     {
@@ -119,11 +121,11 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
     /**
      * Prepare for the import.
      *
-     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     * @return \MUtil\Model\ModelTranslatorAbstract (continuation pattern)
      */
     public function startImport()
     {
-        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+        if ($this->_targetModel instanceof \MUtil\Model\ModelAbstract) {
             // No multiOptions as a new items can be created during import
             $fields = array(
                 'gap_id_attended_by', 'gap_id_referred_by', 'gap_id_activity',  'gap_id_procedure', 'gap_id_location',
@@ -175,8 +177,8 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         }
 
         if (isset($row['gap_admission_time'], $row['gap_discharge_time']) &&
-                ($row['gap_admission_time'] instanceof \MUtil_Date) &&
-                ($row['gap_discharge_time'] instanceof \MUtil_Date)) {
+                ($row['gap_admission_time'] instanceof \MUtil\Date) &&
+                ($row['gap_discharge_time'] instanceof \MUtil\Date)) {
             if ($row['gap_discharge_time']->diffDays($row['gap_admission_time']) > 366) {
                 if ($row['gap_discharge_time']->diffDays() > 366) {
                     // $row['gap_discharge_time'] = null;
@@ -226,8 +228,8 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         }
         
         // This value has a fixed meaning! 
-        $row['gap_last_synch'] = new \MUtil_Date();
-        // \MUtil_Echo::track($row);
+        $row['gap_last_synch'] = new \MUtil\Date();
+        // \MUtil\EchoOut\EchoOut::track($row);
 
         return $row;
     }

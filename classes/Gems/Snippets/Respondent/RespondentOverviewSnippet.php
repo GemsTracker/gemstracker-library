@@ -20,7 +20,7 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.8.2
  */
-class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract {
+class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract {
 
     /**
      * Sets pagination on or off.
@@ -35,7 +35,7 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     protected $db;
     public $showMenu = false;
     
-    public $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+    public $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
     /**
      * Set a fixed model filter.
@@ -60,7 +60,7 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -69,35 +69,35 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     public function afterRegistry() 
     {
         parent::afterRegistry();
-        if (!($this->tracker instanceof \Gems_Tracker)) {
+        if (!($this->tracker instanceof \Gems\Tracker)) {
             $this->tracker = $this->loader->getTracker();
         }
         $this->onEmpty = $this->_('No summary available');
     }
     
-    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) 
+    public function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model) 
     {
         parent::addBrowseTableColumns($bridge, $model);
         
@@ -115,7 +115,7 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     {
         // Make sure we can use jQuery
 
-        $br              = \MUtil_Html::create('br');
+        $br              = \MUtil\Html::create('br');
         $this->columns[] = array('gto_completion_time');
         $this->columns[] = array('gsu_survey_name');
         $this->columns[] = array('forgroup');
@@ -132,10 +132,10 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel() {
-        if (!$this->model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+        if (!$this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model = $this->loader->getTracker()->getTokenModel();
             $model->set('gto_id_token', 'label', $this->_('Summary'), 'formatFunction', array($this, 'getData'));
             $model->set('gsu_survey_name', 'label', $this->_('Survey'));
@@ -168,13 +168,13 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
             }
             if (!empty($scores)) {
-                $repeater = new \MUtil_Lazy_RepeatableByKeyValue($scores);
-                $div      = \MUtil_Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
-                $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(\MUtil_Html::raw('empty'));
+                $repeater = new \MUtil\Lazy\RepeatableByKeyValue($scores);
+                $div      = \MUtil\Html::create('div')->setRepeater($repeater)->setAttrib('class', 'row overviewtable');
+                $div->div($repeater->key, array('class' => 'col-md-6'))->setOnEmpty(\MUtil\Html::raw('empty'));
                 $div->div($repeater->value, array('class' => 'col-md-6', 'renderWithoutContent'=>false));
                 return $div;
             } else {
-                return \MUtil_Html::create('div', array('class'=>'row'))->div($this->_('No summary available'), array('class'=>'col-md-12'));
+                return \MUtil\Html::create('div', array('class'=>'row'))->div($this->_('No summary available'), array('class'=>'col-md-12'));
             }
         } catch (\Exception $exc) {
             return null;
@@ -187,10 +187,10 @@ class RespondentOverviewSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * The round description can contain a / that is interpreted incorrect, so 
      * in TrafficLightTokenSnippet we encode it to the html entity first. This method does the reverse.
      * 
-     * @see \Gems_Snippets_Respondent_TrafficLightTokenSnippet
-     * @param \MUtil_Model_ModelAbstract $model
+     * @see \Gems\Snippets\Respondent\TrafficLightTokenSnippet
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    public function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         // 
         $roundDecription  = $this->request->getParam('gto_round_description');

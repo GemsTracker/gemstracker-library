@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Period.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Date;
@@ -25,14 +24,14 @@ class Period
 {
     /**
      *
-     * @param \MUtil_Date $startDate
+     * @param \MUtil\Date $startDate
      * @param string $type
      * @param int $period Can be nefative
-     * @return \MUtil_Date
+     * @return \MUtil\Date
      */
     public static function applyPeriod($startDate, $type, $period)
     {
-        if ($startDate instanceof \MUtil_Date) {
+        if ($startDate instanceof \MUtil\Date) {
             $date = clone $startDate;
 
             if (self::isDateType($type)) {
@@ -75,7 +74,7 @@ class Period
                         break;
 
                     default:
-                        throw new \Gems_Exception_Coding('Unknown period type; ' . $type);
+                        throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
 
                 }
             }

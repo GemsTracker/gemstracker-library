@@ -20,11 +20,11 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstract
+class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -34,12 +34,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addCompletionBlock(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addCompletionBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         // COMPLETION DATE
         $fields = array();
@@ -68,12 +68,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addContactBlock(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addContactBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         // E-MAIL
         $button = $links->getActionLink($this->request->getControllerName(), 'email', true);
@@ -88,12 +88,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addHeaderGroup(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addHeaderGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         $controller = $this->request->getControllerName();
         $tData      = $this->util->getTokenData();
@@ -104,7 +104,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
             $bridge->tr();
             $bridge->tdh($this->_('Token copied from'));
             $bridge->td(array('colspan' => 2, 'skiprowclass' => true))
-                    ->a([\MUtil_Model::REQUEST_ID => $copiedFrom], $copiedFrom);
+                    ->a([\MUtil\Model::REQUEST_ID => $copiedFrom], $copiedFrom);
         }
         $copiedTo = $this->token->getCopiedTo();
         if ($copiedTo) {
@@ -112,7 +112,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
             $bridge->tdh($this->_('Token copied to'));
             $td = $bridge->td(array('colspan' => 2, 'skiprowclass' => true));
             foreach ($copiedTo as $copy) {
-                $td->a([\MUtil_Model::REQUEST_ID => $copy], $copy);
+                $td->a([\MUtil\Model::REQUEST_ID => $copy], $copy);
                 $td->append(' ');
             }
         }
@@ -137,12 +137,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
                 $controller, 'answer-export'
                 );
         if (count($buttons)) {
-            if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil_Html_HtmlElement)) {
+            if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil\Html\HtmlElement)) {
                 if ('a' == $buttons['ask.take']->tagName) {
                     $buttons['ask.take'] = $tData->getTokenAskButtonForBridge($bridge, true, true);
                 }
             }
-            if (isset($buttons['track.answer']) && ($buttons['track.answer'] instanceof \MUtil_Html_HtmlElement)) {
+            if (isset($buttons['track.answer']) && ($buttons['track.answer'] instanceof \MUtil\Html\HtmlElement)) {
                 if ('a' == $buttons['track.answer']->tagName) {
                     $buttons['track.answer'] = $tData->getTokenAnswerLinkForBridge($bridge, true);
                 }
@@ -162,19 +162,19 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addLastitems(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addLastitems(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         if ($links->count()) {
             $bridge->tfrow($links, array('class' => 'centerAlign'));
         }
 
         foreach ($bridge->tbody() as $row) {
-            if (isset($row[1]) && ($row[1] instanceof \MUtil_Html_HtmlElement)) {
+            if (isset($row[1]) && ($row[1] instanceof \MUtil\Html\HtmlElement)) {
                 if (isset($row[1]->skiprowclass)) {
                     unset($row[1]->skiprowclass);
                 } else {
@@ -192,17 +192,17 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addRespondentGroup(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addRespondentGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         $item = $this->menu->findAllowedController('respondent', 'show');
         if ($item) {
             $href = $item->toHRefAttribute($bridge, $this->request);
-            $model->set('gr2o_patient_nr', 'itemDisplay', \MUtil_Html::create('a', $href));
+            $model->set('gr2o_patient_nr', 'itemDisplay', \MUtil\Html::create('a', $href));
         }
         // ThreeColumnTableBridge->add()
         $bridge->add('gr2o_patient_nr');
@@ -220,12 +220,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Gems_Model_Bridge_ThreeColumnTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \Gems\Model\Bridge\ThreeColumnTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addRoundGroup(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addRoundGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         $bridge->add('gsu_survey_name');
         $bridge->add('gto_round_description');
@@ -240,13 +240,13 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
 
         // Don't know why, but is needed now
         $bridge->getRow();
@@ -280,17 +280,17 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addTrackGroup(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addTrackGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         $item = $this->menu->findAllowedController('track', 'show-track');
         if ($item) {
             $href = $item->toHRefAttribute($bridge, $this->request);
-            $model->set('gtr_track_name', 'itemDisplay', \MUtil_Html::create('a', $href));
+            $model->set('gtr_track_name', 'itemDisplay', \MUtil\Html::create('a', $href));
         }
         // ThreeColumnTableBridge->add()
         $bridge->add('gtr_track_name');
@@ -306,12 +306,12 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
-     * @param \Gems_Menu_MenuList $links
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addValidFromBlock(\Gems_Model_Bridge_ThreeColumnTableBridge $bridge, \MUtil_Model_ModelAbstract $model, \Gems_Menu_MenuList $links)
+    protected function addValidFromBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
     {
         // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
         $button = $links->getActionLink($this->request->getControllerName(), 'edit', true);
@@ -329,7 +329,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
 
     /**
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -341,7 +341,7 @@ class ShowTrackTokenSnippet extends \Gems_Tracker_Snippets_ShowTokenSnippetAbstr
                 ->addCurrentChildren()
                 ->showDisabled();
 
-        // \MUtil_Echo::track(array_keys($links->getArrayCopy()));
+        // \MUtil\EchoOut\EchoOut::track(array_keys($links->getArrayCopy()));
 
         return $links;
     }

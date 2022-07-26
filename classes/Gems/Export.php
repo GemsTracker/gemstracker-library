@@ -7,8 +7,9 @@
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems;
 
 /**
  *
@@ -18,10 +19,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
+class Export extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -30,7 +31,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Is set to the calling controller to allow rendering the view
      *
-     * @var \Gems_Controller_Action
+     * @var \Gems\Controller\Action
      */
     public $controller = null;
 
@@ -68,7 +69,7 @@ class Gems_Export extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param type $container A container acting as source fro \MUtil_Registry_Source
+     * @param type $container A container acting as source fro \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)

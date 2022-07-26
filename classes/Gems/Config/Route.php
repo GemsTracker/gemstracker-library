@@ -25,7 +25,7 @@ class Route
                 ],
                 'allowed_methods' => ['GET'],
                 'options' => [
-                    'controller' => \Gems_Default_ReceptionAction::class,
+                    'controller' => \Gems\Actions\ReceptionAction::class,
                     'action' => 'index',
                 ]
             ],
@@ -41,7 +41,7 @@ class Route
             ],
 
             ...$this->createBrowseRoutes(baseName: 'track-builder.source',
-                controllerClass: \Gems_Default_SourceAction::class,
+                controllerClass: \Gems\Actions\SourceAction::class,
                 pages: [
                     ...$this->defaultPages,
                     'synchronize-all',
@@ -58,10 +58,10 @@ class Route
                     'attributes',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems_Default_ChartconfigAction::class),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.condition', controllerClass: \Gems_Default_ConditionAction::class),
+            ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),
+            ...$this->createBrowseRoutes(baseName: 'track-builder.condition', controllerClass: \Gems\Actions\ConditionAction::class),
             ...$this->createBrowseRoutes(baseName: 'track-builder.survey-maintenance',
-                controllerClass: \Gems_Default_SurveyMaintenanceAction::class,
+                controllerClass: \Gems\Actions\SurveyMaintenanceAction::class,
                 pages: [
                     ...$this->defaultPages,
                     'check-all',
@@ -88,7 +88,7 @@ class Route
                     LegacyController::class,
                 ],
                 'options' => [
-                    'controller' => \Gems_Default_UpdateSurveyAction::class,
+                    'controller' => \Gems\Actions\UpdateSurveyAction::class,
                     'action' => 'run',
                 ],
             ],
@@ -103,13 +103,13 @@ class Route
                     LegacyController::class,
                 ],
                 'options' => [
-                    'controller' => \Gems_Default_SurveyCodeBookExportAction::class,
+                    'controller' => \Gems\Actions\SurveyCodeBookExportAction::class,
                     'action' => 'export',
                 ],
             ],
 
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance',
-                controllerClass: \Gems_Default_TrackMaintenanceAction::class,
+                controllerClass: \Gems\Actions\TrackMaintenanceAction::class,
                 pages: [
                     ...$this->defaultPages,
                     'import',
@@ -128,14 +128,14 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-fields',
-                controllerClass: \Gems_Default_TrackFieldsAction::class,
+                controllerClass: \Gems\Actions\TrackFieldsAction::class,
                 basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-fields',
                 parentParameters: [
                     'trackId',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-rounds',
-                controllerClass: \Gems_Default_TrackFieldsAction::class,
+                controllerClass: \Gems\Actions\TrackFieldsAction::class,
                 basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-rounds',
                 parentParameters: [
                     'trackId',

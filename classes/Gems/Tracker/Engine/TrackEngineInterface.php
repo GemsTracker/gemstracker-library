@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Engine;
+
 /**
  *
  * @package    Gems
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface Gems_Tracker_Engine_TrackEngineInterface
+interface TrackEngineInterface
 {
     /**
      *
@@ -28,25 +30,25 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Integrate field loading en showing and editing
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
      * @param string $respTrackId Optional Database column name where Respondent Track Id is set
-     * @return \Gems_Tracker_Engine_TrackEngineAbstract
+     * @return \Gems\Tracker\Engine\TrackEngineAbstract
      */
-    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true, $respTrackId = false);
+    public function addFieldsToModel(\MUtil\Model\ModelAbstract $model, $addDependency = true, $respTrackId = false);
 
     /**
      * Set menu parameters from this track engine
      *
-     * @param \Gems_Menu_ParameterSource $source
-     * @return \Gems_Tracker_Engine_TrackEngineInterface (continuation pattern)
+     * @param \Gems\Menu\ParameterSource $source
+     * @return \Gems\Tracker\Engine\TrackEngineInterface (continuation pattern)
      */
-    public function applyToMenuSource(\Gems_Menu_ParameterSource $source);
+    public function applyToMenuSource(\Gems\Menu\ParameterSource $source);
 
     /**
      * Calculate the track info from the fields
      *
-     * @param int $respTrackId Gems respondent track id or null when new
+     * @param int $respTrackId \Gems respondent track id or null when new
      * @param array $data The values to save
      * @return string The description to save as track_info
      */
@@ -62,31 +64,31 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Check for the existence of all tokens and create them otherwise
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param \Gems_Task_TaskRunnerBatch $changes batch for counters
+     * @param \Gems\Task\TaskRunnerBatch $changes batch for counters
      */
-    public function checkRoundsFor(\Gems_Tracker_RespondentTrack $respTrack, $userId, \Gems_Task_TaskRunnerBatch $batch = null);
+    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, $userId, \Gems\Task\TaskRunnerBatch $batch = null);
 
     /**
      * Check the valid from and until dates in the track starting at a specified token
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
-     * @param \Gems_Tracker_Token $startToken The token to start at
+     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
+     * @param \Gems\Tracker\Token $startToken The token to start at
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param \Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
+     * @param \Gems\Tracker\Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(\Gems_Tracker_RespondentTrack $respTrack, \Gems_Tracker_Token $startToken, $userId, \Gems_Tracker_Token $skipToken = null);
+    public function checkTokensFrom(\Gems\Tracker\RespondentTrack $respTrack, \Gems\Tracker\Token $startToken, $userId, \Gems\Tracker\Token $skipToken = null);
 
     /**
      * Check the valid from and until dates in the track
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
-     * @return \Gems_Tracker_ChangeTracker detailed info on changes
+     * @return \Gems\Tracker\ChangeTracker detailed info on changes
      */
-    public function checkTokensFromStart(\Gems_Tracker_RespondentTrack $respTrack, $userId);
+    public function checkTokensFromStart(\Gems\Tracker\RespondentTrack $respTrack, $userId);
 
     /**
      * Convert a TrackEngine instance to a TrackEngine of another type.
@@ -164,7 +166,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Returns the field data for the respondent track id.
      *
-     * @param int $respTrackId Gems respondent track id or null when new
+     * @param int $respTrackId \Gems respondent track id or null when new
      * @return array of the existing field values for this respondent track
      */
     public function getFieldsData($respTrackId);
@@ -203,14 +205,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems_Event_TrackFieldUpdateEventInterface | null
+     * @return \Gems\Event\TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent();
 
     /**
      * Get the round id of the first round
      *
-     * @return int Gems id of first round
+     * @return int \Gems id of first round
      */
     public function getFirstRoundId();
 
@@ -226,17 +228,17 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Look up the round id for the next round
      *
-     * @param int $roundId  Gems round id
-     * @return int Gems round id
+     * @param int $roundId  \Gems round id
+     * @return int \Gems round id
      */
     public function getNextRoundId($roundId);
 
     /**
      * Look up the round id for the previous round
      *
-     * @param int $roundId  Gems round id
+     * @param int $roundId  \Gems round id
      * @param int $roundOrder Optional extra round order, for when the current round may have changed.
-     * @return int Gems round id
+     * @return int \Gems round id
      */
     public function getPreviousRoundId($roundId, $roundOrder = null);
 
@@ -252,7 +254,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Get the round object
      *
-     * @param int $roundId  Gems round id
+     * @param int $roundId  \Gems round id
      * @return \Gems\Tracker\Round
      */
     public function getRound($roundId);
@@ -260,16 +262,16 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of snippet names
      */
-    public function getRoundAnswerSnippets(\Gems_Tracker_Token $token);
+    public function getRoundAnswerSnippets(\Gems\Tracker\Token $token);
 
     /**
      * Return the Round Changed event name for this round
      *
      * @param int $roundId
-     * @return \Gems_Event_RoundChangedEventInterface event instance or null
+     * @return \Gems\Event\RoundChangedEventInterface event instance or null
      */
     public function getRoundChangedEvent($roundId);
 
@@ -299,7 +301,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \Gems_Model_JoinModel
+     * @return \Gems\Model\JoinModel
      */
     public function getRoundModel($detailed, $action);
 
@@ -320,38 +322,38 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * An array of snippet names for deleting a token.
      *
-     * @param \Gems_Tracker_Token $token Allows token status dependent delete snippets
+     * @param \Gems\Tracker\Token $token Allows token status dependent delete snippets
      * @return array of string snippet names
      */
-    public function getTokenDeleteSnippetNames(\Gems_Tracker_Token $token);
+    public function getTokenDeleteSnippetNames(\Gems\Tracker\Token $token);
 
     /**
      * An array of snippet names for editing a token.
      *
-     * @param \Gems_Tracker_Token $token Allows token status dependent edit snippets
+     * @param \Gems\Tracker\Token $token Allows token status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTokenEditSnippetNames(\Gems_Tracker_Token $token);
+    public function getTokenEditSnippetNames(\Gems\Tracker\Token $token);
 
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function getTokenModel();
 
     /**
      * An array of snippet names for displaying a token
      *
-     * @param \Gems_Tracker_Token $token Allows token status dependent show snippets
+     * @param \Gems\Tracker\Token $token Allows token status dependent show snippets
      * @return array of string snippet names
      */
-    public function getTokenShowSnippetNames(\Gems_Tracker_Token $token);
+    public function getTokenShowSnippetNames(\Gems\Tracker\Token $token);
 
     /**
      * Get the TrackCompletedEvent for the given trackId
      *
-     * @return \Gems_Event_TrackCalculationEventInterface | null
+     * @return \Gems\Event\TrackCalculationEventInterface | null
      */
     public function getTrackCalculationEvent();
 
@@ -364,7 +366,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Get the TrackCompletedEvent for the given trackId
      *
-     * @return \Gems_Event_TrackCompletedEventInterface|null
+     * @return \Gems\Event\TrackCompletedEventInterface|null
      */
     public function getTrackCompletionEvent();
 

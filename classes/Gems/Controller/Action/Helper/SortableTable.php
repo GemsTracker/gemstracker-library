@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Controller\Action\Helper;
+
 /**
  * This action helper makes sorting table data that has an order field easier
  *
@@ -21,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.8.1
  */
-class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Action_Helper_Abstract
+class SortableTable extends \Zend_Controller_Action_Helper_Abstract
 {
     /**
      * Handles sort in an ajax request
@@ -30,7 +32,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
      * @param string $idField The name of the field with the primary key
      * @param string $orderField The name of the field that holds the order
      * @return void
-     * @throws Gems_Exception
+     * @throws \Gems\Exception
      */
     public function ajaxAction($table, $idField, $orderField)
     {
@@ -65,7 +67,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
             }
         }
 
-        throw new \Gems_Exception($this->_('Sorting failed'), 403);
+        throw new \Gems\Exception($this->_('Sorting failed'), 403);
     }
 
     /**
@@ -73,12 +75,12 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
      *
      * @param string $sortAction The name of the ajax action
      * @param string $urlIdParam The namr used to refer to the record ID in the url
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function direct($sortAction = 'sort', $urlIdParam = 'id')
     {
         $view = $this->getView();
-        \MUtil_JQuery::enableView($view);
+        \MUtil\JQuery::enableView($view);
 
         $jquery = $view->jQuery();
         $jquery->enable();  //Just to make sure
@@ -110,7 +112,7 @@ class Gems_Controller_Action_Helper_SortableTable extends \Zend_Controller_Actio
     /**
      * Get the view
      *
-     * @return Zend_View_Interface
+     * @return \Zend_View_Interface
      */
     public function getView()
     {

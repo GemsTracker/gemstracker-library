@@ -48,11 +48,11 @@ class GemsDefaultTabbedEdit extends EditScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getScreenLabel()
     {
-        return $this->_('(default Gems respondent tabbed edit)');
+        return $this->_('(default \Gems respondent tabbed edit)');
     }
 
     /**

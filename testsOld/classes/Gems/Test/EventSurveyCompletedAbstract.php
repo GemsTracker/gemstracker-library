@@ -1,8 +1,10 @@
 <?php
-abstract class Gems_Test_EventSurveyCompletedAbstract extends \PHPUnit_Framework_TestCase {
+namespace Gems\Test;
+
+abstract class EventSurveyCompletedAbstract extends \PHPUnit_Framework_TestCase {
   
     /**
-     * @var \Gems_Event_SurveyCompletedEventInterface
+     * @var \Gems\Event\SurveyCompletedEventInterface
      */
     protected $_score = null;
     
@@ -14,7 +16,7 @@ abstract class Gems_Test_EventSurveyCompletedAbstract extends \PHPUnit_Framework
     /**
      * Return the Event to test
      * 
-     * @return \Gems_Event_SurveyCompletedEventInterface
+     * @return \Gems\Event\SurveyCompletedEventInterface
      */
     abstract public function getEventClass();
 
@@ -23,8 +25,8 @@ abstract class Gems_Test_EventSurveyCompletedAbstract extends \PHPUnit_Framework
      */
     public function testScore($data, $result)
     {
-        // Create a stub for the \Gems_Tracker_Token class.
-        $token = $this->getMockBuilder('Gems_Tracker_Token')
+        // Create a stub for the \Gems\Tracker\Token class.
+        $token = $this->getMockBuilder('\\Gems\\Tracker\\Token')
                       ->disableOriginalConstructor()
                       ->getMock();
  

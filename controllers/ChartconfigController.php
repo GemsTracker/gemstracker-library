@@ -7,7 +7,6 @@
  * @author     Menno Dekker <mmenno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -19,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ChartconfigController extends \Gems_Default_ChartconfigAction {
+class ChartconfigController extends \Gems\Actions\ChartconfigAction {
 }

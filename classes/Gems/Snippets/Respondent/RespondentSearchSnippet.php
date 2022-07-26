@@ -20,23 +20,23 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RespondentSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -81,7 +81,7 @@ class RespondentSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 
         if ($this->model->isMultiOrganization()) {
             $element = $this->_createSelectElement(
-                    \MUtil_Model::REQUEST_ID2,
+                    \MUtil\Model::REQUEST_ID2,
                     $user->getRespondentOrganizations(),
                     $this->_('(all organizations)')
                     );
@@ -89,9 +89,9 @@ class RespondentSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
             if ($lineBreak) {
                 $element->setLabel($this->_('Organization'))
                         ->setAttrib('onchange', 'this.form.submit();');
-                $elements[] = \MUtil_Html::create('br');
+                $elements[] = \MUtil\Html::create('br');
             }
-            $elements[\MUtil_Model::REQUEST_ID2] = $element;
+            $elements[\MUtil\Model::REQUEST_ID2] = $element;
         }
 
         return $elements;

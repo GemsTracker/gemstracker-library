@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RoundsTitleSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker\Rounds;
@@ -28,7 +27,7 @@ class RoundsTitleSnippet extends ContentTitleSnippet
     /**
      * Required: the engine of the current track
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -53,6 +52,6 @@ class RoundsTitleSnippet extends ContentTitleSnippet
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface;
+        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
     }
 }

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event\Survey\BeforeAnswering;
 
 /**
  * This events look for a previous copy of the same
@@ -20,11 +21,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswers extends \MUtil_Registry_TargetAbstract
-    implements \Gems_Event_SurveyBeforeAnsweringEventInterface
+class GetPreviousAnswers extends \MUtil\Registry\TargetAbstract
+    implements \Gems\Event\SurveyBeforeAnsweringEventInterface
 {
     /**
-     * Set as this is a \MUtil_Registry_TargetInterface
+     * Set as this is a \MUtil\Registry\TargetInterface
      *
      * @var \Zend_Translate $translate
      */
@@ -45,10 +46,10 @@ class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswers extends \MUtil_Regist
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(\Gems_Tracker_Token $token)
+    public function processTokenInsertion(\Gems\Tracker\Token $token)
     {
         if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
             // Preparation for a more general object class

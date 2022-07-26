@@ -54,7 +54,7 @@ class StaffUserClassDependency extends DependencyAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -83,7 +83,7 @@ class StaffUserClassDependency extends DependencyAbstract
         if (isset($context['gsf_id_organization'])) {
             $org = $this->loader->getOrganization($context['gsf_id_organization']);
 
-            if ($org instanceof \Gems_User_Organization) {
+            if ($org instanceof \Gems\User\Organization) {
                 return ['gul_user_class' => ['multiOptions' => $org->getAllowedUserClasses()]];
             }
         }

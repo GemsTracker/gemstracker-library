@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Project\Organization;
 
 /**
  * Marker interface for Pulse Projects having respondents
@@ -17,10 +18,10 @@
  * Use this interface only when the respondents are stored
  * in multiple organizations. Multiple organizations can also
  * used for staff in
- * \Gems_Project_Organization_SingleOrganizationInterface
+ * \Gems\Project\Organization\SingleOrganizationInterface
  * projects.
  *
- * @see \Gems_Project_Organization_SingleOrganizationInterface
+ * @see \Gems\Project\Organization\SingleOrganizationInterface
  *
  * @package    Gems
  * @subpackage Project
@@ -29,6 +30,6 @@
  * @since      Class available since version 1.1
  * @deprecated since 1.7.1: is default setup
  */
-interface Gems_Project_Organization_MultiOrganizationInterface
+interface MultiOrganizationInterface
 {
 }

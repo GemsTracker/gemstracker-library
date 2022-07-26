@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model\Bridge;
+
 /**
  * Special vertical table bridge with an extra third column,
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Model_Bridge_ThreeColumnTableBridge extends \MUtil_Model_Bridge_VerticalTableBridge
+class ThreeColumnTableBridge extends \MUtil\Model\Bridge\VerticalTableBridge
 {
     public function addMarkerRow()
     {

@@ -40,7 +40,7 @@ class CsvExport extends ExportAbstract
 
     /**
      * form elements for extra options for this particular export option
-     * @param  \MUtil_Form $form Current form to add the form elements
+     * @param  \MUtil\Form $form Current form to add the form elements
      * @param  array $data current options set in the form
      * @return array Form elements
      */
@@ -177,25 +177,25 @@ class CsvExport extends ExportAbstract
             $options = array();
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'yyyy-MM-dd';
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     $options['dateFormat']    = 'HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     break;
 
                 //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
+                case \MUtil\Model::TYPE_STRING:
                 default:
-                    $type                      = \MUtil_Model::TYPE_STRING;
+                    $type                      = \MUtil\Model::TYPE_STRING;
                     $options['formatFunction'] = 'formatString';
                     break;
             }

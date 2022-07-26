@@ -1,12 +1,13 @@
 <?php
 
 /**
- * @version    $Id$
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
+
+namespace Gems\Form;
 
 /**
  * @package    Gems
@@ -14,7 +15,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Form_SubForm extends \Gems_Form
+class SubForm extends \Gems\Form
 {
     /**
      * Whether or not form elements are members of an array

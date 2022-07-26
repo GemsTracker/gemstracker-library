@@ -7,17 +7,18 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Project\Tracks;
 
 /**
  * Marker interface for Pulse Projects using only a single track
  *
  * These projects will autmatically be an instance of
- * \Gems_Project_Tracks_TracksOnlyInterface (we assume until
+ * \Gems\Project\Tracks\TracksOnlyInterface (we assume until
  * proven wrong)
  *
- * @see \Gems_Project_Tracks_MultiTracksInterface
+ * @see \Gems\Project\Tracks\MultiTracksInterface
  *
  * @package    Gems
  * @subpackage Project
@@ -25,7 +26,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-interface Gems_Project_Tracks_SingleTrackInterface
+interface SingleTrackInterface
 {
     /**
      * Return the "single" track id

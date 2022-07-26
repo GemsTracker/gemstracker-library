@@ -35,8 +35,8 @@ interface RoundConditionInterface extends ConditionInterface
      * 
      * This is the actual implementation of the condition
      * 
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return bool
      */
-    public function isRoundValid(\Gems_Tracker_Token $token);    
+    public function isRoundValid(\Gems\Tracker\Token $token);    
 }

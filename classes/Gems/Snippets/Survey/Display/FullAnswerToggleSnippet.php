@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Survey\Display;
 
 /**
  * Display survey answers with a toggle for full or compact view
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends \MUtil_Snippets_SnippetAbstract {
+class FullAnswerToggleSnippet extends \MUtil\Snippets\SnippetAbstract {
 
     /**
      *
@@ -28,7 +29,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends \MUtil_Snippe
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 

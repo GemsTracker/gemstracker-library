@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
@@ -25,7 +27,7 @@ use Laminas\Authentication\Adapter\AdapterInterface;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
+class User extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
@@ -35,13 +37,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var Laminas\Authentication\Result
+     * @var \Laminas\Authentication\Result
      */
     protected $_authResult;
 
     /**
      *
-     * @var Gems\User\Embed\EmbeddedUserData
+     * @var \Gems\User\Embed\EmbeddedUserData
      */
     protected $_embedderData;
 
@@ -60,13 +62,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Required
      *
-     * @var \MUtil_Acl
+     * @var \MUtil\Acl
      */
     protected $acl;
 
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
@@ -91,7 +93,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Required, set in constructor
      *
-     * @var \Gems_User_UserDefinitionInterface
+     * @var \Gems\User\UserDefinitionInterface
      */
     protected $definition;
 
@@ -111,7 +113,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -127,7 +129,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * @var array
      */
     public $possibleOrgIds = array(
-        \MUtil_Model::REQUEST_ID2,
+        \MUtil\Model::REQUEST_ID2,
         'gr2o_id_organization',
         'gr2t_id_organization',
         'gap_id_organization',
@@ -153,13 +155,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Required
      *
-     * @var \Gems_User_UserLoader
+     * @var \Gems\User\UserLoader
      */
     protected $userLoader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -167,9 +169,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Creates the class for this user.
      *
      * @param mixed $settings Array, \Zend_Session_Namespace or \ArrayObject for this user.
-     * @param \Gems_User_UserDefinitionInterface $definition The user class definition.
+     * @param \Gems\User\UserDefinitionInterface $definition The user class definition.
      */
-    public function __construct($settings, \Gems_User_UserDefinitionInterface $definition)
+    public function __construct($settings, \Gems\User\UserDefinitionInterface $definition)
     {
         if (is_array($settings)) {
             $this->_vars = new \ArrayObject($settings);
@@ -178,7 +180,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $this->_vars = $settings;
         }
         $this->definition = $definition;
-        // \MUtil_Echo::track($settings);
+        // \MUtil\EchoOut\EchoOut::track($settings);
     }
 
     /**
@@ -217,7 +219,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         $role = $this->_getVar($roleField);
         if (intval($role)) {
-           $role = \Gems_Roles::getInstance()->translateToRoleName($role);
+           $role = \Gems\Roles::getInstance()->translateToRoleName($role);
 
            $this->_setVar($roleField, $role);
         }
@@ -315,7 +317,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Process everything after authentication.
      *
-     * @param Laminas\Authentication\Result $result
+     * @param \Laminas\Authentication\Result $result
      */
     protected function afterAuthorization(Result $result, $lastAuthorizer = null)
     {
@@ -367,13 +369,13 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 }
 
                 // Always record the last fail
-                $values['gula_last_failed']     = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['gula_last_failed']     = new \MUtil\Db\Expr\CurrentTimestamp();
                 $values['gula_failed_logins']   = max(1, $values['gula_failed_logins']);
 
                 // Response gets slowly slower
                 $sleepTime = min($values['gula_failed_logins'] - 1, 10) * 2;
                 sleep($sleepTime);
-                // \MUtil_Echo::track($sleepTime, $values, $result->getMessages());
+                // \MUtil\EchoOut\EchoOut::track($sleepTime, $values, $result->getMessages());
             }
 
             // Value not saveable
@@ -389,7 +391,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         } catch (\Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not yet run
-            // \MUtil_Echo::r($e);
+            // \MUtil\EchoOut\EchoOut::r($e);
         }
 
     }
@@ -411,15 +413,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Function where the layout and style can be set, called in GemsEscort->prepareController()
+     * Function where the layout and style can be set, called in \Gems\Escort->prepareController()
      *
-     * @param \GemsEscort $escort
+     * @param \Gems\Escort $escort
      * @return $this
      */
-    public function applyLayoutSettings(\GemsEscort $escort)
+    public function applyLayoutSettings(\Gems\Escort $escort)
     {
         if ($this->_hasVar('current_user_crumbs')) {
-            // \MUtil_Echo::track($this->_getVar('current_user_crumbs'));
+            // \MUtil\EchoOut\EchoOut::track($this->_getVar('current_user_crumbs'));
             switch ($this->_getVar('current_user_crumbs')) {
                 case 'no_display':
                     $this->project['layoutPrepare']['crumbs'] = null;
@@ -441,15 +443,15 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
-        if ($escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
             if ($this->_hasVar('current_user_style')) {
                 $style = $this->_getVar('current_user_style');
             } else {
                 $style = null;
             }
 
-            // Cookie org is often either \Gems_User_UserLoader::SYSTEM_NO_ORG (-1) or 0 if not set
-            if (! ($style || \Gems_Cookies::getOrganization($this->getRequest()) > 0)) {
+            // Cookie org is often either \Gems\User\UserLoader::SYSTEM_NO_ORG (-1) or 0 if not set
+            if (! ($style || \Gems\Cookies::getOrganization($this->getRequest()) > 0)) {
                 $site = $this->util->getSites()->getSiteForCurrentUrl();
                 if ($site) {
                     $style = $site->getStyle();
@@ -469,10 +471,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Set menu parameters from this user
      *
-     * @param \Gems_Menu_ParameterSource $source
-     * @return \Gems_User_User
+     * @param \Gems\Menu\ParameterSource $source
+     * @return \Gems\User\User
      */
-    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
     {
         $source->offsetSet('gsf_id_organization', $this->getBaseOrganizationId());
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
@@ -546,7 +548,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      *
      * @param string $password The password to test
      * @param boolean $testPassword Set to false to test the non-password checks only
-     * @return Laminas\Authentication\Result
+     * @return \Laminas\Authentication\Result
      */
     public function authenticate($password, $testPassword = true)
     {
@@ -587,14 +589,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             }
         }
 
-        if ($result->isValid() && $this->definition instanceof \Gems_User_DbUserDefinitionAbstract) {
+        if ($result->isValid() && $this->definition instanceof \Gems\User\DbUserDefinitionAbstract) {
             $this->definition->checkRehash($this, $password);
         }
 
 
         $this->afterAuthorization($result, $lastAuthorizer);
 
-        // \MUtil_Echo::track($result);
+        // \MUtil\EchoOut\EchoOut::track($result);
         $this->_authResult = $result;
 
         return $result;
@@ -604,9 +606,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Checks if the user is allowed to login or is blocked
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Laminas\Authenticate\Result.
+     * it is converted into a \Laminas\Authenticate\Result.
      *
-     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
+     * @return mixed \Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeBlock()
     {
@@ -640,7 +642,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
         } catch (\Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not run
-            // \MUtil_Echo::r($e);
+            // \MUtil\EchoOut\EchoOut::r($e);
         }
 
         return true;
@@ -651,9 +653,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to the group he is in
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Laminas\Authenticate\Result.
+     * it is converted into a \Laminas\Authenticate\Result.
      *
-     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
+     * @return mixed \Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeIp()
     {
@@ -678,9 +680,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * according to his BASE organization
      *
      * An adapter authorizes and if the end resultis boolean, string or array
-     * it is converted into a Laminas\Authenticate\Result.
+     * it is converted into a \Laminas\Authenticate\Result.
      *
-     * @return mixed Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
+     * @return mixed \Laminas\Authentication\Adapter\AdapterInterface|Laminas\Authenticate\Result|boolean|string|array
      */
     protected function authorizeOrgIp()
     {
@@ -866,7 +868,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if (! $this->_hasVar('__allowedOrgs')) {
             $this->refreshAllowedOrganizations();
         }
-        // \MUtil_Echo::track($this->_getVar('__allowedOrgs'));
+        // \MUtil\EchoOut\EchoOut::track($this->_getVar('__allowedOrgs'));
 
         return $this->_getVar('__allowedOrgs');
     }
@@ -948,7 +950,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the original (not the current) organization used by this user.
      *
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getBaseOrganization()
     {
@@ -969,7 +971,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Returns a form to change the possword for this user.
      *
      * @param boolean $askOld Ask for the old password, calculated when not set.
-     * @return \Gems_Form
+     * @return \Gems\Form
      */
     public function getChangePasswordForm($args_array = null)
     {
@@ -977,7 +979,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             return;
         }
 
-        $args = \MUtil_Ra::args(func_get_args());
+        $args = \MUtil\Ra::args(func_get_args());
         if (isset($args['askCheck']) && $args['askCheck']) {
             $args['checkFields'] = $this->loadResetPasswordCheckFields();
         }
@@ -988,7 +990,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the organization that is currently used by this user.
      *
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getCurrentOrganization()
     {
@@ -1005,10 +1007,10 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $orgId = $this->_getVar('user_organization_id');
 
         //If not set, read it from the cookie
-        if ($this->isCurrentUser() && ((null === $orgId) || (\Gems_User_UserLoader::SYSTEM_NO_ORG === $orgId))) {
+        if ($this->isCurrentUser() && ((null === $orgId) || (\Gems\User\UserLoader::SYSTEM_NO_ORG === $orgId))) {
             $request = $this->getRequest();
             if ($request) {
-                $orgId = \Gems_Cookies::getOrganization($this->getRequest());
+                $orgId = \Gems\Cookies::getOrganization($this->getRequest());
             }
             if (! $orgId) {
                 $orgId = 0;
@@ -1064,7 +1066,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * If this is an embedder, return the EmbedderUserData object
      *
-     * @return Gems\User\Embed\EmbeddedUserData
+     * @return \Gems\User\Embed\EmbeddedUserData
      */
     public function getEmbedderData()
     {
@@ -1128,7 +1130,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
             $this->_setVar('user_name', $name);
 
-            // \MUtil_Echo::track($name);
+            // \MUtil\EchoOut\EchoOut::track($name);
         }
 
         return $this->_getVar('user_name');
@@ -1247,7 +1249,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
             $this->_setVar('last_name', $name);
 
-            // \MUtil_Echo::track($name);
+            // \MUtil\EchoOut\EchoOut::track($name);
         }
 
         return $this->_getVar('last_name');
@@ -1318,9 +1320,9 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getOtpRequested()
     {
-        return \MUtil_Date::ifDate(
+        return \MUtil\Date::ifDate(
             $this->_getVar('user_otp_requested'),
-            [\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601]
+            [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601]
         );
     }
 
@@ -1331,11 +1333,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      */
     public function getPasswordAge()
     {
-        $date = \MUtil_Date::ifDate(
+        $date = \MUtil\Date::ifDate(
                 $this->_getVar('user_password_last_changed'),
-                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
                 );
-        if ($date instanceof \MUtil_Date) {
+        if ($date instanceof \MUtil\Date) {
             return abs($date->diffDays());
         } else {
             return 0;
@@ -1405,7 +1407,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
 
             $this->_setVar('__allowedRespOrgs', array_intersect($availableOrganizations, $allowedOrganizations));
         }
-        // \MUtil_Echo::track($this->_getVar('__allowedOrgs'));
+        // \MUtil\EchoOut\EchoOut::track($this->_getVar('__allowedOrgs'));
 
         return $this->_getVar('__allowedRespOrgs');
     }
@@ -1513,7 +1515,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         if (! $this->_authenticator instanceof TwoFactorAuthenticatorInterface) {
             if ($this->_hasVar('user_two_factor_key')) {
-                $authClass = \MUtil_String::beforeChars(
+                $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
                         $this->_getVar('user_two_factor_key'),
                         TwoFactorAuthenticatorInterface::SEPERATOR
                         );
@@ -1596,11 +1598,11 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Redirects the user to his/her start page.
      *
-     * @param \Gems_Menu $menu
+     * @param \Gems\Menu $menu
      * @param \Zend_Controller_Request_Abstract $request
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
-    public function gotoStartPage(\Gems_Menu $menu, \Zend_Controller_Request_Abstract $request)
+    public function gotoStartPage(\Gems\Menu $menu, \Zend_Controller_Request_Abstract $request)
     {
         if (false && $this->isPasswordResetRequired()) {
             // Set menu OFF
@@ -1762,7 +1764,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     {
         $orgs = $this->getAllowedOrganizations();
 
-        return isset($orgs[$organizationId]) || (\Gems_User_UserLoader::SYSTEM_NO_ORG == $organizationId);
+        return isset($orgs[$organizationId]) || (\Gems\User\UserLoader::SYSTEM_NO_ORG == $organizationId);
     }
 
     /**
@@ -1904,7 +1906,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Load the callables | results needed to authenticate/authorize this user
      *
      * A callable will be called, then an adapter authorizes and if the end result
-     * is boolean, string or array it is converted into a Laminas\Authenticate\Result.
+     * is boolean, string or array it is converted into a \Laminas\Authenticate\Result.
      *
      * @param string $password
      * @param boolean $testPassword Set to false to test on the non-password checks only
@@ -1949,14 +1951,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if ($value = $this->_getVar('user_birthday')) {
             $label    = $this->_('Your birthday');
 
-            $birthdayElem = new \Gems_JQuery_Form_Element_DatePicker('birthday');
+            $birthdayElem = new \Gems\JQuery\Form\Element\DatePicker('birthday');
             $birthdayElem->setLabel($label)
-                    ->setOptions(\MUtil_Model_Bridge_FormBridge::getFixedOptions('date'))
+                    ->setOptions(\MUtil\Model\Bridge\FormBridge::getFixedOptions('date'))
                     ->setRequired(true)
                     ->setStorageFormat('yyyy-MM-dd');
 
             if ($format = $birthdayElem->getDateFormat()) {
-                $valueFormatted = \MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());
+                $valueFormatted = \MUtil\Date::format($value, $format, $birthdayElem->getStorageFormat());
             } else {
                 $valueFormatted = $value;
             }
@@ -1988,7 +1990,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      *
      * @param string $defName Optional
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function refresh($defName = null)
     {
@@ -2012,7 +2014,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Allowes a refresh of the existing list of organizations
      * for this user.
      *
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function refreshAllowedOrganizations()
     {
@@ -2025,7 +2027,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
             $orgs = array($org->getId() => $org->getName()) +
                     $org->getAllowedOrganizations();
         }
-        // \MUtil_Echo::track($orgs);
+        // \MUtil\EchoOut\EchoOut::track($orgs);
 
         $this->_setVar('__allowedOrgs', $orgs);
 
@@ -2093,7 +2095,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $codes[] = 'staff';
             }
 
-            return $checker->reportPasswordWeakness($this, $password, \MUtil_Ra::flatten($codes), $skipAge);
+            return $checker->reportPasswordWeakness($this, $password, \MUtil\Ra::flatten($codes), $skipAge);
         }
     }
 
@@ -2131,8 +2133,8 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         } else {
             $fields = $this->getMailFields($locale);
         }
-        // \MUtil_Echo::track($fields, $bbBodyTemplate);
-        $fields = \MUtil_Ra::braceKeys($fields, '{', '}');
+        // \MUtil\EchoOut\EchoOut::track($fields, $bbBodyTemplate);
+        $fields = \MUtil\Ra::braceKeys($fields, '{', '}');
 
         $mail->setSubject(strtr($subjectTemplate, $fields));
         $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
@@ -2155,7 +2157,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      *
      * @param boolean $signalLoader Do not set, except from UserLoader
      * @param boolean $resetSessionId Should the session be reset?
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function setAsCurrentUser($signalLoader = true, $resetSessionId = true)
     {
@@ -2192,12 +2194,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      * Set the currently selected organization for this user
      *
-     * @param mixed $organization \Gems_User_Organization or an organization id.
-     * @return \Gems_User_User (continuation pattern)
+     * @param mixed $organization \Gems\User\Organization or an organization id.
+     * @return \Gems\User\User (continuation pattern)
      */
     public function setCurrentOrganization($organization)
     {
-        if (!($organization instanceof \Gems_User_Organization)) {
+        if (!($organization instanceof \Gems\User\Organization)) {
             $organization = $this->userLoader->getOrganization($organization);
         }
 
@@ -2285,12 +2287,12 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
                 $this->_setVar('current_user_group', $groupId);
                 $this->_setVar('current_user_role',  $group->getRole());
             } elseif ($group->isActive()) {
-                throw new \Gems_Exception($this->_('No access to group'), 403, null, sprintf(
+                throw new \Gems\Exception($this->_('No access to group'), 403, null, sprintf(
                         $this->_('You are not allowed to switch to the %s group.'),
                         $group->getName()
                         ));
             } else {
-                throw new \Gems_Exception($this->_('No access to group'), 403, null, sprintf(
+                throw new \Gems\Exception($this->_('No access to group'), 403, null, sprintf(
                         $this->_('You cannot switch to an inactive or non-existing group.')
                         ));
             }
@@ -2302,7 +2304,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Set the locale for this user..
      *
      * @param string $locale
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function setLocale($locale)
     {
@@ -2314,7 +2316,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Set the password, if allowed for this user type.
      *
      * @param string $password
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function setPassword($password)
     {
@@ -2327,7 +2329,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
     /**
      *
      * @param boolean $reset
-     * @return \Gems_User_User  (continuation pattern)
+     * @return \Gems\User\User  (continuation pattern)
      */
     public function setPasswordResetRequired($reset = true)
     {
@@ -2339,7 +2341,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Set the Request object
      *
      * @param \Zend_Controller_Request_Abstract $request
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function setRequest(\Zend_Controller_Request_Abstract $request)
     {
@@ -2413,7 +2415,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * Set the parameters where the survey should return to
      *
      * @param mixed $return \Zend_Controller_Request_Abstract, array of something that can be turned into one.
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function setSurveyReturn($return = null)
     {
@@ -2425,14 +2427,14 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         if ($return instanceof \Zend_Controller_Request_Abstract) {
             $return = $return->getParams();
         } elseif (! is_array($return)) {
-            $return = \MUtil_Ra::to($return);
+            $return = \MUtil\Ra::to($return);
         }
         if (array_key_exists('action', $return) && 'autofilter' == $return['action']) {
             $return['action'] = 'index';
         }
 
         $return = array_filter($return);
-        // \MUtil_Echo::track($return);
+        // \MUtil\EchoOut\EchoOut::track($return);
 
         $this->_setVar('surveyReturn', $return);
 
@@ -2492,7 +2494,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
         $this->locale->setLocale($locale);
         $this->translate->setLocale($locale);
 
-        return \Gems_Cookies::setLocale($locale, $this->basepath->getBasePath());
+        return \Gems\Cookies::setLocale($locale, $this->basepath->getBasePath());
     }
 
     /**
@@ -2501,7 +2503,7 @@ class Gems_User_User extends \MUtil_Translate_TranslateableAbstract
      * This means that the data about this user will no longer be stored in a session.
      *
      * @param boolean $signalLoader Do not set, except from UserLoader
-     * @return \Gems_User_User (continuation pattern)
+     * @return \Gems\User\User (continuation pattern)
      */
     public function unsetAsCurrentUser($signalLoader = true)
     {

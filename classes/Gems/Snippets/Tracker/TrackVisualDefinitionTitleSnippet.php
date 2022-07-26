@@ -27,7 +27,7 @@ class TrackVisualDefinitionTitleSnippet extends ContentTitleSnippet
     /**
      * Required: the engine of the current track
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -52,6 +52,6 @@ class TrackVisualDefinitionTitleSnippet extends ContentTitleSnippet
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface;
+        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
     }
 }

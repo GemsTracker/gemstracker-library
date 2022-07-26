@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Selector;
+
 /**
  *
  * @package    Gems
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstract
 {
     const DATE_FACTOR = 'df';
     const DATE_GROUP  = 'dg';
@@ -48,14 +50,14 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     /**
      * The date the current period ends
      *
-     * @var \MUtil_Date
+     * @var \MUtil\Date
      */
     protected $dateCurrentEnd;
 
     /**
      * The date the current period starts
      *
-     * @var \MUtil_Date
+     * @var \MUtil\Date
      */
     protected $dateCurrentStart;
 
@@ -112,18 +114,18 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      *
      * @param string $name
-     * @return \Gems_Selector_SelectorField
+     * @return \Gems\Selector\SelectorField
      */
     protected function addField($name)
     {
-        $field = new \Gems_Selector_SelectorField($name);
+        $field = new \Gems\Selector\SelectorField($name);
 
         $this->_fields[$name] = $field;
 
@@ -133,13 +135,13 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     /**
      * Creates the base model.
      *
-     * @return \MUtil_Model_SelectModel
+     * @return \MUtil\Model\SelectModel
      */
     protected function createModel()
     {
         $groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom)");
 
-        $date = new \MUtil_Date();
+        $date = new \MUtil\Date();
 
         switch ($this->dateType) {
             case 'D':
@@ -254,7 +256,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
                 break;
 
             default:
-                throw new \Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType);
+                throw new \Gems\Exception\Coding('Incorrect date_type value: ' . $this->dateType);
         }
         $where = "$this->dateFrom BETWEEN '$start' AND '$end'";
 
@@ -280,7 +282,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         }
 
         if ($this->dateFactor) {
-            $today = new \MUtil_Date();
+            $today = new \MUtil\Date();
             $this->dateFactorChanges['D'] = $this->dateCurrentStart->diffDays($today);
             $this->dateFactorChanges['W'] = $this->dateCurrentStart->diffWeeks($today);
             $this->dateFactorChanges['M'] = $this->dateCurrentStart->diffMonths($today);
@@ -288,8 +290,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         } else {
             $this->dateFactorChanges = array_fill_keys(array('D', 'W', 'M', 'Y'), 0);
         }
-        // \MUtil_Echo::track($requiredRows);
-        // \MUtil_Echo::rs($start, $end, $where);
+        // \MUtil\EchoOut\EchoOut::track($requiredRows);
+        // \MUtil\EchoOut\EchoOut::rs($start, $end, $where);
 
         $select = new \Zend_Db_Select($this->db);
         $select->from($this->dataTableName, $groupby + $this->getDbFields());
@@ -298,14 +300,14 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
         $this->processSelect($select);
 
-        // \MUtil_Echo::r((string) $select);
+        // \MUtil\EchoOut\EchoOut::r((string) $select);
 
-        $model = new \MUtil_Model_SelectModel($select, $this->dataTableName);
+        $model = new \MUtil\Model\SelectModel($select, $this->dataTableName);
 
         // Display by column cannot use formatFunction as it is a simple repeater
         // $model->set('duration_avg', 'formatFunction', $this->util->getLocalized()->formatNumber);
 
-        $transformer = new \MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer = new \MUtil\Model\Transform\RequiredRowsTransformer();
         $transformer->setDefaultRow($this->getDefaultRow());
         $transformer->setRequiredRows($requiredRows);
         $transformer->setKeyItemCount($keyCount);
@@ -346,7 +348,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     /**
      * Returns defaults for all field values. Can be overruled.
      *
-     * @return array An array with appropriate default values for use in \MUtil_Model_Transform_RequiredRowsTransformer
+     * @return array An array with appropriate default values for use in \MUtil\Model\Transform\RequiredRowsTransformer
      */
     protected function getDefaultRow()
     {
@@ -382,7 +384,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     /**
      * Returns the base model.
      *
-     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     * @return \MUtil\Model\Transform\RequiredRowsTransformer
      */
     public function getModel()
     {
@@ -401,7 +403,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
      */
     public function getSelectorFilterPart($dateField = null)
     {
-        // \MUtil_Echo::track($filter);
+        // \MUtil\EchoOut\EchoOut::track($filter);
         $newfilter = [];
 
         if ($this->dateCurrentStart && $this->dateCurrentEnd) {
@@ -433,7 +435,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
         $bridge->setBaseUrl(array($this->_actionKey => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
 
-        $columnClass = \MUtil_Lazy::iff($repeater->range, null, 'selectedColumn');
+        $columnClass = \MUtil\Lazy::iff($repeater->range, null, 'selectedColumn');
 
         $this->setTableHeader($bridge, $repeater, $columnClass);
         $this->setTableBody(  $bridge, $repeater, $columnClass);
@@ -505,7 +507,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         $model->setFilter($filter);
     }
 
-    protected function setTableBody(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
         $onEmpty = $this->_('-');
@@ -529,7 +531,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         }
     }
 
-    protected function setTableFooter(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableFooter(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -538,7 +540,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
         $href = array(
             self::DATE_FACTOR => $repeater->df_link,
-            \MUtil_Model::AUTOSEARCH_RESET => null,
+            \MUtil\Model::AUTOSEARCH_RESET => null,
             ) + $baseurl;
 
         // Repeating column
@@ -551,7 +553,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         $tf->setRepeatTags(true);
     }
 
-    protected function setTableHeader(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableHeader(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -583,12 +585,12 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
                 break;
 
             case 'W':
-                $header = array($repeater->period_1, \MUtil_Html::create()->br(),
-                    \MUtil_Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
+                $header = array($repeater->period_1, \MUtil\Html::create()->br(),
+                    \MUtil\Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
                 break;
 
             case 'M':
-                $header = array($repeater->period_1, \MUtil_Html::create()->br(),
+                $header = array($repeater->period_1, \MUtil\Html::create()->br(),
                     $repeater->period_2->call($this->util->getLocalized()->getMonthName));
                 break;
 
@@ -597,18 +599,18 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
                 break;
 
             default:
-                throw new \Gems_Exception_Coding('Incorrect date_type value: ' . $this->dateType); //  $this->_getParam('date_type', 'W'));
+                throw new \Gems\Exception\Coding('Incorrect date_type value: ' . $this->dateType); //  $this->_getParam('date_type', 'W'));
         }
         $th = $bridge->th();
         $th->class = array($this->dataCellClass, $columnClass);
-        $th->a(array(self::DATE_FACTOR => $repeater->date_factor, \MUtil_Model::AUTOSEARCH_RESET => null) + $baseurl,
+        $th->a(array(self::DATE_FACTOR => $repeater->date_factor, \MUtil\Model::AUTOSEARCH_RESET => null) + $baseurl,
                 $header
                 );
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
 
-        $baseurl[\Gems_Selector_DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
-        $baseurl[\Gems_Selector_DateSelectorAbstract::DATE_GROUP]  = null;
-        $th->onclick = array('location.href=\'', new \MUtil_Html_HrefArrayAttribute($baseurl), '\';');
+        $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
+        $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = null;
+        $th->onclick = array('location.href=\'', new \MUtil\Html\HrefArrayAttribute($baseurl), '\';');
     }
 }

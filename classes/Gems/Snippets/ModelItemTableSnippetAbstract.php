@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
  * Displays each fields of a single item in a model in a row in a Html table
  * the model set through the $model snippet parameter.
@@ -19,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippets_ModelVerticalTableSnippetAbstract
+abstract class ModelItemTableSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippetAbstract
 {
     /**
      * Edit the item when it is clicked (provided the user has the right)
@@ -52,21 +54,21 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      * An optional list menu items
      *
-     * @var \Gems_Menu_MenuList
+     * @var \Gems\Menu\MenuList
      */
     protected $menuList = null;
 
@@ -76,11 +78,11 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($this->addOnclickEdit) {
             /*$menuItem = $this->getEditMenuItem();
@@ -98,7 +100,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function findMenuItem($controller, $action = 'index')
     {
@@ -108,7 +110,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItem()
     {
@@ -121,13 +123,13 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         if ($table = parent::getHtmlOutput($view)) {
             if ($title = $this->getTitle()) {
-                $htmlDiv = \MUtil_Html::div(array('renderWithoutContent' => false));
+                $htmlDiv = \MUtil\Html::div(array('renderWithoutContent' => false));
 
                 $htmlDiv->h3($title);
 
@@ -158,17 +160,17 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends \MUtil_Snippe
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         /*if ($this->displayMenu) {
             if (! $this->menuList) {
                 $this->menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
             }
-            if ($this->menuList instanceof \Gems_Menu_MenuList) {
+            if ($this->menuList instanceof \Gems\Menu\MenuList) {
                 $this->menuList->addParameterSources($bridge);
             }
 

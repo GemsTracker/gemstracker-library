@@ -26,7 +26,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -45,7 +45,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     
@@ -173,7 +173,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         $allowedOrgs = $this->getOrganizationList($data);
 
         $elements['select_title'] = $this->_('Select:');
-        $elements['break1']       = \MUtil_Html::create('br');
+        $elements['break1']       = \MUtil\Html::create('br');
 
         // Select organization
         if (count($allowedOrgs) > 1) {
@@ -205,7 +205,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                 $this->_('(all surveys)')
                 );
 
-        $elements['break2'] = \MUtil_Html::create('br');
+        $elements['break2'] = \MUtil\Html::create('br');
 
         // Add status selection
         $elements['token_status'] = $this->_createSelectElement(

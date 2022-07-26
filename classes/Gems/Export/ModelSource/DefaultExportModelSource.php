@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export\ModelSource;
+
 /**
  *
  * @package    Gems
@@ -16,13 +18,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Export_ModelSource_DefaultExportModelSource extends \Gems_Export_ModelSource_ExportModelsourceAbstract
+class DefaultExportModelSource extends \Gems\Export_ModelSource_ExportModelsourceAbstract
 {
 	/**
      * Get the model to export
      * @param  array  $filter Filter for the model
      * @param  array  $data   Data from the form options
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
 	public function getModel($filter = array(), $data = array())
 	{

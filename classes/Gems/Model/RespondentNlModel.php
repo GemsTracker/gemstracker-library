@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model;
 
 /**
  * Class containing the Netherlands specific model extensions.
@@ -21,12 +22,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
+class RespondentNlModel extends \Gems\Model\RespondentModel
 {
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Model_RespondentNlModel
+     * @return \Gems\Model\RespondentNlModel
      */
     public function applyDetailSettings()
     {
@@ -42,7 +43,7 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
      * Set those values needed for editing
      *
      * @param boolean $create True when creating
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function applyEditSettings($create = false)
     {
@@ -84,18 +85,18 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set the field values for a dutch social security number
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param \Zend_Translate_Adapter $translator
      * @param string $fieldName
      */
-    public static function setDutchSsn(\MUtil_Model_ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_ssn')
+    public static function setDutchSsn(\MUtil\Model\ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_ssn')
     {
         $bsn = new \MUtil_Validate_Dutch_Burgerservicenummer();
 
         $model->set($fieldName,
                 'size', 10,
                 'maxlength', 12,
-                'filter', new \MUtil_Filter_Dutch_Burgerservicenummer(),
+                'filter', new \MUtil\Filter\Dutch\Burgerservicenummer(),
                 'validators[bsn]', $bsn);
 
         if (APPLICATION_ENV !== 'production') {
@@ -114,16 +115,16 @@ class Gems_Model_RespondentNlModel extends \Gems_Model_RespondentModel
     /**
      * Set the field values for a dutch zipcode
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @param \Zend_Translate_Adapter $translator
      * @param string $fieldName
      */
-    public static function setDutchZipcode(\MUtil_Model_ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_zipcode')
+    public static function setDutchZipcode(\MUtil\Model\ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_zipcode')
     {
         $model->set($fieldName,
                 'size', 7,
                 'description', $translator->_('E.g.: 0000 AA'),
-                'filter', new \Gems_Filter_DutchZipcode()
+                'filter', new \Gems\Filter\DutchZipcode()
                 );
     }
 }

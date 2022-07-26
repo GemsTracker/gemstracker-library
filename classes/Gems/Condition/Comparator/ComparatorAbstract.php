@@ -19,7 +19,7 @@ namespace Gems\Condition\Comparator;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-abstract class ComparatorAbstract extends \MUtil_Translate_TranslateableAbstract implements ComparatorInterface {
+abstract class ComparatorAbstract extends \MUtil\Translate\TranslateableAbstract implements ComparatorInterface {
     
     public function __construct($options = array()) {
         $this->_options = $options;

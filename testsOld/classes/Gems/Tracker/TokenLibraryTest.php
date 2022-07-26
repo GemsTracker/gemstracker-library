@@ -17,17 +17,17 @@ class TokenLibraryTest extends \PHPUnit_Framework_TestCase {
 
     /**
      *
-     * @var \Gems_Tracker_Token_TokenLibrary
+     * @var \Gems\Tracker\Token\TokenLibrary
      */
     protected $object;
 
     public function setUp() {
         parent::setUp();
 
-        $object = new \Gems_Tracker_Token_TokenLibrary();
+        $object = new \Gems\Tracker\Token\TokenLibrary();
 
         $projectArray = new \Zend_Config_Ini(APPLICATION_PATH . '/configs/project.example.ini', APPLICATION_ENV);
-        $project = new \Gems_Project_ProjectSettings($projectArray);
+        $project = new \Gems\Project\ProjectSettings($projectArray);
         $object->answerRegistryRequest('project', $project);
         $object->checkRegistryRequestsAnswers();
 

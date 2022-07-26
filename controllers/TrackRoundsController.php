@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -19,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class TrackRoundsController extends \Gems_Default_TrackRoundsAction
+class TrackRoundsController extends \Gems\Actions\TrackRoundsAction
 {
 }

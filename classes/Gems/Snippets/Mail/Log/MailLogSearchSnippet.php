@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Mail\Log;
 
 /**
  *
@@ -19,11 +20,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class MailLogSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,7 +44,7 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends \Gems_Snippets_Autosea
 
         $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
 
-        $br  = \MUtil_Html::create()->br();
+        $br  = \MUtil\Html::create()->br();
 
         $elements[] = null;
 

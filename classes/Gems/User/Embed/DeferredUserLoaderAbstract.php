@@ -19,31 +19,31 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:07:27
  */
-abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\TranslateableAbstract
         implements DeferredUserLoaderInterface
 {
     /**
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @param \Gems\User\Embed\EmbeddedUserData $embeddedUserData
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      */
-    protected function checkCurrentSettings(\Gems_User_User $embeddedUser, EmbeddedUserData $embeddedUserData, \Gems_User_User $user)
+    protected function checkCurrentSettings(\Gems\User\User $embeddedUser, EmbeddedUserData $embeddedUserData, \Gems\User\User $user)
     {
         if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
             $user->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
@@ -62,29 +62,29 @@ abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_Translateable
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     // abstract public function getLabel();
 
     /**
      * Get the deferred user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @param string $deferredLogin name of the user to log in
      * @return \Gems_User_user|null
      */
-    // abstract public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin);
+    // abstract public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin);
 
     /**
      * Try to find / load an active user with this data
      *
      * @param string $userLogin
      * @param mixed $organisations (Array of) organization id's or objects
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getUser($userLogin, $organisations = null)
     {
-        // \MUtil_Echo::track($userLogin, $organisations );
+        // \MUtil\EchoOut\EchoOut::track($userLogin, $organisations );
 
         $user       = $this->currentUser;
         $userLoader = $this->loader->getUserLoader();
@@ -94,7 +94,7 @@ abstract class DeferredUserLoaderAbstract extends \MUtil_Translate_Translateable
             $organisations = [$this->currentOrganization];
         }
         foreach ((array) $organisations as $currentOrg) {
-            if ($currentOrg instanceof \Gems_User_Organization) {
+            if ($currentOrg instanceof \Gems\User\Organization) {
                 $user = $userLoader->getUser($userLogin, $currentOrg->getId());
             } else {
                 $user = $userLoader->getUser($userLogin, $currentOrg);

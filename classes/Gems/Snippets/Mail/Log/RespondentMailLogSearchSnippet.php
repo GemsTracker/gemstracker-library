@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Mail\Log;
@@ -27,7 +26,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -35,7 +34,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
      * Creates the form itself
      *
      * @param array $options
-     * @return \Gems_Form
+     * @return \Gems\Form
      */
     protected function createForm($options = null)
     {
@@ -62,7 +61,7 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 
         $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
 
-        $br  = \MUtil_Html::create()->br();
+        $br  = \MUtil\Html::create()->br();
 
         $elements[] = null;
 
@@ -94,11 +93,11 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 
         $surveyNames = $this->db->fetchPairs($surveysSql,
                 array(
-                    $this->request->getParam(\MUtil_Model::REQUEST_ID1),
-                    $this->request->getParam(\MUtil_Model::REQUEST_ID2)
+                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
+                    $this->request->getParam(\MUtil\Model::REQUEST_ID2)
                 )
         );
-        // \MUtil_Echo::track($surveyNames);
+        // \MUtil\EchoOut\EchoOut::track($surveyNames);
         return $surveyNames;
     }
 
@@ -110,11 +109,11 @@ class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 
         $trackNames = $this->db->fetchPairs($tracksSql,
                 array(
-                    $this->request->getParam(\MUtil_Model::REQUEST_ID1),
-                    $this->request->getParam(\MUtil_Model::REQUEST_ID2)
+                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
+                    $this->request->getParam(\MUtil\Model::REQUEST_ID2)
                 )
         );
-        // \MUtil_Echo::track($trackNames);
+        // \MUtil\EchoOut\EchoOut::track($trackNames);
         return $trackNames;
     }
 }

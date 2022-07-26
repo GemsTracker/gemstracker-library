@@ -4,7 +4,7 @@
 namespace Gems\Tracker\Source;
 
 
-class LimeSurvey4m00FieldMap extends \Gems_Tracker_Source_LimeSurvey2m00FieldMap
+class LimeSurvey4m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
 {
     const ANSWERS_TRANSLATE_TABLE   = 'answer_l10ns';
     const GROUPS_TRANSLATE_TABLE   = 'group_l10ns';
@@ -286,7 +286,7 @@ class LimeSurvey4m00FieldMap extends \Gems_Tracker_Source_LimeSurvey2m00FieldMap
                 ) + $map;
 
             $this->_fieldMap = $map;
-            // \MUtil_Echo::track($map);
+            // \MUtil\EchoOut\EchoOut::track($map);
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
             $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
         }

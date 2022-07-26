@@ -21,22 +21,22 @@ use MUtil\Model\Type\JsonData;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 16-May-2018 17:05:54
  */
-class EpisodeOfCareModel extends \Gems_Model_JoinModel
+class EpisodeOfCareModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -55,14 +55,14 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
                 false
                 );
 
-        $this->addColumn(new \Zend_Db_Expr("'careepisodes'"), \Gems_Model::ID_TYPE);
+        $this->addColumn(new \Zend_Db_Expr("'careepisodes'"), \Gems\Model::ID_TYPE);
         $this->addColumn(
                 new \Zend_Db_Expr(
                         "(SELECT COUNT(*) FROM gems__appointments WHERE gap_id_episode = gec_episode_of_care_id)"
                         ),
                 'appointment_count');
 
-        $this->setKeys(array(\Gems_Model::EPISODE_ID => 'gec_episode_of_care_id'));
+        $this->setKeys(array(\Gems\Model::EPISODE_ID => 'gec_episode_of_care_id'));
     }
 
     /**
@@ -129,7 +129,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyBrowseSettings()
     {
@@ -165,7 +165,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyDetailSettings()
     {
@@ -216,7 +216,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
      *
      * @param int $orgId The id of the current organization
      * @param int $respId The id of the current respondent
-     * @return \Gems_Model_AppointmentModel
+     * @return \Gems\Model\AppointmentModel
      */
     public function applyEditSettings($orgId, $respId)
     {
@@ -232,7 +232,7 @@ class EpisodeOfCareModel extends \Gems_Model_JoinModel
                 'elementClass', 'Hidden');
 
         $this->setIfExists('gec_status',          'required', true);
-        $this->setIfExists('gec_startdate',       'default', new \MUtil_Date(),
+        $this->setIfExists('gec_startdate',       'default', new \MUtil\Date(),
                 'elementClass', 'Date',
                 'required', true);
 

@@ -20,7 +20,7 @@ namespace Gems\Snippets\Upgrade;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 11-mei-2015 19:27:25
  */
-class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
+class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * When true there is a namespace error in the application code
@@ -43,19 +43,19 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \GemsEscort
+     * @var \Gems\Escort
      */
     protected $escort;
 
     /**
      *
-     * @var \MUtil_Html_Sequence
+     * @var \MUtil\Html\Sequence
      */
     protected $html;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -104,12 +104,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * The prefix / classnames where the Gems Loaders should look
+     * The prefix / classnames where the \Gems Loaders should look
      *
      * @var array prefix => path
      */
@@ -126,7 +126,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'datetimeFormat' => 'datetimeFormats',
             'timeFormat'     => 'timeFormats',
             ],
-        'Tracker_Survey' => [
+        'Tracker\\Survey' => [
             '_gemsSurvey' => '_data',
             '_surveyId' => '_id',
             ],
@@ -142,17 +142,17 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     {
         $phpObjects = array(
             'ArrayAccess',
-            'ArrayIterator',
-            'ArrayObject',
+            '\\ArrayIterator',
+            '\\ArrayObject',
             'Closure',
             'Countable',
             'DirectoryIterator',
             'Exception',
             'FilesystemIterator',
             'FilterIterator',
-            'GemsEscort',
+            '\\Gems\\Escort',
             'Generator',
-            'Iterator', // also checks for 'IteratorAggregate',
+            '\\Iterator', // also checks for 'IteratorAggregate',
             'OuterIterator',
             'RecursiveDirectoryIterator',
             'RecursiveIterator', // also checks for 'RecursiveIteratorIterator',
@@ -161,7 +161,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'SplFileInfo',
             'SplFileObject',
             'Throwable',
-            'Traversable',
+            '\\Traversable',
             );
 
         foreach ($phpObjects as $className) {
@@ -196,47 +196,47 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $obsFunctions = array(
-            'GemsEscort' => [
+            '\\Gems\\Escort' => [
                 'isAllowedHost' => 'SiteUtil->isRequestFromAllowedHost',
                 ],
             'Gems\\Agenda\\Filter\\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 ],
-            'Gems_Tracker_Source' => [
+            'Gems\Tracker_Source' => [
                 'getFullQuestionList'       => 'getQuestionList',
                 ],
-            'Gems_Mail_MailLoader' => [
+            '\\Gems\\Mail\\MailLoader' => [
                 'getAvailableMailTemplates' => 'CommTemplateUtil->getCommTemplatesForTarget',
                 ],
-            'Gems_Project_ProjectSettings' => [
+            '\\Gems\\Project\\ProjectSettings' => [
                 'getAllowedHosts' => 'SiteUtil->isRequestFromAllowedHost',
-                'getConsoleUrl' => 'Gems_User_Organization->getPreferredSiteUrl',
+                'getConsoleUrl' => 'Gems\User\Organization->getPreferredSiteUrl',
                 'hasAnySupportUrl' => null,
                 'hasBugsUrl' => null,
             ],
-            'Gems_User_User' => [
+            '\\Gems\\User\\User' => [
                 // 'getGroup'                  => 'getGroupId', // REMOVE IN 1.8.3
                 'hasAllowedRole'            => 'inAllowedGroup',
                 'refreshAllowedStaffGroups' => null,
                 ],
-            'Gems_User_UserLoader' => [
+            '\\Gems\\User\\UserLoader' => [
                 'getOrganizationIdByUrl' => null,
                 'getOrganizationUrls'    => 'SiteUrl->getSiteForCurrentUrl', 
             ],
             'Gems_User_LoginStatusTracker' => [
                 'getUsedOrganisationId'     => 'getUsedOrganizationId',
                 ],
-            'Gems_Util_DbLookup' => [
+            '\\Gems\\Util\\DbLookup' => [
                 'getFilterForMailJob' => 'MailJobsUtil->getJobFilter',
-                'getSurveys' => 'Gems_Util_TrackData->getSurveysFor',
+                'getSurveys' => 'Gems\Util\TrackData->getSurveysFor',
                 ],
-            'Gems_Util_Translated' => [
+            '\\Gems\\Util\\Translated' => [
                 'formatDateTime'                 => 'describeDateFromNow',
                 'getBulkMailProcessOptions'      => 'MailJobsUtil->getBulkProcessOptions',
                 'getBulkMailProcessOptionsShort' => 'MailJobsUtil->getBulkProcessOptionsShort',
                 'getBulkMailTargetOptions'       => 'MailJobsUtil->getBulkTargetOptions',
                 ],
-            'Gems_User_Form_LayeredLoginForm' => [
+            '\\Gems\\User\\Form\\LayeredLoginForm' => [
                 'getChildOrganisations'     => 'getChildOrganizations',
                 'getTopOrganisations'       => 'getTopOrganizations',
                 ],
@@ -288,12 +288,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             case 'CommJobController.php':
                 if (preg_match('/\\sfunction\\s+getBulkMailFilterOptions\\s*\\(/', $content)) {
                     $messages[] = "Your CommJob controller has a getBulkMailFilterOptions() function. "
-                            . "This function was moved to Gems\\Util\\MailJobsUtil->getBulkFilterOptions(). "
+                            . "This function was moved to \Gems\\Util\\MailJobsUtil->getBulkFilterOptions(). "
                             . "Remove the function and implement a project\\Util\\MailJobsUtil.php";
                 }
                 if (preg_match('/\\sfunction\\s+getBulkMailFromOptions\\s*\\(/', $content)) {
                     $messages[] = "Your CommJob controller has a getBulkMailFromOptions() function. "
-                            . "This function was moved to Gems\\Util\\MailJobsUtil->getBulkFromOptions(). "
+                            . "This function was moved to \Gems\\Util\\MailJobsUtil->getBulkFromOptions(). "
                             . "Remove the function and implement a project\\Util\\MailJobsUtil.php";
                 }
                 return;
@@ -304,7 +304,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
             case 'ExportSurveysController.php':
                 $messages[] = "This controller was renamed to ExportMultiSurveysController.";
-                $messages[] = "The new controller is a child of \Gems_Controller_ModelSnippetActionAbstract. Check your code for changes.";
+                $messages[] = "The new controller is a child of \Gems\Controller\ModelSnippetActionAbstract. Check your code for changes.";
                 return;
 
             case 'RespondentController.php':
@@ -314,9 +314,9 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     $messages[] = array(
                         "Your respondent controller seems to inherit from Gems_Default_RespondentAction.",
                         ' ',
-                        \MUtil_Html::create('strong', "This class may be obsolete in 1.7.2!"),
+                        \MUtil\Html::create('strong', "This class may be obsolete in 1.7.2!"),
                         ' ',
-                        "Use Gems_Default_RespondentNewAction instead.",
+                        "Use \Gems\Actions\RespondentNewAction instead.",
                         );
                 }
                 break;
@@ -354,7 +354,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                     if (($version == $this->codeVersion) &&
                             ($controller . '.php' == $fileName)) {
                         $messages[] = "The parent class changed from BrowseEditAction to ModelSnippetActionAbstract.";
-                        $messages[] = \MUtil_Html::create('strong', "Check all code in the controller!");
+                        $messages[] = \MUtil\Html::create('strong', "Check all code in the controller!");
                         break;
                     }
                 }
@@ -363,9 +363,9 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             $messages[] = "This controller should change it's getRespondent method to be public.";
         }
 
-        if (preg_match('/\\sextends\\s+\\\\?Gems_Controller_BrowseEditAction\\s/', $content)) {
-            $messages[] = "This controller extends from the deprecated Gems_Controller_BrowseEditAction.";
-            $messages[] = \MUtil_Html::create('strong', "Rewrite the controller!");
+        if (preg_match('/\\sextends\\s+\\\\?Gems\Controller\BrowseEditAction\\s/', $content)) {
+            $messages[] = "This controller extends from the deprecated \Gems\Controller\BrowseEditAction.";
+            $messages[] = \MUtil\Html::create('strong', "Rewrite the controller!");
         }
     }
 
@@ -383,9 +383,9 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
             array_shift($matches);
             foreach($matches as $match) {
-                $version = trim(\MUtil_String::stripStringLeft($match, 'since version'));
+                $version = trim(\MUtil\StringUtil\StringUtil::stripStringLeft($match, 'since version'));
 
-                if (\MUtil_String::contains($version, ' ')) {
+                if (\MUtil\StringUtil\StringUtil::contains($version, ' ')) {
                     list($version, $comment) = explode(' ', $version, 2);
                 } else {
                     $comment = '';
@@ -408,8 +408,8 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->movedSnippets as $oldSnippet => $newSnippet) {
-            if (\MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $oldSnippet) . '.php') &&
-                    (! \MUtil_String::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $newSnippet) . '.php'))) {
+            if (\MUtil\StringUtil\StringUtil::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $oldSnippet) . '.php') &&
+                    (! \MUtil\StringUtil\StringUtil::endsWith($filePathName, str_replace('\\', DIRECTORY_SEPARATOR, 'Snippets\\' . $newSnippet) . '.php'))) {
 
                 if ($newSnippet) {
                     $messages[] = "This snippet is moved to $newSnippet.";
@@ -424,7 +424,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             'Respondent\\MailLogSnippet',
             );
         foreach ($deletedSnippets as $oldSnippet) {
-            if (\MUtil_String::endsWith($filePathName, $oldSnippet . '.php')) {
+            if (\MUtil\StringUtil\StringUtil::endsWith($filePathName, $oldSnippet . '.php')) {
                 $messages[] = "This snippet is no longer in use.";
                 break;
             }
@@ -453,7 +453,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             );
 
         foreach ($obsoleteFields as $replacement => $old) {
-            if (\MUtil_String::contains($content, $old)) {
+            if (\MUtil\StringUtil\StringUtil::contains($content, $old)) {
                 if (is_integer($replacement)) {
                     $messages[] = "Contains a reference to the obsolete '$old' field/variable.";
                 } else {
@@ -513,11 +513,11 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
             );
 
         foreach ($obsoleteTables as $table => $fields) {
-            if (\MUtil_String::contains($content, $table)) {
+            if (\MUtil\StringUtil\StringUtil::contains($content, $table)) {
                 $messages[] = "Contains a reference to the obsolete '$table' database table.";
             }
             foreach ($fields as $field) {
-                if (\MUtil_String::contains($content, $field)) {
+                if (\MUtil\StringUtil\StringUtil::contains($content, $field)) {
                     $messages[] = "Contains a reference to the obsolete '$field' field in the '$table' database table.";
                 }
             }
@@ -535,7 +535,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         $filePathName = $fileinfo->getPathname();
 
         foreach ($this->variablesChanged as $pathPart => $replacements) {
-            if (\MUtil_String::contains($filePathName, str_replace('_', DIRECTORY_SEPARATOR, $pathPart))) {
+            if (\MUtil\StringUtil\StringUtil::contains($filePathName, str_replace('_', DIRECTORY_SEPARATOR, $pathPart))) {
                 foreach ($replacements as $old => $new) {
                     if (preg_match("/(\\\$|->)$old\\W/", $content)) {
                         $messages[] = "This file uses the \$$old variable that is renamed to \$$new.";
@@ -586,12 +586,12 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         $oldInterfaces = array(
-            'Gems_Project_Log_LogRespondentAccessInterface',
-            'Gems_Project_Organization_MultiOrganizationInterface',
-            'Gems_Project_Organization_SingleOrganizationInterface',
-            'Gems_Project_Tracks_FixedTracksInterface',
-            'Gems_Project_Tracks_StandAloneSurveysInterface',
-            'Gems_Project_Tracks_TracksOnlyInterface',
+            '\\Gems\\Project\\Log\\LogRespondentAccessInterface',
+            '\\Gems\\Project\\Organization\\MultiOrganizationInterface',
+            '\\Gems\\Project\\Organization\\SingleOrganizationInterface',
+            '\\Gems\\Project\\Tracks\\FixedTracksInterface',
+            '\\Gems\\Project\\Tracks\\StandAloneSurveysInterface',
+            '\\Gems\\Project\\Tracks\\TracksOnlyInterface',
             );
         foreach ($oldInterfaces as $interface) {
             if ($this->escort instanceof $interface) {
@@ -641,7 +641,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
 
         $this->_checkCodingChanged($fileinfo, $content, $messages);
 
-        if (\MUtil_String::endsWith($fileinfo->getPath(), 'controllers')) {
+        if (\MUtil\StringUtil\StringUtil::endsWith($fileinfo->getPath(), 'controllers')) {
             $this->_checkControllersChanged($fileinfo, $content, $messages);
         } else {
             $this->_checkSnippetsChanged($fileinfo, $content, $messages);
@@ -708,15 +708,15 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
                 // Split by -src(-xxx)
                 preg_match_all("/(\w+-src(-\w+)?) ([^;]+);/", $headers['Content-Security-Policy'], $r);
                 $csp = array_combine($r[1], $r[3]);
-                // \MUtil_Echo::track($csp);
+                // \MUtil\EchoOut\EchoOut::track($csp);
 
                 /*
-                if (! \MUtil_String::contains($csp['script-src'], " 'nonce-\$scriptNonce' ")) {
+                if (! \MUtil\StringUtil\StringUtil::contains($csp['script-src'], " 'nonce-\$scriptNonce' ")) {
                     $this->html->pInfo('Content-Security-Policy script-src \'nonce-\$scriptNonce\' setting missing. This is unsafe!');
                     $issues = true;
                 } // */
-                if (! \MUtil_String::contains($csp['img-src'], ' data: ')) {
-                    if (\MUtil_String::contains($csp['img-src'], ' data ')) {
+                if (! \MUtil\StringUtil\StringUtil::contains($csp['img-src'], ' data: ')) {
+                    if (\MUtil\StringUtil\StringUtil::contains($csp['img-src'], ' data ')) {
                         $this->html->pInfo('Content-Security-Policy uses data instead of data:!');
                     }
                     $this->html->pInfo('Content-Security-Policy img-src data: setting missing, 2FA QR codes will not work!');
@@ -794,7 +794,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Iterator for looping thorugh all files in a directory and i's sub directories
+     * \Iterator for looping thorugh all files in a directory and i's sub directories
      *
      * @param string $dir
      * @return \RecursiveIteratorIterator
@@ -814,7 +814,7 @@ class UpgradeCompatibilitySnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

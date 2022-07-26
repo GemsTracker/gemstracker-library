@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AvailableTracksSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 1-mei-2015 16:05:45
  */
-class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model filter.
@@ -54,20 +53,20 @@ class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * The respondent
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -94,13 +93,13 @@ class AvailableTracksSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
         $translated = $this->util->getTranslated();
 
-        $model = new \MUtil_Model_TableModel('gems__tracks');
+        $model = new \MUtil\Model\TableModel('gems__tracks');
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));

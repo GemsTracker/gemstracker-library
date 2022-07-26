@@ -1,6 +1,6 @@
 <?php
 
-class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
+class StaffUserDefinitionTest extends \Gems\Test\Db2TestAbstract
 {
     /**
      * @var string Password to test with
@@ -12,7 +12,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
     protected $testOrganization = 70;
 
     /**
-     * @var \Gems_User_StaffUserDefinition
+     * @var \Gems\User\StaffUserDefinition
      */
     protected $userDefinition;
 
@@ -22,7 +22,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
 
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
         $sa = $settings->toArray();
-        $this->loader  = new \Gems_Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
+        $this->loader  = new \Gems\Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
         $this->userDefinition = $this->loader->getUserLoader()->getUserDefinition('StaffUser');
         $this->userDefinition->setDb2($this->db);
     }
@@ -42,7 +42,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
 
     public function testValidAuthentication()
     {
-        $user = $this->getMockBuilder('\Gems_User_User')
+        $user = $this->getMockBuilder('\\Gems\\User\\User')
             ->setConstructorArgs([[], $this->userDefinition])
             ->getMock();
 
@@ -64,7 +64,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
         $hashedPassword = $this->userDefinition->hashPassword($this->testPassword);
         $this->db->query(
             "UPDATE gems__user_passwords SET gup_password = '$hashedPassword'",
-            Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
+            \Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
         );
 
         $result = $authAdapter->authenticate();
@@ -78,7 +78,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
 
     public function testWrongAuthentication()
     {
-        $user = $this->getMockBuilder('\Gems_User_User')
+        $user = $this->getMockBuilder('\\Gems\\User\\User')
             ->setConstructorArgs([[], $this->userDefinition])
             ->getMock();
 
@@ -100,7 +100,7 @@ class StaffUserDefinitionTest extends \Gems_Test_Db2TestAbstract
         $hashedPassword = $this->userDefinition->hashPassword($this->testPassword);
         $this->db->query(
             "UPDATE gems__user_passwords SET gup_password = '$hashedPassword'",
-            Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
+            \Laminas\Db\Adapter\Adapter::QUERY_MODE_EXECUTE
         );
 
         $result = $authAdapter->authenticate();

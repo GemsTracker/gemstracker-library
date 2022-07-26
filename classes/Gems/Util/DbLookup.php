@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 use Gems\Util\UtilAbstract;
 
 /**
@@ -19,7 +21,7 @@ use Gems\Util\UtilAbstract;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_DbLookup extends UtilAbstract
+class DbLookup extends UtilAbstract
 {
     const SURVEY_ACTIVE          = 'active';
     const SURVEY_INACTIVE        = 'inactive';
@@ -33,13 +35,13 @@ class Gems_Util_DbLookup extends UtilAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -306,7 +308,7 @@ class Gems_Util_DbLookup extends UtilAbstract
         if ($output) {
             return $output;
         }
-        return \Gems_User_UserLoader::getNotOrganizationArray();
+        return \Gems\User\UserLoader::getNotOrganizationArray();
     }
 
     /**
@@ -332,7 +334,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param int $respondentId
      * @param int $organizationId
      * @return string A patient nr or null
-     * @throws \Gems_Exception When the patient does not exist
+     * @throws \Gems\Exception When the patient does not exist
      */
     public function getPatientNr($respondentId, $organizationId)
     {
@@ -345,7 +347,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             return $result;
         }
 
-        throw new \Gems_Exception(
+        throw new \Gems\Exception(
                 sprintf($this->_('Respondent id %s not found.'), $respondentId),
                 200,
                 null,
@@ -359,7 +361,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param string $patientId
      * @param int $organizationId
      * @return int A respondent id or null
-     * @throws \Gems_Exception When the respondent does not exist
+     * @throws \Gems\Exception When the respondent does not exist
      */
     public function getRespondentId($patientId, $organizationId)
     {
@@ -372,7 +374,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             return $result;
         }
 
-        throw new \Gems_Exception(
+        throw new \Gems\Exception(
                 sprintf($this->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
@@ -386,7 +388,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param string $patientId
      * @param int $organizationId
      * @return array ['id', 'name']
-     * @throws \Gems_Exception When the respondent does not exist
+     * @throws \Gems\Exception When the respondent does not exist
      */
     public function getRespondentIdAndName($patientId, $organizationId)
     {
@@ -406,7 +408,7 @@ class Gems_Util_DbLookup extends UtilAbstract
             return $output;
         }
 
-        throw new \Gems_Exception(
+        throw new \Gems\Exception(
                 sprintf($this->_('Patient number %s not found.'), $patientId),
                 200,
                 null,
@@ -584,7 +586,7 @@ class Gems_Util_DbLookup extends UtilAbstract
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'staff') +
                 array(
-                    \Gems_User_UserLoader::SYSTEM_USER_ID => \MUtil_Html::raw($this->_('&laquo;system&raquo;')),
+                    \Gems\User\UserLoader::SYSTEM_USER_ID => \MUtil\Html::raw($this->_('&laquo;system&raquo;')),
                 );
     }
 
@@ -611,7 +613,7 @@ class Gems_Util_DbLookup extends UtilAbstract
      * @param string $organizationId
      * @return array
      * @deprecated since 1.8.7
-     * @see \Gems_Util_TrackData->getSurveysFor
+     * @see \Gems\Util\TrackData->getSurveysFor
      */
     public function getSurveys($organizationId = null)
     {

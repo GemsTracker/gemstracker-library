@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Displays multiple items from a model in a tabel by row using
@@ -24,18 +25,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelTableSnippetGeneric extends \Gems_Snippets_ModelTableSnippetAbstract
+class ModelTableSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

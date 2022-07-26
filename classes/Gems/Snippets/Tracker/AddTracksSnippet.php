@@ -18,7 +18,7 @@ use Gems\Cache\HelperAdapter;
  *
  * A snippet is a piece of html output that is reused on multiple places in the code.
  *
- * Variables are intialized using the {@see \MUtil_Registry_TargetInterface} mechanism.
+ * Variables are intialized using the {@see \MUtil\Registry\TargetInterface} mechanism.
  *
  * @package    Gems
  * @subpackage Snippets_Tracker
@@ -26,7 +26,7 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
+class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
@@ -41,7 +41,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
     public $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -52,12 +52,12 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -116,7 +116,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                 $action = 'insert';
                 break;
         }
-        $orgId   = intval($this->request->getParam(\MUtil_Model::REQUEST_ID2));
+        $orgId   = intval($this->request->getParam(\MUtil\Model::REQUEST_ID2));
         $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
         if ($this->project->translateDatabaseFields() && $this->project->getLocaleDefault() != $this->locale->getLanguage()) {
             $cacheId .= '_' . $this->locale->getLanguage();
@@ -175,9 +175,9 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         if ($trackType != 'tracks') {
-            $div = \MUtil_Html::create()->div(array('class' => 'btn-group'));
+            $div = \MUtil\Html::create()->div(array('class' => 'btn-group'));
         } else {
-            $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
+            $div = \MUtil\Html::create()->div(array('class' => 'toolbox btn-group'));
         }
 
         $menuIndex  = $this->menu->findController('track', 'index');
@@ -198,7 +198,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                 ));
             $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
 
-            $data   = new \MUtil_Lazy_RepeatableByKeyValue($tracks);
+            $data   = new \MUtil\Lazy\RepeatableByKeyValue($tracks);
 
             if ($trackType == 'tracks') {
                 $menuView   = $this->menu->findController('track', 'view');
@@ -279,19 +279,19 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
     /**
      * Allow manual assignment of surveys/tracks to a patient
      *
-     * If project uses the \Gems_Project_Tracks_MultiTracksInterface, show a track drowpdown
-     * If project uses the \Gems_Project_Tracks_StandAloneSurveysInterface, show a survey
+     * If project uses the \Gems\Project\Tracks\MultiTracksInterface, show a track drowpdown
+     * If project uses the \Gems\Project\Tracks\StandAloneSurveysInterface, show a survey
      * drowpdown for both staff and patient
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $pageRef = array(\MUtil_Model::REQUEST_ID => $this->request->getParam(\MUtil_Model::REQUEST_ID));
+        $pageRef = array(\MUtil\Model::REQUEST_ID => $this->request->getParam(\MUtil\Model::REQUEST_ID));
         $output  = false;
 
-        $addToLists = \MUtil_Html::create()->div(array('class' => 'tooldock'));
+        $addToLists = \MUtil\Html::create()->div(array('class' => 'tooldock'));
         if ($this->showTitle) {
             $addToLists->strong($this->showTitle);
         }
@@ -303,7 +303,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
             }
         }
         if ($this->showForRespondents || $this->showForStaff) {
-            $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
+            $div = \MUtil\Html::create()->div(array('class' => 'toolbox btn-group'));
             $div->button($this->_('Surveys for'), array('class' => 'toolanchor btn', 'type' => 'button'));
 
             if ($this->showForRespondents) {

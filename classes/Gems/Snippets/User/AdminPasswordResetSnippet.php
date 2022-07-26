@@ -29,7 +29,7 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -42,14 +42,14 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
     {
         if ($this->user->hasEmailAddress()) {
             $order = count($form->getElements())-1;
-            $createElement = new \MUtil_Form_Element_FakeSubmit('create_account');
+            $createElement = new \MUtil\Form\Element\FakeSubmit('create_account');
             $createElement->setLabel($this->_('Create account mail'))
                         ->setAttrib('class', 'button')
                         ->setOrder($order++);
 
             $form->addElement($createElement);
 
-            $resetElement = new \MUtil_Form_Element_FakeSubmit('reset_password');
+            $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_password');
             $resetElement->setLabel($this->_('Reset password mail'))
                         ->setAttrib('class', 'button')
                         ->setOrder($order++);

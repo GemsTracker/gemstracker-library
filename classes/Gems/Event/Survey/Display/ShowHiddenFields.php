@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: ShowHiddenFields.php 203 2012-01-01t 12:51:32Z matijs $
  */
+
+namespace Gems\Event\Survey\Display;
 
 /**
  *
@@ -19,18 +20,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Event_Survey_Display_ShowHiddenFields extends \MUtil_Translate_TranslateableAbstract
-    implements \Gems_Event_SurveyDisplayEventInterface
+class ShowHiddenFields extends \MUtil\Translate\TranslateableAbstract
+    implements \Gems\Event\SurveyDisplayEventInterface
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
     {
-        return 'Tracker_Answers_TrackAllAnswersModelSnippet';
+        return 'Tracker\\Answers\\TrackAllAnswersModelSnippet';
     }
 
     /**

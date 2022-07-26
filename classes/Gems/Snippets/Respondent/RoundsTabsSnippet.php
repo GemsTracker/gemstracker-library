@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Respondent;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnippetAbstract
+class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
 {
     /**
      * The tab values
@@ -45,7 +47,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -66,7 +68,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
     /**
      * Required
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -80,7 +82,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -98,7 +100,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                 $this->organizationId = $this->respondent->getOrganizationId();
             }
             if (! $this->organizationId) {
-                $this->organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
+                $this->organizationId = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
             }
         }
 
@@ -108,7 +110,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
             }
             if (! $this->respondentId) {
                 $this->respondentId = $this->util->getDbLookup()->getRespondentId(
-                        $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+                        $this->request->getParam(\MUtil\Model::REQUEST_ID1),
                         $this->organizationId
                         );
             }
@@ -146,7 +148,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -184,7 +186,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                     GROUP BY COALESCE(gto_round_description, '')
                     ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 
-        // \MUtil_Echo::track($this->respondentId);
+        // \MUtil\EchoOut\EchoOut::track($this->respondentId);
         $tabLabels = $this->db->fetchAll($sql, $this->respondentId);
 
         if ($tabLabels) {
@@ -194,7 +196,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
             $tabs    = array();
 
             foreach ($tabLabels as $row) {
-                $name = '_' . \MUtil_Form::normalizeName($row['label']);
+                $name = '_' . \MUtil\Form::normalizeName($row['label']);
                 $label = $row['label'] ? $row['label'] : $this->_('empty');
                 if ($row['waiting']) {
                     $label = sprintf($this->_('%s (%d open)'), $label, $row['waiting']);
@@ -202,7 +204,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                     $label = $label;
                 }
                 if (! $row['label']) {
-                    $label = \MUtil_Html::create('em', $label);
+                    $label = \MUtil\Html::create('em', $label);
                 }
 
                 $filters[$name] = $row['label'];
@@ -238,7 +240,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
                 $this->model->setMeta('tab_filter', array('gto_round_description' => $filters[$reqFilter]));
             }
 
-            // \MUtil_Echo::track($tabs, $reqFilter, $default, $tabLabels);
+            // \MUtil\EchoOut\EchoOut::track($tabs, $reqFilter, $default, $tabLabels);
 
             $this->defaultTab = $default;
             $this->_tabs      = $tabs;

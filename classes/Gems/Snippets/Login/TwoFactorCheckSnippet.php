@@ -48,7 +48,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $user;
 
@@ -88,7 +88,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
 
         $element = $this->_form->createElement('html', 'reset');
         $element->setLabel(html_entity_decode('&nbsp;'));
-        $element->setValue(\Gems_Html::actionLink($cancelUrl, $this->_('Cancel login')));
+        $element->setValue(\Gems\Html::actionLink($cancelUrl, $this->_('Cancel login')));
         $this->_form->addElement($element);
     }
 
@@ -108,7 +108,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
             try {
                 $authenticator->sendCode($this->user);
                 $this->addMessage($authenticator->getSentMessage($this->user));
-            } catch (\Gems_Exception $e) {
+            } catch (\Gems\Exception $e) {
                 $this->addMessage($e->getMessage());
             }
             if ($authenticator instanceof SendTwoFactorCodeInterface) {
@@ -116,7 +116,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
                      if ($authenticator->canRetry($this->user)) {
                         $this->addMessage($this->getRetryMessage());
                     }
-                } catch(\Gems_Exception $e) {
+                } catch(\Gems\Exception $e) {
                 }
             }
         }
@@ -190,11 +190,11 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
             'resend' => 1,
         ];
         if ($href) {
-            $link = \MUtil_Html::create('a', $href, 'Click here');
+            $link = \MUtil\Html::create('a', $href, 'Click here');
 
 
             $clickLink = $link->setView($this->view);
-            return new \MUtil_Html_Raw(sprintf(
+            return new \MUtil\Html\Raw(sprintf(
                 $this->_('%s to retry sending the message'),
                 $clickLink
             ));
@@ -233,7 +233,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -288,7 +288,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
             if ($authenticator instanceof SendTwoFactorCodeInterface) {
                 try {
                     $authenticator->enableRetrySendCode($this->user);
-                } catch (\Gems_Exception $e) {
+                } catch (\Gems\Exception $e) {
 
                 }
                 /*$this->redirectRoute = [

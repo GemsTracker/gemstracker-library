@@ -6,11 +6,13 @@
  * and open the template in the editor.
  */
 
-class Test_Escort extends GemsEscort {
+namespace Test;
+
+class Escort extends \Gems\Escort {
     
     public function _initLogger() {
         $this->bootstrap('project');    // Make sure the project object is available
-        $logger = \Gems_Log::getLogger();
+        $logger = \Gems\Log::getLogger();
 
         $writer = new \Zend_Log_Writer_Null();
         $logger->addWriter($writer);
@@ -21,10 +23,10 @@ class Test_Escort extends GemsEscort {
     public function _initProject() {
         $projectArray = $this->includeFile(APPLICATION_PATH . '/configs/project.example.ini');
 
-        if ($projectArray instanceof \Gems_Project_ProjectSettings) {
+        if ($projectArray instanceof \Gems\Project\ProjectSettings) {
             $project = $projectArray;
         } else {
-            $project = $this->createProjectClass('Project_ProjectSettings', $projectArray);
+            $project = $this->createProjectClass('Project\\ProjectSettings', $projectArray);
         }
 
         return $project;

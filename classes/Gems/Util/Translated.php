@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Util;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -18,7 +20,7 @@ use MUtil\Translate\TranslateableTrait;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_Translated
+class Translated
 {
     use TranslateableTrait;
 
@@ -84,7 +86,7 @@ class Gems_Util_Translated
             return array($this, $name);
         }
 
-        throw new \Gems_Exception_Coding("Unknown method '$name' requested as callable.");
+        throw new \Gems\Exception\Coding("Unknown method '$name' requested as callable.");
     }
 
     /**
@@ -100,7 +102,7 @@ class Gems_Util_Translated
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil_Date $dateTimeValue
+     * @param \MUtil\Date $dateTimeValue
      * @return string
      */
     public function describeDateFromNow($dateTimeValue)
@@ -109,12 +111,12 @@ class Gems_Util_Translated
             return null;
         }
 
-        if ($dateTimeValue instanceof \MUtil_Date) {
+        if ($dateTimeValue instanceof \MUtil\Date) {
             $dateTime = $dateTimeValue;
         } else{
-            $dateTime = \MUtil_Date::ifDate(
+            $dateTime = \MUtil\Date::ifDate(
                 $dateTimeValue,
-                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
             );
             if (! $dateTime) {
                 return null;
@@ -154,7 +156,7 @@ class Gems_Util_Translated
     /**
      * Get a readable version of date / time object with nearby time translated in text
      *
-     * @param \MUtil_Date $dateTimeValue
+     * @param \MUtil\Date $dateTimeValue
      * @return string
      */
     public function describeTimeFromNow($dateTimeValue)
@@ -163,12 +165,12 @@ class Gems_Util_Translated
             return null;
         }
 
-        if ($dateTimeValue instanceof \MUtil_Date) {
+        if ($dateTimeValue instanceof \MUtil\Date) {
             $dateTime = $dateTimeValue;
         } else{
-            $dateTime = \MUtil_Date::ifDate(
+            $dateTime = \MUtil\Date::ifDate(
                 $dateTimeValue,
-                array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
+                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
             );
             if (! $dateTime) {
                 return null;
@@ -203,8 +205,8 @@ class Gems_Util_Translated
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDate($dateValue)
     {
@@ -215,15 +217,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'forever' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateForever($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('forever'), array('class' => 'disabled'));
         }
     }
 
@@ -231,15 +233,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'n/a' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateNa($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
         }
     }
 
@@ -247,22 +249,22 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'never' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateNever($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('never'), array('class' => 'disabled'));
         }
     }
 
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil_Date $dateTimeValue
+     * @param \MUtil\Date $dateTimeValue
      * @param string $format Optioanl PHP date() format
      * @return string
      * @deprecated since version 1.9.1, replaced by describeDateFromNow
@@ -276,15 +278,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'forever' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeForever($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('forever'), array('class' => 'disabled'));
         }
     }
 
@@ -292,15 +294,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'n/a' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeNa($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
         }
     }
 
@@ -308,15 +310,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'never' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeNever($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('never'), array('class' => 'disabled'));
         }
     }
 
@@ -324,15 +326,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'unknown' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeUnknown($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
@@ -340,15 +342,15 @@ class Gems_Util_Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'unknown' when null
      *
-     * @param \MUtil_Date $dateValue
-     * @return string|\MUtil_Html_HtmlElement
+     * @param \MUtil\Date $dateValue
+     * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateUnknown($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
@@ -389,7 +391,7 @@ class Gems_Util_Translated
     public function formatTimeUnknown($dateTimeValue)
     {
         if (null === $dateTimeValue) {
-            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         } else {
             return $this->formatTime($dateTimeValue);
         }
@@ -408,7 +410,7 @@ class Gems_Util_Translated
     /**
      * Get a translated empty value for usage in dropdowns
      *
-     * On instantiation of the class via \Gems_Loader this variable will be populated
+     * On instantiation of the class via \Gems\Loader this variable will be populated
      * in checkRegistryRequestsAnswers
      *
      * @return array
@@ -513,7 +515,7 @@ class Gems_Util_Translated
     public function markEmpty($value)
     {
         if (empty($value)) {
-            $em = \MUtil_Html::create('em');
+            $em = \MUtil\Html::create('em');
             $em->raw($this->_('&laquo;empty&raquo;'));
 
             return $em;

@@ -7,9 +7,10 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_Form_Decorator_CKEditor extends \Zend_Form_Decorator_ViewHelper {
+namespace Gems\Form\Decorator;
+
+class CKEditor extends \Zend_Form_Decorator_ViewHelper {
 
     /**
      * Default basedir for CKEditor. Can be overwritten through the Decorator options.
@@ -45,12 +46,12 @@ class Gems_Form_Decorator_CKEditor extends \Zend_Form_Decorator_ViewHelper {
         $element = $this->getElement();
         $view    = $element->getView();
 
-        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath() . '/';
         $view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
 
 
-        //\MUtil_Echo::track($baseUrl);
-        //\MUtil_Echo::track('test');
+        //\MUtil\EchoOut\EchoOut::track($baseUrl);
+        //\MUtil\EchoOut\EchoOut::track('test');
         $element = $this->getElement();
         $name    = htmlentities($element->getFullyQualifiedName());
         $label   = htmlentities($element->getLabel());

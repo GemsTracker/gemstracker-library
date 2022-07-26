@@ -19,7 +19,7 @@ namespace Gems\User\Mask;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Dec 25, 2016 5:44:30 PM
  */
-abstract class MaskerAbstract extends \MUtil_Translate_TranslateableAbstract implements MaskerInterface
+abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract implements MaskerInterface
 {
     /**
      *
