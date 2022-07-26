@@ -11,7 +11,7 @@
 
 namespace Gems\Actions;
 
-use Gems\Locale\Locale\Locale;
+use Gems\Locale\Locale;
 use Gems\Project\ProjectSettings;
 use Gems\Util\Translated;
 

@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Cache\HelperAdapter;
-use Gems\Locale\Locale\Locale;
+use Gems\Locale\Locale;
 use MUtil\Request\RequestInfo;
 
 /**

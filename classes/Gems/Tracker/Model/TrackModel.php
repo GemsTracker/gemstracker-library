@@ -96,7 +96,7 @@ class TrackModel extends \MUtil\Model\TableModel
         if ($edit) {
             $dateFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
         } else {
-            $dateFormat = $translated->dateFormatString;
+            $dateFormat = $this->translatedUtil->dateFormatString;
         }
 
         $this->resetOrder();

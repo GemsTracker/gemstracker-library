@@ -12,7 +12,7 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Date\Period;
-use Gems\Locale\Locale\Locale;
+use Gems\Locale\Locale;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
@@ -75,7 +75,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      *
      * @var Locale
      */
-    protected Locale $locale;
+    protected $locale;
 
     /**
      *
