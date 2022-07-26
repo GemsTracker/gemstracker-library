@@ -40,6 +40,11 @@ class DbLookup extends UtilAbstract
     protected $loader;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      *
      * @var \Gems\Util
      */
@@ -160,7 +165,8 @@ class DbLookup extends UtilAbstract
      */
     public function getAllowedRespondentGroups()
     {
-        return $this->util->getTranslated()->getEmptyDropdownArray() +
+
+        return $this->translatedUtil->getEmptyDropdownArray() +
             $this->_getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',
@@ -239,7 +245,7 @@ class DbLookup extends UtilAbstract
      */
     public function getGroups()
     {
-        return $this->util->getTranslated()->getEmptyDropdownArray() +
+        return $this->translatedUtil->getEmptyDropdownArray() +
             $this->_getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',

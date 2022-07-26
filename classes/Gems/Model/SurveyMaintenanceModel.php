@@ -70,7 +70,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
     public function __construct($name = 'surveymaintenance')
     {
         parent::__construct($name, 'gems__surveys', 'gsu');
-        $this->addTable('gems__sources', array('gsu_id_source' => 'gso_id_source'));
+        $this->addTable('gems__sources', ['gsu_id_source' => 'gso_id_source']);
         $this->setCreate(false);
     }
 
@@ -115,7 +115,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         );
         $this->set('gsu_survey_description', 'label', $this->_('Description'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', array($this, 'formatDescription')
+                'formatFunction', [$this, 'formatDescription']
                 );
 
         $this->set('gsu_survey_languages',        'label', $this->_('Available languages'),
@@ -136,7 +136,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                 );
         $this->set('gsu_survey_warnings',        'label', $this->_('Warnings'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', array($this, 'formatWarnings')
+                'formatFunction', [$this, 'formatWarnings']
                 );
 
         $message = $this->_('Active');
@@ -186,7 +186,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                     'noSort', true,
                     'no_text_search', true
                     );
-            $this->setOnLoad('track_count', array($this, 'calculateTrackCount'));
+            $this->setOnLoad('track_count', [$this, 'calculateTrackCount']);
         }
 
         $this->set('gsu_code',                 'label', $this->_('Survey code'),
@@ -237,7 +237,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
             'gsu_insertable'
             ]);
 
-        $this->set('gsu_survey_languages', 'itemDisplay', array($this, 'formatLanguages'));
+        $this->set('gsu_survey_languages', 'itemDisplay', [$this, 'formatLanguages']);
 
         $ct = new \MUtil\Model\Type\ConcatenatedRow('|', $this->_(', '));
 
@@ -273,28 +273,28 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         $ct->apply($this, 'gsu_insert_organizations');
 
         $hideElement = ['elementClass' => 'Hidden', 'label' => null];
-        $this->addDependency(array('ValueSwitchDependency', [0 => ['gsu_answer_groups' => $hideElement]]), 'gsu_answers_by_group');
+        $this->addDependency(['ValueSwitchDependency', [0 => ['gsu_answer_groups' => $hideElement]]], 'gsu_answers_by_group');
         $switches = [0 => [
             'gsu_valid_for_length'     => $hideElement,
             'gsu_valid_for_unit'       => $hideElement,
             'gsu_insert_organizations' => $hideElement,
             'toggleOrg'                => $hideElement,
         ],];
-        $this->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');
+        $this->addDependency(['ValueSwitchDependency', $switches], 'gsu_insertable');
 
         $this->set('track_usage',          'label', $this->_('Usage'),
                 'elementClass', 'Exhibitor',
                 'noSort', true,
                 'no_text_search', true
                 );
-        $this->setOnLoad('track_usage', array($this, 'calculateTrackUsage'));
+        $this->setOnLoad('track_usage', [$this, 'calculateTrackUsage']);
 
         $this->set('calc_duration',        'label', $this->_('Duration calculated'),
                 'elementClass', 'Html',
                 'noSort', true,
                 'no_text_search', true
                 );
-        $this->setOnLoad('calc_duration', array($this, 'calculateDuration'));
+        $this->setOnLoad('calc_duration', [$this, 'calculateDuration']);
 
         $this->set('gsu_duration',         'label', $this->_('Duration description'),
                 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'),
@@ -356,11 +356,11 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         $this->applyDetailSettings($surveyId, true);
 
         if ($this->currentUser->hasPrivilege('pr.survey-maintenance.answer-groups')) {
-            $this->addDependency('CanEditDependency', 'gsu_answers_by_group', array('gsu_answer_groups'));
+            $this->addDependency('CanEditDependency', 'gsu_answers_by_group', ['gsu_answer_groups']);
         } else {
             $this->setMulti(['gsu_answers_by_group', 'gsu_answer_groups', 'gsu_allow_export'], ['readonly' => 'readonly', 'disabled' => 'disabled']);
         }
-        $this->addDependency('CanEditDependency', 'gsu_surveyor_active', array('gsu_active'));
+        $this->addDependency('CanEditDependency', 'gsu_surveyor_active', ['gsu_active']);
 
         $order = $this->getOrder('gsu_insert_organizations') + 1;
 
@@ -457,7 +457,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                                     WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
                                 ) as t2
                             WHERE t1.row_number = floor(total_rows / 2) + 1";
-                $med = $this->db->fetchOne($sql, array($surveyId, $surveyId));
+                $med = $this->db->fetchOne($sql, [$surveyId, $surveyId]);
                 if ($med) {
                     $seq->sprintf($this->_('Median value: %s.'), $trs->formatTimeUnknown($med));
                 }
@@ -486,7 +486,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @param boolean $isPost True when passing on post data
      * @return \MUtil\Date|\Zend_Db_Expr|string
      */
-    public function calculateTrackCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    public function calculateTrackCount($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
@@ -494,8 +494,8 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         }
 
         $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__rounds', array('useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)'));
-        $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', array())
+        $select->from('gems__rounds', ['useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)']);
+        $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', [])
                 ->where('gro_id_survey = ?', $surveyId);
         $counts = $select->query()->fetchObject();
 
@@ -522,7 +522,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @param boolean $isPost True when passing on post data
      * @return \MUtil\Date|\Zend_Db_Expr|string
      */
-    public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
         $surveyId = isset($context['gsu_id_survey']) ? $context['gsu_id_survey'] : false;
         if (! $surveyId) {
@@ -530,8 +530,8 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         }
 
         $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__tracks', array('gtr_track_name'));
-        $select->joinLeft('gems__rounds', 'gro_id_track = gtr_id_track', array('useCnt' => 'COUNT(*)'))
+        $select->from('gems__tracks', ['gtr_track_name']);
+        $select->joinLeft('gems__rounds', 'gro_id_track = gtr_id_track', ['useCnt' => 'COUNT(*)'])
                 ->where('gro_id_survey = ?', $surveyId)
                 ->group('gtr_track_name');
         $usage = $this->db->fetchPairs($select);

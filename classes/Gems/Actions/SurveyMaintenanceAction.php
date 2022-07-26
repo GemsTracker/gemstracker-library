@@ -38,20 +38,20 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'   => 'getBrowseColumns',
-        'extraSort' => array(
+        'extraSort' => [
             'gsu_survey_name' => SORT_ASC,
-            ),
-        'menuEditActions' => array('edit', 'pdf'),
-        );
+        ],
+        'menuEditActions' => ['edit', 'pdf'],
+    ];
 
     /**
      * Tags for cache cleanup after changes, passed to snippets
      *
      * @var array
      */
-    public $cacheTags = array('surveys', 'tracks');
+    public $cacheTags = ['surveys', 'tracks'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -63,16 +63,16 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array(
+    protected $createEditParameters = [
         'surveyId'        => 'getSurveyId',
-        );
+    ];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = array('ModelFormSnippetGeneric', 'Survey\\SurveyQuestionsSnippet');
+    protected $createEditSnippets = ['ModelFormSnippetGeneric', 'Survey\\SurveyQuestionsSnippet'];
 
     /**
      *
@@ -91,7 +91,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet'];
 
     /**
      *
@@ -115,18 +115,18 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array('surveyId' => 'getSurveyId');
+    protected $showParameters = ['surveyId' => 'getSurveyId'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Survey\\SurveyQuestionsSnippet'
-        );
+    ];
 
     /**
      * Import answers to a survey
@@ -230,17 +230,17 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
     {
         $br = \MUtil\Html::create('br');
 
-        $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description', $br, 'gsu_survey_languages');
-        $output[20] = array('gsu_surveyor_active', \MUtil\Html::raw($this->_(' [')), 'gso_source_name',
-            \MUtil\Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings');
+        $output[10] = ['gsu_survey_name', $br, 'gsu_survey_description', $br, 'gsu_survey_languages'];
+        $output[20] = ['gsu_surveyor_active', \MUtil\Html::raw($this->_(' [')), 'gso_source_name',
+            \MUtil\Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings'];
 
         $mailCodes = $this->util->getDbLookup()->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
-            $output[30] = array('gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_mail_code', \MUtil\Html::raw(', '), 'gsu_insertable', $br, 'gsu_id_primary_group');
+            $output[30] = ['gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_mail_code', \MUtil\Html::raw(', '), 'gsu_insertable', $br, 'gsu_id_primary_group'];
         } else {
-            $output[30] = array('gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group');
+            $output[30] = ['gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group'];
         }
-        $output[40] = array('gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code');
+        $output[40] = ['gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code'];
 
         return $output;
     }
