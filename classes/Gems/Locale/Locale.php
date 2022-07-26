@@ -4,6 +4,8 @@ namespace Gems\Locale;
 
 class Locale
 {
+    private array $config;
+
     private string $currentLanguage;
 
     public function __construct(array $config)

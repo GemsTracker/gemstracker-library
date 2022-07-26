@@ -2,7 +2,7 @@
 
 namespace Gems\Middleware;
 
-use Gems\Locale\Locale\Locale;
+use Gems\Locale\Locale;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -25,12 +25,15 @@ class LocaleMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $language = $this->getLanguage($request);
+        if ($language !== null) {
+            $this->locale->setCurrentLanguage($language);
+        }
 
         $response = $handler->handle($request);
         if ($language === null) {
             return $response;
         }
-        $this->locale->setCurrentLanguage($language);
+
 
         return $response->withAddedHeader('Content-Language', $language);
     }
@@ -50,10 +53,9 @@ class LocaleMiddleware implements MiddlewareInterface
 
         // Default language from site
 
-
         // Default language from config
-        if (isset($config['default']) && in_array($config['default'], $this->config['availableLocales'])) {
-            return $config['default'];
+        if (isset($this->config['default']) && in_array($this->config['default'], $this->config['availableLocales'])) {
+            return $this->config['default'];
         }
 
         return null;
