@@ -2,7 +2,7 @@
 
 namespace GemsTest\MenuNew;
 
-use Gems\EventNew\MenuBuildItemsEvent;
+use Gems\Event\Application\MenuBuildItemsEvent;
 
 class MenuBuildItemsEventTest extends \PHPUnit\Framework\TestCase
 {

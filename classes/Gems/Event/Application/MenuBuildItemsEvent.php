@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\EventNew;
+namespace Gems\Event\Application;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

@@ -3,7 +3,7 @@
 namespace GemsTest\MenuNew;
 
 use Gems\Config\Menu;
-use Gems\EventNew\MenuBuildItemsEvent;
+use Gems\Event\Application\MenuBuildItemsEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
