@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,9 +29,9 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('changed' => SORT_DESC),
-        );
+    protected $autofilterParameters = [
+        'extraSort'   => ['changed' => SORT_DESC],
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -55,7 +57,12 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array('addOnclickEdit' => false);
+    protected $showParameters = ['addOnclickEdit' => false];
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -80,7 +87,7 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
             $model->set('relpath',  'label', $this->_('File (local)'),
                     'maxlength', 255,
                     'size', 40,
-                    'validators', array('File_Path', 'File_IsRelativePath')
+                    'validators', ['File_Path', 'File_IsRelativePath']
                     );
             $model->set('filename', 'elementClass', 'Exhibitor');
         }
@@ -92,14 +99,14 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
             $model->set('fullpath',  'label', $this->_('Full name'), 'elementClass', 'Exhibitor');
             $model->set('extension', 'label', $this->_('Type'), 'elementClass', 'Exhibitor');
             $model->set('content',   'label', $this->_('Content'),
-                    'formatFunction', array(\MUtil\Html::create(), 'pre'),
+                    'formatFunction', [\MUtil\Html::create(), 'pre'],
                     'elementClass', 'TextArea');
         }
         $model->set('size',      'label', $this->_('Size'),
-                'formatFunction', array('\\MUtil\\File', 'getByteSized'),
+                'formatFunction', ['\\MUtil\\File', 'getByteSized'],
                 'elementClass', 'Exhibitor');
         $model->set('changed',   'label', $this->_('Changed on'),
-                'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
+                'dateFormat', $this->translatedUtil->dateTimeFormatString,
                 'elementClass', 'Exhibitor');
 
         return $model;
@@ -111,10 +118,19 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function deleteAction()
     {
         $model = $this->getModel();
-        $model->applyRequest($this->getRequest());
+        $model->applyParameters(array_filter($this->request->getQueryParams()));
 
         $model->delete();
-        $this->_reroute(array($this->getRequest()->getActionKey() => 'index', MUTil_Model::REQUEST_ID => null));
+
+        $route = $this->requestHelper->getRoute();
+        $routeName = $route->getName();
+        $routeNameParts = explode('.', $routeName);
+        array_pop($routeNameParts);
+        $routeNameParts[] = 'index';
+        $newRouteName = join('.', $routeNameParts);
+
+        $url = $this->urlHelper->generate($newRouteName);
+        $this->redirectUrl = $url;
     }
 
     /**
@@ -123,7 +139,7 @@ class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function downloadAction()
     {
         $model = $this->getModel();
-        $model->applyRequest($this->getRequest());
+        $model->applyParameters(array_filter($this->request->getQueryParams()));
 
         $fileData = $model->loadFirst();
 

@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Track;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -67,10 +69,9 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public $menuShowActions = array('track' => 'show-track');
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Creates the model
@@ -87,7 +88,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gr2t_track_info',   'label', $this->_('Description'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'formatFunction', $this->util->getTranslated()->formatDate,
+            'formatFunction', $this->translatedUtil->formatDate,
             'default', \MUtil\Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
         $model->set('gr2t_reception_code');
         $model->set('progress', 'label', $this->_('Progress')); // , 'tdClass', 'rightAlign', 'thClass', 'rightAlign');

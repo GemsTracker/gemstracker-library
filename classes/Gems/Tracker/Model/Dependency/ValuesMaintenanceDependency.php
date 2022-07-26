@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\FieldAbstract;
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
@@ -51,10 +52,9 @@ class ValuesMaintenanceDependency extends DependencyAbstract
         );
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Put each value on a separate line
@@ -118,7 +118,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
                 'label'        => $this->_('Default'),
                 'description'  => $this->_('Choose the default value'),
                 'elementClass' => 'Select',
-                'multiOptions' => $this->util->getTranslated()->getEmptyDropdownArray() + array_combine($multi, $multi),
+                'multiOptions' => $this->translatedUtil->getEmptyDropdownArray() + array_combine($multi, $multi),
                 ),
             );
     }

@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
@@ -31,9 +32,9 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array('description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
+    protected $_defaultEffects = ['description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick',
         'filters', 'validators',
-        );
+    ];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -42,7 +43,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_id_track', 'gtf_id_order', 'gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track');
+    protected $_dependentOn = ['gtf_id_track', 'gtf_id_order', 'gtf_filter_id', 'gtf_max_diff_exists', 'gtf_min_diff_length', 'gtf_create_track'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -51,11 +52,11 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array(
+    protected $_effecteds = [
         'gtf_id_order', 'htmlCalc', 'gtf_filter_id', 'gtf_min_diff_unit', 'gtf_min_diff_length',
         'gtf_max_diff_exists', 'gtf_max_diff_unit', 'gtf_max_diff_length', 'htmlCreate', 'gtf_uniqueness',
         'gtf_create_track', 'gtf_create_wait_days',
-        );
+    ];
 
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -75,10 +76,9 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     protected $menu;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -109,29 +109,26 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             return array();
         }
 
-        // Load utility
-        $translated = $this->util->getTranslated();
-
-        $output['gtf_id_order'] =array(
+        $output['gtf_id_order'] = [
             'description' => $this->_('The display and processing order of the fields.') . "\n" .
             $this->_('When using automatic filters the fields are ALWAYS filled with appointments in ascending order.'),
-            );
+        ];
 
-        $output['htmlCalc'] = array(
+        $output['htmlCalc'] = [
             'label'        => ' ',
             'elementClass' => 'Exhibitor',
-        );
-        $output['gtf_filter_id'] = array(
+        ];
+        $output['gtf_filter_id'] = [
             'label'          => $this->_('Appointment filter'),
             'description'    => $this->_('Automatically link an appointment when it passes this filter.'),
             'elementClass'   => 'Select',
             'formatFunction' => [$this, 'showFilter', true],
-            'multiOptions'   => $translated->getEmptyDropdownArray() + $filters,
+            'multiOptions'   => $this->translatedUtil->getEmptyDropdownArray() + $filters,
             'onchange'       => 'this.form.submit();',
-            );
+        ];
 
         if ($context['gtf_filter_id']) {
-            $periodUnits = $this->util->getTranslated()->getPeriodUnits();
+            $periodUnits = $this->translatedUtil->getPeriodUnits();
             
             if (isset($context['gtf_id_track'], $context['gtf_id_order'])) {
                 $previous = $this->db->fetchRow(
@@ -152,33 +149,33 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 $diffDescription = $this->_('Difference with the previous appointment or track start date, can be negative but not zero');
             }
 
-            $output['gtf_min_diff_length'] = array(
+            $output['gtf_min_diff_length'] = [
                 'label'             => $this->_('Minimal time difference'),
                 'description'       => $diffDescription,
                 'elementClass'      => 'Text',
                 'required'          => true,
                 // 'size'              => 5, // Causes trouble during save
                 'filters[int]'      => 'Int',
-                'validators[isnot]' => new \MUtil_Validate_IsNot(0, $this->_('This value may not be zero!')),
-                );
-            $output['gtf_min_diff_unit'] = array(
+                'validators[isnot]' => new \MUtil\Validate\IsNot(0, $this->_('This value may not be zero!')),
+            ];
+            $output['gtf_min_diff_unit'] = [
                 'label'        => $this->_('Minimal difference unit'),
                 'elementClass' => 'Select',
                 'multiOptions' => $periodUnits,
-                );
-            $output['gtf_max_diff_exists'] = array(
+            ];
+            $output['gtf_max_diff_exists'] = [
                 'label'        => $this->_('Set a maximum time difference'),
                 'elementClass' => 'Checkbox',
                 'onclick'      => 'this.form.submit();',
-            );
+            ];
             if ($context['gtf_max_diff_exists']) {
-                $output['gtf_max_diff_length'] = array(
+                $output['gtf_max_diff_length'] = [
                     'label'             => $this->_('Maximum time difference'),
                     'elementClass'      => 'Text',
                     'required'          => false,
                     // 'size'              => 5, // Causes trouble during save
                     'filters[int]'      => 'Int',
-                    );
+                ];
                 if ($context['gtf_min_diff_length'] < 0) {
                     $output['gtf_max_diff_length']['description'] = $this->_(
                             'Must be negative, just like the minimal difference.'
@@ -190,11 +187,11 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                             );
                     $output['gtf_max_diff_length']['validators[gt]'] = new \Zend_Validate_GreaterThan(0);
                 }
-                $output['gtf_max_diff_unit'] = array(
+                $output['gtf_max_diff_unit'] = [
                     'label'        => $this->_('Maximum difference unit'),
                     'elementClass' => 'Select',
                     'multiOptions' => $periodUnits,
-                    );
+                ];
             }
 //            $output['gtf_after_next'] = array(
 //                'label'        => $this->_('Link ascending'),
@@ -202,21 +199,21 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
 //                'elementClass' => 'Checkbox',
 //                'multiOptions' => $translated->getYesNo(),
 //                );
-            $output['gtf_uniqueness'] = array(
+            $output['gtf_uniqueness'] = [
                 'label'        => $this->_('Link unique'),
                 'description'  => $this->_('Can one appointment be used in multiple fields?'),
                 'elementClass' => 'Radio',
-                'multiOptions' => array(
+                'multiOptions' => [
                     0 => $this->_('No: repeatedly linked appointments are allowed.'),
                     1 => $this->_('A track instance may link only one field to a specific appointment.'),
                     2 => $this->_('All instances of this track may link only once to a specific appointment.'),
     //                 3 => $this->_('Appointment may not be used in any other track.'),
-                    ),
-                );
-            $output['htmlCreate'] = array(
+                ],
+            ];
+            $output['htmlCreate'] = [
                 'label'        => ' ',
                 'elementClass' => 'Exhibitor',
-            );
+            ];
             $output['gtf_create_track'] = $this->loader->getAgenda()->getTrackCreateElement();
         }
 
@@ -242,11 +239,11 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             }
         }
         if ($label && $description) {
-            $output['gtf_create_wait_days'] = array(
+            $output['gtf_create_wait_days'] = [
                 'label'        => $label,
                 'description'  => $description,
                 'elementClass' => 'Text',
-                );
+            ];
         } else {
             unset($output['gtf_create_wait_days']);
         }

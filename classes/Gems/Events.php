@@ -12,6 +12,7 @@
 namespace Gems;
 
 use Gems\Event\RespondentChangedEventInterface;
+use Gems\Util\Translated;
 
 /**
  * Per project overruleable event processing engine
@@ -55,10 +56,9 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
     );
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Lookup event class for an event type. This class or interface should at the very least
@@ -101,14 +101,14 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
      * Returns a list of selectable events with an empty element as the first option.
      *
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the events to list
-     * @return \Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
+     * @return array
      */
     protected function _listEvents($eventType)
     {
         $classType = $this->_getEventClass($eventType);
         $paths     = $this->_getEventDirs($eventType);
         
-        return $this->util->getTranslated()->getEmptyDropdownArray() + $this->listClasses($classType, $paths, 'getEventName');
+        return $this->translatedUtil->getEmptyDropdownArray() + $this->listClasses($classType, $paths, 'getEventName');
     }
 
     /**
@@ -116,7 +116,7 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param string $eventName The class name of the individual event to load
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the event
-     * @return \Gems_tracker_TrackerEventInterface or more specific a $eventClass type object
+     * @return \Gems\Tracker\TrackerEventInterface or more specific a $eventClass type object
      */
     protected function _loadEvent($eventName, $eventType)
     {

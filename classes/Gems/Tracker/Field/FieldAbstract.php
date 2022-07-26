@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Field;
 
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Util\Translated;
 
 /**
  *
@@ -62,10 +63,9 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
     protected $_trackId;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -296,7 +296,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
                 'label'        => sprintf($this->_('Set %s'), strtolower($this->getLabel())),
                 'description'  => $this->_('Manually set fields will never be (re)calculated.'),
                 'elementClass' => 'Radio',
-                'multiOptions' => $this->util->getTranslated()->getDateCalculationOptions(),
+                'multiOptions' => $this->translatedUtil->getDateCalculationOptions(),
                 'separator'    => ' ',
                 ];
         }

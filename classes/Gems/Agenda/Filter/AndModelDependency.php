@@ -13,6 +13,7 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Agenda\SubFilterDependencyInterface;
+use Gems\Util\Translated;
 
 /**
  *
@@ -44,10 +45,9 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
     protected $menu;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Called after the check that all required registry values
@@ -57,7 +57,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      */
     public function afterRegistry()
     {
-        $this->_filters = $this->util->getTranslated()->getEmptyDropdownArray() + $this->agenda->getFilterList();
+        $this->_filters = $this->translatedUtil->getEmptyDropdownArray() + $this->agenda->getFilterList();
 
         parent::afterRegistry();
     }

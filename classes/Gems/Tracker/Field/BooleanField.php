@@ -1,17 +1,15 @@
 <?php
 
-
 namespace Gems\Tracker\Field;
 
-
-use Gems\Tracker\Field\FieldAbstract;
+use Gems\Util\Translated;
 
 class BooleanField extends FieldAbstract
 {
     /**
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     public static $keyValues = [
         1,
@@ -30,11 +28,11 @@ class BooleanField extends FieldAbstract
         $empty = [];
         $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
         if (empty($this->_fieldDefinition['gtf_field_values']) || empty($multi)) {
-            $multi = $this->util->getTranslated()->getYesNo();
+            $multi = $this->translatedUtil->getYesNo();
         }
 
         if ($this->_fieldDefinition['gtf_required'] !== 1) {
-            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+            $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
         $settings['elementClass'] = 'Radio';

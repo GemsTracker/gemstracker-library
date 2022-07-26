@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,47 +29,52 @@ class AgendaProcedureAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gapr_name' => SORT_ASC),
+        'extraSort'   => ['gapr_name' => SORT_ASC],
         'searchFields' => 'getSearchFields',
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('procedure', 'procedures');
+    public $cacheTags = ['procedure', 'procedures'];
     
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda\\CalendarTableSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -107,7 +114,6 @@ class AgendaProcedureAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $translated = $this->util->getTranslated();
         $model      = new \MUtil\Model\TableModel('gems__agenda_procedures');
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gapr');
@@ -122,7 +128,7 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
 
         $model->setIfExists('gapr_id_organization', 'label', $this->_('Organization'),
                 'description', $this->_('Optional, an import match with an organization has priority over those without.'),
-                'multiOptions', $translated->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
+                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
                 );
 
         $model->setIfExists('gapr_name_for_resp',   'label', $this->_('Respondent explanation'),
@@ -139,12 +145,12 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
         $model->setIfExists('gapr_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
         $model->setIfExists('gapr_filter',      'label', $this->_('Filter'),
                 'description', $this->_('When checked appointments with these procedures are not imported.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->addColumn("CASE WHEN gapr_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
@@ -176,7 +182,7 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowCaption()
     {
@@ -185,7 +191,7 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowOnEmpty()
     {

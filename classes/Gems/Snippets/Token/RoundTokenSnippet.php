@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -46,9 +48,9 @@ class RoundTokenSnippet extends RespondentTokenSnippet
     protected $config;
 
     /**
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -115,9 +117,8 @@ class RoundTokenSnippet extends RespondentTokenSnippet
     {
         $model = parent::createModel();
 
-        $translated = $this->util->getTranslated();
         $model->set('calc_used_date',
-                'formatFunction', $translated->formatDateNever,
+                'formatFunction', $this->translatedUtil->formatDateNever,
                 'tdClass', 'date');
         $model->set('gto_changed',
                 'dateFormat', 'dd-MM-yyyy HH:mm:ss',

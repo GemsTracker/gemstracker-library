@@ -12,6 +12,7 @@
 namespace Gems\Agenda;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Util\Translated;
 
 /**
  *
@@ -78,10 +79,9 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     protected $subFilters = [];
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -95,13 +95,13 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems\Agenda\AppointmentFilterModelAbstract
+     * @return self
      */
     public function applyBrowseSettings()
     {
         $this->loadFilterDependencies(false);
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $this->set('gaf_class', 'label', $this->_('Filter type'),
                 'description', $this->_('Determines what is filtered how.'),
@@ -143,7 +143,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     {
         $this->loadFilterDependencies(true);
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $this->resetOrder();
 

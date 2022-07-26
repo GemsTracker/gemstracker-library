@@ -12,6 +12,8 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Util\Translated;
+
 /**
  * Simple stub for track model, allows extension by projects and adds auto labelling
  *
@@ -58,6 +60,11 @@ class TrackModel extends \MUtil\Model\TableModel
     protected $translate;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * @var \Gems\Util
      */
     protected $util;
@@ -85,7 +92,6 @@ class TrackModel extends \MUtil\Model\TableModel
      */
     public function applyFormatting($detailed = false, $edit = false)
     {
-        $translated = $this->util->getTranslated();
         $translator = $this->getTranslateAdapter();
         if ($edit) {
             $dateFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
@@ -109,13 +115,13 @@ class TrackModel extends \MUtil\Model\TableModel
         $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));
 
         $this->set('gtr_active',        'label', $translator->_('Active'),
-                'multiOptions', $translated->getYesNo());
+                'multiOptions', $this->translatedUtil->getYesNo());
         $this->set('gtr_date_start',    'label', $translator->_('From'),
                 'dateFormat', $dateFormat,
-                'formatFunction', $translated->formatDate);
+                'formatFunction', $this->translatedUtil->formatDate);
         $this->set('gtr_date_until',    'label', $translator->_('Use until'),
                 'dateFormat', $dateFormat,
-                'formatFunction', $translated->formatDateForever);
+                'formatFunction', $this->translatedUtil->formatDateForever);
         $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
                 'size', 10,
                 'description', $translator->_('Optional code name to link the track to program code.'));

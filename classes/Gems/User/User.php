@@ -15,6 +15,7 @@ use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
+use Gems\Util\Translated;
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Adapter\AdapterInterface;
 
@@ -128,7 +129,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      *
      * @var array
      */
-    public $possibleOrgIds = array(
+    public $possibleOrgIds = [
         \MUtil\Model::REQUEST_ID2,
         'gr2o_id_organization',
         'gr2t_id_organization',
@@ -137,7 +138,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         'gor_id_organization',
         'gla_organization',
         'grco_organization',
-        );
+    ];
 
     /**
      *
@@ -151,6 +152,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @var \Zend_Session_Namespace
      */
     protected $session;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * Required
@@ -1027,7 +1033,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getDearGreeting()
     {
 
-        $genderDears = $this->util->getTranslated()->getGenderDear();
+        $genderDears = $this->translatedUtil->getGenderDear();
 
         $gender = $this->_getVar('user_gender');
         if (isset($genderDears[$gender])) {
@@ -1146,7 +1152,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     protected function getGenderGreeting($locale = null)
     {
-        $greetings = $this->util->getTranslated()->getGenderGreeting($locale);
+        $greetings = $this->translatedUtil->getGenderGreeting($locale);
 
         if (isset($greetings[$this->_getVar('user_gender')])) {
             return $greetings[$this->_getVar('user_gender')];
@@ -1163,7 +1169,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     protected function getGenderHello($locale = null)
     {
-        $greetings = $this->util->getTranslated()->getGenderHello($locale);
+        $greetings = $this->translatedUtil->getGenderHello($locale);
 
         if (isset($greetings[$this->_getVar('user_gender')])) {
             return $greetings[$this->_getVar('user_gender')];
@@ -2481,10 +2487,10 @@ class User extends \MUtil\Translate\TranslateableAbstract
         if (null === $locale) {
             $locale = $this->getLocale();
             if (null === $locale) {
-                $site = $this->util->getSites()->getSiteForCurrentUrl();
+                /* $site = $this->util->getSites()->getSiteForCurrentUrl();
                 if ($site) {
                     $locale = $site->getLocale();
-                }
+                } */
             }
         } 
         if ($this->getLocale() != $locale) {

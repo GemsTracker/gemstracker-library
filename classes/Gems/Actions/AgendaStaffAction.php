@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,47 +29,52 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gas_name' => SORT_ASC),
+        'extraSort'   => ['gas_name' => SORT_ASC],
         'searchFields' => 'getSearchFields',
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('staff');
+    public $cacheTags = ['staff'];
     
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda\\CalendarTableSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -82,14 +89,14 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $params = $this->_processParameters($this->showParameters);
         $params['contentTitle'] = $this->_('Clean up existing appointments?');
-        $params['filterOn']     = array('gap_id_attended_by', 'gap_id_referred_by');
+        $params['filterOn']     = ['gap_id_attended_by', 'gap_id_referred_by'];
         $params['filterWhen']   = 'gas_filter';
 
-        $snippets = array(
+        $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda\\CalendarTableSnippet',
-            );
+        ];
 
         $this->addSnippets($snippets, $params);
     }
@@ -108,7 +115,6 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected function createModel($detailed, $action)
     {
         $dblookup   = $this->util->getDbLookup();
-        $translated = $this->util->getTranslated();
         $model      = new \MUtil\Model\TableModel('gems__agenda_staff');
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gas');
@@ -128,7 +134,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $model->setIfExists('gas_id_user',         'label', $this->_('GemsTracker user'),
                 'description', $this->_('Optional: link this health care provider to a GemsTracker Staff user.'),
-                'multiOptions', $translated->getEmptyDropdownArray() + $dblookup->getStaff()
+                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $dblookup->getStaff()
                 );
         $model->setIfExists('gas_match_to',        'label', $this->_('Import matches'),
                 'description', $this->_("Split multiple import matches using '|'.")
@@ -137,12 +143,12 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->setIfExists('gas_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
         $model->setIfExists('gas_filter',      'label', $this->_('Filter'),
                 'description', $this->_('When checked appointments with this staff member are not imported.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->addColumn("CASE WHEN gas_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
@@ -174,7 +180,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowCaption()
     {
@@ -183,7 +189,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowOnEmpty()
     {
@@ -198,11 +204,11 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getShowFilter()
     {
         $id = intval($this->_getIdParam());
-        return array(
+        return [
             \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
             "gap_id_referred_by = $id OR gap_id_attended_by = $id",
             'limit' => 10,
-            );
+        ];
     }
 
     /**

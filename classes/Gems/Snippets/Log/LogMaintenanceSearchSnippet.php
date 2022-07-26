@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -23,6 +25,11 @@ namespace Gems\Snippets\Log;
 class LogMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -33,7 +40,7 @@ class LogMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
         $elements = parent::getAutoSearchElements($data);
 
         $elements[] = $this->_createSelectElement('gls_when_no_user', $yesNo, $this->_('(any when no user)'));

@@ -12,8 +12,10 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\FilterTracer;
+use Gems\Model;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Util\Translated;
 
 /**
  *
@@ -65,10 +67,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
     protected $tracker;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the elements to the form
@@ -108,7 +109,10 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
         parent::afterRegistry();
 
         $this->agenda      = $this->loader->getAgenda();
-        $this->appointment = $this->agenda->getAppointment($this->request->getParam(\Gems\Model::APPOINTMENT_ID));
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[Model::APPOINTMENT_ID])) {
+            $this->appointment = $this->agenda->getAppointment($queryParams[Model::APPOINTMENT_ID]);
+        }
         $this->tracer      = new FilterTracer();
         $this->tracker     = $this->loader->getTracker();
 
@@ -121,8 +125,6 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
      */
     protected function appendCheckedTracks(\MUtil\Html\Sequence $seq)
     {
-        $translated = $this->util->getTranslated();
-
         $tracks = $this->tracer->getTracks();
         $seq->h2($this->_('Existing tracks check'));
         if ($tracks) {
@@ -145,7 +147,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                     $li->em($trackData['trackName']);
                 }
                 if ($trackData['trackStart'] instanceof \Zend_Date) {
-                    $startDate = $translated->describeDateFromNow($trackData['trackStart']);
+                    $startDate = $this->translatedUtil->describeDateFromNow($trackData['trackStart']);
                 } else {
                     $startDate = $this->_('startdate unknown');
                 }
@@ -403,7 +405,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
      * Set what to do when the form is 'finished'.
      *
      * #param array $params Url items to set for this route
-     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
+     * @return self (continuation pattern)
      */
     protected function setAfterSaveRoute(array $params = array())
     {

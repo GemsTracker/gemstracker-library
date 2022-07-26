@@ -13,6 +13,7 @@ namespace Gems\Condition\Track;
 
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
+use Gems\Util\Translated;
 
 /**
  *
@@ -26,6 +27,11 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * @var \Gems\Util
@@ -45,7 +51,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
      */
     public function getModelFields($context, $new)
     {
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
         $orgs   = $this->util->getDbLookup()->getOrganizationsWithRespondents();
         $output = [];
 

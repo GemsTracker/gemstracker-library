@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Util\Translated;
+
 /**
  * Adds basic track editing snippet parameter processing and checking.
  *
@@ -101,17 +103,16 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     protected $trackId;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * Optional, required when creating or loader should be set
      *
      * @var int The user Id of the one doing the changing
      */
     protected $userId;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
 
     /**
      * Should be called after answering the request to allow the Target
@@ -273,7 +274,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
         if (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed']) {
             // Cannot change start date after first answered token
             $model->set('gr2t_start_date', 'elementClass', 'Exhibitor',
-                    'formatFunction', $this->util->getTranslated()->formatDateUnknown,
+                    'formatFunction', $this->translatedUtil->formatDateUnknown,
                     'description', $this->_('Cannot be changed after first answered token.')
                     );
         }

@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -73,10 +75,9 @@ class RelationField extends FieldAbstract
     protected $loader;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -140,7 +141,7 @@ class RelationField extends FieldAbstract
         }
 
         $sql    = $this->_sql ."WHERE grr_id_respondent = ? ORDER BY grr_type";
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $output['multiOptions'] = $empty + $this->db->fetchPairs($sql, $context['gr2t_id_user']);
 
@@ -150,7 +151,7 @@ class RelationField extends FieldAbstract
     /**
      * Display a relation as text
      *
-     * @param value $value
+     * @param mixed $value
      * @return string
      */
     public function showRelation($value)

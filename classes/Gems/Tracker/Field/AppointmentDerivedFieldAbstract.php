@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -49,10 +51,9 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     protected $loader;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -63,7 +64,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
      */
     protected function addModelSettings(array &$settings)
     {
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
 
         $settings['elementClass'] = 'Select';
         $settings['multiOptions'] = $empty + $this->getLookup();
@@ -156,7 +157,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
         if ($this->isReadOnly()) {
             return null;
         }
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $output['multiOptions'] = $empty + $this->getLookup($context['gr2t_id_organization']);
 

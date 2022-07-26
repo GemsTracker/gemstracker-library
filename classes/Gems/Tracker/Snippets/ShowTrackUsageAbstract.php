@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Util\Translated;
+
 /**
  * Displays the assignments of a track to a respondent.
  *
@@ -107,6 +109,11 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
     protected $trackId;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -132,7 +139,7 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
         $model->set('assigned_by',       'label', $this->_('Assigned by'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
+            'formatFunction', $this->translatedUtil->formatDate,
             'default', new \Zend_Date());
         $model->set('gr2t_reception_code');
 

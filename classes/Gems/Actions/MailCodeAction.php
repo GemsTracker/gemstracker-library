@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -20,6 +22,11 @@ namespace Gems\Actions;
  */
 class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
 {
+    /**
+     * @var array
+     */
+    public $config;
+
     /**
      * Variable to set tags for cache cleanup after changes
      *
@@ -37,16 +44,16 @@ class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
         ];
 
     /**
-     * @var \Gems\Util
+     * @var Translated
      */
-    public $util;
+    public $translatedUtil;
     
     /**
      * @inheritDoc
      */
     protected function createModel($detailed, $action)
     {
-        $yesNo  = $this->util->getTranslated()->getYesNo();
+        $yesNo  = $this->translatedUtil->getYesNo();
         
         $model = new \MUtil\Model\TableModel('gems__mail_codes');
         $model->copyKeys(); // The user can edit the keys.
@@ -90,7 +97,7 @@ class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
         
         \Gems\Model::setChangeFieldsByPrefix($model, 'gmc');
 
-        if ($this->project->translateDatabaseFields()) {
+        if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {
             if ('create' == $action || 'edit' == $action) {
                 $this->loader->getModels()->addDatabaseTranslationEditFields($model);
             } else {

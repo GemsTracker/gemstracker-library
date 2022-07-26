@@ -11,6 +11,8 @@
 
 namespace Gems\Selector;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package    Gems
@@ -111,6 +113,11 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -581,7 +588,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         switch ($this->dateType) {
             case 'D':
                 // $header = $repeater->period_1;
-                $header = $repeater->period_1->call($this->util->getTranslated()->formatDate);
+                $header = $repeater->period_1->call($this->translatedUtil->formatDate);
                 break;
 
             case 'W':

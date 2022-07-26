@@ -2,6 +2,7 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Util\Translated;
 use MUtil\Validate\NotEqualTo;
 
 class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
@@ -83,6 +84,11 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      * @var int Id of the tartget Survey
      */
     protected $targetSurveyId;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * @var \Gems\Util
@@ -358,7 +364,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 
             $surveys = $this->surveys;
 
-            $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
+            $empty         = $this->translatedUtil->getEmptyDropdownArray();
             $surveyOptions = $empty + $surveys;
 
             $model->set('source_survey', 'label', $this->_('Source Survey'), 'multiOptions', $surveyOptions, 'required', true);
@@ -692,7 +698,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
         $select = \MUtil\Html::create()->select(['name' => $name]);
         $select->class = 'form-control';
 
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
         $select->option(reset($empty), ['value' => '']);
 
         foreach ($surveyData as $questionCode => $questionData) {
@@ -759,7 +765,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 
         $select = \MUtil\Html::create()->select(['name' => $name]);
 
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
         $select->option(reset($empty), ['value' => '']);
 
         return $select;
@@ -843,8 +849,8 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      * Or from whatever other source you specify here.
      */
     protected function loadFormData() {
-        if ($this->request->isPost()) {
-            $this->formData = $this->request->getPost() + $this->formData;
+        if ($this->requestInfo->isPost()) {
+            $this->formData = $this->requestInfo->getRequestPostParams() + $this->formData;
         } else {
             foreach ($this->model->getColNames('default') as $name) {
                 if (!(isset($this->formData[$name]) && $this->formData[$name])) {

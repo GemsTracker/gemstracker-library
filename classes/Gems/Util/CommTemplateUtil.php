@@ -22,10 +22,9 @@ namespace Gems\Util;
 class CommTemplateUtil extends UtilAbstract
 {
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -79,7 +78,7 @@ class CommTemplateUtil extends UtilAbstract
         $result = $this->_getSelectPairsCached($cacheId, $sql, $binds, ['commTemplates']);
 
         if ($addEmpty) {
-            return $this->util->getTranslated()->getEmptyDropdownArray() + $result;
+            return $this->translatedUtil->getEmptyDropdownArray() + $result;
         }
 
         return $result;

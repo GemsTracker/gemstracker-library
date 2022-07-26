@@ -15,6 +15,7 @@ use Gems\Event\Application\NamedArrayEvent;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 
 /**
@@ -104,6 +105,11 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
      * @var \Zend_Translate_Adapter
      */
     protected $translateAdapter;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -235,8 +241,8 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
     {
         $this->resetOrder();
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
-        $types = $this->util->getTranslated()->getEmptyDropdownArray()+$this->getFieldTypes();
+        $yesNo = $this->translatedUtil->getYesNo();
+        $types = $this->translatedUtil->getEmptyDropdownArray()+$this->getFieldTypes();
 
         $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));

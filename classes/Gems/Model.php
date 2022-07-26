@@ -11,6 +11,8 @@
 
 namespace Gems;
 
+use Gems\Util\Translated;
+
 /**
  * Central storage / access point for working with gems models.
  *
@@ -106,16 +108,16 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     protected $translate;
 
     /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
+    /**
      * The length of a user id.
      *
      * @var int
      */
     protected $userIdLen = 8;
-
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
 
     /**
      * Add database translations to a model
@@ -369,7 +371,7 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
                     'formatFunction', array('\\MUtil\\File', 'getByteSized'),
                     'elementClass', 'Exhibitor');
         $model->set('changed',   'label', $this->translate->_('Changed on'),
-                    'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
+                    'dateFormat', $this->translatedUtil->dateTimeFormatString,
                     'elementClass', 'Exhibitor');
 
         return $model;

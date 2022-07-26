@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,47 +29,52 @@ class AgendaActivityAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'      => 'getBrowseColumns',
-        'extraSort'    => array('gaa_name' => SORT_ASC),
+        'extraSort'    => ['gaa_name' => SORT_ASC],
         'searchFields' => 'getSearchFields',
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('activity', 'activities');
+    public $cacheTags = ['activity', 'activities'];
     
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda\\CalendarTableSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -85,11 +92,11 @@ class AgendaActivityAction extends \Gems\Controller\ModelSnippetActionAbstract
         $params['filterOn']     = 'gap_id_activity';
         $params['filterWhen']   = 'gaa_filter';
 
-        $snippets = array(
+        $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda\\CalendarTableSnippet',
-            );
+        ];
 
         $this->addSnippets($snippets, $params);
     }
@@ -107,7 +114,6 @@ class AgendaActivityAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $translated = $this->util->getTranslated();
         $model      = new \MUtil\Model\TableModel('gems__agenda_activities');
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gaa');
@@ -122,7 +128,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
 
         $model->setIfExists('gaa_id_organization', 'label', $this->_('Organization'),
                 'description', $this->_('Optional, an import match with an organization has priority over those without.'),
-                'multiOptions', $translated->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
+                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
                 );
 
         $model->setIfExists('gaa_name_for_resp',   'label', $this->_('Respondent explanation'),
@@ -139,12 +145,12 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
         $model->setIfExists('gaa_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
         $model->setIfExists('gaa_filter',      'label', $this->_('Filter'),
                 'description', $this->_('When checked appointments with these activities are not imported.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
@@ -176,7 +182,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowCaption()
     {
@@ -185,7 +191,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowOnEmpty()
     {
@@ -199,11 +205,11 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
      */
     public function getShowFilter()
     {
-        return array(
+        return [
             \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
             'gap_id_activity' => $this->_getIdParam(),
             'limit' => 10,
-            );
+        ];
     }
 
     /**

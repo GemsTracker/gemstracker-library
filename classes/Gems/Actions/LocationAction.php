@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,39 +29,44 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('glo_name' => SORT_ASC),
-        );
+        'extraSort'   => ['glo_name' => SORT_ASC],
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('location', 'locations');
+    public $cacheTags = ['location', 'locations'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda\\CalendarTableSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -77,11 +84,11 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
         $params['filterOn']     = 'gap_id_location';
         $params['filterWhen']   = 'glo_filter';
 
-        $snippets = array(
+        $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda\\CalendarTableSnippet',
-            );
+        ];
 
         $this->addSnippets($snippets, $params);
     }
@@ -99,10 +106,10 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
         $br = \MUtil\Html::create('br');
         $sp = \MUtil\Html::raw(' ');
 
-        $columns[10] = array('glo_name', $br, 'glo_organizations');
-        $columns[20] = array('glo_url', $br, 'glo_url_route');
-        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', \MUtil\Html::raw('&nbsp;&nbsp;'), 'glo_city');
-        $columns[40] = array(\MUtil\Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to');
+        $columns[10] = ['glo_name', $br, 'glo_organizations'];
+        $columns[20] = ['glo_url', $br, 'glo_url_route'];
+        $columns[30] = ['glo_address_1', $br, 'glo_zipcode', \MUtil\Html::raw('&nbsp;&nbsp;'), 'glo_city'];
+        $columns[40] = [\MUtil\Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to'];
 
         return $columns;
     }
@@ -121,7 +128,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected function createModel($detailed, $action)
     {
         $model = new \MUtil\Model\TableModel('gems__locations');
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'glo');
 
@@ -203,7 +210,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowCaption()
     {
@@ -212,7 +219,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowOnEmpty()
     {
@@ -226,11 +233,11 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function getShowFilter()
     {
-        return array(
+        return [
             \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
             'gap_id_location' => $this->_getIdParam(),
             'limit' => 10,
-            );
+        ];
     }
 
     /**

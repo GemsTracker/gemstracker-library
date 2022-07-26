@@ -5,6 +5,7 @@ namespace Gems\Tracker\Field;
 
 
 use Gems\Tracker\Field\FieldAbstract;
+use Gems\Util\Translated;
 
 class TrackField extends FieldAbstract
 {
@@ -47,9 +48,9 @@ class TrackField extends FieldAbstract
     protected $request;
 
     /**
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -60,7 +61,7 @@ class TrackField extends FieldAbstract
      */
     protected function addModelSettings(array &$settings)
     {
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
 
         $settings['elementClass'] = 'Select';
         $settings['multiOptions'] = $empty + $this->getLookup();
@@ -96,7 +97,7 @@ class TrackField extends FieldAbstract
         if ($this->isReadOnly()) {
             return null;
         }
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
         $tracks = $this->getLookup($context['gr2t_id_user'], $context['gr2t_id_organization']);
         unset($tracks[$context['gr2t_id_respondent_track']]);
         $output['multiOptions'] = $empty + $tracks;
@@ -139,7 +140,7 @@ class TrackField extends FieldAbstract
      */
     public function showTrack($value)
     {
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
         if (! $value || in_array($value, $empty)) {
             return null;
         }

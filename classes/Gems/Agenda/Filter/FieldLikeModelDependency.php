@@ -12,6 +12,7 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
+use Gems\Util\Translated;
 
 /**
  *
@@ -31,10 +32,9 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
     protected $agenda;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -48,11 +48,11 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = [])
     {
         $fields = $this->agenda->getFieldLabels();
 
-        $output = array();
+        $output = [];
         if (isset($context['gaf_filter_text1'], $fields[$context['gaf_filter_text1']], $context['gaf_filter_text2']) &&
                 $context['gaf_filter_text1'] && $context['gaf_filter_text2']) {
             $output[] = sprintf($this->_('%s like "%s"'), $fields[$context['gaf_filter_text1']], $context['gaf_filter_text2']);
@@ -76,7 +76,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      */
     public function getFieldLabels()
     {
-        $output = array(
+        $output = [
             'gap_id_organization' => $this->_('Organization'),
             'gap_source'          => $this->_('Source of appointment'),
             'gap_id_attended_by'  => $this->_('With'),
@@ -85,7 +85,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
             'gap_id_procedure'    => $this->_('Procedure'),
             'gap_id_location'     => $this->_('Location'),
             'gap_subject'         => $this->_('Subject'),
-        );
+        ];
 
         asort($output);
 
@@ -126,25 +126,25 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
                 ));
 
-        return array(
-            'gaf_filter_text1' => array(
+        return [
+            'gaf_filter_text1' => [
                 'label'        => $this->_('Field 1'),
                 'multiOptions' => $fields,
                 'required'     => true,
-                ),
-            'gaf_filter_text2' => array(
+            ],
+            'gaf_filter_text2' => [
                 'label'        => $this->_('Search text 1'),
                 'description'  => $description,
                 'required'     => true,
-                ),
-            'gaf_filter_text3' => array(
+            ],
+            'gaf_filter_text3' => [
                 'label'        => $this->_('Field 2'),
-                'multiOptions' => $this->util->getTranslated()->getEmptyDropdownArray() + $fields,
-                ),
-            'gaf_filter_text4' => array(
+                'multiOptions' => $this->translatedUtil->getEmptyDropdownArray() + $fields,
+            ],
+            'gaf_filter_text4' => [
                 'label'       => $this->_('Search text 2'),
                 'description' => sprintf($this->_("Required when filled - use %%-sign as well.")),
-                ),
-            );
+            ],
+        ];
     }
 }

@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Condition\RoundConditionInterface;
 use Gems\Tracker\Model\RoundModel;
+use Gems\Util\Translated;
 
 /**
  *
@@ -69,11 +70,9 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
     public $menuActionController = 'track-rounds';
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
-
+    protected $translatedUtil;
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -112,7 +111,7 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
             $this->_model->set('gsu_survey_name',       'label', $this->_('Survey'));
             $this->_model->set('ggp_name',              'label', $this->_('Assigned to'));
             $this->_model->set('gro_active',            'label', $this->_('Active'),
-                    'multiOptions', $this->util->getTranslated()->getYesNo());
+                    'multiOptions', $this->translatedUtil->getYesNo());
         }
 
         // Now add the joins so we can sort on the real name
@@ -150,10 +149,14 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
      */
     protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
+        $conditionId = null;
         if ($this->condition) {
             $conditionId = $this->condition->getConditionId();
         } else {
-            $conditionId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+            $queryParams = $this->requestInfo->getRequestQueryParams();
+            if (isset($queryParams[\MUtil\Model::REQUEST_ID])) {
+                $conditionId = $queryParams[\MUtil\Model::REQUEST_ID];
+            }
         }
 
         //\MUtil\Model::$verbose = true;

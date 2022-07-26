@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -22,6 +24,11 @@ namespace Gems\Tracker\Field;
  */
 class ConsentField extends FieldAbstract
 {
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
     /**
      *
      * @var \Gems\Util
@@ -37,7 +44,7 @@ class ConsentField extends FieldAbstract
      */
     protected function addModelSettings(array &$settings)
     {
-        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty = $this->translatedUtil->getEmptyDropdownArray();
 
         $settings['elementClass'] = 'Select';
         $settings['multiOptions'] = $empty + $this->util->getDbLookup()->getUserConsents();

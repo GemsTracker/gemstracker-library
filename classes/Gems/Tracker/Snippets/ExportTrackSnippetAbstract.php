@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Util\Translated;
 
 /**
  *
@@ -95,10 +96,9 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
     protected $trackEngine;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -335,9 +335,9 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
     protected function createModel()
     {
         if (! $this->exportModel instanceof \MUtil\Model\ModelAbstract) {
-            $yesNo = $this->util->getTranslated()->getYesNo();
+            $yesNo = $this->translatedUtil->getYesNo();
 
-            $model = new \MUtil\Model\SessionModel('export_for_' . $this->request->getControllerName());
+            $model = new \MUtil\Model\SessionModel('export_for_' . $this->requestInfo->getCurrentController());
 
             $model->set('orgs', 'label', $this->_('Organization export'),
                     'default', 1,

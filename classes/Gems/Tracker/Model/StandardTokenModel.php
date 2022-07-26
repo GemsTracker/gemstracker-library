@@ -13,6 +13,7 @@ namespace Gems\Tracker\Model;
 
 use Gems\Date\Period;
 use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
@@ -63,12 +64,12 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
     public static $dateOnlyFormat = 'dd-MM-yyyy';
 
     /**
-     * @var string $util->getTranslated() Format function to use for whole date tokens after date 
+     * @var string \Gems\Util\Translated Format function to use for whole date tokens after date
      */
     public static $dateOnlyTranslatedFrom = 'formatDateNever';
 
     /**
-     * @var string $util->getTranslated() Format function to use for whole date tokens for date
+     * @var string \Gems\Util\Translated Format function to use for whole date tokens for date
      */
     public static $dateOnlyTranslatedUntil = 'formatDateForever';
     
@@ -78,12 +79,12 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
     public static $dateTimeFormat = 'dd-MM-yyyy HH:mm';
 
     /**
-     * @var string $util->getTranslated() Format function to use for date/time tokens after date
+     * @var string \Gems\Util\Translated Format function to use for date/time tokens after date
      */
     public static $dateTimeTranslatedFrom = 'formatDateTimeNever';
 
     /**
-     * @var string $util->getTranslated() Format function to use for date/time tokens for date
+     * @var string \Gems\Util\Translated Format function to use for date/time tokens for date
      */
     public static $dateTimeTranslatedUntil = 'formatDateTimeForever';
     
@@ -98,6 +99,11 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
      * @var boolean Set to true when data in the respondent2track table must be saved as well
      */
     protected $saveRespondentTracks = false;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * @var \Gems\Util
@@ -302,7 +308,6 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
         $this->resetOrder();
 
         $dbLookup   = $this->util->getDbLookup();
-        $translated = $this->util->getTranslated();
 
         // Token id & respondent
         $this->set('gto_id_token',           'label', $this->_('Token'),
@@ -338,7 +343,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
                 );
 
         // Token, editable part
-        $manual = $translated->getDateCalculationOptions();
+        $manual = $this->translatedUtil->getDateCalculationOptions();
         $this->set('gto_valid_from_manual',  'label', $this->_('Set valid from'),
                 'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
@@ -495,16 +500,16 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
         if ($useFullDate) {
             $output['dateFormat'] = self::$dateOnlyFormat;
             if ($validFrom) {
-                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateOnlyTranslatedFrom];
+                $output['formatFunction'] = [$this->translatedUtil, self::$dateOnlyTranslatedFrom];
             } else {
-                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateOnlyTranslatedUntil];
+                $output['formatFunction'] = [$this->translatedUtil, self::$dateOnlyTranslatedUntil];
             }
         } else {
             $output['dateFormat'] = self::$dateTimeFormat;
             if ($validFrom) {
-                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateTimeTranslatedFrom];
+                $output['formatFunction'] = [$this->translatedUtil, self::$dateTimeTranslatedFrom];
             } else {
-                $output['formatFunction'] = [$this->util->getTranslated(), self::$dateTimeTranslatedUntil];
+                $output['formatFunction'] = [$this->translatedUtil, self::$dateTimeTranslatedUntil];
             }
         }
         

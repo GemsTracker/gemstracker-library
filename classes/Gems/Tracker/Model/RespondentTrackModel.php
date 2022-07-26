@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
@@ -48,6 +49,11 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -125,7 +131,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      */
     public function applyBrowseSettings()
     {
-        $formatDate = $this->util->getTranslated()->formatDate;
+        $formatDate = $this->translatedUtil->formatDate;
 
         $this->resetOrder();
 
@@ -168,8 +174,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     {
         $this->resetOrder();
 
-        $translated = $this->util->getTranslated();
-        $formatDate = $this->util->getTranslated()->formatDate;
+        $formatDate = $this->translatedUtil->formatDate;
 
         $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
         $this->set('respondent_name',   'label', $this->_('Respondent name'));
@@ -197,7 +202,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
                 'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
                 'elementClass', 'Radio',
-                'multiOptions', $translated->getDateCalculationOptions(),
+                'multiOptions', $this->translatedUtil->getDateCalculationOptions(),
                 'separator', ' '
                 );
         $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
@@ -216,7 +221,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * Set those values needed for editing
      *
      * @param \Gems\Tracker\Engine\TrackEngineInterface $trackEngine
-     * @return \Gems\Model_RespondentTrackModel
+     * @return self
      */
     public function applyEditSettings(\Gems\Tracker\Engine\TrackEngineInterface $trackEngine)
     {

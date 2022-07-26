@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  * Controller for maintaining reception codes.
  *
@@ -32,23 +34,23 @@ class ReceptionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraSort' => array(
+    protected $autofilterParameters = [
+        'extraSort' => [
             'grc_id_reception_code' => SORT_ASC,
-            ),
-        );
+        ],
+    ];
 
     /**
      * Tags for cache cleanup after changes, passed to snippets
      *
      * @var array
      */
-    public $cacheTags = array('receptionCode', 'receptionCodes');
+    public $cacheTags = ['receptionCode', 'receptionCodes'];
 
     /**
-     * @var \Gems\Project\ProjectSettings
+     * @var Translated
      */
-    public $project;
+    public $translatedUtil;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -64,7 +66,7 @@ class ReceptionAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function createModel($detailed, $action)
     {
         $rcLib = $this->util->getReceptionCodeLibrary();
-        $yesNo  = $this->util->getTranslated()->getYesNo();
+        $yesNo  = $this->translatedUtil->getYesNo();
 
         $model  = new \MUtil\Model\TableModel('gems__reception_codes');
         $model->copyKeys(); // The user can edit the keys.

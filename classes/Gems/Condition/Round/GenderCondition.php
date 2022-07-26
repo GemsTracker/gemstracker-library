@@ -13,6 +13,7 @@ namespace Gems\Condition\Round;
 
 use Gems\Conditions;
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Util\Translated;
 
 /**
  *
@@ -25,23 +26,14 @@ use Gems\Condition\RoundConditionAbstract;
 class GenderCondition extends RoundConditionAbstract
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-    
-    /**
      * @var \Gems\Tracker
      */
     public $tracker;
-    
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-        if ($this->loader && !$this->tracker) {
-            $this->tracker = $this->loader->getTracker();
-        }
-    }
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
         
     protected function getComparators()
     {
@@ -77,7 +69,7 @@ class GenderCondition extends RoundConditionAbstract
             $subject = $context['gcon_condition_text1'];
         }
         
-        $genders = $this->loader->getUtil()->getTranslated()->getGenders();
+        $genders = $this->translatedUtil->getGenders();
 
         return [
             'gcon_condition_text1' => ['label' => $this->_('Determine gender based on'), 'elementClass' => 'Select', 'multiOptions' => $subjects, 'value' => $subject],

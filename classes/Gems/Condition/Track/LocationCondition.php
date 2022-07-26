@@ -14,6 +14,7 @@ namespace Gems\Condition\Track;
 use Gems\Conditions;
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
+use Gems\Util\Translated;
 
 /**
  *
@@ -30,9 +31,9 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     protected $tracker;
 
     /**
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * @inheritDoc
@@ -62,7 +63,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      */
     protected function getLocations()
     {
-        return $this->util->getTranslated()->getEmptyDropdownArray() +
+        return $this->translatedUtil->getEmptyDropdownArray() +
             $this->loader->getAgenda()->getLocationsWithOrganization();;
     }
 
@@ -153,7 +154,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
         $fields = $this->tracker->getAllCodeFields();
 
         //  We now have field ids, and codes, filter to have unique codes
-        $result = $this->util->getTranslated()->getEmptyDropdownArray();
+        $result = $this->translatedUtil->getEmptyDropdownArray();
         foreach($fields as $code)
         {
             $result[$code] = $code;

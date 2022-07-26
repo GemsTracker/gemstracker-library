@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  * The maintenace screen for the action log
  *
@@ -32,9 +34,9 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraSort' => array('gls_name' => SORT_ASC),
-        );
+    protected $autofilterParameters = [
+        'extraSort' => ['gls_name' => SORT_ASC],
+    ];
 
     /**
      * The parameters used for the create and edit actions.
@@ -46,16 +48,21 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array(
-        'cacheTags' => array('accesslog_actions'),
-    );
+    protected $createEditParameters = [
+        'cacheTags' => ['accesslog_actions'],
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet'];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -78,25 +85,25 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->set('gls_when_no_user', 'label', $this->_('Log when no user'),
                 'description', $this->_('Always log this action, even when no one is logged in.'),
                 'elementClass', 'CheckBox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->set('gls_on_action', 'label', $this->_('Log view'),
                 'description', $this->_('Always log when viewed / opened.'),
                 'elementClass', 'CheckBox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->set('gls_on_post', 'label', $this->_('Log change tries'),
                 'description', $this->_('Log when trying to change the data.'),
                 'elementClass', 'CheckBox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         $model->set('gls_on_change', 'label', $this->_('Log data change'),
                 'description', $this->_('Log when data changes.'),
                 'elementClass', 'CheckBox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
 
         return $model;

@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Survey;
 
 use Gems\Snippets\ModelImportSnippet;
+use Gems\Util\Translated;
+use MUtil\Model;
 
 /**
  *
@@ -53,6 +55,11 @@ class AnswerImportSnippet extends ModelImportSnippet
      * @var \Gems\Menu
      */
     protected $menu;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -102,17 +109,21 @@ class AnswerImportSnippet extends ModelImportSnippet
     protected function createModel()
     {
         if (! $this->importModel instanceof \MUtil\Model\ModelAbstract) {
-            $surveyId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+            $surveyId = null;
+            $queryParams = $this->requestInfo->getRequestQueryParams();
+            if (isset($queryParams[Model::REQUEST_ID])) {
+                $surveyId = $queryParams[Model::REQUEST_ID];
+            }
 
             if ($surveyId) {
                 $this->formData['survey'] = $surveyId;
                 $this->_survey            = $this->loader->getTracker()->getSurvey($surveyId);
                 $surveys[$surveyId]       = $this->_survey->getName();
                 $elementClass             = 'Exhibitor';
-                $tracks                   = $this->util->getTranslated()->getEmptyDropdownArray() +
+                $tracks                   = $this->translatedUtil->getEmptyDropdownArray() +
                         $this->util->getTrackData()->getTracksBySurvey($surveyId);
             } else {
-                $empty        = $this->util->getTranslated()->getEmptyDropdownArray();
+                $empty        = $this->translatedUtil->getEmptyDropdownArray();
                 $trackData    = $this->util->getTrackData();
                 $surveys      = $empty + $trackData->getActiveSurveys();
                 $tracks       = $empty + $trackData->getAllTracks();
@@ -140,10 +151,10 @@ class AnswerImportSnippet extends ModelImportSnippet
                     'default', 0,
                     'description', $this->_('What to do when the respondent does not exist'),
                     'elementClass', 'Checkbox',
-                    'multiOptions', $this->util->getTranslated()->getYesNo()
+                    'multiOptions', $this->translatedUtil->getYesNo()
                     );
 
-            $tokenCompleted = array(
+            $tokenCompleted = [
                 \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_OVERWRITE =>
                     $this->_('Delete old token and create new'),
                 \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_DOUBLE =>
@@ -152,7 +163,7 @@ class AnswerImportSnippet extends ModelImportSnippet
                     $this->_('Abort the import'),
                 \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_SKIP =>
                     $this->_('Skip the token'),
-            );
+            ];
 
             $this->importModel->set('tokenCompleted', 'label', $this->_('When token completed'),
                     'default', \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,
@@ -161,14 +172,14 @@ class AnswerImportSnippet extends ModelImportSnippet
                     'multiOptions', $tokenCompleted
                     );
 
-            $tokenTreatments = array(
+            $tokenTreatments = [
                 // \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_DOUBLE =>
                 //     $this->_('Create new token'),
                 \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR =>
                     $this->_('Abort the import'),
                 \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_SKIP =>
                     $this->_('Skip the token'),
-            );
+            ];
 
             $this->importModel->set('noToken', 'label', $this->_('Token does not exist'),
                     'default', \Gems\Model\Translator\AnswerTranslatorAbstract::TOKEN_ERROR,

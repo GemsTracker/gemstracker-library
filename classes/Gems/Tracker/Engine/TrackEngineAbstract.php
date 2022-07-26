@@ -872,7 +872,6 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     public function getRoundModel($detailed, $action)
     {
         $model      = $this->createRoundModel();
-        $translated = $this->util->getTranslated();
 
         // Set the keys to the parameters in use.
         $model->setKeys(array(\MUtil\Model::REQUEST_ID => 'gro_id_track', \Gems\Model::ROUND_ID => 'gro_id_round'));

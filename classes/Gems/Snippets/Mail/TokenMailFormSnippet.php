@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Mail;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -23,10 +25,9 @@ namespace Gems\Snippets\Mail;
 class TokenMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
 {
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -44,7 +45,7 @@ class TokenMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
         $bridge->addExhibitor('track', array('label' => $this->_('Track')));
         $bridge->addExhibitor('round', array('label' => $this->_('Round')));
         $bridge->addExhibitor('survey', array('label' => $this->_('Survey')));
-        $bridge->addExhibitor('last_contact', array('label' => $this->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
+        $bridge->addExhibitor('last_contact', array('label' => $this->_('Last contact'), 'formatFunction' => $this->translatedUtil->formatDateNever));
 
         parent::addFormElements($bridge,$model);
     }

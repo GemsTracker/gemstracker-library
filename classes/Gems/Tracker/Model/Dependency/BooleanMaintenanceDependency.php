@@ -59,18 +59,17 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
     {
         $multi = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
         if (empty($context['gtf_field_values']) || empty($multi)) {
-            $multi = $this->util->getTranslated()->getYesNo();
+            $multi = $this->translatedUtil->getYesNo();
         }
 
         $empty = [];
         if ($context['gtf_required'] != 1) {
-            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+            $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
         return array(
             'gtf_field_values' => array(
                 'label'          => $this->_('Values'),
-                'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
                 'description'    => $this->_('Leave empty for Yes|No. Add two values as replacement. Separate multiple values with a vertical bar (|)'),
                 'elementClass'   => 'Text',
                 'formatFunction' => array($this, 'formatValues'),

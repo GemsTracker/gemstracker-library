@@ -10,6 +10,8 @@
 
 namespace Gems\Export;
 
+use Gems\Util\Translated;
+
 /**
  * Handles export of all tracks/surveys for a respondent
  * 
@@ -149,10 +151,9 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
     public $trackFilter = array();
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      *
@@ -359,7 +360,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
         $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
-            'formatFunction', $this->util->getTranslated()->formatDate,
+            'formatFunction', $this->translatedUtil->formatDate,
             'default', \MUtil\Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
         $trackModel->set('gr2t_reception_code');
         $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));

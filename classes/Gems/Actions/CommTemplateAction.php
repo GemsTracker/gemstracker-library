@@ -11,6 +11,10 @@
 
 namespace Gems\Actions;
 
+use Gems\Locale\Locale\Locale;
+use Gems\Project\ProjectSettings;
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -37,11 +41,26 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected $createEditSnippets = 'Mail\\MailModelFormSnippet';
 
     /**
+     * @var Locale
+     */
+    public $locale;
+
+    /**
+     * @var ProjectSettings
+     */
+    public $project;
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = 'Mail\\CommTemplateShowSnippet';
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -87,7 +106,7 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $allLanguages    = $this->util->getLocalized()->getLanguages();
         $currentLanguage = $this->locale->getLanguage();
-        $markEmptyCall   = array($this->util->getTranslated(), 'markEmpty');
+        $markEmptyCall   = array($this->translatedUtil, 'markEmpty');
 
         ksort($allLanguages);
 
@@ -145,7 +164,10 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
                 $requiredRows[]['gctt_lang'] = $code;
             }
         } else {
-            $defaultLanguage = $this->project->getLocaleDefault();
+            $defaultLanguage = 'en';
+            if (isset($this->config['locale'], $this->config['locale']['default'])) {
+                $defaultLanguage = $this->config['locale']['default'];
+            }
             $requiredRows[]['gctt_lang'] = $defaultLanguage;
 
             $translationModel->setFilter(array('gctt_lang' => $defaultLanguage));

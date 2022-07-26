@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -65,10 +67,9 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $respondent;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Called after the check that all required registry values
@@ -97,18 +98,16 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel()
     {
-        $translated = $this->util->getTranslated();
-
         $model = new \MUtil\Model\TableModel('gems__tracks');
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
         $model->set('gtr_date_start',    'label', $this->_('From'),
-                'dateFormat', $translated->formatDate,
+                'dateFormat', $this->translatedUtil->formatDate,
                 'tdClass', 'date'
                 );
         $model->set('gtr_date_until',    'label', $this->_('Until'),
-                'dateFormat', $translated->formatDateForever,
+                'dateFormat', $this->translatedUtil->formatDateForever,
                 'tdClass', 'date'
                 );
 

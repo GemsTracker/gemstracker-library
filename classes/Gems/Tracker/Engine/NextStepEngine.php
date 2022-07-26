@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Engine;
 
+use Gems\Util\Translated;
+
 /**
  * Step engine that uses a begin date from the previous round and calculates the end date using the token itself.
  *
@@ -22,6 +24,12 @@ namespace Gems\Tracker\Engine;
  */
 class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
 {
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
@@ -41,7 +49,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
 
         } else {
             $itemData['gro_valid_after_id'] = null;
-            $rounds = $this->util->getTranslated()->getEmptyDropdownArray();
+            $rounds = $this->translatedUtil->getEmptyDropdownArray();
         }
         $model->set('gro_valid_after_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
 
@@ -76,7 +84,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      *
      * @see getConversionTargets()
      *
-     * @param type $conversionTargetClass
+     * @param string $conversionTargetClass
      */
     public function convertTo($conversionTargetClass)
     {

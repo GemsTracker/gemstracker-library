@@ -10,6 +10,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package Gems
@@ -30,15 +32,20 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraFilter' => array(
+    protected $autofilterParameters = [
+        'extraFilter' => [
             'gsu_surveyor_active' => 1,
             'gsu_active'          => 1,
-            ),
-        'extraSort' => array(
+        ],
+        'extraSort' => [
             'gsu_survey_name' => SORT_ASC,
-            ),
-        );
+        ],
+    ];
+
+    /**
+     * @var array
+     */
+    public $config;
 
     /**
      *
@@ -68,18 +75,23 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array('surveyId' => '_getIdParam');
+    protected $showParameters = ['surveyId' => '_getIdParam'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Survey\\SurveyQuestionsSnippet'
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -94,10 +106,10 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
 
         $model = new \Gems\Model\JoinModel('surveys', 'gems__surveys');
-        $model->addTable('gems__groups',  array('gsu_id_primary_group' => 'ggp_id_group'));
+        $model->addTable('gems__groups',  ['gsu_id_primary_group' => 'ggp_id_group']);
 
         $model->addColumn(
                 "(SELECT COUNT(DISTINCT gro_id_track)
@@ -112,9 +124,9 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         if ($detailed) {
             $model->set('gsu_survey_description', 'label', $this->_('Description'),
-                    'formatFunction', array(__CLASS__, 'formatDescription')
+                    'formatFunction', [__CLASS__, 'formatDescription']
                     );
-            $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
+            $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->config['app']['name']),
                     'elementClass', 'Checkbox',
                     'multiOptions', $yesNo
                     );

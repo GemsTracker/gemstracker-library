@@ -411,15 +411,6 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
     }
 
     /**
-     *
-     * @return \Gems\Util\Translated
-     */
-    public function getTranslated()
-    {
-        return $this->_getClass('translated');
-    }
-
-    /**
      * Checks if a given IP is allowed according to a set
      * of IP addresses / ranges.
      *

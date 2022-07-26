@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -27,47 +29,52 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gad_diagnosis_code' => SORT_ASC, 'gad_description' => SORT_ASC),
+        'extraSort'   => ['gad_diagnosis_code' => SORT_ASC, 'gad_description' => SORT_ASC],
         'searchFields' => 'getSearchFields',
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('diagnosis', 'diagnoses');
+    public $cacheTags = ['diagnosis', 'diagnoses'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
         'onEmpty'         => 'getShowOnEmpty',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Agenda\\CalendarTableSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      *
@@ -85,11 +92,11 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
         $params['filterOn']     = 'gap_diagnosis_code';
         $params['filterWhen']   = 'gad_filter';
 
-        $snippets = array(
+        $snippets = [
             'Generic\\ContentTitleSnippet',
             'Agenda\\AppointmentCleanupSnippet',
             'Agenda\\CalendarTableSnippet',
-            );
+        ];
 
         $this->addSnippets($snippets, $params);
     }
@@ -106,7 +113,6 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $translated = $this->util->getTranslated();
         $model      = new \MUtil\Model\TableModel('gems__agenda_diagnoses');
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gad');
@@ -124,7 +130,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $model->setIfExists('gad_coding_method',    'label', $this->_('Coding system'),
                 'description', $this->_('The coding system used.'),
-                'multiOptions', $translated->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
+                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
                 );
 
         $model->setIfExists('gad_code',             'label', $this->_('Diagnosis code'),
@@ -134,7 +140,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->setIfExists('gad_active',           'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
         $model->setIfExists('gad_filter',      'label', $this->_('Filter'),
                 'description', $this->_('When checked appointments with these diagnoses are not imported.'),
@@ -172,7 +178,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowCaption()
     {
@@ -181,7 +187,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @return type
+     * @return string
      */
     public function getShowOnEmpty()
     {
@@ -195,11 +201,11 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function getShowFilter()
     {
-        return array(
+        return [
             \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
             'gap_diagnosis_code' => $this->_getIdParam(),
             'limit' => 10,
-            );
+        ];
     }
 
     /**

@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Util\Translated;
+
 /**
  * Displays a respondent's details with assigned surveys and tracks in extra columns.
  *
@@ -30,10 +32,9 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
     protected $request;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    public $util;
+    protected $translatedUtil;
 
     /**
      * Place to set the data to display
@@ -83,7 +84,7 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
         $tracksTarget[] = ' ';
         $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
         $tracksTarget[] = ' ';
-        $tracksTarget[] = \MUtil\Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
+        $tracksTarget[] = \MUtil\Lazy::call($this->translatedUtil->formatDate, $tracksData->gr2t_created);
         $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
 
         // OTHER ROWS

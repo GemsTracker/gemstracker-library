@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -23,10 +25,9 @@ namespace Gems\Tracker\Field;
 class SelectField extends FieldAbstract
 {
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -39,7 +40,7 @@ class SelectField extends FieldAbstract
     {
         $empty = [];
         if (!$this->_fieldDefinition['gtf_required'] || $this->_fieldDefinition['gtf_field_default'] === null) {
-            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+            $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
         $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);

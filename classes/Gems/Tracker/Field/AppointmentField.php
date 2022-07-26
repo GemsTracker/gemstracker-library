@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Field;
 
 use Gems\Date\Period;
+use Gems\Util\Translated;
 
 /**
  *
@@ -91,10 +92,9 @@ class AppointmentField extends FieldAbstract
     protected $request;
 
     /**
-     *
-     * @var \Gems\Util
+     * @var Translated
      */
-    protected $util;
+    protected $translatedUtil;
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -291,7 +291,7 @@ class AppointmentField extends FieldAbstract
         }
 
         $agenda = $this->loader->getAgenda();
-        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+        $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $output['multiOptions'] = $empty + $agenda->getActiveAppointments(
                 $context['gr2t_id_user'],

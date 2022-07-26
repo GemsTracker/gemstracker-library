@@ -12,6 +12,7 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
+use Gems\Util\Translated;
 
 /**
  *
@@ -23,6 +24,11 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  */
 class OrganizationModelDependency extends FilterModelDependencyAbstract
 {
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
+
     /**
      *
      * @var \Gems\Util
@@ -94,7 +100,7 @@ class OrganizationModelDependency extends FilterModelDependencyAbstract
      */
     public function getTextSettings()
     {
-        $options = $this->util->getTranslated()->getEmptyDropdownArray() +
+        $options = $this->translatedUtil->getEmptyDropdownArray() +
                 $this->util->getDbLookup()->getOrganizations();
 
         foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $i => $field) {

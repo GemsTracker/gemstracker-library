@@ -12,8 +12,10 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Date\Period;
+use Gems\Locale\Locale\Locale;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Util\Translated;
 
 /**
  * Parent class for all engines that calculate dates using information
@@ -71,15 +73,20 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
 
     /**
      *
-     * @var \Zend_Locale
+     * @var Locale
      */
-    protected $locale;
+    protected Locale $locale;
 
     /**
      *
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      * Helper function for default handling of multi options value sets
@@ -456,7 +463,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
             $format = $this->_('%s');
         }
 
-        $units = $this->util->getTranslated()->getPeriodUnits();
+        $units = $this->translatedUtil->getPeriodUnits();
         if (isset($units[$context[$fieldBase . 'unit']])) {
             $unit = $units[$context[$fieldBase . 'unit']];
         } else {
@@ -636,7 +643,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
                 );
 
         if ($detailed) {
-            $periodUnits = $this->util->getTranslated()->getPeriodUnits();
+            $periodUnits = $this->translatedUtil->getPeriodUnits();
 
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),

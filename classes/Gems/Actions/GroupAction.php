@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  *
@@ -32,19 +34,19 @@ class GroupAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => [
             'ggp_name' => SORT_ASC,
             ],
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('group', 'groups');
+    public $cacheTags = ['group', 'groups'];
 
     /**
      * The snippets used for the create and edit actions.
@@ -73,26 +75,36 @@ class GroupAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $loader;
 
     /**
+     * @var Translated
+     */
+    public $translatedUtil;
+
+    /**
      *
      * @throws \Exception
      */
     public function changeUiAction()
     {
-        $request = $this->getRequest();
-
         if (! $this->currentUser->hasPrivilege('pr.group.switch', false)) {
             $this->escort->setError(
                     $this->_('No access to page'),
                     403,
                     sprintf($this->_('Access to the %s/%s page is not allowed for your current group: %s.'),
-                            $request->getControllerName(),
-                            $request->getActionName(),
+                            $this->requestHelper->getControllerName(),
+                            $this->requestHelper->getActionName(),
                             $this->currentUser->getGroup()->getName()),
                     true);
         }
 
-        $group = strtolower($request->getParam('group'));
-        $url   = base64_decode($request->getParam('current_uri'));
+        $group = null;
+        $url = null;
+        $queryParams = $this->request->getQueryParams();
+        if (isset($queryParams['group'])) {
+            $group = strtolower($queryParams['group']);
+        }
+        if (isset($queryParams['current_uri'])) {
+            $url = strtolower($queryParams['current_uri']);
+        }
 
         if ((! $url) || ('/' !== $url[0])) {
             throw new \Exception($this->_('Illegal group redirect url.'));
@@ -102,11 +114,10 @@ class GroupAction extends \Gems\Controller\ModelSnippetActionAbstract
         $this->currentUser->setGroupTemp(intval($group));
 
         if ($url) {
-            $this->getResponse()->setRedirect($url);
+            $this->redirectUrl = $url;
         } else {
-            $this->currentUser->gotoStartPage($this->menu, $request);
+            $this->redirectUrl = '/';
         }
-        return;
     }
 
     /**
@@ -164,7 +175,7 @@ class GroupAction extends \Gems\Controller\ModelSnippetActionAbstract
                 'multiOptions', $dbLookup->getGroups()
                 );
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $yesNo = $this->translatedUtil->getYesNo();
         $model->set('ggp_staff_members', 'label', $this->_('Staff'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
@@ -236,7 +247,7 @@ class GroupAction extends \Gems\Controller\ModelSnippetActionAbstract
             $maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
         }
 
-        if ($this->project->translateDatabaseFields()) {
+        if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {
             if ('create' == $action || 'edit' == $action) {
                 $this->loader->getModels()->addDatabaseTranslationEditFields($model);
             } else {

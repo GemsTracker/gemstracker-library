@@ -13,6 +13,7 @@ namespace Gems\Tracker;
 
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
+use Gems\Util\Translated;
 use MUtil\Translate\TranslateableTrait;
 
 
@@ -182,6 +183,11 @@ class Token extends \Gems\Registry\TargetAbstract
      * @var \Gems\Tracker
      */
     protected $tracker;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -1219,7 +1225,7 @@ class Token extends \Gems\Registry\TargetAbstract
      */
     public function getRespondentGenderHello()
     {
-        $greetings = $this->util->getTranslated()->getGenderGreeting();
+        $greetings = $this->translatedUtil->getGenderGreeting();
         $gender    = $this->getRespondentGender();
 
         if (isset($greetings[$gender])) {

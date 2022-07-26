@@ -10,6 +10,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Util\Translated;
+
 /**
  *
  * @package Gems
@@ -30,15 +32,15 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraFilter' => array(
+    protected $autofilterParameters = [
+        'extraFilter' => [
             'gtr_active' => 1,
             -2 => '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE'
-            ),
-        'extraSort' => array(
+        ],
+        'extraSort' => [
             'gtr_track_name' => SORT_ASC,
-            ),
-        );
+        ],
+    ];
 
     /**
      *
@@ -62,23 +64,28 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'showHeader' => true,
         'trackId'    => '_getIdParam',
         'trackData'  => 'getTrackData',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\TrackSurveyOverviewSnippet',
-        );
+    ];
+
+    /**
+     * @var Translated
+     */
+    public $translatedUtil;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -93,18 +100,16 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $translated = $this->util->getTranslated();
-
         $model = new \MUtil\Model\TableModel('gems__tracks');
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
         $model->set('gtr_date_start',    'label', $this->_('From'),
-                'dateFormat', $translated->formatDate,
+                'dateFormat', $this->translatedUtil->formatDate,
                 'tdClass', 'date'
                 );
         $model->set('gtr_date_until',    'label', $this->_('Until'),
-                'dateFormat', $translated->formatDateForever,
+                'dateFormat', $this->translatedUtil->formatDateForever,
                 'tdClass', 'date'
                 );
 
