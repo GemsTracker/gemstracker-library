@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Adds basic track editing snippet parameter processing and checking.
@@ -21,18 +22,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_ModelFormSnippetAbstract
+class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -60,14 +61,14 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     /**
      * The respondent
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
     /**
      * Optional, required when editing or $respondentTrackId should be set
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -88,7 +89,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -108,7 +109,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -129,14 +130,14 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
         $tracker = $this->loader->getTracker();
         $model   = $tracker->getRespondentTrackModel();
 
-        if (! $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+        if (! $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
             if (! $this->respondentTrack) {
                 $this->respondentTrack = $tracker->getRespondentTrack($this->respondentTrackId);
             }
@@ -178,13 +179,13 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
-        if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
             if (! $this->patientId) {
                 $this->patientId = $this->respondent->getPatientNumber();
             }
@@ -198,7 +199,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
             if ($this->respondentTrack) {
                 $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
             } else {
-                $this->respondentTrackId = $this->request->getParam(\Gems_Model::RESPONDENT_TRACK);
+                $this->respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK);
             }
         }
         // Try to get $this->respondentTrack filled
@@ -231,7 +232,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
                 if ($this->trackEngine) {
                     $this->trackId = $this->trackEngine->getTrackId();
                 } else {
-                    $this->trackId = $this->request->getParam(\Gems_Model::TRACK_ID);
+                    $this->trackId = $this->request->getParam(\Gems\Model::TRACK_ID);
                 }
             }
             // Try to get $this->trackEngine filled
@@ -240,7 +241,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
             }
 
             if (! ($this->trackEngine && $this->patientId && $this->organizationId && $this->userId)) {
-                throw new \Gems_Exception_Coding('Missing parameter for ' . __CLASS__  .
+                throw new \Gems\Exception\Coding('Missing parameter for ' . __CLASS__  .
                         ': could not find data for editing a respondent track nor the track engine, patientId and organizationId needed for creating one.');
             }
         }
@@ -286,7 +287,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
     /**
      * If menu item does not exist or is not allowed, redirect to index
      *
-     * @return \Gems_Snippets_ModelFormSnippetAbstract
+     * @return \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {
@@ -295,7 +296,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
         if (is_array($this->afterSaveRouteUrl)) {
             if (isset($this->afterSaveRouteUrl['action'], $this->formData['gr2t_id_respondent_track']) &&
                     'index' !== $this->afterSaveRouteUrl['action']) {
-                $this->afterSaveRouteUrl[\Gems_Model::RESPONDENT_TRACK] = $this->formData['gr2t_id_respondent_track'];
+                $this->afterSaveRouteUrl[\Gems\Model::RESPONDENT_TRACK] = $this->formData['gr2t_id_respondent_track'];
             }
         }
     }

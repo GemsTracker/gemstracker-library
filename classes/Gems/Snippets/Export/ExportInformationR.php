@@ -17,7 +17,7 @@ namespace Gems\Snippets\Export;
  * @license    New BSD License
  * @since      Class available since version 1.8.5
  */
-class ExportInformationR extends \MUtil_Snippets_SnippetAbstract
+class ExportInformationR extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * Create the snippets content
@@ -25,7 +25,7 @@ class ExportInformationR extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

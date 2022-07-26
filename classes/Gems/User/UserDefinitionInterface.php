@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 use Gems\User\Group;
 
 /**
@@ -20,7 +22,7 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-interface Gems_User_UserDefinitionInterface
+interface UserDefinitionInterface
 {
     /**
      * Return true if a password reset key can be created.
@@ -28,10 +30,10 @@ interface Gems_User_UserDefinitionInterface
      * Returns the setting for the definition whan no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canResetPassword(\Gems_User_User $user = null);
+    public function canResetPassword(\Gems\User\User $user = null);
 
     /**
      * Return true if the two factor can be set.
@@ -46,27 +48,27 @@ interface Gems_User_UserDefinitionInterface
      * Returns the setting for the definition when no user is passed, otherwise
      * returns the answer for this specific user.
      *
-     * @param \Gems_User_User $user Optional, the user whose password might change
+     * @param \Gems\User\User $user Optional, the user whose password might change
      * @return boolean
      */
-    public function canSetPassword(\Gems_User_User $user = null);
+    public function canSetPassword(\Gems\User\User $user = null);
 
     /**
-     * Returns an initialized Laminas\Authentication\Adapter\AdapterInterface
+     * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password
-     * @return Laminas\Authentication\Adapter\AdapterInterface
+     * @return \Laminas\Authentication\Adapter\AdapterInterface
      */
-    public function getAuthAdapter(\Gems_User_User $user, $password);
+    public function getAuthAdapter(\Gems\User\User $user, $password);
 
     /**
      * Return a password reset key
      *
-     * @param \Gems_User_User $user The user to create a key for.
+     * @param \Gems\User\User $user The user to create a key for.
      * @return string
      */
-    public function getPasswordResetKey(\Gems_User_User $user);
+    public function getPasswordResetKey(\Gems\User\User $user);
 
     /**
      * Returns the number of hours a reset key remains valud
@@ -87,10 +89,10 @@ interface Gems_User_UserDefinitionInterface
     /**
      * Return true if the user has a password.
      *
-     * @param \Gems_User_User $user The user to check
+     * @param \Gems\User\User $user The user to check
      * @return boolean
      */
-    public function hasPassword(\Gems_User_User $user);
+    public function hasPassword(\Gems\User\User $user);
 
     /**
      * Returns true when users using this definition are staff members.
@@ -114,17 +116,17 @@ interface Gems_User_UserDefinitionInterface
     /**
      * Set the password, if allowed for this user type.
      *
-     * @param \Gems_User_User $user The user whose password to change
+     * @param \Gems\User\User $user The user whose password to change
      * @param string $password
-     * @return \Gems_User_UserDefinitionInterface (continuation pattern)
+     * @return \Gems\User\UserDefinitionInterface (continuation pattern)
      */
-    public function setPassword(\Gems_User_User $user, $password);
+    public function setPassword(\Gems\User\User $user, $password);
 
     /**
      *
-     * @param \Gems_User_User $user The user whose password to change
+     * @param \Gems\User\User $user The user whose password to change
      * @param string $newKey
      * @return $this
      */
-    public function setTwoFactorKey(\Gems_User_User $user, $newKey);
+    public function setTwoFactorKey(\Gems\User\User $user, $newKey);
 }

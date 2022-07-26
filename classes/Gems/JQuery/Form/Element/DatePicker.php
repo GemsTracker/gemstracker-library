@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery\Form\Element;
 
 /**
  * DatePicker extended with autosubmit
@@ -19,13 +20,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class Gems_JQuery_Form_Element_DatePicker extends \MUtil_JQuery_Form_Element_DatePicker
-        implements \Gems_Form_AutosubmitElementInterface
+class DatePicker extends \MUtil\JQuery\Form\Element\DatePicker
+        implements \Gems\Form\AutosubmitElementInterface
 {
     /**
      * Change the form into an autosubmit form
      *
-     * @see \Gems_Form setAutoSubmit
+     * @see \Gems\Form setAutoSubmit
      * @param array $autoSubmitArgs Array containing submitUrl and targetId
      */
     public function enableAutoSubmit(array $autoSubmitArgs)

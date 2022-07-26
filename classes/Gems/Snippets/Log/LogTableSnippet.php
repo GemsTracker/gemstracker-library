@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LogTableSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
@@ -23,7 +22,7 @@ use Gems\Model\LogModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 17:17:48
  */
-class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -36,13 +35,13 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -52,14 +51,14 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if (! $this->columns) {
-            $br   = \MUtil_Html::create('br');
+            $br   = \MUtil\Html::create('br');
 
             $this->columns[10] = array('gla_created', $br, 'gls_name');
             $this->columns[20] = array('gla_message');
@@ -73,7 +72,7 @@ class LogTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

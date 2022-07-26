@@ -22,11 +22,11 @@ use Gems\Tracker\Engine\FieldsDefinition;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class CreateTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
+class CreateTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

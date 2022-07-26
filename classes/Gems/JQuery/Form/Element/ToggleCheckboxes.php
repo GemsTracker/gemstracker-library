@@ -6,8 +6,9 @@
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\JQuery\Form\Element;
 
 /**
  * Short description for ToggleCheckboxes
@@ -20,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_JQuery_Form_Element_ToggleCheckboxes extends \Zend_Form_Element_Button
+class ToggleCheckboxes extends \Zend_Form_Element_Button
 {
     /**
      * Use toggleCheckboxes view helper by default
@@ -34,7 +35,7 @@ class Gems_JQuery_Form_Element_ToggleCheckboxes extends \Zend_Form_Element_Butto
      * Specify the 'selector' in the options http://api.jquery.com/category/selectors/
      *
      * Usage:
-     * $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('name', array('selector'=>'input[name^=oid]')
+     * $element = new \Gems\JQuery\Form\Element\ToggleCheckboxes('name', array('selector'=>'input[name^=oid]')
      *
      * @param type $spec
      * @param type $options
@@ -50,7 +51,7 @@ class Gems_JQuery_Form_Element_ToggleCheckboxes extends \Zend_Form_Element_Butto
      * Ensures that the view object has the \Gems_jQuery view helper path set.
      *
      * @param  \Zend_View_Interface $view
-     * @return \Gems_JQuery_Form_Element_ToggleCheckboxes
+     * @return \Gems\JQuery\Form\Element\ToggleCheckboxes
      */
     public function setView(\Zend_View_Interface $view = null)
     {

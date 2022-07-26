@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -18,7 +17,7 @@
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
  */
 class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
-    extends Zend_Controller_Plugin_Abstract
+    extends \Zend_Controller_Plugin_Abstract
     implements ZFDebug_Controller_Plugin_Debug_Plugin_Interface
 {
     protected static $_logger;
@@ -42,12 +41,12 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     /**
      * Get the ZFDebug logger
      *
-     * @return Zend_Log
+     * @return \Zend_Log
      */
     public static function getLogger()
     {
         if (!self::$_logger) {
-            if ($zfdebug = Zend_Controller_Front::getInstance()->getPlugin('ZFDebug_Controller_Plugin_Debug')) {
+            if ($zfdebug = \Zend_Controller_Front::getInstance()->getPlugin('ZFDebug_Controller_Plugin_Debug')) {
                 self::$_logger = $zfdebug->getPlugin('Log')->getLog();
             } else {
                 return false;
@@ -83,7 +82,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
      */
     public function __construct()
     {
-        Zend_Controller_Front::getInstance()->registerPlugin($this);
+        \Zend_Controller_Front::getInstance()->registerPlugin($this);
 
         set_error_handler(array($this , 'errorHandler'));
     }
@@ -168,9 +167,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
 
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function routeStartup(Zend_Controller_Request_Abstract $request)
@@ -178,9 +177,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
@@ -188,9 +187,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
@@ -198,9 +197,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function postDispatch(Zend_Controller_Request_Abstract $request)
@@ -208,9 +207,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
@@ -218,14 +217,14 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function dispatchLoopShutdown()
     {
-        $response = Zend_Controller_Front::getInstance()->getResponse();
+        $response = \Zend_Controller_Front::getInstance()->getResponse();
         foreach ($response->getException() as $e) {
             $exception = get_class($e) . ': ' . $e->getMessage()
                        . ' thrown in ' . str_replace($_SERVER['DOCUMENT_ROOT'], '', $e->getFile())

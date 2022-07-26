@@ -2,18 +2,19 @@
 
 /**
  *
- * Gems Base \Exception class
+ * \Gems Base \Exception class
  *
  * @package    Gems
  * @subpackage Exception
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems;
+
 /**
- * Gems Base \Exception class
+ * \Gems Base \Exception class
  *
  * @package    Gems
  * @subpackage Exception
@@ -21,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Exception extends \Zend_Exception
+class Exception extends \Zend_Exception
 {
     /**
      * Optional extra information on the exception

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AddTrackFieldsTransformer.php 2534 2015-05-05 18:07:37Z matijsdejong $
  */
 
 namespace Gems\Tracker\Model;
@@ -21,18 +20,18 @@ namespace Gems\Tracker\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
  */
-class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
+class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
 {
 
     protected $changed = 0;
 
     /**
-     * @var \Gems_Tracker_Source_SourceInterface
+     * @var \Gems\Tracker\Source\SourceInterface
      */
     protected $source;
 
     /**
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $survey;
 
@@ -41,7 +40,7 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
      */
     protected $tokenField = 'gto_id_token';
 
-    public function __construct(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source)
+    public function __construct(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source)
     {
         $this->survey = $survey;
         $this->source = $source;
@@ -61,17 +60,17 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         // get tokens
 
-        $tokens = \MUtil_Ra::column('gto_id_token', $data);
+        $tokens = \MUtil\Ra::column('gto_id_token', $data);
 
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $resultRows = array();
@@ -88,9 +87,9 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
             }
         }
 
-        //\MUtil_Echo::track($tokens);
+        //\MUtil\EchoOut\EchoOut::track($tokens);
 
-        //\MUtil_Echo::track($resultRows);
+        //\MUtil\EchoOut\EchoOut::track($resultRows);
 
         // No changes
         return $resultRows;
@@ -100,11 +99,11 @@ class AddAnswersTransformer extends \MUtil_Model_ModelTransformerAbstract
      * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil\Model\ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
     {
         $token = $this->source->getToken($row['gto_id_token']);
         $answers = $row;

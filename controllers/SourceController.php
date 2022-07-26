@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class SourceController extends Gems_Default_SourceAction
+class SourceController extends \Gems\Actions\SourceAction
 {
 }

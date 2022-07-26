@@ -18,10 +18,10 @@ namespace Gems\Snippets\Communication;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class ResendCommLogItemSnippet extends \MUtil_Snippets_SnippetAbstract
+class ResendCommLogItemSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
     
@@ -32,7 +32,7 @@ class ResendCommLogItemSnippet extends \MUtil_Snippets_SnippetAbstract
     protected $request;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -56,7 +56,7 @@ class ResendCommLogItemSnippet extends \MUtil_Snippets_SnippetAbstract
         return [
             $this->request->getControllerKey() => $this->request->getControllerName(),
             $this->request->getActionKey() => 'show',
-            \MUtil_Model::REQUEST_ID => $this->request->getParam(\MUtil_Model::REQUEST_ID),
+            \MUtil\Model::REQUEST_ID => $this->request->getParam(\MUtil\Model::REQUEST_ID),
         ];
         
     }
@@ -68,13 +68,13 @@ class ResendCommLogItemSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
-        $logId   = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        $logId   = $this->request->getParam(\MUtil\Model::REQUEST_ID);
         if (! $logId) {
             $this->addMessage($this->_('Cannot find mail log item!'));
             return false;

@@ -57,7 +57,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
     {
         parent::afterRegistry();
 
-        $setOnSave = \MUtil_Model_ModelAbstract::SAVE_TRANSFORMER;
+        $setOnSave = \MUtil\Model\ModelAbstract::SAVE_TRANSFORMER;
         $switches  = $this->getTextSettings();
 
         // Make sure the calculated name is saved
@@ -84,7 +84,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -101,7 +101,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

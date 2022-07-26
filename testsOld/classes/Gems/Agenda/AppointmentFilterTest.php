@@ -19,11 +19,11 @@ use Gems\Agenda\AppointmentFilterInterface;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.4 24-Oct-2018 11:03:27
  */
-class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
+class AppointmentFilterTest extends \Gems\Test\DbTestAbstract
 {
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
@@ -34,7 +34,7 @@ class AppointmentFilterTest extends \Gems_Test_DbTestAbstract
 
     /**
      *
-     * @var \Gems_Model_AppointmentModel
+     * @var \Gems\Model\AppointmentModel
      */
     protected $model;
 

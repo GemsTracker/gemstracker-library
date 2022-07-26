@@ -20,7 +20,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
+class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -52,14 +52,14 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Required
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -76,26 +76,26 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
         //
         // Initiate data retrieval for stuff needed by links
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
         $bridge->gr2t_id_respondent_track;
 
-        $HTML = \MUtil_Html::create();
+        $HTML = \MUtil\Html::create();
 
         $model->set('gto_round_description', 'tableDisplay', 'smallData');
         $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
 
-        $roundIcon[] = \MUtil_Lazy::iif($bridge->gto_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
         $bridge->td($this->util->getTokenData()->getTokenStatusLinkForBridge($bridge, false));
 
@@ -113,7 +113,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
-        $project = \GemsEscort::getInstance()->project;
+        $project = \Gems\Escort::getInstance()->project;
 
         // If we are allowed to see the result of the survey, show them
         if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
@@ -134,7 +134,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -146,9 +146,9 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         $filter['gto_id_respondent']   = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
@@ -176,7 +176,7 @@ class RespondentTokenSnippet extends \Gems_Snippets_TokenModelSnippetAbstract
 
         $model->addFilter($filter);
 
-        // \MUtil_Echo::track($model->getFilter());
+        // \MUtil\EchoOut\EchoOut::track($model->getFilter());
 
         $this->processSortOnly($model);
     }

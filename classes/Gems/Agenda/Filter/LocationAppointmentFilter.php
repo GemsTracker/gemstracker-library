@@ -92,10 +92,10 @@ class LocationAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
     {
         if (true !== $this->_locations) {
             if (isset($this->_locations[$appointment->getLocationId()])) {

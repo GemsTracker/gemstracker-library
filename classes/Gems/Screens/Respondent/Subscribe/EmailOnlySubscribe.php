@@ -21,12 +21,12 @@ use Gems\Screens\SubscribeScreenInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 11:38:50
  */
-class EmailOnlySubscribe extends \MUtil_Translate_TranslateableAbstract implements SubscribeScreenInterface
+class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implements SubscribeScreenInterface
 {
     /**
      * Use currentUser since currentOrganization may have changed by now
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -57,7 +57,7 @@ class EmailOnlySubscribe extends \MUtil_Translate_TranslateableAbstract implemen
         $function = function_exists('random_int') ? 'random_int' : 'rand';
         do {
             $number = $prefix . $function(1000000, 9999999);
-            // \MUtil_Echo::track($number);
+            // \MUtil\EchoOut\EchoOut::track($number);
         } while ($this->db->fetchOne($sql, [$number, $orgId]));
 
         return $number;
@@ -65,7 +65,7 @@ class EmailOnlySubscribe extends \MUtil_Translate_TranslateableAbstract implemen
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getScreenLabel()
     {

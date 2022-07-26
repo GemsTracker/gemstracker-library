@@ -7,13 +7,15 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * @package    Gems
  * @subpackage Versions
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Versions
+class Versions
 {
     /**
      * Build number
@@ -37,7 +39,7 @@ class Gems_Versions
     }
 
     /**
-     * The official Gems version number
+     * The official \Gems version number
      *
      * @return string
      */
@@ -47,7 +49,7 @@ class Gems_Versions
     }
 
     /**
-     * The official Gems main version number (with only one dot)
+     * The official \Gems main version number (with only one dot)
      *
      * @return string
      */

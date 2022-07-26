@@ -21,7 +21,7 @@ use Gems\Tracker\Model\RoundModel;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -37,21 +37,21 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
 
     /**
      *
-     * @var \Gems_Model_ConditionModel
+     * @var \Gems\Model_ConditionModel
      */
     protected $_model;
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -64,7 +64,7 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -86,7 +86,7 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -101,11 +101,11 @@ class ConditionAndOrTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstrac
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
-        $conditionId = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+        $conditionId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
 
         if ($conditionId) {
             $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $conditionId),

@@ -24,7 +24,7 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
+class FieldsDefinition extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      * Field key separator
@@ -120,13 +120,13 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -167,7 +167,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
                     $this->_trackFields[$key] = $field;
                 }
-                // \MUtil_Echo::track($this->_trackFields);
+                // \MUtil\EchoOut\EchoOut::track($this->_trackFields);
             } else {
                 $this->exists       = false;
             }
@@ -229,10 +229,10 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get model dependency that changes model settings for each row when loaded
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      * @return array of \MUtil\Model\Dependency\DependencyInterface
      */
-    public function getDataModelDependencies(\MUtil_Model_ModelAbstract $model)
+    public function getDataModelDependencies(\MUtil\Model\ModelAbstract $model)
     {
         if (! $this->exists) {
             return null;
@@ -444,7 +444,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns the field data for the respondent track id.
      *
-     * @param int $respTrackId Gems respondent track id or null when new
+     * @param int $respTrackId \Gems respondent track id or null when new
      * @return array of the existing field values for this respondent track
      */
     public function getFieldsDataFor($respTrackId)
@@ -692,7 +692,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Saves the field data for the respondent track id.
      *
-     * @param int $respTrackId Gems respondent track id
+     * @param int $respTrackId \Gems respondent track id
      * @param array $fieldData The values to save, only the key is used, not the code
      * @return int The number of changed fields
      */
@@ -702,7 +702,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $logs   = [];
         
         $oldFieldData = $this->getFieldsDataFor($respTrackId);
-        // \MUtil_Echo::track($fieldData, $oldFieldData);
+        // \MUtil\EchoOut\EchoOut::track($fieldData, $oldFieldData);
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
@@ -734,7 +734,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     'gr2t2f_value_manual'        => $manual ? 1 : 0,
                 );
                 
-                // \MUtil_Echo::track(array_key_exists($key, $oldFieldData), $saveVal, $oldFieldData[$key], $manual, $oldManual);
+                // \MUtil\EchoOut\EchoOut::track(array_key_exists($key, $oldFieldData), $saveVal, $oldFieldData[$key], $manual, $oldManual);
                 if ((! array_key_exists($key, $oldFieldData)) || ($saveVal != $oldFieldData[$key])  || ($manual != $oldManual)) {
                     $logs[] = [
                         'glrtf_id_respondent_track' => $respTrackId,
@@ -753,7 +753,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
         $model->saveAll($saves);
         
         if ($logs) {
-            // \MUtil_Echo::track($logs);
+            // \MUtil\EchoOut\EchoOut::track($logs);
             $this->getLogStorageModel()->saveAll($logs);
         }
 

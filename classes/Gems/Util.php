@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 use IPLib\Factory as IpFactory;
 use IPLib\Address\AddressInterface;
 use IPLib\Range\RangeInterface;
@@ -22,16 +24,16 @@ use IPLib\Range\RangeInterface;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
+class Util extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -45,13 +47,13 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_Util_DbLookup
+     * @var \Gems\Util\DbLookup
      */
     protected $dbLookup;
 
     /**
      *
-     * @var \Gems_Util_Localized
+     * @var \Gems\Util\Localized
      */
     protected $localized;
 
@@ -69,19 +71,19 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Util_ReceptionCodeLibrary
+     * @var \Gems\Util\ReceptionCodeLibrary
      */
     protected $receptionCodeLibrary;
 
     /**
      *
-     * @var \Gems_Util_RequestCache
+     * @var \Gems\Util\RequestCache
      */
     protected $requestCache;
 
@@ -93,19 +95,19 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_Util_TokenData
+     * @var \Gems\Util\TokenData
      */
     protected $tokenData;
 
     /**
      *
-     * @var \Gems_Util_TrackData
+     * @var \Gems\Util\TrackData
      */
     protected $trackData;
 
     /**
      *
-     * @var \Gems_Util_Translated
+     * @var \Gems\Util\Translated
      */
     protected $translated;
 
@@ -160,7 +162,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * The mapping of actual consents to consentCODEs is done in the gems__consents table
      *
      * @return string Default value is 'do not use'
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     public function getConsentRejected()
     {
@@ -203,7 +205,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the cron job lock
      *
-     * @return \Gems_Util_LockFile
+     * @return \Gems\Util\LockFile
      */
     public function getCronJobLock()
     {
@@ -222,7 +224,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
         static $uri;
 
         if (! $uri) {
-            $uri = (\MUtil_Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
+            $uri = (\MUtil\Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
 
             $uri .= '://';
             if (isset($_SERVER['SERVER_NAME'])) {
@@ -230,12 +232,12 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
                 $uri .= $this->basepath->getBasePath();
             } else {
                 // I did not want to add loader to util, can no longer tell why
-                $org = \GemsEscort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
+                $org = \Gems\Escort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
 
-                if ($org instanceof \Gems_User_Organization) {
+                if ($org instanceof \Gems\User\Organization) {
                     $uri = $org->getPreferredSiteUrl();
                 } else {
-                    throw new \Gems_Exception_Coding(
+                    throw new \Gems\Exception\Coding(
                         __CLASS__ . '->' . __FUNCTION__ . "() should not be called when there is no current organization."
                     );
                 }
@@ -266,7 +268,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Util_DbLookup
+     * @return \Gems\Util\DbLookup
      */
     public function getDbLookup()
     {
@@ -285,7 +287,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Util_Localized
+     * @return \Gems\Util\Localized
      */
     public function getLocalized()
     {
@@ -296,7 +298,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * Returns a lock object
      *
      * @param string $filename (without a path!)
-     * @return \Gems_Util_LockFile
+     * @return \Gems\Util\LockFile
      */
     public function getLockFile($filename)
     {
@@ -306,7 +308,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns the maintenance lock
      *
-     * @return \Gems_Util_LockFile
+     * @return \Gems\Util\LockFile
      */
     public function getMaintenanceLock()
     {
@@ -347,7 +349,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      * Returns a single reception code object.
      *
      * @param string $code
-     * @return \Gems_Util_ReceptionCode
+     * @return \Gems\Util\ReceptionCode
      */
     public function getReceptionCode($code)
     {
@@ -363,7 +365,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a
      *
-     * @return \Gems_Util_ReceptionCodeLibrary
+     * @return \Gems\Util\ReceptionCodeLibrary
      */
     public function getReceptionCodeLibrary()
     {
@@ -374,7 +376,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string  $sourceAction    The action to get the cache from if not the current one.
      * @param boolean $readonly        Optional, tell the cache not to store any new values
-     * @return \Gems_Util_RequestCache
+     * @return \Gems\Util\RequestCache
      */
     public function getRequestCache($sourceAction = null, $readonly = false)
     {
@@ -392,7 +394,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Util_TokenData
+     * @return \Gems\Util\TokenData
      */
     public function getTokenData()
     {
@@ -401,7 +403,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Util_TrackData
+     * @return \Gems\Util\TrackData
      */
     public function getTrackData()
     {
@@ -410,7 +412,7 @@ class Gems_Util extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Util_Translated
+     * @return \Gems\Util\Translated
      */
     public function getTranslated()
     {

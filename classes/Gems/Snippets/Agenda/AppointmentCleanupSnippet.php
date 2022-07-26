@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentCleanupSnippet.php  2532 2015-04-30 16:33:05Z matijsdejong $
  */
 
 namespace Gems\Snippets\Agenda;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-mrt-2015 11:11:12
  */
-class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGeneric
+class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
 {
     /**
      * The action to go to when the user clicks 'No'.
@@ -40,11 +39,11 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
     protected $afterSaveRouteUrl;
 
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      * Shortfix to add class attribute
@@ -109,7 +108,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
      */
     protected function getWhere()
     {
-        $id = intval($this->request->getParam(\MUtil_Model::REQUEST_ID));
+        $id = intval($this->request->getParam(\MUtil\Model::REQUEST_ID));
         $add = " = " . $id;
 
         return implode($add . ' OR ', (array) $this->filterOn) . $add;
@@ -122,7 +121,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -177,11 +176,11 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $fparams = array('class' => 'centerAlign');
         $row     = $bridge->getRow();
@@ -222,7 +221,7 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
                 $this->menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
                 $this->menuList->addCurrentSiblings();
             }
-            if ($this->menuList instanceof \Gems_Menu_MenuList) {
+            if ($this->menuList instanceof \Gems\Menu\MenuList) {
                 $this->menuList->addParameterSources($bridge);
             }
 

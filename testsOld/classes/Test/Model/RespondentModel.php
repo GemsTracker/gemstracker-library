@@ -2,7 +2,7 @@
 
 namespace Test\Model;
 
-use Gems_Model_RespondentModel;
+use Gems\Model\RespondentModel;
 use UnitTestDBFixTrait;
 
 /**
@@ -12,7 +12,7 @@ use UnitTestDBFixTrait;
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class RespondentModel extends Gems_Model_RespondentModel {
+class RespondentModel extends \Gems\Model\RespondentModel {
     
     use UnitTestDBFixTrait;
     

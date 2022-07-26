@@ -41,13 +41,13 @@ class RelatedTracksField extends MultiselectField
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -72,7 +72,7 @@ class RelatedTracksField extends MultiselectField
     protected function addModelSettings(array &$settings)
     {
         parent::addModelSettings($settings);
-        // \MUtil_Echo::track(array_keys($settings));
+        // \MUtil\EchoOut\EchoOut::track(array_keys($settings));
 
         $settings['escape'] = false;
         $settings['formatFunction'] = array($this, 'showTracks');
@@ -110,12 +110,12 @@ class RelatedTracksField extends MultiselectField
             if ($respondentTracks) {
                 $options = [];
                 foreach ($respondentTracks as $respondentTrack) {
-                    if ($respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+                    if ($respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
                         $class = $this->getTrackClass($respondentTrack);
                         $label = $this->getTrackLabel($respondentTrack);
                         
                         if ($class) {
-                            $label = \MUtil_Html::create('span', $label, ['class' => $class])->render($this->view);
+                            $label = \MUtil\Html::create('span', $label, ['class' => $class])->render($this->view);
                         }
                         $options[$respondentTrack->getRespondentTrackId()] = $label;
                     }
@@ -125,26 +125,26 @@ class RelatedTracksField extends MultiselectField
                 $output['description'] = $this->_('No other tracks to select');
                 $output['elementClass'] = 'Exhibitor';
             }
-            // \MUtil_Echo::track($context,count($respondentTracks), array_keys($respondentTracks));
+            // \MUtil\EchoOut\EchoOut::track($context,count($respondentTracks), array_keys($respondentTracks));
         }
         
         return $output;
     }
 
     /**
-     * @param \Gems_Tracker_RespondentTrack $respondentTrack
+     * @param \Gems\Tracker\RespondentTrack $respondentTrack
      * @return string The label to display
      */
-    public function getTrackClass(\Gems_Tracker_RespondentTrack $respondentTrack)
+    public function getTrackClass(\Gems\Tracker\RespondentTrack $respondentTrack)
     {
         return $respondentTrack->getReceptionCode()->isSuccess() ? '' : 'deleted';
     }
     
     /**
-     * @param \Gems_Tracker_RespondentTrack $respondentTrack
+     * @param \Gems\Tracker\RespondentTrack $respondentTrack
      * @return string The label to display
      */
-    public function getTrackLabel(\Gems_Tracker_RespondentTrack $respondentTrack)
+    public function getTrackLabel(\Gems\Tracker\RespondentTrack $respondentTrack)
     {
         return $respondentTrack->getTrackName() . ' ' . $respondentTrack->getFieldsInfo();
     }
@@ -167,7 +167,7 @@ class RelatedTracksField extends MultiselectField
     
     /**
      * @param $value
-     * @return \MUtil_Html_HtmlElement
+     * @return \MUtil\Html\HtmlElement
      */
     public function showTracks($value)
     {
@@ -179,14 +179,14 @@ class RelatedTracksField extends MultiselectField
             $this->request = \Zend_Controller_Front::getInstance()->getRequest();
         }
 
-        $baseUrl      = ['gr2o_patient_nr' => $this->request->getParam(\MUtil_Model::REQUEST_ID1), 'gr2o_id_organization' => $this->request->getParam(\MUtil_Model::REQUEST_ID2)];
+        $baseUrl      = ['gr2o_patient_nr' => $this->request->getParam(\MUtil\Model::REQUEST_ID1), 'gr2o_id_organization' => $this->request->getParam(\MUtil\Model::REQUEST_ID2)];
         $tracker      = $this->loader->getTracker();
         $showMenuItem = $this->menu->findAllowedController('track', 'show-track');
         
         if ($value) {
-            $ul = \MUtil_Html::create('ul', ['class' => $this->displayClass]);
+            $ul = \MUtil\Html::create('ul', ['class' => $this->displayClass]);
             foreach ($value as $respondentTrackId) {
-                // \MUtil_Echo::track($respondentTrackId);
+                // \MUtil\EchoOut\EchoOut::track($respondentTrackId);
                 $respondentTrack = $tracker->getRespondentTrack($respondentTrackId);
 
                 $label = $this->getTrackLabel($respondentTrack);
@@ -201,7 +201,7 @@ class RelatedTracksField extends MultiselectField
                 }
             }
         } else {
-            $ul = \MUtil_Html::create('span', $this->_('No linked tracks selected.'));
+            $ul = \MUtil\Html::create('span', $this->_('No linked tracks selected.'));
             
         }
         

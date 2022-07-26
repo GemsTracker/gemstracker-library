@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $id$
  */
+
+namespace Gems\Task\Updates;
 
 /**
  * Recompile all templates
@@ -18,10 +19,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4  05-jun-2014
  */
-class Gems_Task_Updates_CompileTemplates extends \MUtil_Task_TaskAbstract
+class CompileTemplates extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
     
@@ -33,7 +34,7 @@ class Gems_Task_Updates_CompileTemplates extends \MUtil_Task_TaskAbstract
      */
     public function execute()
     {
-        $model = new \Gems_Model_TemplateModel('templates', $this->project);
+        $model = new \Gems\Model\TemplateModel('templates', $this->project);
         $templates = $model->load();
         foreach ($templates as $name => $data) {
             // Now load individual template

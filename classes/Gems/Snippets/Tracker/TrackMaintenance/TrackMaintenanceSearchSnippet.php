@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackMaintenanceSearchSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker\TrackMaintenance;
@@ -21,11 +20,11 @@ namespace Gems\Snippets\Tracker\TrackMaintenance;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 18:10:55
  */
-class TrackMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,7 +42,7 @@ class TrackMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $elements = parent::getAutoSearchElements($data);
 
         if ($elements) {
-            $br = \MUtil_Html::create('br');
+            $br = \MUtil\Html::create('br');
             $elements[] = $this->_createSelectElement('gtr_track_class', $this->model, $this->_('(all track engines)'));
 
             $elements[] = $br;

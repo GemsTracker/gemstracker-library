@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -46,7 +45,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin
 
     protected function _isXhtml()
     {
-        $view = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer')->view;
+        $view = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer')->view;
         $doctype = $view->doctype();
         return $doctype->isXhtml();
     }

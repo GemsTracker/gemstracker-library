@@ -4,8 +4,9 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Executes any command in a source for a given $sourceId
@@ -17,10 +18,10 @@
  * @since      Class available since version 1.5.3
  * @deprecated since 1.6.4 No longer in use
  */
-class Gems_Task_Tracker_SourceCommand extends \MUtil_Task_TaskAbstract
+class SourceCommand extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

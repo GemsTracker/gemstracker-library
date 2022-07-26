@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
  * Extra code for displaying token models.
  *
@@ -20,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableSnippetAbstract
+class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -31,34 +33,34 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * A model, not necessarily the token model
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
      */
-    protected function addActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
+    protected function addActionLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         $tData = $this->util->getTokenData();
         
@@ -75,9 +77,9 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
 
     /**
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
      */
-    protected function addTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
+    protected function addTokenLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         $link = $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
 
@@ -89,11 +91,11 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Tracker_Model_StandardTokenModel) {
+        if ($this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model = $this->model;
         } else {
             $model = $this->loader->getTracker()->getTokenModel();
@@ -119,9 +121,9 @@ class Gems_Snippets_TokenModelSnippetAbstract extends \Gems_Snippets_ModelTableS
     /**
      * calc_used_date has special sort, see bugs 108 and 127
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function sortCalcDateCheck(\MUtil_Model_ModelAbstract $model)
+    protected function sortCalcDateCheck(\MUtil\Model\ModelAbstract $model)
     {
         $sort = $model->getSort();
 

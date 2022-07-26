@@ -19,7 +19,7 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:06 PM
  */
-class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
+class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
 {
     const RESPONDENT_BROWSE_SCREEN      = 'Respondent\\Browse';
     const RESPONDENT_EDIT_SCREEN        = 'Respondent\\Edit';
@@ -59,7 +59,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
         if (isset($this->_screenClasses[$screenType])) {
             return $this->_screenClasses[$screenType];
         } else {
-            throw new \Gems_Exception_Coding("No screen class exists for screen type '$screenType'.");
+            throw new \Gems\Exception\Coding("No screen class exists for screen type '$screenType'.");
         }
     }
 
@@ -112,7 +112,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
     {
         $screenClass = $this->_getScreenClass($screenType);
 
-        // \MUtil_Echo::track($screenName);
+        // \MUtil\EchoOut\EchoOut::track($screenName);
         if (! class_exists($screenName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
@@ -120,9 +120,9 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
                     strtolower($screenType) . DIRECTORY_SEPARATOR . $screenName . '.php';
 
             if (! file_exists($filename)) {
-                throw new \Gems_Exception_Coding("The screen '$screenName' of type '$screenType' does not exist at location: $filename.");
+                throw new \Gems\Exception\Coding("The screen '$screenName' of type '$screenType' does not exist at location: $filename.");
             }
-            // \MUtil_Echo::track($filename);
+            // \MUtil\EchoOut\EchoOut::track($filename);
 
             include($filename);
         }
@@ -130,10 +130,10 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
         $screen = new $screenName();
 
         if (! $screen instanceof $screenClass) {
-            throw new \Gems_Exception_Coding("The screen '$screenName' of type '$screenType' is not an instance of '$screenClass'.");
+            throw new \Gems\Exception\Coding("The screen '$screenName' of type '$screenType' is not an instance of '$screenClass'.");
         }
 
-        if ($screen instanceof \MUtil_Registry_TargetInterface) {
+        if ($screen instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($screen);
         }
 
@@ -173,7 +173,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listSubscribeScreens()
     {
-        return \Gems_Util_Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_SUBSCRIBE_SCREEN);
+        return \Gems\Util\Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_SUBSCRIBE_SCREEN);
     }
 
     /**
@@ -191,7 +191,7 @@ class ScreenLoader extends \Gems_Loader_TargetLoaderAbstract
      */
     public function listUnsubscribeScreens()
     {
-        return \Gems_Util_Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_UNSUBSCRIBE_SCREEN);
+        return \Gems\Util\Translated::$emptyDropdownArray + $this->_listScreens(self::RESPONDENT_UNSUBSCRIBE_SCREEN);
     }
 
     /**

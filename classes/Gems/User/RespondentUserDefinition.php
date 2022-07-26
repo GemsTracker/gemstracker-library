@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 /**
  * A standard, database stored and authenticate respondent user as of version 1.5.
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_RespondentUserDefinition extends \Gems_User_DbUserDefinitionAbstract
+class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.

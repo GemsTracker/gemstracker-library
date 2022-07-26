@@ -13,7 +13,7 @@ namespace Test;
  *
  * @author 175780
  */
-class Upgrades extends \Gems_UpgradesAbstract
+class Upgrades extends \Gems\UpgradesAbstract
 {
     public function __construct()
     {

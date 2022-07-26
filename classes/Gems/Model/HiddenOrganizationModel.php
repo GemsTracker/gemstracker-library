@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 use Gems\User\Group;
 
 /**
@@ -21,11 +23,11 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
+class HiddenOrganizationModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -60,9 +62,9 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
     {
         if ($parameters) {
             // Allow use when passed only an ID value
-            if (isset($parameters[\MUtil_Model::REQUEST_ID]) && (! isset($parameters[\MUtil_Model::REQUEST_ID1], $parameters[\MUtil_Model::REQUEST_ID2]))) {
+            if (isset($parameters[\MUtil\Model::REQUEST_ID]) && (! isset($parameters[\MUtil\Model::REQUEST_ID1], $parameters[\MUtil\Model::REQUEST_ID2]))) {
 
-                $id    = $parameters[\MUtil_Model::REQUEST_ID];
+                $id    = $parameters[\MUtil\Model::REQUEST_ID];
                 $keys  = $this->getKeys();
                 $field = array_shift($keys);
 
@@ -70,19 +72,19 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
 
                 if ($field2 = array_shift($keys)) {
                     $parameters[$field2] = $this->getCurrentOrganization();
-                    \MUtil_Echo::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
-                    \MUtil_Echo::r($parameters);
+                    \MUtil\EchoOut\EchoOut::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
+                    \MUtil\EchoOut\EchoOut::r($parameters);
                 }
 
-                unset($parameters[\MUtil_Model::REQUEST_ID]);
+                unset($parameters[\MUtil\Model::REQUEST_ID]);
             }
 
-            if (isset($parameters[\MUtil_Model::REQUEST_ID2]) &&
-                (! array_key_exists($parameters[\MUtil_Model::REQUEST_ID2], $this->currentUser->getAllowedOrganizations()))) {
+            if (isset($parameters[\MUtil\Model::REQUEST_ID2]) &&
+                (! array_key_exists($parameters[\MUtil\Model::REQUEST_ID2], $this->currentUser->getAllowedOrganizations()))) {
 
                 $this->initTranslateable();
 
-                throw new \Gems_Exception(
+                throw new \Gems\Exception(
                         $this->_('Inaccessible or unknown organization'),
                         403, null,
                         sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
@@ -102,7 +104,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->currentUser instanceof \Gems_User_User);
+        return ($this->currentUser instanceof \Gems\User\User);
     }
 
     /**
@@ -129,7 +131,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
         $keys = $this->getKeys();
 
         if (! $organizationInKey) {
-            if ($forData instanceof \MUtil_Lazy_RepeatableInterface) {
+            if ($forData instanceof \MUtil\Lazy\RepeatableInterface) {
                 // Here I kind of assume that the data always contains the organization key.
                 $organizationInKey = true;
             } else {
@@ -139,11 +141,11 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
         }
 
         if ($organizationInKey) {
-            $href[\MUtil_Model::REQUEST_ID]  = self::_getValueFrom(reset($keys), $forData);
+            $href[\MUtil\Model::REQUEST_ID]  = self::_getValueFrom(reset($keys), $forData);
         } else {
-            $href[\MUtil_Model::REQUEST_ID1] = self::_getValueFrom(reset($keys), $forData);
+            $href[\MUtil\Model::REQUEST_ID1] = self::_getValueFrom(reset($keys), $forData);
             next($keys);
-            $href[\MUtil_Model::REQUEST_ID2] = self::_getValueFrom(key($keys), $forData);
+            $href[\MUtil\Model::REQUEST_ID2] = self::_getValueFrom(key($keys), $forData);
         }
 
         return $href;
@@ -162,7 +164,7 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
         }
 
         if (! $this->translate instanceof \Zend_Translate_Adapter) {
-            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
+            $this->translate = new \MUtil\Translate\Adapter\Potemkin();
         }
 
         return $this->translate;
@@ -171,12 +173,12 @@ class Gems_Model_HiddenOrganizationModel extends \Gems_Model_JoinModel
     /**
      * Helper function that procesess the raw data after a load.
      *
-     * @see \MUtil_Model_SelectModelPaginator
+     * @see \MUtil\Model\SelectModelPaginator
      *
-     * @param mxied $data Nested array or Traversable containing rows or iterator
+     * @param mxied $data Nested array or \Traversable containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
-     * @return array or Traversable Nested
+     * @return array or \Traversable Nested
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {

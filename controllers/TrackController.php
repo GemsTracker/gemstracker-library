@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class TrackController extends Gems_Default_TrackAction
+class TrackController extends \Gems\Actions\TrackAction
 {
 }

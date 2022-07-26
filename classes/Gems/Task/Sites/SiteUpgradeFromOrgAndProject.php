@@ -18,7 +18,7 @@ namespace Gems\Task\Sites;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
+class SiteUpgradeFromOrgAndProject extends \MUtil\Task\TaskAbstract
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -26,12 +26,12 @@ class SiteUpgradeFromOrgAndProject extends \MUtil_Task_TaskAbstract
     protected $db;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

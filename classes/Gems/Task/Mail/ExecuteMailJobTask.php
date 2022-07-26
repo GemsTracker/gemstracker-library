@@ -23,11 +23,11 @@ use Psr\Log\LoggerInterface;
  * @since      Class available since version 1.7.3
  * @deprecated since version 1.9.1
  */
-class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
+class ExecuteMailJobTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -39,7 +39,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -50,7 +50,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -74,7 +74,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
         $job = $this->db->fetchRow($sql);
 
         if (empty($job)) {
-            throw new \Gems_Exception($this->_('Mail job not found!'));
+            throw new \Gems\Exception($this->_('Mail job not found!'));
         }
 
         $mailLoader = $this->loader->getMailLoader();
@@ -103,7 +103,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
 
         foreach ($multipleTokensData as $tokenData) {
             $mailer       = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
-            /* @var $mailer \Gems_Mail_TokenMailer */
+            /* @var $mailer \Gems\Mail\TokenMailer */
             $token  = $mailer->getToken();
 
             $email = $this->getToEmail($job, $sendByMail, $mailer, $token, $tokenData['can_email']);
@@ -163,7 +163,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                         break;
 
                     default:
-                        throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
+                        throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Processing Method')));
                 }
 
                 if ($mail == true) {
@@ -190,7 +190,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 );
 
                 // Use a gems exception to pass extra information to the log
-                $gemsException = new \Gems_Exception($info, 0, $exception);
+                $gemsException = new \Gems\Exception($info, 0, $exception);
                 $this->logger->error(LogHelper::getMessageFromException($gemsException));
 
                 $errors++;
@@ -231,11 +231,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      *
      * @param array $job
      * @param string $sendByMail Email address
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    protected function getFallbackEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    protected function getFallbackEmail(array $job, $sendByMail, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_fallback_method']) {
@@ -253,7 +253,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 return $this->project->email['site'];
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
         }
     }
 
@@ -261,11 +261,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      *
      * @param array $job
      * @param string $sendByMail Email address
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    protected function getFromEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    protected function getFromEmail(array $job, $sendByMail, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -282,7 +282,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 return $this->project->email['site'];
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
         }
     }
 
@@ -290,11 +290,11 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      *
      * @param array $job
      * @param string $sendByMail Email address
-     * @param \Gems_Mail_TokenMailer $mailer
+     * @param \Gems\Mail\TokenMailer $mailer
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    protected function getFromName(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer)
+    protected function getFromName(array $job, $sendByMail, \Gems\Mail\TokenMailer $mailer)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -310,13 +310,13 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
      *
      * @param array $job
      * @param string $sendByMail Email address
-     * @param \Gems_Mail_TokenMailer $mailer
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Mail\TokenMailer $mailer
+     * @param \Gems\Tracker\Token $token
      * @param boolean $canBeMailed True when allowed to mail respondent
      * @return string or null
-     * @throws \Gems_Exception
+     * @throws \Gems\Exception
      */
-    protected function getToEmail(array $job, $sendByMail, \Gems_Mail_TokenMailer $mailer, \Gems_Tracker_Token $token, $canBeMailed)
+    protected function getToEmail(array $job, $sendByMail, \Gems\Mail\TokenMailer $mailer, \Gems\Tracker\Token $token, $canBeMailed)
     {
         $email = null;
 
@@ -343,7 +343,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 return $this->getFallbackEmail($job, $sendByMail, $mailer);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
         }
 
 
@@ -360,7 +360,7 @@ class ExecuteMailJobTask extends \MUtil_Task_TaskAbstract
                 return $this->getFallbackEmail($job, $sendByMail, $mailer);
 
             default:
-                throw new \Gems_Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
         }
     }
 

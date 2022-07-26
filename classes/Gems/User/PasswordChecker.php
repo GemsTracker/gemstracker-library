@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
+class PasswordChecker extends \MUtil\Registry\TargetAbstract
 {
     /**
      *
@@ -28,7 +30,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -50,7 +52,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_User_User $user
+     * @var \Gems\User\User $user
      */
     protected $user;
 
@@ -113,7 +115,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
     {
         // Process the codes array to a format better used for filtering
         $codes = array_change_key_case(array_flip(array_filter($codes)));
-        // \MUtil_Echo::track($codes);
+        // \MUtil\EchoOut\EchoOut::track($codes);
 
         $rules = [];
         if (isset($this->config['passwords']) && is_array($this->config['passwords'])) {
@@ -144,7 +146,7 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
             $filename = __DIR__ . '/../../../docs/' . ltrim($parameter, '/');;
 
             if (! file_exists($filename)) {
-                throw new \Gems_Exception("Unable to load password list '{$filename}'");
+                throw new \Gems\Exception("Unable to load password list '{$filename}'");
             }
 
             $passwordList = explode("\n", file_get_contents($filename));
@@ -299,13 +301,13 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
     /**
      * Check for password weakness.
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @param string $password Or null when you want a report on all the rules for this password.
      * @param array  $codes An array of code names that identify rules that should be used only for those codes.
      * @param boolean $skipAge When setting a new password, we should not check for age
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(\Gems_User_User $user, $password, array $codes, $skipAge = false)
+    public function reportPasswordWeakness(\Gems\User\User $user, $password, array $codes, $skipAge = false)
     {
         $this->user = $user;
         $this->_errors = array();
@@ -315,14 +317,14 @@ class Gems_User_PasswordChecker extends \MUtil_Registry_TargetAbstract
         if ($skipAge) {
             unset($rules['maxAge']);
         }
-        // \MUtil_Echo::track($rules);
+        // \MUtil\EchoOut\EchoOut::track($rules);
 
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);
             }
         }
-        // \MUtil_Echo::track($this->_errors);
+        // \MUtil\EchoOut\EchoOut::track($this->_errors);
 
         return $this->_errors;
     }

@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Token;
@@ -20,7 +19,7 @@ namespace Gems\Snippets\Token;
  *
  * A snippet is a piece of html output that is reused on multiple places in the code.
  *
- * Variables are intialized using the {@see \MUtil_Registry_TargetInterface} mechanism.
+ * Variables are intialized using the {@see \MUtil\Registry\TargetInterface} mechanism.
  *
  * @package    Gems
  * @subpackage Snippets
@@ -28,7 +27,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TokenTabsSnippet extends \MUtil_Snippets_TabSnippetAbstract
+class TokenTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
 {
     /**
      * Default href parameter values
@@ -42,7 +41,7 @@ class TokenTabsSnippet extends \MUtil_Snippets_TabSnippetAbstract
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -80,7 +79,7 @@ class TokenTabsSnippet extends \MUtil_Snippets_TabSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

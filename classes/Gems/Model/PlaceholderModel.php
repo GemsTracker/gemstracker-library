@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 /**
  * A placeholder array model
  *
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.9,0
  */
-class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
+class PlaceholderModel extends \MUtil\Model\ArrayModelAbstract
 {
     /**
      * @var array The data in the model
@@ -25,7 +27,7 @@ class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
 	protected $data;
 
     /**
-     * Gems_Model_PlaceholderModel constructor.
+     * \Gems\Model\PlaceholderModel constructor.
      *
      * @param string $modelName
      * @param array $fieldArray Nested array containing settings
@@ -76,7 +78,7 @@ class Gems_Model_PlaceholderModel extends \MUtil_Model_ArrayModelAbstract
      * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
      * @param array $sort Sort array field name => sort type
      * @return integer number of total items in model result
-     * @throws Zend_Db_Select_Exception
+     * @throws \Zend_Db_Select_Exception
      */
     public function getItemCount($filter = true, $sort = true)
     {

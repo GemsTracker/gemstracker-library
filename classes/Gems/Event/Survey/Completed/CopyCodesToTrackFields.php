@@ -22,7 +22,7 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-class CopyCodesToTrackFields extends \Gems_Event_EventCalculations implements \Gems_Event_SurveyCompletedEventInterface
+class CopyCodesToTrackFields extends \Gems\Event\EventCalculations implements \Gems\Event\SurveyCompletedEventInterface
 {
 
     /**
@@ -40,10 +40,10 @@ class CopyCodesToTrackFields extends \Gems_Event_EventCalculations implements \G
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems_Tracker_Token $token)
+    public function processTokenData(\Gems\Tracker\Token $token)
     {
         if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
@@ -58,7 +58,7 @@ class CopyCodesToTrackFields extends \Gems_Event_EventCalculations implements \G
             }
 
             if ($newFields) {
-                // \MUtil_Echo::track($answers, $newFields);
+                // \MUtil\EchoOut\EchoOut::track($answers, $newFields);
                 $respTrack->setFieldData($newFields);
             }
         }

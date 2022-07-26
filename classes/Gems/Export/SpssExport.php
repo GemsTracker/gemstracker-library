@@ -104,12 +104,12 @@ class SpssExport extends ExportAbstract
         foreach ($exportRow as $name => $value) {
             $type = $this->model->get($name, 'type');
             // When numeric, there could be a non numeric answer, just ignore empty values
-            if ($type == \MUtil_Model::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
-                $this->model->set($name, 'type', \MUtil_Model::TYPE_STRING);
+            if ($type == \MUtil\Model::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
+                $this->model->set($name, 'type', \MUtil\Model::TYPE_STRING);
                 $changed = true;
             }
             
-            if ($type == \MUtil_Model::TYPE_STRING) {
+            if ($type == \MUtil\Model::TYPE_STRING) {
                 $size = (int) $this->model->get($name, 'maxlength');
                 if (mb_strlen($value)>$size) {
                     $this->model->set($name, 'maxlength', mb_strlen($value));
@@ -187,25 +187,25 @@ class SpssExport extends ExportAbstract
             $options          = array();
             $type             = $model->get($colname, 'type');
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     $type = 'SDATE10';
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     $type = 'DATETIME23';
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     $type = 'TIME8.0';
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     $defaultSize = $this->defaultNumericSize;
                     $type        = 'F';
                     break;
 
                 //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
+                case \MUtil\Model::TYPE_STRING:
                 default:
                     $defaultSize = $this->defaultAlphaSize;
                     $type        = 'A';
@@ -316,25 +316,25 @@ class SpssExport extends ExportAbstract
             $options = array();
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
-                case \MUtil_Model::TYPE_DATE:
+                case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'yyyy-MM-dd';
                     break;
 
-                case \MUtil_Model::TYPE_DATETIME:
+                case \MUtil\Model::TYPE_DATETIME:
                     $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_TIME:
+                case \MUtil\Model::TYPE_TIME:
                     $options['dateFormat']    = 'HH:mm:ss';
                     break;
 
-                case \MUtil_Model::TYPE_NUMERIC:
+                case \MUtil\Model::TYPE_NUMERIC:
                     break;
 
                 //When no type set... assume string
-                case \MUtil_Model::TYPE_STRING:
+                case \MUtil\Model::TYPE_STRING:
                 default:
-                    $type                      = \MUtil_Model::TYPE_STRING;
+                    $type                      = \MUtil\Model::TYPE_STRING;
                     $options['formatFunction'] = 'formatString';
                     break;
             }

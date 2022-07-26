@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StaffLogSearchSnippet.php 2493 2015-04-15 16:29:48Z matijsdejong $
  */
 
 namespace Gems\Snippets\Log;
@@ -36,7 +35,7 @@ class StaffLogSearchSnippet extends LogSearchSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID);
+        $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID);
 
         return $elements;
     }
@@ -52,7 +51,7 @@ class StaffLogSearchSnippet extends LogSearchSnippet
     {
         $neededParams = parent::getFixedParams();
         
-        $neededParams[] = \MUtil_Model::REQUEST_ID;
+        $neededParams[] = \MUtil\Model::REQUEST_ID;
         
         return $neededParams;
         

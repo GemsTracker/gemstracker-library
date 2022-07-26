@@ -70,7 +70,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -83,7 +83,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $user;
 
@@ -94,7 +94,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      */
     protected function addFormElements(\Zend_Form $form)
     {
-        if ($form instanceof \Gems_User_Form_ChangePasswordForm) {
+        if ($form instanceof \Gems\User\Form\ChangePasswordForm) {
             $form->loadDefaultElements();
         }
     }
@@ -134,7 +134,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -173,7 +173,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */

@@ -7,11 +7,10 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
- * @see Zend_Db_Table_Abstract
+ * @see \Zend_Db_Table_Abstract
  */
 require_once 'Zend/Db/Table/Abstract.php';
 
@@ -44,22 +43,22 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Database
     /**
      * Create ZFDebug_Controller_Plugin_Debug_Plugin_Variables
      *
-     * @param Zend_Db_Adapter_Abstract|array $adapters
+     * @param \Zend_Db_Adapter_Abstract|array $adapters
      * @return void
      */
     public function __construct(array $options = array())
     {
         if (!isset($options['adapter']) || !count($options['adapter'])) {
             if (Zend_Db_Table_Abstract::getDefaultAdapter()) {
-                $this->_db[0] = Zend_Db_Table_Abstract::getDefaultAdapter();
+                $this->_db[0] = \Zend_Db_Table_Abstract::getDefaultAdapter();
                 $this->_db[0]->getProfiler()->setEnabled(true);
             }
-        } else if ($options['adapter'] instanceof Zend_Db_Adapter_Abstract ) {
+        } else if ($options['adapter'] instanceof \Zend_Db_Adapter_Abstract ) {
             $this->_db[0] = $options['adapter'];
             $this->_db[0]->getProfiler()->setEnabled(true);
         } else {
             foreach ($options['adapter'] as $name => $adapter) {
-                if ($adapter instanceof Zend_Db_Adapter_Abstract) {
+                if ($adapter instanceof \Zend_Db_Adapter_Abstract) {
                     $adapter->getProfiler()->setEnabled(true);
                     $this->_db[$name] = $adapter;
                 }
@@ -157,8 +156,8 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Database
                         $queries .= htmlspecialchars($profile->getQuery());
                     }
 
-                    $supportedAdapter = ($adapter instanceof Zend_Db_Adapter_Mysqli ||
-                                         $adapter instanceof Zend_Db_Adapter_Pdo_Mysql);
+                    $supportedAdapter = ($adapter instanceof \Zend_Db_Adapter_Mysqli ||
+                                         $adapter instanceof \Zend_Db_Adapter_Pdo_Mysql);
 
                     # Run explain if enabled, supported adapter and SELECT query
                     if ($this->_explain && $supportedAdapter) {

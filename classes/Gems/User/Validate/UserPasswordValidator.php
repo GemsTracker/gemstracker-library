@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User\Validate;
 
 /**
  *
@@ -19,20 +20,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Validate_UserPasswordValidator extends \Gems_User_Validate_PasswordValidatorAbstract
+class UserPasswordValidator extends \Gems\User\Validate\PasswordValidatorAbstract
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     private $_user;
 
     /**
      *
-     * @param \Gems_User_User $user The user to check
+     * @param \Gems\User\User $user The user to check
      * @param string $message Default message for standard login fail.
      */
-    public function __construct(\Gems_User_User $user, $message)
+    public function __construct(\Gems\User\User $user, $message)
     {
         $this->_user = $user;
 

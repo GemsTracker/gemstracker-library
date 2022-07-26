@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Tracker\Snippets;
 
 /**
  * Displays the assignments of a track to a respondent.
@@ -23,7 +24,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippets_ModelTableSnippetAbstract
+abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -49,7 +50,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
     /**
      * Required
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -70,7 +71,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
     /**
      * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -92,7 +93,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
      *
      * $trackEngine and TrackId need $patientId and $organizationId to be set as well
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -119,7 +120,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -144,7 +145,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -167,7 +168,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
      */
     protected function getRespondentName()
     {
-        if ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
+        if ($this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
             return $this->respondentTrack->getRespondentName();
         } else {
             $select = $this->db->select();
@@ -195,7 +196,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -206,7 +207,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
             if ($this->respondentTrack) {
                 $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
             } else {
-                $this->respondentTrackId = $this->request->getParam(\Gems_Model::RESPONDENT_TRACK);
+                $this->respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK);
             }
         }
         // First attempt at trackId
@@ -237,7 +238,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
             $this->organizationId = $this->respondentTrack->getOrganizationId();
         }
 
-        // \MUtil_Echo::track($this->trackId, $this->patientId, $this->organizationId, $this->respondentTrackId);
+        // \MUtil\EchoOut\EchoOut::track($this->trackId, $this->patientId, $this->organizationId, $this->respondentTrackId);
 
         return $this->getModel()->loadFirst() && parent::hasHtmlOutput();
     }
@@ -245,9 +246,9 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends \Gems_Snippe
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

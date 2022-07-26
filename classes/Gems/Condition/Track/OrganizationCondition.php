@@ -23,12 +23,12 @@ use Gems\Condition\TrackConditionInterface;
 class OrganizationCondition extends ConditionAbstract implements TrackConditionInterface
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -120,11 +120,11 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
      *
      * This is the actual implementation of the condition
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems_Tracker_RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
     {
         $orgId = $respTrack->getOrganizationId();
 

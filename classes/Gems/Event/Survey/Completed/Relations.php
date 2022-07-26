@@ -20,7 +20,7 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class Relations extends \MUtil_Translate_TranslateableAbstract implements \Gems_Event_SurveyCompletedEventInterface
+class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\Event\SurveyCompletedEventInterface
 {
 
     /**
@@ -39,13 +39,13 @@ class Relations extends \MUtil_Translate_TranslateableAbstract implements \Gems_
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Model_RespondentRelationModel
+     * @var \Gems\Model\RespondentRelationModel
      */
     protected $relationModel;
 
@@ -64,10 +64,10 @@ class Relations extends \MUtil_Translate_TranslateableAbstract implements \Gems_
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems_Tracker_Token $token)
+    public function processTokenData(\Gems\Tracker\Token $token)
     {
         $respondentTrack = $token->getRespondentTrack();
 
@@ -130,10 +130,10 @@ class Relations extends \MUtil_Translate_TranslateableAbstract implements \Gems_
      * Perform checks on the relation, does it already exist and need updating
      *
      * @param array $relation
-     * @param \Gems_Tracker_Respondent $respondent
+     * @param \Gems\Tracker\Respondent $respondent
      * @return int The relation ID
      */
-    protected function handleRelation($relation, \Gems_Tracker_Respondent $respondent)
+    protected function handleRelation($relation, \Gems\Tracker\Respondent $respondent)
     {
 
         $relationFilter = [
@@ -151,7 +151,7 @@ class Relations extends \MUtil_Translate_TranslateableAbstract implements \Gems_
                     'yyyy-MM-dd HH:mm:ss',
                     'yyyy-MM-dd'
                 ];
-                $relation['grr_birthdate'] = \MUtil_Date::ifDate($relation['grr_birthdate'], $dateformats);
+                $relation['grr_birthdate'] = \MUtil\Date::ifDate($relation['grr_birthdate'], $dateformats);
             }
 
             $relation = ['grr_id_respondent' => $respondent->getId()] + $relation + $this->relationModel->loadNew();

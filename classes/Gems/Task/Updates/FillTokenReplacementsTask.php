@@ -19,7 +19,7 @@ namespace Gems\Task\Updates;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Mar 2, 2017 1:38:59 PM
  */
-class FillTokenReplacementsTask extends \MUtil_Task_TaskAbstract
+class FillTokenReplacementsTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *

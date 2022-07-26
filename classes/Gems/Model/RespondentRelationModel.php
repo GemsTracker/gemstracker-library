@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 /**
  *
  * @package    Gems
@@ -18,15 +20,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
+class RespondentRelationModel extends \Gems\Model\JoinModel {
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -71,7 +73,7 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
      *
      * @param int $respondentId
      * @param int $relationId
-     * @return \Gems_Model_RespondentRelationInstance
+     * @return \Gems\Model\RespondentRelationInstance
      */
     public function getRelation($respondentId, $relationId)
     {
@@ -86,7 +88,7 @@ class Gems_Model_RespondentRelationModel extends \Gems_Model_JoinModel {
             $data = array();
         }
 
-        $relationObject = $this->loader->getInstance('Model_RespondentRelationInstance', $this, $data);
+        $relationObject = $this->loader->getInstance('Model\\RespondentRelationInstance', $this, $data);
 
         return $relationObject;
     }

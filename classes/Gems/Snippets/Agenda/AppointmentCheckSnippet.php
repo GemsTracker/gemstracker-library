@@ -27,19 +27,19 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var \Gems_Agenda_Appointment
+     * @var \Gems\Agenda\Appointment
      */
     protected $appointment;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -60,13 +60,13 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -108,7 +108,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
         parent::afterRegistry();
 
         $this->agenda      = $this->loader->getAgenda();
-        $this->appointment = $this->agenda->getAppointment($this->request->getParam(\Gems_Model::APPOINTMENT_ID));
+        $this->appointment = $this->agenda->getAppointment($this->request->getParam(\Gems\Model::APPOINTMENT_ID));
         $this->tracer      = new FilterTracer();
         $this->tracker     = $this->loader->getTracker();
 
@@ -117,9 +117,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @param \MUtil_Html_Sequence $seq
+     * @param \MUtil\Html\Sequence $seq
      */
-    protected function appendCheckedTracks(\MUtil_Html_Sequence $seq)
+    protected function appendCheckedTracks(\MUtil\Html\Sequence $seq)
     {
         $translated = $this->util->getTranslated();
 
@@ -181,9 +181,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @param \MUtil_Html_Sequence $seq
+     * @param \MUtil\Html\Sequence $seq
      */
-    protected function appendFiltersChecked(\MUtil_Html_Sequence $seq)
+    protected function appendFiltersChecked(\MUtil\Html\Sequence $seq)
     {
         $seq->h2($this->_('Creation by filter check'));
 
@@ -208,7 +208,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 $li->append(sprintf($this->_('%s: '), ucfirst($this->_('filter'))));
                 if ($menuFilter) {
                     $li->em()->a(
-                            $menuFilter->toHRefAttribute([\MUtil_Model::REQUEST_ID => $filterId]),
+                            $menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $filterId]),
                             $filterData['filterName']
                             );
                 } else {
@@ -217,7 +217,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 $li->append(sprintf($this->_(', %s: '), $this->plural('track', 'tracks', 1)));
                 if ($menuTrack) {
                     $li->em()->a(
-                            $menuTrack->toHRefAttribute([\MUtil_Model::REQUEST_ID => $filterData['filterTrack']]),
+                            $menuTrack->toHRefAttribute([\MUtil\Model::REQUEST_ID => $filterData['filterTrack']]),
                             $track->getTrackName()
                             );
                 } else {
@@ -278,9 +278,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @param \MUtil_Html_Sequence $seq
+     * @param \MUtil\Html\Sequence $seq
      */
-    protected function appendFiltersSkipped(\MUtil_Html_Sequence $seq)
+    protected function appendFiltersSkipped(\MUtil\Html\Sequence $seq)
     {
         $seq->h2($this->_('Creation by filter check skipped'));
         if ($this->appointment->isActive()) {
@@ -292,9 +292,9 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @param \MUtil_Html_Sequence $seq
+     * @param \MUtil\Html\Sequence $seq
      */
-    protected function appendFormInfo(\MUtil_Html_Sequence $seq)
+    protected function appendFormInfo(\MUtil\Html\Sequence $seq)
     {
         $seq->br();
 
@@ -323,11 +323,11 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        // \MUtil_Echo::track('Hi');
+        // \MUtil\EchoOut\EchoOut::track('Hi');
         $form = parent::getHtmlOutput($view);
 
         $seq = $this->getHtmlSequence();
@@ -355,7 +355,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -380,7 +380,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -403,7 +403,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
      * Set what to do when the form is 'finished'.
      *
      * #param array $params Url items to set for this route
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute(array $params = array())
     {

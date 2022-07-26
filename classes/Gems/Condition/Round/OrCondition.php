@@ -46,7 +46,7 @@ class OrCondition extends AndCondition
         return join($this->_(' OR '), $text);
     }
 
-    public function isRoundValid(\Gems_Tracker_Token $token)
+    public function isRoundValid(\Gems\Tracker\Token $token)
     {
         $conditions = $this->getConditions();
         $valid = false;

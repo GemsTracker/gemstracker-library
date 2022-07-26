@@ -7,8 +7,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form\Element;
 
 /**
  * CKEditor form element.
@@ -22,9 +23,8 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_Form_Element_CKEditor extends \Zend_Form_Element_Textarea {
+class CKEditor extends \Zend_Form_Element_Textarea {
     /**
      * Use formTextarea view helper by default
      * @var string

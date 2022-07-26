@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class RoleController extends Gems_Default_RoleAction
+class RoleController extends \Gems\Actions\RoleAction
 {
 }

@@ -20,7 +20,7 @@ namespace Gems\Task\Survey;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackReplaceTask extends \MUtil_Task_TaskAbstract
+class TrackReplaceTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -47,8 +47,8 @@ class TrackReplaceTask extends \MUtil_Task_TaskAbstract
                 
         $this->getBatch()->addMessage(
                 sprintf($this->plural(
-                            '%d track round has been updated to use \'%s\' instead of \'%s\'',
-                            '%d track rounds have been updated to use \'%s\' instead of \'%s\'',
+                            '%d track round has been updated to use '%s\' instead of \'%s\'',
+                            '%d track rounds have been updated to use '%s\' instead of \'%s\'',
                             $count),
                         $count,
                         $this->targetSurveyName,

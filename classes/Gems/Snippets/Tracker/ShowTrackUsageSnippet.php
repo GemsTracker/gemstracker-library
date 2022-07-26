@@ -8,7 +8,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker;
@@ -22,7 +21,7 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowTrackUsageSnippet extends \Gems_Tracker_Snippets_ShowTrackUsageAbstract
+class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstract
 {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -30,11 +29,11 @@ class ShowTrackUsageSnippet extends \Gems_Tracker_Snippets_ShowTrackUsageAbstrac
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
@@ -55,7 +54,7 @@ class ShowTrackUsageSnippet extends \Gems_Tracker_Snippets_ShowTrackUsageAbstrac
 
         // If we have a track Id and is not excluded: mark it!
         if ($this->respondentTrackId && (! $this->excludeCurrent)) {
-            $bridge->tr()->appendAttrib('class', \MUtil_Lazy::iff(\MUtil_Lazy::comp($bridge->gr2t_id_respondent_track, '==', $this->respondentTrackId), 'currentRow', null));
+            $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iff(\MUtil\Lazy::comp($bridge->gr2t_id_respondent_track, '==', $this->respondentTrackId), 'currentRow', null));
         }
 
         // Add show-track button if allowed, otherwise show, again if allowed
@@ -70,7 +69,7 @@ class ShowTrackUsageSnippet extends \Gems_Tracker_Snippets_ShowTrackUsageAbstrac
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

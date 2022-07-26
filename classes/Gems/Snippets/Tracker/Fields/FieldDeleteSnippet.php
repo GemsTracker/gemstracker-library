@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 namespace Gems\Snippets\Tracker\Fields;
@@ -21,7 +20,7 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FieldDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
+class FieldDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetGeneric
 {
     /**
      * Set what to do when the form is 'finished'.
@@ -33,7 +32,7 @@ class FieldDeleteSnippet extends \Gems_Snippets_ModelItemYesNoDeleteSnippetGener
         parent::setAfterDeleteRoute();
 
         if ($this->afterSaveRouteUrl) {
-            $this->afterSaveRouteUrl[\MUtil_Model::REQUEST_ID] = $this->request->getParam(\MUtil_Model::REQUEST_ID);
+            $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID] = $this->request->getParam(\MUtil\Model::REQUEST_ID);
         }
     }
 }

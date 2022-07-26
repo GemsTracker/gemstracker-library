@@ -4,8 +4,9 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Export;
 
 /**
  * Footer for html/pdf export of a respondent
@@ -16,10 +17,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_Export_ReportFooterSnippet extends \MUtil_Snippets_SnippetAbstract
+class ReportFooterSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

@@ -23,7 +23,7 @@ class CommTemplateUtil extends UtilAbstract
 {
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 

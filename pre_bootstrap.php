@@ -2,7 +2,7 @@
 
 /**
  * This files contains general project code that set constants and initializes
- * PHP for use with Zend / Gemstracker. Next the autoloader and Zend_Application
+ * PHP for use with Zend / Gemstracker. Next the autoloader and \Zend_Application
  * are created and the bootstrap is started.
  *
  * @author Matijs de Jong <mjong@magnafacta.nl>
@@ -50,7 +50,7 @@ $application = new \Zend_Application(
     APPLICATION_PATH . '/configs/application.ini'
 );
 
-// MUtil_Model::$verbose = true;
+// \MUtil\Model::$verbose = true;
 
 $application->bootstrap()
             ->run();

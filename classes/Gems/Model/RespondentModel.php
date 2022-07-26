@@ -1,5 +1,7 @@
 <?php
 
+namespace Gems\Model;
+
 use Gems\Exception\RespondentAlreadyExists;
 
 /**
@@ -24,7 +26,7 @@ use Gems\Exception\RespondentAlreadyExists;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
+class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 {
     /**
      * Store the SSN hashed in the database and display only '*****'
@@ -73,7 +75,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -86,17 +88,17 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Util_Translated
+     * @var \Gems\Util\Translated
      */
     protected $translatedUtil;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -178,7 +180,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Add the table and field to check for respondent login checks
      *
-     * @return \Gems_Model_RespondentModel (continuation pattern)
+     * @return \Gems\Model\RespondentModel (continuation pattern)
      */
     public function addLoginCheck()
     {
@@ -187,8 +189,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                     'gems__user_logins',
                     array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
                     'gul',
-                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                        \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
+                    \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                        \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_DELETE);
         }
 
         $this->addColumn(
@@ -200,10 +202,10 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 
     /**
      * Add the respondent name as a caclulated field to the model
-     * @param \Gems_Model_JoinModel $model
+     * @param \Gems\Model\JoinModel $model
      * @param string $label
      */
-    public static function addNameToModel(\Gems_Model_JoinModel $model, $label)
+    public static function addNameToModel(\Gems\Model\JoinModel $model, $label)
     {
         $nameExpr[]  = "COALESCE(grs_last_name, '-')";
         $fieldList[] = 'grs_last_name';
@@ -237,7 +239,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         }
         $model->set('name',
                 'label', $label,
-                'column_expression', new Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
+                'column_expression', new \Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
                 'fieldlist', $fieldList);
    }
 
@@ -251,7 +253,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     {
         parent::afterRegistry();
 
-        $this->setOnSave('gr2o_opened', new \MUtil_Db_Expr_CurrentTimestamp());
+        $this->setOnSave('gr2o_opened', new \MUtil\Db\Expr\CurrentTimestamp());
         $this->setSaveOnChange('gr2o_opened');
         $this->setOnSave('gr2o_opened_by', $this->currentUser->getUserId());
         $this->setSaveOnChange('gr2o_opened_by');
@@ -260,7 +262,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function applyBrowseSettings()
     {
@@ -314,7 +316,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function applyDetailSettings()
     {
@@ -381,7 +383,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_address_1',   'label', $this->_('Street'));
         $this->setIfExists('grs_address_2',   'label', ' ');
 
-        // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('gr2o_email'));
+        // \MUtil\EchoOut\EchoOut::track($this->getItemsOrdered(), $this->getOrder('gr2o_email'));
 
         $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
         $this->setIfExists('grs_city',        'label', $this->_('City'));
@@ -439,7 +441,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      * Set those values needed for editing
      *
      * @param boolean $create True when creating
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function applyEditSettings($create = false)
     {
@@ -454,7 +456,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         });
 
         if ($create && ($this->hashSsn !== self::SSN_HIDE)) {
-            $onblur = new \MUtil_Html_JavascriptArrayAttribute('onblur');
+            $onblur = new \MUtil\Html\JavascriptArrayAttribute('onblur');
             $onblur->addSubmitOnChange('this.value');
 
             $this->set('grs_ssn',
@@ -479,7 +481,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 );
         $this->set('grs_id_user');
 
-        $this->set('gr2o_email', 'filter', new Gems_Filter_CleanEmail,
+        $this->set('gr2o_email', 'filter', new \Gems\Filter\CleanEmail,
                 'required', true,
                 'autoInsertNotEmptyValidator', false, // Make sure it works ok with next
                 'size', 30,
@@ -490,7 +492,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'elementClass', 'Checkbox',
                 'required', true,
                 'order', $this->getOrder('gr2o_email') + 1,
-                'validator', new \Gems_Validate_OneOf(
+                'validator', new \Gems\Validate\OneOf(
                         $this->_('Respondent has no e-mail'),
                         'gr2o_email',
                         $this->get('gr2o_email', 'label')
@@ -531,8 +533,8 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 // 'dateFormat', 'dd-MM-yyyy',
                 'elementClass', 'Date',
-                // TODO: re-enable validator after it has been updated to Laminas Validator and DateTimeInterface dates
-                //'validator', new \MUtil_Validate_Date_DateBefore()
+                // TODO: re-enable validator after it has been updated to \Laminas Validator and DateTimeInterface dates
+                //'validator', new \MUtil\Validate\Date\DateBefore()
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);
@@ -612,7 +614,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      * @param string $toPid             Respondent number of the sending organization
      * @param bool $keepConsent         Should new organization inherit the consent of the old organization or not?
      * @return array The new respondent
-     * @throws \Gems_Exception|RespondentAlreadyExists
+     * @throws \Gems\Exception|RespondentAlreadyExists
      */
     public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
     {
@@ -622,7 +624,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         // Do some sanity checks
         $fromPatient = $this->loadFirst(['gr2o_id_organization' => $fromOrgId, 'gr2o_patient_nr' => $fromPid]);
         if (empty($fromPatient)) {
-            throw new \Gems_Exception($this->_('Respondent not found in sending organization.'));
+            throw new \Gems\Exception($this->_('Respondent not found in sending organization.'));
         }
 
         $toPatientByPid        = $this->loadFirst(['gr2o_id_organization' => $toOrgId, 'gr2o_patient_nr' => $toPid]);
@@ -649,7 +651,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
         // And save the record
         $toPatient['gr2o_patient_nr']      = $toPid;
         $toPatient['gr2o_id_organization'] = $toOrgId;
-        $toPatient['gr2o_reception_code']  = \GemsEscort::RECEPTION_OK;
+        $toPatient['gr2o_reception_code']  = \Gems\Escort::RECEPTION_OK;
 
         $loginToSaveTable = false;
         if (isset($this->_saveTables['gems__user_logins'])) {
@@ -739,11 +741,11 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      * Create a database model for retrieving the respondent tracks
      *
-     * @return \Gems_Model_JoinModel A NEW JoinModel, not a continuation pattern return
+     * @return \Gems\Model\JoinModel A NEW JoinModel, not a continuation pattern return
      */
     public function getRespondentTracksModel()
     {
-        $model = new \Gems_Model_JoinModel('surveys', 'gems__respondent2track');
+        $model = new \Gems\Model\JoinModel('surveys', 'gems__respondent2track');
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__respondent2org', array('gr2t_id_user' => 'gr2o_id_user'));
 
@@ -753,13 +755,13 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
     /**
      *
      * @param string $patientId
-     * @param int|\Gems_User_Organization $organization
+     * @param int|\Gems\User\Organization $organization
      * @param int $respondentId
      * @return boolean True when something changed
      */
     public function handleRespondentChanged($patientId, $organization, $respondentId = null)
     {
-        if ($organization instanceof \Gems_User_Organization) {
+        if ($organization instanceof \Gems\User\Organization) {
             $org   = $organization;
             $orgId = $organization->getId();
         } else {
@@ -852,7 +854,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 $values['glrc_consent_field']   = $consent;
                 $values['glrc_old_consent']     = $newValues[$oldConsent];
                 $values['glrc_new_consent']     = $newValues[$consent];
-                $values['glrc_created']         = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['glrc_created']         = new \MUtil\Db\Expr\CurrentTimestamp();
                 $values['glrc_created_by']      = $userId ?: $this->currentUser->getUserId();
 
                 $this->db->insert('gems__log_respondent_consents', $values);
@@ -941,13 +943,13 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 );
 
                 $changed   = 0;
-                $currentTs = new \MUtil_Db_Expr_CurrentTimestamp();
+                $currentTs = new \MUtil\Db\Expr\CurrentTimestamp();
                 $userId    = $this->currentUser->getUserId();
 
                 foreach ($tables as $tableName => $settings) {
                     list($respIdField, $orgIdField) = $settings;
 
-                    $start = \MUtil_String::beforeChars($respIdField, '_');
+                    $start = \MUtil\StringUtil\StringUtil::beforeChars($respIdField, '_');
 
                     $values = [
                         $respIdField           => $newPatient['grs_id_user'],
@@ -1090,7 +1092,7 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
                 $newValues['grs_id_user']  = $id;
                 $newValues['gr2o_id_user'] = $id;
             }
-            // If empty, then set by \Gems_Model->createGemsUserId()
+            // If empty, then set by \Gems\Model->createGemsUserId()
         }
 
         $result = parent::save($newValues, $filter, $saveTables);
@@ -1132,14 +1134,14 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
      *
      * @param string $patientId   Can be empty if $respondentId is passed
      * @param int $organizationId
-     * @param string $newCode     String or \Gems_Util_ReceptionCode
+     * @param string $newCode     String or \Gems\Util\ReceptionCode
      * @param int $respondentId   Pass when at hand, is looked up otherwise
-     * @param string $oldCode     Pass when at hand as string or \Gems_Util_ReceptionCode, is looked up otherwise
-     * @return \Gems_Util_ReceptionCode The new code reception code object for further processing
+     * @param string $oldCode     Pass when at hand as string or \Gems\Util\ReceptionCode, is looked up otherwise
+     * @return \Gems\Util\ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
     {
-        if (!$newCode instanceof \Gems_Util_ReceptionCode) {
+        if (!$newCode instanceof \Gems\Util\ReceptionCode) {
             $newCode = $this->util->getReceptionCode($newCode);
         }
         $userId = $this->currentUser->getUserId();
@@ -1149,14 +1151,14 @@ class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
             if (null === $oldCode) {
                 $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
             }
-            if ($oldCode instanceof \Gems_Util_ReceptionCode) {
+            if ($oldCode instanceof \Gems\Util\ReceptionCode) {
                 $oldCode = $oldCode->getCode();
             }
 
             // If the code wasn't set already
             if ($oldCode !== $newCode->getCode()) {
                 $values['gr2o_reception_code'] = $newCode->getCode();
-                $values['gr2o_changed']        = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['gr2o_changed']        = new \MUtil\Db\Expr\CurrentTimestamp();
                 $values['gr2o_changed_by']     = $userId;
 
                 if ($patientId) {

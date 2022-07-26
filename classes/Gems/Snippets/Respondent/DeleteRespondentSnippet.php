@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DeleteRespondentSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Respondent;
@@ -48,7 +47,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -61,7 +60,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $respondent;
 
@@ -87,15 +86,15 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems_Model_RespondentModel) {
+        if ($this->model instanceof \Gems\Model\RespondentModel) {
             $model = $this->model;
 
         } else {
-            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
                 $model = $this->respondent->getRespondentModel();
 
             } else {
@@ -130,7 +129,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
     protected function loadFormData()
     {
         if (! $this->request->isPost()) {
-            if ($this->respondent instanceof \Gems_Tracker_Respondent) {
+            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
                 $this->formData = $this->respondent->getArrayCopy();
             }
         }

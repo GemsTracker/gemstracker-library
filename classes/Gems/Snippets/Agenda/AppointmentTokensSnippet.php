@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentTokensSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Agenda;
@@ -47,17 +46,17 @@ class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         parent::processFilterAndSort($model);
 
-        $appId = $this->request->getParam(\Gems_Model::APPOINTMENT_ID);
+        $appId = $this->request->getParam(\Gems\Model::APPOINTMENT_ID);
 
         if ($appId) {
             $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, ''));
-            $appSource    = $this->db->quote(\Gems_Tracker_Engine_StepEngineAbstract::APPOINTMENT_TABLE);
+            $appSource    = $this->db->quote(\Gems\Tracker\Engine\StepEngineAbstract::APPOINTMENT_TABLE);
 
             $or[] = $this->db->quoteInto(
                     "gro_valid_after_source = $appSource AND

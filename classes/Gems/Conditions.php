@@ -16,12 +16,12 @@ use Gems\Condition\ConditionLoadException;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
-use Gems_Exception_Coding;
-use Gems_Loader;
-use Gems_Loader_TargetLoaderAbstract;
-use Gems_Util;
+use Gems\Exception\Coding;
+use Gems\Loader;
+use Gems\Loader\TargetLoaderAbstract;
+use Gems\Util;
 use MUtil\Translate\TranslateableTrait;
-use MUtil_Registry_TargetInterface;
+use MUtil\Registry\TargetInterface;
 
 /**
  * Per project overruleable condition processing engine
@@ -32,7 +32,7 @@ use MUtil_Registry_TargetInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class Conditions extends Gems_Loader_TargetLoaderAbstract
+class Conditions extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
@@ -69,7 +69,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
     protected $_conditionTypes;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -82,13 +82,13 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Util_Translated
+     * @var \Gems\Util\Translated
      */
     protected $translatedUtil;
 
@@ -112,7 +112,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         if (isset($this->_conditionClasses[$conditionType])) {
             return $this->_conditionClasses[$conditionType];
         } else {
-            throw new Gems_Exception_Coding("No condition class exists for condition type '$conditionType'.");
+            throw new Gems\Exception\Coding("No condition class exists for condition type '$conditionType'.");
         }
     }
 
@@ -159,7 +159,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
         $conditionClass = $this->_getConditionClass($conditionType);
 
         if (! class_exists($conditionName, true)) {
-            throw new Gems_Exception_Coding("The condition '$conditionName' of type '$conditionType' can not be found");
+            throw new Gems\Exception\Coding("The condition '$conditionName' of type '$conditionType' can not be found");
         }
 
         $condition = new $conditionName();
@@ -168,7 +168,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
             throw new ConditionLoadException("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
         }
 
-        if ($condition instanceof MUtil_Registry_TargetInterface) {
+        if ($condition instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($condition);
         }
 
@@ -279,7 +279,7 @@ class Conditions extends Gems_Loader_TargetLoaderAbstract
             return $condition;
         }
 
-        throw new Gems_Exception_Coding('Unable to load requested condition');
+        throw new Gems\Exception\Coding('Unable to load requested condition');
     }
 
     /**

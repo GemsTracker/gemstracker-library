@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker\Model;
+
 /**
  * Simple stub for track model, allows extension by projects and adds auto labelling
  *
@@ -19,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
+class TrackModel extends \MUtil\Model\TableModel
 {
     /**
      * Holds the trackData in array with key trackId, for internal caching use only
@@ -35,18 +37,18 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
     protected $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
@@ -56,7 +58,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
     protected $translate;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -69,7 +71,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
         $this->addColumn("CASE WHEN gtr_track_class = 'SingleSurveyEngine' THEN 'deleted' ELSE '' END", 'row_class');
 
-        \Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
+        \Gems\Model::setChangeFieldsByPrefix($this, 'gtr');
 
         $this->set('gtr_date_start', 'default', new \Zend_Date());
     }
@@ -79,14 +81,14 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
      *
      * @param boolean $detailed True when shopwing detailed information
      * @param boolean $edit When true use edit settings
-     * @return \Gems_Tracker_Model_TrackModel
+     * @return \Gems\Tracker\Model\TrackModel
      */
     public function applyFormatting($detailed = false, $edit = false)
     {
         $translated = $this->util->getTranslated();
         $translator = $this->getTranslateAdapter();
         if ($edit) {
-            $dateFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $dateFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
         } else {
             $dateFormat = $translated->dateFormatString;
         }
@@ -155,7 +157,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                     'multiOptions', $this->util->getDbLookup()->getOrganizationsWithRespondents(),
                     'required', true
                     );
-            $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $translator->_(', '));
+            $ct = new \MUtil\Model\Type\ConcatenatedRow('|', $translator->_(', '));
             $ct->apply($this, 'gtr_organizations');
         }
         if ($edit) {
@@ -299,7 +301,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         }
 
         if (! $this->translate instanceof \Zend_Translate_Adapter) {
-            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
+            $this->translate = new \MUtil\Translate\Adapter\Potemkin();
         }
 
         return $this->translate;

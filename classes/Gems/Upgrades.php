@@ -7,8 +7,9 @@
  * @subpackage Upgrades
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems;
 
 /**
  * Short description for Upgrades
@@ -21,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Upgrades extends \Gems_UpgradesAbstract
+class Upgrades extends \Gems\UpgradesAbstract
 {
     public function __construct()
     {
@@ -60,10 +61,10 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade164to170()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 56);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 56);
 
-        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
 
         return true;
     }
@@ -73,11 +74,11 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade170to171()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 57);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 57);
 
-        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -87,11 +88,11 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade171to172()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 58);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 58);
 
-        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -101,11 +102,11 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade172to181()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 59);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 59);
 
-        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -115,14 +116,14 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade181to182()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 60);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 60);
 
         // Use AddTask task to execute after patches
         $this->_batch->addTask('AddTask', 'Updates\\FillTokenReplacementsTask');
 
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -132,12 +133,12 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade182to183()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 61);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 61);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -147,13 +148,13 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade183to184()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 62);
-        $this->_batch->addTask('Updates_CompileTemplates');
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 62);
+        $this->_batch->addTask('Updates\\CompileTemplates');
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -163,12 +164,12 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade184to185()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 63);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 63);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -178,17 +179,17 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade185to186()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 64);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 64);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password');
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__mail_servers', 'gms_from', 'gms_password');
-        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__radius_config', 'grcfg_id', 'grcfg_secret');
+        $this->_batch->addTask('AddTask', 'Updates\\EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password');
+        $this->_batch->addTask('AddTask', 'Updates\\EncryptPasswords', 'gems__mail_servers', 'gms_from', 'gms_password');
+        $this->_batch->addTask('AddTask', 'Updates\\EncryptPasswords', 'gems__radius_config', 'grcfg_id', 'grcfg_secret');
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -198,12 +199,12 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade186to187()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 65);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 65);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -213,12 +214,12 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade187to190()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 66);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 66);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -228,14 +229,14 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade190to191()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 67);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 67);
 
         $this->_batch->addTask('Sites\\SiteUpgradeFromOrgAndProject');
         
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }
@@ -245,12 +246,12 @@ class Gems_Upgrades extends \Gems_UpgradesAbstract
      */
     public function Upgrade191to192()
     {
-        $this->_batch->addTask('Db_CreateNewTables');
-        $this->_batch->addTask('Db_AddPatches', 68);
+        $this->_batch->addTask('Db\\CreateNewTables');
+        $this->_batch->addTask('Db\\AddPatches', 68);
 
         // Use AddTask task to execute after patches
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
-        $this->_batch->addTask('AddTask', 'Echo', $this->_('Check the Code compatibility report for any issues with project specific code!'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Make sure to read the changelog as it contains important instructions'));
+        $this->_batch->addTask('AddTask', 'EchoOut\\EchoOut', $this->_('Check the Code compatibility report for any issues with project specific code!'));
 
         return true;
     }

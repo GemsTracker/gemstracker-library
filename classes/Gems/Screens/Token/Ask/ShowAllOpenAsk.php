@@ -25,27 +25,27 @@ class ShowAllOpenAsk extends AskScreenAbstract
 {
     /**
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Added before all other parameters
      */
-    public function getParameters(\Gems_Tracker_Token $token)
+    public function getParameters(\Gems\Tracker\Token $token)
     {
         return ['showLastName' => true];
     }
 
     /**
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array Of snippets or false to use original
      */
-    public function getSnippets(\Gems_Tracker_Token $token)
+    public function getSnippets(\Gems\Tracker\Token $token)
     {
         return ['Gems\\Snippets\\Ask\\ShowAllOpenSnippet'];
     }
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getScreenLabel()
     {

@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Util;
 
 /**
  * Library functions and constants for working with reception codes.
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstract
+class ReceptionCodeLibrary extends \MUtil\Translate\TranslateableAbstract
 {
     const APPLY_NOT  = 0;
     const APPLY_DO   = 1;
@@ -47,7 +48,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
     
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
     
@@ -162,7 +163,7 @@ class Gems_Util_ReceptionCodeLibrary extends \MUtil_Translate_TranslateableAbstr
      */
     public function getOKString()
     {
-        return \GemsEscort::RECEPTION_OK;
+        return \Gems\Escort::RECEPTION_OK;
     }
 
 

@@ -1,7 +1,9 @@
 <?php
 
 
-class Gems_Form_Decorator_CountryInputGroupAddon extends \Gems_Form_Decorator_InputGroupAddon
+namespace Gems\Form\Decorator;
+
+class CountryInputGroupAddon extends \Gems\Form\Decorator\InputGroupAddon
 {
     protected $flagDir = 'gems-responsive/images/locale/png/';
 

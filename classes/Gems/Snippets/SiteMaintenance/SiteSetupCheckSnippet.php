@@ -18,17 +18,17 @@ namespace Gems\Snippets\SiteMaintenance;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteSetupCheckSnippet extends \MUtil_Snippets_SnippetAbstract
+class SiteSetupCheckSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     protected $outputLevel = true;
     
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     
@@ -38,7 +38,7 @@ class SiteSetupCheckSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

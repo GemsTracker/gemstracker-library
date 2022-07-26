@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class RespondentExportController extends Gems_Default_RespondentExportAction
+class RespondentExportController extends \Gems\Actions\RespondentExportAction
 {
 }

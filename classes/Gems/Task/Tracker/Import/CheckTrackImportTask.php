@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTrackImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 18, 2016 6:55:45 PM
  */
-class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
+class CheckTrackImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -96,7 +95,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 if (isset($trackData['gtr_beforefieldupdate_event']) && $trackData['gtr_beforefieldupdate_event']) {
                     try {
                         $events->loadBeforeTrackFieldUpdateEvent($trackData['gtr_beforefieldupdate_event']);
-                    } catch (\Gems_Exception_Coding $ex) {
+                    } catch (\Gems\Exception\Coding $ex) {
                         $batch->addToCounter('import_errors');
                         $batch->addMessage(sprintf(
                                 $this->_('Unknown or invalid track field before update event "%s" specified on line %d.'),
@@ -108,7 +107,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 if (isset($trackData['gtr_calculation_event']) && $trackData['gtr_calculation_event']) {
                     try {
                         $events->loadTrackCalculationEvent($trackData['gtr_calculation_event']);
-                    } catch (\Gems_Exception_Coding $ex) {
+                    } catch (\Gems\Exception\Coding $ex) {
                         $batch->addToCounter('import_errors');
                         $batch->addMessage(sprintf(
                                 $this->_('Unknown or invalid track calculation event "%s" specified on line %d.'),
@@ -120,7 +119,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 if (isset($trackData['gtr_completed_event']) && $trackData['gtr_completed_event']) {
                     try {
                         $events->loadTrackCompletionEvent($trackData['gtr_completed_event']);
-                    } catch (\Gems_Exception_Coding $ex) {
+                    } catch (\Gems\Exception\Coding $ex) {
                         $batch->addToCounter('import_errors');
                         $batch->addMessage(sprintf(
                                 $this->_('Unknown or invalid track completion event "%s" specified on line %d.'),
@@ -132,7 +131,7 @@ class CheckTrackImportTask extends \MUtil_Task_TaskAbstract
                 if (isset($trackData['gtr_fieldupdate_event']) && $trackData['gtr_fieldupdate_event']) {
                     try {
                         $events->loadTrackFieldUpdateEvent($trackData['gtr_fieldupdate_event']);
-                    } catch (\Gems_Exception_Coding $ex) {
+                    } catch (\Gems\Exception\Coding $ex) {
                         $batch->addToCounter('import_errors');
                         $batch->addMessage(sprintf(
                                 $this->_('Unknown or invalid track field update event "%s" specified on line %d.'),

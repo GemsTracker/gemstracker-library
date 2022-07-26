@@ -20,11 +20,11 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.8.4.
  */
-class CheckTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
+class CheckTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -52,7 +52,7 @@ class CheckTrackRoundConditionImportTask extends \MUtil_Task_TaskAbstract
         if (isset($conditionData['gcon_class']) && $conditionData['gcon_class']) {
             try {
                 $conditions->loadRoundCondition($conditionData['gcon_class']);
-            } catch (\Gems_Exception_Coding $ex) {
+            } catch (\Gems\Exception\Coding $ex) {
                 $batch->addToCounter('import_errors');
                 $batch->addMessage(sprintf(
                         $this->_('Unknown or invalid round condition "%s" specified on line %d.'),

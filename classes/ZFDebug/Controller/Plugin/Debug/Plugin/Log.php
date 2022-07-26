@@ -7,7 +7,6 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id$
  */
 
 /**
@@ -18,7 +17,7 @@
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
  */
 class ZFDebug_Controller_Plugin_Debug_Plugin_Log
-    extends Zend_Controller_Plugin_Abstract
+    extends \Zend_Controller_Plugin_Abstract
     implements ZFDebug_Controller_Plugin_Debug_Plugin_Interface
 {
     const ZFLOG = 10;
@@ -30,9 +29,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
 
     public function __construct()
     {
-        Zend_Controller_Front::getInstance()->registerPlugin($this);
+        \Zend_Controller_Front::getInstance()->registerPlugin($this);
         $this->_writer = new ZFDebug_Controller_Plugin_Debug_Plugin_Log_Writer();
-        $this->_logger = new Zend_Log($this->_writer);
+        $this->_logger = new \Zend_Log($this->_writer);
         $this->_logger->addPriority('ZFLOG', self::ZFLOG);
     }
 
@@ -74,7 +73,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
      */
     public function getPanel()
     {
-        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $request = \Zend_Controller_Front::getInstance()->getRequest();
         $module = $request->getModuleName();
         if ('default' !== $module) {
             $module = " ($module module)";
@@ -148,9 +147,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function routeStartup(Zend_Controller_Request_Abstract $request)
@@ -159,9 +158,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
@@ -170,9 +169,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
@@ -184,9 +183,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function postDispatch(Zend_Controller_Request_Abstract $request)
@@ -198,9 +197,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function dispatchLoopStartup(Zend_Controller_Request_Abstract $request)
@@ -209,9 +208,9 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Log
     }
 
     /**
-     * Defined by Zend_Controller_Plugin_Abstract
+     * Defined by \Zend_Controller_Plugin_Abstract
      *
-     * @param Zend_Controller_Request_Abstract
+     * @param \Zend_Controller_Request_Abstract
      * @return void
      */
     public function dispatchLoopShutdown()

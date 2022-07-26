@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Tracker\Answers;
 
 /**
  * Show all answers for one survey within a track
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet extends \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class TrackAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in
@@ -32,9 +33,9 @@ class Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet extends \Gems_Track
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

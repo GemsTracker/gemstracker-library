@@ -6,7 +6,9 @@
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class Gems_Mail_Transport_SendMail extends \Zend_Mail_Transport_Sendmail {
+namespace Gems\Mail\Transport;
+
+class SendMail extends \Zend_Mail_Transport_Sendmail {
     public function _sendMail() {
         $from = $this->_mail->getFrom();
         
@@ -19,7 +21,7 @@ class Gems_Mail_Transport_SendMail extends \Zend_Mail_Transport_Sendmail {
                 ini_set('sendmail_from', $from);
             }
         } else {
-            throw new \Gems_Exception('No sender email set!');
+            throw new \Gems\Exception('No sender email set!');
         }
                 
         parent::_sendMail();

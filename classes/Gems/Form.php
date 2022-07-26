@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
  * Base form class with extensions for correct load paths, autosubmit forms and registry use.
  *
@@ -16,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Form extends \MUtil_Form
+class Form extends \MUtil\Form
 {
     /**
      * If set this holds the url and targetid for the autosubmit
@@ -40,11 +42,11 @@ class Gems_Form extends \MUtil_Form
 
         $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', \Zend_Form::DECORATOR);
         $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   \Zend_Form::ELEMENT);
-        $this->addPrefixPath('Gems_Form_Decorator', 'Gems/Form/Decorator/', \Zend_Form::DECORATOR);
-        $this->addPrefixPath('Gems_Form_Element',   'Gems/Form/Element/',   \Zend_Form::ELEMENT);
+        $this->addPrefixPath('Gems\Form_Decorator', 'Gems/Form/Decorator/', \Zend_Form::DECORATOR);
+        $this->addPrefixPath('Gems\Form_Element',   'Gems/Form/Element/',   \Zend_Form::ELEMENT);
 
         $this->addElementPrefixPath(GEMS_PROJECT_NAME_UC . '_Validate', GEMS_PROJECT_NAME_UC . '/Validate/', \Zend_Form_Element::VALIDATE);
-        $this->addElementPrefixPath('Gems_Form_Decorator',  'Gems/Form/Decorator/',  \Zend_Form_Element::DECORATOR);
+        $this->addElementPrefixPath('Gems\Form_Decorator',  'Gems/Form/Decorator/',  \Zend_Form_Element::DECORATOR);
         $this->addElementPrefixPath('Gems_Filter',          'Gems/Filter/',          \Zend_Form_Element::FILTER);
         $this->addElementPrefixPath('Gems_Validate',        'Gems/Validate/',        \Zend_Form_Element::VALIDATE);
 
@@ -78,7 +80,7 @@ class Gems_Form extends \MUtil_Form
             foreach ($element->getElements() as $sub) {
                 $this->_enableAutoSubmitElement($sub);
             }
-        } elseif ($element instanceof \Gems_Form_AutosubmitElementInterface) {
+        } elseif ($element instanceof \Gems\Form\AutosubmitElementInterface) {
             $element->enableAutoSubmit($this->_autosubmit);
         }
     }
@@ -86,7 +88,7 @@ class Gems_Form extends \MUtil_Form
     /**
      * Activate JQuery for this form
      *
-     * @return \MUtil_Form (continuation pattern)
+     * @return \MUtil\Form (continuation pattern)
      */
     public function activateJQuery()
     {
@@ -153,21 +155,21 @@ class Gems_Form extends \MUtil_Form
     /**
      * Change the form into an autosubmit form
      *
-     * @param mixed $submitUrl Url as \MUtil_Html_UrlArrayAttribute, array or string
-     * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil_Html_ElementInterface or string
+     * @param mixed $submitUrl Url as \MUtil\Html\UrlArrayAttribute, array or string
+     * @param mixed $targetId Id of html element whose content is replaced by the submit result: \MUtil\Html\ElementInterface or string
      * @param boolean $selective When true autosubmit is applied only to elements with the CSS class autosubmit
      */
     public function setAutoSubmit($submitUrl, $targetId, $selective = false)
     {
         // Filter out elements passed by type
-        $args = \MUtil_Ra::args(func_get_args(),
+        $args = \MUtil\Ra::args(func_get_args(),
             array(
-                'submitUrl' => array('MUtil_Html_UrlArrayAttribute', 'is_array', 'is_string'),
-                'targetId'  => array('MUtil_Html_ElementInterface', 'is_string'),
-                ), null, \MUtil_Ra::STRICT);
+                'submitUrl' => array('\\MUtil\\Html\\UrlArrayAttribute', 'is_array', 'is_string'),
+                'targetId'  => array('\\MUtil\\Html\\ElementInterface', 'is_string'),
+                ), null, \MUtil\Ra::STRICT);
 
         if (isset($args['targetId'])) {
-            if ($args['targetId'] instanceof \MUtil_Html_ElementInterface) {
+            if ($args['targetId'] instanceof \MUtil\Html\ElementInterface) {
                 if (isset($args['targetId']->id)) {
                     $args['targetId'] = '#' . $args['targetId']->id;
                 } elseif (isset($args['targetId']->class)) {

@@ -54,13 +54,13 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $util;
 

@@ -21,7 +21,7 @@ class TestCurrentUserMiddleware implements \Psr\Http\Server\MiddlewareInterface
         }
     }
 
-    protected function getCurrentUser(): \Gems_User_User
+    protected function getCurrentUser(): \Gems\User\User
     {
         $currentUsername = null;
         $currentOrganizationId = null;

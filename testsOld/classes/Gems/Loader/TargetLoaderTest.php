@@ -11,7 +11,7 @@ class TargetLoaderTest extends \PHPUnit_Framework_TestCase {
     
     /**
      *
-     * @var \Gems_Loader_TargetLoaderAbstract
+     * @var \Gems\Loader\TargetLoaderAbstract
      */
     protected $loader;
     
@@ -20,7 +20,7 @@ class TargetLoaderTest extends \PHPUnit_Framework_TestCase {
         
         $container = null;
         $dirs = [];
-        $this->loader = new \Gems_Loader_TargetLoaderAbstract($container, $dirs);
+        $this->loader = new \Gems\Loader\TargetLoaderAbstract($container, $dirs);
     }
     
     /**

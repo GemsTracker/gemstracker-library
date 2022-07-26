@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Respondent;
+
 /**
  * Show the track in a different way, ordered by round and group showing
  * traffic light color indicating the status of a token and uses inline
@@ -20,7 +22,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
+class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
     /**
      * Set a fixed model filter.
@@ -75,68 +77,68 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_overview;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_surveyAnswer;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_takeSurvey;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_tokenEdit;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_tokenCorrect;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_tokenPreview;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_tokenShow;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_trackAnswer;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_trackDelete;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem
+     * @var \Gems\Menu\SubMenuItem
      */
     protected $_trackEdit;
 
     public $allowedOrgs;
 
     /**
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
     
@@ -148,7 +150,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     public $browse = false;
 
     /**
-     * @var \MUtil_Html_Creator
+     * @var \MUtil\Html\Creator
      */
     public $creator             = null;
 
@@ -164,7 +166,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     protected $textNotMailable;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -178,7 +180,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
     protected function _getDeleteIcon($row, $trackParameterSource, $isSuccess = true)
     {
-        $deleteTrackContainer = \MUtil_Html::create('div', array('class' => 'otherOrg pull-right', 'renderClosingTag' => true));
+        $deleteTrackContainer = \MUtil\Html::create('div', array('class' => 'otherOrg pull-right', 'renderClosingTag' => true));
         if ($row['gr2o_id_organization'] != $this->currentOrgId) {
             $deleteTrackContainer[] = $this->loader->getOrganization($row['gr2o_id_organization'])->getName() . ' ';
         }
@@ -190,7 +192,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $caption = $this->_("Undelete %s!");
                 $icon    = 'recycle';
             }
-            $deleteLink = \MUtil_Html::create('i', array(
+            $deleteLink = \MUtil\Html::create('i', array(
                 'class'            => 'fa fa-' . $icon . ' deleteIcon',
                 'renderClosingTag' => true
             ));
@@ -207,7 +209,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     protected function _getEditIcon($row, $trackParameterSource)
     {
         if (array_key_exists($row['gr2o_id_organization'], $this->allowedOrgs) && $this->_trackEdit) {
-            $editLink = \MUtil_Html::create('i', array(
+            $editLink = \MUtil\Html::create('i', array(
                 'class'            => 'fa fa-pencil',
                 'renderClosingTag' => true
             ));
@@ -217,7 +219,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $link->setAttrib('onClick', 'event.cancelBubble = true;');
         } else {
             // When org not allowed, dont add the link, so the track will just open
-            $link = \MUtil_Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
+            $link = \MUtil\Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
         }
         return $link;
     }
@@ -229,12 +231,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         }
 
         $tooltipText    = $row['gr2t_mailable'] == 0 ? $this->textNotMailable : $this->textMailable;
-        $icon           = \MUtil_Html::create('i', array('class' => 'fa fa-envelope-o fa-fw', 'renderClosingTag' => true));
+        $icon           = \MUtil\Html::create('i', array('class' => 'fa fa-envelope-o fa-fw', 'renderClosingTag' => true));
         $mailableIcon   = array();
         $mailableIcon[] = $icon;
 
         if ($row['gr2t_mailable'] == 0) {
-            $icon           = \MUtil_Html::create('i', array('class' => 'fa fa-close fa-fw icon-danger', 'renderClosingTag' => true));
+            $icon           = \MUtil\Html::create('i', array('class' => 'fa fa-close fa-fw icon-danger', 'renderClosingTag' => true));
             $mailableIcon[] = $icon;
         }
         $this->_addTooltip($icon, $tooltipText, 'right');
@@ -254,7 +256,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         $baseUrl = $this->basepath->getBasePath();
 
         // Make sure we can use jQuery
-        \MUtil_JQuery::enableView($view);
+        \MUtil\JQuery::enableView($view);
 
         // Now add the scrollTo plugin so we can scroll to today
         $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.scrollTo.min.js');
@@ -359,7 +361,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                 $tokenLink = $this->createMenuLink($tokenData + array('gto_in_source' => 1), 'track', 'answer', '', $this->_trackAnswer);
                 $tooltip = array(sprintf($this->_('Completed') . ': %s', $tokenData['gto_completion_time']->get($this->_dateTimeFormat)));
                 if (!empty($tokenData['gto_result'])) {
-                    $tooltip[] = \MUtil_Html::raw('<br/>');
+                    $tooltip[] = \MUtil\Html::raw('<br/>');
                     $tooltip[] = sprintf($this->_('Result') .': %s', $tokenData['gto_result']);
                 }
                 $this->_completed++;
@@ -429,12 +431,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         parent::afterRegistry();
 
         // Load the display dateformat
-        $dateOptions       = \MUtil_Model_Bridge_FormBridge::getFixedOptions('date');
-        $dateTimeOptions   = \MUtil_Model_Bridge_FormBridge::getFixedOptions('datetime');
+        $dateOptions       = \MUtil\Model\Bridge\FormBridge::getFixedOptions('date');
+        $dateTimeOptions   = \MUtil\Model\Bridge\FormBridge::getFixedOptions('datetime');
         $this->_dateFormat = $dateOptions['dateFormat'];
         $this->_dateTimeFormat = $dateTimeOptions['dateFormat'];
 
-        $this->creator = \MUtil_Html::getCreator();
+        $this->creator = \MUtil\Html::getCreator();
 
         // find the menu items only once for more efficiency
         $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
@@ -469,7 +471,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * @param type $action
      * @param type $label
      * @param type $menuItem
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
     {
@@ -485,7 +487,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function createModel()
     {
@@ -569,7 +571,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -579,18 +581,18 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         //$main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
-        $currentTrackId  = \Gems_Cookies::get($this->request, 'track_idx');
+        $currentTrackId  = \Gems\Cookies::get($this->request, 'track_idx');
         $data            = $this->_loadData();
         $doelgroep       = null;
         $lastDate        = null;
         $lastDescription = null;
-        $now             = new \MUtil_Date();
+        $now             = new \MUtil\Date();
         $progressDiv     = null;
         $respTrackId     = 0;
         $today           = $now->get($this->_dateFormat);
         $trackProgress   = null;
-        $minIcon         = \MUtil_Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
-        $summaryIcon     = \MUtil_Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
+        $minIcon         = \MUtil\Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
+        $summaryIcon     = \MUtil\Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
         $trackIds        = array_column($data, 'gto_id_respondent_track', 'gto_id_respondent_track');
 
         // Check for cookie set for this patient
@@ -602,7 +604,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         foreach ($data as $row)
         {
             if ($respTrackId !== $row['gto_id_respondent_track']) {
-                if (isset($day) && new \MUtil_Date($lastDate, 'dd-MM-y') < $now) {
+                if (isset($day) && new \MUtil\Date($lastDate, 'dd-MM-y') < $now) {
                     $day->class .= ' today';
 					unset($day);
                 }
@@ -632,9 +634,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
                 $trackHeading  = $track->div(array('class' => 'panel-heading header', 'renderClosingTag' => true));
 
-                $trackTitle    = \MUtil_Html::create('span', array('class' => 'title'));
+                $trackTitle    = \MUtil\Html::create('span', array('class' => 'title'));
                 $trackTitle[]  = ' ' . $row['gtr_track_name'];
-                $trackTitle[]  = \MUtil_Html::create('span', array('class' => "header-caret fa fa-fw " . $caretClass, 'renderClosingTag' => true));
+                $trackTitle[]  = \MUtil\Html::create('span', array('class' => "header-caret fa fa-fw " . $caretClass, 'renderClosingTag' => true));
 
                 $trackReceptionCode = $this->loader->getUtil()->getReceptionCode($row['gr2t_reception_code']);
                 if (!$trackReceptionCode->isSuccess()) {
@@ -643,7 +645,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     if (!empty($row['gr2t_comment'])) {
                         $description .= sprintf(' (%s)', $row['gr2t_comment']);
                     }
-                    $trackTitle[] = \MUtil_Html::create('div', $description, array('class'=>'description'));
+                    $trackTitle[] = \MUtil\Html::create('div', $description, array('class'=>'description'));
                 }
 
                 $trackHeader   = $trackHeading->h3(array('class' => "panel-title", 'renderClosingTag' => true));
@@ -675,7 +677,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
             $description = $row['gto_round_description'];
             if (is_null($description)) $description = '';
             if (/* $date !== $lastDate || */ $lastDescription !== $description || !isset($day)) {
-                $last = new \MUtil_Date($lastDate, 'dd-MM-y');
+                $last = new \MUtil\Date($lastDate, 'dd-MM-y');
                 if (isset($day) && $last < $now && $row['gto_valid_from'] > $now) {
                     $day->class .= ' today';
                 }
@@ -706,7 +708,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
                     $summaryLink->href->add($params);
                     // $summaryLink->target = 'inline';
                 } else {
-                    $summaryLink = \MUtil_Html::create('div', $summaryIcon, array('renderClosingTag' => true));
+                    $summaryLink = \MUtil\Html::create('div', $summaryIcon, array('renderClosingTag' => true));
                 }
                 $summaryLink->class='pull-right inline-answers';
                 $day->h5(array($summaryLink, ucfirst($description)));
@@ -731,7 +733,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
             $tokenDiv[] = $this->addToken($row);
         }
-        if (isset($day) && new \MUtil_Date($lastDate, 'dd-MM-y') < $now) {
+        if (isset($day) && new \MUtil\Date($lastDate, 'dd-MM-y') < $now) {
             $day->class .= ' today';
         }
         $progressDiv = $this->finishGroup($progressDiv);
@@ -742,7 +744,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
     /**
      *
-     * @param \MUtil_Html $toolsDiv
+     * @param \MUtil\Html $toolsDiv
      * @param array $token
      */
     public function getToolIcons($toolsDiv, $token)
@@ -752,21 +754,21 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
         static $clipboardIcon;
 
         if (!isset($correctIcon)) {
-            $correctIcon = \MUtil_Html::create('i', array(
+            $correctIcon = \MUtil\Html::create('i', array(
                     'class'            => 'fa fa-fw fa-pencil dropdown-toggle',
                     'renderClosingTag' => true
                 ));
         }
 
         if (!isset($showIcon)) {
-            $plusIcon = \MUtil_Html::create('i', array(
+            $plusIcon = \MUtil\Html::create('i', array(
                     'class'            => 'fa fa-fw fa-ellipsis-h dropdown-toggle',
                     'renderClosingTag' => true
                 ));
         }
 
         if (!isset($clibboardIcon)) {
-            $clipboardIcon = \MUtil_Html::create('i', array(
+            $clipboardIcon = \MUtil\Html::create('i', array(
                 'class'            => 'fa fa-fw fa-clipboard dropdown-toggle',
                 'renderClosingTag' => true
             ));
@@ -811,7 +813,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -823,9 +825,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
     /**
      * Copied from parent, adjusted to also show inactive tracks with ok and completed tokens
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         $filter['gto_id_respondent']   = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
@@ -853,7 +855,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems\Snippets\T
 
         $model->addFilter($filter);
 
-        // \MUtil_Echo::track($model->getFilter());
+        // \MUtil\EchoOut\EchoOut::track($model->getFilter());
 
         $this->processSortOnly($model);
     }

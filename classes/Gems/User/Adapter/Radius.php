@@ -4,8 +4,9 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\User\Adapter;
 
 include_once 'Radius/radius.class.php';
 
@@ -30,7 +31,7 @@ use Laminas\Authentication\Exception\RuntimeException;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Adapter_Radius implements AdapterInterface
+class Radius implements AdapterInterface
 {
 	/**
 	 * $_identity - Identity value
@@ -168,7 +169,7 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	 * setIdentity() - set the value to be used as the identity
 	 *
 	 * @param  string $value
-	 * @return \Gems_User_Adapter_Radius Provides a fluent interface
+	 * @return \Gems\User\Adapter\Radius Provides a fluent interface
 	 */
 	public function setIdentity($value)
 	{
@@ -180,7 +181,7 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	 * setCredential() - set the credential value to be used
 	 *
 	 * @param  string $credential
-	 * @return \Gems_User_Adapter_Radius Provides a fluent interface
+	 * @return \Gems\User\Adapter\Radius Provides a fluent interface
 	 */
 	public function setCredential($credential)
 	{
@@ -189,13 +190,13 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	}
 
 	/**
-	 * authenticate() - defined by Laminas\Authentication\Adapter\AdapterInterface.  This method is called to
+	 * authenticate() - defined by \Laminas\Authentication\Adapter\AdapterInterface.  This method is called to
 	 * attempt an authenication.  Previous to this call, this adapter would have already
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
-	 * @throws Laminas\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
-	 * @return Laminas\Authentication\Result
+	 * @throws \Laminas\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
+	 * @return \Laminas\Authentication\Result
 	 */
 	public function authenticate()
 	{
@@ -217,7 +218,7 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	 * _authenticateSetup() - This method abstracts the steps involved with making sure
 	 * that this adapter was indeed setup properly with all required peices of information.
 	 *
-	 * @throws \Gems_Exception_Coding - in the event that setup was not done properly
+	 * @throws \Gems\Exception\Coding - in the event that setup was not done properly
 	 * @return true
 	 */
 	protected function _authenticateSetup()
@@ -225,20 +226,20 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 		$exception = null;
 
 		if ($this->_ip === null) {
-			$exception = 'An ip address must be specified for use with the \Gems_User_Adapter_Radius authentication adapter.';
+			$exception = 'An ip address must be specified for use with the \Gems\User\Adapter\Radius authentication adapter.';
 		} elseif ($this->_sharedSecret === null) {
-			$exception = 'A shared secret must be specified for use with the \Gems_User_Adapter_Radius authentication adapter.';
+			$exception = 'A shared secret must be specified for use with the \Gems\User\Adapter\Radius authentication adapter.';
 		} elseif ($this->_identity == '') {
-			$exception = 'A value for the identity was not provided prior to authentication with \Gems_User_Adapter_Radius.';
+			$exception = 'A value for the identity was not provided prior to authentication with \Gems\User\Adapter\Radius.';
 		} elseif ($this->_credential === null) {
-			$exception = 'A credential value was not provided prior to authentication with \Gems_User_Adapter_Radius.';
+			$exception = 'A credential value was not provided prior to authentication with \Gems\User\Adapter\Radius.';
 		}
 
 		if (null !== $exception) {
 			/**
-			 * @see \Gems_Exception_Coding
+			 * @see \Gems\Exception\Coding
 			 */
-			throw new \Gems_Exception_Coding($exception);
+			throw new \Gems\Exception\Coding($exception);
 		}
 
 		$this->_authenticateResultInfo = array(
@@ -253,10 +254,10 @@ class Gems_User_Adapter_Radius implements AdapterInterface
 	}
 
 	/**
-	 * _authenticateCreateAuthResult() - This method creates a Laminas\Authentication\Result object
+	 * _authenticateCreateAuthResult() - This method creates a \Laminas\Authentication\Result object
 	 * from the information that has been collected during the authenticate() attempt.
 	 *
-	 * @return Laminas\Authentication\Result
+	 * @return \Laminas\Authentication\Result
 	 */
 	protected function _authenticateCreateAuthResult()
 	{

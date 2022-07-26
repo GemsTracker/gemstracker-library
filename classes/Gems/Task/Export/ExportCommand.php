@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Export;
 
 /**
  * Executes any command in an Export class for a given $exportType
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_Task_Export_ExportCommand extends \Gems_Task_TaskAbstract
+class ExportCommand extends \Gems\Task\TaskAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed

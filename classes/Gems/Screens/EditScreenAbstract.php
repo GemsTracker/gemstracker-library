@@ -19,7 +19,7 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:33 PM
  */
-abstract class EditScreenAbstract extends \MUtil_Translate_TranslateableAbstract implements ConsentInterface
+abstract class EditScreenAbstract extends \MUtil\Translate\TranslateableAbstract implements ConsentInterface
 {
     /**
      *
@@ -77,7 +77,7 @@ abstract class EditScreenAbstract extends \MUtil_Translate_TranslateableAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     // public function getScreenLabel();
 }

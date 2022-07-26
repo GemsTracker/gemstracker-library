@@ -20,8 +20,8 @@ use Gems\Tracker\Mock\TokenReadonly;
  * @license    New BSD License
  * @since      Class available since version 1.9.2
  */
-abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbstract 
-    implements \Gems_Event_SurveyBeforeAnsweringEventInterface
+abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbstract 
+    implements \Gems\Event\SurveyBeforeAnsweringEventInterface
 {
     /**
      * @var FIELDNAME in ucase => fieldname
@@ -63,7 +63,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
      */
     protected function addCheckedArray(array $values, $keepAnswer = true)
     {
-        // \MUtil_Echo::track($values);
+        // \MUtil\EchoOut\EchoOut::track($values);
         foreach ($values as $key => $value) {
             if ($value) {
                 $this->addCheckedValue($key, $value, $keepAnswer);
@@ -138,10 +138,10 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
     }
 
     /**
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return array
      */
-    protected function getAnswersFieldsFromSurvey(\Gems_Tracker_Token $token)
+    protected function getAnswersFieldsFromSurvey(\Gems\Tracker\Token $token)
     {
         return array_fill_keys(array_keys($token->getSurvey()->getQuestionList($this->locale)), null);
     }
@@ -156,7 +156,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
         // Wo do not want to output these ever.
         unset($this->_output['datestamp'], $this->_output['id'], $this->_output['startdate'], $this->_output['startlanguage'], $this->_output['submitdate'], $this->_output['token']);
 
-        // \MUtil_Echo::track($this->_output);
+        // \MUtil\EchoOut\EchoOut::track($this->_output);
         return $this->_output;
     }
 
@@ -166,10 +166,10 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
      * You can overrule this code, but the default is to check for a survey code and look
      * for a survey with the same code if it exists. Otherwise it has to be the same survey.
      *
-     * @param \Gems_Tracker_Token $token
-     * @return string|\Gems_Tracker_Token Token (id) or null
+     * @param \Gems\Tracker\Token $token
+     * @return string|\Gems\Tracker\Token Token (id) or null
      */
-    public function getPreviousToken(\Gems_Tracker_Token $token)
+    public function getPreviousToken(\Gems\Tracker\Token $token)
     {
         if ($token->getSurvey()->getCode()) {
             return $this->getPreviousTokenByCode($token);
@@ -181,10 +181,10 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
     /**
      * Return the previous token by looking at the survey code of the current token
      *
-     * @param \Gems_Tracker_Token $token
-     * @return string|\Gems_Tracker_Token Token (id) or null
+     * @param \Gems\Tracker\Token $token
+     * @return string|\Gems\Tracker\Token Token (id) or null
      */
-    public function getPreviousTokenByCode(\Gems_Tracker_Token $token)
+    public function getPreviousTokenByCode(\Gems\Tracker\Token $token)
     {
         $code = $token->getSurvey()->getCode();
 
@@ -203,10 +203,10 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
     /**
      * Return the answered previous token of the same survey
      *
-     * @param \Gems_Tracker_Token $token
-     * @return string|\Gems_Tracker_Token Token (id) or null
+     * @param \Gems\Tracker\Token $token
+     * @return string|\Gems\Tracker\Token Token (id) or null
      */
-    public function getPreviousTokenBySurvey(\Gems_Tracker_Token $token)
+    public function getPreviousTokenBySurvey(\Gems\Tracker\Token $token)
     {
         $surveyId   = $token->getSurveyId();
 
@@ -225,7 +225,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
      * @param array $requests
      * @return array
      */
-    public function getTrackFieldValues(\Gems_Tracker_RespondentTrack $respondentTrack)
+    public function getTrackFieldValues(\Gems\Tracker\RespondentTrack $respondentTrack)
     {
         $fieldCode2Label = $respondentTrack->getCodeFields();
         $rawFieldData    = $respondentTrack->getFieldData();    // Date (time) fields are unprocessed here
@@ -236,7 +236,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
                 $value = $rawFieldData[$key];
                 
                 // If it is a date(/time) field export it in ISO format
-                if ($rawFieldData[$key] instanceof \MUtil_Date) {
+                if ($rawFieldData[$key] instanceof \MUtil\Date) {
                     $value = $value->toString('yyyy-MM-dd HH:mm:ss');
                 }
                 $results[$key] = $value;
@@ -273,9 +273,9 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
     }
 
     /**
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
-    protected function prepareOutput(\Gems_Tracker_Token $token)
+    protected function prepareOutput(\Gems\Tracker\Token $token)
     {
         $this->_answers = $token->getRawAnswers();
         if (! $this->_answers) {
@@ -298,19 +298,19 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      */
-    abstract protected function processOutput(\Gems_Tracker_Token $token);
+    abstract protected function processOutput(\Gems\Tracker\Token $token);
 
     /**
      * Process the data and return the answers that should be filled in beforehand.
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems_Tracker_Token $token Gems token object
+     * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(\Gems_Tracker_Token $token)
+    public function processTokenInsertion(\Gems\Tracker\Token $token)
     {
         // Do nothing when completed or deleted
         if ($token->isCompleted() || (! $token->getReceptionCode()->isSuccess())) {

@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Form;
+
 /**
  *
  *
@@ -18,17 +20,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLoadFormAbstract implements \Gems_User_Validate_GetUserInterface
+abstract class OrganizationFormAbstract extends \Gems\Form\AutoLoadFormAbstract implements \Gems\User\Validate\GetUserInterface
 {
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $_user;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -178,7 +180,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
     /**
      * Returns a user
      *
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getUser()
     {
@@ -216,10 +218,10 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
      * Validate the form
      *
      * As it is better for translation utilities to set the labels etc. translated,
-     * the MUtil default is to disable translation.
+     * the \MUtil default is to disable translation.
      *
      * However, this also disables the translation of validation messages, which we
-     * cannot set translated. The MUtil form is extended so it can make this switch.
+     * cannot set translated. The \MUtil form is extended so it can make this switch.
      *
      * @param  array   $data
      * @param  boolean $disableTranslateValidators Extra switch
@@ -243,7 +245,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends \Gems_Form_AutoLo
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param int $organizationMaxLines
-     * @return \Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems\User\Form\LoginForm (continuation pattern)
      */
     public function setOrganizationMaxLines($organizationMaxLines)
     {

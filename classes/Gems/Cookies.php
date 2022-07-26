@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 /**
- * Static Gems cookie utilities
+ * Static \Gems cookie utilities
  *
  * @package    Gems
  * @subpackage Cookies
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Cookies
+class Cookies
 {
     const LOCALE_COOKIE       = 'gems_locale';
     const ORGANIZATION_COOKIE = 'gems_organization';
@@ -70,7 +72,7 @@ class Gems_Cookies
      */
     public static function set($name, $value, $days = 30, $basepath = '/')
     {
-        // Gems uses the empty string when the base path is '/'
+        // \Gems uses the empty string when the base path is '/'
         if (! $basepath) {
             $basepath = '/';
         }

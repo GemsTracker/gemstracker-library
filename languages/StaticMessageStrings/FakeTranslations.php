@@ -12,19 +12,19 @@
 _('Value is required and can\'t be empty');
 _('Invalid type given, value should be string, integer or float');
 
-//Login: Zend_Auth_Adapter_DbTable
+//Login: \Zend_Auth_Adapter_DbTable
 // Gems_Validate_GemsPasswordUsername
 _('Installation not complete! Login is not yet possible!');
 _('Your account is temporarily blocked, please wait %s minutes');
 _('You are not allowed to login from this location.');
 
-// Gems_Validate_IPRanges
+// \Gems\Validate\IPRanges
 _("One or more IPs are illegal.");
 
-// Gems_Validate_OneOf
+// \Gems\Validate\OneOf
 _("Either '%description%' or '%fieldDescription%' must be entered.");
 
-// Gems\Validate\ValidateSurveyExportCode
+// \Gems\Validate\ValidateSurveyExportCode
 _('A duplicate export code matching \'%value%\' was found.');
 
 // MUtil_Validate_Base32
@@ -34,14 +34,14 @@ _("'%value%' is not a base 32 string. Only A through Z, 2 to 7 and = at the end 
 _("At least %min% checked value(s) required");
 _("Not more then %max% checked value(s) allowed");
 
-// MUtil_Validate_Date_DateAfter
+// \MUtil\Validate\Date\DateAfter
 _("Date should be '%dateAfter%' or later.");
 _("Should be empty if valid from date is not set.");
 
-// MUtil_Validate_Date_DateBefore
+// \MUtil\Validate\Date\DateBefore
 _("Date should be '%dateBefore%' or earlier.");
 
-// MUtil_Validate_Date_IsDate
+// \MUtil\Validate\Date\IsDate
 _('%value% is not a valid date.');
 
 // MUtil_Validate_Db_UniqueValue
@@ -66,13 +66,13 @@ _("Must be the same as %fieldDescription%.");
 // MUtil_Validate_IsNot
 _("This value is not allowed.");
 
-// MUtil\Validate\NoCsvInjectionChars
+// \MUtil\Validate\NoCsvInjectionChars
 _("The characters =, + and | are not allowed here.");
 
 // MUtil_Validate_NoScript
 _("Html tags may not be entered here.");
 
-// MUtil\Validate\NoTags
+// \MUtil\Validate\NoTags
 _("No letters, ':' or '\\' are allowed directly after a '<' or '&' character.");
 
 // MUtil_Validate_NotEqualTo
@@ -81,7 +81,7 @@ _('Values may not be the same.');
 // MUtil_Validate_Phone
 _("'%value%' is not a phone number (e.g. +12 (0)34-567 890).");
 
-// MUtil_Validate_Pdf
+// \MUtil\Validate\Pdf
 _('Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this problem.');
 
 // MUtil_Validate_Require
@@ -94,15 +94,15 @@ _("'%value%' is not an email address (e.g. name@somewhere.com).");
 // MUtil_Validate_SimpleEmails
 _("'%value%' is not a series of email addresses (e.g. name@somewhere.com, nobody@nowhere.org).");
 
-// Zend_Validate_Digit
+// \Zend_Validate_Digit
 _("'%value%' must contain only digits");
 _("'%value%' is an empty string");
 _("Invalid type given. String, integer or float expected");
 
-// Zend_Validate_File_Extension but altered in FormBridge
+// \Zend_Validate_File_Extension but altered in FormBridge
 _("Only %extension% files are accepted.");
 
-// Zend_Validate_GreaterThan
+// \Zend_Validate_GreaterThan
 _("'%value%' is not greater than '%min%'");
 
 /*

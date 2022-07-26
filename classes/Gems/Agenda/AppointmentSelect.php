@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentSelect.php $
  */
 
 namespace Gems\Agenda;
@@ -21,7 +20,7 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 5-mrt-2015 11:29:20
  */
-class AppointmentSelect extends \MUtil_Registry_TargetAbstract
+class AppointmentSelect extends \MUtil\Registry\TargetAbstract
 {
     /**
      *
@@ -31,7 +30,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
@@ -135,12 +134,12 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @param \MUtil_Date $from Optional date after which the appointment must occur
-     * @param \MUtil_Date $until Optional date before which the appointment must occur
+     * @param \MUtil\Date $from Optional date after which the appointment must occur
+     * @param \MUtil\Date $until Optional date before which the appointment must occur
      * @param boolean $sortAsc Retrieve first or last appointment first
      * @return \Gems\Agenda\AppointmentSelect
      */
-    public function forPeriod(\MUtil_Date $from = null, \MUtil_Date $until = null, $sortAsc = true)
+    public function forPeriod(\MUtil\Date $from = null, \MUtil\Date $until = null, $sortAsc = true)
     {
         if ($from) {
             $this->_select->where("gap_admission_time >= ?", $from->toString('yyyy-MM-dd HH:mm:ss'));
@@ -182,7 +181,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
     public function fromDate($from = null, $oper = '>=')
     {
         if ($from) {
-            if ($from instanceof \Gems_Agenda_Appointment) {
+            if ($from instanceof \Gems\Agenda\Appointment) {
                 $from = $from->getAdmissionTime();
             }
             if ($from instanceof \Zend_Date) {

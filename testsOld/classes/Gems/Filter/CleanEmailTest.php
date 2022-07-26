@@ -13,7 +13,7 @@ class CleanEmailFilterTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->filter = new \Gems_Filter_CleanEmail();
+        $this->filter = new \Gems\Filter\CleanEmail();
     }
 
     /**

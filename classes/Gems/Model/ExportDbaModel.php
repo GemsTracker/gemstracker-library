@@ -4,7 +4,7 @@
 namespace Gems\Model;
 
 
-class ExportDbaModel extends \Gems_Model_DbaModel
+class ExportDbaModel extends \Gems\Model\DbaModel
 {
     /**
      * List of groups (database prefixes) to exclude from export

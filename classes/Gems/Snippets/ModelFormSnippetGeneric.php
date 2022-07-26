@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Displays an edit form based on the model the model set through the $model snippet parameter.
@@ -23,18 +24,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelFormSnippetGeneric extends \Gems_Snippets_ModelFormSnippetAbstract
+class ModelFormSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

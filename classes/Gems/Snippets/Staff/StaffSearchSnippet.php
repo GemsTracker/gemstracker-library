@@ -20,11 +20,11 @@ namespace Gems\Snippets\Staff;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 28-sep-2015 12:19:23
  */
-class StaffSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class StaffSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

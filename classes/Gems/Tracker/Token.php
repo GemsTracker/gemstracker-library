@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker;
+
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
 use MUtil\Translate\TranslateableTrait;
@@ -23,7 +25,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
+class Token extends \Gems\Registry\TargetAbstract
 {
     use TranslateableTrait;
 
@@ -64,13 +66,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     private $_nextToken = null;
 
     /**
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     private $_previousToken = null;
 
@@ -83,7 +85,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Respondent
+     * @var \Gems\Tracker\Respondent
      */
     protected $_respondentObject = null;
 
@@ -101,7 +103,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -125,7 +127,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -144,13 +146,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respTrack;
 
@@ -171,19 +173,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Tracker_Survey
+     * @var \Gems\Tracker\Survey
      */
     protected $survey;
 
     /**
      *
-     * @var \Gems_Tracker
+     * @var \Gems\Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -206,7 +208,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Add relation to the select statement
      *
-     * @param Gems_Tracker_Token_TokenSelect $select
+     * @param \Gems\Tracker\Token\TokenSelect $select
      */
     protected function _addRelation($select)
     {
@@ -231,13 +233,13 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
             $respId = $this->_gemsData['gto_id_respondent'];
             $orgId  = $this->_gemsData['gto_id_organization'];
-            // \MUtil_Echo::track($this->_gemsData);
+            // \MUtil\EchoOut\EchoOut::track($this->_gemsData);
 
             if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
                 $this->_gemsData = $this->_gemsData + $row;
             } else {
                 $token = $this->_tokenId;
-                throw new \Gems_Exception("Respondent data missing for token $token.");
+                throw new \Gems\Exception("Respondent data missing for token $token.");
             }
         }
     }
@@ -258,7 +260,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             return $this->resultFieldLength;
         }
 
-        $model = new \MUtil_Model_TableModel('gems__tokens');
+        $model = new \MUtil\Model\TableModel('gems__tokens');
         self::$staticResultFieldLength = $model->get('gto_result', 'maxlength');
         $this->resultFieldLength = self::$staticResultFieldLength;
 
@@ -278,16 +280,16 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             return 0;   // No changes
         }
 
-        if (\Gems_Tracker::$verbose) {
+        if (\Gems\Tracker::$verbose) {
             $echo = '';
             foreach ($values as $key => $val) {
                 $echo .= $key . ': ' . $this->_gemsData[$key] . ' => ' . $val . "\n";
             }
-            \MUtil_Echo::r($echo, 'Updated values for ' . $this->_tokenId);
+            \MUtil\EchoOut\EchoOut::r($echo, 'Updated values for ' . $this->_tokenId);
         }
 
         $defaults = [
-            'gto_changed'    => new \MUtil_Db_Expr_CurrentTimestamp(),
+            'gto_changed'    => new \MUtil\Db\Expr\CurrentTimestamp(),
             'gto_changed_by' => $userId
         ];
 
@@ -316,10 +318,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Set menu parameters from this token
      *
-     * @param \Gems_Menu_ParameterSource $source
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @param \Gems\Menu\ParameterSource $source
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
-    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
     {
         $source->setTokenId($this->_tokenId);
         if (!$this->exists) return $this;
@@ -344,7 +346,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 ($validFrom = $this->getValidFrom())) {
 
             $validUntil = $this->getValidUntil();
-            $today = new \MUtil_Date();
+            $today = new \MUtil\Date();
 
             $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
         }
@@ -431,7 +433,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns the full url Gems should forward to after survey completion.
+     * Returns the full url \Gems should forward to after survey completion.
      *
      * This fix allows multiple sites with multiple url's to share a single
      * installation.
@@ -455,7 +457,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         // as it is more dependable when the user has multiple windows open on the application.
         if ($referrer && (0 == strncasecmp($referrer, $currentUri, strlen($currentUri)))) {
             return $referrer;
-            // \MUtil_Echo::track($referrer);
+            // \MUtil\EchoOut\EchoOut::track($referrer);
         } // */
 
         // Use the survey return if available.
@@ -468,12 +470,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             // added to the url.
             $surveyReturn['RouteReset'] = true;
 
-            // \MUtil_Echo::track($currentUri, \MUtil_Html::urlString($surveyReturn));
-            return $currentUri . \MUtil_Html::urlString($surveyReturn);
+            // \MUtil\EchoOut\EchoOut::track($currentUri, \MUtil\Html::urlString($surveyReturn));
+            return $currentUri . \MUtil\Html::urlString($surveyReturn);
         }
 
         // Ultimate backup solution for return
-        return $currentUri . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
+        return $currentUri . '/ask/forward/' . \MUtil\Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
     }
 
     /**
@@ -485,7 +487,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function checkRegistryRequestsAnswers()
     {
         if ($this->_gemsData) {
-            if ($this->currentUser instanceof \Gems_User_User) {
+            if ($this->currentUser instanceof \Gems\User\User) {
                 $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
             }
         } else {
@@ -517,17 +519,17 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             $values['gto_in_source'] = 1;
             $survey                  = $this->getSurvey();
             $startTime               = $survey->getStartTime($this);
-            if ($startTime instanceof \MUtil_Date) {
+            if ($startTime instanceof \MUtil\Date) {
                 // Value from source overrules any set date time
-                $values['gto_start_time'] = $startTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                $values['gto_start_time'] = $startTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
 
             } else {
-                // Otherwise use the time kept by Gems.
+                // Otherwise use the time kept by \Gems.
                 $startTime = $this->getDateTime('gto_start_time');
 
                 //What if we have older tokens... where no gto_start_time was set??
                 if (is_null($startTime)) {
-                    $startTime = new \MUtil_Date();
+                    $startTime = new \MUtil\Date();
                 }
 
                 // No need to set $values['gto_start_time'], it does not change
@@ -537,19 +539,19 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $complTime         = $survey->getCompletionTime($this);
                 $setCompletionTime = true;
 
-                if (! $complTime instanceof \MUtil_Date) {
+                if (! $complTime instanceof \MUtil\Date) {
                     // Token is completed but the source cannot tell the time
                     //
                     // Try to see it was stored already
                     $complTime = $this->getDateTime('gto_completion_time');
 
-                    if ($complTime instanceof \MUtil_Date) {
+                    if ($complTime instanceof \MUtil\Date) {
                         // Again no need to change a time that did not change
                         unset($values['gto_completion_time']);
                         $setCompletionTime = false;
                     } else {
                         // Well anyhow it was completed now or earlier. Get the current moment.
-                        $complTime = new \MUtil_Date();
+                        $complTime = new \MUtil\Date();
                     }
                 }
 
@@ -557,17 +559,17 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $oldCompletionTime = $this->_gemsData['gto_completion_time'];
                 //Set completion time for completion event
                 if ($setCompletionTime) {
-                    $values['gto_completion_time']          = $complTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                    $values['gto_completion_time']          = $complTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
                     $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
                 }
 
-                // Process any Gems side survey dependent changes
+                // Process any \Gems side survey dependent changes
                 if ($changed = $this->handleAfterCompletion()) {
                     // Communicate change
                     $result += self::COMPLETION_EVENTCHANGE;
 
-                    if (\Gems_Tracker::$verbose) {
-                        \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                    if (\Gems\Tracker::$verbose) {
+                        \MUtil\EchoOut\EchoOut::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
                     }
                 }
 
@@ -641,7 +643,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         foreach($newValues as &$value)
         {
             if ($value instanceof \Zend_Date) {
-                $value = $value->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                $value = $value->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
             }
         }
 
@@ -649,7 +651,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
         $replacementLog['gtrp_id_token_new'] = $tokenId;
         $replacementLog['gtrp_id_token_old'] = $this->_tokenId;
-        $replacementLog['gtrp_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
+        $replacementLog['gtrp_created']      = new \MUtil\Db\Expr\CurrentTimestamp();
         $replacementLog['gtrp_created_by']   = $userId;
 
         $this->db->insert('gems__token_replacements', $replacementLog);
@@ -697,7 +699,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      * Returns a field from the raw answers as a date object.
      *
      * @param string $fieldName Name of answer field
-     * @return \MUtil_Date date time or null
+     * @return \MUtil\Date date time or null
      */
     public function getAnswerDateTime($fieldName)
     {
@@ -770,15 +772,15 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \MUtil_Date Completion time as a date or null
+     * @return \MUtil\Date Completion time as a date or null
      */
     public function getCompletionTime()
     {
         if (isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time']) {
-            if ($this->_gemsData['gto_completion_time'] instanceof \MUtil_Date) {
+            if ($this->_gemsData['gto_completion_time'] instanceof \MUtil\Date) {
                 return $this->_gemsData['gto_completion_time'];
             }
-            return new \MUtil_Date($this->_gemsData['gto_completion_time'], \Gems_Tracker::DB_DATETIME_FORMAT);
+            return new \MUtil\Date($this->_gemsData['gto_completion_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
         }
     }
 
@@ -853,18 +855,18 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return \MUtil_Date
+     * @return \MUtil\Date
      */
     public function getDateTime($fieldName)
     {
         if (isset($this->_gemsData[$fieldName])) {
-            if ($this->_gemsData[$fieldName] instanceof \MUtil_Date) {
+            if ($this->_gemsData[$fieldName] instanceof \MUtil\Date) {
                 return $this->_gemsData[$fieldName];
             }
 
-            return \MUtil_Date::ifDate(
+            return \MUtil\Date::ifDate(
                     $this->_gemsData[$fieldName],
-                    array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT)
+                    array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT)
                     );
         }
     }
@@ -936,7 +938,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return \Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems\Tracker\Model\StandardTokenModel
      */
     public function getModel()
     {
@@ -950,7 +952,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Returns the next token in this track
      *
-     * @return \Gems_Tracker_Token
+     * @return \Gems\Tracker\Token
      */
     public function getNextToken()
     {
@@ -974,7 +976,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Returns the next unanswered token for the person answering this token
      *
-     * @return \Gems_Tracker_Token
+     * @return \Gems\Tracker\Token
      */
     public function getNextUnansweredToken()
     {
@@ -1003,7 +1005,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getOrganization()
     {
@@ -1062,7 +1064,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Returns the previous token that has succes in this track
      *
-     * @return \Gems_Tracker_Token
+     * @return \Gems\Tracker\Token
      */
     public function getPreviousSuccessToken()
     {
@@ -1078,7 +1080,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Returns the previous token in this track
      *
-     * @return \Gems_Tracker_Token
+     * @return \Gems\Tracker\Token
      */
     public function getPreviousToken()
     {
@@ -1115,9 +1117,9 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Return the \Gems_Util_ReceptionCode object
+     * Return the \Gems\Util\ReceptionCode object
      *
-     * @return \Gems_Util_ReceptionCode reception code
+     * @return \Gems\Util\ReceptionCode reception code
      */
     public function getReceptionCode()
     {
@@ -1127,7 +1129,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Get the relation object if any
      *
-     * @return \Gems_Model_RespondentRelationInstance
+     * @return \Gems\Model\RespondentRelationInstance
      */
     public function getRelation()
     {
@@ -1184,14 +1186,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Get the respondent linked to this token
      *
-     * @return \Gems_Tracker_Respondent
+     * @return \Gems\Tracker\Respondent
      */
     public function getRespondent()
     {
         $patientNumber  = $this->getPatientNumber();
         $organizationId = $this->getOrganizationId();
 
-        if (! ($this->_respondentObject instanceof \Gems_Tracker_Respondent)
+        if (! ($this->_respondentObject instanceof \Gems\Tracker\Respondent)
                 || $this->_respondentObject->getPatientNumber()  !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
             $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
@@ -1234,7 +1236,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (array_key_exists('gto_id_respondent', $this->_gemsData)) {
             return $this->_gemsData['gto_id_respondent'];
         } else {
-            throw new \Gems_Exception(sprintf('Token not loaded correctly', $this->getTokenId()));
+            throw new \Gems\Exception(sprintf('Token not loaded correctly', $this->getTokenId()));
         }
     }
 
@@ -1288,7 +1290,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_Tracker_RespondentTrack
+     * @return \Gems\Tracker\RespondentTrack
      */
     public function getRespondentTrack()
     {
@@ -1421,7 +1423,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_Tracker_Survey
+     * @return \Gems\Tracker\Survey
      */
     public function getSurvey()
     {
@@ -1434,7 +1436,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return int Gems survey id
+     * @return int \Gems survey id
      */
     public function getSurveyId()
     {
@@ -1444,7 +1446,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param string $language (ISO) language string
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getSurveyAnswerModel($language)
     {
@@ -1500,7 +1502,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Get the track engine that generated this token
      *
-     * @return \Gems_Tracker_Engine_TrackEngineInterface
+     * @return \Gems\Tracker\Engine\TrackEngineInterface
      */
     public function getTrackEngine()
     {
@@ -1508,7 +1510,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             return $this->tracker->getTrackEngine($this->_gemsData['gto_id_track']);
         }
 
-        throw new \Gems_Exception_Coding('Coding error: requesting track engine for non existing token.');
+        throw new \Gems\Exception\Coding('Coding error: requesting track engine for non existing token.');
     }
 
     /**
@@ -1530,7 +1532,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      *
      * @param string $language The language currently used by the user
      * @param int $userId The id of the gems user
-     * @throws \Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
     public function getUrl($language, $userId)
     {
@@ -1539,7 +1541,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new \MUtil_Db_Expr_CurrentTimestamp();
+            $values['gto_start_time'] = new \MUtil\Db\Expr\CurrentTimestamp();
             $values['gto_in_source']  = 1;
 
             $oldTokenId = $this->getCopiedFrom();
@@ -1562,7 +1564,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \MUtil_Date Valid from as a date or null
+     * @return \MUtil\Date Valid from as a date or null
      */
     public function getValidFrom()
     {
@@ -1571,7 +1573,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \MUtil_Date Valid until as a date or null
+     * @return \MUtil\Date Valid until as a date or null
      */
     public function getValidUntil()
     {
@@ -1702,8 +1704,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
             $this->setRawAnswers($changed);
 
-            if (\Gems_Tracker::$verbose) {
-                \MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+            if (\Gems\Tracker::$verbose) {
+                \MUtil\EchoOut\EchoOut::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
             }
         }
 
@@ -1827,7 +1829,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         $date = $this->getValidUntil();
 
-        if ($date instanceof \MUtil_Date) {
+        if ($date instanceof \MUtil\Date) {
             return $date->isEarlierOrEqual(time());
         }
 
@@ -1864,7 +1866,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         $date = $this->getValidFrom();
 
-        if ($date instanceof \MUtil_Date) {
+        if ($date instanceof \MUtil\Date) {
             return $date->isLaterOrEqual(time());
         }
 
@@ -1905,7 +1907,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
     public function refresh(array $gemsData = null)
     {
@@ -1928,7 +1930,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 $this->_gemsData = [];
             }
         }
-        if ($this->currentUser instanceof \Gems_User_User) {
+        if ($this->currentUser instanceof \Gems\User\User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
         $this->exists = isset($this->_gemsData['gto_id_token']);
@@ -1952,22 +1954,22 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @param string|\MUtil_Date $completionTime Completion time as a date or null
+     * @param string|\MUtil\Date $completionTime Completion time as a date or null
      * @param int $userId The current user
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
     public function setCompletionTime($completionTime, $userId)
     {
         $values['gto_completion_time'] = null;
         if (!is_null($completionTime)) {
             if (! $completionTime instanceof \Zend_Date) {
-                $completionTime = \MUtil_Date::ifDate(
+                $completionTime = \MUtil\Date::ifDate(
                         $completionTime,
-                        array(\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT, null)
+                        array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, null)
                         );
             }
             if ($completionTime instanceof \Zend_Date) {
-                $values['gto_completion_time'] = $completionTime->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+                $values['gto_completion_time'] = $completionTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
             }
         }
         $this->_updateToken($values, $userId);
@@ -1989,7 +1991,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     {
         $values = [
             'gto_mail_sent_num' => new \Zend_Db_Expr('gto_mail_sent_num + 1'),
-            'gto_mail_sent_date' => \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd'),
+            'gto_mail_sent_date' => \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd'),
         ];
 
         $this->_updateToken($values, $this->currentUser->getUserId());
@@ -1998,10 +2000,10 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     /**
      * Sets the next token in this track
      *
-     * @param \Gems_Tracker_Token $token
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @param \Gems\Tracker\Token $token
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
-    public function setNextToken(\Gems_Tracker_Token $token)
+    public function setNextToken(\Gems\Tracker\Token $token)
     {
         $this->_nextToken = $token;
 
@@ -2034,22 +2036,22 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
      * Set the reception code for this token and make sure the necessary
      * cascade to the source takes place.
      *
-     * @param string $code The new (non-success) reception code or a \Gems_Util_ReceptionCode object
+     * @param string $code The new (non-success) reception code or a \Gems\Util\ReceptionCode object
      * @param string $comment Comment False values leave value unchanged
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
     public function setReceptionCode($code, $comment, $userId)
     {
-        // Make sure it is a \Gems_Util_ReceptionCode object
-        if (! $code instanceof \Gems_Util_ReceptionCode) {
+        // Make sure it is a \Gems\Util\ReceptionCode object
+        if (! $code instanceof \Gems\Util\ReceptionCode) {
             $code = $this->util->getReceptionCode($code);
         }
         $values['gto_reception_code'] = $code->getCode();
         if ($comment) {
             $values['gto_comment'] = $comment;
         }
-        // \MUtil_Echo::track($values);
+        // \MUtil\EchoOut\EchoOut::track($values);
 
         $changed = $this->_updateToken($values, $userId);
 
@@ -2091,8 +2093,8 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
     public function setValidFrom($validFrom, $validUntil, $userId)
     {
         $mailSentDate = $this->getMailSentDate();
-        if (! $mailSentDate instanceof \MUtil_Date) {
-            $mailSentDate = \MUtil_Date::ifDate($mailSentDate, [\Gems_Tracker::DB_DATE_FORMAT, \Gems_Tracker::DB_DATETIME_FORMAT]);
+        if (! $mailSentDate instanceof \MUtil\Date) {
+            $mailSentDate = \MUtil\Date::ifDate($mailSentDate, [\Gems\Tracker::DB_DATE_FORMAT, \Gems\Tracker::DB_DATETIME_FORMAT]);
         }
         if ($validFrom && $mailSentDate) {
             // Check for newerness
@@ -2100,14 +2102,14 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
             if ($validFrom instanceof \Zend_Date) {
                 $start = $validFrom;
             } else {
-                $start = new \MUtil_Date($validFrom, \Gems_Tracker::DB_DATETIME_FORMAT);
+                $start = new \MUtil\Date($validFrom, \Gems\Tracker::DB_DATETIME_FORMAT);
             }
 
             if ($start->isLater($mailSentDate)) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
-                $now = new \MUtil_Date();
+                $now = new \MUtil\Date();
                 $newComment = sprintf(
                     $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),
                     $now->toString('yyyy-MM-dd HH:mm:ss'),
@@ -2123,12 +2125,12 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
 
         if ($validFrom instanceof \Zend_Date) {
-            $validFrom = $validFrom->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            $validFrom = $validFrom->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validFrom) {
             $validFrom = null;
         }
         if ($validUntil instanceof \Zend_Date) {
-            $validUntil = $validUntil->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+            $validUntil = $validUntil->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validUntil) {
             $validUntil = null;
         }
@@ -2154,7 +2156,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         //
         // For some reason mysql prepared parameters do nothing with a \Zend_Db_Expr
         // object and that causes an error when using CURRENT_TIMESTAMP
-        $current = \MUtil_Date::now()->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
+        $current = \MUtil\Date::now()->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
         $rValues = array(
             'gdr_id_token'   => $this->_tokenId,
             'gdr_changed'    => $current,
@@ -2165,7 +2167,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         $responses = $this->getRawAnswers();
 
         $source = $this->getSurvey()->getSource();
-        if ($source instanceof \Gems_Tracker_Source_SourceAbstract) {
+        if ($source instanceof \Gems\Tracker\Source\SourceAbstract) {
             $metaFields = $source::$metaFields;
             foreach ($metaFields as $field) {
                 if (array_key_exists($field, $responses)) {
@@ -2182,7 +2184,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         if (! $currentResponses) {
             $currentResponses = array();
         }
-        // \MUtil_Echo::track($currentResponses, $responses);
+        // \MUtil\EchoOut\EchoOut::track($currentResponses, $responses);
 
         // Prepare sql
         $sql = "UPDATE gemsdata__responses
@@ -2202,7 +2204,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                 // But only if value changed
                 if ($currentResponses[$fieldName] != $response) {
                     try {
-                        // \MUtil_Echo::track($sql, $rValues['gdr_id_token'], $fieldName, $response);
+                        // \MUtil\EchoOut\EchoOut::track($sql, $rValues['gdr_id_token'], $fieldName, $response);
                         $statement->execute(array(
                             $response,
                             $rValues['gdr_changed'],
@@ -2223,7 +2225,7 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
         }
 
         if (count($inserts)>0) {
-            // \MUtil_Echo::track($inserts);
+            // \MUtil\EchoOut\EchoOut::track($inserts);
             try {
                 $fields = array_keys(reset($inserts));
                 $fields = array_map(array($responseDb, 'quoteIdentifier'), $fields);
@@ -2231,11 +2233,11 @@ class Gems_Tracker_Token extends \Gems_Registry_TargetAbstract
                         implode(', ', $fields) . ') VALUES (' .
                         implode(', ', array_fill(1, count($fields), '?')) . ')';
 
-                // \MUtil_Echo::track($sql);
+                // \MUtil\EchoOut\EchoOut::track($sql);
                 $statement = $responseDb->prepare($sql);
 
                 foreach($inserts as $insert) {
-                    // \MUtil_Echo::track($insert);
+                    // \MUtil\EchoOut\EchoOut::track($insert);
                     $statement->execute($insert);
                 }
 

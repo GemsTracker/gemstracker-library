@@ -22,17 +22,17 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 4, 2016 11:20:07 AM
  */
-class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstract
+class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Task_TaskRunnerBatch
+     * @var \Gems\Task\TaskRunnerBatch
      */
     private $_batch;
 
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -44,7 +44,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -63,13 +63,13 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $exportModel;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -90,13 +90,13 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -109,11 +109,11 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
+    protected function addStepElementsFor(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model, $step)
     {
         $this->displayHeader($bridge, sprintf(
                 $this->_('%s track export. Step %d of %d.'),
@@ -140,10 +140,10 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepExportCodes(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepExportCodes(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->displayHeader($bridge, $this->_('Set the survey export codes'), 'h3');
 
@@ -164,10 +164,10 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepExportSettings(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepExportSettings(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $this->displayHeader($bridge, $this->_('Select what to export'), 'h3');
 
@@ -177,10 +177,10 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepGenerateExportFile(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addStepGenerateExportFile(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
@@ -197,7 +197,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil_Registry_Source::$verbose = true;
+        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->request)) {
             exit;
         }
@@ -209,7 +209,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $batch->autoStart   = false;
 
             // Keep the filename after $batch->getMessages(true) cleared the previous
-            $downloadName  = \MUtil_File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+            $downloadName  = \MUtil\File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
             $localFilename = $batch->getSessionVariable('filename');
 
             $this->addMessage($batch->getMessages(true));
@@ -240,7 +240,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                         );
                 $p->append(' ');
 
-                $href = new \MUtil_Html_HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
+                $href = new \MUtil\Html\HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
                 $p->a(
                         $href,
                         $downloadName,
@@ -278,8 +278,8 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             }
 
             if ($saves) {
-                $sModel = new \MUtil_Model_TableModel('gems__surveys');
-                \Gems_Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+                $sModel = new \MUtil\Model\TableModel('gems__surveys');
+                \Gems\Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
                 $sModel->saveAll($saves);
 
                 $count = $sModel->getChanged();
@@ -324,20 +324,20 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         if (!isset($options['role'])) {
             $options['role'] = 'form';
         }
-        return new \Gems_Form($options);
+        return new \Gems\Form($options);
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->exportModel instanceof \MUtil_Model_ModelAbstract) {
+        if (! $this->exportModel instanceof \MUtil\Model\ModelAbstract) {
             $yesNo = $this->util->getTranslated()->getYesNo();
 
-            $model = new \MUtil_Model_SessionModel('export_for_' . $this->request->getControllerName());
+            $model = new \MUtil\Model\SessionModel('export_for_' . $this->request->getControllerName());
 
             $model->set('orgs', 'label', $this->_('Organization export'),
                     'default', 1,
@@ -409,11 +409,11 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Display a header
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
+    protected function displayHeader(\MUtil\Model\Bridge\FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
         static $count = 0;
 
@@ -427,8 +427,8 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
     /**
      * Performs actual download
      *
-     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      */
     protected function downloadExportFile()
     {
@@ -451,7 +451,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
 
     /**
      *
-     * @return \Gems_Task_TaskRunnerBatch
+     * @return \Gems\Task\TaskRunnerBatch
      */
     protected function getExportBatch($load = true)
     {
@@ -466,7 +466,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
         }
 
         if (! $this->_batch->isLoaded()) {
-            $filename = \MUtil_File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
+            $filename = \MUtil\File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
             $trackId  = $this->trackEngine->getTrackId();
             $this->_batch->setSessionVariable('filename', $filename);
 
@@ -479,7 +479,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                     );
 
             if (isset($this->formData['fields']) && is_array($this->formData['fields'])) {
-                // \MUtil_Echo::track($this->formData['fields']);
+                // \MUtil\EchoOut\EchoOut::track($this->formData['fields']);
                 foreach ($this->formData['fields'] as $fieldId) {
                     $this->_batch->addTask(
                             'Tracker\\Export\\TrackFieldExportTask',
@@ -553,7 +553,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
                 $this->formData = $model->loadNew();
             }
         }
-        // \MUtil_Echo::track($this->formData);
+        // \MUtil\EchoOut\EchoOut::track($this->formData);
     }
 
     /**
@@ -574,7 +574,7 @@ class ExportTrackSnippetAbstract extends \MUtil_Snippets_WizardFormSnippetAbstra
             $this->afterSaveRouteUrl = array(
                 $this->request->getControllerKey() => $this->request->getControllerName(),
                 $this->request->getActionKey()     => $this->routeAction,
-                \MUtil_Model::REQUEST_ID           => $this->request->getParam(\MUtil_Model::REQUEST_ID),
+                \MUtil\Model::REQUEST_ID           => $this->request->getParam(\MUtil\Model::REQUEST_ID),
                 );
         }
 

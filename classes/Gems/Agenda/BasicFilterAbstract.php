@@ -23,7 +23,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:13:01
  */
-abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstract
     implements AppointmentFilterInterface
 {
     /**
@@ -178,10 +178,10 @@ abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstrac
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
      * @return boolean
      */
-    // public function matchAppointment(\Gems_Agenda_Appointment $appointment);
+    // public function matchAppointment(\Gems\Agenda\Appointment $appointment);
 
     /**
      * Check a filter for a match
@@ -194,7 +194,7 @@ abstract class BasicFilterAbstract extends \MUtil_Translate_TranslateableAbstrac
     /**
      * By default only object variables starting with '_' are serialized in order to
      * avoid serializing any resource types loaded by
-     * \MUtil_Translate_TranslateableAbstract
+     * \MUtil\Translate\TranslateableAbstract
      *
      * @return array
      */

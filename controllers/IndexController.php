@@ -19,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class IndexController extends Gems_Default_IndexAction
+class IndexController extends \Gems\Actions\IndexAction
 {
     /**
      * The width factor for the label elements.

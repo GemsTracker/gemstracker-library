@@ -20,7 +20,7 @@ namespace Gems\Task\Survey;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class MoveanswersTask extends \MUtil_Task_TaskAbstract
+class MoveanswersTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -29,7 +29,7 @@ class MoveanswersTask extends \MUtil_Task_TaskAbstract
     public $db;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 

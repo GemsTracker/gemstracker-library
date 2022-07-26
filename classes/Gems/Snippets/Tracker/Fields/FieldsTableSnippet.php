@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FieldsTableSnippet.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Snippets\Tracker\Fields;
@@ -24,7 +23,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 18:56:47
  */
-class FieldsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -51,7 +50,7 @@ class FieldsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
     /**
      * Required: the engine of the current track
      *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -63,13 +62,13 @@ class FieldsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface;
+        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

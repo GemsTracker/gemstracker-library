@@ -31,12 +31,12 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
     protected $authenticator;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -47,13 +47,13 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $user;
 
     /**
      *
-     * @var \Gems_User_UserLoader
+     * @var \Gems\User\UserLoader
      */
     protected $userLoader;
 
@@ -92,7 +92,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
         if ($this->authenticator) {
             try {
                 $this->authenticator->addSetupFormElements($form, $this->user, $this->formData);
-            } catch (\Gems_Exception $e) {
+            } catch (\Gems\Exception $e) {
 
                 $this->addMessage($e->getMessage());
                 $canEnableTwoFactor = false;
@@ -207,7 +207,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -232,7 +232,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -259,7 +259,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
     /**
      * Load the selected two factor method, or the first available
      *
-     * @throws \Gems_Exception_Coding
+     * @throws \Gems\Exception\Coding
      */
     protected function loadAuthenticator()
     {

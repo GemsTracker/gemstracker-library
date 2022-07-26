@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems;
+
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSelect;
 use Gems\Agenda\EpisodeOfCare;
@@ -22,11 +24,11 @@ use Gems\Agenda\EpisodeOfCare;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
+class Agenda extends \Gems\Loader\TargetLoaderAbstract
 {
     /**
      *
-     * @var \Gems_Agenda_Appointment[]
+     * @var \Gems\Agenda\Appointment[]
      */
     private $_appointments = array();
 
@@ -55,7 +57,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     protected $cache;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -69,7 +71,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -86,13 +88,13 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     protected $translateAdapter;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      *
-     * @param type $container A container acting as source for \MUtil_Registry_Source
+     * @param type $container A container acting as source for \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)
@@ -165,8 +167,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      */
     public function addActivity($name, $organizationId)
     {
-        $model = new \MUtil_Model_TableModel('gems__agenda_activities');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
+        $model = new \MUtil\Model\TableModel('gems__agenda_activities');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gaa');
 
         $values = array(
             'gaa_name'            => $name,
@@ -194,8 +196,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      */
     public function addHealthcareStaff($name, $organizationId)
     {
-        $model = new \MUtil_Model_TableModel('gems__agenda_staff');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gas');
+        $model = new \MUtil\Model\TableModel('gems__agenda_staff');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gas');
 
         $values = array(
             'gas_name'            => $name,
@@ -242,8 +244,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             );
         }
 
-        $model = new \MUtil_Model_TableModel('gems__locations');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+        $model = new \MUtil\Model\TableModel('gems__locations');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'glo');
 
         $result = $model->save($values);
 
@@ -264,8 +266,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      */
     public function addProcedure($name, $organizationId)
     {
-        $model = new \MUtil_Model_TableModel('gems__agenda_procedures');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
+        $model = new \MUtil\Model\TableModel('gems__agenda_procedures');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gapr');
 
         $values = array(
             'gapr_name'            => $name,
@@ -358,7 +360,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                         ) OR
                             gaa_id_organization = ?', $organizationId);
         }
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->setCacheItem($cacheId, $results, ['activities']);
         return $results;
@@ -368,14 +370,14 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Overrule this function to adapt the display of the agenda items for each project
      *
-     * @see \Gems_Agenda_Appointment->getDisplayString()
+     * @see \Gems\Agenda\Appointment->getDisplayString()
      *
      * @param array $row Row containing result select
      * @return string
      */
     public function getAppointmentDisplay(array $row)
     {
-        $date = new \MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
+        $date = new \MUtil\Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
         $results[] = $date->toString($this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
@@ -394,17 +396,17 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * Get an appointment object
      *
      * @param mixed $appointmentData Appointment id or array containing appointment data
-     * @return \Gems_Agenda_Appointment
+     * @return \Gems\Agenda\Appointment
      */
     public function getAppointment($appointmentData)
     {
         if (! $appointmentData) {
-            throw new \Gems_Exception_Coding('Provide at least the apppointment id when requesting an appointment.');
+            throw new \Gems\Exception\Coding('Provide at least the apppointment id when requesting an appointment.');
         }
 
         if (is_array($appointmentData)) {
              if (!isset($appointmentData['gap_id_appointment'])) {
-                 throw new \Gems_Exception_Coding(
+                 throw new \Gems\Exception\Coding(
                          '$appointmentData array should atleast have a key "gap_id_appointment" containing the requested appointment id'
                          );
              }
@@ -412,7 +414,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         } else {
             $appointmentId = $appointmentData;
         }
-        // \MUtil_Echo::track($appointmentId, $appointmentData);
+        // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
             $this->_appointments[$appointmentId] = $this->_loadClass('appointment', true, array($appointmentData));
@@ -459,7 +461,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     ->where('gr2o_id_organization = ?', $organizationId);
         }
 
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
         $rows = $this->db->fetchAll($select);
 
         if (! $rows) {
@@ -490,7 +492,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
         $select->where('gap_id_episode = ?', $episodeId);
 
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
         $rows = $this->db->fetchAll($select);
 
         if (! $rows) {
@@ -526,17 +528,17 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     public function getEpisodeOfCare($episodeData)
     {
         if (! $episodeData) {
-            throw new \Gems_Exception_Coding('Provide at least the episode id when requesting an episode of care.');
+            throw new \Gems\Exception\Coding('Provide at least the episode id when requesting an episode of care.');
         }
 
         if (is_array($episodeData)) {
              if (!isset($episodeData['gec_episode_of_care_id'])) {
-                 throw new \Gems_Exception_Coding(
+                 throw new \Gems\Exception\Coding(
                          '$episodeData array should atleast have a key "gec_episode_of_care_id" containing the requested episode id'
                          );
              }
         }
-        // \MUtil_Echo::track($appointmentId, $appointmentData);
+        // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
         return $this->_loadClass('episodeOfCare', true, array($episodeData));
     }
@@ -618,11 +620,11 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get the episodes for a respondent
      *
-     * @param \Gems_Tracker_Respondent $respondent
+     * @param \Gems\Tracker\Respondent $respondent
      * @param $where mixed Optional extra string or array filter
      * @return array of $episodeId => \Gems\Agenda\EpisodeOfCare
      */
-    public function getEpisodesFor(\Gems_Tracker_Respondent $respondent, $where = null)
+    public function getEpisodesFor(\Gems\Tracker\Respondent $respondent, $where = null)
     {
         return $this->getEpisodesForRespId($respondent->getId(), $respondent->getOrganizationId(), $where);
     }
@@ -656,7 +658,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 $select->where($where);
             }
         }
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
 
         $episodes = $this->db->fetchAll($select);
         $output   = [];
@@ -793,7 +795,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $filterRows = $this->db->fetchAll($sql);
         $output     = array();
 
-        // \MUtil_Echo::track($filterRows);
+        // \MUtil\EchoOut\EchoOut::track($filterRows);
         foreach ($filterRows as $key => $filter) {
             $className = $filter['gaf_class'];
             if (! isset($classes[$className])) {
@@ -805,7 +807,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 $output[$key] = $filterObject;
             }
         }
-        // \MUtil_Echo::track(count($filterRows), count($output));
+        // \MUtil\EchoOut\EchoOut::track(count($filterRows), count($output));
 
         return $output;
     }
@@ -833,7 +835,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             $select->where('gas_active = 1')
                     ->where('gas_id_organization = ?', $organizationId);
         }
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->setCacheItem($cacheId, $results, ['staff']);
         return $results;
@@ -945,7 +947,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                         ) OR
                             gapr_id_organization = ?', $organizationId);
         }
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil\EchoOut\EchoOut::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->setCacheItem($cacheId, $results, ['procedures']);
         return $results;
@@ -1051,8 +1053,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get the element that allows to create a track from an appointment
      *
-     * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
-     * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
+     * When adding a new type, make sure to modify \Gems\Agenda\Appointment too
+     * @see \Gems\Agenda\Appointment::getCreatorCheckMethod()
      *
      * @return array For element setting
      */
@@ -1069,8 +1071,8 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Get the element that allows to create a track from an appointment
      *
-     * When adding a new type, make sure to modify \Gems_Agenda_Appointment too
-     * @see \Gems_Agenda_Appointment::getCreatorCheckMethod()
+     * When adding a new type, make sure to modify \Gems\Agenda\Appointment too
+     * @see \Gems\Agenda\Appointment::getCreatorCheckMethod()
      *
      * @return array Code => label
      */
@@ -1131,7 +1133,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil\Translate\Adapter\Potemkin();
     }
 
     /**
@@ -1164,7 +1166,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if ($output) {
             foreach ($output as $key => $filterObject) {
                 // Filterobjects should not serialize anything loaded from a source
-                if ($filterObject instanceof \MUtil_Registry_TargetInterface) {
+                if ($filterObject instanceof \MUtil\Registry\TargetInterface) {
                     $this->applySource($filterObject);
                 }
                 $this->_filters[$key] = $filterObject;
@@ -1239,7 +1241,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param mixed $to \Gems_Agenda_Appointment:EpsiodeOfCare
+     * @param mixed $to \Gems\Agenda\Appointment:EpsiodeOfCare
      * @return AppointmentFilterInterface[]
      */
     public function matchFilters($to)
@@ -1247,7 +1249,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         $filters = $this->loadDefaultFilters();
         $output  = array();
 
-        if ($to instanceof \Gems_Agenda_Appointment) {
+        if ($to instanceof \Gems\Agenda\Appointment) {
             foreach ($filters as $filter) {
                 if ($filter instanceof AppointmentFilterInterface) {
                     if ($filter->matchAppointment($to)) {
@@ -1264,7 +1266,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 }
             }
         } else {
-            throw new \Gems_Exception_Coding('The $to paramater must be either an appointment or an episode object.');
+            throw new \Gems\Exception\Coding('The $to paramater must be either an appointment or an episode object.');
         }
 
         return $output;

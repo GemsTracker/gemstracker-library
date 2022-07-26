@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Validate;
 
 /**
  * Check for one of the two values being filled
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Validate_OneOf extends \Laminas\Validator\AbstractValidator
+class OneOf extends \Laminas\Validator\AbstractValidator
 {
     /**
      * Error codes

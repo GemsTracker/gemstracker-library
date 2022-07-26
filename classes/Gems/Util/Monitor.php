@@ -7,12 +7,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Monitor.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Util;
 
-use \MUtil\Util\MonitorJob;
+use MUtil\Util\MonitorJob;
 
 /**
  *
@@ -37,7 +36,7 @@ class Monitor extends UtilAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     

@@ -39,7 +39,7 @@ class GemsTimelineShow extends ShowScreenAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getScreenLabel()
     {

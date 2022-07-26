@@ -7,11 +7,12 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems\Import;
+
 /**
- * Gems specific importer class
+ * \Gems specific importer class
  *
  * @package    Gems
  * @subpackage Import
@@ -19,21 +20,21 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Import_Importer extends \MUtil_Model_Importer
+class Importer extends \MUtil\Model\Importer
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
      * @param string $idPart End part for batch id
-     * @param \MUtil_Task_TaskBatch $batch Optional batch with different source etc..
-     * @return \MUtil_Task_TaskBatch
+     * @param \MUtil\Task\TaskBatch $batch Optional batch with different source etc..
+     * @return \MUtil\Task\TaskBatch
      */
-    protected function getBasicImportBatch($idPart, \MUtil_Task_TaskBatch $batch = null)
+    protected function getBasicImportBatch($idPart, \MUtil\Task\TaskBatch $batch = null)
     {
         if (null === $batch) {
             $batch = $this->loader->getTaskRunnerBatch('check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
@@ -44,12 +45,12 @@ class Gems_Import_Importer extends \MUtil_Model_Importer
     }
     /**
      *
-     * @param \MUtil_Task_TaskBatch $batch Optional batch with different source etc..
-     * @return \MUtil_Task_TaskBatch
+     * @param \MUtil\Task\TaskBatch $batch Optional batch with different source etc..
+     * @return \MUtil\Task\TaskBatch
      */
-    public function getImportOnlyBatch(\MUtil_Task_TaskBatch $batch = null)
+    public function getImportOnlyBatch(\MUtil\Task\TaskBatch $batch = null)
     {
-        if (! $this->_importBatch instanceof \MUtil_Task_TaskBatch) {
+        if (! $this->_importBatch instanceof \MUtil\Task\TaskBatch) {
             $batch = $this->loader->getTaskRunnerBatch(__CLASS__ . '_import_' .
                     basename($this->sourceModel->getName()) . '_' . __FUNCTION__);
             $this->_importBatch = $batch;

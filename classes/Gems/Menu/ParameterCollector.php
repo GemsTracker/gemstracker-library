@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Menu;
 
 /**
  *
@@ -19,14 +20,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Menu_ParameterCollector
+class ParameterCollector
 {
     protected $sources = array();
     protected $values = array();
 
     public function __construct()
     {
-        $sources = \MUtil_Ra::args(func_get_args());
+        $sources = \MUtil\Ra::args(func_get_args());
         $array   = array();
         foreach ($sources as $key => $source) {
             // Fix for array sources.
@@ -62,11 +63,11 @@ class Gems_Menu_ParameterCollector
 
         $this->values[$name] = null;
         foreach ($this->sources as $source) {
-            if ($source instanceof \MUtil_Model_Bridge_TableBridgeAbstract) {
+            if ($source instanceof \MUtil\Model\Bridge\TableBridgeAbstract) {
                 if ($source->has($name)) {
                     $this->values[$name] = $source->getLazy($name);
                 }
-            } elseif ($source instanceof \Gems_Menu_ParameterSourceInterface) {
+            } elseif ($source instanceof \Gems\Menu\ParameterSourceInterface) {
                 $this->values[$name] = $source->getMenuParameter($name, $this->values[$name]);
 
             } elseif ($source instanceof \Zend_Controller_Request_Abstract) {
@@ -77,11 +78,11 @@ class Gems_Menu_ParameterCollector
                 $this->values[$name] = $value;
 
             } elseif (is_array($source)) {
-                // \MUtil_Echo::track($name, $source);
+                // \MUtil\EchoOut\EchoOut::track($name, $source);
                 if (isset($source[$name])) {
                     $this->values[$name] = $source[$name];
                 }
-            } elseif ($source instanceof \MUtil_Lazy_RepeatableInterface) {
+            } elseif ($source instanceof \MUtil\Lazy\RepeatableInterface) {
                 $this->values[$name] = $source->__get($name);
 
             }

@@ -3,7 +3,7 @@
 namespace Gems\User\TwoFactor;
 
 
-abstract class TwoFactorTotpAbstract extends \MUtil_Translate_TranslateableAbstract implements TwoFactorAuthenticatorInterface
+abstract class TwoFactorTotpAbstract extends \MUtil\Translate\TranslateableAbstract implements TwoFactorAuthenticatorInterface
 {
     /**
      *
@@ -33,12 +33,12 @@ abstract class TwoFactorTotpAbstract extends \MUtil_Translate_TranslateableAbstr
         }
     }
 
-    public function addSetupFormElements(\Zend_Form $form, \Gems_User_User $user, array &$formData)
+    public function addSetupFormElements(\Zend_Form $form, \Gems\User\User $user, array &$formData)
     {
         $this->addKeyEditFormElements($form, $user, $formData);
     }
 
-    protected function addKeyEditFormElements(\Zend_Form $form, \Gems_User_User $user, array &$formData)
+    protected function addKeyEditFormElements(\Zend_Form $form, \Gems\User\User $user, array &$formData)
     {
         if ($user->canSaveTwoFactorKey()) {
             $orElement = $form->createElement('Html', 'orelem');
@@ -304,10 +304,10 @@ abstract class TwoFactorTotpAbstract extends \MUtil_Translate_TranslateableAbstr
             return false;
         }
 
-        // \MUtil_Echo::track($discrepancy);
+        // \MUtil\EchoOut\EchoOut::track($discrepancy);
 
         for ($i = -$discrepancy; $i <= $discrepancy; ++$i) {
-            // \MUtil_Echo::track($i);
+            // \MUtil\EchoOut\EchoOut::track($i);
             $calculatedCode = $this->getCode($secret, $currentTimeSlice + $i);
             if ($this->_timingSafeEquals($calculatedCode, $code)) {
                 return true;

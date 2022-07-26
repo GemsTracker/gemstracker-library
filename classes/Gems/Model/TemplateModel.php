@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Model;
 
 /**
  *
@@ -17,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class Gems_Model_TemplateModel extends \MUtil_Model_ArrayModelAbstract {
+class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
 
     protected $_modelFields = array('name', 'path');
     protected $_templates = array();
@@ -32,7 +33,7 @@ class Gems_Model_TemplateModel extends \MUtil_Model_ArrayModelAbstract {
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $_project;
 
@@ -41,7 +42,7 @@ class Gems_Model_TemplateModel extends \MUtil_Model_ArrayModelAbstract {
     /**
      *
      * @param string $modelName
-     * @param \Gems_Project_ProjectSettings $project
+     * @param \Gems\Project\ProjectSettings $project
      */
     public function __construct($modelName, $project)
     {
@@ -235,9 +236,9 @@ class Gems_Model_TemplateModel extends \MUtil_Model_ArrayModelAbstract {
             $view = \Zend_Layout::getMvcInstance()->getView();
             $headlink = $view->headLink();
 
-            if ($headlink instanceof \MUtil_Less_View_Helper_HeadLink) {
+            if ($headlink instanceof \MUtil\Less\View\Helper\HeadLink) {
                 foreach($data['sheets'] as $url) {
-                    if (\MUtil_String::endsWith($url, '.less', true)) {
+                    if (\MUtil\StringUtil\StringUtil::endsWith($url, '.less', true)) {
                         $result = $headlink->compile($view, $url, true);
 
                         if ($result) {

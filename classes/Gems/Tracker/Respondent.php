@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Tracker;
+
 /**
  *
  *
@@ -18,9 +20,9 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
+class Respondent extends \Gems\Registry\TargetAbstract
 {
-    use \Gems\Translate\GenderTranslation;
+    use Gems\Translate\GenderTranslation;
 
     /**
      *
@@ -37,7 +39,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -55,7 +57,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
 	/**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -67,7 +69,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Model_RespondentModel
+     * @var \Gems\Model\RespondentModel
      */
 	protected $model;
 
@@ -96,7 +98,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -135,10 +137,10 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     /**
      * Set menu parameters from this token
      *
-     * @param \Gems_Menu_ParameterSource $source
-     * @return \Gems_Tracker_RespondentTrack (continuation pattern)
+     * @param \Gems\Menu\ParameterSource $source
+     * @return \Gems\Tracker\RespondentTrack (continuation pattern)
      */
-    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
+    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
     {
         $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
         $source->offsetSet('resp_deleted', ($this->getReceptionCode()->isSuccess() ? 0 : 1));
@@ -159,7 +161,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     /**
      * Returns current age or at a given date when supplied
      *
-     * @param \MUtil_Date|null $date
+     * @param \MUtil\Date|null $date
      * @return int
      */
     public function getAge($date = null, $months = false)
@@ -167,10 +169,10 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
         $birthDate = $this->getBirthDay();
 
         if (is_null($date)) {
-            $date = new \MUtil_Date();
+            $date = new \MUtil\Date();
         }
 
-        if (!($birthDate instanceof \MUtil_Date) || !($date instanceof \MUtil_Date)) {
+        if (!($birthDate instanceof \MUtil\Date) || !($date instanceof \MUtil\Date)) {
             return null;
         }
 
@@ -202,7 +204,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     /**
      * Get the birthdate
      *
-     * @return \MUtil_Date|null
+     * @return \MUtil\Date|null
      */
     public function getBirthday()
     {
@@ -232,7 +234,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return \MUtil_Date
+     * @return \MUtil\Date
      */
     public function getDate($fieldName)
     {
@@ -240,11 +242,11 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $date = $this->_gemsData[$fieldName];
 
             if ($date) {
-                if ($date instanceof \MUtil_Date) {
+                if ($date instanceof \MUtil\Date) {
                     return $date;
                 }
 
-                return \MUtil_Date::ifDate($date, [\Gems_Tracker::DB_DATETIME_FORMAT, \Gems_Tracker::DB_DATE_FORMAT]);
+                return \MUtil\Date::ifDate($date, [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT]);
             }
         }
     }
@@ -390,7 +392,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_User_Organization
+     * @return \Gems\User\Organization
      */
     public function getOrganization()
     {
@@ -453,9 +455,9 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
     }
 
     /**
-     * Return the \Gems_Util_ReceptionCode object
+     * Return the \Gems\Util\ReceptionCode object
      *
-     * @return \Gems_Util_ReceptionCode reception code
+     * @return \Gems\Util\ReceptionCode reception code
      */
     public function getReceptionCode()
     {
@@ -464,7 +466,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return \Gems_Model_RespondentModel
+     * @return \Gems\Model\RespondentModel
      */
     public function getRespondentModel()
     {
@@ -588,7 +590,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
             $this->exists = false;
         }
 
-        if ($this->currentUser instanceof \Gems_User_User) {
+        if ($this->currentUser instanceof \Gems\User\User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
 	}
@@ -599,11 +601,11 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * Used when restoring a respondent, and the restore tracks box is checked. This will
      * also restore all tokens in the tracks that have the same codes.
      *
-     * @param \Gems_Util_ReceptionCode $oldCode The old reception code
-     * @param \Gems_Util_ReceptionCode $newCode the new reception code
+     * @param \Gems\Util\ReceptionCode $oldCode The old reception code
+     * @param \Gems\Util\ReceptionCode $newCode the new reception code
      * @return int  The number of restored tracks
      */
-    public function restoreTracks(\Gems_Util_ReceptionCode $oldCode, \Gems_Util_ReceptionCode $newCode) {
+    public function restoreTracks(\Gems\Util\ReceptionCode $oldCode, \Gems\Util\ReceptionCode $newCode) {
         $count      = 0;
 
         if (!$oldCode->isSuccess() && $newCode->isSuccess()) {
@@ -613,7 +615,7 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
                     );
 
             foreach ($respTracks as $respTrack) {
-                if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                if ($respTrack instanceof \Gems\Tracker\RespondentTrack) {
                     if ($oldCode->getCode() === $respTrack->getReceptionCode()->getCode()) {
                         $respTrack->setReceptionCode($newCode, null, $this->currentUser->getUserId());
                         $respTrack->restoreTokens($oldCode, $newCode);
@@ -642,8 +644,8 @@ class Gems_Tracker_Respondent extends \Gems_Registry_TargetAbstract
      * Set the reception code for a respondent and cascade non-success codes to the
      * tracks / surveys.
      *
-     * @param string $newCode     String or \Gems_Util_ReceptionCode
-     * @return \Gems_Util_ReceptionCode The new code reception code object for further processing
+     * @param string $newCode     String or \Gems\Util\ReceptionCode
+     * @return \Gems\Util\ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($newCode)
     {

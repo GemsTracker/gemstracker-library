@@ -26,7 +26,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -47,13 +47,13 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -63,11 +63,11 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -82,7 +82,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function findMenuItem($controller, $action = 'index')
     {
@@ -92,7 +92,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItem()
     {
@@ -102,7 +102,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -115,7 +115,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -123,7 +123,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
         $title = $this->getTitle();
 
         if ($title) {
-            $htmlDiv = \MUtil_Html::div();
+            $htmlDiv = \MUtil\Html::div();
 
             $htmlDiv->h3($title);
 
@@ -168,11 +168,11 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 

@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets\Export;
+
 /**
  * Header for html/pdf export of a survey
  *
@@ -16,10 +18,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Snippets_Export_SurveyHeaderSnippet extends \MUtil_Snippets_SnippetAbstract
+class SurveyHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     public $token;
 

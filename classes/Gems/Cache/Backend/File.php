@@ -21,7 +21,7 @@ class File extends \Zend_Cache_Backend_File
         foreach($directives as $name=>$value) {
         //while (list($name, $value) = each($directives)) {
             if (!is_string($name)) {
-                Zend_Cache::throwException("Incorrect option name : $name");
+                \Zend_Cache::throwException("Incorrect option name : $name");
             }
             $name = strtolower($name);
             if (array_key_exists($name, $this->_directives)) {

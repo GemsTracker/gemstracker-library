@@ -4,8 +4,9 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Task\Tracker;
 
 /**
  * Check token completion in a batch job
@@ -19,10 +20,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Task_Tracker_BulkCheckTokenCompletion extends \MUtil_Task_TaskAbstract
+class BulkCheckTokenCompletion extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
@@ -49,7 +50,7 @@ class Gems_Task_Tracker_BulkCheckTokenCompletion extends \MUtil_Task_TaskAbstrac
         if ($completed) {
             $batch   = $this->getBatch();
             foreach($completed as $tokenId) {
-                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                $batch->setTask('Tracker\\CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
             }
         }
     }

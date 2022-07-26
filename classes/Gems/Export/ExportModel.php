@@ -6,8 +6,9 @@
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Export;
 
 /**
  *
@@ -17,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export_ExportModel extends \MUtil_Model_ModelAbstract
+class ExportModel extends \MUtil\Model\ModelAbstract
 {
 
     public function __construct()

@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export\ModelSource;
+
 /**
  *
  * @package    Gems
@@ -16,16 +18,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class Gems_Export_ModelSource_ExportModelSourceAbstract extends \MUtil_Translate_TranslateableAbstract
+abstract class ExportModelSourceAbstract extends \MUtil\Translate\TranslateableAbstract
 {
 	/**
 	 * Get form elements for the specific Export
      *
-	 * @param  \Gems_Form $form existing form type
+	 * @param  \Gems\Form $form existing form type
 	 * @param  array data existing options set in the form
 	 * @return array of form elements
 	 */
-	public function getExtraDataFormElements(\Gems_Form $form, $data)
+	public function getExtraDataFormElements(\Gems\Form $form, $data)
 	{
 		return array();
 	}
@@ -34,7 +36,7 @@ abstract class Gems_Export_ModelSource_ExportModelSourceAbstract extends \MUtil_
      * Get the model to export
      * @param  array  $filter Filter for the model
      * @param  array  $data   Data from the form options
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
 	abstract public function getModel($filter = array(), $data = array());
 }

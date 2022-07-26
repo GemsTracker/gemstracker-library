@@ -8,6 +8,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Export;
+
 /**
  * Handles export of all tracks/surveys for a respondent
  * 
@@ -19,7 +21,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstract
+class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      * Group answers
@@ -29,7 +31,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     protected $_group;
 
     /**
-     * @var \Gems_Pdf
+     * @var \Gems\Pdf
      */
     protected $_pdf;
 
@@ -47,40 +49,40 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      *
      * @var string
      */
-    protected $_reportFooter      = 'Export_ReportFooterSnippet';
+    protected $_reportFooter      = 'Export\\ReportFooterSnippet';
 
     /**
      *
      * @var string
      */
-    protected $_reportHeader      = 'Export_ReportHeaderSnippet';
+    protected $_reportHeader      = 'Export\\ReportHeaderSnippet';
 
     /**
      *
      * @var string
      */
-    protected $_respondentSnippet = 'Export_RespondentSnippet';
+    protected $_respondentSnippet = 'Export\\RespondentSnippet';
 
     /**
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
      *
-     * @var \GemsEscort
+     * @var \Gems\Escort
      */
     protected $escort;
 
     /**
      *
-     * @var \MUtil_Html_Sequence
+     * @var \MUtil\Html\Sequence
      */
     protected $html;
 
@@ -91,20 +93,20 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -148,7 +150,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -161,7 +163,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     /**
      * Returns true when this token should be displayed
      *
-     * @param \Gems_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @return boolean
      */
     public function _displayToken($token)
@@ -177,10 +179,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      * Determines if this particular token should be included
      * in the report
      *
-     * @param  \Gems_Tracker_Token $token
+     * @param  \Gems\Tracker\Token $token
      * @return boolean This dummy implementation always returns true
      */
-    protected function _isTokenInFilter(\Gems_Tracker_Token $token)
+    protected function _isTokenInFilter(\Gems\Tracker\Token $token)
     {
         $result = false;
 
@@ -220,10 +222,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      * Determines if this particular track should be included
      * in the report
      *
-     * @param  \Gems_Tracker_RespondentTrack $track
+     * @param  \Gems\Tracker\RespondentTrack $track
      * @return boolean This dummy implementation always returns true
      */
-    protected function _isTrackInFilter(\Gems_Tracker_RespondentTrack $track)
+    protected function _isTrackInFilter(\Gems\Tracker\RespondentTrack $track)
     {
         $result    = false;
         $trackInfo = array(
@@ -257,9 +259,9 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     /**
      * Exports all the tokens of a single track, grouped by round
      *
-     * @param \Gems_Tracker_RespondentTrack $track
+     * @param \Gems\Tracker\RespondentTrack $track
      */
-    protected function _exportTrackTokens(\Gems_Tracker_RespondentTrack $track)
+    protected function _exportTrackTokens(\Gems\Tracker\RespondentTrack $track)
     {
         $groupSurveys = $this->_group;
         $token        = $track->getFirstToken();
@@ -322,10 +324,10 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                     $snippets = array($snippets);
                 }
 
-                list($snippets, $snippetParams) = \MUtil_Ra::keySplit($snippets);
+                list($snippets, $snippetParams) = \MUtil\Ra::keySplit($snippets);
                 $params = $params + $snippetParams;
 
-                $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
+                $this->html->snippet('Export\\SurveyHeaderSnippet', 'token', $token);
 
                 foreach($snippets as $snippet) {
                     $this->html->snippet($snippet, $params);
@@ -341,9 +343,9 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     /**
      * Exports a single track
      *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \Gems\Tracker\RespondentTrack $respTrack
      */
-    protected function _exportTrack(\Gems_Tracker_RespondentTrack $respTrack)
+    protected function _exportTrack(\Gems\Tracker\RespondentTrack $respTrack)
     {
         if (!$this->_isTrackInFilter($respTrack)) {
             return;
@@ -358,7 +360,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
         $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
             'formatFunction', $this->util->getTranslated()->formatDate,
-            'default', \MUtil_Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
+            'default', \MUtil\Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
         $trackModel->set('gr2t_reception_code');
         $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));
         $trackModel->setFilter(array('gr2t_id_respondent_track' => $respTrack->getRespondentTrackId()));
@@ -367,7 +369,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $this->html->h4($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
         $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table copy-to-clipboard-before'));
-        $bridge->setRepeater(\MUtil_Lazy::repeat(array($trackData)));
+        $bridge->setRepeater(\MUtil\Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
         foreach($trackModel->getItemsOrdered() as $name) {
@@ -376,7 +378,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
             }
         }
 
-        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $tableContainer = \MUtil\Html::create()->div(array('class' => 'table-container'));
         $tableContainer[] = $bridge->getTable();
         $this->html[] = $tableContainer;
         $this->html->br();
@@ -427,7 +429,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     /**
      *
      * @param int $respTrackId
-     * @return \Gems_Export_RespondentExport
+     * @return \Gems\Export\RespondentExport
      */
     public function addRespondentTrackFilter($respTrackId)
     {
@@ -438,7 +440,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
     /**
      *
      * @param string $tokenId
-     * @return \Gems_Export_RespondentExport
+     * @return \Gems\Export\RespondentExport
      */
     public function addTokenFilter($tokenId)
     {
@@ -463,8 +465,8 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
                 $this->_wordPdf = true;
             }
         }
-        $this->escort  = \GemsEscort::getInstance();
-        $this->html    = \MUtil_Html::div(['class' => 'copy-to-clipboard-before']);
+        $this->escort  = \Gems\Escort::getInstance();
+        $this->html    = \MUtil\Html::div(['class' => 'copy-to-clipboard-before']);
         $this->request = \Zend_Controller_Front::getInstance()->getRequest();
 
         // Do not know why, but for some reason menu is not loaded automatically.
@@ -523,11 +525,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
      * Constructs the form
      *
      * @param boolean $hideGroup When true group checkbox is hidden
-     * @return \Gems_Form_TableForm
+     * @return \Gems\Form\TableForm
      */
     public function getForm($hideGroup = false)
     {
-        $form = new \Gems_Form();
+        $form = new \Gems\Form();
         if (! $this->isFramed) {
             $form->setAttrib('target', '_blank');
         }
@@ -565,7 +567,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
         $links->addCurrentParent($this->_('Cancel'));
         if (count($links)) {
-            $element = new \MUtil_Form_Element_Html('menuLinks');
+            $element = new \MUtil\Form\Element\Html('menuLinks');
             $element->setValue($links);
             // $element->setOrder(999);
             $form->addElement($element);
@@ -625,11 +627,11 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
 
         if ($this->isFramed && ('html' == $format)) {
             $div = $this->html->div();
-            $url = new \MUtil_Html_HrefArrayAttribute([
+            $url = new \MUtil\Html\HrefArrayAttribute([
                 $this->request->getControllerKey() => $this->request->getControllerName(),
                 $this->request->getActionKey() => $this->request->getActionName(),
-                \MUtil_Model::REQUEST_ID1 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID1),
-                \MUtil_Model::REQUEST_ID2 =>  $this->request->getParam(\MUtil_Model::REQUEST_ID2),
+                \MUtil\Model::REQUEST_ID1 =>  $this->request->getParam(\MUtil\Model::REQUEST_ID1),
+                \MUtil\Model::REQUEST_ID2 =>  $this->request->getParam(\MUtil\Model::REQUEST_ID2),
                 ]);
             $url->setRouteReset(true);
             $div->a($url, $this->_('Back'), ['class' => 'btn']);
@@ -652,7 +654,7 @@ class Gems_Export_RespondentExport extends \MUtil_Translate_TranslateableAbstrac
         $this->html->snippet($this->_reportFooter,  'respondents', $respondents);
 
         $this->menu->setVisible(false);
-        if ($this->escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
+        if ($this->escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
             $this->escort->layoutSwitch();
         }
         $this->escort->postDispatch($this->request);

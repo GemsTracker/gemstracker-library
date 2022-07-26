@@ -6,8 +6,9 @@
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Communication;
 
 /**
  * A simple value-object containing respondent information
@@ -17,7 +18,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Communication_RespondentContainer
+class RespondentContainer
 {
     private $_patientId     = null;
     private $_firstName     = null;
@@ -74,7 +75,7 @@ class Gems_Communication_RespondentContainer
 
     public function setBsn($bsn)
     {
-        $filter = new \MUtil_Filter_Dutch_Burgerservicenummer();
+        $filter = new \MUtil\Filter\Dutch\Burgerservicenummer();
         $this->_bsn = $filter->filter($bsn);
     }
 

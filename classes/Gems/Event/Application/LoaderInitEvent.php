@@ -31,17 +31,17 @@ class LoaderInitEvent extends Event
     protected $container;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      * LoaderInitEvent constructor.
      *
-     * @param \Gems_Loader   $loader
+     * @param \Gems\Loader   $loader
      * @param mixed $container
      */
-    public function __construct(\Gems_Loader $loader, $container)
+    public function __construct(\Gems\Loader $loader, $container)
     {
         $this->loader    = $loader;
         $this->container = $container;
@@ -59,7 +59,7 @@ class LoaderInitEvent extends Event
      */
     public function addByName($object, $name)
     {
-        if ($object instanceof \MUtil_Registry_TargetInterface) {
+        if ($object instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($object);
         }
         $this->container->getServiceManager()->setService($name, $object);
@@ -79,10 +79,10 @@ class LoaderInitEvent extends Event
     /**
      * Apply this source to the target.
      *
-     * @param \MUtil_Registry_TargetInterface $target
+     * @param \MUtil\Registry\TargetInterface $target
      * @return boolean True if $target is OK with loaded requests
      */
-    public function applySource(\MUtil_Registry_TargetInterface $target)
+    public function applySource(\MUtil\Registry\TargetInterface $target)
     {
         return $this->loader->applySource($target);
     }

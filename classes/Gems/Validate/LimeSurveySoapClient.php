@@ -1,6 +1,5 @@
 <?php
 /**
- * @version    $Id$
  * @package    Gems
  * @subpackage Validate
  * @copyright  Copyright (c) 2011 Erasmus MC

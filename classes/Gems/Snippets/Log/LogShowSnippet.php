@@ -20,37 +20,37 @@ namespace Gems\Snippets\Log;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 23-apr-2015 11:10:02
  */
-class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
+class LogShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
 {
     /**
-     * One of the \MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW;
+    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -64,9 +64,9 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->request->getParam('log')) {
             $model->setFilter(array('gla_id' => $this->request->getParam('log')));
@@ -82,18 +82,18 @@ class LogShowSnippet extends \Gems_Snippets_ModelItemTableSnippetAbstract
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_VerticalTableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil_Model_Bridge_VerticalTableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $row = $bridge->getRow();
 
         parent::setShowTableFooter($bridge, $model);
 
         if (isset($row['gla_respondent_id'], $row['gla_organization']) &&
-                ($this->menuList instanceof \Gems_Menu_MenuList)) {
+                ($this->menuList instanceof \Gems\Menu\MenuList)) {
 
             try {
                 $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);

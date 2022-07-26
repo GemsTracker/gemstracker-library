@@ -1,6 +1,6 @@
 <?php
 
-class AnotherStaffUserDefinitionTest extends \Gems_Test_DbTestAbstract
+class AnotherStaffUserDefinitionTest extends \Gems\Test\DbTestAbstract
 {
     /**
      * @var string Password to test with
@@ -10,7 +10,7 @@ class AnotherStaffUserDefinitionTest extends \Gems_Test_DbTestAbstract
     protected $testUserId = 10001;
 
     /**
-     * @var \Gems_User_StaffUserDefinition
+     * @var \Gems\User\StaffUserDefinition
      */
     protected $userDefinition;
 
@@ -20,7 +20,7 @@ class AnotherStaffUserDefinitionTest extends \Gems_Test_DbTestAbstract
 
         $settings = new \Zend_Config_Ini(GEMS_ROOT_DIR . '/configs/application.example.ini', APPLICATION_ENV);
         $sa = $settings->toArray();
-        $this->loader  = new \Gems_Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
+        $this->loader  = new \Gems\Loader(\Zend_Registry::getInstance(), $sa['loaderDirs']);
         $this->userDefinition = $this->loader->getUserLoader()->getUserDefinition('StaffUser');
     }
 
@@ -45,7 +45,7 @@ class AnotherStaffUserDefinitionTest extends \Gems_Test_DbTestAbstract
         $oldHashedPassword = $this->userDefinition->hashOldPassword($this->testPassword);
         $this->db->query("UPDATE gems__user_passwords SET gup_password = '$oldHashedPassword'");
 
-        $user = $this->getMockBuilder('\Gems_User_User')
+        $user = $this->getMockBuilder('\\Gems\\User\\User')
             ->setConstructorArgs([[], $this->userDefinition])
             ->getMock();
 
@@ -87,7 +87,7 @@ class AnotherStaffUserDefinitionTest extends \Gems_Test_DbTestAbstract
         $hash = $this->userDefinition->hashPassword($this->testPassword);
         $this->db->query("UPDATE gems__user_passwords SET gup_password = '$hash'");
 
-        $user = $this->getMockBuilder('\Gems_User_User')
+        $user = $this->getMockBuilder('\\Gems\\User\\User')
             ->setConstructorArgs([[], $this->userDefinition])
             ->getMock();
 

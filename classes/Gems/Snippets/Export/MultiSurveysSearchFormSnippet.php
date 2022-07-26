@@ -23,7 +23,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
 {
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
@@ -70,10 +70,10 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
     /**
      * Get the export classes to use
      * 
-     * @param \Gems_Export $export
+     * @param \Gems\Export $export
      * @return array
      */
-    protected function getExportClasses(\Gems_Export $export)
+    protected function getExportClasses(\Gems\Export $export)
     {
         return $export->getExportClasses();
     }
@@ -112,7 +112,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         if ($exportFormElements) {
             $elements['firstCheck'] = $this->form->createElement('hidden', $currentType)->setBelongsTo($currentType);
             foreach ($exportFormElements as $key => $formElement) {
-                $elements['type_br_' . $key] = \MUtil_Html::create('br');
+                $elements['type_br_' . $key] = \MUtil\Html::create('br');
                 $elements['type_el_' . $key] = $formElement;
             }
         }
@@ -150,22 +150,22 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
         // Surveys
         $surveysByType = $dbLookup->getSurveysForExport($trackId, $roundDescr, false, $this->forCodeBooks);
         $surveys  = [];
-        if (isset($surveysByType[\Gems_Util_DbLookup::SURVEY_ACTIVE])) {
-            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_ACTIVE] as $surveyId => $label) {
+        if (isset($surveysByType[\Gems\Util\DbLookup::SURVEY_ACTIVE])) {
+            foreach ($surveysByType[\Gems\Util\DbLookup::SURVEY_ACTIVE] as $surveyId => $label) {
                 $surveys[$surveyId] = $label;
             }
         }
-        if (isset($surveysByType[\Gems_Util_DbLookup::SURVEY_INACTIVE])) {
-            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_INACTIVE] as $surveyId => $label) {
-                $surveys[$surveyId] = \MUtil_Html::create(
+        if (isset($surveysByType[\Gems\Util\DbLookup::SURVEY_INACTIVE])) {
+            foreach ($surveysByType[\Gems\Util\DbLookup::SURVEY_INACTIVE] as $surveyId => $label) {
+                $surveys[$surveyId] = \MUtil\Html::create(
                     'em',
                     sprintf($this->_('%s (%s)'), $label, $this->_('inactive'))
                 )->render($this->view);
             }
         }
-        if ($this->forCodeBooks && isset($surveysByType[\Gems_Util_DbLookup::SURVEY_SOURCE_INACTIVE])) {
-            foreach ($surveysByType[\Gems_Util_DbLookup::SURVEY_SOURCE_INACTIVE] as $surveyId => $label) {
-                $surveys[$surveyId] = \MUtil_Html::create(
+        if ($this->forCodeBooks && isset($surveysByType[\Gems\Util\DbLookup::SURVEY_SOURCE_INACTIVE])) {
+            foreach ($surveysByType[\Gems\Util\DbLookup::SURVEY_SOURCE_INACTIVE] as $surveyId => $label) {
+                $surveys[$surveyId] = \MUtil\Html::create(
                     'em',
                     sprintf($this->_('%s (%s)'), $label, $this->_('source inactive')),
                     ['class' => 'deleted']
@@ -180,7 +180,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 );
         $elements['gto_id_track']->setAttrib('onchange', 'this.form.submit();');
 
-        $elements[] = \MUtil_Html::create('br');
+        $elements[] = \MUtil\Html::create('br');
 
        	$elements['gto_round_description'] = $this->_createSelectElement(
                 'gto_round_description',
@@ -189,7 +189,7 @@ class MultiSurveysSearchFormSnippet extends SurveyExportSearchFormSnippetAbstrac
                 );
         $elements['gto_round_description']->setAttrib('onchange', 'this.form.submit();');
 
-        $elements[] = \MUtil_Html::create('br');
+        $elements[] = \MUtil\Html::create('br');
 
         $elements['gto_id_survey'] = $this->_createMultiCheckBoxElements('gto_id_survey', $surveys, '<br/>');
         if (isset($elements['gto_id_survey']['gto_id_survey'])) {

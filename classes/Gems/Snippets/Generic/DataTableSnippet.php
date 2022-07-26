@@ -2,7 +2,7 @@
 
 namespace Gems\Snippets\Generic;
 
-class DataTableSnippet extends \MUtil_Snippets_SnippetAbstract
+class DataTableSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      * 
@@ -28,13 +28,13 @@ class DataTableSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $table = \MUtil_Html_TableElement::createArray($this->tableData, $this->tableTitle, $this->tableNested);
+        $table = \MUtil\Html\TableElement::createArray($this->tableData, $this->tableTitle, $this->tableNested);
         $table->class = 'browser table';
-        $div = \MUtil_Html::create()->div(array('class' => 'table-container'));
+        $div = \MUtil\Html::create()->div(array('class' => 'table-container'));
         $div[] = $table;
         return $div;
     }

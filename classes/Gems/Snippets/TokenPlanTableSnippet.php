@@ -4,8 +4,9 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Displays a table for TokenModel
@@ -16,12 +17,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
   */
-class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
+class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     public $filter = array();
 
     /**
-     * @var \GemsEscort
+     * @var \Gems\Escort
      */
     public $escort;
     
@@ -33,11 +34,11 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    public function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
         $model->set('gto_round_description', 'label', $this->_('Round / Details'));
@@ -46,10 +47,10 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         $model->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
         $model->set('respondent_name',       'label', $this->_('Name'));
 
-        $HTML  = \MUtil_Html::create();
+        $HTML  = \MUtil\Html::create();
         
         if ($this->showActionLinks) {
-            $rowClass = \MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd');
+            $rowClass = \MUtil\Html\TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd');
         } else {
             $rowClass = 'odd';
         }
@@ -78,7 +79,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 
-        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
+        if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
             $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
         } else {
             $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
@@ -92,7 +93,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         $bridge->addSortable('assigned_by');
     }
 
-    public function getActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
+    public function getActionLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         // Get the other token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true))) {
@@ -117,7 +118,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         return $buttons;
     }
 
-    public function getTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
+    public function getTokenLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         // Get the token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => 'show', 'allowed' => true))) {
@@ -128,7 +129,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnipp
         }
     }
 
-    public function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    public function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if (!empty($this->filter)) {
             $model->setFilter($this->filter);

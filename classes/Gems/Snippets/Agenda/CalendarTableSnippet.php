@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CalendarTableSnippet.php$
  */
+
+namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\AppointmentFilterInterface;
 
@@ -20,7 +21,7 @@ use Gems\Agenda\AppointmentFilterInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
+class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
      *
@@ -31,13 +32,13 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
     
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
@@ -47,11 +48,11 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         $bridge->gr2o_id_organization;
 
@@ -66,8 +67,8 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
             $respButton = null;
         }
 
-        $br = \MUtil_Html::create('br');
-        $sp = \MUtil_Html::raw(' ');
+        $br = \MUtil\Html::create('br');
+        $sp = \MUtil\Html::raw(' ');
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -94,7 +95,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
         $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
 
-        unset($table[\MUtil_Html_TableElement::THEAD]);
+        unset($table[\MUtil\Html\TableElement::THEAD]);
     }
 
     /**
@@ -108,16 +109,16 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
         parent::afterRegistry();
 
         if (null !== $this->calSearchFilter) {
-            $this->bridgeMode = \MUtil_Model_Bridge_BridgeAbstract::MODE_ROWS;
+            $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
             $this->caption    = $this->_('Example appointments');
             
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
-                    \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
+                    \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
                     $this->calSearchFilter->getSqlAppointmentsWhere(),
                     'limit' => 10,
                     ];
-                // \MUtil_Echo::track($this->calSearchFilter->getSqlAppointmentsWhere());
+                // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter->getSqlAppointmentsWhere());
 
                 $this->onEmpty = $this->_('No example appointments found');
             } elseif (false === $this->calSearchFilter) {
@@ -127,17 +128,17 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
                 $this->searchFilter = $this->calSearchFilter;
             }
         }
-        // \MUtil_Echo::track($this->calSearchFilter);
+        // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter);
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof \Gems_Model_AppointmentModel) {
+        if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();
             $this->model->applyBrowseSettings();
         }
@@ -152,11 +153,11 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTabl
 
         $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
-        \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
+        \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
         $this->model->refreshGroupSettings();
 
-        // \MUtil_Model::$verbose = true;
+        // \MUtil\Model::$verbose = true;
         return $this->model;
     }
 }

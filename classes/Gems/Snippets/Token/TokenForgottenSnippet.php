@@ -22,13 +22,13 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_User_Organization
+     * @var \Gems\User\Organization
      */
     protected $currentOrganization;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
@@ -40,7 +40,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -72,7 +72,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -255,7 +255,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
                     $batch->runAll();
 
                     $sent = $batch->getCounter('communications_sent');
-                    // \MUtil_Echo::track($sent, $batch->getCounter('jobs_started'), $userData);
+                    // \MUtil\EchoOut\EchoOut::track($sent, $batch->getCounter('jobs_started'), $userData);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail

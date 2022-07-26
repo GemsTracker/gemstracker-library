@@ -41,13 +41,13 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _getTokenMock($date = true)
     {
-        $ageTen = new \MUtil_Date();
+        $ageTen = new \MUtil\Date();
         $ageTen->sub(10, 'y');
-        $respondent = new \Gems_Tracker_Respondent(1,1);
+        $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondentData = ['grs_birthday' => $ageTen];
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
                 
-        $token = $this->getMockBuilder('Gems_Tracker_Token')
+        $token = $this->getMockBuilder('\\Gems\\Tracker\\Token')
                 ->disableOriginalConstructor()
                 ->getMock();
         
@@ -56,7 +56,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
                 ->will($this->returnValue($respondent));
         
         if ($date) {
-            $validFrom = new \MUtil_Date();
+            $validFrom = new \MUtil\Date();
         } else {
             $validFrom = null;
         }

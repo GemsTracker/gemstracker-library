@@ -19,11 +19,11 @@ namespace Gems\Snippets\Unsubscribe;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:18:39
  */
-class NoUnsubscriptionsSnippet extends \MUtil_Snippets_SnippetAbstract
+class NoUnsubscriptionsSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -33,7 +33,7 @@ class NoUnsubscriptionsSnippet extends \MUtil_Snippets_SnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {

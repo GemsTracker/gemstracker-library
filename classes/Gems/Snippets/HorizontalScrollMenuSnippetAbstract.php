@@ -7,8 +7,9 @@
  * @author     Jasper van Gestel <jvangestl@gmail.com>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Abstract class for quickly creating a tabbed bar, or rather a div that contains a number
@@ -20,11 +21,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends \MUtil_Snippets_TabSnippetAbstract
+abstract class HorizontalScrollMenuSnippetAbstract extends \MUtil\Snippets\TabSnippetAbstract
 {
     /**
      *
-     * @var \Gems_Util_BasePath
+     * @var \Gems\Util\BasePath
      */
     protected $basepath;
 
@@ -77,7 +78,7 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends \MUtil_
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -97,7 +98,7 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends \MUtil_
             $this->getCurrentTab();
 
 
-            $scrollContainer = \MUtil_Html::create()->div();
+            $scrollContainer = \MUtil\Html::create()->div();
 
             if ($tabCount > $this->scrollFromSize) {
                 $scrollContainer->a('#', $this->prevLabel, array('class' => 'prev'));

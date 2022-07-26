@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Mail;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
+class TokenMailer extends \Gems\Mail\RespondentMailer
 {
     /**
      *
@@ -27,13 +29,13 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
 	protected $db;
 	/**
 	 *
-	 * @var \Gems_Loader;
+	 * @var \Gems\Loader;
 	 */
 	protected $loader;
 
     /**
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
 	protected $token;
 
@@ -147,15 +149,15 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     /**
      * Get the token object used in this mailer
      *
-     * @return \Gems_Tracker_Token
-     * @throws \Gems_Exception_Coding
+     * @return \Gems\Tracker\Token
+     * @throws \Gems\Exception\Coding
      */
     public function getToken()
     {
-        if ($this->token instanceof \Gems_Tracker_Token) {
+        if ($this->token instanceof \Gems\Tracker\Token) {
             return $this->token;
         } else {
-            throw new \Gems_Exception_Coding('Token not loaded');
+            throw new \Gems\Exception\Coding('Token not loaded');
         }
     }
 
@@ -190,7 +192,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
     protected function logRespondentCommunication()
     {
         $currentUserId                = $this->loader->getCurrentUser()->getUserId();
-        $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
+        $changeDate                   = new \MUtil\Db\Expr\CurrentTimestamp();
 
         $logData['grco_id_to']        = $this->respondent->getId();
 
@@ -257,9 +259,9 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $organizationLoginUrl   = $this->organization->getLoginUrl();
             $result['site_ask_url'] = $organizationLoginUrl . '/ask/';
             // Url's
-            $url      = $organizationLoginUrl . '/ask/forward/' . \MUtil_Model::REQUEST_ID . '/';
+            $url      = $organizationLoginUrl . '/ask/forward/' . \MUtil\Model::REQUEST_ID . '/';
             $url      .= $this->token->getTokenId();
-            $urlInput = $result['site_ask_url'] . 'index/' . \MUtil_Model::REQUEST_ID . '/' . $this->token->getTokenId();
+            $urlInput = $result['site_ask_url'] . 'index/' . \MUtil\Model::REQUEST_ID . '/' . $this->token->getTokenId();
 
             $result['survey']           = $survey->getExternalName();
 
@@ -269,11 +271,11 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
             $result['todo_track_count'] = $todo['track'];
 
             $result['token']            = strtoupper($this->token->getTokenId());
-            $result['token_from']       = \MUtil_Date::format($this->token->getValidFrom(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
+            $result['token_from']       = \MUtil\Date::format($this->token->getValidFrom(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
 
             $result['token_link']       = '[url=' . $url . ']' . $survey->getExternalName() . '[/url]';
 
-            $result['token_until']      = \MUtil_Date::format($this->token->getValidUntil(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
+            $result['token_until']      = \MUtil\Date::format($this->token->getValidUntil(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
             $result['token_url']        = $url;
             $result['token_url_input']  = $urlInput;
 
@@ -357,7 +359,7 @@ class Gems_Mail_TokenMailer extends \Gems_Mail_RespondentMailer
         }
         
         $tokenData['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
-        $tokenData['gto_mail_sent_date'] = \MUtil_Date::format(new \Zend_Date(), 'yyyy-MM-dd');
+        $tokenData['gto_mail_sent_date'] = \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd');
 
         $this->db->update('gems__tokens', $tokenData, $this->db->quoteInto('gto_id_token = ?', $tokenId));
     }

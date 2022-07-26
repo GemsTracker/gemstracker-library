@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackExportAbstract.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Export;
@@ -24,7 +23,7 @@ use Gems\Tracker\Field\FieldInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 14, 2016 2:17:09 PM
  */
-abstract class TrackExportAbstract extends \MUtil_Task_TaskAbstract
+abstract class TrackExportAbstract extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -40,7 +39,7 @@ abstract class TrackExportAbstract extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -93,13 +92,13 @@ abstract class TrackExportAbstract extends \MUtil_Task_TaskAbstract
     /**
      * Sets the batch this task belongs to
      *
-     * This method will be called from the \Gems_Task_TaskRunnerBatch upon execution of the
+     * This method will be called from the \Gems\Task\TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
      *
-     * @param \MUtil_Task_TaskBatch $batch
-     * @return \MUtil_Task_TaskInterface (continuation pattern)
+     * @param \MUtil\Task\TaskBatch $batch
+     * @return \MUtil\Task\TaskInterface (continuation pattern)
      */
-    public function setBatch(\MUtil_Task_TaskBatch $batch)
+    public function setBatch(\MUtil\Task\TaskBatch $batch)
     {
         parent::setBatch($batch);
 

@@ -18,7 +18,7 @@ namespace Gems\Tracker\Mock;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class TokenReadonly extends \Gems_Tracker_Token
+class TokenReadonly extends \Gems\Tracker\Token
 {
     /**
      * @var array function => [changes]
@@ -31,16 +31,16 @@ class TokenReadonly extends \Gems_Tracker_Token
     private $_localDataRaw = null;
     
     /**
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $_parentToken;
 
     /**
      * TokenReadonly constructor.
      *
-     * @param \Gems_Tracker_Token $parent
+     * @param \Gems\Tracker\Token $parent
      */
-    public function __construct(\Gems_Tracker_Token $parent)
+    public function __construct(\Gems\Tracker\Token $parent)
     {
         $this->_parentToken = $parent;
         
@@ -161,7 +161,7 @@ class TokenReadonly extends \Gems_Tracker_Token
      *
      * @param string $language The language currently used by the user
      * @param int $userId The id of the gems user
-     * @throws \Gems_Tracker_Source_SurveyNotFoundException
+     * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
     public function getUrl($language, $userId)
     {
@@ -172,7 +172,7 @@ class TokenReadonly extends \Gems_Tracker_Token
         // $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new \MUtil_Db_Expr_CurrentTimestamp();
+            $values['gto_start_time'] = new \MUtil\Db\Expr\CurrentTimestamp();
             $values['gto_in_source']  = 1;
 
             $oldTokenId = $this->getCopiedFrom();
@@ -207,9 +207,9 @@ class TokenReadonly extends \Gems_Tracker_Token
 
     /**
      *
-     * @param string|\MUtil_Date $completionTime Completion time as a date or null
+     * @param string|\MUtil\Date $completionTime Completion time as a date or null
      * @param int $userId The current user
-     * @return \Gems_Tracker_Token (continuation pattern)
+     * @return \Gems\Tracker\Token (continuation pattern)
      */
     public function setCompletionTime($completionTime, $userId)
     {
@@ -235,7 +235,7 @@ class TokenReadonly extends \Gems_Tracker_Token
      * Set the reception code for this token and make sure the necessary
      * cascade to the source takes place.
      *
-     * @param string $code The new (non-success) reception code or a \Gems_Util_ReceptionCode object
+     * @param string $code The new (non-success) reception code or a \Gems\Util\ReceptionCode object
      * @param string $comment Comment False values leave value unchanged
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
@@ -296,6 +296,6 @@ class TokenReadonly extends \Gems_Tracker_Token
         $this->_changes                         = [];
         $this->_gemsData['gto_in_source']       = 0;
         $this->_gemsData['gto_completion_time'] = null;
-        $this->_gemsData['gto_reception_code']  = \GemsEscort::RECEPTION_OK;
+        $this->_gemsData['gto_reception_code']  = \Gems\Escort::RECEPTION_OK;
     }
 }

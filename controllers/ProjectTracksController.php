@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ProjectTracksController extends Gems_Default_ProjectTracksAction
+class ProjectTracksController extends \Gems\Actions\ProjectTracksAction
 {
 }

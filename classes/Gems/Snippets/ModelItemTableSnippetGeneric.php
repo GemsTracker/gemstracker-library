@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets;
 
 /**
  * Displays each fields of a single item in a model in a row in a Html table
@@ -26,18 +27,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_ModelItemTableSnippetGeneric extends \Gems_Snippets_ModelItemTableSnippetAbstract
+class ModelItemTableSnippetGeneric extends \Gems\Snippets\ModelItemTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil_Model_ModelAbstract
+     * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {

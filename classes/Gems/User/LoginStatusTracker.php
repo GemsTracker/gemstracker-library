@@ -30,20 +30,20 @@ class LoginStatusTracker
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $_user;
 
     /**
      *
-     * @var \Gems_User_UserLoader
+     * @var \Gems\User\UserLoader
      */
     protected $_userLoader;
 
     /**
      * Initiate session namespace
      */
-    public function __construct(\Gems_User_UserLoader $userLoader)
+    public function __construct(\Gems\User\UserLoader $userLoader)
     {
         $this->_session = new \Zend_Session_Namespace(__CLASS__ . GEMS_PROJECT_NAME . '.sessionStatic');
 
@@ -96,7 +96,7 @@ class LoginStatusTracker
 
     /**
      *
-     * @return \Gems_User_User
+     * @return \Gems\User\User
      */
     public function getUser()
     {
@@ -153,10 +153,10 @@ class LoginStatusTracker
 
     /**
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @return $this
      */
-    public function setUser(\Gems_User_User $user)
+    public function setUser(\Gems\User\User $user)
     {
         $this->_session->data['userName']         = $user->getLoginName();
         $this->_session->data['userOrganization'] = $user->getCurrentOrganizationId();

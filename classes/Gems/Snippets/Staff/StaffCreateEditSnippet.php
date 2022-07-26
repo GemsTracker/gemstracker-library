@@ -8,7 +8,7 @@
 
 namespace Gems\Snippets\Staff;
 
-use Gems_Snippets_ModelFormSnippetGeneric as ModelFormSnippetGeneric;
+use Gems\Snippets\ModelFormSnippetGeneric as ModelFormSnippetGeneric;
 
 /**
  * Description of StaffCreateEditSnippet
@@ -26,7 +26,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -83,7 +83,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
                         $this->afterSaveRouteUrl = array(
                             $this->request->getControllerKey() => $this->request->getControllerName(),
                             $this->request->getActionKey() => 'reactivate',
-                            \MUtil_Model::REQUEST_ID       => $result['gsf_id_user']
+                            \MUtil\Model::REQUEST_ID       => $result['gsf_id_user']
                         );
 
                         return;
@@ -130,7 +130,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
      */
     public function setAfterSaveRoute()
     {
@@ -152,7 +152,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
 
         parent::setAfterSaveRoute();
         if ($this->switch) {
-            // Controller is reset in \MUtil_Snippets_ModelFormSnippetAbstract::setAfterSaveRoute()
+            // Controller is reset in \MUtil\Snippets\ModelFormSnippetAbstract::setAfterSaveRoute()
             $this->afterSaveRouteUrl['controller'] = $controller;
         }
         return $this;

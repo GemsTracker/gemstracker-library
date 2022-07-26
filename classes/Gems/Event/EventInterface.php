@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event;
 
 /**
  * To be able to display lists of possible event classes in a list and to mark events as such,
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface Gems_Event_EventInterface
+interface EventInterface
 {
     /**
      * A pretty name for use in dropdown selection boxes.

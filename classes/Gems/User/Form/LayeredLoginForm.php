@@ -7,6 +7,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Form;
+
 /**
  * A layered login form, useful when organizations have some kind of
  * hierarchy
@@ -17,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
+class LayeredLoginForm extends \Gems\User\Form\LoginForm
 {
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -129,12 +131,12 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
     {
         $request = $this->getRequest();
         if ($request->isPost() && ($orgId = $request->getParam($this->topOrganizationFieldName))) {
-            \Gems_Cookies::set('gems_toporganization', $orgId);
+            \Gems\Cookies::set('gems_toporganization', $orgId);
             return $orgId;
         } else {
             $orgs = array_keys($this->getTopOrganizations());
             $firstId = reset($orgs);
-            return \Gems_Cookies::get($this->getRequest(), 'gems_toporganization', $firstId);
+            return \Gems\Cookies::get($this->getRequest(), 'gems_toporganization', $firstId);
         }
     }
 
@@ -265,7 +267,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      * Load the elements, starting with the extra top organization element and
      * continue with the other elements like in the standard login form
      *
-     * @return \Gems_User_Form_LayeredLoginForm
+     * @return \Gems\User\Form\LayeredLoginForm
      */
     public function loadDefaultElements()
     {
@@ -291,7 +293,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param string $description
-     * @return \Gems_User_Form_LayeredLoginForm (continuation pattern)
+     * @return \Gems\User\Form\LayeredLoginForm (continuation pattern)
      */
     public function setChildOrganizationDescription($description = null)
     {
@@ -306,7 +308,7 @@ class Gems_User_Form_LayeredLoginForm extends \Gems_User_Form_LoginForm
      * Enables loading of parameter through \Zend_Form::__construct()
      *
      * @param string $description
-     * @return \Gems_User_Form_LayeredLoginForm (continuation pattern)
+     * @return \Gems\User\Form\LayeredLoginForm (continuation pattern)
      */
     public function setTopOrganizationDescription($description = null)
     {

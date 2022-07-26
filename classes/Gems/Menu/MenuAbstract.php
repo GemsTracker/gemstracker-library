@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Menu;
+
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -22,49 +24,49 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
+abstract class MenuAbstract extends \Gems\Loader\TargetLoaderAbstract
 {
     use TranslateableTrait;
 
     /**
      *
-     * @var \Gems_Menu_SubMenuItem[]
+     * @var \Gems\Menu\SubMenuItem[]
      */
     protected $_subItems = array();
 
     /**
      *
-     * @var \MUtil_Acl
+     * @var \MUtil\Acl
      */
     public $acl;
 
     /**
      *
-     * @var \Gems_User_User
+     * @var \Gems\User\User
      */
     protected $currentUser;
 
     /**
-     * @var \GemsEscort
+     * @var \Gems\Escort
      */
     public $escort;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      *
      */
     public $loader;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     public $project;
 
     public function __construct()
     {
-        $this->escort = \GemsEscort::getInstance();
+        $this->escort = \Gems\Escort::getInstance();
     }
 
     /**
@@ -86,7 +88,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             if ($_privilege && (true !== $_privilege)) {
                 if (isset($privileges[$_privilege])) {
                     $add = "<br/>&nbsp; + " . $_itemlabel;
-                    if (! \MUtil_String::contains($privileges[$_privilege], $add)) {
+                    if (! \MUtil\StringUtil\StringUtil::contains($privileges[$_privilege], $add)) {
                         $privileges[$_privilege] .= $add;
                     }
                 } else {
@@ -118,10 +120,10 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * Returns a \Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
-     * @param \Gems_Menu_ParameterCollector $source
+     * @param \Gems\Menu\ParameterCollector $source
      * @return array
      */
-    protected function _toNavigationArray(\Gems_Menu_ParameterCollector $source)
+    protected function _toNavigationArray(\Gems\Menu\ParameterCollector $source)
     {
         $this->sortByOrder();
         $lastParams = null;
@@ -134,7 +136,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             }
             $page = $item->_toNavigationArray($source);
 
-            if (($this instanceof \Gems_Menu_SubMenuItem) &&
+            if (($this instanceof \Gems\Menu\SubMenuItem) &&
                     (!$this->notSet('controller', 'action')) &&
                     isset($page['params'])) {
 
@@ -167,7 +169,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Add a sub item to this item.
      *
-     * The argumenets can be any of those used for \Zend_Navigation_Page as well as some Gems specials.<ul>
+     * The argumenets can be any of those used for \Zend_Navigation_Page as well as some \Gems specials.<ul>
      * <li>'action' The name of the action.</li>
      * <li>'allowed' Is the user allowed to access this menu item. Is checked against ACL using 'privilige'.</li>
      * <li>'button_only' Never in the menu, only shown as a button by the program.</li>
@@ -183,13 +185,13 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @see \Zend_Navigation_Page
      *
-     * @param array $argsArray \MUtil_Ra::args array with defaults 'visible' and 'allowed' true.
-     * @return \Gems_Menu_SubMenuItem
+     * @param array $argsArray \MUtil\Ra::args array with defaults 'visible' and 'allowed' true.
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function add($argsArray)
     {
         // Process parameters.
-        $args = \MUtil_Ra::args(func_get_args(), 0,
+        $args = \MUtil\Ra::args(func_get_args(), 0,
             array('visible' => true,    // All menu items are initally visible unless stated otherwise
                 'allowed' => true,      // Same as with visible, need this for _toNavigationArray()
                 ));
@@ -202,7 +204,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             $args['order'] = 10 * (count($this->_subItems) + 1);
         }
 
-        $page = new \Gems_Menu_SubMenuItem($this, $args);
+        $page = new \Gems\Menu\SubMenuItem($this, $args);
 
         $this->_subItems[] = $page;
 
@@ -214,7 +216,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addAgendaSetupMenu($label)
     {
@@ -237,7 +239,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $privilege
      * @param string $controller
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addAgendaSetupPage($label, $privilege, $controller, array $other = array())
     {
@@ -263,7 +265,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $privilege
      * @param string $controller
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addBrowsePage($label, $privilege, $controller, array $other = array())
     {
@@ -287,7 +289,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $controller
      * @param string $action
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addButtonOnly($label, $privilege, $controller, $action = 'index', array $other = array())
     {
@@ -301,7 +303,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addCalendarPage($label)
     {
@@ -319,7 +321,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addCommSetupMenu($label)
     {
@@ -366,7 +368,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $label
      * @param string $privilege
      * @param array $other
-     * @return \Gems_Menu_ContainerItem
+     * @return \Gems\Menu\ContainerItem
      */
     public function addContainer($label, $privilege = null, array $other = array())
     {
@@ -389,7 +391,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
             }
         }
 
-        $page = new \Gems_Menu_ContainerItem($this, $other);
+        $page = new \Gems\Menu\ContainerItem($this, $other);
 
         $this->_subItems[] = $page;
 
@@ -400,7 +402,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * Shortcut function to create the export container.
      *
      * @param string $label Label for the container
-     * @return \Gems_Menu_MenuAbstract The new contact page
+     * @return \Gems\Menu\MenuAbstract The new contact page
      */
     public function addExportContainer($label)
     {
@@ -442,7 +444,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $controller    What controller to use
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addFilePage($label, $privilege, $controller, array $other = array())
     {
@@ -454,7 +456,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $page = $page->addShowAction();
         $page->addEditAction();
 
-        $onDelete = new \MUtil_Html_OnClickArrayAttribute();
+        $onDelete = new \MUtil\Html\OnClickArrayAttribute();
         $onDelete->addConfirm($this->_("Are you sure you want to delete this file?"));
         $page->addButtonOnly($this->_('Delete'), $privilege . '.delete', $controller, 'delete', array(
             'onclick' => $onDelete,
@@ -471,27 +473,27 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addGroupsPage($label, array $other = array())
     {
         $page  = $this->addBrowsePage($label, 'pr.group', 'group', $other);
 //        $groups = array();
 //
-//        if ($this->user instanceof \Gems_User_User) {
+//        if ($this->user instanceof \Gems\User\User) {
 //            if ($this->user->hasPrivilege('pr.group')) {
 //                $groups = $this->user->getAllowedStaffGroups();
-//                $rolesObj = \Gems_Roles::getInstance();
+//                $rolesObj = \Gems\Roles::getInstance();
 //                $rolesRaw = $this->user->getAllowedRoles();
 //                $roleIds  = $rolesObj->translateToRoleIds($rolesRaw);
 //                $roles    = array_combine($roleIds, $roleIds) + $rolesRaw;
 //            }
 //        }
-//        \MUtil_Echo::track($roles, array_flip($rolesObj->translateToRoleIds($rolesRaw)), $rolesRaw);
-//        \Gems_Menu::$verbose = true;
+//        \MUtil\EchoOut\EchoOut::track($roles, array_flip($rolesObj->translateToRoleIds($rolesRaw)), $rolesRaw);
+//        \Gems\Menu::$verbose = true;
 //        // Now limit changes to allowed roles
 //        foreach ($page->getChildren() as $showpage) {
-//            if ($showpage instanceof \Gems_Menu_SubMenuItem) {
+//            if ($showpage instanceof \Gems\Menu\SubMenuItem) {
 //                if ('show' === $showpage->get('action')) {
 //                    foreach ($showpage->getChildren() as $subpage) {
 //                        $subpage->addParameterFilter('ggp_role', $groups);
@@ -508,7 +510,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * Shortcut function to create the import container.
      *
      * @param string $label Label for the container
-     * @return \Gems_Menu_MenuAbstract The new contact page
+     * @return \Gems\Menu\MenuAbstract The new contact page
      */
     public function addImportContainer($label)
     {
@@ -544,7 +546,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $page->addAutofilterAction();
         $page->addExportAction();
         $page->addShowAction()
-                ->setNamedParameters(\Gems_Model::LOG_ITEM_ID, 'gla_id');
+                ->setNamedParameters(\Gems\Model::LOG_ITEM_ID, 'gla_id');
 
         // LOG FILES CONTROLLER
         $this->addFilePage($this->_('Log files'), 'pr.log.files', 'log-file');
@@ -558,7 +560,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * @param string $controller    What controller to use
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addPage($label, $privilege, $controller, $action = 'index', array $other = array())
     {
@@ -577,7 +579,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      * Add a list of report pages
      *
      * @param string $label         The label to display for the menu item, null for access without display
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addPlanPage($label)
     {
@@ -622,7 +624,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addProjectInfoPage($label)
     {
@@ -688,25 +690,25 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addProjectPage($label)
     {
-        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
+        if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
             if ($trackId = $this->escort->getTrackId()) {
                 $infoPage = $this->addPage($label, 'pr.project', 'project-tracks', 'show')
-                    ->addHiddenParameter(\MUtil_Model::REQUEST_ID, $trackId);
+                    ->addHiddenParameter(\MUtil\Model::REQUEST_ID, $trackId);
                 $trackSurveys = $infoPage;
             } else {
                 $infoPage = $this->addPage($label, 'pr.project', 'project-tracks');
                 $trackSurveys = $infoPage->addShowAction('pr.project');
             }
             $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::SURVEY_ID, 'gsu_id_survey');
+                    ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::SURVEY_ID, 'gsu_id_survey');
 
             $infoPage->addAutofilterAction();
 
-            // \MUtil_Echo::track($infoPage->_toNavigationArray(array($this->_getOriginalRequest())));
+            // \MUtil\EchoOut\EchoOut::track($infoPage->_toNavigationArray(array($this->_getOriginalRequest())));
         } else {
             $infoPage = $this->addContainer($label);
             $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
@@ -714,7 +716,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 
             $trackSurveys = $tracksPage->addShowAction('pr.project');
             $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::SURVEY_ID, 'gsu_id_survey');
+                    ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::SURVEY_ID, 'gsu_id_survey');
 
             $surveysPage = $infoPage->addPage($this->_('Surveys'), 'pr.project', 'project-surveys');
             $surveysPage->addAutofilterAction();
@@ -729,7 +731,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addStaffPage($label, array $other = array())
     {
@@ -784,7 +786,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addSystemUserPage($label, array $other = array())
     {
@@ -823,7 +825,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $label
      * @param array $other
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function addTrackBuilderMenu($label, array $other = array())
     {
@@ -840,13 +842,13 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $show->addDeleteAction();
 
         $show->addAction($this->_('Check status'), null, 'ping')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+                ->addParameters(\MUtil\Model::REQUEST_ID);
         $show->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+                ->addParameters(\MUtil\Model::REQUEST_ID);
         $show->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+                ->addParameters(\MUtil\Model::REQUEST_ID);
         $show->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')
-                ->addParameters(\MUtil_Model::REQUEST_ID);
+                ->addParameters(\MUtil\Model::REQUEST_ID);
 
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
@@ -870,17 +872,17 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
         $showPage->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->addParameters(\MUtil\Model::REQUEST_ID)
                 ->setParameterFilter('gsu_active', 1);
         $showPage->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-import')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->addParameters(\MUtil\Model::REQUEST_ID)
                 ->setParameterFilter('gsu_active', 1);
         $showPage->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->addParameters(\MUtil\Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
 
         $codePage = $showPage->addPage($this->_('Export codebook'), 'pr.survey-maintenance.code-book-export', 'survey-code-book-export', 'export')
-            ->addParameters(\MUtil_Model::REQUEST_ID)
+            ->addParameters(\MUtil\Model::REQUEST_ID)
             ->setParameterFilter('gsu_active', 1);
 
         $this->addHiddenPrivilege('pr.survey-maintenance.answer-groups', $this->_(
@@ -906,39 +908,39 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
                 ->setModelParameters(1);*/
 
         $showPage->addAction($this->_('Export'), 'pr.track-maintenance.export', 'export')
-                 ->addParameters(\MUtil_Model::REQUEST_ID);
+                 ->addParameters(\MUtil\Model::REQUEST_ID);
         $showPage->addAction($this->_('Check rounds'), 'pr.track-maintenance.check', 'check-track')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->addParameters(\MUtil\Model::REQUEST_ID)
                 ->setParameterFilter('gtr_active', 1);
         $showPage->addAction($this->_('Recalculate fields'), 'pr.track-maintenance.check', 'recalc-fields')
-                ->addParameters(\MUtil_Model::REQUEST_ID)
+                ->addParameters(\MUtil\Model::REQUEST_ID)
                 ->setParameterFilter('gtr_active', 1);
 
         // Fields
         $fpage = $showPage->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gtf_id_track');
         $fpage->addAutofilterAction();
         $fpage->addCreateAction('pr.track-maintenance.create')
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gtf_id_track');
         $fpage = $fpage->addShowAction()
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gtf_id_track', \Gems_Model::FIELD_ID, 'gtf_id_field', 'sub', 'sub');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gtf_id_track', \Gems\Model::FIELD_ID, 'gtf_id_field', 'sub', 'sub');
         $fpage->addEditAction('pr.track-maintenance.edit')
-                ->addNamedParameters(\Gems_Model::FIELD_ID, 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
+                ->addNamedParameters(\Gems\Model::FIELD_ID, 'gtf_id_field', \MUtil\Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
         $fpage->addDeleteAction('pr.track-maintenance.delete')
-                ->addNamedParameters(\Gems_Model::FIELD_ID, 'gtf_id_field', \MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
+                ->addNamedParameters(\Gems\Model::FIELD_ID, 'gtf_id_field', \MUtil\Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
 
         // Rounds
         $rpage = $showPage->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track');
         $rpage->addAutofilterAction();
         $rpage->addCreateAction('pr.track-maintenance.create')
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track');
         $spage = $rpage->addShowAction()
-                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gro_id_track', \Gems_Model::ROUND_ID, 'gro_id_round');
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::ROUND_ID, 'gro_id_round');
         $spage->addEditAction('pr.track-maintenance.edit')
-                ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
+                ->addNamedParameters(\Gems\Model::ROUND_ID, 'gro_id_round', \MUtil\Model::REQUEST_ID, 'gro_id_track');
         $spage->addDeleteAction('pr.track-maintenance.delete')
-                ->addNamedParameters(\Gems_Model::ROUND_ID, 'gro_id_round', \MUtil_Model::REQUEST_ID, 'gro_id_track');
+                ->addNamedParameters(\Gems\Model::ROUND_ID, 'gro_id_round', \MUtil\Model::REQUEST_ID, 'gro_id_track');
 
         $ajaxPage = $this->addPage($this->_('Sort rounds'), 'pr.track-maintenance.edit', 'track-rounds', 'sort', array('visible' => false));
 
@@ -958,9 +960,9 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param \Zend_Acl $acl
      * @param string $userRole
-     * @return \Gems_Menu_MenuAbstract (continuation pattern)
+     * @return \Gems\Menu\MenuAbstract (continuation pattern)
      */
-    protected function applyAcl(\MUtil_Acl $acl, $userRole)
+    protected function applyAcl(\MUtil\Acl $acl, $userRole)
     {
         foreach ($this->_subItems as $item) {
 
@@ -992,7 +994,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param <type> $options
      * @param <type> $findDeep
-     * @return \Gems_Menu_SubMenuItem|null
+     * @return \Gems\Menu\SubMenuItem|null
      */
     protected function findItem($options, $findDeep = true)
     {
@@ -1025,7 +1027,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return \Gems_Menu_SubMenuItem[]
+     * @return \Gems\Menu\SubMenuItem[]
      */
     public function getChildren()
     {
@@ -1045,8 +1047,8 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Make sure only the active branch is visible
      *
-     * @param array $activeBranch Of \Gems_Menu_Menu Abstract items
-     * @return \Gems_Menu_MenuAbstract (continuation pattern)
+     * @param array $activeBranch Of \Gems\Menu_Menu Abstract items
+     * @return \Gems\Menu\MenuAbstract (continuation pattern)
      */
     protected function setBranchVisible(array $activeBranch)
     {
@@ -1081,7 +1083,7 @@ abstract class Gems_Menu_MenuAbstract extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Sorts the childeren on their order attribute (instead of the order the were added)
      *
-     * @return \Gems_Menu_MenuAbstract (continuation pattern)
+     * @return \Gems\Menu\MenuAbstract (continuation pattern)
      */
     public function sortByOrder()
     {

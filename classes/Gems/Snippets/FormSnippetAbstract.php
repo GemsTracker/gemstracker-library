@@ -26,7 +26,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems_AccessLog
+     * @var \Gems\AccessLog
      */
     protected $accesslog;
 
@@ -66,13 +66,13 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     /**
      * Required
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
@@ -98,7 +98,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
      */
     protected function createForm($options = null)
     {
-        $form = new \Gems_Form($options);
+        $form = new \Gems\Form($options);
 
         return $form;
     }
@@ -113,7 +113,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     {
         parent::afterRegistry();
 
-        if ($this->project instanceof \Gems_Project_ProjectSettings) {
+        if ($this->project instanceof \Gems\Project\ProjectSettings) {
             $this->useCsrf = $this->project->useCsrfCheck();
         }
     }
@@ -149,7 +149,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
 
         $links = $this->getMenuList();
         if ($links) {
-            $linkContainer = \MUtil_Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
+            $linkContainer = \MUtil\Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
             $linkContainer[] = $links;
 
             $element = $this->_form->createElement('html', 'formLinks');
@@ -180,11 +180,11 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $htmlDiv = \MUtil_Html::div();
+        $htmlDiv = \MUtil\Html::div();
 
         $htmlDiv->h3($this->getTitle(), array('class' => 'title'));
 
@@ -198,7 +198,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems_Menu_MenuList
+     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {

@@ -9,8 +9,10 @@
  * @license    New BSD License
  */
 
+namespace Gems\Snippets;
+
 /**
- * Adds Gems specific display details and helper functions:
+ * Adds \Gems specific display details and helper functions:
  *
  * Items set are:
  * - Display class: 'browser'
@@ -26,7 +28,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_ModelTableSnippetAbstract
+abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -64,7 +66,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     public $menu;
 
@@ -122,11 +124,11 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -162,7 +164,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      *
      * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
+    protected function addPaginator(\MUtil\Html\TableElement $table, \Zend_Paginator $paginator)
     {
         //$table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
     }
@@ -196,7 +198,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
 
         if (isset($filter[$textKey])) {
             $searchText = $filter[$textKey];
-            $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            $marker = new \MUtil\Html\Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label') && (! $model->is($name, 'no_text_search', true))) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
@@ -211,7 +213,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      * @param string $controller
      * @param string $action
      * @param string $label
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
     {
@@ -226,7 +228,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      *
      * @param string $defaultController
      * @param string|array $actions
-     * @return \Gems_Menu_SubMenuItem The first that
+     * @return \Gems\Menu\SubMenuItem The first that
      * @deprecated since 1.7.1, use findMenuItems()
      */
     protected function findMenuItem($defaultController, $actions = 'index')
@@ -246,7 +248,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      *
      * @param string $defaultController
      * @param string|array $actions
-     * @return array of \Gems_Menu_SubMenuItem
+     * @return array of \Gems\Menu\SubMenuItem
      */
     protected function findMenuItems($defaultController, $actions = array('index'))
     {
@@ -268,7 +270,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      * Returns an edit menu item, if access is allowed by privileges
      *
      * @deprecated since 1.7.1, use getEditMenuItems()
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItem()
     {
@@ -280,7 +282,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getEditMenuItems()
     {
@@ -296,7 +298,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -313,13 +315,13 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
 
             // If we are already in a containing div it is simple
             if ($this->containingId) {
-                return array($table, new \Gems_JQuery_TableRowKeySelector($this->containingId));
+                return array($table, new \Gems\JQuery\TableRowKeySelector($this->containingId));
             }
 
             // Create a new containing div
-            $div = \MUtil_Html::create()->div(array('id' => 'keys_target', 'class' => 'table-container'), $table);
+            $div = \MUtil\Html::create()->div(array('id' => 'keys_target', 'class' => 'table-container'), $table);
 
-            return array($div, new \Gems_JQuery_TableRowKeySelector($div));
+            return array($div, new \Gems\JQuery\TableRowKeySelector($div));
 
         } else {
             return $table;
@@ -330,7 +332,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      * Returns a show menu item, if access is allowed by privileges
      *
      * @deprecated since 1.7.1, use getShowMenuItems()
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getShowMenuItem()
     {
@@ -342,7 +344,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     /**
      * Returns a show menu item, if access is allowed by privileges
      *
-     * @return \Gems_Menu_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     protected function getShowMenuItems()
     {

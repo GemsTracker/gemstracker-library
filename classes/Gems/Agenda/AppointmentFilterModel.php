@@ -22,11 +22,11 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 13:07:11
  */
-class AppointmentFilterModel extends \Gems_Model_JoinModel
+class AppointmentFilterModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
@@ -66,7 +66,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -79,7 +79,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -95,7 +95,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Agenda\AppointmentFilterModelAbstract
      */
     public function applyBrowseSettings()
     {
@@ -137,7 +137,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Agenda\AppointmentFilterModelAbstract
      */
     public function applyDetailSettings()
     {
@@ -192,7 +192,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * Set those values needed for editing
      *
-     * @return \Gems_Agenda_AppointmentFilterModelAbstract
+     * @return \Gems\Agenda\AppointmentFilterModelAbstract
      */
     public function applyEditSettings($create = false)
     {
@@ -313,7 +313,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     /**
      * A ModelAbstract->setOnSave() function that returns an paired array of filters
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -342,7 +342,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      * A ModelAbstract->setOnSave() function that a nested array containing the tracks and fields using
      * this filter
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -376,18 +376,18 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     public function showFilters($value)
     {
         if (! ($value && is_array($value))) {
-            return \MUtil_Html::create('em', $this->_('Not used in filters'));
+            return \MUtil\Html::create('em', $this->_('Not used in filters'));
         }
 
         $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
 
-        $list = \MUtil_Html::create('ol');
+        $list = \MUtil\Html::create('ol');
         foreach ($value as $id => $label) {
             $li = $list->li();
 
             if ($menuFilter) {
                 $li->em()->a(
-                        $menuFilter->toHRefAttribute([\MUtil_Model::REQUEST_ID => $id]),
+                        $menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $id]),
                         $label
                         );
             } else {
@@ -406,19 +406,19 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
     public function showTracks($value)
     {
         if (! ($value && is_array($value))) {
-            return \MUtil_Html::create('em', $this->_('Not used in tracks'));
+            return \MUtil\Html::create('em', $this->_('Not used in tracks'));
         }
 
         $menuTrack  = $this->menu->findAllowedController('track-maintenance', 'show');
         $menuField  = $this->menu->findAllowedController('track-fields', 'show');
 
-        $list = \MUtil_Html::create('ol');
+        $list = \MUtil\Html::create('ol');
         foreach ($value as $row) {
             $li = $list->li();
 
             if ($menuTrack) {
                 $li->em()->a(
-                        $menuTrack->toHRefAttribute([\MUtil_Model::REQUEST_ID => $row['gtr_id_track']]),
+                        $menuTrack->toHRefAttribute([\MUtil\Model::REQUEST_ID => $row['gtr_id_track']]),
                         $row['gtr_track_name']
                         );
             } else {

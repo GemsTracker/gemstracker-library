@@ -16,11 +16,11 @@ class TokenEvent extends Event
     protected $changed;
 
     /**
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $token;
 
-    public function __construct(\Gems_Tracker_Token $token)
+    public function __construct(\Gems\Tracker\Token $token)
     {
         $this->token = $token;
     }
@@ -51,7 +51,7 @@ class TokenEvent extends Event
     /**
      * Get the event token
      *
-     * @return \Gems_Tracker_Token
+     * @return \Gems\Tracker\Token
      */
     public function getToken()
     {

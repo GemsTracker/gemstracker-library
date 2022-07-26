@@ -24,7 +24,7 @@ class XandModelDependency extends AndModelDependency
     /**
      * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
      *
-     * @see \MUtil_Model_ModelAbstract
+     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

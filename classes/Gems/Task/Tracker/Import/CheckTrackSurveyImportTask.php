@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTrackSurveyImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -21,7 +20,7 @@ namespace Gems\Task\Tracker\Import;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 19, 2016 12:50:25 PM
  */
-class CheckTrackSurveyImportTask extends \MUtil_Task_TaskAbstract
+class CheckTrackSurveyImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
@@ -31,7 +30,7 @@ class CheckTrackSurveyImportTask extends \MUtil_Task_TaskAbstract
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -90,8 +89,8 @@ class CheckTrackSurveyImportTask extends \MUtil_Task_TaskAbstract
      */
     protected function checkSourceRequired($source, $field, array $rounds)
     {
-        if (($source == \Gems_Tracker_Engine_StepEngineAbstract::ANSWER_TABLE) ||
-                ($source == \Gems_Tracker_Engine_StepEngineAbstract::TOKEN_TABLE)) {
+        if (($source == \Gems\Tracker\Engine\StepEngineAbstract::ANSWER_TABLE) ||
+                ($source == \Gems\Tracker\Engine\StepEngineAbstract::TOKEN_TABLE)) {
             return isset($rounds[$field]) && $rounds[$field];
         }
     }

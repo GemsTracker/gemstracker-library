@@ -7,7 +7,6 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTrackFieldImportTask.php 2430 2015-02-18 15:26:24Z matijsdejong $
  */
 
 namespace Gems\Task\Tracker\Import;
@@ -24,11 +23,11 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 18, 2016 7:34:00 PM
  */
-class CheckTrackFieldImportTask extends \MUtil_Task_TaskAbstract
+class CheckTrackFieldImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -53,7 +52,7 @@ class CheckTrackFieldImportTask extends \MUtil_Task_TaskAbstract
                     $fieldData['gtf_field_type']) {
 
                 $trackEngine = $batch->getVariable('trackEngine');
-                if ($trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+                if ($trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                     $fieldDef = $trackEngine->getFieldsDefinition();
                     $field    = $fieldDef->getFieldByOrder($fieldData['gtf_id_order']);
 

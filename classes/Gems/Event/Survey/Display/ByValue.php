@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event\Survey\Display;
 
 /**
  * Put the highest value first
@@ -19,20 +20,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Event_Survey_Display_ByValue extends \Gems_Event_SurveyAnswerFilterAbstract
+class ByValue extends \Gems\Event\SurveyAnswerFilterAbstract
 {
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+     * @see \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
     {
         $currentNames = array_combine($currentNames, $currentNames);
         $newOrder     = array();
@@ -46,7 +47,7 @@ class Gems_Event_Survey_Display_ByValue extends \Gems_Event_SurveyAnswerFilterAb
             }
         }
 
-        // \MUtil_Echo::track($this->_values, $newOrder, $newOrder + $currentNames);
+        // \MUtil\EchoOut\EchoOut::track($this->_values, $newOrder, $newOrder + $currentNames);
 
         return $this->restoreHeaderPositions($model, $newOrder + $currentNames);
     }

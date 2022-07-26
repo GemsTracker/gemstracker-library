@@ -9,6 +9,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\User\Form;
+
 /**
  *
  *
@@ -18,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAbstract
+class ResetRequestForm extends \Gems\User\Form\OrganizationFormAbstract
 {
     /**
      * The field name for the login link element
@@ -30,17 +32,17 @@ class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAb
     /**
      * Returns an html link for the login page.
      *
-     * @return \MUtil_Html_AElement
+     * @return \MUtil\Html\AElement
      */
     public function getLoginLink()
     {
-        return \MUtil_Html::create('a', array('controller' => 'index', 'action' => 'login'), $this->translate->_('Back to login'), array('class' => 'actionlink'));
+        return \MUtil\Html::create('a', array('controller' => 'index', 'action' => 'login'), $this->translate->_('Back to login'), array('class' => 'actionlink'));
     }
 
     /**
      * Returns a link to the login page
      *
-     * @return \MUtil_Form_Element_Html
+     * @return \MUtil\Form\Element\Html
      */
     public function getLoginLinkElement()
     {
@@ -49,7 +51,7 @@ class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAb
         if (! $element) {
             // Login link
             if ($link = $this->getLoginLink()) {
-                $element = new \MUtil_Form_Element_Html($this->_loginLinkFieldName);
+                $element = new \MUtil\Form\Element\Html($this->_loginLinkFieldName);
                 // $element->br();
                 $element->setValue($link);
 
@@ -82,7 +84,7 @@ class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAb
         if (! $element) {
             $element = parent::getUserNameElement();
 
-            //$element->addValidator(new \Gems_User_Validate_ResetRequestValidator($this, $this->translate));
+            //$element->addValidator(new \Gems\User\Validate\ResetRequestValidator($this, $this->translate));
         }
 
         return $element;
@@ -91,7 +93,7 @@ class Gems_User_Form_ResetRequestForm extends \Gems_User_Form_OrganizationFormAb
     /**
      * The function that determines the element load order
      *
-     * @return \Gems_User_Form_LoginForm (continuation pattern)
+     * @return \Gems\User\Form\LoginForm (continuation pattern)
      */
     public function loadDefaultElements()
     {

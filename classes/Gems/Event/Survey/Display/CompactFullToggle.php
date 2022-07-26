@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Event\Survey\Display;
 
 /**
  * Display only those questions that have an answer
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Event_Survey_Display_CompactFullToggle extends \Gems_Event_SurveyAnswerFilterAbstract
+class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
 {
      public $IncludeLength = 5;
      public $IncludeStarts = array('score');
@@ -27,14 +28,14 @@ class Gems_Event_Survey_Display_CompactFullToggle extends \Gems_Event_SurveyAnsw
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+     * @see \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
      *
-     * @param \MUtil_Model_Bridge_TableBridge $bridge
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
     {
 
         $repeater = $model->loadRepeatable();
@@ -81,14 +82,14 @@ class Gems_Event_Survey_Display_CompactFullToggle extends \Gems_Event_SurveyAnsw
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems\Tracker\Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
     {
         $snippets = parent::getAnswerDisplaySnippets($token);
 
-        array_unshift($snippets, 'Survey_Display_FullAnswerToggleSnippet');
+        array_unshift($snippets, 'Survey\\Display\\FullAnswerToggleSnippet');
 
         return $snippets;
     }

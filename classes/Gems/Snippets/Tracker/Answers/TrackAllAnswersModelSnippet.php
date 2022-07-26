@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Snippets\Tracker\Answers;
 
 /**
  *
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class TrackAllAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in
@@ -31,7 +32,7 @@ class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends \Gems_Tr
     /**
      * Creates the model
      *
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel()
     {
@@ -49,9 +50,9 @@ class Gems_Snippets_Tracker_Answers_TrackAllAnswersModelSnippet extends \Gems_Tr
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->request) {
             $this->processSortOnly($model);

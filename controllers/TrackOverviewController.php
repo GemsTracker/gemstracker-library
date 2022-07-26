@@ -7,7 +7,6 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -19,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class TrackOverviewController extends Gems_Default_TrackOverviewAction
+class TrackOverviewController extends \Gems\Actions\TrackOverviewAction
 {
 }

@@ -17,7 +17,7 @@ namespace Gems\Condition;
  * @subpackage Condition
  * @since      Class available since version 1.8.8
  */
-abstract class ConditionAbstract extends \MUtil_Translate_TranslateableAbstract implements ConditionInterface
+abstract class ConditionAbstract extends \MUtil\Translate\TranslateableAbstract implements ConditionInterface
 {
     protected $_data;
 
@@ -28,7 +28,7 @@ abstract class ConditionAbstract extends \MUtil_Translate_TranslateableAbstract 
     protected $conditions;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 

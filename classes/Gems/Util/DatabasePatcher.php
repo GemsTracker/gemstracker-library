@@ -6,8 +6,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Util;
 
 /**
  * File for checking and executing (new) patches.
@@ -18,7 +19,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Util_DatabasePatcher
+class DatabasePatcher
 {
     /**
      *
@@ -127,8 +128,8 @@ class Gems_Util_DatabasePatcher
 
                         $name = substr(trim($name), 0, 30);
 
-                        // \MUtil_Echo::r($statements, $name);
-                        foreach (\MUtil_Parser_Sql_WordsParser::splitStatements($statements, false) as $i => $statement) {
+                        // \MUtil\EchoOut\EchoOut::r($statements, $name);
+                        foreach (\MUtil\Parser\Sql\WordsParser::splitStatements($statements, false) as $i => $statement) {
                             $this->_loaded_patches[] = array(
                                     'gpa_level'    => $levelnr,
                                     'gpa_location' => $location,
@@ -191,10 +192,10 @@ class Gems_Util_DatabasePatcher
      * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
      * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed
      *                                (this includes the ones that are executed but not completed)
-     * @param \MUtil_Task_TaskBatch $batch Optional batch, otherwise one is created
-     * @return \MUtil_Task_TaskBatch The batch
+     * @param \MUtil\Task\TaskBatch $batch Optional batch, otherwise one is created
+     * @return \MUtil\Task\TaskBatch The batch
      */
-    public function loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, \MUtil_Task_TaskBatch $batch)
+    public function loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, \MUtil\Task\TaskBatch $batch)
     {
         $select = $this->db->select();
         $select->from('gems__patches', array('gpa_id_patch', 'gpa_sql', 'gpa_location', 'gpa_completed'))
@@ -209,7 +210,7 @@ class Gems_Util_DatabasePatcher
         if ($ignoreExecuted) {
             $select->where('gpa_executed = 0');
         }
-        // \MUtil_Echo::track($ignoreCompleted, $ignoreExecuted, $select);
+        // \MUtil\EchoOut\EchoOut::track($ignoreCompleted, $ignoreExecuted, $select);
 
         $executed = 0;
         $patches  = $select->query()->fetchAll();
@@ -217,7 +218,7 @@ class Gems_Util_DatabasePatcher
         if ($patches) {
             foreach ($patches as $patch) {
                 $batch->addTask(
-                        'Db_ExecuteOnePatch',
+                        'Db\\ExecuteOnePatch',
                         $patch['gpa_location'],
                         $patch['gpa_sql'],
                         $patch['gpa_completed'],
@@ -225,7 +226,7 @@ class Gems_Util_DatabasePatcher
                         );
             }
 
-            $batch->addTask('Db_UpdatePatchLevel', $patchLevel);
+            $batch->addTask('Db\\UpdatePatchLevel', $patchLevel);
             $batch->addTask('CleanCache');
         }
 
@@ -253,12 +254,12 @@ class Gems_Util_DatabasePatcher
         }
 
         // Change into a nested tree for easy access
-        $tree    = \MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
+        $tree    = \MUtil\Ra\Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
         $changed = 0;
-        $current = new \MUtil_Db_Expr_CurrentTimestamp();
+        $current = new \MUtil\Db\Expr\CurrentTimestamp();
 
         $this->_loadPatches($this->getMinimumPatchLevel(), $applicationLevel);
-        // \MUtil_Echo::track($this->_loaded_patches);
+        // \MUtil\EchoOut\EchoOut::track($this->_loaded_patches);
         foreach ($this->_loaded_patches as $patch) {
             $level    = $patch['gpa_level'];
             $location = $patch['gpa_location'];
@@ -279,7 +280,7 @@ class Gems_Util_DatabasePatcher
                             $tree[$level][$location][$name][$order]['gpa_id_patch']
                             );
 
-                    // \MUtil_Echo::track($values, $where);
+                    // \MUtil\EchoOut\EchoOut::track($values, $where);
                     $this->db->update('gems__patches', $values, $where);
                     $changed++;
                 }

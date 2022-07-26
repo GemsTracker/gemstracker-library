@@ -20,7 +20,7 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
+class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
 {
     /**
      *
@@ -30,7 +30,7 @@ class RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -85,8 +85,8 @@ class RespondentFormSnippet extends \Gems_Snippets_ModelFormSnippetGeneric
                     }
 
                     if ($data) {
-                        // \MUtil_Echo::track($this->formData);
-                        // \MUtil_Echo::track($data);
+                        // \MUtil\EchoOut\EchoOut::track($this->formData);
+                        // \MUtil\EchoOut\EchoOut::track($data);
                         // Do not use this value
                         unset($data['grs_ssn']);
 

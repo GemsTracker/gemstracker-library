@@ -6,8 +6,9 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\View\Helper;
 
 /**
  * CKEditor view helper. Handles rendering the CKEditor element
@@ -17,9 +18,8 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
-class Gems_View_Helper_FormCKEditor extends \Zend_View_Helper_FormTextarea
+class FormCKEditor extends \Zend_View_Helper_FormTextarea
 {
     public $config = array();
 
@@ -33,7 +33,7 @@ class Gems_View_Helper_FormCKEditor extends \Zend_View_Helper_FormTextarea
 
     public function __construct($options = null)
     {
-        //\MUtil_Echo::track('test');
+        //\MUtil\EchoOut\EchoOut::track('test');
         // If basepath not set, try a default
         if ($options) {
             if (is_array($options)) {
@@ -57,15 +57,15 @@ class Gems_View_Helper_FormCKEditor extends \Zend_View_Helper_FormTextarea
             }
         }
 
-        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath() . '/';
 
         $this->view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
         $this->view->headScript()->prependScript("
             CKEditorConfig = ".\Zend_Json::encode($this->config).";
             ");
 
-        //\MUtil_Echo::track($baseUrl);
-        //\MUtil_Echo::track('test');
+        //\MUtil\EchoOut\EchoOut::track($baseUrl);
+        //\MUtil\EchoOut\EchoOut::track('test');
         //
         //$markup = sprintf($this->_format, $id, $name, $value);
 

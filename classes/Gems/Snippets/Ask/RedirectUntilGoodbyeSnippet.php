@@ -22,18 +22,18 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAbstract
+class RedirectUntilGoodbyeSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     /**
      * Optional, calculated from $token
      *
-     * @var \Gems_Tracker_Token
+     * @var \Gems\Tracker\Token
      */
     protected $currentToken;
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -43,7 +43,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil_Html_HtmlInterface Something that can be rendered
+     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
@@ -66,7 +66,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems_Tracker_Snippets_ShowTokenLoopAb
             // Continue later was clicked, handle the click
             return $this->continueClicked();
 
-        } elseif ($this->currentToken instanceof \Gems_Tracker_Token) {
+        } elseif ($this->currentToken instanceof \Gems\Tracker\Token) {
             $href = $this->getTokenHref($this->currentToken);
             $url  = $href->render($this->view);
 

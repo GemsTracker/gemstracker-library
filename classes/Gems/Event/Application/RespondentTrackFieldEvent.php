@@ -19,7 +19,7 @@ class RespondentTrackFieldEvent extends Event
     protected $fieldData;
 
     /**
-     * @var \Gems_Tracker_RespondentTrack
+     * @var \Gems\Tracker\RespondentTrack
      */
     protected $respondentTrack;
 
@@ -28,7 +28,7 @@ class RespondentTrackFieldEvent extends Event
      */
     protected $userId;
 
-    public function __construct(\Gems_Tracker_RespondentTrack $respondentTrack, $userId, $fieldData=[])
+    public function __construct(\Gems\Tracker\RespondentTrack $respondentTrack, $userId, $fieldData=[])
     {
         $this->respondentTrack = $respondentTrack;
         $this->userId = $userId;
@@ -75,7 +75,7 @@ class RespondentTrackFieldEvent extends Event
     }
 
     /**
-     * @return \Gems_Tracker_RespondentTrack
+     * @return \Gems\Tracker\RespondentTrack
      */
     public function getRespondentTrack()
     {

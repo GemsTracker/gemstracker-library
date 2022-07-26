@@ -19,12 +19,12 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
     /**
-     * @var \Gems_Model_Translator_AppointmentTranslator
+     * @var \Gems\Model\Translator\AppointmentTranslator
      */
     protected $object;
     
@@ -51,7 +51,7 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
     }
 
     /**
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     protected function getAnswerModel() 
     {
@@ -62,12 +62,12 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $tablePrefix    = '';
         $cache          = \Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
 
-        $fieldmap = new \Gems_Tracker_Source_LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
+        $fieldmap = new \Gems\Tracker\Source\LimeSurvey1m9FieldMap($sourceSurveyId, $language, $lsDb, $translate, $tablePrefix, $cache, 1);
 
 
         // Create a simple array model to apply to fieldmap to
         $array = array('test' => 123);
-        $model = new \Gems_Model_PlaceholderModel('test', $array);
+        $model = new \Gems\Model\PlaceholderModel('test', $array);
         $fieldmap->applyToModel($model);
 
         return $model;
@@ -166,7 +166,7 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $actual = $this->object->translateImport($data);
 
         foreach ($actual as &$row) {
-            if ($row['completion_date'] instanceof \MUtil_Date) {
+            if ($row['completion_date'] instanceof \MUtil\Date) {
                 $row['completion_date'] = $row['completion_date']->toString('yyyy-MM-dd HH:mm:ss');
             }
         }

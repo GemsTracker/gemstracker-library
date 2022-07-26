@@ -20,20 +20,20 @@ use Gems\Util\SiteUtil;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteModel extends  \Gems_Model_JoinModel
+class SiteModel extends  \Gems\Model\JoinModel
 {
     /**
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
-     * @var \Gems_Util_Translated
+     * @var \Gems\Util\Translated
      */
     protected $translatedUtil;
 
     /**
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
     
@@ -55,7 +55,7 @@ class SiteModel extends  \Gems_Model_JoinModel
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @param int $defaultOrgId The default organization id or null if current organization
-     * @return \Gems_Model_StaffModel
+     * @return \Gems\Model\StaffModel
      */
     public function applySettings($detailed, $action)
     {
@@ -76,7 +76,7 @@ class SiteModel extends  \Gems_Model_JoinModel
                    'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                    'required', true
         );
-        $ct = new \MUtil_Model_Type_ConcatenatedRow(SiteUtil::ORG_SEPARATOR, $this->_(', '), true);
+        $ct = new \MUtil\Model\Type\ConcatenatedRow(SiteUtil::ORG_SEPARATOR, $this->_(', '), true);
         $ct->apply($this, 'gsi_organizations');
 
         $switches = array(

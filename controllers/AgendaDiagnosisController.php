@@ -17,5 +17,5 @@
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.4 09-Oct-2018 16:41:05
  */
-class AgendaDiagnosisController extends \Gems_Default_AgendaDiagnosisAction
+class AgendaDiagnosisController extends \Gems\Actions\AgendaDiagnosisAction
 { }

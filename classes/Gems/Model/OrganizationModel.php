@@ -10,6 +10,8 @@
  * @license    New BSD License
  */
 
+namespace Gems\Model;
+
 /**
  * Contains the organization
  *
@@ -21,7 +23,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
+class OrganizationModel extends \Gems\Model\JoinModel
 {
     /**
      * @var array
@@ -34,7 +36,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     protected $config;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     protected $loader;
 
@@ -45,13 +47,13 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var \Gems_Project_ProjectSettings
+     * @var \Gems\Project\ProjectSettings
      */
     protected $project;
 
     /**
      *
-     * @var \Gems_Util
+     * @var \Gems\Util
      */
     protected $util;
 
@@ -69,14 +71,14 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
         $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
-        // \Gems_Model::setChangeFieldsByPrefix($this, 'gor');
+        // \Gems\Model::setChangeFieldsByPrefix($this, 'gor');
     }
 
     /**
      * Set those settings needed for the browse display
      *
      *
-     * @return \Gems_Model_OrganizationModel
+     * @return \Gems\Model\OrganizationModel
      */
     public function applyBrowseSettings()
     {
@@ -153,7 +155,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
                 'description', $this->_('Checked organizations see this organizations respondents.'),
                 'multiOptions', $dbLookup->getOrganizations()
                 );
-        $tp = new \MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp = new \MUtil\Model\Type\ConcatenatedRow(':', ', ');
         $tp->apply($this, 'gor_accessible_by');
 
         $this->setIfExists('gor_allowed_ip_ranges');
@@ -212,7 +214,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems_Model_OrganizationModel
+     * @return \Gems\Model\OrganizationModel
      */
     public function applyDetailSettings()
     {
@@ -247,7 +249,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     /**
      * Set those values needed for editing
      *
-     * @return \Gems_Model_OrganizationModel
+     * @return \Gems\Model\OrganizationModel
      */
     public function applyEditSettings()
     {
@@ -337,7 +339,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         $this->setIfExists('gor_allowed_ip_ranges',
             'elementClass', 'Textarea',
             'rows', 4,
-            'validator', new \Gems_Validate_IPRanges()
+            'validator', new \Gems\Validate\IPRanges()
             );
         $this->setIfExists('gor_user_class');
 
@@ -394,7 +396,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
     /**
      * Helper function that procesess the raw data after a load.
      *
-     * @see \MUtil_Model_SelectModelPaginator
+     * @see \MUtil\Model\SelectModelPaginator
      *
      * @param mixed $data Nested array or \Traversable containing rows or iterator
      * @param boolean $new True when it is a new item
@@ -412,7 +414,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
             if (isset($row['gor_user_class']) && !empty($row['gor_user_class'])) {
                 $definition = $this->loader->getUserLoader()->getUserDefinition($row['gor_user_class']);
 
-                if ($definition instanceof \Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
+                if ($definition instanceof \Gems\User\UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                     $definition->addConfigFields($this);
                     $row = $row + $definition->loadConfig($row);
                 }
@@ -443,7 +445,7 @@ class Gems_Model_OrganizationModel extends \Gems_Model_JoinModel
         if (isset($newValues['gor_user_class']) && !empty($newValues['gor_user_class'])) {
             $definition = $this->loader->getUserLoader()->getUserDefinition($newValues['gor_user_class']);
 
-            if ($definition instanceof \Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
+            if ($definition instanceof \Gems\User\UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $savedValues = $definition->saveConfig($savedValues, $newValues);
 
                 if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {

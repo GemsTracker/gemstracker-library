@@ -7,8 +7,9 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
+
+namespace Gems\Form\Decorator;
 
 /**
  * Display a form in a table decorator.
@@ -19,7 +20,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
+class Tabs extends \Zend_Form_Decorator_ViewHelper
 {
     protected $_cellDecorators;
     protected $_options;
@@ -135,10 +136,10 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
 
         $cellDecorators = $this->getCellDecorators();
 
-        $containerDiv = \MUtil_Html::create()->div(array('id' => 'tabElement'));
+        $containerDiv = \MUtil\Html::create()->div(array('id' => 'tabElement'));
 
 
-        if ($element instanceof \MUtil_Form_Element_Table) {
+        if ($element instanceof \MUtil\Form\Element\Table) {
             $containerDiv->appendAttrib('class', $element->getAttrib('class'));
             $subforms = $element->getSubForms();
         } elseif ($element instanceof \Zend_Form)  {
@@ -165,7 +166,7 @@ class Gems_Form_Decorator_Tabs extends \Zend_Form_Decorator_ViewHelper
             }
             $tabNumber = 0;
 
-            $tabContainerDiv = $containerDiv->div(array('class' => 'tab-content'));//\MUtil_Html::create()->div(array('class' => 'tab-content'));
+            $tabContainerDiv = $containerDiv->div(array('class' => 'tab-content'));//\MUtil\Html::create()->div(array('class' => 'tab-content'));
 
             $active = $this->getOption('active');
             foreach($subforms as $subform) {

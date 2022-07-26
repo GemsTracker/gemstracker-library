@@ -5,7 +5,6 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
 /**
@@ -17,6 +16,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class RespondentRelationController extends \Gems_Default_RespondentRelationAction
+class RespondentRelationController extends \Gems\Actions\RespondentRelationAction
 {
 }

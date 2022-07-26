@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Gems specific version of the snippet loader
+ * \Gems specific version of the snippet loader
  *
  * @package    Gems
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
  */
 
+namespace Gems\Snippets;
+
 /**
- * Gems specific version of the snippet loader
+ * \Gems specific version of the snippet loader
  *
  * Loads snippets like all other classes in gems first with project prefix, then gems, mutil
  * and when all that fails it will try without prefix from the project\snippets and gems\snippets
@@ -23,8 +24,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
-    implements \MUtil_Snippets_SnippetLoaderInterface
+class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
+    implements \MUtil\Snippets\SnippetLoaderInterface
 {
     /**
      * Static variable for debuggging purposes. Toggles the echoing of what snippets
@@ -35,7 +36,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
      * is including the full prefix (if any).
      *
      * Use:
-     *     \Gems_Snippets_SnippetLoader::$verbose = true;
+     *     \Gems\Snippets\SnippetLoader::$verbose = true;
      * to enable.
      *
      * @var boolean $verbose If true echo information about snippet loading.
@@ -43,7 +44,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
     public static $verbose = false;
 
     /**
-     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -52,7 +53,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $source Something that is or can be made into \MUtil_Registry_SourceInterface, otherwise
+     * @param mixed $source Something that is or can be made into \MUtil\Registry\SourceInterface, otherwise
      * \Zend_Registry is used.
      * @param array $dirs prefix => pathname The inital paths to load from
      */
@@ -69,7 +70,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
      * @param string $prefix
      * @param string $path
      * @param boolean $prepend
-     * @return \MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil\Snippets\SnippetLoaderInterface
      */
     public function addPrefixPath($prefix, $path, $prepend = true)
     {
@@ -90,7 +91,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $filename The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
-     * @return \MUtil_Snippets_SnippetInterface The snippet
+     * @return \MUtil\Snippets\SnippetInterface The snippet
      */
     public function getSnippet($filename, array $extraSourceParameters = null)
     {
@@ -99,11 +100,11 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
             $snippet = $this->_loadClass($filename, true);
             $this->removeRegistryContainer('tmpContainer');
             if (self::$verbose) {
-                \MUtil_Echo::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
+                \MUtil\EchoOut\EchoOut::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
                }
         } catch (\Exception $exc) {
             if (self::$verbose) {
-                \MUtil_Echo::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
+                \MUtil\EchoOut\EchoOut::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
             }
             throw $exc;
         }
@@ -114,7 +115,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Returns a source of values for snippets.
      *
-     * @return \MUtil_Registry_SourceInterface
+     * @return \MUtil\Registry\SourceInterface
      */
     public function getSource()
     {
@@ -126,7 +127,7 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
      *
      * @param string $prefix
      * @param string $path OPTIONAL
-     * @return \MUtil_Snippets_SnippetLoaderInterface
+     * @return \MUtil\Snippets\SnippetLoaderInterface
      */
     public function removePrefixPath($prefix, $path = null)
     {
@@ -138,11 +139,11 @@ class Gems_Snippets_SnippetLoader extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Sets the source of variables for snippets
      *
-     * @param \MUtil_Registry_SourceInterface $source
-     * @return \MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param \MUtil\Registry\SourceInterface $source
+     * @return \MUtil\Snippets\SnippetLoader (continuation pattern)
      */
-    public function setSource(\MUtil_Registry_SourceInterface $source)
+    public function setSource(\MUtil\Registry\SourceInterface $source)
     {
-        throw new \Gems_Exception_Coding('Cannot set source for ' . __CLASS__);
+        throw new \Gems\Exception\Coding('Cannot set source for ' . __CLASS__);
     }
 }

@@ -21,26 +21,26 @@ use Gems\Agenda\AppointmentFilterInterface;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.4 27-Nov-2018 18:44:41
  */
-class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
+class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 {
     /**
-     * @var \Gems_Agenda
+     * @var \Gems\Agenda
      */
     protected $agenda;
 
     /**
-     * @var \Gems_Tracker_TrackerInterface
+     * @var \Gems\Tracker\TrackerInterface
      */
     protected $tracker;
 
     /**
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $engine;
 
     private function _toDayString($value)
     {
-        if ($value instanceof \MUtil_Date) {
+        if ($value instanceof \MUtil\Date) {
             $value = $value->getDateTime();
         }
         if ($value instanceof \DateTime) {
@@ -160,7 +160,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $timeFormOptions['dateFormat']   = 'HH:mm';
 
-        \MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
+        \MUtil\Model\Bridge\FormBridge::setFixedOptions(array(
             'date'     => $dateFormOptions,
             'datetime' => $datetimeFormOptions,
             'time'     => $timeFormOptions,
@@ -211,7 +211,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -236,7 +236,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(0, count($preRespTracks));
 
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -245,7 +245,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -268,7 +268,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
         
-        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /**
@@ -290,7 +290,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -299,7 +299,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -321,7 +321,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
-        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
 
@@ -345,7 +345,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -354,7 +354,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -397,7 +397,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -406,7 +406,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -448,7 +448,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -457,7 +457,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -479,7 +479,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
         $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
         
-        \MUtil_Batch_BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
     /**
@@ -502,7 +502,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
         $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
-        \MUtil_Batch_BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
+        \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
 
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->save([
@@ -511,7 +511,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -557,7 +557,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -601,7 +601,7 @@ class AppointmentFieldTest extends \Gems_Test_DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil_Date($nextMonth),
+            'gap_admission_time' => new \MUtil\Date($nextMonth),
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,

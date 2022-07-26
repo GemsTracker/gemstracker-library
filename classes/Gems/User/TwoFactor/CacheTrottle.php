@@ -49,36 +49,36 @@ trait CacheTrottle
     /**
      * Can new OTP's be sent?
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @return bool
      */
-    protected function canSendOtp(\Gems_User_User $user)
+    protected function canSendOtp(\Gems\User\User $user)
     {
         $key = $this->getSendOtpKey($user);
         $maxKey = $this->getMaxSendOtpKey($user);
         if ($this->rateLimiter->tooManyAttempts($key, $this->maxSendTimesOfSameOtp)) {
-            throw new \Gems_Exception_Security($this->_('OTP already sent.'));
+            throw new \Gems\Exception\Security($this->_('OTP already sent.'));
         }
         if ($this->rateLimiter->tooManyAttempts($maxKey, $this->maxSendOtpAttempts)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
+            throw new \Gems\Exception\Security($this->_('Maximum number of OTP send attempts reached'));
         }
         return true;
     }
 
-    public function canRetry(\Gems_User_User $user)
+    public function canRetry(\Gems\User\User $user)
     {
         $key = $this->getRetryOtpKey($user);
         $maxKey = $this->getMaxSendOtpKey($user);
         if ($this->rateLimiter->tooManyAttempts($key, $this->maxRetries)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
+            throw new \Gems\Exception\Security($this->_('Maximum number of OTP send attempts reached'));
         }
         if ($this->rateLimiter->tooManyAttempts($maxKey, $this->maxSendOtpAttempts)) {
-            throw new \Gems_Exception_Security($this->_('Maximum number of OTP send attempts reached'));
+            throw new \Gems\Exception\Security($this->_('Maximum number of OTP send attempts reached'));
         }
         return true;
     }
 
-    protected function clearShortOtpThrottle(\Gems_User_User $user)
+    protected function clearShortOtpThrottle(\Gems\User\User $user)
     {
         $key = $this->getSendOtpKey($user);
         $this->rateLimiter->clear($key);
@@ -100,10 +100,10 @@ trait CacheTrottle
     /**
      * Get OTP send throttle key
      *
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      * @return string
      */
-    protected function getSendOtpKey(\Gems_User_User $user)
+    protected function getSendOtpKey(\Gems\User\User $user)
     {
         $key = sha1($user->getUserId()) . '_otp';
         return $key;
@@ -112,10 +112,10 @@ trait CacheTrottle
     /**
      * Get OTP send throttle key
      *
-     * @param \Gems_User_User $key
+     * @param \Gems\User\User $key
      * @return string
      */
-    protected function getMaxSendOtpKey(\Gems_User_User $user)
+    protected function getMaxSendOtpKey(\Gems\User\User $user)
     {
         $key = $this->getSendOtpKey($user) . '_max';
         return $key;
@@ -124,19 +124,19 @@ trait CacheTrottle
     /**
      * Get OTP send throttle key
      *
-     * @param \Gems_User_User $key
+     * @param \Gems\User\User $key
      * @return string
      */
-    protected function getRetryOtpKey(\Gems_User_User $user)
+    protected function getRetryOtpKey(\Gems\User\User $user)
     {
         $key = $this->getSendOtpKey($user) . '_retry';
         return $key;
     }
 
     /**
-     * @param \Gems_User_User $user
+     * @param \Gems\User\User $user
      */
-    protected function hitSendOtp(\Gems_User_User $user)
+    protected function hitSendOtp(\Gems\User\User $user)
     {
         $key = $this->getSendOtpKey($user);
         $maxKey = $this->getMaxSendOtpKey($user);
@@ -148,7 +148,7 @@ trait CacheTrottle
         $this->rateLimiter->hit($maxKey, $this->maxSendOtpAttemptsPeriod);
     }
 
-    protected function hitOtpRetry(\Gems_User_User $user)
+    protected function hitOtpRetry(\Gems\User\User $user)
     {
         $key = $this->getRetryOtpKey($user);
         $this->rateLimiter->hit($key, $this->getOtpTimeLeft());

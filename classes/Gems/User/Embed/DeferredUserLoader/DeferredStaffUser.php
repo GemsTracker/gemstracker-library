@@ -27,11 +27,11 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
     /**
      * Get the deferred user
      *
-     * @param \Gems_User_User $embeddedUser
+     * @param \Gems\User\User $embeddedUser
      * @param string $deferredLogin name of the user to log in
      * @return \Gems_User_user|null
      */
-    public function getDeferredUser(\Gems_User_User $embeddedUser, $deferredLogin)
+    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin)
     {
         $embeddedUserData = $embeddedUser->getEmbedderData();
         if (! ($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
@@ -63,7 +63,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
         $data['gsf_iso_lang']         = $embeddedUser->getLocale();
         $data['gul_user_class']       = 'StaffUser';
         $data['gul_can_login']        = 1;
-        // \MUtil_Echo::track($data);
+        // \MUtil\EchoOut\EchoOut::track($data);
 
         $model->save($data);
 
@@ -78,7 +78,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
 
     /**
      *
-     * @return mixed Something to display as label. Can be an \MUtil_Html_HtmlElement
+     * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
     public function getLabel()
     {

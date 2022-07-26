@@ -18,7 +18,7 @@ namespace Gems\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract implements ExportInterface
+abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract implements ExportInterface
 {
     /**
      * @var \Zend_Session_Namespace    Own session used for non-batch exports
@@ -26,7 +26,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     protected $_session;
 
     /**
-     * @var \Gems_Task_TaskRunnerBatch   The batch object if one is set
+     * @var \Gems\Task\TaskRunnerBatch   The batch object if one is set
      */
     protected $batch;
 
@@ -82,12 +82,12 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     protected $modelId;
 
     /**
-     * @var \Gems_Loader
+     * @var \Gems\Loader
      */
     public $loader;
 
     /**
-     * @var \MUtil_Model_ModelAbstract  Current model to export
+     * @var \MUtil\Model\ModelAbstract  Current model to export
      */
     protected $model;
 
@@ -108,7 +108,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
     /**
      * form elements for extra options for this particular export option
-     * @param  \MUtil_Form $form Current form to add the form elements
+     * @param  \MUtil\Form $form Current form to add the form elements
      * @param  array $data current options set in the form
      * @return array Form elements
      */
@@ -171,7 +171,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             do {
                 $filter['limit'] = array($this->rowsPerBatch, $currentRow);
                 if ($this->batch) {
-                    $this->batch->addTask('Export_ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
+                    $this->batch->addTask('Export\\ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
                 } else {
                     $this->addRows($data, $modelId, $this->tempFilename, $filter);
                 }
@@ -179,7 +179,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
             } while ($currentRow < $totalRows);
 
             if ($this->batch) {
-                $this->batch->addTask('Export_ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
+                $this->batch->addTask('Export\\ExportCommand', $data['type'], 'addFooter', $this->tempFilename . $this->fileExtension, $modelId, $data);
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
@@ -196,7 +196,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         $exportTempDir = $this->getExportTempDir();
 
         if (! is_dir($exportTempDir)) {
-            \MUtil_File::ensureDir($exportTempDir);
+            \MUtil\File::ensureDir($exportTempDir);
         }
 
         $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
@@ -287,7 +287,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         // Remove dot if it starts with one
         $filename = trim($filename, '.');
 
-        return \MUtil_File::cleanupName($filename);
+        return \MUtil\File::cleanupName($filename);
     }
 
     /**
@@ -317,7 +317,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     {
         $storageFormat = $this->model->get($columnName, 'storageFormat');
 
-        return \MUtil_Date::format($value, $dateFormat, $storageFormat);
+        return \MUtil\Date::format($value, $dateFormat, $storageFormat);
     }
 
     protected function filterFormatFunction($value, $functionName)
@@ -331,8 +331,8 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
     protected function filterHtml($result)
     {
-        if ($result instanceof \MUtil_Html_ElementInterface && !($result instanceof \MUtil_Html_Sequence)) {
-            if ($result instanceof \MUtil_Html_AElement) {
+        if ($result instanceof \MUtil\Html\ElementInterface && !($result instanceof \MUtil\Html\Sequence)) {
+            if ($result instanceof \MUtil\Html\AElement) {
                 $href   = $result->href;
                 $result = $href;
             } elseif ($result->count() > 0) {
@@ -342,12 +342,12 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
         if (is_object($result)) {
             // If it is Lazy, execute it
-            if ($result instanceof \MUtil_Lazy_LazyInterface) {
-                $result = \MUtil_Lazy::rise($result);
+            if ($result instanceof \MUtil\Lazy\LazyInterface) {
+                $result = \MUtil\Lazy::rise($result);
             }
 
             // If it is Html, render it
-            if ($result instanceof \MUtil_Html_HtmlInterface) {
+            if ($result instanceof \MUtil\Html\HtmlInterface) {
                 $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
                 if (null === $viewRenderer->view) {
                     $viewRenderer->initView();
@@ -366,13 +366,13 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         if (is_callable($functionName)) {
             $result = call_user_func($functionName, $value);
         } elseif (is_object($functionName)) {
-            if (($functionName instanceof \MUtil_Html_ElementInterface) || method_exists($functionName, 'append')) {
+            if (($functionName instanceof \MUtil\Html\ElementInterface) || method_exists($functionName, 'append')) {
                 $object = clone $functionName;
                 $result = $object->append($value);
             }
         } elseif (is_string($functionName)) {
             // Assume it is a html tag when a string
-            $result = \MUtil_Html::create($functionName, $value);
+            $result = \MUtil\Html::create($functionName, $value);
         }
 
         return $result;
@@ -442,7 +442,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
                     }
                 }
 
-                if ($result instanceof \MUtil_Date) {
+                if ($result instanceof \MUtil\Date) {
                     $result = $this->filterDateFormat($result, 'yyyy-MM-dd HH:mm:ss', $columnName);
                 }
 
@@ -519,7 +519,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      * @param array $filter
      * @param array $data
      * @param array|string $sort
-     * @return \MUtil_Model_ModelAbstract model
+     * @return \MUtil\Model\ModelAbstract model
      */
     protected function getAnswerModel($exportModelSource, array $filter, array $data, $sort)
     {
@@ -564,7 +564,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
 
     /**
      * Get the model to export
-     * @return \MUtil_Model_ModelAbstract
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getModel()
     {
@@ -575,7 +575,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
         }
         if (is_array($model)) {
             if ($this->modelId) {
-                if (isset($model[$this->modelId]) && $model[$this->modelId] instanceof \MUtil_Model_ModelAbstract) {
+                if (isset($model[$this->modelId]) && $model[$this->modelId] instanceof \MUtil\Model\ModelAbstract) {
                     $model = $model[$this->modelId];
                 } else {
                     $modelType = null;
@@ -646,7 +646,7 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      */
     protected function getModelCount($filter = true)
     {
-        if ($this->model && $this->model instanceof \MUtil_Model_ModelAbstract) {
+        if ($this->model && $this->model instanceof \MUtil\Model\ModelAbstract) {
             $totalCount = $this->model->loadPaginator()->getTotalItemCount();
             return $totalCount;
         }
@@ -666,9 +666,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
      *
      * Use $this->hasBatch to check for existence
      *
-     * @param \Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems\Task\TaskRunnerBatch $batch
      */
-    public function setBatch(\Gems_Task_TaskRunnerBatch $batch)
+    public function setBatch(\Gems\Task\TaskRunnerBatch $batch)
     {
         $this->batch = $batch;
     }
@@ -676,9 +676,9 @@ abstract class ExportAbstract extends \MUtil_Translate_TranslateableAbstract imp
     /**
      * Set the model when not in batch mode
      *
-     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $model
      */
-    public function setModel(\MUtil_Model_ModelAbstract $model)
+    public function setModel(\MUtil\Model\ModelAbstract $model)
     {
         if ($this->_session) {
             $this->_session->model = $model;

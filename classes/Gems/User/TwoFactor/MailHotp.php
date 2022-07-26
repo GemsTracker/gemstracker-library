@@ -16,7 +16,7 @@ class MailHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfa
         $this->maxRetries = 2;
     }
 
-    public function addSetupFormElements(\Zend_Form $form, \Gems_User_User $user, array &$formData)
+    public function addSetupFormElements(\Zend_Form $form, \Gems\User\User $user, array &$formData)
     {
         $element = $form->createElement('exhibitor', 'email',
             [
@@ -38,12 +38,12 @@ class MailHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfa
         return $this->_('From the E-mail we sent you');
     }
 
-    public function getSentMessage(\Gems_User_User $user)
+    public function getSentMessage(\Gems\User\User $user)
     {
         return $this->_('An authentication code has been sent to your email address');
     }
 
-    public function sendCode(\Gems_User_User $user)
+    public function sendCode(\Gems\User\User $user)
     {
         if ($this->canSendOtp($user)) {
             $subject = 'Authentication code';
@@ -59,7 +59,7 @@ class MailHotp extends TwoFactorHotpAbstract implements SendTwoFactorCodeInterfa
                 return true;
             }
         }
-        throw new \Gems_Exception($this->_('OTP could not be sent'));
+        throw new \Gems\Exception($this->_('OTP could not be sent'));
     }
 
     /**

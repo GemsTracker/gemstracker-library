@@ -19,7 +19,7 @@ namespace Gems\Snippets\Login;
  * @license    New BSD License
  * @since      Class available since version 1.8.3 Jun 28, 2018 1:55:19 PM
  */
-class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
+class RedirectToRequestSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
@@ -35,7 +35,7 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var \Gems_Menu
+     * @var \Gems\Menu
      */
     protected $menu;
 
@@ -60,7 +60,7 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil_Registry_TargetInterface}.
+     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -93,7 +93,7 @@ class RedirectToRequestSnippet extends \MUtil_Snippets_SnippetAbstract
         $this->_redirectUrl = false;
 
         // Retrieve these before the session is reset
-        $staticSession = \GemsEscort::getInstance()->getStaticSession();
+        $staticSession = \Gems\Escort::getInstance()->getStaticSession();
 
         if ($staticSession && is_array($staticSession->previousRequestParameters)) {
             $url = $staticSession->previousRequestParameters;
