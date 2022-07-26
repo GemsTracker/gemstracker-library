@@ -83,6 +83,8 @@ class GemsRespondent2org extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gr2o_changed', 'timestamp', [
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
+                'update' => 'CURRENT_TIMESTAMP',
                 'after' => 'gr2o_opened_by',
             ])
             ->addColumn('gr2o_changed_by', 'integer', [
@@ -93,6 +95,8 @@ class GemsRespondent2org extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gr2o_created', 'timestamp', [
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
+                'update' => '',
                 'after' => 'gr2o_changed_by',
             ])
             ->addColumn('gr2o_created_by', 'integer', [

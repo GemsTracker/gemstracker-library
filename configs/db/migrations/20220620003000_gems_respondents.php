@@ -132,6 +132,8 @@ class GemsRespondents extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('grs_created', 'timestamp', [
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
+                'update' => '',
                 'after' => 'grs_changed_by',
             ])
             ->addColumn('grs_created_by', 'integer', [

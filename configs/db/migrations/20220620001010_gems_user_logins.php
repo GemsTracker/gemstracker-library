@@ -85,6 +85,8 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gul_created', 'timestamp', [
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
+                'update' => '',
                 'after' => 'gul_changed_by',
             ])
             ->addColumn('gul_created_by', 'integer', [

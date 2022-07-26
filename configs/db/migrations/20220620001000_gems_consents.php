@@ -48,6 +48,7 @@ class GemsConsents extends Phinx\Migration\AbstractMigration
                 'after' => 'gco_changed',
             ])
             ->addColumn('gco_created', 'timestamp', [
+                'default' => 'CURRENT_TIMESTAMP',
                 'null' => false,
                 'after' => 'gco_changed_by',
             ])

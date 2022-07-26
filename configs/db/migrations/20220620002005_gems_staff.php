@@ -134,6 +134,8 @@ class GemsStaff extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gsf_created', 'timestamp', [
                 'null' => false,
+                'default' => 'CURRENT_TIMESTAMP',
+                'update' => '',
                 'after' => 'gsf_changed_by',
             ])
             ->addColumn('gsf_created_by', 'integer', [
