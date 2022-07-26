@@ -11,6 +11,7 @@
 
 namespace Gems\User;
 
+use Gems\Locale\Locale;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
@@ -120,7 +121,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @var \Zend_Locale
+     * @var Locale
      */
     protected $locale;
 
@@ -2497,7 +2498,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             $this->setLocale($locale);
         }
 
-        $this->locale->setLocale($locale);
+        $this->locale->setCurrentLanguage($locale);
         $this->translate->setLocale($locale);
 
         return \Gems\Cookies::setLocale($locale, $this->basepath->getBasePath());
