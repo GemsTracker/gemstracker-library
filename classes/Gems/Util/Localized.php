@@ -12,6 +12,11 @@
 
 namespace Gems\Util;
 
+use NumberFormatter;
+use Gems\Locale\Locale;
+use Symfony\Component\Intl\Countries;
+use Symfony\Component\Intl\Languages;
+
 /**
  * Localization class, allowing for project specific overrides
  *
@@ -20,26 +25,25 @@ namespace Gems\Util;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Localized extends \Gems\Registry\TargetAbstract
+class Localized
 {
     /**
      *
-     * @var \Zend_Locale
+     * @var Locale
      */
-    protected $locale;
+    protected Locale $locale;
 
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    public function __construct(Locale $locale)
+    {
+        $this->locale = $locale;
+    }
 
     public function getCountries()
     {
         static $data;
 
         if (! $data) {
-            $data = \Zend_Locale::getTranslationList('territory', $this->locale, 2);
+            $data = Countries::getNames($this->locale->getCurrentLanguage());
 
             asort($data, SORT_LOCALE_STRING);
         }
@@ -62,7 +66,8 @@ class Localized extends \Gems\Registry\TargetAbstract
         }
 
         foreach ($locales as $locale) {
-            $languages[$locale] = \Zend_Locale::getTranslation($locale, 'Language', $this->locale);
+            $languages[$locale] = Languages::getName($locale, $this->locale->getCurrentLanguage());
+
         }
 
         asort($languages);
@@ -75,7 +80,7 @@ class Localized extends \Gems\Registry\TargetAbstract
         static $data;
 
         if (! $data) {
-            $data = \Zend_Locale::getTranslationList('month', $this->locale);
+            $data = \Zend_Locale::getTranslationList('month', $this->locale->getCurrentLanguage());
         }
 
         $month = intval($month); // Sometimes month comes through as '02'
@@ -113,10 +118,11 @@ class Localized extends \Gems\Registry\TargetAbstract
         return null;
     } // */
 
-    public function formatNumber($value, $precision = 2)
+    public function formatNumber(int|float $value, int $precision = 2)
     {
-        if (null !== $value) {
-            return \Zend_Locale_Format::toNumber($value, array('precision' => $precision, 'locale' => $this->locale));
-        }
+        $formatter = new NumberFormatter($this->locale->getCurrentLanguage(), NumberFormatter::DECIMAL);
+        $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, 0);
+        $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $precision);
+        return $formatter->format($value);
     }
 }

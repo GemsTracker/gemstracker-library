@@ -8,6 +8,7 @@ use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
+use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Psr\Cache\CacheItemPoolInterface;
@@ -55,6 +56,7 @@ class LegacyConfigProvider
                 'LegacyLoader' => \Gems\Loader::class,
                 'LegacyMenu' => \Gems\Menu::class,
                 'LegacyLocale' => Locale::class,
+                'LegacyLocalized' => Localized::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 'LegacySession' => \Zend_Session_Namespace::class,

@@ -3,6 +3,7 @@
 namespace Gems\Model;
 
 use Gems\Exception\RespondentAlreadyExists;
+use Gems\Util\Localized;
 
 /**
  *
@@ -78,6 +79,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Localized
+     */
+    protected $localized;
 
     /**
      * Should the logincheck be added automatically
@@ -321,7 +327,6 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
     public function applyDetailSettings()
     {
         $dbLookup   = $this->util->getDbLookup();
-        $localized  = $this->util->getLocalized();
 
         if ($this->loginCheck) {
             $this->addLoginCheck();
@@ -388,7 +393,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_zipcode',     'label', $this->_('Zipcode'));
         $this->setIfExists('grs_city',        'label', $this->_('City'));
         $this->setIfExists('grs_iso_country', 'label', $this->_('Country'),
-                'multiOptions', $localized->getCountries());
+                'multiOptions', $this->localized->getCountries());
 
         $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
         $this->setIfExists('grs_phone_2',     'label', $this->_('Phone 2'));
@@ -396,7 +401,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_phone_4',     'label', $this->_('Phone 4'));
 
         $this->setIfExists('grs_iso_lang',    'label', $this->_('Language'),
-                'multiOptions', $localized->getLanguages(),
+                'multiOptions', $this->localized->getLanguages(),
                 'tab', $this->_('Settings'), 'default', $this->project->getLocaleDefault());
 
         $this->setIfExists('gr2o_consent',    'label', $this->_('Consent'),

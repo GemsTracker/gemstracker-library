@@ -46,6 +46,7 @@
     "require": {
         "php": ">=8.1.0",
         "ext-gd": "*",
+        "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
@@ -89,7 +90,10 @@
         "symfony/console": "^6.1",
         "symfony/messenger": "^6.1",
         "symfony/redis-messenger": "^6.1",
-        "symfony/doctrine-messenger": "^6.1"
+        "symfony/doctrine-messenger": "^6.1",
+        "laminas/laminas-hydrator": "^4.5",
+        "symfony/intl": "^6.1",
+
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
