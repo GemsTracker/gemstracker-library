@@ -2498,10 +2498,13 @@ class User extends \MUtil\Translate\TranslateableAbstract
             $this->setLocale($locale);
         }
 
-        $this->locale->setCurrentLanguage($locale);
-        $this->translate->setLocale($locale);
+        if ($locale !== null) {
+            $this->locale->setCurrentLanguage($locale);
+            $this->translate->setLocale($locale);
+            return \Gems\Cookies::setLocale($locale, $this->basepath->getBasePath());
+        }
 
-        return \Gems\Cookies::setLocale($locale, $this->basepath->getBasePath());
+        return false;
     }
 
     /**
