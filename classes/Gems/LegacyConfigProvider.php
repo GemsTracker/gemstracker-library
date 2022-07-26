@@ -7,7 +7,7 @@ namespace Gems;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
-use Gems\Locale\Locale\Locale;
+use Gems\Locale\Locale;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Psr\Cache\CacheItemPoolInterface;

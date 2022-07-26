@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\Locale\Locale;
+namespace Gems\Locale;
 
 class Locale
 {
