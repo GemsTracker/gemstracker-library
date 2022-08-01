@@ -2,6 +2,7 @@
 
 namespace Gems\Route;
 
+use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -34,10 +35,11 @@ trait ModelSnippetActionRouteHelpers
         'edit',
     ];
 
-    protected array $modelSnippetCustomFirmware = [
+    protected array $modelSnippetCustomMiddleware = [
         SecurityHeadersMiddleware::class,
         LegacyCurrentUserMiddleware::class,
         LocaleMiddleware::class,
+        TestCurrentUserMiddleware::class,
         MenuMiddleware::class,
         LegacyController::class,
     ];
@@ -66,7 +68,7 @@ trait ModelSnippetActionRouteHelpers
         }
 
         if ($customMiddleware === null) {
-            $customMiddleware = $this->modelSnippetCustomFirmware;
+            $customMiddleware = $this->modelSnippetCustomMiddleware;
         }
 
         $routes = [];
@@ -129,5 +131,15 @@ trait ModelSnippetActionRouteHelpers
         }
 
         return $routes;
+    }
+
+    public function getDefaultMiddleware(string|array $additionalMiddleware): array
+    {
+        $middleware = $this->modelSnippetCustomMiddleware;
+        if (is_string($additionalMiddleware)) {
+            $additionalMiddleware = [$additionalMiddleware];
+        }
+        array_pop($middleware);
+        return $middleware + $additionalMiddleware;
     }
 }
