@@ -55,18 +55,6 @@ class Form extends \MUtil\Form
         $this->activateBootstrap();
     }
 
-    protected function _activateJQueryView(\Zend_View_Interface $view = null) {
-        parent::_activateJQueryView($view);
-
-        if (null === $view) {
-            $view = $this->getView();
-        }
-
-        if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
-            $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
-        }
-    }
-
     /**
      * Change all elements into an autosubmit element
      *

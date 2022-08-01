@@ -3,12 +3,12 @@
 /**
  *
  * @package    Gems
- * @subpackage JQuery
+ * @subpackage View\Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
 
-namespace Gems\JQuery\View\Helper;
+namespace Gems\View\Helper;
 
 /**
  * Short description for ToggleCheckboxes
@@ -16,7 +16,7 @@ namespace Gems\JQuery\View\Helper;
  * Long description for class ToggleCheckboxes (if any)...
  *
  * @package    Gems
- * @subpackage JQuery
+ * @subpackage View\Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5

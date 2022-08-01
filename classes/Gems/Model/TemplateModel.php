@@ -236,7 +236,7 @@ class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
             $view = \Zend_Layout::getMvcInstance()->getView();
             $headlink = $view->headLink();
 
-            if ($headlink instanceof \MUtil\Less\View\Helper\HeadLink) {
+            if ($headlink instanceof \MUtil\View\Helper\HeadLink) {
                 foreach($data['sheets'] as $url) {
                     if (\MUtil\StringUtil\StringUtil::endsWith($url, '.less', true)) {
                         $result = $headlink->compile($view, $url, true);

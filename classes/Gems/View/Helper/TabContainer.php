@@ -3,14 +3,14 @@
  * Extension to the default TabContainer ViewHelper
  *
  * @package    Gems
- * @subpackage JQuery
+ * @subpackage View\Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
 
-namespace Gems\JQuery\View\Helper;
+namespace Gems\View\Helper;
 
-require_once "ZendX/JQuery/View/Helper/TabContainer.php";
+// require_once "ZendX/JQuery/View/Helper/TabContainer.php";
 
 /**
  * Extension to allow passing what tab was selected and highlighting tabs with errors

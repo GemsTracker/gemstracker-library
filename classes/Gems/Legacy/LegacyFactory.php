@@ -234,7 +234,6 @@ class LegacyFactory implements FactoryInterface
         $loader = new \MUtil\Loader\PluginLoader([
             'Zend_View_Helper_' => 'Zend/View/Helper/',
             'MUtil_View_Helper_' => 'MUtil/View/Helper/',
-            'MUtil_Less_View_Helper_' => 'MUtil/Less/View/Helper/',
             'Gems_View_Helper_' => 'Gems/View/Helper/',
             ]);
         $view->setPluginLoader($loader, 'helper');

@@ -7,7 +7,7 @@
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-namespace Gems\JQuery\View\Helper;
+namespace Gems\View\Helper;
 
 class ColorPicker extends \ZendX_JQuery_View_Helper_ColorPicker
 {

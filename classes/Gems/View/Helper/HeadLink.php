@@ -21,7 +21,7 @@ namespace Gems\View\Helper;
  * @license    New BSD License
  * @since      Class available since version 1.6.5
  */
-class HeadLink extends \MUtil\Less\View\Helper\HeadLink
+class HeadLink extends \MUtil\View\Helper\HeadLink
 {
     public function __construct()
     {
