@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker;
 
+use Gems\Translate\GenderTranslation;
 use Gems\Util\Translated;
 
 /**
@@ -24,7 +25,7 @@ use Gems\Util\Translated;
  */
 class Respondent extends \Gems\Registry\TargetAbstract
 {
-    use Gems\Translate\GenderTranslation;
+    use GenderTranslation;
 
     /**
      *

@@ -3,13 +3,14 @@
 
 namespace Gems\Translate;
 
-
-use Gems\Event\EventDispatcher;
+use Gems\Event\Application\TranslatorEvent;
+use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 trait GenderTranslation
 {
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $event;
 
@@ -20,7 +21,7 @@ trait GenderTranslation
 
     /**
      *
-     * @var \Zend_Translate
+     * @var Translator
      */
     protected $translate;
 
@@ -106,7 +107,7 @@ trait GenderTranslation
     public function plural($singular, $plural, $number, $locale = null)
     {
         $args = func_get_args();
-        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
+        return call_user_func_array([$this->translateAdapter, 'plural'], $args);
     }
 
 
@@ -120,29 +121,12 @@ trait GenderTranslation
 
     protected function getGenderAdapter($gender)
     {
-        $language = $this->translate->getAdapter()->getLocale();
+        $locale = $this->translate->getLocale();
 
-        /*
-         * Scan for files with -<languagecode> and disable notices when the requested
-         * language is not found
-         */
-        $options = [
-            'adapter'         => 'gettext',
-            'content'         => GEMS_LIBRARY_DIR . '/languages/gender/'.$gender,
-            'disableNotices'  => true,
-            'locale'          => $language,
-            'scan'            => \Zend_Translate::LOCALE_FILENAME
-        ];
-
-        $translate = new \Zend_Translate($options);
-
-        // If we don't find the needed language, use a fake translator to disable notices
-        if (! $translate->isAvailable($language)) {
-            $translate = \MUtil\Translate\Adapter\Potemkin::create();
-        }
+        $translator = new \MUtil\Translate\Translator($this->translate->getLocale());
 
         // Add other languages through Event (e.g. Modules)
-        $event = new \Gems\Event\Application\ZendTranslateEvent($translate, $language, $options);
+        $event = new TranslatorEvent($translator, $locale);
         $this->event->dispatch($event, $event::NAME . '.gender.' . $gender);
 
         //Now if we have a project specific language file, add it to the event
@@ -150,8 +134,8 @@ trait GenderTranslation
         if (file_exists($projectLanguageDir)) {
             $event->addTranslationByDirectory($projectLanguageDir);
         }
-        $translate = $event->getTranslate();
+        $translator = $event->getTranslator();
 
-        return $translate;
+        return $translator;
     }
 }
