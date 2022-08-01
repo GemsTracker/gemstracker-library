@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Factory;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use MUtil\Model;
 use Psr\Container\ContainerInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -33,6 +34,7 @@ class ProjectOverloaderFactory implements FactoryInterface
         $overloader = new ProjectOverloader($container, $overloaderPaths);
         $overloader->legacyClasses = true;
         $overloader->legacyPrefix = 'Legacy';
+        Model::setSource($overloader->createSubFolderOverloader('Model'));
         return $overloader;
     }
 }
