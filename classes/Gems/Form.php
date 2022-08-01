@@ -42,8 +42,8 @@ class Form extends \MUtil\Form
 
         $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', \Zend_Form::DECORATOR);
         $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   \Zend_Form::ELEMENT);
-        $this->addPrefixPath('Gems\Form_Decorator', 'Gems/Form/Decorator/', \Zend_Form::DECORATOR);
-        $this->addPrefixPath('Gems\Form_Element',   'Gems/Form/Element/',   \Zend_Form::ELEMENT);
+        $this->addPrefixPath('Gems_Form_Decorator', 'Gems/Form/Decorator/', \Zend_Form::DECORATOR);
+        $this->addPrefixPath('Gems_Form_Element',   'Gems/Form/Element/',   \Zend_Form::ELEMENT);
 
         $this->addElementPrefixPath(GEMS_PROJECT_NAME_UC . '_Validate', GEMS_PROJECT_NAME_UC . '/Validate/', \Zend_Form_Element::VALIDATE);
         $this->addElementPrefixPath('Gems\Form_Decorator',  'Gems/Form/Decorator/',  \Zend_Form_Element::DECORATOR);

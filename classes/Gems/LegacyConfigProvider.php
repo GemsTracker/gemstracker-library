@@ -31,6 +31,8 @@ class LegacyConfigProvider
      */
     public function getDependencies(): array
     {
+        \MUtil\Model::addNameSpace('Gems');
+        
         return [
             'factories'  => [
                 \Gems\Loader::class => LegacyFactory::class,

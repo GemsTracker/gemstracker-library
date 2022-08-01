@@ -57,6 +57,9 @@ class ToggleCheckboxes extends \Zend_Form_Element_Button
     {
         $element = parent::setView($view);
         if (null !== $view) {
+            if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper')) {
+                $view->addHelperPath('MUtil/Bootstrap/View/Helper', 'MUtil_Bootstrap_View_Helper');
+            }
             if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
                 $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
             }

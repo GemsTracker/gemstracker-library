@@ -201,7 +201,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
 
 
         if ($detailed) {
-            $inGems = $this->_('Leave empty for the \Gems database settings.');
+            $inGems = $this->_('Leave empty for the Gems database settings.');
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'),
                     'description', $inGems,
