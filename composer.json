@@ -92,8 +92,7 @@
         "symfony/redis-messenger": "^6.1",
         "symfony/doctrine-messenger": "^6.1",
         "laminas/laminas-hydrator": "^4.5",
-        "symfony/intl": "^6.1",
-
+        "symfony/intl": "^6.1"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
