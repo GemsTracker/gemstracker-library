@@ -4,6 +4,7 @@ namespace Gems\Route;
 
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 
@@ -36,6 +37,7 @@ trait ModelSnippetActionRouteHelpers
     protected array $modelSnippetCustomFirmware = [
         SecurityHeadersMiddleware::class,
         LegacyCurrentUserMiddleware::class,
+        LocaleMiddleware::class,
         MenuMiddleware::class,
         LegacyController::class,
     ];
