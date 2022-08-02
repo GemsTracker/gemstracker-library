@@ -27,331 +27,595 @@ class Menu
     private function buildItems(): array
     {
         return [
-            [
-                'name' => 'respondent.index',
-                'label' => 'Respondent',
-                'type' => 'route-link-item',
-                'children' => [
-                    [
-                        'name' => 'respondent.create',
-                        'label' => 'New',
-                        'type' => 'route-link-item',
+            $this->getRespondentMenu(),
+            $this->getOverviewMenu(),
+            $this->getProjectMenu(),
+            $this->getSetupMenu(),
+            $this->getTrackBuilderMenu(),
+        ];
+    }
+
+    public function getRespondentMenu(): array
+    {
+        return  [
+            'name' => 'respondent.index',
+            'label' => $this->translator->trans('Respondent'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'respondent.create',
+                    'label' => $this->translator->trans('New'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'respondent.show',
+                    'label' => $this->translator->trans('Show'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'respondent.edit',
+                            'label' => $this->translator->trans('Edit'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'respondent.change-consent',
+                            'label' => $this->translator->trans('Consent'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'respondent.delete',
+                            'label' => $this->translator->trans('Delete'),
+                            'type' => 'route-link-item',
+                        ],
                     ],
-                    [
-                        'name' => 'respondent.show',
-                        'label' => 'Show',
-                        'type' => 'route-link-item',
-                        'children' => [
+                ],
+            ],
+        ];
+    }
+
+    public function getOverviewMenu(): array
+    {
+        return [
+            'name' => 'overview',
+            'label' => $this->translator->trans('Overview'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'overview.summary',
+                    'label' => $this->translator->trans('Track Summary'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.compliance',
+                    'label' => $this->translator->trans('Track Compliance'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.field-report',
+                    'label' => $this->translator->trans('Track Field Utilization'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.field-overview',
+                    'label' => $this->translator->trans('Track Field Content'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.overview-plan',
+                    'label' => $this->translator->trans('By period'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.token-plan',
+                    'label' => $this->translator->trans('By token'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.respondent-plan',
+                    'label' => $this->translator->trans('By patient'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'overview.consent-plan',
+                    'label' => $this->translator->trans('Patient status'),
+                    'type' => 'route-link-item',
+                ],
+            ],
+        ];
+    }
+
+    public function getProjectMenu(): array
+    {
+        return [
+            'name' => 'project',
+            'label' => $this->translator->trans('Project'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'project.tracks',
+                    'label' => $this->translator->trans('Tracks'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'project.tracks.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ]
+                ],
+                [
+                    'name' => 'project.surveys',
+                    'label' => $this->translator->trans('Surveys'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'project.surveys.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ]
+                ],
+            ],
+        ];
+    }
+
+    public function getSetupMenu()
+    {
+        return [
+            'name' => 'setup',
+            'label' => $this->translator->trans('Setup'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'setup.project-information.index',
+                    'label' => $this->translator->trans('Project setup'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.project-information.errors',
+                            'label' => $this->translator->trans('Errors'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.php',
+                            'label' => $this->translator->trans('PHP'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.php-errors',
+                            'label' => $this->translator->trans('PHP Errors'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.project',
+                            'label' => $this->translator->trans('Project settings'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.session',
+                            'label' => $this->translator->trans('Session'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'setup.project-information.upgrade.index',
+                            'label' => $this->translator->trans('Upgrade'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.project-information.upgrade.compatibility-report',
+                                    'label' => $this->translator->trans('Code compatibility report'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.project-information.changelog-gems',
+                                    'label' => $this->translator->trans('Changelog GemsTracker'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.project-information.changelog',
+                                    'label' => $this->translator->trans('Project Changelog'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+
+                    ],
+                ],
+                [
+                    'name' => 'settings.codes',
+                    'label' => $this->translator->trans('Codes'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'settings.codes.reception.index',
+                            'label' => $this->translator->trans('Reception codes'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'settings.codes.reception.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'settings.codes.reception.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'settings.codes.reception.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'settings.codes.reception.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
                             [
-                                'name' => 'respondent.edit',
-                                'label' => 'Edit',
+                                'name' => 'settings.codes.consents.index',
+                                'label' => $this->translator->trans('Consents'),
+                                'type' => 'route-link-item',
+                                'children' => [
+                                    [
+                                        'name' => 'settings.codes.consents.create',
+                                        'label' => $this->translator->trans('New'),
+                                        'type' => 'route-link-item',
+                                    ],
+                                    [
+                                        'name' => 'settings.codes.consents.show',
+                                        'label' => $this->translator->trans('Show'),
+                                        'type' => 'route-link-item',
+                                        'children' => [
+                                            [
+                                                'name' => 'settings.codes.consents.edit',
+                                                'label' => $this->translator->trans('Edit'),
+                                                'type' => 'route-link-item',
+                                            ],
+                                            [
+                                                'name' => 'settings.codes.consents.delete',
+                                                'label' => $this->translator->trans('Delete'),
+                                                'type' => 'route-link-item',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'name' => 'settings.codes.mail-codes.index',
+                                'label' => $this->translator->trans('Mail codes'),
+                                'type' => 'route-link-item',
+                                'children' => [
+                                    [
+                                        'name' => 'settings.codes.mail-codes.create',
+                                        'label' => $this->translator->trans('New'),
+                                        'type' => 'route-link-item',
+                                    ],
+                                    [
+                                        'name' => 'settings.codes.mail-codes.show',
+                                        'label' => $this->translator->trans('Show'),
+                                        'type' => 'route-link-item',
+                                        'children' => [
+                                            [
+                                                'name' => 'settings.codes.mail-codes.edit',
+                                                'label' => $this->translator->trans('Edit'),
+                                                'type' => 'route-link-item',
+                                            ],
+                                            [
+                                                'name' => 'settings.codes.mail-codes.delete',
+                                                'label' => $this->translator->trans('Delete'),
+                                                'type' => 'route-link-item',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    public function getTrackBuilderMenu(): array
+    {
+        return [
+            'name' => 'track-builder',
+            'label' => $this->translator->trans('Track Builder'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'track-builder.source.index',
+                    'label' => $this->translator->trans('Source'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'track-builder.source.create',
+                            'label' => $this->translator->trans('New'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.source.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'track-builder.source.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.source.delete',
+                                    'label' => $this->translator->trans('Delete'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.source.ping',
+                                    'label' => $this->translator->trans('Check status'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.source.synchronize',
+                                    'label' => $this->translator->trans('Synchronize surveys'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.source.attributes',
+                                    'label' => $this->translator->trans('Check attributes'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                            [
+                                'name' => 'track-builder.source.synchronize-all',
+                                'label' => $this->translator->trans('Synchronize all surveys'),
                                 'type' => 'route-link-item',
                             ],
                             [
-                                'name' => 'respondent.delete',
-                                'label' => 'Delete',
+                                'name' => 'track-builder.source.check-all',
+                                'label' => $this->translator->trans('Check all is answered'),
+                                'type' => 'route-link-item',
+                            ],
+                            [
+                                'name' => 'track-builder.source.attributes-all',
+                                'label' => $this->translator->trans('Check all attributes'),
                                 'type' => 'route-link-item',
                             ],
                         ],
                     ],
                 ],
-            ],
-            [
-                'name' => 'track-builder',
-                'label' => $this->translator->trans('Track Builder'),
-                'type' => 'route-link-item',
-                'children' => [
-                    [
-                        'name' => 'track-builder.source.index',
-                        'label' => $this->translator->trans('Source'),
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'track-builder.source.create',
-                                'label' => $this->translator->trans('New'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.source.show',
-                                'label' => $this->translator->trans('Show'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'track-builder.source.edit',
-                                        'label' => $this->translator->trans('Edit'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.source.delete',
-                                        'label' => $this->translator->trans('Delete'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.source.ping',
-                                        'label' => $this->translator->trans('Check status'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.source.synchronize',
-                                        'label' => $this->translator->trans('Synchronize surveys'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.source.attributes',
-                                        'label' => $this->translator->trans('Check attributes'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                ],
+                [
+                    'name' => 'track-builder.chartconfig.index',
+                    'label' => $this->translator->trans('Chart config'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'track-builder.chartconfig.create',
+                            'label' => $this->translator->trans('Create'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.chartconfig.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
                                 [
-                                    'name' => 'track-builder.source.synchronize-all',
-                                    'label' => $this->translator->trans('Synchronize all surveys'),
+                                    'name' => 'track-builder.chartconfig.edit',
+                                    'label' => $this->translator->trans('Edit'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.source.check-all',
+                                    'name' => 'track-builder.chartconfig.delete',
+                                    'label' => $this->translator->trans('Delete'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'track-builder.condition.index',
+                    'label' => $this->translator->trans('Conditions'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'track-builder.condition.create',
+                            'label' => $this->translator->trans('Create'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.condition.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'track-builder.condition.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.condition.delete',
+                                    'label' => $this->translator->trans('Delete'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'track-builder.survey-maintenance.index',
+                    'label' => $this->translator->trans('Surveys'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'track-builder.survey-maintenance.create',
+                            'label' => $this->translator->trans('Create'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.survey-maintenance.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'track-builder.survey-maintenance.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.survey-maintenance.delete',
+                                    'label' => $this->translator->trans('Delete'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.survey-maintenance.check',
                                     'label' => $this->translator->trans('Check all is answered'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.source.attributes-all',
-                                    'label' => $this->translator->trans('Check all attributes'),
+                                    'name' => 'track-builder.survey-maintenance.answer-import',
+                                    'label' => $this->translator->trans('Import answers'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.survey-maintenance.export-codebook',
+                                    'label' => $this->translator->trans('Update to new survey'),
                                     'type' => 'route-link-item',
                                 ],
                             ],
                         ],
-                    ],
-                    [
-                        'name' => 'track-builder.chartconfig.index',
-                        'label' => $this->translator->trans('Chart config'),
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'track-builder.chartconfig.create',
-                                'label' => $this->translator->trans('Create'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.chartconfig.show',
-                                'label' => $this->translator->trans('Show'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'track-builder.chartconfig.edit',
-                                        'label' => $this->translator->trans('Edit'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.chartconfig.delete',
-                                        'label' => $this->translator->trans('Delete'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                ],
-                            ],
+                        [
+                            'name' => 'track-builder.survey-maintenance.check-all',
+                            'label' => $this->translator->trans('Check all is answered'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.survey-maintenance.answer-imports',
+                            'label' => $this->translator->trans('Import answers'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.survey-maintenance.update-survey',
+                            'label' => $this->translator->trans('Update to new survey'),
+                            'type' => 'route-link-item',
                         ],
                     ],
-                    [
-                        'name' => 'track-builder.condition.index',
-                        'label' => $this->translator->trans('Conditions'),
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'track-builder.condition.create',
-                                'label' => $this->translator->trans('Create'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.condition.show',
-                                'label' => $this->translator->trans('Show'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'track-builder.condition.edit',
-                                        'label' => $this->translator->trans('Edit'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.condition.delete',
-                                        'label' => $this->translator->trans('Delete'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                ],
-                            ],
+                ],
+                [
+                    'name' => 'track-builder.track-maintenance.index',
+                    'label' => $this->translator->trans('Tracks'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'track-builder.track-maintenance.create',
+                            'label' => $this->translator->trans('Create'),
+                            'type' => 'route-link-item',
                         ],
-                    ],
-                    [
-                        'name' => 'track-builder.survey-maintenance.index',
-                        'label' => $this->translator->trans('Surveys'),
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'track-builder.survey-maintenance.create',
-                                'label' => $this->translator->trans('Create'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.survey-maintenance.show',
-                                'label' => $this->translator->trans('Show'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'track-builder.survey-maintenance.edit',
-                                        'label' => $this->translator->trans('Edit'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.survey-maintenance.delete',
-                                        'label' => $this->translator->trans('Delete'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.survey-maintenance.check',
-                                        'label' => $this->translator->trans('Check all is answered'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.survey-maintenance.answer-import',
-                                        'label' => $this->translator->trans('Import answers'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.survey-maintenance.export-codebook',
-                                        'label' => $this->translator->trans('Update to new survey'),
-                                        'type' => 'route-link-item',
-                                    ],
+                        [
+                            'name' => 'track-builder.track-maintenance.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'track-builder.track-maintenance.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
                                 ],
-                            ],
-                            [
-                                'name' => 'track-builder.survey-maintenance.check-all',
-                                'label' => $this->translator->trans('Check all is answered'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.survey-maintenance.answer-imports',
-                                'label' => $this->translator->trans('Import answers'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.survey-maintenance.update-survey',
-                                'label' => $this->translator->trans('Update to new survey'),
-                                'type' => 'route-link-item',
-                            ],
-                        ],
-                    ],
-                    [
-                        'name' => 'track-builder.track-maintenance.index',
-                        'label' => $this->translator->trans('Tracks'),
-                        'type' => 'route-link-item',
-                        'children' => [
-                            [
-                                'name' => 'track-builder.track-maintenance.create',
-                                'label' => $this->translator->trans('Create'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.track-maintenance.show',
-                                'label' => $this->translator->trans('Show'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'track-builder.track-maintenance.edit',
-                                        'label' => $this->translator->trans('Edit'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.delete',
-                                        'label' => $this->translator->trans('Delete'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.export',
-                                        'label' => $this->translator->trans('Export'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.check-track',
-                                        'label' => $this->translator->trans('Check rounds'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.recalc-fields',
-                                        'label' => $this->translator->trans('Recalculate fields'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.track-fields',
-                                        'label' => $this->translator->trans('Fields'),
-                                        'type' => 'route-link-item',
-                                        'children' => [
-                                            [
-                                                'name' => 'track-builder.track-fields.create',
-                                                'label' => $this->translator->trans('Create'),
-                                                'type' => 'route-link-item',
-                                            ],
-                                            [
-                                                'name' => 'track-builder.track-fields.show',
-                                                'label' => $this->translator->trans('Show'),
-                                                'type' => 'route-link-item',
-                                                'children' => [
-                                                    [
-                                                        'name' => 'track-builder.track-fields.edit',
-                                                        'label' => $this->translator->trans('Edit'),
-                                                        'type' => 'route-link-item',
-                                                    ],
-                                                    [
-                                                        'name' => 'track-builder.track-fields.delete',
-                                                        'label' => $this->translator->trans('Delete'),
-                                                        'type' => 'route-link-item',
-                                                    ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.delete',
+                                    'label' => $this->translator->trans('Delete'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.check-track',
+                                    'label' => $this->translator->trans('Check rounds'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.recalc-fields',
+                                    'label' => $this->translator->trans('Recalculate fields'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.track-fields',
+                                    'label' => $this->translator->trans('Fields'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'track-builder.track-fields.create',
+                                            'label' => $this->translator->trans('Create'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'track-builder.track-fields.show',
+                                            'label' => $this->translator->trans('Show'),
+                                            'type' => 'route-link-item',
+                                            'children' => [
+                                                [
+                                                    'name' => 'track-builder.track-fields.edit',
+                                                    'label' => $this->translator->trans('Edit'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'track-builder.track-fields.delete',
+                                                    'label' => $this->translator->trans('Delete'),
+                                                    'type' => 'route-link-item',
                                                 ],
                                             ],
                                         ],
                                     ],
-                                    [
-                                        'name' => 'track-builder.track-maintenance.track-rounds',
-                                        'label' => $this->translator->trans('Rounds'),
-                                        'type' => 'route-link-item',
-                                        'children' => [
-                                            [
-                                                'name' => 'track-builder.track-rounds.create',
-                                                'label' => $this->translator->trans('Create'),
-                                                'type' => 'route-link-item',
-                                            ],
-                                            [
-                                                'name' => 'track-builder.track-rounds.show',
-                                                'label' => $this->translator->trans('Show'),
-                                                'type' => 'route-link-item',
-                                                'children' => [
-                                                    [
-                                                        'name' => 'track-builder.track-rounds.edit',
-                                                        'label' => $this->translator->trans('Edit'),
-                                                        'type' => 'route-link-item',
-                                                    ],
-                                                    [
-                                                        'name' => 'track-builder.track-rounds.delete',
-                                                        'label' => $this->translator->trans('Delete'),
-                                                        'type' => 'route-link-item',
-                                                    ],
+                                ],
+                                [
+                                    'name' => 'track-builder.track-maintenance.track-rounds',
+                                    'label' => $this->translator->trans('Rounds'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'track-builder.track-rounds.create',
+                                            'label' => $this->translator->trans('Create'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'track-builder.track-rounds.show',
+                                            'label' => $this->translator->trans('Show'),
+                                            'type' => 'route-link-item',
+                                            'children' => [
+                                                [
+                                                    'name' => 'track-builder.track-rounds.edit',
+                                                    'label' => $this->translator->trans('Edit'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'track-builder.track-rounds.delete',
+                                                    'label' => $this->translator->trans('Delete'),
+                                                    'type' => 'route-link-item',
                                                 ],
                                             ],
                                         ],
                                     ],
                                 ],
                             ],
-                            [
-                                'name' => 'track-builder.track-maintenance.track-overview',
-                                'label' => $this->translator->trans('Track per org'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.track-maintenance.check-all',
-                                'label' => $this->translator->trans('Check all rounds'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.track-maintenance.recalc-all-fields',
-                                'label' => $this->translator->trans('Recalculate all fields'),
-                                'type' => 'route-link-item',
-                            ],
+                        ],
+                        [
+                            'name' => 'track-builder.track-maintenance.track-overview',
+                            'label' => $this->translator->trans('Track per org'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.track-maintenance.check-all',
+                            'label' => $this->translator->trans('Check all rounds'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.track-maintenance.recalc-all-fields',
+                            'label' => $this->translator->trans('Recalculate all fields'),
+                            'type' => 'route-link-item',
                         ],
                     ],
                 ],
