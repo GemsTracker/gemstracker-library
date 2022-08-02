@@ -11,6 +11,8 @@ abstract class MenuItem extends MenuNode
 
     abstract protected function register();
 
+    abstract protected function hasPermission(): bool;
+
     protected function getMenu(): Menu
     {
         return $this->menu;
@@ -32,25 +34,32 @@ abstract class MenuItem extends MenuNode
         return $this->open;
     }
 
-    public function openPath(array $params): void
+    public function openPath(array $params): bool
     {
-        $this->open($params);
-        $this->setActive(true);
-
         if ($this->parent instanceof MenuItem) {
-            $this->parent->openPath($params);
+            if (!$this->parent->openPath($params)) {
+                return false;
+            }
         }
+
+        if (!$this->open($params)) {
+            return false;
+        }
+
+        $this->setActive(true);
 
         foreach ($this->children as $child) {
             if (!$child->isOpen()) {
                 $child->open($params);
             }
         }
+
+        return true;
     }
 
-    public function open(array $params): void
+    public function open(array $params): bool
     {
-        $this->open = true;
+        return $this->open = $this->hasPermission();
     }
 
     public function renderNode(): string

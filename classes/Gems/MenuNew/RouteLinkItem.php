@@ -17,29 +17,37 @@ class RouteLinkItem extends MenuItem
         $this->getMenu()->registerItem($this->name, $this);
     }
 
-    public function open(array $params): void
+    protected function hasPermission(): bool
     {
-        $route = $this->getMenu()->getRoute($this->name);
+        return $this->getMenu()->routeHelper->hasAccessToRoute($this->name);
+    }
+
+    public function open(array $params): bool
+    {
+        $route = $this->getMenu()->routeHelper->getRoute($this->name);
         $requiredParams = $route['params'] ?? [];
 
         $missingParams = array_diff($requiredParams, array_keys($params));
 
         if (count($missingParams) > 0) {
-            return;
+            return false;
         }
 
         $params = array_intersect_key($params, array_flip($requiredParams));
 
-        parent::open($params);
+        if (!parent::open($params)) {
+            return false;
+        }
 
         $this->openParams = $params;
+        return true;
     }
 
     public function renderContent(): string
     {
         $menu = $this->getMenu();
 
-        $url = $menu->router->generateUri($this->name, $this->openParams);
+        $url = $menu->routeHelper->getRouteUrl($this->name, $this->openParams);
 
         return $menu->templateRenderer->render('menu::route-link-item', [
             'url' => $url,

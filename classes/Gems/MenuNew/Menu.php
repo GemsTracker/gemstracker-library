@@ -3,7 +3,6 @@
 namespace Gems\MenuNew;
 
 use Mezzio\Router\RouteResult;
-use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
 
 class Menu extends MenuNode
@@ -11,24 +10,12 @@ class Menu extends MenuNode
     /** @var MenuItem[] */
     private array $items = [];
 
-    private array $routes;
-
     public function __construct(
-        public readonly RouterInterface $router,
         public readonly TemplateRendererInterface $templateRenderer,
-        array $config,
+        public readonly RouteHelper $routeHelper,
+        \Gems\Config\Menu $menuConfig,
     ) {
-        $this->routes = [];
-        foreach ($config['routes'] as $route) {
-            $this->routes[$route['name']] = $route;
-        }
-
-        $this->addFromConfig($this, $config['menu']);
-    }
-
-    public function getRoute(string $name): array
-    {
-        return $this->routes[$name];
+        $this->addFromConfig($this, $menuConfig->getItems());
     }
 
     private function addFromConfig(MenuNode $node, array $items)
