@@ -30,6 +30,8 @@ use Mezzio\Csrf\FlashCsrfGuardFactory;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
+use Mezzio\Session\Ext\PhpSessionPersistence;
+use Mezzio\Session\Ext\PhpSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
@@ -161,6 +163,7 @@ class ConfigProvider
                 // Session
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
+                PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
                 FlashMessageMiddleware::class => FlashMessageMiddleware::class,
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
 
@@ -188,7 +191,8 @@ class ConfigProvider
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
 
                 // Session
-                SessionPersistenceInterface::class => CacheSessionPersistence::class,
+                //SessionPersistenceInterface::class => CacheSessionPersistence::class,
+                SessionPersistenceInterface::class => PhpSessionPersistence::class,
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
 
                 RoleAdapterInterface::class => ConfigRoleAdapter::class,
