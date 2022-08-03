@@ -137,18 +137,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         // Make sure \Gems\User\User gets userLoader variable.
         $extras['userLoader'] = $this;
 
-        // Make sure that this code keeps working when _initSession
-        // is removed from \Gems\Escort
-        if (! $this->session instanceof \Zend_Session_Namespace) {
-            $this->session = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
-
-            $idleTimeout = $this->project->getSessionTimeout();
-
-            $this->session->setExpirationSeconds($idleTimeout);
-
-            $extras['session'] = $this->session;
-        }
-
         $this->addRegistryContainer($extras);
     }
 
