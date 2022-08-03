@@ -942,7 +942,10 @@ class ProjectSettings extends \ArrayObject
      */
     public function getName()
     {
-        return $this->offsetGet('name');
+        if ($this->offsetExists('app') && isset($this->app['name'])) {
+            return $this->app['name'];
+        }
+        return 'GemsTracker';
     }
 
     /**
