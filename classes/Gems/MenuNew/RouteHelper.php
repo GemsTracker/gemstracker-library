@@ -30,6 +30,36 @@ class RouteHelper
         return $this->routes[$name];
     }
 
+    public function getRouteParent(string $name, string $parentName = 'index'): ?array
+    {
+        return $this->getRouteSibling($name, $parentName);
+    }
+
+    public function getRouteSibling(string $name, string $siblingName = 'index'): ?array
+    {
+        $routeParts = explode('.', $name);
+        $routeParts[count($routeParts)-1] = $siblingName;
+        $parentRouteName = join('.', $routeParts);
+        return $this->getRoute($parentRouteName);
+    }
+
+    public function getRouteSiblings(string $name): ?array
+    {
+        $routeParts = explode('.', $name);
+        $partsCount = count($routeParts);
+        array_pop($routeParts);
+
+        $baseRouteName = join('.', $routeParts);
+
+        $sibblingRoutes = array_filter($this->routes, function($routeName) use ($baseRouteName, $partsCount) {
+            return (str_starts_with($routeName, $baseRouteName) && count(explode('.', $routeName)) === $partsCount);
+        }, ARRAY_FILTER_USE_KEY );
+
+        // TODO: Add filter for parameters
+
+        return $sibblingRoutes;
+    }
+
     public function getRouteUrl(string $name, array $routeParams = []): ?string
     {
         $route = $this->getRoute($name);

@@ -54,34 +54,20 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
     protected $anyParameterSiblings = false;
 
     /**
-     * Required
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
      * Set the menu items (allows for overruling in subclasses)
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(\Gems\Menu\MenuList $menuList)
+    protected function addButtons(array $menuList)
     {
         if ($this->addCurrentParent) {
-            $menuList->addCurrentParent($this->_('Cancel'));
+            // $menuList->addCurrentParent($this->_('Cancel'));
         }
         if ($this->addCurrentSiblings) {
-            $menuList->addCurrentSiblings($this->anyParameterSiblings);
+            // $menuList->addCurrentSiblings($this->anyParameterSiblings);
         }
         if ($this->addCurrentChildren) {
-            $menuList->addCurrentChildren();
+            // $menuList->addCurrentChildren();
         }
         // \MUtil\EchoOut\EchoOut::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
     }
@@ -96,16 +82,13 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $menuList = $this->menu->getMenuList();
-
-        $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        // \MUtil\EchoOut\EchoOut::track($this->request->getParams(), $this->menu->getParameterSource()->getArrayCopy());
+        $menuList = [];
 
         $this->addButtons($menuList);
 
-        if ($menuList->render($view)) {
+        if (count($menuList)) {
             return \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
         }
+        return null;
     }
 }
