@@ -86,9 +86,9 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
     /**
      * @var RequestInfo
      */
-    protected RequestInfo $requestInfo;
+    protected $requestInfo;
 
-    protected RouteHelper $routeHelper;
+    protected $routeHelper;
 
     /**
      *
@@ -104,15 +104,15 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
 
     /**
      *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
      * @var string
      */
     protected $searchLabel;
+
+    /**
+     *
+     * @var \Gems\Util
+     */
+    protected $util;
 
     /**
      * Generate two date selectors and - depending on the number of $dates passed -

@@ -9,6 +9,7 @@ use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
+use Gems\MenuNew\RouteHelper;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
@@ -62,6 +63,7 @@ class LegacyConfigProvider
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
+                'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 //'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems\Util::class,

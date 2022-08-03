@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\RouteHelper;
+
 /**
  * Adds \Gems specific display details and helper functions:
  *
@@ -92,11 +94,19 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     protected $routeAction = 'show';
 
     /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
+
+    /**
      * When true a tabbed form is used.
      *
      * @var boolean
      */
     protected $useTabbedForm = false;
+
+
+    protected ?string $cancelRoute = null;
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -295,6 +305,22 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
         return new \Gems\Form($options);
     }
 
+    public function getCancelRoute()
+    {
+        $routeResult = $this->requestInfo->getCurrentRouteResult();
+        $routeName = $this->cancelRoute;
+        if (!$routeName) {
+            $currentRouteName = $routeResult->getMatchedRouteName();
+            $routeParts = explode('.', $currentRouteName);
+            $routeParts[count($routeParts)-1] = 'index';
+            $routeName = join('.', $routeParts);
+        }
+
+        $params = $routeResult->getMatchedParams();
+
+        return $this->routeHelper->getRouteUrl($routeName, $params);
+    }
+
     /**
      * Create the snippets content
      *
@@ -322,22 +348,25 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     /**
      * overrule to add your own buttons.
      *
-     * @return \Gems\Menu\MenuList
+     * @return string[]
      */
-    protected function getMenuList()
+    protected function getMenuList(): array
     {
-        $links = $this->menu->getMenuList();
+        $urls = [];
+        $urls[$this->_('Cancel')] = $this->getCancelRoute();
 
-        $links->addParameterSources($this->menu->getParameterSource());
-        $links->addCurrentParent($this->_('Cancel'));
+        $links = [];
+        foreach($urls as $label => $url) {
+            $links[] = \MUtil\Html::create()->actionLink($url, $label);
+        }
 
-        if ($this->menuShowSiblings) {
+        /*if ($this->menuShowSiblings) {
             $links->addCurrentSiblings();
         }
 
         if ($this->menuShowChildren) {
             $links->addCurrentChildren();
-        }
+        }*/
 
         return $links;
     }
