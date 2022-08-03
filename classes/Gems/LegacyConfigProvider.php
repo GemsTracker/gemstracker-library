@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
+use Gems\AccessLog\AccesslogRepository;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
@@ -11,6 +12,7 @@ use Gems\Locale\Locale;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
+use Laminas\Permissions\Acl\Acl;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -51,17 +53,17 @@ class LegacyConfigProvider
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],
             'aliases' => [
-                'LegacyAcl' => \Zend_Acl::class,
+                'LegacyAccesslog' => AccesslogRepository::class,
+                'LegacyAcl' => Acl::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyLoader' => \Gems\Loader::class,
-                'LegacyMenu' => \Gems\Menu::class,
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
-                'LegacySession' => \Zend_Session_Namespace::class,
+                //'LegacySession' => \Zend_Session_Namespace::class,
                 'LegacyUtil' => \Gems\Util::class,
                 'LegacyTracker' => \Gems\Tracker::class,
                 'LegacyTranslate' => TranslatorInterface::class,
