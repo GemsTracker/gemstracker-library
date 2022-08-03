@@ -595,23 +595,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      */
     public function getInstanceId()
     {
-        if ($id = $this->_getParam(\MUtil\Model::REQUEST_ID)) {
-            return $id;
-        }
-    }
-
-    /**
-     * Returns a session based message store for adding messages to.
-     *
-     * @return \Mezzio\Flash\FlashMessagesInterface
-     */
-    public function getMessenger(): \Mezzio\Flash\FlashMessagesInterface
-    {
-        if (! $this->messenger) {
-            $this->setMessenger($this->loader->getMessenger());
-        }
-
-        return $this->messenger;
+        return $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
     }
 
     /**
