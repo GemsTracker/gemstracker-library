@@ -16,15 +16,11 @@ class CurrentUserRepository
 
     protected $organizationId;
 
-    protected $session;
-
     protected $userLoader;
 
-    public function __construct(ProjectOverloader $loader, \Zend_Session_Namespace $LegacySession)
+    public function __construct(ProjectOverloader $loader)
     {
         $this->loader = $loader;
-
-        $this->session = $LegacySession;
     }
 
     public function getCurrentUser()
@@ -41,23 +37,6 @@ class CurrentUserRepository
         }
 
         return $this->currentUser;
-    }
-
-    public function getCurrentUserFromSession()
-    {
-        if ($this->session->user_role != 'nologin' && $this->session->__isset('__user_definition')) {
-            $defName = 'User_' . $this->session->__get('__user_definition') . 'Definition';
-
-            $userLoader = $this->getUserLoader();
-            $this->currentUser = $this->loader->create('User\\User', $this->session, $this->loader->create($defName));
-            if ($this->currentUser) {
-                $this->currentUser->answerRegistryRequest('userLoader', $userLoader);
-                return $this->currentUser;
-            }
-            return null;
-        }
-
-        return null;
     }
 
     protected function getUserLoader()
