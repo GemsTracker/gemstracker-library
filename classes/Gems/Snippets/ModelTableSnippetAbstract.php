@@ -228,55 +228,22 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      *
      * @param string $defaultController
      * @param string|array $actions
-     * @return \Gems\Menu\SubMenuItem The first that
-     * @deprecated since 1.7.1, use findMenuItems()
-     */
-    protected function findMenuItem($defaultController, $actions = 'index')
-    {
-        foreach ((array) $actions as $key => $action) {
-            $controller = is_int($key) ? $defaultController : $key;
-            $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
-
-            if ($item) {
-                return $item;
-            }
-        }
-    }
-
-    /**
-     * Finds a specific active menu item
-     *
-     * @param string $defaultController
-     * @param string|array $actions
      * @return array of \Gems\Menu\SubMenuItem
      */
     protected function findMenuItems($defaultController, $actions = array('index'))
     {
         $output = array();
 
-        foreach ((array) $actions as $key => $action) {
+        /*foreach ((array) $actions as $key => $action) {
             $controller = is_int($key) ? $defaultController : $key;
             $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
 
             if ($item) {
                 $output[] = $item;
             }
-        }
+        }*/
 
         return $output;
-    }
-
-    /**
-     * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @deprecated since 1.7.1, use getEditMenuItems()
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function getEditMenuItem()
-    {
-        if ($this->menuEditActions) {
-            return $this->findMenuItem($this->menuActionController, $this->menuEditActions);
-        }
     }
 
     /**
@@ -325,19 +292,6 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
         } else {
             return $table;
-        }
-    }
-
-    /**
-     * Returns a show menu item, if access is allowed by privileges
-     *
-     * @deprecated since 1.7.1, use getShowMenuItems()
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function getShowMenuItem()
-    {
-        if ($this->menuShowActions) {
-            return $this->findMenuItem($this->menuActionController, $this->menuShowActions);
         }
     }
 
