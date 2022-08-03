@@ -120,13 +120,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     protected $util;
 
     /**
-     * There can be only one, current user that is.
-     *
-     * @var \Gems\User\User
-     */
-    protected static $currentUser;
-
-    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -263,59 +256,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         $form = $this->_loadClass('Form\\ChangePasswordForm', true, array($args));
 
         return $form;
-    }
-
-    /**
-     * Get the currently loggin in user
-     *
-     * @return \Gems\User\User
-     */
-    public final function getCurrentUser()
-    {
-        if (! self::$currentUser) {
-            if ($this->session->__isset('__user_definition')) {
-                $defName = $this->session->__get('__user_definition');
-
-                if (substr($defName, -10, 10) != 'Definition') {
-                    $defName .= 'Definition';
-                }
-
-                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
-
-            } else {
-                if (\MUtil\Console::isConsole()) {
-                    if (! $this->project->isConsoleAllowed()) {
-                        echo "Accessing " . GEMS_PROJECT_NAME . " from the command line is not allowed.\n";
-                        exit;
-                    }
-
-                    $request = \Zend_Controller_Front::getInstance()->getRequest();
-
-                    if (($request instanceof \MUtil\Controller\Request\Cli) && $request->hasUserLogin()) {
-                        $user = $this->getUser($request->getUserName(), $request->getUserOrganization());
-
-                        $authResult = $user->authenticate($request->getUserPassword());
-                        if (! $authResult->isValid()) {
-                            echo "Invalid user login data.\n";
-                            echo implode("\n", $authResult->getMessages());
-                            exit;
-                        }
-                        self::$currentUser = $user;
-
-                    } elseif ($this->project->getConsoleRole()) {
-                        // \MUtil\EchoOut\EchoOut::track($this->request->getUserName(), $this->request->getUserOrganization());
-                        self::$currentUser = $this->loadUser(self::USER_CONSOLE, 0, '(system)');
-                    }
-
-                }
-                if (! self::$currentUser) {
-                    self::$currentUser = $this->getUser(null, self::SYSTEM_NO_ORG);
-                }
-                self::$currentUser->setAsCurrentUser();
-           }
-        }
-
-        return self::$currentUser;
     }
 
     /**
@@ -795,47 +735,5 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
     public function reportPasswordWeakness(\Gems\User\User $user, $password = null)
     {
         return $user->reportPasswordWeakness($password);
-    }
-
-    /**
-     * Sets a new user as the current user.
-     *
-     * @param \Gems\User\User $user
-     * @return \Gems\User\UserLoader (continuation pattern)
-     */
-    public function setCurrentUser(\Gems\User\User $user)
-    {
-        if ($user !== self::$currentUser) {
-            $this->unsetCurrentUser();
-            self::$currentUser = $user;
-
-            // Update the escort variable used by loader
-            if ($escort = \Gems\Escort::getInstance()) {
-                $escort->currentUser = $user;
-            }
-
-            // Double check in case this function was used as original
-            // start for setting the user.
-            if (! $user->isCurrentUser()) {
-                $user->setAsCurrentUser(true);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Removes the current user
-     *
-     * @return \Gems\User\UserLoader (continuation pattern)
-     */
-    public function unsetCurrentUser()
-    {
-        // Remove if the currentUser still sees itself as the current user.
-        if ((self::$currentUser instanceof \Gems\User\User) && self::$currentUser->isCurrentUser()) {
-            self::$currentUser->unsetAsCurrentUser(false);
-        }
-        self::$currentUser = null;
-        return $this;
     }
 }

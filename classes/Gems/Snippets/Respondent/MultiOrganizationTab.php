@@ -25,6 +25,11 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
     protected $href = [];
 
     /**
+     * @var \Gems\User\User
+     */
+    protected $currentUser;
+
+    /**
      * Required
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -69,18 +74,16 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
      */
     protected function getTabs()
     {
-        $user = $this->loader->getCurrentUser();
-
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
-        $this->defaultTab = $user->getCurrentOrganizationId();
+        $this->defaultTab = $this->currentUser->getCurrentOrganizationId();
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
         if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
             $this->currentTab = $queryParams[\MUtil\Model::REQUEST_ID2];
         }
 
-        $allowedOrgs  = $user->getRespondentOrganizations();
+        $allowedOrgs  = $this->currentUser->getRespondentOrganizations();
         $existingOrgs = $this->db->fetchPairs($sql, $this->respondent->getId());
         $tabs         = [];
         

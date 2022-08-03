@@ -240,19 +240,21 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     protected function getCaption($onlyNotCurrent = false)
     {
         $orgId = null;
-        $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = $queryParams[\MUtil\Model::REQUEST_ID2];
+        $params = $this->requestInfo->getRequestMatchedParams();
+        if (isset($params[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = $params[\MUtil\Model::REQUEST_ID2];
         }
 
-        if ($orgId == $this->loader->getCurrentUser()->getCurrentOrganizationId()) {
+        $currentOrganization = $this->currentUser->getCurrentOrganization();
+
+        if ($orgId == $currentOrganization->getId()) {
             if ($onlyNotCurrent) {
                 return;
             } else {
                 return $this->_('Respondent information');
             }
         } else {
-            return sprintf($this->_('%s respondent information'), $this->loader->getOrganization($orgId)->getName());
+            return sprintf($this->_('%s respondent information'), $currentOrganization->getName());
         }
     }
 

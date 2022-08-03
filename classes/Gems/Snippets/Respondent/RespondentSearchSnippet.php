@@ -53,8 +53,7 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $user = $this->loader->getCurrentUser();
-        if ($user->hasPrivilege('pr.respondent.select-on-track')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.select-on-track')) {
             $tracks = $this->searchData['__active_tracks'];
 
             $masks['show_all']           = $this->_('(all)');
@@ -75,14 +74,14 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             $lineBreak = false;
         }
 
-        if ($user->hasPrivilege('pr.respondent.show-deleted')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.show-deleted')) {
             $elements['grc_success'] = $this->_createCheckboxElement('grc_success', $this->_('Show active'));
         }
 
         if ($this->model->isMultiOrganization()) {
             $element = $this->_createSelectElement(
                     \MUtil\Model::REQUEST_ID2,
-                    $user->getRespondentOrganizations(),
+                    $this->currentUser->getRespondentOrganizations(),
                     $this->_('(all organizations)')
                     );
 

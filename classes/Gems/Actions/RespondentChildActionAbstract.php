@@ -79,7 +79,7 @@ abstract class RespondentChildActionAbstract extends \Gems\Controller\ModelSnipp
     {
         return $this->_('Respondent %s is not participating at the moment.');
     }
-    
+
     /**
      * Get the respondent object
      *
@@ -88,15 +88,8 @@ abstract class RespondentChildActionAbstract extends \Gems\Controller\ModelSnipp
     public function getRespondent()
     {
         if (! $this->_respondent) {
-            $queryParams = $this->request->getQueryParams();
-            $patientNumber  = null;
-            if (isset($queryParams[\MUtil\Model::REQUEST_ID1])) {
-                $patientNumber = $queryParams[\MUtil\Model::REQUEST_ID1];
-            }
-            $organizationId  = null;
-            if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
-                $organizationId = $queryParams[\MUtil\Model::REQUEST_ID2];
-            }
+            $patientNumber = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
 
             $this->_respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 
@@ -110,7 +103,7 @@ abstract class RespondentChildActionAbstract extends \Gems\Controller\ModelSnipp
                     403, null,
                     sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
             }
-            $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+            //$this->_respondent->applyToMenuSource($this->menu->getParameterSource());
         }
 
         return $this->_respondent;
@@ -124,8 +117,7 @@ abstract class RespondentChildActionAbstract extends \Gems\Controller\ModelSnipp
      */
     public function getRespondentId()
     {
-        $queryParams = $this->request->getQueryParams();
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID1])) {
+        if ($this->request->getAttribute(\MUtil\Model::REQUEST_ID1) !== null) {
             return $this->getRespondent()->getId();
         }
 
