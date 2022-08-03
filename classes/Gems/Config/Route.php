@@ -143,16 +143,69 @@ class Route
                 pages: [
                     ...$this->defaultPages,
                     'change-consent',
+                    'change-organization',
+                    'export-archive',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'change-consent',
+                    'change-organization',
+                    'export-archive',
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',
                     'id2' => '\d+',
                 ],
             ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.episodes-of-care',
+                controllerClass: \Gems\Actions\CareEpisodeAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    \Gems\Model::EPISODE_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.appointments',
+                controllerClass: \Gems\Actions\AppointmentAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    \Gems\Model::APPOINTMENT_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
+                controllerClass: \Gems\Actions\TrackAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    \Gems\Model::TRACK_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.tokens',
+                controllerClass: \Gems\Actions\TokenAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    \Gems\Model::SURVEY_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.activity-log',
+                controllerClass: \Gems\Actions\RespondentLogAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    \Gems\Model::LOG_ITEM_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.relations',
+                controllerClass: \Gems\Actions\RespondentRelationAction::class,
+                parameters: [
+                    'id1' => '[a-zA-Z0-9-_]+',
+                    'id2' => '\d+',
+                    'rid' => '\d+',
+                ],
+            ),
+
         ];
     }
 

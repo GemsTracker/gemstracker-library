@@ -63,6 +63,186 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
+                            'name' => 'respondent.change-organization',
+                            'label' => $this->translator->trans('Change organization'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'respondent.episodes-of-care.index',
+                            'label' => $this->translator->trans('Episodes'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.episodes-of-care.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.episodes-of-care.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.episodes-of-care.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.episodes-of-care.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'respondent.appointments.index',
+                            'label' => $this->translator->trans('Appointments'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.appointments.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.appointments.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.appointments.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.appointments.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'respondent.tracks.index',
+                            'label' => $this->translator->trans('Tracks'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.tracks.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.tracks.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.tracks.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'respondent.tokens.index',
+                            'label' => $this->translator->trans('Surveys'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.tokens.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.tokens.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.tokens.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tokens.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'respondent.activity-log.index',
+                            'label' => $this->translator->trans('Activity log'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.activity-log.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.activity-log.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.activity-log.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.activity-log.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'respondent.relations.index',
+                            'label' => $this->translator->trans('Relations'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.relations.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'respondent.relations.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.relations.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.relations.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+
+                        [
                             'name' => 'respondent.delete',
                             'label' => $this->translator->trans('Delete'),
                             'type' => 'route-link-item',
