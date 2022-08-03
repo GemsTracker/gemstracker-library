@@ -12,6 +12,7 @@
 namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\MenuNew\RouteHelper;
 
 /**
  * Controller for Source maintenance
@@ -49,6 +50,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+
+    /**
+     * @var RouteHelper
+     */
+    public $routeHelper;
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -331,7 +337,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             $this->addMessage($this->_('Installation error!'), 'danger');
             $this->addMessage($e->getMessage(), 'danger');
         }
-        $this->_reroute(['action' => 'show']);
+
+        $currentRoute = $this->requestHelper->getRouteResult();
+        $showRoute = $this->routeHelper->getRouteSibling($currentRoute->getMatchedRouteName(), 'show');
+        $params = $currentRoute->getMatchedParams();
+        $this->redirectUrl = $this->routeHelper->getRouteUrl($showRoute['name'], $params);
     }
 
     /**
