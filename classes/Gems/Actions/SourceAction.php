@@ -326,7 +326,6 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             if ($source->checkSourceActive($this->currentUser->getUserId())) {
                 $message = $this->_('This installation is active.');
                 $status  = 'success';
-                $this->addMessage($this->_('This installation is active.'), 'success');
             } else {
                 $message = $this->_('Inactive installation.');
                 $status  = 'warning';
