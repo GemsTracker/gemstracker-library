@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\RouteHelper;
+use MUtil\Request\RequestInfo;
+
 /**
  * Display a search form that selects on typed text only
  *
@@ -44,7 +47,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @var array()
      */
-    protected $defaultSearchData = array();
+    protected $defaultSearchData = [];
 
     /**
      * Optional string format for date
@@ -58,6 +61,8 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      * @var \Gems\Form
      */
     protected $form;
+
+    protected bool $isPost = false;
 
     /**
      *
@@ -78,8 +83,12 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     protected $orgIsMultiCheckbox = true;
 
-    
-    protected bool $isPost = false;
+    /**
+     * @var RequestInfo
+     */
+    protected RequestInfo $requestInfo;
+
+    protected RouteHelper $routeHelper;
 
     /**
      *
@@ -89,9 +98,9 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
 
     /**
      *
-     * @var string
+     * @var string Id for auto search button
      */
-    protected $searchLabel;
+    protected $searchButtonId = 'AUTO_SEARCH_TEXT_BUTTON';
 
     /**
      *
@@ -101,9 +110,9 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
 
     /**
      *
-     * @var string Id for auto search button
+     * @var string
      */
-    protected $searchButtonId = 'AUTO_SEARCH_TEXT_BUTTON';
+    protected $searchLabel;
 
     /**
      * Generate two date selectors and - depending on the number of $dates passed -
@@ -451,18 +460,21 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
     /**
      * Creates a reset button for the search form
      *
-     * @return \Zend_Form_Element_Html or null
+     * @return \MUtil\Form\Element\Html or null
      */
     protected function getAutoSearchReset()
     {
-        if ($menuItem = $this->menu->getCurrent()) {
-            $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
+        $routeResult = $this->requestInfo->getCurrentRouteResult();
+        $routeName = $routeResult->getMatchedRouteName();
+        $params = $routeResult->getMatchedParams();
+        $url = $this->routeHelper->getRouteUrl($routeName, $params);
 
-            $element = new \MUtil\Form\Element\Html('reset');
-            $element->setValue($link);
+        $link = \MUtil\Html::create()->actionLink($url, $this->_('Reset search'));
 
-            return $element;
-        }
+        $element = new \MUtil\Form\Element\Html('reset');
+        $element->setValue($link);
+
+        return $element;
     }
 
     /**
@@ -647,7 +659,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
         /*if ($this->requestCache) {
             $filter = $this->requestCache->getProgramParams();
         } else {*/
-            $filter = $this->request->getParams();
+            $filter = $this->requestInfo->getRequestPostParams();
         //}
 
         if ($this->defaultSearchData) {

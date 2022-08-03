@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\AccessLog\AccesslogRepository;
+
 /**
  * Controller for Source maintenance
  *
@@ -24,7 +26,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var AccesslogRepository
      */
     public $accesslog;
 
@@ -291,10 +293,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     private function getSourceId()
     {
-        $sourceId = $this->_getParam('gso_id_source');
-        if (! $sourceId) {
-            $sourceId = $this->_getIdParam();
-        }
+        $sourceId = $this->request->getAttribute(\Mutil\Model::REQUEST_ID);
 
         return $sourceId;
     }
@@ -326,13 +325,13 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
                 $message = $this->_('Inactive installation.');
                 $status  = 'warning';
             }
-            $this->accesslog->logChange($this->getRequest(), $message, $status);
+            $this->accesslog->logChange($this->request, $message, $status);
             $this->addMessage($message, $status);
         } catch (\Exception $e) {
             $this->addMessage($this->_('Installation error!'), 'danger');
             $this->addMessage($e->getMessage(), 'danger');
         }
-        $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
+        $this->_reroute(['action' => 'show']);
     }
 
     /**
