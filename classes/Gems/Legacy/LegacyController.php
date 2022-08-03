@@ -9,9 +9,11 @@ namespace Gems\Legacy;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouteResult;
 use Mezzio\Template\TemplateRendererInterface;
+use MUtil\Controller\Action;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -80,9 +82,12 @@ class LegacyController implements RequestHandlerInterface
 
                 $content = $controllerObject->html->render($this->view);
 
+                $flashMessages = $this->getFlashMessages($request);
+
                 $data = [
                     'content' => $content,
                     'menuHtml' => null,
+                    'flashMessages' => $flashMessages,
                 ];
 
                 $statusCode = 200;
@@ -104,6 +109,15 @@ class LegacyController implements RequestHandlerInterface
         $actionParts = explode('-', $action);
         $capitalizedActionParts = array_map('ucfirst', $actionParts);
         return lcfirst(join('', $capitalizedActionParts)) . 'Action';
+    }
+
+    protected function getFlashMessages(ServerRequestInterface $request): array
+    {
+        /**
+         * @var $messenger FlashMessagesInterface
+         */
+        $messenger = $request->getAttribute('flash');
+        return $messenger->getFlash(Action::$messengerKey, []);
     }
 
     protected function getLegacyRequest(ServerRequestInterface $request, $controllerName, $actionName): \Zend_Controller_Request_Http
