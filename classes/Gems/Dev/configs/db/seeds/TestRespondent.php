@@ -1,6 +1,6 @@
 <?php
 
-class TestUsers extends \Phinx\Seed\AbstractSeed
+class TestRespondent extends \Phinx\Seed\AbstractSeed
 {
     public function getDependencies()
     {
