@@ -8,6 +8,8 @@ use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Session\SessionMiddleware;
 
 trait ModelSnippetActionRouteHelpers
 {
@@ -37,6 +39,8 @@ trait ModelSnippetActionRouteHelpers
 
     protected array $modelSnippetCustomMiddleware = [
         SecurityHeadersMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
         LegacyCurrentUserMiddleware::class,
         LocaleMiddleware::class,
         TestCurrentUserMiddleware::class,
