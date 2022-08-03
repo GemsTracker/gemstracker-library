@@ -79,6 +79,7 @@ class ConfigProvider
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
             'permissions'   => $this->getPermissions(),
+            'roles'         => $this->getRoles(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
@@ -406,6 +407,18 @@ class ConfigProvider
     protected function getPermissions(): array
     {
         return [
+        ];
+    }
+
+    /**
+     * Returns the roles defined by this project
+     *
+     * @return mixed[]
+     */
+    public function getRoles(): array
+    {
+        return [
+            'staff' => [],
         ];
     }
 }
