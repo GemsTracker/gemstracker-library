@@ -2,7 +2,9 @@
 
 namespace Gems\AccessLog;
 
+use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Router\RouteResult;
+use MUtil\Controller\Action;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
@@ -127,16 +129,12 @@ class AccesslogRepository
      * @param ServerRequestInterface $request
      * @return string
      */
-    public function getApiAction(ServerRequestInterface $request): string
+    public function getRouteName(ServerRequestInterface $request): string
     {
         $routeResult = $request->getAttribute(RouteResult::class);
         $route = $routeResult->getMatchedRoute();
-        $action = str_replace(['.get', '.fixed'], '', $route->getName());
-        if (!str_starts_with($action, 'api.')) {
-            $action = 'api.'.$action;
-        }
 
-        return $action;
+        return $route->getName();
     }
 
     /**
@@ -225,7 +223,11 @@ class AccesslogRepository
      */
     public function getMessage(ServerRequestInterface $request)
     {
-        return null;
+        /**
+         * @var $messenger FlashMessagesInterface
+         */
+        $messenger = $request->getAttribute('flash');
+        return $messenger->getFlash(Action::$messengerKey);
     }
 
     /**
@@ -247,9 +249,9 @@ class AccesslogRepository
      * @param int|null $respondentId
      * @return array|null
      */
-    public function logChange(ServerRequestInterface $request, ?int $respondentId=null): array|null
+    public function logChange(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId = null): array|null
     {
-        return $this->logRequest($request, $respondentId, true);
+        return $this->logRequest($request, $message, $data, $respondentId, true);
     }
 
     /**
@@ -260,9 +262,9 @@ class AccesslogRepository
      * @param bool $changed have there been changes to the resource
      * @return array|null
      */
-    protected function logRequest(ServerRequestInterface $request, int $respondentId=null, bool $changed=false): array|null
+    protected function logRequest(ServerRequestInterface $request, mixed $message = null, mixed $data = null, ?int $respondentId=null, bool $changed = false): array|null
     {
-        $action = $this->getApiAction($request);
+        $action = $this->getRouteName($request);
         $dbAction = $this->getAction($action);
         $method = $request->getMethod();
         if ($dbAction === false || $this->checkAction($dbAction, $method, $changed) === false) {
@@ -277,8 +279,14 @@ class AccesslogRepository
             $by = $request->getAttribute('user_id');
             $organization = $request->getAttribute('user_organization');
             $role = $request->getAttribute('user_role', '');
-            $message = $this->getMessage($request);
-            $data = $this->getData($request);
+            if (null === $message) {
+                $message = $this->getMessage($request);
+            }
+
+            if ($data === null) {
+                $data = $this->getData($request);
+            }
+            
             $ip = $this->getIp($request);
 
             $log = [
