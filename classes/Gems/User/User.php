@@ -224,14 +224,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _getRole($roleField)
     {
-        $role = $this->_getVar($roleField);
-        if (intval($role)) {
-           $role = \Gems\Roles::getInstance()->translateToRoleName($role);
-
-           $this->_setVar($roleField, $role);
-        }
-
-        return $role;
+        return $this->_getVar($roleField);
     }
 
     /**
