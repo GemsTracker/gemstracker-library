@@ -13,6 +13,7 @@ namespace Gems\User;
 
 use Gems\User\Group;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
+use Laminas\ServiceManager\ServiceManager;
 
 /**
  * Loads users.
@@ -90,6 +91,11 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     protected $config;
 
+    /**
+     * @var User
+     */
+    protected $_currentLegacyUser;
+    
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -256,6 +262,18 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         $form = $this->_loadClass('Form\\ChangePasswordForm', true, array($args));
 
         return $form;
+    }
+    
+    public function getCurrentUser() : User
+    {
+        if (! $this->_currentLegacyUser) {
+            $container = \MUtil\Model::getSource()->getContainer();
+            if ($container instanceof ServiceManager) {
+                $this->_currentLegacyUser = $container->get('LegacyCurrentUser');
+            }
+        }
+        
+        return $this->_currentLegacyUser;
     }
 
     /**
@@ -725,6 +743,11 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         return $this->_loadClass('User', true, array($values, $definition));
     }
 
+    public function setLegacyCurrentUser(User $_currentLegacyUser)
+    {
+        $this->_currentLegacyUser = $_currentLegacyUser;
+    }
+    
     /**
      * Check for password weakness.
      *

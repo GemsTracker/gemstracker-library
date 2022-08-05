@@ -33,6 +33,8 @@ class CurrentUserRepository
             $userLoader = $this->getUserLoader();
             $user = $userLoader->getUser($this->loginName, $this->organizationId);
 
+            $userLoader->setLegacyCurrentUser($user);
+            
             $this->currentUser = $user;
         }
 
