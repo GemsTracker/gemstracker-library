@@ -9,6 +9,8 @@
 
 namespace Gems\Task;
 
+use MUtil\Task\TaskBatch;
+
 /**
  * Handles running tasks independent on the kind of task
  *
@@ -23,7 +25,7 @@ namespace Gems\Task;
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class TaskRunnerBatch extends \MUtil\Task\TaskBatch
+class TaskRunnerBatch extends TaskBatch
 {
 
     /**
@@ -35,7 +37,7 @@ class TaskRunnerBatch extends \MUtil\Task\TaskBatch
      *
      * @var int
      */
-    public $extraPushPaddingKb = 5;
+    public int $extraPushPaddingKb = 5;
 
     /**
      * The number of bytes to pad for the first push communication in Kilobytes. If zero
@@ -47,28 +49,5 @@ class TaskRunnerBatch extends \MUtil\Task\TaskBatch
      *
      * @var int
      */
-    public $initialPushPaddingKb = 10;
-
-    /**
-     *
-     * @var array containing the classPrefix => classPath for task laoder
-     */
-    protected $taskLoaderDirs = array(
-        'Gems_Task'  => 'Gems/Task',
-        'MUtil_Task' => 'MUtil/Task',
-    );
-
-    /**
-     *
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    public function afterRegistry() {
-        if (!isset($this->log) && $this->logger instanceof \Psr\Log\LoggerInterface) {
-            $this->log = $this->logger;
-        }
-        return parent::afterRegistry();
-    }
-
+    public int $initialPushPaddingKb = 10;
 }
