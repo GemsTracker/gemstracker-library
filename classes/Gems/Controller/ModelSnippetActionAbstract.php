@@ -11,6 +11,9 @@
 
 namespace Gems\Controller;
 
+use Mezzio\Csrf\CsrfGuardInterface;
+use Mezzio\Csrf\CsrfMiddleware;
+
 /**
  * Class contains \Gems specific adaptations to parent class.
  *
@@ -139,6 +142,20 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     protected $autofilterSnippets = 'ModelTableSnippetGeneric';
 
     /**
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = [
+        'csrfGuard' => 'getCsrfGuard',
+    ];
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
@@ -238,7 +255,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     /**
      * The automatically filtered result
      *
-     * @param $resetMvc When true only the filtered resulsts
+     * @param bool $resetMvc When true only the filtered resulsts
      */
     public function autofilterAction($resetMvc = true)
     {
@@ -435,6 +452,11 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
                 return $menuItem;
             }
         }
+    }
+
+    public function getCsrfGuard(): ?CsrfGuardInterface
+    {
+        return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
     }
 
     public function getControllerName()
