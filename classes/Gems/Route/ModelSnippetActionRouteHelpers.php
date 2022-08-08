@@ -8,6 +8,7 @@ use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
 
@@ -41,6 +42,7 @@ trait ModelSnippetActionRouteHelpers
         SecurityHeadersMiddleware::class,
         SessionMiddleware::class,
         FlashMessageMiddleware::class,
+        CsrfMiddleware::class,
         LegacyCurrentUserMiddleware::class,
         LocaleMiddleware::class,
         TestCurrentUserMiddleware::class,
