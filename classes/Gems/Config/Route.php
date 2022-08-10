@@ -344,6 +344,9 @@ class Route
                     'controller' => \Gems\Actions\SurveyCodeBookExportAction::class,
                     'action' => 'export',
                 ],
+                'params' => [
+                    'id',
+                ],
             ],
 
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance',
