@@ -422,7 +422,7 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
             $find['action'] = $this->afterSaveRouteUrl['action'];
 
             // If not allowed, redirect to index
-            if (null == $this->menu->find($find)) {
+            if ((! $this->menu) || (null == $this->menu->find($find))) {
                 $this->afterSaveRouteUrl['action'] = 'index';
                 $this->resetRoute = true;
             }
