@@ -35,8 +35,6 @@ class ContinuousBatchRunnerSnippet extends SnippetAbstract
             $ul->li($message);
         }
 
-        $container->append($ul);
-
         $this->batch->reset();
 
         return $container;
