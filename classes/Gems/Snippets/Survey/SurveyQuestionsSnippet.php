@@ -187,10 +187,10 @@ class SurveyQuestionsSnippet extends \MUtil\Snippets\TableSnippetAbstract
                 $div->pInfo($this->_('Survey not specified.'));
             }
         }
-        $item = $this->menu->getCurrentParent();
+        /*$item = $this->menu->getCurrentParent();
         if ($item) {
             $div->append($item->toActionLink($this->_('Cancel'), $this->request));
-        }
+        }*/
 
         return $div;
     }
