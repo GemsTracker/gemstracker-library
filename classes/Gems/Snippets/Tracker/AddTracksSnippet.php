@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Locale\Locale;
+use Gems\MenuNew\RouteHelper;
 use MUtil\Request\RequestInfo;
 
 /**
@@ -67,6 +68,11 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
      * @var RequestInfo
      */
     protected $requestInfo;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      * When using bootstrap and more than this number of items the dropdowns will
@@ -189,12 +195,10 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             $div = \MUtil\Html::create()->div(array('class' => 'toolbox btn-group'));
         }
 
-        $menuIndex  = $this->menu->findController('track', 'index');
-
         if ($tracks) {
-            $menuCreate = $this->menu->findController('track', $action);
+            $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action);
 
-            if (! $menuCreate->isAllowed()) {
+            if ($menuCreateUrl === null) {
                 return null;
             }
 
@@ -210,10 +214,10 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             $data   = new \MUtil\Lazy\RepeatableByKeyValue($tracks);
 
             if ($trackType == 'tracks') {
-                $menuView   = $this->menu->findController('track', 'view');
+                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view');
                 $params = array('gtr_id_track' => $data->key);
             } else {
-                $menuView   = $this->menu->findController('track', 'view-survey');
+                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey');
                 $params = array('gsu_id_survey' => $data->key);
             }
 
