@@ -36,6 +36,7 @@ trait ModelSnippetActionRouteHelpers
     protected array $defaultPostRoutes = [
         'create',
         'edit',
+        'index',
     ];
 
     protected array $modelSnippetCustomMiddleware = [
