@@ -13,6 +13,10 @@ namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
 use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\Batch\ContinuousBatchRunnerSnippet;
+use Gems\Task\TaskRunnerBatch;
+use Gems\Tracker\TrackerInterface;
+use Mezzio\Session\SessionInterface;
 
 /**
  * Controller for Source maintenance
@@ -70,6 +74,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
 
     /**
+     * @var TrackerInterface
+     */
+    public $tracker;
+
+    /**
      * @var \Gems\Util\Translated
      */
     public $translatedUtil;
@@ -100,7 +109,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gsu_id_source = ?', $sourceId);
 
-        $batch = $this->loader->getTracker()->refreshTokenAttributes('attributeCheck' . $sourceId, $where);
+        $batch = $this->tracker->refreshTokenAttributes('attributeCheck' . $sourceId, $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -116,7 +125,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function attributesAllAction()
     {
-        $batch = $this->loader->getTracker()->refreshTokenAttributes('attributeCheckAll');
+        $batch = $this->tracker->refreshTokenAttributes('attributeCheckAll');
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
@@ -134,7 +143,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
-        $batch = $this->loader->getTracker()->recalculateTokens('sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
+        $batch = $this->tracker->recalculateTokens('sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -150,7 +159,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
+        $batch = $this->tracker->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
 
         $title = $this->_('Checking all surveys for all sources for answers.');
         $this->_helper->batchRunner($batch, $title, $this->accesslog);
@@ -173,7 +182,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function createModel($detailed, $action)
     {
-        $tracker = $this->loader->getTracker();
+        $tracker = $this->tracker;
         $model   = new \MUtil\Model\TableModel('gems__sources');
 
         $model->set('gso_source_name', 'label', $this->_('Name'),
@@ -289,7 +298,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         if (null === $sourceId) {
             $sourceId = $this->getSourceId();
         }
-        return $this->loader->getTracker()->getSource($sourceId);
+        return $this->tracker->getSource($sourceId);
     }
 
     /**
@@ -350,11 +359,18 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $sourceId = $this->getSourceId();
 
-        $batch = $this->loader->getTracker()->synchronizeSources($sourceId, $this->currentUser->getUserId());
+        $session = $this->request->getAttribute(SessionInterface::class);
+
+        $batch = $this->tracker->synchronizeSources($session, $sourceId, $this->currentUser->getUserId());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
+
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSynchronizationInformation();
     }
@@ -364,7 +380,8 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function synchronizeAllAction()
     {
-        $batch = $this->loader->getTracker()->synchronizeSources(null, $this->currentUser->getUserId());
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = $this->tracker->synchronizeSources($session, null, $this->currentUser->getUserId());
         $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');

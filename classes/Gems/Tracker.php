@@ -11,7 +11,10 @@
 
 namespace Gems;
 
+use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Mezzio\Session\SessionInterface;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * The tracker is the central access point doing anything with tracks or tokens.
@@ -119,6 +122,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var ProjectOverloader
+     */
+    protected $overLoader;
 
     /**
      *
@@ -1084,26 +1092,26 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources($sourceId = null, $userId = null)
+    public function synchronizeSources(SessionInterface $session, $sourceId = null, $userId = null)
     {
-        $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
-        $batch = $this->loader->getTaskRunnerBatch($batch_id);
+        $batchId = 'source_sync' . ($sourceId ? '_' . $sourceId : '');
+        $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
         if (! $batch->isLoaded()) {
             if ($sourceId) {
                 $sources = array($sourceId);
             } else {
                 $select = $this->db->select();
-                $select->from('gems__sources', array('gso_id_source'))
+                $select->from('gems__sources', ['gso_id_source'])
                         ->where('gso_active = 1');
                 $sources = $this->db->fetchCol($select);
             }
 
             foreach ($sources as $source) {
                 $batch->addTask('Tracker\\SourceSyncSurveys', $source, $userId);
-                // Reset cache after basic synch
+                // Reset cache after basic sync
                 $batch->addTask('CleanCache');
-                // Reset cache after field synch
+                // Reset cache after field sync
                 $batch->addTask('AddTask', 'CleanCache');
                 $batch->addTask('AddTask', 'Tracker\\UpdateSyncDate', $source, $userId);
             }

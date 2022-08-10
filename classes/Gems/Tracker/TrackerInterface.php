@@ -10,6 +10,8 @@
 
 namespace Gems\Tracker;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  * This interface lists all API-level methods in the Tracker class.
  *
@@ -365,9 +367,10 @@ interface TrackerInterface
      *
      * Does not reflect changes to tracks or rounds.
      *
+     * @param SessionInterface $session
      * @param int $sourceId A source identifier
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources($sourceId = null, $userId = null);
+    public function synchronizeSources(SessionInterface $session, $sourceId = null, $userId = null);
 }
