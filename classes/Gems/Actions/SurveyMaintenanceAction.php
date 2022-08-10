@@ -380,17 +380,13 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
     }
 
     /**
-     * Return the survey id (and set a menu var)
+     * Return the survey id
      *
      * @return int
      */
     public function getSurveyId()
     {
         $id = $this->_getIdParam();
-
-        $survey = $this->loader->getTracker()->getSurvey($id);
-
-        $this->menu->getParameterSource()->offsetSet('gsu_active', $survey->isActive() ? 1 : 0);
 
         return $id;
     }
