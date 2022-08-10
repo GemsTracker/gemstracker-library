@@ -107,9 +107,9 @@ class LimeSurvey4m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
     protected function _getMap()
     {
         $cacheId = 'lsFieldMap'.$this->sourceId . '_'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
-        $this->_fieldMap = $this->cache->load($cacheId);
+        $this->_fieldMap = $this->cache->getCacheItem($cacheId);
 
-        if (false === $this->_fieldMap) {
+        if (null === $this->_fieldMap) {
             $aTable = $this->_getQuestionAttributesTableName();
             $cTable = $this->_getQuestionConditonsTableName();
             $gTable = $this->_getGroupsTableName();
@@ -288,16 +288,21 @@ class LimeSurvey4m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
             $this->_fieldMap = $map;
             // \MUtil\EchoOut\EchoOut::track($map);
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
-            $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
+
+            $item = $this->cache->getItem($cacheId);
+            $item->set($this->_fieldMap);
+            $item->tag(['fieldmap']);
+            $item->expiresAfter(86400);
+            $this->cache->save($item);
         }
 
-        return $this->_fieldMap;
+        return (array)$this->_fieldMap;
     }
 
     /**
      * Return an array with all possible answers for a given sid/field combination
      *
-     * @param $field    Field from getFieldMap function
+     * @param array $field    Field from getFieldMap function
      */
     protected function _getMultiOptions($field)
     {
