@@ -42,7 +42,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         'requestQueryParams'    => 'getRequestQueryParams',
         'requestPost'           => 'getRequestParsedBody',
         'isPost'                => 'getRequestIsPost'
-        );
+    );
 
     /**
      * \Gems only parameters used for the create action. Can be overruled
@@ -53,7 +53,8 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     private $_createExtraParameters = array(
         'formTitle'     => 'getCreateTitle',
         'topicCallable' => 'getTopicCallable',
-        );
+        'csrfGuard'     => 'getCsrfGuard',
+    );
 
     /**
      * \Gems only parameters used for the deactivate action. Can be overruled
@@ -66,7 +67,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         'displayTitle'    => 'getDeactivateTitle',
         'formTitle'       => 'getDeactivateTitle',
         'topicCallable'   => 'getTopicCallable',
-        );
+    );
 
     /**
      * \Gems only parameters used for the delete action. Can be overruled
@@ -79,7 +80,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         'displayTitle'   => 'getDeleteTitle',
         'formTitle'      => 'getDeleteTitle',
         'topicCallable'  => 'getTopicCallable',
-        );
+    );
 
     /**
      * \Gems only parameters used for the edit action. Can be overruled
@@ -90,7 +91,8 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     private $_editExtraParameters = array(
         'formTitle'     => 'getEditTitle',
         'topicCallable' => 'getTopicCallable',
-        );
+        'csrfGuard'     => 'getCsrfGuard',
+    );
 
     /**
      * \Gems only parameters used for the export action. Can be overruled
@@ -100,7 +102,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      */
     private $_exportExtraParameters = [
         'exportClasses' => 'getExportClasses',
-        ];
+    ];
 
     /**
      * \Gems only parameters used for the import action. Can be overruled
@@ -113,7 +115,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
-        );
+    );
 
     /**
      * \Gems only parameters used for the deactivate action. Can be overruled
@@ -126,7 +128,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         'displayTitle'    => 'getReactivateTitle',
         'formTitle'       => 'getReactivateTitle',
         'topicCallable'   => 'getTopicCallable',
-        );
+    );
 
     /**
      *
@@ -151,9 +153,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
-        'csrfGuard' => 'getCsrfGuard',
-    ];
+    protected $createEditParameters = [];
 
     /**
      * The snippets used for the create and edit actions.
@@ -402,10 +402,10 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
                     $url = $this->getExportReturnLink();
                     if ($url) {
                         $controller->html->pInfo()->a(
-                                $url,
-                                array('class'=>'actionlink'),
-                                $this->_('Back')
-                                );
+                            $url,
+                            array('class'=>'actionlink'),
+                            $this->_('Back')
+                        );
                     }
                 }
             }
@@ -560,7 +560,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      */
     protected function getExportReturnLink()
     {
-       return \MUtil\Html\UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
+        return \MUtil\Html\UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
     }
 
     /**
@@ -571,9 +571,9 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     public function getImporter()
     {
         return $this->loader->getImportLoader()->getImporter(
-                $this->getRequest()->getControllerName(),
-                $this->getModel()
-                );
+            $this->getRequest()->getControllerName(),
+            $this->getModel()
+        );
     }
 
     /**
