@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Token;
 
+use Gems\Util;
+
 /**
  * Helps building select statements for the Token model
  *
@@ -45,7 +47,7 @@ class TokenSelect
      * @param \Zend_Db_Adapter_Abstract $db Adapter to use
      * @param string|array $fields Optional select fieldlist
      */
-    public function __construct(\Zend_Db_Adapter_Abstract $db, $fields = "*", \Gems\Util $util)
+    public function __construct(\Zend_Db_Adapter_Abstract $db, Util $util, $fields = "*")
     {
         $this->db   = $db;
         $this->util = $util;
