@@ -354,9 +354,9 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      */
     protected function _getReturnURIDescription($language)
     {
-        $message = $this->translate->_('Back', $language);
+        $message = $this->translate->_('Back', [], null, $language);
         if (isset($this->config['app']['name'])) {
-            $message = sprintf($this->translate->_('Back to %s', $language), $this->config['app']['name']);
+            $message = sprintf($this->translate->_('Back to %s', [], null, $language), $this->config['app']['name']);
         }
 
         return $message;

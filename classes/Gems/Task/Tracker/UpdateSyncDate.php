@@ -11,6 +11,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\User\User;
+use MUtil\Db\Expr\CurrentTimestamp;
+
 /**
  *
  *
@@ -22,6 +25,11 @@ namespace Gems\Task\Tracker;
  */
 class UpdateSyncDate extends \MUtil\Task\TaskAbstract
 {
+    /**
+     * @var User
+     */
+    protected $currentUser;
+
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
@@ -36,8 +44,16 @@ class UpdateSyncDate extends \MUtil\Task\TaskAbstract
      */
     public function execute($sourceId = null, $userId = null)
     {
-        $now    = new \MUtil\Db\Expr\CurrentTimestamp();
-        $values = array('gso_last_synch' => $now, 'gso_changed' => $now, 'gso_changed_by' => $userId);
+        if ($userId === null) {
+            $userId = $this->currentUser->getUserId();
+        }
+
+        $now    = new CurrentTimestamp();
+        $values = [
+            'gso_last_synch' => $now,
+            'gso_changed' => $now,
+            'gso_changed_by' => $userId
+        ];
         $where  = $this->db->quoteInto('gso_id_source = ?', $sourceId);
 
         $this->db->update('gems__sources', $values, $where);

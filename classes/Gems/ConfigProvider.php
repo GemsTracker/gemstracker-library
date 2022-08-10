@@ -85,6 +85,7 @@ class ConfigProvider
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'templates'     => $this->getTemplates(),
+            'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
         ];
     }
@@ -390,6 +391,32 @@ class ConfigProvider
             'paths' => [
                 'menu' => [__DIR__ . '/../../templates/menu'],
             ],
+        ];
+    }
+
+    protected function getTokenSettings(): array
+    {
+        /**
+         * chars:  characters allowed in a token.
+         * format: format string to show to user for input of
+         *         token. The \ backslash is used as escape
+         *         character for characters that are fixed.
+         * from:   commonly mistaken input characters to correct.
+         * to:     characters to translate from characters to.
+         * case:   optional: 1|0. If the token should be
+         *         treated case-sensitive. If missing the token
+         *         is case-sensitive when chars contain
+         *         uppercase characters.
+         * reuse:  days tokens can be used:
+         *         -1 = not at all
+         *         0 = only today (default and required for looping)
+         *         1 = only up to yesterday's tokens
+         */
+        return [
+            'chars'  => '23456789abcdefghijklmnopqrstuvwxyz',
+            'format' => 'XXXX\-XXXX',
+            'from'   => '01',
+            'to'     => 'ol',
         ];
     }
 

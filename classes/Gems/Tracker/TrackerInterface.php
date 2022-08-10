@@ -372,5 +372,5 @@ interface TrackerInterface
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources(SessionInterface $session, $sourceId = null, $userId = null);
+    public function synchronizeSources(SessionInterface $session, $sourceId = null);
 }

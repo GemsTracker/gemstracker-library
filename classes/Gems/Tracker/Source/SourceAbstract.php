@@ -91,8 +91,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         $select = $this->_gemsDb->select();
         $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
-                ->where('gsu_id_source = ?', $this->getId())
-                ->order('gsu_surveyor_id');
+            ->where('gsu_id_source = ?', $this->getId())
+            ->order('gsu_surveyor_id');
 
         return $this->_gemsDb->fetchPairs($select);
     }
@@ -232,7 +232,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         return false;
     }
-    
+
     /**
      * Extract limit and offset from the filter and add it to a select
      *
@@ -320,23 +320,23 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                     //If upgrade has run and we have a 'charset' use it
                     if (array_key_exists('gso_ls_charset', $this->_sourceData)) {
                         $dbConfig['charset'] = $this->_sourceData['gso_ls_charset']
-                                ? $this->_sourceData['gso_ls_charset']
-                                : $gemsConfig['charset'];
+                            ? $this->_sourceData['gso_ls_charset']
+                            : $gemsConfig['charset'];
                     }
                     $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost']
-                            ? $this->_sourceData['gso_ls_dbhost']
-                            : $gemsConfig['host'];
+                        ? $this->_sourceData['gso_ls_dbhost']
+                        : $gemsConfig['host'];
                     if (isset($this->_sourceData['gso_ls_dbport'])) {
                         $dbConfig['port'] = $this->_sourceData['gso_ls_dbport'];
                     } elseif (isset($gemsConfig['port'])) {
                         $dbConfig['port'] = $gemsConfig['port'];
                     }
                     $dbConfig['username'] = $this->_sourceData['gso_ls_username']
-                            ? $this->_sourceData['gso_ls_username']
-                            : $gemsConfig['username'];
+                        ? $this->_sourceData['gso_ls_username']
+                        : $gemsConfig['username'];
                     $dbConfig['password'] = $this->_sourceData['gso_ls_password']
-                            ? $this->project->decrypt($this->_sourceData['gso_ls_password'])
-                            : $gemsConfig['password'];
+                        ? $this->project->decrypt($this->_sourceData['gso_ls_password'])
+                        : $gemsConfig['password'];
 
                     $this->_sourceDb = \Zend_Db::factory($adapter, $dbConfig);
                 }
@@ -367,10 +367,10 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
         if (! isset($cache[$surveyId])) {
             $cache[$surveyId] = $this->_gemsDb->fetchRow(
-                    'SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1',
-                    $surveyId,
-                    \Zend_Db::FETCH_ASSOC
-                    );
+                'SELECT * FROM gems__surveys WHERE gsu_id_survey = ? LIMIT 1',
+                $surveyId,
+                \Zend_Db::FETCH_ASSOC
+            );
         }
 
         if (null === $field) {
@@ -393,13 +393,13 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         // Surveys in \Gems
         $select = $this->_gemsDb->select();
-        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
-                ->where('gsu_id_source = ?', $this->getId())
-                ->order('gsu_surveyor_id');
+        $select->from('gems__surveys', ['gsu_id_survey', 'gsu_surveyor_id'])
+            ->where('gsu_id_source = ?', $this->getId())
+            ->order('gsu_surveyor_id');
 
         $gemsSurveys = $this->_gemsDb->fetchPairs($select);
         if (!$gemsSurveys) {
-            $gemsSurveys = array();
+            $gemsSurveys = [];
         }
 
         // Surveys in Source
@@ -407,7 +407,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
         if ($sourceSurveys) {
             $sourceSurveys = array_combine($sourceSurveys, $sourceSurveys);
         } else {
-            $sourceSurveys = array();
+            $sourceSurveys = [];
         }
 
         // Always those already in the database

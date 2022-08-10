@@ -8,6 +8,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker;
+use Gems\User\User;
+
 /**
  * Executes the syncSurveys method for a given sourceId
  *
@@ -20,9 +23,14 @@ namespace Gems\Task\Tracker;
 class SourceSyncSurveys extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
+     * @var User
      */
-    public $loader;
+    protected $currentUser;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -33,10 +41,10 @@ class SourceSyncSurveys extends \MUtil\Task\TaskAbstract
     public function execute($sourceId = null, $userId = null)
     {
         $batch  = $this->getBatch();
-        $source = $this->loader->getTracker()->getSource($sourceId);
+        $source = $this->tracker->getSource($sourceId);
 
         if (is_null($userId)) {
-            $userId = $this->loader->getCurrentUser()->getUserId();
+            $userId = $this->currentUser->getUserId();
         }
 
         $surveyCount = $batch->addToCounter('sourceSyncSources');

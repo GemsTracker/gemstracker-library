@@ -11,6 +11,9 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker;
+use Gems\User\User;
+
 /**
  *
  * @package    Gems
@@ -22,9 +25,14 @@ namespace Gems\Task\Tracker;
 class CheckSurvey extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
+     * @var User
      */
-    protected $loader;
+    protected $currentUser;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -35,10 +43,10 @@ class CheckSurvey extends \MUtil\Task\TaskAbstract
     public function execute($sourceId = null, $sourceSurveyId = null, $surveyId = null, $userId = null)
     {
         $batch    = $this->getBatch();
-        $source   = $this->loader->getTracker()->getSource($sourceId);
+        $source   = $this->tracker->getSource($sourceId);
 
         if (null === $userId) {
-            $userId = $this->loader->getCurrentUser()->getUserId();
+            $userId = $this->currentUser->getUserId();
         }
 
         $messages = $source->checkSurvey($sourceSurveyId, $surveyId, $userId);

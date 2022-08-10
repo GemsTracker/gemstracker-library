@@ -1092,7 +1092,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources(SessionInterface $session, $sourceId = null, $userId = null)
+    public function synchronizeSources(SessionInterface $session, $sourceId = null)
     {
         $batchId = 'source_sync' . ($sourceId ? '_' . $sourceId : '');
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
@@ -1108,12 +1108,12 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
             }
 
             foreach ($sources as $source) {
-                $batch->addTask('Tracker\\SourceSyncSurveys', $source, $userId);
+                $batch->addTask('Tracker\\SourceSyncSurveys', $source);
                 // Reset cache after basic sync
                 $batch->addTask('CleanCache');
                 // Reset cache after field sync
                 $batch->addTask('AddTask', 'CleanCache');
-                $batch->addTask('AddTask', 'Tracker\\UpdateSyncDate', $source, $userId);
+                $batch->addTask('AddTask', 'Tracker\\UpdateSyncDate', $source);
             }
         }
 

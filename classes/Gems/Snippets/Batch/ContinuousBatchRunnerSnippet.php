@@ -28,14 +28,16 @@ class ContinuousBatchRunnerSnippet extends SnippetAbstract
             $messages[] = 'Nothing to do...';
         }
 
-        $container = Html::create('div', ['class' => 'container']);
+        $container = Html::create('div', ['class' => 'alert alert-info']);
 
-        $ul = Html::create('div', ['class' => 'list']);
+        $ul = $container->ul(['class' => 'list']);
         foreach($messages as $message) {
             $ul->li($message);
         }
 
         $container->append($ul);
+
+        $this->batch->reset();
 
         return $container;
     }

@@ -11,6 +11,10 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker\TrackerInterface;
+use Exception;
+use MUtil\Html\HtmlInterface;
+
 /**
  *
  * @package    Gems
@@ -39,6 +43,11 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
     protected $project;
 
     /**
+     * @var TrackerInterface
+     */
+    protected $tracker;
+
+    /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
@@ -49,9 +58,9 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
         $batch = $this->getBatch();
 
         if ($surveyId) {
-            $survey = $this->loader->getTracker()->getSurvey($surveyId);
+            $survey = $this->tracker->getSurvey($surveyId);
         } else {
-            $survey = $this->loader->getTracker()->getSurveyBySourceId($sourceSurveyId, $sourceId);
+            $survey = $this->tracker->getSurveyBySourceId($sourceSurveyId, $sourceId);
         }
 
         if (! $survey->isActive()) {
@@ -83,7 +92,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
     
     protected function render($result)
     {
-        if ($result instanceof \MUtil\Html\HtmlInterface) {
+        if ($result instanceof HtmlInterface) {
             $viewRenderer = \Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();
@@ -121,7 +130,7 @@ class AddRefreshQuestions extends \MUtil\Task\TaskAbstract
 
         foreach ($answerModel->getItemsOrdered() as $name) {
             if (true === $answerModel->get($name, 'survey_question') && // It should be a question
-                    !in_array($name, array('submitdate', 'startdate', 'datestamp')) && // Leave out meta info
+                    !in_array($name, ['submitdate', 'startdate', 'datestamp']) && // Leave out meta info
                     !$answerModel->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {         // Only real answers
                 $fieldSql .= ',MAX(IF(gdr_answer_id = ' . $responseDb->quote($name) . ', gdr_response, NULL)) AS ' . $responseDb->quoteIdentifier($name);
             }
