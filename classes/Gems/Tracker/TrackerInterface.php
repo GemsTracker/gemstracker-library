@@ -10,6 +10,7 @@
 
 namespace Gems\Tracker;
 
+use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 
 /**
@@ -55,7 +56,7 @@ interface TrackerInterface
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds($batchId, $userId = null, $cond = null);
+    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null): TaskRunnerBatch;
 
     /**
      * Create a new track for a patient
@@ -312,13 +313,14 @@ interface TrackerInterface
      *
      * Does not reflect changes to tracks or rounds.
      *
+     * @param SessionInterface $session
      * @param int $respondentId   Id of the respondent to check for or NULL
      * @param int $userId         Id of the user who takes the action (for logging)
      * @param int $orgId          Optional Id of the organization to check for
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false);
+    public function processCompletedTokens(SessionInterface $session, int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool;
 
     /**
      * Recalculates all token dates, timing and results
@@ -326,32 +328,35 @@ interface TrackerInterface
      *
      * Does not reflect changes to tracks or rounds.
      *
+     * @param SessionInterface $session
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param string $cond
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens($batch_id, $userId = null, $cond = null);
+    public function recalculateTokens(SessionInterface $session, $batch_id, $userId = null, $cond = null): TaskRunnerBatch;
 
     /**
      * Recalculates the fields in tracks.
      *
      * Does recalculate changed tracks
      *
+     * @param SessionInterface $session
      * @param string $batchId A unique identifier for the current batch
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields($batchId, $cond = null);
+    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch;
 
     /**
      * Refreshes the tokens in the source
      *
+     * @param SessionInterface $session
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributes($batch_id, $cond = null);
+    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch;
 
     /**
      * Remove token from cache for saving memory
@@ -372,5 +377,5 @@ interface TrackerInterface
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources(SessionInterface $session, $sourceId = null);
+    public function synchronizeSources(SessionInterface $session, ?int $sourceId = null): TaskRunnerBatch;
 }

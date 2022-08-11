@@ -184,11 +184,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds($batchId, $userId = null, $cond = null)
+    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
 
-        $batch = $this->loader->getTaskRunnerBatch($batchId);
+        $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
@@ -906,9 +906,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false)
+    public function processCompletedTokens(SessionInterface $session, int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
     {
-        $batch = $this->loader->getTaskRunnerBatch('completed');
+        $batch = new TaskRunnerBatch('completed', $this->overLoader, $session);
 
         if (! $batch->isLoaded()) {
             $this->loadCompletedTokensBatch($batch, $respondentId, $userId, $orgId, $quickCheck);
@@ -939,11 +939,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    protected function processTokensBatch($batch_id, \Gems\Tracker\Token\TokenSelect $tokenSelect, $userId)
+    protected function processTokensBatch(SessionInterface $session, $batchId, \Gems\Tracker\Token\TokenSelect $tokenSelect, $userId): TaskRunnerBatch
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(\Zend_Db_Select::WHERE));
 
-        $batch = $this->loader->getTaskRunnerBatch($batch_id);
+        $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
@@ -972,7 +972,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokens($batch_id, $userId = null, $cond = null)
+    public function recalculateTokens(SessionInterface $session, $batch_id, $userId = null, $cond = null): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
@@ -988,7 +988,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $tokenSelect->forWhere('gsu_surveyor_active = 1');
 
         self::$verbose = true;
-        return $this->processTokensBatch($batch_id, $tokenSelect, $userId);
+        return $this->processTokensBatch($session, $batch_id, $tokenSelect, $userId);
     }
 
     /**
@@ -1000,7 +1000,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields($batchId, $cond = null)
+    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch
     {
         $respTrackSelect = $this->db->select();
         $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
@@ -1016,7 +1016,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         // Also recaclulate when track was completed: there may be new rounds!
         // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
-        $batch = $this->loader->getTaskRunnerBatch($batchId);
+        $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 
@@ -1040,9 +1040,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond An optional where statement
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributes($batch_id, $cond = null)
+    public function refreshTokenAttributes(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch
     {
-        $batch = $this->loader->getTaskRunnerBatch($batch_id);
+        $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
 
         if (! $batch->isLoaded()) {
             $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
@@ -1096,7 +1096,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId Id of the user who takes the action (for logging)
      * @return \Gems\Task\TaskRunnerBatch A batch to process the synchronization
      */
-    public function synchronizeSources(SessionInterface $session, $sourceId = null)
+    public function synchronizeSources(SessionInterface $session, ?int $sourceId = null): TaskRunnerBatch
     {
         $batchId = 'source_sync' . ($sourceId ? '_' . $sourceId : '');
         $batch = new TaskRunnerBatch($batchId, $this->overLoader, $session);
