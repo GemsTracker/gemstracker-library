@@ -2,6 +2,8 @@
 
 namespace Gems;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
@@ -13,12 +15,14 @@ use Gems\Config\App;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
+use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Messenger\MessengerFactory;
+use Gems\Factory\DoctrineOrmFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -160,6 +164,10 @@ class ConfigProvider
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
+
+                // Doctrine
+                Connection::class => DoctrineDbalFactory::class,
+                EntityManagerInterface::class => DoctrineOrmFactory::class,
 
                 // Session
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
