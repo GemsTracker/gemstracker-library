@@ -11,6 +11,13 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\RouteNotFoundException;
+use MUtil\Html\AElement;
+use MUtil\Lazy\Call;
+use MUtil\Model\Bridge\BridgeAbstract;
+use MUtil\Model\Bridge\TableBridge;
+
 /**
  * Adds \Gems specific display details and helper functions:
  *
@@ -46,16 +53,16 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     /**
      * The default search data to use.
      *
-     * @var array()
+     * @var array
      */
-    protected $defaultSearchData = array();
+    protected $defaultSearchData = [];
 
     /**
      * Use keyboard to select row
      *
      * @var boolean
      */
-    public $keyboard = false;
+    public bool $keyboard = false;
 
     /**
      * Make sure the keyboard id is used only once
@@ -63,12 +70,6 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      * @var boolean
      */
     public static $keyboardUsed = false;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    public $menu;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -85,7 +86,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      *
      * @var array (int/controller => action)
      */
-    public $menuEditActions = array('edit');
+    public array $menuEditActions = ['edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -95,14 +96,19 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      *
      * @var array (int/controller => action)
      */
-    public $menuShowActions = array('show');
+    public array $menuShowActions = ['show'];
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      * Option to manually diasable the menu
      *
      * @var boolean
      */
-    protected $showMenu = true;
+    protected bool $showMenu = true;
 
     /**
      * The $request param that stores the ascending sort
@@ -135,10 +141,10 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowMenuItems();
+            $showMenuItems = $this->getShowUrls($bridge);
 
             foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
             }
         }
 
@@ -148,10 +154,10 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
         parent::addBrowseTableColumns($bridge, $model);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditMenuItems();
+            $editMenuItems = $this->getEditUrls($bridge);
 
             foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
             }
         }
     }
@@ -201,7 +207,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
             $marker = new \MUtil\Html\Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label') && (! $model->is($name, 'no_text_search', true))) {
-                    $model->set($name, 'markCallback', array($marker, 'mark'));
+                    $model->set($name, 'markCallback', [$marker, 'mark']);
                 }
             }
         }
@@ -217,10 +223,11 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
     {
-        $menuItem = $this->findMenuItem($controller, $action);
+        $menuItem = $this->findUrls([$action]);
         if ($menuItem) {
-            return $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
+            return \Gems\Html::actionLink($menuItem, $this->_('Create'));
         }
+        return null;
     }
 
     /**
@@ -230,18 +237,45 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      * @param string|array $actions
      * @return array of \Gems\Menu\SubMenuItem
      */
-    protected function findMenuItems($defaultController, $actions = array('index'))
+    protected function findUrls(array|string $actions = ['index'], ?TableBridge $bridge = null)
     {
-        $output = array();
+        $output = [];
 
-        /*foreach ((array) $actions as $key => $action) {
-            $controller = is_int($key) ? $defaultController : $key;
-            $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+        foreach ((array) $actions as $key=>$action) {
 
-            if ($item) {
-                $output[] = $item;
+            try {
+                $route = $this->routeHelper->getRoute($action);
+            } catch (RouteNotFoundException $e) {
+                $currentRouteName = $this->requestInfo->getCurrentRouteResult()->getMatchedRouteName();
+                $routeParts = explode('.', $currentRouteName);
+                $routeParts[count($routeParts)-1] = $action;
+                $routeName = join('.', $routeParts);
+                try {
+                    $route = $this->routeHelper->getRoute($routeName);
+                } catch (RouteNotFoundException $e) {
+                    continue;
+                }
+
             }
-        }*/
+
+            $params = [];
+            if (isset($route['params'])) {
+                $currentParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();
+                foreach($route['params'] as $paramName) {
+                    if (isset($currentParams[$paramName])) {
+                        $params[$paramName] = $currentParams[$paramName];
+                        continue;
+                    }
+                    if ($bridge instanceof BridgeAbstract) {
+                        $params[$paramName] = $bridge->getLazy($paramName);
+                    }
+                }
+            }
+
+            $output[] = new Call(function(string $routeName, array $params = []) {
+                $this->routeHelper->getRouteUrl($routeName, $params);
+            }, [$routeName, $params]);
+        }
 
         return $output;
     }
@@ -249,14 +283,14 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return \Gems\Menu\SubMenuItem
+     * @return string[]
      */
-    protected function getEditMenuItems()
+    protected function getEditUrls(TableBridge $bridge): array
     {
         if ($this->menuEditActions) {
-            return $this->findMenuItems($this->menuActionController, $this->menuEditActions);
+            return $this->findUrls($this->menuEditActions, $bridge);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -282,13 +316,13 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
             // If we are already in a containing div it is simple
             if ($this->containingId) {
-                return array($table, new \Gems\JQuery\TableRowKeySelector($this->containingId));
+                return [$table, new \Gems\JQuery\TableRowKeySelector($this->containingId)];
             }
 
             // Create a new containing div
-            $div = \MUtil\Html::create()->div(array('id' => 'keys_target', 'class' => 'table-container'), $table);
+            $div = \MUtil\Html::create()->div(['id' => 'keys_target', 'class' => 'table-container'], $table);
 
-            return array($div, new \Gems\JQuery\TableRowKeySelector($div));
+            return [$div, new \Gems\JQuery\TableRowKeySelector($div)];
 
         } else {
             return $table;
@@ -298,13 +332,13 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     /**
      * Returns a show menu item, if access is allowed by privileges
      *
-     * @return \Gems\Menu\SubMenuItem
+     * @return string[]
      */
-    protected function getShowMenuItems()
+    protected function getShowUrls(TableBridge $bridge): array
     {
         if ($this->menuShowActions) {
-            return $this->findMenuItems($this->menuActionController, $this->menuShowActions);
+            return $this->findUrls($this->menuShowActions, $bridge);
         }
-        return array();
+        return [];
     }
 }
