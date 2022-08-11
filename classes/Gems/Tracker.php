@@ -40,8 +40,8 @@ use Zalt\Loader\ProjectOverloader;
  */
 class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker\TrackerInterface
 {
-    const DB_DATE_FORMAT = 'yyyy-MM-dd';
-    const DB_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+    const DB_DATE_FORMAT = 'Y-m-d';
+    const DB_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      *
@@ -241,7 +241,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         }
         if (! array_key_exists('gr2t_start_date', $respTrackData)) {
             // The start date has to exist.
-            $respTrackData['gr2t_start_date'] = new \MUtil\Date();
+            $respTrackData['gr2t_start_date'] = new \DateTimeImmutable();
         }
         $respTrackData['gr2t_id_user']         = $respondentId;
         $respTrackData['gr2t_id_organization'] = $organizationId;

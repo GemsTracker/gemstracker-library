@@ -98,11 +98,8 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $from = new \MUtil\Date();
-            $from->subWeek(2);
-
-            $until = new \MUtil\Date();
-            $until->addDay(1);
+            $from = new DateTimeImmutable('-14 days');
+            $until = new DateTimeImmutable('+1 day');
 
             $this->defaultSearchData = array(
                 \Gems\Snippets\AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created',

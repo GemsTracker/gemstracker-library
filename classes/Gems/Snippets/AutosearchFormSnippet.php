@@ -11,7 +11,11 @@
 
 namespace Gems\Snippets;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use Gems\JQuery\Form\Element\DatePicker;
 use Gems\MenuNew\RouteHelper;
+use MUtil\Model;
 use MUtil\Request\RequestInfo;
 
 /**
@@ -161,7 +165,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
         $type = 'date';
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
-            list($dateFormat, $separator, $timeFormat) = \MUtil\Date\Format::splitDateTimeFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = DatePicker::splitTojQueryDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -174,10 +178,10 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
         $options['label'] = $fromLabel;
         \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
 
-        $elements['datefrom'] = new \Gems\JQuery\Form\Element\DatePicker('datefrom', $options);
+        $elements['datefrom'] = new DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new \Gems\JQuery\Form\Element\DatePicker('dateuntil', $options);
+        $elements['dateuntil'] = new DatePicker('dateuntil', $options);
     }
 
     /**
@@ -534,22 +538,14 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
         }
 
         if (null === $outFormat) {
-            $outFormat = 'yyyy-MM-dd';
+            $outFormat = Model::getTypeDefault(Model::TYPE_DATE, 'storageFormat');
         }
         if (null === $inFormat) {
-            $inFormat  = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
+            $inFormat  = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
         }
 
-        if ($from && \Zend_Date::isDate($from,  $inFormat)) {
-            $datefrom = $db->quote(\MUtil\Date::format($from, $outFormat, $inFormat));
-        } else {
-            $datefrom = null;
-        }
-        if ($until && \Zend_Date::isDate($until,  $inFormat)) {
-            $dateuntil = $db->quote(\MUtil\Date::format($until, $outFormat, $inFormat));
-        } else {
-            $dateuntil = null;
-        }
+        $datefrom  = Model::reformatDate($from, $inFormat, $outFormat);
+        $dateuntil = Model::reformatDate($until, $inFormat, $outFormat);
 
         if (! ($datefrom || $dateuntil)) {
             return;
@@ -566,8 +562,8 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                                 (%2$s >= %3$s OR %2$s IS NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $datefrom,
-                            $dateuntil
+                            $db->quote($datefrom),
+                            $db->quote($dateuntil)
                             );
                 }
                 if ($datefrom) {
@@ -575,7 +571,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                             '%2$s >= %3$s OR (%2$s IS NULL AND %1$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $datefrom
+                            $db->quote($datefrom)
                             );
                 }
                 if ($dateuntil) {
@@ -583,7 +579,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                             '%1$s <= %3$s OR (%1$s IS NULL AND %2$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $dateuntil
+                            $db->quote($dateuntil)
                             );
                 }
                 return;
@@ -597,8 +593,8 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                             '%1$s >= %3$s AND %2$s <= %4$s',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $datefrom,
-                            $dateuntil
+                            $db->quote($datefrom),
+                            $db->quote($dateuntil)
                             );
                 }
                 if ($datefrom) {
@@ -606,7 +602,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                             '%1$s >= %3$s AND (%2$s IS NULL OR %2$s >= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $datefrom
+                            $db->quote($datefrom)
                             );
                 }
                 if ($dateuntil) {
@@ -614,7 +610,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                             '%2$s <= %3$s AND (%1$s IS NULL OR %1$s <= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $dateuntil
+                            $db->quote($dateuntil)
                             );
                 }
                 return;
@@ -624,22 +620,22 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
                     return sprintf(
                             '%s BETWEEN %s AND %s',
                             $db->quoteIdentifier($period),
-                            $datefrom,
-                            $dateuntil
+                            $db->quote($datefrom),
+                            $db->quote($dateuntil)
                             );
                 }
                 if ($datefrom) {
                     return sprintf(
                             '%s >= %s',
                             $db->quoteIdentifier($period),
-                            $datefrom
+                            $db->quote($datefrom)
                             );
                 }
                 if ($dateuntil) {
                     return sprintf(
                             '%s <= %s',
                             $db->quoteIdentifier($period),
-                            $dateuntil
+                            $db->quote($dateuntil)
                             );
                 }
                 return;

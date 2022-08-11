@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Source;
 
+use DateTimeInterface;
+
 /**
  * Interface description of SourceInterface for (external) survey sources.
  *
@@ -76,7 +78,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null);
 
@@ -97,7 +99,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getCompletionTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null);
 
@@ -210,7 +212,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getStartTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null);
 

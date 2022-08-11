@@ -231,7 +231,7 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
         if ($detailed) {
             $model->set('script',   'label', $this->_('Script'), 'itemDisplay', 'pre');
         } else {
-            $model->set('lastChanged', 'label', $this->_('Changed on'), 'dateFormat', 'yyyy-MM-dd HH:mm:ss');
+            $model->set('lastChanged', 'label', $this->_('Changed on'));
         }
 
         return $model;

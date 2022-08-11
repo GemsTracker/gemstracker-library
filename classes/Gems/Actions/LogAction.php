@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use DateTimeImmutable;
+
 /**
  * Show the action log
  *
@@ -98,11 +100,8 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $from = new \MUtil\Date();
-            $from->subWeek(2);
-
-            $until = new \MUtil\Date();
-            $until->addDay(1);
+            $from = new DateTimeImmutable('-14 days');
+            $until = new DateTimeImmutable('+1 day');
 
             $this->defaultSearchData = array(
                 'datefrom'         => $from,

@@ -11,6 +11,9 @@
 
 namespace Gems\Agenda;
 
+use DateTimeInterface;
+use MUtil\Model;
+
 /**
  *
  *
@@ -134,18 +137,18 @@ class AppointmentSelect extends \MUtil\Registry\TargetAbstract
 
     /**
      *
-     * @param \MUtil\Date $from Optional date after which the appointment must occur
-     * @param \MUtil\Date $until Optional date before which the appointment must occur
+     * @param DateTimeInterface $from Optional date after which the appointment must occur
+     * @param DateTimeInterface $until Optional date before which the appointment must occur
      * @param boolean $sortAsc Retrieve first or last appointment first
      * @return \Gems\Agenda\AppointmentSelect
      */
-    public function forPeriod(\MUtil\Date $from = null, \MUtil\Date $until = null, $sortAsc = true)
+    public function forPeriod(DateTimeInterface $from = null, DateTimeInterface $until = null, $sortAsc = true)
     {
         if ($from) {
-            $this->_select->where("gap_admission_time >= ?", $from->toString('yyyy-MM-dd HH:mm:ss'));
+            $this->_select->where("gap_admission_time >= ?", $from->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));
         }
         if ($until) {
-            $this->_select->where("gap_admission_time <= ?", $until->toString('yyyy-MM-dd HH:mm:ss'));
+            $this->_select->where("gap_admission_time <= ?", $until->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat')));
         }
         if ($sortAsc) {
             $this->order('gap_admission_time ASC');

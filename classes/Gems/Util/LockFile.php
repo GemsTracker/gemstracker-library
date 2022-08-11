@@ -11,6 +11,8 @@
 
 namespace Gems\Util;
 
+use DateTimeImmutable;
+
 /**
  * A simple file based locking mechanism.
  *
@@ -40,12 +42,13 @@ class LockFile
     /**
      * Last time the lock was set.
      *
-     * @return \MUtil\Date or null when not locked.
+     * @return ?DateTimeImmutable or null when not locked.
      */
-    public function getLockTime()
+    public function getLockTime(): ?DateTimeImmutable 
     {
         if ($this->isLocked()) {
-            return new \MUtil\Date(filectime($this->lockFileName));
+            $date = new DateTimeImmutable();
+            return $date->setTimestamp(filectime($this->lockFileName));
         }
     }
 

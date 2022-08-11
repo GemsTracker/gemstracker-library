@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Engine;
 
+use DateTimeInterface;
+
 /**
  * Step engine that can select any previous round for begin date and any round for calculating the end date.
  *
@@ -157,7 +159,7 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack)
     {
@@ -172,8 +174,8 @@ class AnyStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param \MUtil\Date $validFrom The calculated new valid from value
-     * @return \MUtil\Date date time or null
+     * @param ?DateTimeInterface $validFrom The calculated new valid from value
+     * @return ?DateTimeInterface date time or null
      */
     protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom)
     {

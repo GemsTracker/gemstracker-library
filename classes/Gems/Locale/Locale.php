@@ -2,6 +2,8 @@
 
 namespace Gems\Locale;
 
+use MUtil\Model;
+
 class Locale
 {
     private array $config;
@@ -48,5 +50,27 @@ class Locale
     public function setCurrentLanguage(string $currentLanguage): void
     {
         $this->currentLanguage = $currentLanguage;
+        
+        $config = $this->config['locale'] ?? [];
+        
+        if (isset($config['defaultTypes'])) {
+            $settings = $config['defaultTypes'];
+        }
+        if (isset($config['localeTypes'][$currentLanguage])) {
+            if (isset($settings)) {
+                foreach ($config['defaultTypes'][$currentLanguage] as $type => $settings) {
+                    foreach ($settings as $key => $value) {
+                        // Set each value seperately, each overrules existing settings.
+                        $settings[$type][$key] = $value;
+                    }
+                }
+            } else {
+                $settings = $this->config['localeTypes'][$currentLanguage];
+            }
+        }
+        
+        if (isset($settings)) {
+            Model::addTypesDefaults($settings);
+        }
     }
 }

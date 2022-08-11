@@ -141,7 +141,7 @@ class FormattedData extends \IteratorIterator
 
                     $dateFormat = $value;
                     $storageFormat = $model->get($name, 'storageFormat');
-                    $result = \MUtil\Date::format($result, $dateFormat, $storageFormat);
+                    $result = \MUtil\Model::reformatDate($result, $dateFormat, $storageFormat);
                     break;
 
                 case 'itemDisplay':

@@ -143,13 +143,8 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->model->applyBrowseSettings();
         }
         $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
-        $this->model->set('date_only', 'dateFormat',
-                \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
-                \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR,
-                'storageFormat', 'YYYY-MM-DD'
-                );
-        $this->model->set('gap_admission_time', 'label', $this->_('Time'),
-                'dateFormat', 'HH:mm');
+        $this->model->set('date_only', 'type', \MUtil\Model::TYPE_DATE);
+        $this->model->set('gap_admission_time', 'label', $this->_('Time'), 'type', \MUtil\Model::TYPE_TIME);
 
         $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 

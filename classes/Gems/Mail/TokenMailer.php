@@ -271,11 +271,11 @@ class TokenMailer extends \Gems\Mail\RespondentMailer
             $result['todo_track_count'] = $todo['track'];
 
             $result['token']            = strtoupper($this->token->getTokenId());
-            $result['token_from']       = \MUtil\Date::format($this->token->getValidFrom(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
+            $result['token_from']       = \MUtil\Model::reformatDate($this->token->getValidFrom(), 'Y-m-d', 'j F Y');
 
             $result['token_link']       = '[url=' . $url . ']' . $survey->getExternalName() . '[/url]';
 
-            $result['token_until']      = \MUtil\Date::format($this->token->getValidUntil(), \Zend_Date::DATE_LONG, 'yyyy-MM-dd');
+            $result['token_until']      = \MUtil\Model::reformatDate($this->token->getValidUntil(), 'Y-m-d', 'j F Y');;
             $result['token_url']        = $url;
             $result['token_url_input']  = $urlInput;
 
@@ -336,7 +336,7 @@ class TokenMailer extends \Gems\Mail\RespondentMailer
             $result['token_url']                 = '';
             $result['token_url_input']           = '';
             $result['track']                     = '';
-            $result['relation_about']            = $this->_('yourself', $language);
+            $result['relation_about']            = $this->_('yourself');
             $result['relation_about_first_name'] = '';
             $result['relation_about_full_name']  = '';
             $result['relation_about_greeting']   = '';
@@ -359,7 +359,8 @@ class TokenMailer extends \Gems\Mail\RespondentMailer
         }
         
         $tokenData['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
-        $tokenData['gto_mail_sent_date'] = \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd');
+        $now = new \DateTimeImmutable();
+        $tokenData['gto_mail_sent_date'] = $now->format('Y-m-d');
 
         $this->db->update('gems__tokens', $tokenData, $this->db->quoteInto('gto_id_token = ?', $tokenId));
     }

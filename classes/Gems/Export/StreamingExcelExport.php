@@ -12,6 +12,8 @@ namespace Gems\Export;
 
 
 use Gems\Export\ExportAbstract;
+use MUtil\Model;
+
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Writer\WriterFactory;
 use Box\Spout\Writer\Style\StyleBuilder;
@@ -297,12 +299,9 @@ class StreamingExcelExport extends ExportAbstract
         if (isset($this->data[$exportName]) &&
                 isset($this->data[$exportName]['format']) &&
                 in_array('formatDate', (array) $this->data[$exportName]['format'])) {
-            if ($value instanceof \MUtil\Date) {
-                $date = new \DateTime();
-                $date->setTimestamp($value->getTimestamp());
-                return $this->createExcelDate($date);
-            } elseif ($this->validateDate($value, \MUtil\Date::$zendToPhpFormats[$dateFormat])) {
-                $date = \DateTime::createFromFormat(\MUtil\Date::$zendToPhpFormats[$dateFormat], $value);
+
+            $date = Model::getDateTimeInterface($value);
+            if ($date) {
                 return $this->createExcelDate($date);
             }
         }
@@ -377,22 +376,6 @@ class StreamingExcelExport extends ExportAbstract
     }
 
     /**
-     * @param $value string Date value
-     * @param $dateFormat string date format as in the DateTime php class
-     * @return bool True if Date is valid
-     */
-    public function validateDate($value, $dateFormat)
-    {
-        $dateTime = \DateTime::createFromFormat($dateFormat, $value);
-        if ($dateTime) {
-            $writtenDate = str_replace('!', '', $dateTime->format($dateFormat));
-            return $writtenDate === $value;
-        }
-
-        return false;
-    }
-
-    /**
      * Create Excel date stamp from DateTime
      *
      * @param \DateTime $date
@@ -463,15 +446,15 @@ class StreamingExcelExport extends ExportAbstract
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
-                    $options['dateFormat']    = 'yyyy-MM-dd';
+                    $options['dateFormat']    = 'Y-m-d';
                     break;
 
                 case \MUtil\Model::TYPE_DATETIME:
-                    $options['dateFormat']    = 'yyyy-MM-dd HH:mm:ss';
+                    $options['dateFormat']    = 'Y-m-d H:i:s';
                     break;
 
                 case \MUtil\Model::TYPE_TIME:
-                    $options['dateFormat']    = 'HH:mm:ss';
+                    $options['dateFormat']    = 'H:i:s';
                     break;
 
                 case \MUtil\Model::TYPE_NUMERIC:

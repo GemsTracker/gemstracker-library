@@ -1320,10 +1320,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getOtpRequested()
     {
-        return \MUtil\Date::ifDate(
-            $this->_getVar('user_otp_requested'),
-            [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601]
-        );
+        return \MUtil\Model::getDateTimeInterface($this->_getVar('user_otp_requested'));
     }
 
     /**

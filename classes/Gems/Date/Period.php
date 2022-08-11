@@ -11,6 +11,11 @@
 
 namespace Gems\Date;
 
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
+
 /**
  *
  *
@@ -24,62 +29,52 @@ class Period
 {
     /**
      *
-     * @param \MUtil\Date $startDate
+     * @param ?DateTimeInterface $startDate
      * @param string $type
-     * @param int $period Can be nefative
-     * @return \MUtil\Date
+     * @param int $period Can be negative
+     * @return ?DateTimeInterface
      */
-    public static function applyPeriod($startDate, $type, $period)
+    public static function applyPeriod($startDate, $type, $period): ?DateTimeInterface
     {
-        if ($startDate instanceof \MUtil\Date) {
-            $date = clone $startDate;
-
-            if (self::isDateType($type)) {
-                // A 'whole day' period should start at 00:00:00, even when the period is '0'
-                $date->setTime(0);
-            }
-
-            if ($period) {
-                switch (strtoupper($type)) {
-                    case 'D':
-                        $date->addDay($period);
-                        break;
-
-                    case 'H':
-                        $date->addHour($period);
-                        break;
-
-                    case 'M':
-                        $date->addMonth($period);
-                        break;
-
-                    case 'N':
-                        $date->addMinute($period);
-                        break;
-
-                    case 'Q':
-                        $date->addMonth($period * 3);
-                        break;
-
-                    case 'S':
-                        $date->addSecond($period);
-                        break;
-
-                    case 'W':
-                        $date->addDay($period * 7);
-                        break;
-
-                    case 'Y':
-                        $date->addYear($period);
-                        break;
-
-                    default:
-                        throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
-
-                }
-            }
-            return $date;
+        if (! $startDate instanceof DateTimeInterface) {
+            return null;
         }
+        
+        $date = DateTimeImmutable::createFromInterface($startDate);
+
+        if (self::isDateType($type)) {
+            // A 'whole day' period should start at 00:00:00, even when the period is '0'
+            $date = $date->setTime(0, 0, 0);
+        }
+        
+        if ($period) {
+            switch (strtoupper($type)) {
+                case 'Q':
+                    $periodString = 'P' . ($period * 3) . 'M';
+                    break;
+
+                case 'N':
+                    $periodString = 'PT' . $period . 'M;';
+                    break;
+                    
+                case 'H':
+                case 'S':
+                    $periodString = 'PT' . $period . strtoupper($type);
+                    break;
+
+                case 'D':
+                case 'M':
+                case 'W':
+                case 'Y':
+                    $periodString = 'P' . $period . strtoupper($type);
+                    break;
+
+                default:
+                    throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
+
+            }
+        }
+        return $date->add(new DateInterval($periodString));
     }
 
     /**

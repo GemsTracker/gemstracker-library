@@ -17,6 +17,11 @@ use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
+use MUtil\Model;
+
 /**
  * Parent class for all engines that calculate dates using information
  * from other rounds.
@@ -241,10 +246,10 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
 
     /**
      *
-     * @param \MUtil\Date $startDate
+     * @param ?DateTimeInterface $startDate
      * @param string $type
      * @param int $period
-     * @return \MUtil\Date
+     * @return ?DateTimeInterface
      */
     protected function calculateFromDate($startDate, $type, $period)
     {
@@ -253,19 +258,19 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
 
     /**
      *
-     * @param \MUtil\Date $startDate
+     * @param ?DateTimeInterface $startDate
      * @param string $type
      * @param int $period
-     * @return \MUtil\Date
+     * @return ?DateTimeInterface
      */
     protected function calculateUntilDate($startDate, $type, $period)
     {
         $date = $this->calculateFromDate($startDate, $type, $period);
 
-        if ($date instanceof \MUtil\Date) {
+        if ($date instanceof DateTimeImmutable) {
             if (Period::isDateType($type)) {
                 // Make sure day based units are valid until the end of the day.
-                $date->setTimeToDayEnd();
+                $date->setTime(23,59,59);
             }
             return $date;
         }
@@ -936,7 +941,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     abstract protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack);
 
@@ -948,8 +953,8 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param \MUtil\Date $validFrom The calculated new valid from value
-     * @return \MUtil\Date date time or null
+     * @param ?DateTimeInterface $validFrom The calculated new valid from value
+     * @return ?DateTimeInterface date time or null
      */
     abstract protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom);
 

@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use DateTimeImmutable;
+use MUtil\Model;
+
 /**
  *
  *
@@ -100,7 +103,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
+            $format = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
         }
 
         return $format;
@@ -120,7 +123,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
             $this->defaultSearchData = array(
                 'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',
-                'datefrom'            => new \MUtil\Date(),
+                'datefrom'            => new DateTimeImmutable('today'),
                 );
         }
 
@@ -141,7 +144,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
             $filter,
             $this->db,
             $this->getDateFormat(),
-            'yyyy-MM-dd HH:mm:ss');
+            'Y-m-d H:i:s');
 
         if ($where) {
             $filter[] = $where;

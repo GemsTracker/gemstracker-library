@@ -11,7 +11,12 @@
 
 namespace Gems\Tracker;
 
+
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Date\Period;
+use MUtil\Model;
 
 /**
  * Object representing a specific Survey
@@ -33,7 +38,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     
     /**
      *
-     * @var \Gems\Tracker_SourceInterface
+     * @var \Gems\Tracker\SourceInterface
      */
     private $_source;
 
@@ -257,7 +262,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @param string $fieldName Name of answer field
      * @param \Gems\Tracker\Token  $token \Gems token object
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token)
     {
@@ -305,7 +310,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
      * The time the survey was completed according to the source
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getCompletionTime(\Gems\Tracker\Token $token)
     {
@@ -406,10 +411,10 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     /**
      * Calculate the until date for single survey insertion
      *
-     * @param \MUtil\Date $from
-     * @return \MUtil\Date
+     * @param DateTimeInterface $from
+     * @return ?DateTimeInterface
      */
-    public function getInsertDateUntil(\MUtil\Date $from)
+    public function getInsertDateUntil(DateTimeInterface $from)
     {
         return Period::applyPeriod(
                 $from,
@@ -520,7 +525,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
      * The time the survey was started according to the source
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getStartTime(\Gems\Tracker\Token $token)
     {

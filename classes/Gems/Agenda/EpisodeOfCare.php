@@ -11,6 +11,9 @@
 
 namespace Gems\Agenda;
 
+use DateTimeInterface;
+use MUtil\Model;
+
 /**
  *
  * @package    Gems
@@ -222,14 +225,13 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
     /**
      * Return the start date
      *
-     * @return \MUtil\Date Start date as a date or null
+     * @return ?DateTimeInterface Start date as a date or null
      */
-    public function getStartDate()
+    public function getStartDate(): ?DateTimeInterface
     {
         if (isset($this->_gemsData['gec_startdate']) && $this->_gemsData['gec_startdate']) {
-            if (! $this->_gemsData['gec_startdate'] instanceof \MUtil\Date) {
-                $this->_gemsData['gec_startdate'] =
-                        new \MUtil\Date($this->_gemsData['gec_startdate'], \Gems\Tracker::DB_DATE_FORMAT);
+            if (! $this->_gemsData['gec_startdate'] instanceof DateTimeInterface) {
+                $this->_gemsData['gec_startdate'] = Model::getDateTimeInterface($this->_gemsData['gec_startdate']);
             }
             return $this->_gemsData['gec_startdate'];
         }

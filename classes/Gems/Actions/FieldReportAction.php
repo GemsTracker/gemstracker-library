@@ -182,7 +182,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return string
      */
     public function emptyCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -208,7 +208,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return string
      */
     public function fillCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -261,7 +261,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return string
      */
     public function valueCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {

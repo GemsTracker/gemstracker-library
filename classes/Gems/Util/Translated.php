@@ -10,6 +10,10 @@
 
 namespace Gems\Util;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -25,20 +29,6 @@ class Translated
     use TranslateableTrait;
 
     /**
-     * Format string usaed by this project date output to site users
-     *
-     * @var string
-     */
-    protected $phpDateFormatString = 'd-m-Y';
-
-    /**
-     * Format string usaed by this project date time output to site users
-     *
-     * @var string
-     */
-    protected $phpDateTimeFormatString = 'd-m-Y H:i';
-
-    /**
      * Format string usaed by this project time output to site users
      *
      * @var string
@@ -50,14 +40,14 @@ class Translated
      *
      * @var string
      */
-    public $dateFormatString = 'yyyy-MM-dd';
+    public $dateFormatString = 'Y-M-d';
 
     /**
      * DateTime format string used by this project
      *
      * @var string
      */
-    public $dateTimeFormatString = 'yyyy-MM-dd HH:mm:ss';
+    public $dateTimeFormatString = 'Y-M-d H:i';
 
     /**
      * Array representing an empty choice
@@ -88,7 +78,7 @@ class Translated
 
         throw new \Gems\Exception\Coding("Unknown method '$name' requested as callable.");
     }
-
+    
     /**
      * Called after the check that all required registry values
      * have been set correctly has run.
@@ -102,27 +92,18 @@ class Translated
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil\Date $dateTimeValue
+     * @param mixed $dateTimeValue
      * @return string
      */
     public function describeDateFromNow($dateTimeValue)
     {
-        if (! $dateTimeValue) {
+        $dateTime = Model::getDateTimeInterface($dateTimeValue);
+        if (! $dateTime) {
             return null;
         }
 
-        if ($dateTimeValue instanceof \MUtil\Date) {
-            $dateTime = $dateTimeValue;
-        } else{
-            $dateTime = \MUtil\Date::ifDate(
-                $dateTimeValue,
-                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
-            );
-            if (! $dateTime) {
-                return null;
-            }
-        }
-        $days = $dateTime->diffDays();
+        $diff = $dateTime->diff(new DateTimeImmutable());
+        $days = $diff->days;
 
         switch ($days) {
             case -2:
@@ -149,35 +130,25 @@ class Translated
                     }
                 }
 
-                return $dateTime->getDateTime()->format($this->phpDateFormatString);
+                return $dateTime->format($this->dateFormatString);
         }
     }
 
     /**
      * Get a readable version of date / time object with nearby time translated in text
      *
-     * @param \MUtil\Date $dateTimeValue
+     * @param mixed $dateTimeValue
      * @return string
      */
     public function describeTimeFromNow($dateTimeValue)
     {
-        if (! $dateTimeValue) {
+        $dateTime = Model::getDateTimeInterface($dateTimeValue);
+        if (! $dateTime) {
             return null;
         }
 
-        if ($dateTimeValue instanceof \MUtil\Date) {
-            $dateTime = $dateTimeValue;
-        } else{
-            $dateTime = \MUtil\Date::ifDate(
-                $dateTimeValue,
-                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
-            );
-            if (! $dateTime) {
-                return null;
-            }
-        }
-
-        $hours = $dateTime->diffHours();
+        $diff  = $dateTime->diff(new DateTimeImmutable());
+        $hours = $dateTime->h + (24 * $diff->days);
 
         if (abs($hours) < 49) {
             if ($hours > 1) {
@@ -188,7 +159,7 @@ class Translated
             }
 
             // Switch to minutes
-            $minutes = $dateTime->diffMinutes();
+            $minutes = $diff->i;
             if ($minutes > 0) {
                 return sprintf($this->plural('In %d minute', 'In %d minutes', $minutes), $minutes);
             }
@@ -199,13 +170,13 @@ class Translated
             return $this->_('this minute!');
         }
 
-        return $dateTime->getDateTime()->format($this->phpDateTimeFormatString);
+        return $dateTime->format($this->dateTimeFormatString);
     }
 
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDate($dateValue)
@@ -217,7 +188,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'forever' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateForever($dateValue)
@@ -233,7 +204,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'n/a' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateNa($dateValue)
@@ -249,7 +220,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'never' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateNever($dateValue)
@@ -264,7 +235,7 @@ class Translated
     /**
      * Get a readable version of date / time object with nearby days translated in text
      *
-     * @param \MUtil\Date $dateTimeValue
+     * @param mixed $dateTimeValue
      * @param string $format Optioanl PHP date() format
      * @return string
      * @deprecated since version 1.9.1, replaced by describeDateFromNow
@@ -278,7 +249,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'forever' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeForever($dateValue)
@@ -294,7 +265,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'n/a' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeNa($dateValue)
@@ -310,7 +281,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'never' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeNever($dateValue)
@@ -326,7 +297,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'unknown' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateTimeUnknown($dateValue)
@@ -342,7 +313,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      * or 'unknown' when null
      *
-     * @param \MUtil\Date $dateValue
+     * @param mixed $dateValue
      * @return string|\MUtil\Html\HtmlElement
      */
     public function formatDateUnknown($dateValue)
@@ -362,18 +333,18 @@ class Translated
      */
     public function formatTime($dateTimeValue)
     {
-        if ($dateTimeValue instanceof \Zend_Date) {
-            $dateTimeValue = $dateTimeValue->getTimestamp();
+        $dateTime = Model::getDateTimeInterface($dateTimeValue);
+        if (! $dateTime) {
+            return null;
         }
-        $seconds = str_pad($dateTimeValue % 60, 2, '0', STR_PAD_LEFT);
-        $rest    = intval($dateTimeValue / 60);
-        $minutes = str_pad($rest % 60, 2, '0', STR_PAD_LEFT);
-        $hours   = intval($rest / 60);
-        $days    = intval($hours / 24);
+        $diff = $dateTime->diff(new DateTimeImmutable());
 
-        if ($hours > 48) {
-            $hours = $hours % 24;
+        $seconds = str_pad($diff->s, 2, '0', STR_PAD_LEFT);
+        $minutes = str_pad($diff->i, 2, '0', STR_PAD_LEFT);
+        $hours   = $diff->h;
+        $days    = $diff->days;
 
+        if ($days > 1) {
             return sprintf($this->_('%d days %d:%s:%s'), $days, $hours, $minutes, $seconds);
         } elseif ($hours) {
             return sprintf($this->_('%d:%s:%s'), $hours, $minutes, $seconds);

@@ -146,8 +146,8 @@ class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      * Get the string name of the backup file.
-     * With current settings this file will be written in /var/backup/gems_backup_YYYYMMDD.sql or
-     * /var/backup/gems_backup_no_respondent_data_YYYYMMDD.sql if respondent data is not included
+     * With current settings this file will be written in /var/backup/gems_backup_YMD.sql or
+     * /var/backup/gems_backup_no_respondent_data_Ymd.sql if respondent data is not included
      *
      * @param $filter
      * @return string

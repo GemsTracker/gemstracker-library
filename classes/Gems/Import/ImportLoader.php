@@ -238,19 +238,19 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      * The file name to use for final storage, minus the extension
      *
      * @param string $controller Name of controller (or other id)
-     * @param mixed $dateValue Optional date item to use in filename, timestamp, or DateObject or \MUtil\Date
+     * @param mixed $dateValue Optional date item to use in filename, timestamp, or DateTimeInterface
      * @return string
      */
     public function getLongtermFileName($controller, $dateValue = null)
     {
-        if ($dateValue instanceof \Zend_Date) {
+        if ($dateValue instanceof \DateTimeInterface) {
             $date = $dateValue;
         } else {
-            $date = new \MUtil\Date($dateValue);
+            $date = new \DateTimeImmutable($dateValue);
         }
 
         $name[] = $controller;
-        $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
+        $name[] = $date->toString('Y-m-dTH-i-s');
         $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $this->currentUser->getLoginName());
         $name[] = $this->getOrganizationCode();
 

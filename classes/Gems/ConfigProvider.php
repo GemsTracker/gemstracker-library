@@ -39,6 +39,7 @@ use Mezzio\Session\Ext\PhpSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
+use MUtil\Model;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
@@ -251,6 +252,47 @@ class ConfigProvider
 
     protected function getLocaleSettings(): array
     {
+//        $jstUrl = $this->basepath->getBasePath() . '/gems/js';
+
+        $dateFormat = [
+            'dateFormat'   => 'd-m-Y',
+            'description'  => 'dd-mm-yyyy',
+            'jQueryParams' => [
+                'changeMonth' => true, 
+                'changeYear'  => true, 
+                'duration'    => 'fast',
+                ],
+            'size'         => 10,
+            'storageFormat' => 'Y-m-d',
+            ];
+
+        $timeFormat = [
+            'dateFormat'   => 'H:i',
+            'description'  => 'hh:mm',
+            'jQueryParams' => [
+                'duration'    => 'fast', 
+                'stepMinute'  => 5, 
+//                'timeJsUrl'   => $jstUrl,
+                ],
+            'size'        => 6,
+            'storageFormat' => 'H:i:s',
+            ];
+
+        $dateTimeFormat = [
+            'dateFormat'   => 'd-m-Y H:i',
+            'description'  => 'dd-mm-yyyy hh:mm',
+            'jQueryParams' => [
+                'changeMonth' => true,
+                'changeYear'  => true,
+                'duration'    => 'fast',
+                'stepMinute'  => 5,
+                'size'        => 8,
+//                'timeJsUrl'   => $jstUrl,
+            ],
+            'size'         => 16,
+            'storageFormat' => 'Y-m-d H:i:s',
+        ];
+
         return [
             'availableLocales' => [
                 'en',
@@ -259,6 +301,27 @@ class ConfigProvider
                 'fr',
             ],
             'default' => 'en',
+            'defaultTypes' => [
+                Model::TYPE_DATE     => $dateFormat,
+                Model::TYPE_DATETIME => $dateTimeFormat,
+                Model::TYPE_TIME     => $timeFormat,
+            ],
+            'localeTypes' => [
+                'nl' => [
+                    Model::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
+                    Model::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
+                    Model::TYPE_TIME     => ['description' => 'uu:mm'],
+                ],
+                'de' => [
+                    Model::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
+                    Model::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
+                    Model::TYPE_TIME     => ['description' => 'ss:mm'],
+                ],
+                'fr' => [
+                    Model::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
+                    Model::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
+                ],
+            ],
         ];
     }
 

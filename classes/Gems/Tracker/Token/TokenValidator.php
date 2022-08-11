@@ -11,6 +11,11 @@
 
 namespace Gems\Tracker\Token;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
+use MUtil\Model;
+
 /**
  * Checks whether a token kan be used for the ask/forward loop
  *
@@ -108,7 +113,7 @@ class TokenValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Val
      *
      * @param  mixed $value
      * @return boolean
-     * @throws \Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value)
     {
@@ -187,13 +192,13 @@ class TokenValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Val
 
         $token = $this->tracker->getToken($value);
         if ($token && $token->exists && $token->getReceptionCode()->isSuccess()) {
-            $currentDate = new \MUtil\Date();
+            $currentDate = new DateTimeImmutable();
 
             if ($completionTime = $token->getCompletionTime()) {
                 // Reuse means a user can use an old token to check for new surveys
                 if ($reuse >= 0) {
                     // Oldest date AFTER completiondate. Oldest date is today minus reuse time
-                    if ($currentDate->diffDays($completionTime) <= $reuse) {
+                    if ($currentDate->diff($completionTime)->days <= $reuse) {
                         // It is completed and may still be used to look
                         // up other valid tokens.
                         return true;
@@ -204,14 +209,14 @@ class TokenValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Val
             }
 
             $fromDate = $token->getValidFrom();
-            if ((null === $fromDate) || $currentDate->isEarlier($fromDate)) {
+            if ((null === $fromDate) || ($currentDate->getTimestamp() < $fromDate->getTimestamp())) {
                 // Current date is BEFORE from date
                 $this->_messages = $this->translate->_('This token cannot (yet) be used.');
                 return false;
             }
 
             if ($untilDate = $token->getValidUntil()) {
-                if ($currentDate->isLater($untilDate)) {
+                if ($currentDate->getTimestamp() > $untilDate->getTimestamp()) {
                     //Current date is AFTER until date
                     $this->_messages = $this->translate->_('This token is no longer valid.');
                     return false;

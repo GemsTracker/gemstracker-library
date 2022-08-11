@@ -12,6 +12,8 @@
 
 namespace Gems\Model;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Gems\Util\Translated;
 
 /**
@@ -92,7 +94,8 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
         return $this->_defaults;
     }
 
-    public function afterRegistry() {
+    public function afterRegistry() 
+    {
         parent::afterRegistry();
 
         // Make sure we have at least some default data
@@ -104,29 +107,26 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
     /**
      * Returns current age or at a given date when supplied
      *
-     * @param \MUtil\Date|null $date
+     * @param ?DateTimeInterface $date To comare with
      * @return int
      */
-    public function getAge($date = NULL)
+    public function getAge($date = NULL): ?DateTimeImmutable
     {
+        $birthDate = $this->getBirthDate();
+        if (! $birthDate instanceof DateTimeInterface) {
+            return null;
+        }
+
         if (is_null($date)) {
-            $date = new \MUtil\Date();
+            $date = new DateTimeImmutable();
+        } elseif (! $date instanceof \DateTimeInterface) {
+            return null;
         }
-
-        if ($date instanceof \MUtil\Date) {
-            // Now calculate age
-            $birthDate = $this->getBirthDate();
-            if ($birthDate instanceof \Zend_Date) {
-				$age = $date->get('Y') - $birthDate->get('Y');
-				if ($date->get('MMdd') < $birthDate->get('MMdd')) {
-					$age--;
-				}
-			} else {
-				return;
-			}
-        }
-
-        return $age;
+        
+        // Now calculate age
+        $diff = $birthDate->diff($date);
+        
+        return $diff->y;
     }
 
     public function getBirthDate()

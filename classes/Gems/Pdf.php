@@ -140,7 +140,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
         }
 
 
-        // Acrobat defined date format D:YYYYMMDDHHmmSSOHH'mm
+        // Acrobat defined date format D:YmdHisP'mm
         $pdf->properties['ModDate']  = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
         $pdf->properties['Producer'] = $projectName;       // Avoid warning on Word with a (R) symbol
         $pdf->properties['Creator']  = $projectName;       // Avoid warning on Word with a (R) symbol

@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Engine;
 
+use DateTimeInterface;
+
 use Gems\Util\Translated;
 
 /**
@@ -149,7 +151,7 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack)
     {
@@ -189,8 +191,8 @@ class NextStepEngine extends \Gems\Tracker\Engine\StepEngineAbstract
      * @param int $prevRoundId Id from round
      * @param \Gems\Tracker\Token $token
      * @param \Gems\Tracker\RespondentTrack $respTrack
-     * @param \MUtil\Date $validFrom The calculated new valid from value or null
-     * @return \MUtil\Date date time or null
+     * @param ?DateTimeInterface $validFrom The calculated new valid from value or null
+     * @return ?DateTimeInterface date time or null
      */
     protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respTrack, $validFrom)
     {

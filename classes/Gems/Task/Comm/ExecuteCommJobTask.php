@@ -205,7 +205,8 @@ class ExecuteCommJobTask extends \MUtil\Task\TaskAbstract
     public function incrementTokenCommunicationCount($tokenId)
     {
         $tokenData['gto_mail_sent_num'] = new \Zend_Db_Expr('gto_mail_sent_num + 1');
-        $tokenData['gto_mail_sent_date'] = \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd');
+        $now = new \DateTimeImmutable();
+        $tokenData['gto_mail_sent_date'] = $now->format('Y-m-d');
 
         $this->db->update('gems__tokens', $tokenData, $this->db->quoteInto('gto_id_token = ?', $tokenId));
     }

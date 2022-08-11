@@ -238,7 +238,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
                 'elementClass', 'Hidden');
 
         $this->setIfExists('gec_status',          'required', true);
-        $this->setIfExists('gec_startdate',       'default', new \MUtil\Date(),
+        $this->setIfExists('gec_startdate',       'default', new \DateTimeImmutable(),
                 'elementClass', 'Date',
                 'required', true);
 

@@ -93,11 +93,6 @@ class TrackModel extends \MUtil\Model\TableModel
     public function applyFormatting($detailed = false, $edit = false)
     {
         $translator = $this->getTranslateAdapter();
-        if ($edit) {
-            $dateFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
-        } else {
-            $dateFormat = $this->translatedUtil->dateFormatString;
-        }
 
         $this->resetOrder();
 
@@ -117,10 +112,8 @@ class TrackModel extends \MUtil\Model\TableModel
         $this->set('gtr_active',        'label', $translator->_('Active'),
                 'multiOptions', $this->translatedUtil->getYesNo());
         $this->set('gtr_date_start',    'label', $translator->_('From'),
-                'dateFormat', $dateFormat,
                 'formatFunction', $this->translatedUtil->formatDate);
         $this->set('gtr_date_until',    'label', $translator->_('Use until'),
-                'dateFormat', $dateFormat,
                 'formatFunction', $this->translatedUtil->formatDateForever);
         $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
                 'size', 10,

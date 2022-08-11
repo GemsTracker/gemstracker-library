@@ -11,7 +11,12 @@
 
 namespace Gems\Tracker\Source;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Log\LogHelper;
+
+use MUtil\Model;
 
 /**
  * LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
@@ -27,9 +32,9 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
-    const LS_DB_COMPLETION_FORMAT = 'yyyy-MM-dd HH:mm';
-    const LS_DB_DATE_FORMAT       = 'yyyy-MM-dd';
-    const LS_DB_DATETIME_FORMAT   = 'yyyy-MM-dd HH:mm:ss';
+    const LS_DB_COMPLETION_FORMAT = 'Y-m-d H:i';
+    const LS_DB_DATE_FORMAT       = 'Y-m-d';
+    const LS_DB_DATETIME_FORMAT   = 'Y-m-d H:i:s';
 
     const QUESTIONS_TABLE    = 'questions';
     const SURVEY_TABLE       = 'survey_';
@@ -872,17 +877,14 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token  $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
-            return \MUtil\Date::ifDate(
-                    $answers[$fieldName],
-                    array(self::LS_DB_DATETIME_FORMAT, self::LS_DB_DATE_FORMAT)
-                    );
+            return Model::getDateTimeInterface($answers[$fieldName], [self::LS_DB_DATETIME_FORMAT, self::LS_DB_DATE_FORMAT]);
         }
     }
 
@@ -901,7 +903,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getCompletionTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
@@ -936,7 +938,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
                     $submitDate = $lsDb->fetchOne("SELECT submitdate FROM $lsSurvey WHERE token = ? LIMIT 1", $tokenId);
 
                     if ($submitDate) {
-                        $submitDate = \MUtil\Date::ifDate($submitDate, self::LS_DB_DATETIME_FORMAT);
+                        $submitDate = Model::getDateTimeInterface($submitDate, self::LS_DB_DATETIME_FORMAT);
                         if (null === $submitDate) {
                             $submitDate = false; // Null does not trigger cacheHas()
                         }
@@ -948,7 +950,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
             $token->cacheSet('submitdate', $submitDate);
         }
 
-        return $submitDate instanceof \MUtil\Date ? $submitDate : null;
+        return $submitDate instanceof DateTimeInterface ? $submitDate : null;
     }
 
     /**
@@ -1277,7 +1279,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getStartTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
@@ -1389,7 +1391,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      */
     public function getValidDates(\Gems\Tracker\Token $token)
     {
-        $now = new \MUtil\Date();
+        $now = new DateTimeImmutable();
         // For extra protection, we add valid from/to dates as needed instead of leaving them in GemsTracker only
         $tokenFrom  = $token->getValidFrom();
         $tokenUntil = $token->getValidUntil();
@@ -1401,30 +1403,17 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
                 $lsUntil = $tokenUntil;
             } else {
                 // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
-                $lsUntil = clone $now;
-                $lsUntil->setTimeToDayEnd();
+                $lsUntil = $now->setTime(23,59,59);
             }
         } else {
             // No start date, use save date in the past to block access
-            $lsFrom  = new \MUtil\Date('1900-01-01');
+            $lsFrom  = DateTimeImmutable::createFromFormat('Y-m-d', '1900-01-01');
             $lsUntil = $lsFrom;
         }
 
-//        $lsFrom     = is_null($tokenFrom) ? new \MUtil\Date('1900-01-01') : $gtokenFrom;
-//        if (!is_null($tokenUntil) && $tokenUntil->isEarlier($now)) {
-//            $lsUntil = $tokenUntil;
-//        } elseif (!is_null($tokenFrom)) {
-//            // To end of day. If entering via GemsTracker it will always be updated as long as the token is still valid
-//            $lsUntil = clone $now;
-//            $lsUntil->setTimeToDayEnd();
-//        } else {
-//            // No valid from date, use same date as until
-//            $lsUntil = $lsFrom;
-//        }
-
         $values = [
-            'validfrom'  => $lsFrom->toString(self::LS_DB_DATETIME_FORMAT),
-            'validuntil' => $lsUntil->toString(self::LS_DB_DATETIME_FORMAT)
+            'validfrom'  => $lsFrom->format(self::LS_DB_DATETIME_FORMAT),
+            'validuntil' => $lsUntil->format(self::LS_DB_DATETIME_FORMAT)
         ];
 
         return $values;

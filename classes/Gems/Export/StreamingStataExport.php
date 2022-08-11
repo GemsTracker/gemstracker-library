@@ -522,8 +522,8 @@ class StreamingStataExport extends ExportAbstract
 
         $result = parent::filterHtml($result);
 
-        if ($result instanceof \MUtil\Date) {
-            $result = $result->toString('yyyy-MM-dd hh:mm:ss');
+        if ($result instanceof \DateTimeInterface) {
+            $result = $result->format('Y-m-d H:i:s');
         }
 
         return $result;

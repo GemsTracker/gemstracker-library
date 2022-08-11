@@ -11,9 +11,14 @@
 
 namespace Gems\Agenda;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\EpisodeOfCare;
 use Gems\Agenda\FilterTracer;
+
+use MUtil\Model;
 
 /**
  *
@@ -233,7 +238,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         $end         = $respTrack->getEndDate();
         $wait        = $filter->getWaitDays();
 
-        if ((! $end) || ($curr->diffDays($end) <= $wait)) {
+        $diff = $curr->diff($end);
+        
+        if ((! $end) || ($diff->days <= $wait)) {
             $createTrack = false;
             if ($this->filterTracer) {
                 if (! $end) {
@@ -243,7 +250,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
                 } else {
                     $this->filterTracer->setSkipCreationMessage(sprintf(
                             $this->_('%d days since previous end date, %d required'),
-                            $curr->diffDays($end)                            ,
+                            $diff->days,
                             $wait
                             ));
                 }
@@ -311,8 +318,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         $curr        = $this->getAdmissionTime();
         $start       = $respTrack->getStartDate();
         $wait        = $filter->getWaitDays();
+        $diff        = $curr->diff($start);
 
-        if ((! $start) || ($curr->diffDays($start) <= $wait)) {
+        if ((! $start) || ($diff->days <= $wait)) {
             $createTrack = false;
             if ($this->filterTracer) {
                 if (! $start) {
@@ -322,7 +330,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
                 } else {
                     $this->filterTracer->setSkipCreationMessage(sprintf(
                             $this->_('%d days since previous startdate, %d required'),
-                            $curr->diffDays($start)                            ,
+                            $diff->days,
                             $wait
                             ));
                 }
@@ -479,14 +487,14 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
     /**
      * Return the admission time
      *
-     * @return \MUtil\Date Admission time as a date or null
+     * @return ?DateTimeInterface Admission time as a date or null
      */
     public function getAdmissionTime()
     {
         if (isset($this->_gemsData['gap_admission_time']) && $this->_gemsData['gap_admission_time']) {
-            if (! $this->_gemsData['gap_admission_time'] instanceof \MUtil\Date) {
+            if (! $this->_gemsData['gap_admission_time'] instanceof DateTimeInterface) {
                 $this->_gemsData['gap_admission_time'] =
-                        new \MUtil\Date($this->_gemsData['gap_admission_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
+                        DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $this->_gemsData['gap_admission_time']);
             }
             // Clone to make sure calculations can be performed without changing this object
             return clone $this->_gemsData['gap_admission_time'];
@@ -543,7 +551,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      */
     public function getDisplayString()
     {
-        $results[] = $this->getAdmissionTime()->toString($this->agenda->appointmentDisplayFormat);
+        $results[] = $this->getAdmissionTime()->format($this->agenda->appointmentDisplayFormat);
         $results[] = $this->getActivityDescription();
         $results[] = $this->getProcedureDescription();
         $results[] = $this->getLocationDescription();
@@ -554,7 +562,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @return \Gems|Agenda\EpisodeOfCare
+     * @return \Gems\Agenda\EpisodeOfCare
      */
     public function getEpisode()
     {
@@ -866,7 +874,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         }
 
         // Only check if we need to create when this appointment is active and today or later
-        if ($this->isActive() && $this->getAdmissionTime()->isLaterOrEqual(new \MUtil\Date())) {
+        if ($this->isActive() && ($this->getAdmissionTime() >= time())) {
             $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
         } else {
             if ($this->filterTracer) {

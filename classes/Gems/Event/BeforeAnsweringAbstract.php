@@ -236,8 +236,8 @@ abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbs
                 $value = $rawFieldData[$key];
                 
                 // If it is a date(/time) field export it in ISO format
-                if ($rawFieldData[$key] instanceof \MUtil\Date) {
-                    $value = $value->toString('yyyy-MM-dd HH:mm:ss');
+                if ($rawFieldData[$key] instanceof \DateTimeInterface) {
+                    $value = $value->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
                 }
                 $results[$key] = $value;
             }

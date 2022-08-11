@@ -14,6 +14,7 @@ namespace Gems;
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSelect;
 use Gems\Agenda\EpisodeOfCare;
+use MUtil\Model;
 
 /**
  *
@@ -42,13 +43,13 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string
      */
-    public $appointmentDisplayFormat = 'dd-MM-yyyy HH:mm';
+    public $appointmentDisplayFormat = 'd-m-Y H:i';
 
     /**
      *
      * @var string
      */
-    public $episodeDisplayFormat = 'dd-MM-yyyy';
+    public $episodeDisplayFormat = 'd-M-Y';
 
     /**
      *
@@ -377,8 +378,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getAppointmentDisplay(array $row)
     {
-        $date = new \MUtil\Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
-        $results[] = $date->toString($this->appointmentDisplayFormat);
+        $results[] = Model::reformatDate($row['gap_admission_time'], null, $this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
         }

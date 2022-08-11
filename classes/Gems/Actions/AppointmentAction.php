@@ -187,8 +187,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
 
                 if ($action == 'create') {
                     // Set default date to tomoorow.
-                    $now  = new \MUtil\Date();
-                    $now->addDay(1);
+                    $now  = new \DateTimeImmutable('tomorrow');
 
                     $loid = $this->db->fetchOne(
                             "SELECT gap_id_location

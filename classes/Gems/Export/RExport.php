@@ -251,15 +251,15 @@ class RExport extends ExportAbstract
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
-                    $options['dateFormat']    = 'yyyy-MM-dd';
+                    $options['dateFormat']    = 'Y-M-d';
                     break;
 
                 case \MUtil\Model::TYPE_DATETIME:
-                    $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
+                    $options['dateFormat']    = 'd-M-Y H:i:s';
                     break;
 
                 case \MUtil\Model::TYPE_TIME:
-                    $options['dateFormat']    = 'HH:mm:ss';
+                    $options['dateFormat']    = 'H:i:s';
                     break;
 
                 case \MUtil\Model::TYPE_NUMERIC:

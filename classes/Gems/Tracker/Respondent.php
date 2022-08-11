@@ -11,8 +11,13 @@
 
 namespace Gems\Tracker;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Translate\GenderTranslation;
 use Gems\Util\Translated;
+
+use MUtil\Model;
 
 /**
  *
@@ -146,7 +151,7 @@ class Respondent extends \Gems\Registry\TargetAbstract
      * Set menu parameters from this token
      *
      * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\Tracker\RespondentTrack (continuation pattern)
+     * @return \Gems\Tracker\Respondent (continuation pattern)
      */
     public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
     {
@@ -175,28 +180,24 @@ class Respondent extends \Gems\Registry\TargetAbstract
     public function getAge($date = null, $months = false)
     {
         $birthDate = $this->getBirthDay();
-
-        if (is_null($date)) {
-            $date = new \MUtil\Date();
+        if (! $birthDate instanceof DateTimeInterface) {
+            return null;
         }
 
-        if (!($birthDate instanceof \MUtil\Date) || !($date instanceof \MUtil\Date)) {
+        if (is_null($date)) {
+            $date = new DateTimeImmutable();
+        } elseif (! $date instanceof DateTimeInterface) {
             return null;
         }
 
         // Now calculate age
-        if ($months) {
-            $age  = $date->diffMonths($birthDate);
-            $unit = 'dd';
-        } else {
-            $age  = $date->diffYears($birthDate);
-            $unit = 'MMdd';
-        }
-        if ($date->get($unit) < $birthDate->get($unit)) {
-            $age--;
-        }
+        $diff = $birthDate->diff($date);
 
-        return $age;
+        if ($months) {
+            return ($diff->y * 12) + $diff->m;
+        }
+        
+        return $diff->y;
     }
 
     /**
@@ -242,21 +243,22 @@ class Respondent extends \Gems\Registry\TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return \MUtil\Date
+     * @return ?DateTimeInterface
      */
-    public function getDate($fieldName)
+    public function getDate($fieldName) : ?DateTimeInterface
     {
         if (isset($this->_gemsData[$fieldName])) {
             $date = $this->_gemsData[$fieldName];
 
             if ($date) {
-                if ($date instanceof \MUtil\Date) {
+                if ($date instanceof DateTimeInterface) {
                     return $date;
                 }
 
-                return \MUtil\Date::ifDate($date, [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT]);
+                return Model::getDateTimeInterface($date, [\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT]);
             }
         }
+        return null;
     }
 
     /**
@@ -284,7 +286,7 @@ class Respondent extends \Gems\Registry\TargetAbstract
      *
      * @return string
      */
-    public function getEmailAddress()
+    public function getEmailAddress(): string
     {
         return $this->_gemsData['gr2o_email'];
     }
@@ -366,7 +368,8 @@ class Respondent extends \Gems\Registry\TargetAbstract
      * Get the respondents preferred language
      * @return string
      */
-    public function getLanguage() {
+    public function getLanguage() 
+    {
         if (!isset($this->respondentLanguage)) {
             $this->respondentLanguage = $this->_gemsData['grs_iso_lang'];
         }

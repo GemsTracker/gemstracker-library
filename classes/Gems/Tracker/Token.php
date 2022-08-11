@@ -11,9 +11,13 @@
 
 namespace Gems\Tracker;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
 use Gems\Util\Translated;
+use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
 
 
@@ -115,7 +119,7 @@ class Token extends \Gems\Registry\TargetAbstract
     protected $db;
 
     /**
-     * @var \Gems\Event\EventDispatcher
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $event;
 
@@ -351,10 +355,7 @@ class Token extends \Gems\Registry\TargetAbstract
                 ($completed == 0) &&
                 ($validFrom = $this->getValidFrom())) {
 
-            $validUntil = $this->getValidUntil();
-            $today = new \MUtil\Date();
-
-            $canBeTaken = $validFrom->isEarlier($today) && ($validUntil ? $validUntil->isLater($today) : true);
+            $canBeTaken = $this->isCurrentlyValid();
         }
         $source->offsetSet('can_be_taken', $canBeTaken);
 
@@ -525,9 +526,9 @@ class Token extends \Gems\Registry\TargetAbstract
             $values['gto_in_source'] = 1;
             $survey                  = $this->getSurvey();
             $startTime               = $survey->getStartTime($this);
-            if ($startTime instanceof \MUtil\Date) {
+            if ($startTime instanceof DateTimeInterface) {
                 // Value from source overrules any set date time
-                $values['gto_start_time'] = $startTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+                $values['gto_start_time'] = $startTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
 
             } else {
                 // Otherwise use the time kept by \Gems.
@@ -535,7 +536,7 @@ class Token extends \Gems\Registry\TargetAbstract
 
                 //What if we have older tokens... where no gto_start_time was set??
                 if (is_null($startTime)) {
-                    $startTime = new \MUtil\Date();
+                    $startTime = new DateTimeImmutable();
                 }
 
                 // No need to set $values['gto_start_time'], it does not change
@@ -545,19 +546,19 @@ class Token extends \Gems\Registry\TargetAbstract
                 $complTime         = $survey->getCompletionTime($this);
                 $setCompletionTime = true;
 
-                if (! $complTime instanceof \MUtil\Date) {
+                if (! $complTime instanceof DateTimeInterface) {
                     // Token is completed but the source cannot tell the time
                     //
                     // Try to see it was stored already
                     $complTime = $this->getDateTime('gto_completion_time');
 
-                    if ($complTime instanceof \MUtil\Date) {
+                    if ($complTime instanceof DateTimeInterface) {
                         // Again no need to change a time that did not change
                         unset($values['gto_completion_time']);
                         $setCompletionTime = false;
                     } else {
                         // Well anyhow it was completed now or earlier. Get the current moment.
-                        $complTime = new \MUtil\Date();
+                        $complTime = new DateTimeImmutable();
                     }
                 }
 
@@ -581,7 +582,7 @@ class Token extends \Gems\Registry\TargetAbstract
 
                 //Reset completiontime to old value, so changes will be picked up
                 $this->_gemsData['gto_completion_time'] = $oldCompletionTime;
-                $values['gto_duration_in_sec']          = max($complTime->diffSeconds($startTime), 0);
+                $values['gto_duration_in_sec']          = max($complTime->getTimestamp() - $startTime->getTimestamp(), 0);
 
                 //If the survey has a resultfield, store it
                 if ($resultField = $survey->getResultField()) {
@@ -705,7 +706,7 @@ class Token extends \Gems\Registry\TargetAbstract
      * Returns a field from the raw answers as a date object.
      *
      * @param string $fieldName Name of answer field
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getAnswerDateTime($fieldName)
     {
@@ -778,16 +779,17 @@ class Token extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @return \MUtil\Date Completion time as a date or null
+     * @return ?DateTimeInterface Completion time as a date or null
      */
-    public function getCompletionTime()
+    public function getCompletionTime(): ?DateTimeInterface
     {
         if (isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time']) {
-            if ($this->_gemsData['gto_completion_time'] instanceof \MUtil\Date) {
+            if ($this->_gemsData['gto_completion_time'] instanceof DateTimeInterface) {
                 return $this->_gemsData['gto_completion_time'];
             }
-            return new \MUtil\Date($this->_gemsData['gto_completion_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
+            return Model::getDateTimeInterface($this->_gemsData['gto_completion_time'], \Gems\Tracker::DB_DATETIME_FORMAT);
         }
+        return null;
     }
 
     /**
@@ -861,20 +863,18 @@ class Token extends \Gems\Registry\TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return \MUtil\Date
+     * @return ?DateTimeInterface
      */
-    public function getDateTime($fieldName)
+    public function getDateTime($fieldName): ?DateTimeInterface
     {
         if (isset($this->_gemsData[$fieldName])) {
-            if ($this->_gemsData[$fieldName] instanceof \MUtil\Date) {
+            if ($this->_gemsData[$fieldName] instanceof DateTimeInterface) {
                 return $this->_gemsData[$fieldName];
             }
 
-            return \MUtil\Date::ifDate(
-                    $this->_gemsData[$fieldName],
-                    array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT)
-                    );
+            return Model::getDateTimeInterface($this->_gemsData[$fieldName]);
         }
+        return null;
     }
 
     /**
@@ -887,7 +887,7 @@ class Token extends \Gems\Registry\TargetAbstract
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenDeleteSnippetNames($this);
         } else {
-            return 'Token\\TokenNotFoundSnippet';
+            return ['Token\\TokenNotFoundSnippet'];
         }
     }
 
@@ -901,7 +901,7 @@ class Token extends \Gems\Registry\TargetAbstract
         if ($this->exists) {
             return $this->getTrackEngine()->getTokenEditSnippetNames($this);
         } else {
-            return 'Token\\TokenNotFoundSnippet';
+            return ['Token\\TokenNotFoundSnippet'];
         }
     }
 
@@ -982,7 +982,7 @@ class Token extends \Gems\Registry\TargetAbstract
     /**
      * Returns the next unanswered token for the person answering this token
      *
-     * @return \Gems\Tracker\Token
+     * @return ?Token
      */
     public function getNextUnansweredToken()
     {
@@ -1007,6 +1007,7 @@ class Token extends \Gems\Registry\TargetAbstract
         if ($tokenData = $tokenSelect->fetchRow()) {
             return $this->tracker->getToken($tokenData);
         }
+        return null;
     }
 
     /**
@@ -1570,18 +1571,18 @@ class Token extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @return \MUtil\Date Valid from as a date or null
+     * @return ?DateTimeInterface Valid from as a date or null
      */
-    public function getValidFrom()
+    public function getValidFrom(): ?DateTimeInterface
     {
         return $this->getDateTime('gto_valid_from');
     }
 
     /**
      *
-     * @return \MUtil\Date Valid until as a date or null
+     * @return ?DateTimeInterface Valid until as a date or null
      */
-    public function getValidUntil()
+    public function getValidUntil(): ?DateTimeInterface
     {
         return $this->getDateTime('gto_valid_until');
     }
@@ -1589,8 +1590,6 @@ class Token extends \Gems\Registry\TargetAbstract
     /**
      * Survey dependent calculations / answer changes that must occur after a survey is completed
      *
-     * @param type $tokenId The tokend the answers are for
-     * @param array $tokenAnswers Array with answers. May be changed in process
      * @return array The changed values
      */
     public function handleAfterCompletion()
@@ -1835,8 +1834,8 @@ class Token extends \Gems\Registry\TargetAbstract
     {
         $date = $this->getValidUntil();
 
-        if ($date instanceof \MUtil\Date) {
-            return $date->isEarlierOrEqual(time());
+        if ($date instanceof DateTimeInterface) {
+            return time() > $date->getTimestamp();
         }
 
         return false;
@@ -1872,8 +1871,8 @@ class Token extends \Gems\Registry\TargetAbstract
     {
         $date = $this->getValidFrom();
 
-        if ($date instanceof \MUtil\Date) {
-            return $date->isLaterOrEqual(time());
+        if ($date instanceof DateTimeInterface) {
+            return time() < $date->getTimestamp();
         }
 
         return true;
@@ -1960,7 +1959,7 @@ class Token extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @param string|\MUtil\Date $completionTime Completion time as a date or null
+     * @param string $completionTime Completion time as a date or null
      * @param int $userId The current user
      * @return \Gems\Tracker\Token (continuation pattern)
      */
@@ -1968,14 +1967,11 @@ class Token extends \Gems\Registry\TargetAbstract
     {
         $values['gto_completion_time'] = null;
         if (!is_null($completionTime)) {
-            if (! $completionTime instanceof \Zend_Date) {
-                $completionTime = \MUtil\Date::ifDate(
-                        $completionTime,
-                        array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, null)
-                        );
+            if (! $completionTime instanceof DateTimeInterface) {
+                $completionTime = Model::getDateTimeInterface($completionTime);
             }
-            if ($completionTime instanceof \Zend_Date) {
-                $values['gto_completion_time'] = $completionTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+            if ($completionTime instanceof DateTimeInterface) {
+                $values['gto_completion_time'] = $completionTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
             }
         }
         $this->_updateToken($values, $userId);
@@ -1997,7 +1993,7 @@ class Token extends \Gems\Registry\TargetAbstract
     {
         $values = [
             'gto_mail_sent_num' => new \Zend_Db_Expr('gto_mail_sent_num + 1'),
-            'gto_mail_sent_date' => \MUtil\Date::format(new \Zend_Date(), 'yyyy-MM-dd'),
+            'gto_mail_sent_date' => (new DateTimeImmutable())->format('Y-m-d'),
         ];
 
         $this->_updateToken($values, $this->currentUser->getUserId());
@@ -2099,28 +2095,30 @@ class Token extends \Gems\Registry\TargetAbstract
     public function setValidFrom($validFrom, $validUntil, $userId)
     {
         $mailSentDate = $this->getMailSentDate();
-        if (! $mailSentDate instanceof \MUtil\Date) {
-            $mailSentDate = \MUtil\Date::ifDate($mailSentDate, [\Gems\Tracker::DB_DATE_FORMAT, \Gems\Tracker::DB_DATETIME_FORMAT]);
+        if (! $mailSentDate instanceof DateTimeInterface) {
+            $mailSentDate = Model::getDateTimeInterface($mailSentDate, [\Gems\Tracker::DB_DATE_FORMAT, \Gems\Tracker::DB_DATETIME_FORMAT]);
         }
         if ($validFrom && $mailSentDate) {
             // Check for newerness
 
-            if ($validFrom instanceof \Zend_Date) {
+            if ($validFrom instanceof DateTimeInterface) {
                 $start = $validFrom;
             } else {
-                $start = new \MUtil\Date($validFrom, \Gems\Tracker::DB_DATETIME_FORMAT);
+                $start = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $validFrom);
             }
 
             if ($start->isLater($mailSentDate)) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
-                $now = new \MUtil\Date();
+                $format = Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat');
+                
+                $now = new DateTimeImmutable();
                 $newComment = sprintf(
                     $this->_('%s: Reset number of contact moments because new start date %s is later than last contact date (%s).'),
-                    $now->toString('yyyy-MM-dd HH:mm:ss'),
-                    $start->toString('yyyy-MM-dd HH:mm:ss'),
-                    $mailSentDate->toString('yyyy-MM-dd HH:mm:ss')
+                    $now->format($format),
+                    $start->format($format),
+                    $mailSentDate->format($format)
                 );
                 $comment = $this->getComment();
                 if (!empty($comment)) {
@@ -2130,13 +2128,13 @@ class Token extends \Gems\Registry\TargetAbstract
             }
         }
 
-        if ($validFrom instanceof \Zend_Date) {
-            $validFrom = $validFrom->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+        if ($validFrom instanceof DateTimeInterface) {
+            $validFrom = $validFrom->format(\Gems\Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validFrom) {
             $validFrom = null;
         }
-        if ($validUntil instanceof \Zend_Date) {
-            $validUntil = $validUntil->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+        if ($validUntil instanceof DateTimeInterface1) {
+            $validUntil = $validUntil->format(\Gems\Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validUntil) {
             $validUntil = null;
         }
@@ -2162,7 +2160,7 @@ class Token extends \Gems\Registry\TargetAbstract
         //
         // For some reason mysql prepared parameters do nothing with a \Zend_Db_Expr
         // object and that causes an error when using CURRENT_TIMESTAMP
-        $current = \MUtil\Date::now()->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+        $current = (new DateTimeImmutable())->format(\Gems\Tracker::DB_DATETIME_FORMAT);
         $rValues = array(
             'gdr_id_token'   => $this->_tokenId,
             'gdr_changed'    => $current,

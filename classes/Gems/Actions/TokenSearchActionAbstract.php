@@ -12,6 +12,7 @@
 namespace Gems\Actions;
 
 use Mezzio\Session\SessionInterface;
+use MUtil\Model;
 
 /**
  *
@@ -171,9 +172,8 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $inFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
-            $now      = new \MUtil\Date();
-            $today    = $now->toString($inFormat);
+            $format = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
+            $today    = (new \DateTimeImmutable('today'))->format($format);
 
             $this->defaultSearchData = array(
                 'datefrom'    => $today,

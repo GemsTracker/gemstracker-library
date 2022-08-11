@@ -103,8 +103,8 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
         if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
             $model->set('respondent_name', 'label', $this->_('Name'));
         }
-        $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
-        $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
+        $model->set('gr2t_start_date', 'label', $this->_('Start date'));
+        $model->set('gr2t_end_date',   'label', $this->_('End date'));
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
