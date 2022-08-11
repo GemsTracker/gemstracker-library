@@ -906,7 +906,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens(SessionInterface $session, int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
+    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool
     {
         $batch = new TaskRunnerBatch('completed', $this->overLoader, $session);
 

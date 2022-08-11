@@ -33,24 +33,24 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $answerExportParameters = array(
+    protected $answerExportParameters = [
         'formTitle' => 'getTokenTitle',
         'hideGroup' => true,
-    );
+    ];
 
     /**
      * This snippets for answer export
      *
      * @var mixed String or array of snippets name
      */
-    protected $answerExportSnippets = array('Export\\RespondentExportSnippet');
+    protected $answerExportSnippets = ['Export\\RespondentExportSnippet'];
 
     /**
      * The parameters used for the answers action.
      *
      * Currently filled from $defaultTokenParameters
      */
-    protected $answerParameters = array();
+    protected $answerParameters = [];
 
     /**
      * The parameters used for the autofilter action.
@@ -62,24 +62,24 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'extraFilter'     => 'getRespondentFilter',
-        'extraSort'       => array('gr2t_start_date' => SORT_DESC),
-        'menuEditActions' => array('edit-track'),
-        'menuShowActions' => array('show-track'),
+        'extraSort'       => ['gr2t_start_date' => SORT_DESC],
+        'menuEditActions' => ['edit-track'],
+        'menuShowActions' => ['show-track'],
         'respondent'      => 'getRespondent',
-        );
+    ];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = array(
+    protected $autofilterSnippets = [
         'Tracker\\TrackTableSnippet',
-        'Tracker\\Buttons\\TrackIndexButtonRow',
+        //'Tracker\\Buttons\\TrackIndexButtonRow',
         'Tracker\\AvailableTracksSnippet',
-        );
+    ];
 
     /**
      * The parameters used for the check token action. The $defaultTokenParameters are added to these parameters
@@ -108,10 +108,10 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $correctParameters = array(
+    protected $correctParameters = [
         'fixedReceptionCode' => 'redo',
         'formTitle'          => 'getCorrectTokenTitle',
-        );
+    ];
 
     /**
      * The parameters used for the create actions, overrules any values in
@@ -124,24 +124,24 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = array(
+    protected $createParameters = [
         'createData'  => true,
         'formTitle'   => 'getCreateTrackTitle',
         'multiTracks' => 'isMultiTracks',
         'trackEngine' => 'getTrackEngine',
-        );
+    ];
 
     /**
      * This action uses a different snippet order during create
      *
      * @var mixed String or array of snippets name
      */
-    protected $createSnippets = array(
+    protected $createSnippets = [
         'Tracker\\TrackUsageOverviewSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\EditTrackSnippet',
         'Tracker\\TrackSurveyOverviewSnippet',
-        );
+    ];
 
     /**
      *
@@ -159,12 +159,12 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $defaultTokenParameters = array(
+    protected $defaultTokenParameters = [
         'model'      => null,
         'respondent' => null,
         'token'      => 'getToken',
         'tokenId'    => 'getTokenId',
-    );
+    ];
 
     /**
      * The parameters used for the delete action.
@@ -176,17 +176,17 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialisation
      */
-    protected $deleteParameters = array(
+    protected $deleteParameters = [
         'formTitle'     => null,
         'topicCallable' => 'getTokenTopicCallable',
-    );
+    ];
 
     /**
      * The parameters used for the edit track action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteTrackParameters = array(
+    protected $deleteTrackParameters = [
         'formTitle'         => null,
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
@@ -194,18 +194,18 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'topicCallable'     => 'getTopicCallable',
         'trackEngine'       => 'getTrackEngine',
         'trackId'           => 'getTrackId',
-    );
+    ];
 
     /**
      * Snippets for deleting tracks
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteTrackSnippets = array(
+    protected $deleteTrackSnippets = [
         'Tracker\\DeleteTrackSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
-        );
+    ];
     
     /**
      * Parameters for editing a track token
@@ -223,7 +223,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $editTrackParameters = array(
+    protected $editTrackParameters = [
         'createData'        => false,
         'formTitle'         => 'getTrackTitle',
         'multiTracks'       => 'isMultiTracks',
@@ -231,26 +231,26 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'respondentTrackId' => 'getRespondentTrackId',
         'trackEngine'       => 'getTrackEngine',
         'trackId'           => 'getTrackId',
-    );
+    ];
 
     /**
      * Snippets for editing tracks
      *
      * @var mixed String or array of snippets name
      */
-    protected $editTrackSnippets = array(
+    protected $editTrackSnippets = [
         'Tracker\\EditTrackSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
-        );
+    ];
 
     /**
      * The parameters used for the email action.
      *
      * Currently mostly filled from $defaultTokenParameters
      */
-    protected $emailParameters = array(
+    protected $emailParameters = [
         'formTitle'    => 'getEmailTokenTitle',
         'identifier'   => '_getIdParam',
         'mailTarget'   => 'token',
@@ -258,75 +258,75 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'routeAction'  => 'show',
         'templateOnly' => 'isTemplateOnly',
         'view'         => 'getView',
-    );
+    ];
 
     /**
      * Snippets used for emailing
      *
      * @var mixed String or array of snippets name
      */
-    protected $emailSnippets = array('Mail\\TokenMailFormSnippet');
+    protected $emailSnippets = ['Mail\\TokenMailFormSnippet'];
 
     /**
      * The parameters used for the export track action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $exportTrackParameters = array(
+    protected $exportTrackParameters = [
         'formTitle'         => 'getTrackTitle',
         'respondentTrack'   => 'getRespondentTrack',
-    );
+    ];
 
     /**
      * This snippets for track export
      *
      * @var mixed String or array of snippets name
      */
-    protected $exportTrackSnippets = array('Export\\RespondentExportSnippet');
+    protected $exportTrackSnippets = ['Export\\RespondentExportSnippet'];
 
     /**
      * The parameters used for the insert action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $insertParameters = array(
+    protected $insertParameters = [
         'createData' => true,
         'formTitle'  => 'getInsertInTrackTitle',
         'model'      => null,
-        );
+    ];
 
     /**
      * Snippets used for inserting a survey
      *
      * @var mixed String or array of snippets name
      */
-    protected $insertSnippets = array('Tracker\\InsertSurveySnippet');
+    protected $insertSnippets = ['Tracker\\InsertSurveySnippet'];
 
     /**
      * The parameters used for the questions action.
      *
      * Currently mostly filled from $defaultTokenParameters
      */
-    protected $questionsParameters = array(
+    protected $questionsParameters = [
         'surveyId' => 'getSurveyId',
-    );
+    ];
 
     /**
      * Snippets used for showing survey questions
      *
      * @var mixed String or array of snippets name
      */
-    protected $questionsSnippets = array(
+    protected $questionsSnippets = [
         'Survey\\SurveyQuestionsSnippet',
         'Tracker\\Buttons\\TokenActionButtonRow',
-        );
+    ];
 
     /**
      * The parameters used for the edit track action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showTrackParameters = array(
+    protected $showTrackParameters = [
         'contentTitle'      => 'getTrackTitle',
         'extraFilter'       => 'getNoRespondentFilter',
         'multiTracks'       => 'isMultiTracks',
@@ -335,14 +335,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'displayMenu'       => false,
         'trackEngine'       => 'getTrackEngine',
         'trackId'           => 'getTrackId',
-    );
+    ];
 
     /**
      * This action uses a different snippet order during create
      *
      * @var mixed String or array of snippets name
      */
-    protected $showTrackSnippets = array(
+    protected $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippetGeneric',
@@ -350,7 +350,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
-        );
+    ];
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -363,18 +363,18 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'create', 'view', 'view-survey');
+    public $summarizedActions = ['index', 'autofilter', 'create', 'view', 'view-survey'];
 
     /**
      * The actions that should result in the survey return being set.
      *
      * @var array
      */
-    protected $tokenReturnActions = array(
+    protected $tokenReturnActions = [
         'index',
         'show',
         'show-track',
-    );
+    ];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -387,41 +387,41 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $viewParameters = array(
+    protected $viewParameters = [
         'contentTitle' => 'getViewTrackTitle',
         'multiTracks'  => 'isMultiTracks',
         'trackEngine'  => 'getTrackEngine',
         'trackId'      => 'getTrackId',
-        );
+    ];
 
     /**
      * This action uses a different snippet order during create
      *
      * @var mixed String or array of snippets name
      */
-    protected $viewSnippets = array(
+    protected $viewSnippets = [
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
         'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackSurveyOverviewSnippet',
-        );
+    ];
 
     /**
      * The parameters used for the viewSurveys action.
      */
-    protected $viewSurveyParameters = array(
+    protected $viewSurveyParameters = [
         'surveyId' => 'getSurveyId',
-    );
+    ];
 
     /**
      * Snippets used for showing survey questions
      *
      * @var mixed String or array of snippets name
      */
-    protected $viewSurveySnippets = array(
+    protected $viewSurveySnippets = [
         'Survey\\SurveyQuestionsSnippet'
-        );
+    ];
 
     /**
      * Pops the answers to a survey in a separate window
@@ -876,7 +876,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
             return $respTrack;
         }
 
-        $respTrackId = $this->_getParam(\Gems\Model::RESPONDENT_TRACK);
+        $respTrackId = $this->request->getAttribute(\Gems\Model::RESPONDENT_TRACK);
         $tracker     = $this->loader->getTracker();
 
         if ($respTrackId) {
@@ -942,7 +942,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      */
     public function getSurveyId()
     {
-        $sid = $this->_getParam(\Gems\Model::SURVEY_ID);
+        $sid = $this->request->getAttribute(\Gems\Model::SURVEY_ID);
         if ($sid) {
             return $sid;
         }
@@ -1072,7 +1072,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         }
 
         if (! $engine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
-            $trackId = $this->_getParam(\Gems_model::TRACK_ID);
+            $trackId = $this->request->getAttribute(\Gems\model::TRACK_ID);
 
             if (! $trackId) {
                 if ($this->isMultiTracks()) {
@@ -1163,7 +1163,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
             return sprintf(
                     $this->_('%s track assignments for respondent nr %s: %s'),
                     $trackEngine->getTrackName(),
-                    $this->_getParam(\MUtil\Model::REQUEST_ID1),
+                    $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
                     $this->getRespondent()->getFullName()
                     );
         } else {
@@ -1181,15 +1181,16 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
-        $request = $this->getRequest();
-
-        if (in_array($request->getActionName(), $this->tokenReturnActions)) {
+        if (in_array($this->requestHelper->getActionName(), $this->tokenReturnActions)) {
             // Tell the system where to return to after a survey has been taken
-            $this->currentUser->setSurveyReturn($request);
+            $route = [
+                'route' => $this->requestHelper->getRouteResult()->getMatchedRouteName(),
+            ] + $this->requestHelper->getRouteResult()->getMatchedParams();
+            $this->currentUser->setSurveyReturn($route);
         }
     }
 

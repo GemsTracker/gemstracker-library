@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets;
 
+use MUtil\Model\Bridge\VerticalTableBridge;
+use MUtil\Model\ModelAbstract;
+
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
  *
@@ -47,13 +50,6 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
     /**
      * Required
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
      * @var \Gems\Menu
      */
     protected $menu;
@@ -68,7 +64,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addShowTableRows(VerticalTableBridge $bridge, ModelAbstract $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -87,7 +83,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      */
     protected function findMenuItem($controller, $action = 'index')
     {
-        return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+        return $this->menu->find(['controller' => $controller, 'action' => $action, 'allowed' => true]);
     }
 
     /**
@@ -97,7 +93,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      */
     protected function getEditMenuItem()
     {
-        return $this->findMenuItem($this->request->getControllerName(), 'edit');
+        return null; //$this->findMenuItem($this->request->getControllerName(), 'edit');
     }
 
     /**
@@ -160,14 +156,14 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(VerticalTableBridge $bridge, ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 
         $footer[] = $this->getQuestion();
         $footer[] = ' ';
-        $footer->actionLink(array($this->confirmParameter => 1), $this->_('Yes'));
+        $footer->actionLink([$this->confirmParameter => 1], $this->_('Yes'));
         $footer[] = ' ';
-        $footer->actionLink(array($this->request->getActionKey() => $this->abortAction), $this->_('No'));
+        $footer->actionLink(['action' => $this->abortAction], $this->_('No'));
     }
 }

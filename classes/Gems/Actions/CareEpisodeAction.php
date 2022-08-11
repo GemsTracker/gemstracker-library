@@ -32,9 +32,9 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('gec_admission_time' => SORT_DESC),
-        );
+    protected $autofilterParameters = [
+        'extraSort'   => ['gec_admission_time' => SORT_DESC],
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -59,9 +59,9 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = array(
+    protected $indexParameters = [
         'contentTitle' => 'getContentTitle',
-        );
+    ];
 
     /**
      * The parameters used for the show action
@@ -159,8 +159,10 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
     public function getRespondent()
     {
         if (! $this->_respondent) {
-            $id = $this->_getParam(\Gems\Model::EPISODE_ID);
-            if ($id && ! ($this->_getParam(\MUtil\Model::REQUEST_ID1) || $this->_getParam(\MUtil\Model::REQUEST_ID2))) {
+            $id = $this->request->getAttribute(\Gems\Model::EPISODE_ID);
+            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            if ($id && ! ($patientNr || $orgId)) {
                 $episode = $this->loader->getAgenda()->getEpisodeOfCare($id);
                 $this->_respondent = $episode->getRespondent();
 

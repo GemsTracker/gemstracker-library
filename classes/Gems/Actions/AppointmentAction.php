@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use MUtil\Model;
+
 /**
  *
  * @package    Gems
@@ -42,9 +44,9 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('gap_admission_time' => SORT_DESC),
-        );
+    protected $autofilterParameters = [
+        'extraSort'   => ['gap_admission_time' => SORT_DESC],
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -142,12 +144,12 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Agenda\\AppointmentShowSnippet',
         'Track\\TracksForAppointment',
         'Agenda\\AppointmentTokensSnippet',
-        );
+    ];
 
     /**
      * Perform checks on an Episode of care
@@ -213,10 +215,10 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
             }
         } else {
             $model->applyBrowseSettings();
-            $model->addFilter(array(
+            $model->addFilter([
                 'gap_id_user'         => $this->respondentId,
                 'gap_id_organization' => $this->organizationId,
-                ));
+            ]);
         }
 
         return $model;
@@ -238,15 +240,13 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      */
     public function getContentTitle()
     {
-        $patientId = $this->_getParam(\MUtil\Model::REQUEST_ID1);
+        $patientId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
         if ($patientId) {
             if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
-            $respondent = $this->loader->getRespondent(
-                    $patientId,
-                    $this->getRequest()->getParam(\MUtil\Model::REQUEST_ID2)
-                );
+            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $respondent = $this->loader->getRespondent($patientId, $orgId);
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
@@ -270,8 +270,10 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
     public function getRespondent()
     {
         if (! $this->_respondent) {
-            $id = $this->_getParam(\Gems\Model::APPOINTMENT_ID);
-            if ($id && ! ($this->_getParam(\MUtil\Model::REQUEST_ID1) || $this->_getParam(\MUtil\Model::REQUEST_ID2))) {
+            $id = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
+            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            if ($id && ! ($patientNr || $orgId)) {
                 $appointment = $this->loader->getAgenda()->getAppointment($id);
                 $this->_respondent = $appointment->getRespondent();
 
@@ -306,8 +308,8 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      */
     protected function loadParams()
     {
-        $patientNr           = $this->_getParam(\MUtil\Model::REQUEST_ID1);
-        $this->appointmentId = $this->_getParam(\Gems\Model::APPOINTMENT_ID);
+        $patientNr           = $this->request->getAttribute(Model::REQUEST_ID1);
+        $this->appointmentId = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
             $select = $this->db->select();
@@ -326,7 +328,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
                 $patientNr            = $data['gr2o_patient_nr'];
             }
         } else {
-            $this->organizationId = $this->_getParam(\MUtil\Model::REQUEST_ID2);
+            $this->organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
 
             if ($patientNr && $this->organizationId) {
                 $this->respondentId   = $this->util->getDbLookup()->getRespondentId(
@@ -352,14 +354,6 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
                     throw new \Gems\Exception($this->_('Organization does not exist.'));
                 }
             }
-        }
-
-        $source = $this->menu->getParameterSource();
-        if ($this->appointmentId) {
-            $source->setAppointmentId($this->appointmentId);
-        }
-        if ($patientNr && $this->organizationId) {
-            $source->setPatient($patientNr, $this->organizationId);
         }
     }
 }

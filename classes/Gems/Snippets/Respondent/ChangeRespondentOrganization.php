@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\AccessLog\AccesslogRepository;
+use MUtil\Model;
+use MUtil\Validate\IsNot;
+
 /**
  *
  * @package    Gems
@@ -23,7 +27,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var AccesslogRepository
      */
     protected $accesslog;
 
@@ -143,7 +147,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
                 'escape', false,
                 'multiOptions', $availableOrganizations,
                 'onchange', 'this.form.submit();',
-                'validator', new \MUtil_Validate_IsNot(
+                'validator', new IsNot(
                         $disabled,
                         $this->_('You cannot change to this organization')
                         )
@@ -189,9 +193,10 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
                 default:
 
             }
+            $params = $this->requestInfo->getRequestMatchedParams();
             $this->addMessage(sprintf(
                     $message,
-                    $this->request->getParam(\MUtil\Model::REQUEST_ID1),
+                    $params[Model::REQUEST_ID1],
                     $this->loader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
                     $this->formData['gr2o_patient_nr']
                     ));
@@ -261,7 +266,10 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
         if (! isset($this->formData['change_method'])) {
             $this->formData['change_method'] = null;
         }
-        $this->formData['orig_org_id'] = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
+        $params = $this->requestInfo->getRequestMatchedParams();
+        if (isset($params[Model::REQUEST_ID2])) {
+            $this->formData['orig_org_id'] = $params[Model::REQUEST_ID2];
+        }
     }
 
     /**
@@ -275,8 +283,10 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
     {
         $this->beforeSave();
 
-        $fromOrgId   = $this->request->getParam(\MUtil\Model::REQUEST_ID2);
-        $fromPid     = $this->request->getParam(\MUtil\Model::REQUEST_ID1);
+        $params = $this->requestInfo->getRequestMatchedParams();
+
+        $fromOrgId   = $params[Model::REQUEST_ID2];
+        $fromPid     = $params[Model::REQUEST_ID1];
         $fromRespId  = $this->respondent->getId();
         $toOrgId     = $this->formData['gr2o_id_organization'];
         $toPatientId = $this->formData['gr2o_patient_nr'];
@@ -446,11 +456,11 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
     {
         $this->routeAction = 'show';
 
-        if ($this->request->getActionName() !== $this->routeAction) {
-            $this->afterSaveRouteUrl = array(
-                $this->request->getControllerKey() => $this->request->getControllerName(),
-                $this->request->getActionKey() => $this->routeAction,
-                );
+        if ($this->requestInfo->getCurrentAction() !== $this->routeAction) {
+            $this->afterSaveRouteUrl = [
+                'controller' => $this->requestInfo->getCurrentController(),
+                'action' => $this->routeAction,
+            ];
 
             if ($this->afterSaveRouteKeys) {
                 $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];

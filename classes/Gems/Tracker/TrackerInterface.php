@@ -320,7 +320,7 @@ interface TrackerInterface
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens(SessionInterface $session, int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool;
+    public function processCompletedTokens(SessionInterface $session, ?int $respondentId, ?int $userId = null, ?int $orgId = null, bool $quickCheck = false): bool;
 
     /**
      * Recalculates all token dates, timing and results

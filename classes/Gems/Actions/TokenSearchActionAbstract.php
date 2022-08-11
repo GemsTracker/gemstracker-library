@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  *
@@ -32,10 +34,10 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
-        );
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -68,7 +70,7 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet'];
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -78,7 +80,7 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
     protected $indexStopSnippets = [
         'Tracker\\TokenStatusLegenda',
         'Generic\\CurrentSiblingsButtonRowSnippet',
-        ];
+    ];
 
     /**
      *
@@ -223,18 +225,18 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
             }
             unset($filter['forgroupid']);
         }
-        
+
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
                 case 'hasnomail':
                     $filter[] = sprintf(
-                            "((gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%1\$s') AND
+                        "((gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%1\$s') AND
                                 ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1) 
                              OR
                              ((grr_email IS NULL OR grr_email = '' OR grr_email NOT RLIKE '%1\$s') AND
                                 ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
-                            str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
-                            );
+                        str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                    );
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable, we don't want to ask them for email if we are not allowed to used it anyway
@@ -255,13 +257,13 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
 
                 case 'tomail':
                     $filter[] = sprintf(
-                            "(gr2o_email IS NOT NULL AND gr2o_email != '' AND gr2o_email RLIKE '%1\$s' AND
+                        "(gr2o_email IS NOT NULL AND gr2o_email != '' AND gr2o_email RLIKE '%1\$s' AND
                                 ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
                               OR
                               (grr_email IS NOT NULL AND grr_email != '' AND grr_email RLIKE '%1\$s' AND
                                 ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
-                            str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
-                            );
+                        str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                    );
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
@@ -302,12 +304,14 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
     public function indexAction()
     {
         if ($this->checkForAnswersOnLoad) {
+            $session = $this->request->getAttribute(SessionInterface::class);
             $this->loader->getTracker()->processCompletedTokens(
-                    null,
-                    $this->currentUser->getUserId(),
-                    $this->currentUser->getCurrentOrganizationId(),
-                    true
-                    );
+                $session,
+                null,
+                $this->currentUser->getUserId(),
+                $this->currentUser->getCurrentOrganizationId(),
+                true
+            );
         }
 
         parent::indexAction();
