@@ -93,7 +93,9 @@
         "symfony/doctrine-messenger": "^6.1",
         "laminas/laminas-hydrator": "^4.5",
         "symfony/intl": "^6.1",
-        "mezzio/mezzio-session-ext": "^1.12"
+        "mezzio/mezzio-session-ext": "^1.12",
+        "doctrine/dbal": "^3.4",
+        "doctrine/orm": "^2.13"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
