@@ -126,8 +126,7 @@ trait ModelSnippetActionRouteHelpers
                 if (!array_key_exists('params', $route)) {
                     $route['params'] = [];
                 }
-                $route['params'] += array_keys($parameters);
-
+                $route['params'] = [...$route['params'], ...array_keys($parameters)];
             }
 
             if (in_array($pageName, $postRoutes)) {
