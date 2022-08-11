@@ -64,7 +64,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $br    = \MUtil\Html::create('br');
 
         // Add link to patient to overview
-        $menuItems = $this->findMenuItems('respondent', 'show');
+        $menuItems = $this->findUrls('respondent', 'show');
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems\Menu\SubMenuItem) {

@@ -154,7 +154,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowMenuItems();
+            $showMenuItems = $this->getShowUrls();
 
             foreach ($showMenuItems as $menuItem) {
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
@@ -171,7 +171,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         $this->addBrowseColumn5($bridge, $model);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditMenuItems();
+            $editMenuItems = $this->getEditUrls();
 
             foreach ($editMenuItems as $menuItem) {
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));

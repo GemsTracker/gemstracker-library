@@ -98,18 +98,18 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \Gems\Menu\SubMenuItem
      */
-    protected function getEditMenuItems()
+    protected function getEditUrls()
     {
-        $resets = $this->findMenuItems($this->menuActionController, 'reset');
+        $resets = $this->findUrls($this->menuActionController, 'reset');
         foreach ($resets as $resetPw) {
             if ($resetPw instanceof \Gems\Menu\SubMenuItem) {
                 $resetPw->set('label', $this->_('password'));
             }
         }
         return array_merge(
-                parent::getEditMenuItems(),
+                parent::getEditUrls(),
                 $resets,
-                $this->findMenuItems($this->menuActionController, 'mail')
+                $this->findUrls($this->menuActionController, 'mail')
                 );
     }
 }

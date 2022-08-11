@@ -104,7 +104,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
             $model->set('gtr_track_name',  'label', $this->_('Track'));
             $model->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            $items = $this->findMenuItems('track', 'show-track');
+            $items = $this->findUrls('track', 'show-track');
             $track = 'gtr_track_name';
             if ($items) {
                 $menuItem = reset($items);

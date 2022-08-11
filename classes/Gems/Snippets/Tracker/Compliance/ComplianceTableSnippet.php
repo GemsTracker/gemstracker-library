@@ -63,7 +63,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         $this->applyTextMarker();
 
         // Add link to patient to overview
-        $menuItems = $this->findMenuItems('respondent', 'show');
+        $menuItems = $this->findUrls('respondent', 'show');
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems\Menu\SubMenuItem) {

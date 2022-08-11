@@ -94,7 +94,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         ));
 
         // Add link to survey-edit
-        $menuItems = $this->findMenuItems('survey-maintenance', 'edit');
+        $menuItems = $this->findUrls('survey-maintenance', 'edit');
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems\Menu\SubMenuItem) {

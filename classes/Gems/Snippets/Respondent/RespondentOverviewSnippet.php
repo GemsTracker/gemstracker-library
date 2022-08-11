@@ -101,7 +101,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         parent::addBrowseTableColumns($bridge, $model);
         
-        $showMenuItems = $this->getShowMenuItems();
+        $showMenuItems = $this->getShowUrls();
 
         foreach ($showMenuItems as $menuItem) {
             $link = $menuItem->toActionLinkLower($this->request, $bridge);

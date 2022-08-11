@@ -50,7 +50,7 @@ class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowMenuItems();
+            $showMenuItems = $this->getShowUrls();
 
             foreach ($showMenuItems as $menuItem) {
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
@@ -74,7 +74,7 @@ class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         $bridge->addMultiSort('status',        $by, 'filler',          $br, 'grco_topic');
 
         if ($this->showMenu) {
-            $items  = $this->findMenuItems('track', 'show');
+            $items  = $this->findUrls('track', 'show');
             $links  = array();
             $params = array('gto_id_token'  => $bridge->gto_id_token, \Gems\Model::ID_TYPE => 'token');
             $title  = \MUtil\Html::create('strong', $this->_('+'));
