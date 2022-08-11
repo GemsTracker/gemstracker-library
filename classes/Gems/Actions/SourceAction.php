@@ -107,14 +107,21 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function attributesAction()
     {
         $sourceId = $this->getSourceId();
+
         $where    = $this->db->quoteInto('gsu_id_source = ?', $sourceId);
 
-        $batch = $this->tracker->refreshTokenAttributes('attributeCheck' . $sourceId, $where);
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in the source.'));
         $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
@@ -125,11 +132,17 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function attributesAllAction()
     {
-        $batch = $this->tracker->refreshTokenAttributes('attributeCheckAll');
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheckAll');
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in on of the sources.'));
         $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
@@ -143,11 +156,18 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
-        $batch = $this->tracker->recalculateTokens('sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
+
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
                 'itemDescription', $this->_('This task checks all tokens using this source for answers .')
@@ -159,10 +179,17 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function checkAllAction()
     {
-        $batch = $this->tracker->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = $this->tracker->recalculateTokens($session, 'surveyCheckAll', $this->currentUser->getUserId());
 
         $title = $this->_('Checking all surveys for all sources for answers.');
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
+
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
                 'itemDescription', $this->_('This task checks all tokens in all sources for answers.')
@@ -369,6 +396,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $params = [
             'batch' => $batch,
             'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
         ];
         $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
@@ -381,13 +409,17 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function synchronizeAllAction()
     {
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->synchronizeSources($session, null, $this->currentUser->getUserId());
+        $batch = $this->tracker->synchronizeSources($session);
+
         $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');
-        $this->_helper->batchRunner($batch, $title, $this->accesslog);
-
-        $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'), array('class' => 'btn-danger'));
+        $params = [
+            'batch' => $batch,
+            'requestInfo' => $this->getRequestInfo(),
+            'title' => $title,
+        ];
+        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSynchronizationInformation();
     }
