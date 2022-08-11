@@ -11,7 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Model\RespondentModel;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Gems\Tracker\Respondent;
 
 /**
  *
@@ -29,21 +31,21 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var array
      */
-    protected $editItems = array();
+    protected $editItems = [];
 
     /**
      * Array of items that should be shown to the user
      *
      * @var array
      */
-    protected $exhibitItems = array('gr2o_patient_nr', 'gr2o_id_organization');
+    protected $exhibitItems = ['gr2o_patient_nr', 'gr2o_id_organization'];
 
     /**
      * Array of items that should be kept, but as hidden
      *
      * @var array
      */
-    protected $hiddenItems = array('grs_id_user');
+    protected $hiddenItems = ['grs_id_user'];
 
     /**
      *
@@ -90,11 +92,11 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected function createModel()
     {
-        if ($this->model instanceof \Gems\Model\RespondentModel) {
+        if ($this->model instanceof RespondentModel) {
             $model = $this->model;
 
         } else {
-            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+            if ($this->respondent instanceof Respondent) {
                 $model = $this->respondent->getRespondentModel();
 
             } else {
@@ -128,8 +130,8 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected function loadFormData()
     {
-        if (! $this->request->isPost()) {
-            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+        if (! $this->requestInfo->isPost()) {
+            if ($this->respondent instanceof Respondent) {
                 $this->formData = $this->respondent->getArrayCopy();
             }
         }
@@ -141,9 +143,9 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         $model = $this->getModel();
 
         $model->set('restore_tracks', 'label', $this->_('Restore tracks'),
-                'description', $this->_('Restores tracks with the same code as the respondent.'),
-                'elementClass', 'Checkbox'
-                );
+            'description', $this->_('Restores tracks with the same code as the respondent.'),
+            'elementClass', 'Checkbox'
+        );
 
         if (! array_key_exists('restore_tracks', $this->formData)) {
             $this->formData['restore_tracks'] = 1;
@@ -183,7 +185,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
             if ($this->formData['restore_tracks']) {
                 $count = $this->respondent->restoreTracks($oldCode, $code);
-                
+
                 $this->addMessage(sprintf($this->plural('Restored %d track.', 'Restored %d tracks.', $count), $count));
             }
 

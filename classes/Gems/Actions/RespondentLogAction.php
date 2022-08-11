@@ -32,7 +32,7 @@ class RespondentLogAction extends \Gems\Actions\LogAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('extraFilter' => 'getRespondentFilter');
+    protected $autofilterParameters = ['extraFilter' => 'getRespondentFilter'];
 
     /**
      * Get the respondent object
@@ -44,8 +44,8 @@ class RespondentLogAction extends \Gems\Actions\LogAction
         static $respondent;
 
         if (! $respondent) {
-            $patientNumber  = $this->_getParam(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->_getParam(\MUtil\Model::REQUEST_ID2);
+            $patientNumber  = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
 
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
 

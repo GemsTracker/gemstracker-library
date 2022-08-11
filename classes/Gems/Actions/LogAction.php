@@ -30,11 +30,16 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected $autofilterSnippets = 'Log\\LogTableSnippet';
 
     /**
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet'];
 
     /**
      *
@@ -47,7 +52,7 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet');
+    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet'];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

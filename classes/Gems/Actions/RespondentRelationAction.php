@@ -63,7 +63,7 @@ class RespondentRelationAction extends \Gems\Controller\ModelSnippetActionAbstra
     {
         if (is_null($this->_respondent)) {
             $model = $this->loader->getModels()->getRespondentModel(true);
-            $model->applyRequest($this->getRequest(), true);
+            $model->applyParameters($this->request->getQueryParams() + $this->request->getParsedBody());
             $respondent = $model->loadFirst();
             $respondent = $this->loader->getRespondent($respondent['gr2o_patient_nr'], $respondent['gr2o_id_organization']);
 
@@ -84,12 +84,12 @@ class RespondentRelationAction extends \Gems\Controller\ModelSnippetActionAbstra
         $this->deleteParameters['resetRoute'] = true;
         $this->deleteParameters['deleteAction'] = 'delete'; // Trick to not get aftersaveroute
         $this->deleteParameters['abortAction'] = 'index';
-        $this->deleteParameters['afterSaveRouteUrl'] = array(
+        $this->deleteParameters['afterSaveRouteUrl'] = [
             'action' => 'index',
             'controller' => 'respondent-relation',
-            \MUtil\Model::REQUEST_ID1 => $this->_getParam(\MUtil\Model::REQUEST_ID1),
-            \MUtil\Model::REQUEST_ID2 => $this->_getParam(\MUtil\Model::REQUEST_ID2),
-            );
+            \MUtil\Model::REQUEST_ID1 => $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
+            \MUtil\Model::REQUEST_ID2 => $this->request->getAttribute(\MUtil\Model::REQUEST_ID2),
+        ];
 
         parent::deleteAction();
     }
