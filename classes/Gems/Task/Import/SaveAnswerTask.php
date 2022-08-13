@@ -211,7 +211,7 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
                 if (isset($row['completion_date']) && $row['completion_date']) {
                     $token->setCompletionTime($row['completion_date'], $userId);
                 } elseif (! $token->isCompleted()) {
-                    $token->setCompletionTime(new \MUtil\Date(), $userId);
+                    $token->setCompletionTime(new \DateTimeImmutable(), $userId);
                 }
                 $token->getRespondentTrack()->checkTrackTokens($userId, $token);
 

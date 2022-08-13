@@ -315,9 +315,12 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
 
     protected function filterDateFormat($value, $dateFormat, $columnName)
     {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format($dateFormat);
+        }
+        
         $storageFormat = $this->model->get($columnName, 'storageFormat');
-
-        return \MUtil\Date::format($value, $dateFormat, $storageFormat);
+        return \MUtil\Model::reformatDate($value, $storageFormat, $dateFormat);
     }
 
     protected function filterFormatFunction($value, $functionName)
@@ -442,8 +445,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
                     }
                 }
 
-                if ($result instanceof \MUtil\Date) {
-                    $result = $this->filterDateFormat($result, 'yyyy-MM-dd HH:mm:ss', $columnName);
+                if ($result instanceof \DateTimeInterface) {
+                    $result = $this->filterDateFormat($result, 'Y-m-d H:i:s', $columnName);
                 }
 
                 $result = $this->filterHtml($result);

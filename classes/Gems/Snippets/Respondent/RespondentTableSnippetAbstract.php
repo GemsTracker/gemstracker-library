@@ -154,10 +154,10 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowUrls();
+            $showMenuItems = $this->getShowUrls($bridge);
 
             foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                // $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
             }
         }
 
@@ -171,10 +171,10 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         $this->addBrowseColumn5($bridge, $model);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditUrls();
+            $editMenuItems = $this->getEditUrls($bridge);
 
             foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                // $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
             }
         }
     }

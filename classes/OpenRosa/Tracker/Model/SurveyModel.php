@@ -144,7 +144,7 @@ class SurveyModel extends \Gems\Tracker\SurveyModel
         }
 
         if (!isset($row['gto_completion_time']) || $row['gto_completion_time']) {
-            $row['gto_completion_time'] = new \MUtil\Date;
+            $row['gto_completion_time'] = new \DateTimeImmutable();
         }
 
         $row = parent::processBeforeSave($row);

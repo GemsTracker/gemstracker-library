@@ -90,15 +90,15 @@ class TrackUsageTextDetailsSnippet extends \MUtil\Snippets\SnippetAbstract
             $html->pInfo(
                 sprintf(
                     $this->_('This track can be assigned from %s until %s.'),
-                    \MUtil\Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG),
-                    \MUtil\Date::format($this->trackData['gtr_date_until'], \Zend_Date::DATE_LONG))
+                    \MUtil\Model::reformatDate($this->trackData['gtr_date_start'], null, 'j M Y'),
+                    \MUtil\Model::reformatDate($this->trackData['gtr_date_until'], null, 'j M Y'))
                 );
 
         } else {
             $html->pInfo(
                 sprintf(
                     $this->_('This track can be assigned since %s.'),
-                    \MUtil\Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG))
+                    \MUtil\Model::reformatDate($this->trackData['gtr_date_start'], null, 'j M Y'),)
                 );
         }
 

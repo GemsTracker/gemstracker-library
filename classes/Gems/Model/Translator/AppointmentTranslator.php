@@ -177,10 +177,12 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
         }
 
         if (isset($row['gap_admission_time'], $row['gap_discharge_time']) &&
-                ($row['gap_admission_time'] instanceof \MUtil\Date) &&
-                ($row['gap_discharge_time'] instanceof \MUtil\Date)) {
-            if ($row['gap_discharge_time']->diffDays($row['gap_admission_time']) > 366) {
-                if ($row['gap_discharge_time']->diffDays() > 366) {
+                ($row['gap_admission_time'] instanceof \DateTimeInterface) &&
+                ($row['gap_discharge_time'] instanceof \DateTimeInterface)) {
+            
+            $diff = $row['gap_discharge_time']->diff($row['gap_admission_time']);
+            if ($diff->days > 366) {
+                if ($row['gap_discharge_time']->diff(new \DateTimeImmutable())->days > 366) {
                     // $row['gap_discharge_time'] = null;
                 }
             }
@@ -228,7 +230,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
         }
         
         // This value has a fixed meaning! 
-        $row['gap_last_synch'] = new \MUtil\Date();
+        $row['gap_last_synch'] = new \DateTimeImmutable();
         // \MUtil\EchoOut\EchoOut::track($row);
 
         return $row;

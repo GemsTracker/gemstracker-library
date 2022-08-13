@@ -89,7 +89,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $model->set('gr2t_track_info',   'label', $this->_('Description'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
             'formatFunction', $this->translatedUtil->formatDate,
-            'default', \MUtil\Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
+            'default', new \DateTimeImmutable());
         $model->set('gr2t_reception_code');
         $model->set('progress', 'label', $this->_('Progress')); // , 'tdClass', 'rightAlign', 'thClass', 'rightAlign');
         $model->set('assigned_by',       'label', $this->_('Assigned by'));

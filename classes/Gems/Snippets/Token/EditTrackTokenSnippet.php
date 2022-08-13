@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Token;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Date\Period;
 
 /**
@@ -120,12 +123,8 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
         // \MUtil\EchoOut\EchoOut::track($this->formData);
         if ($this->formData['gto_valid_until'] && Period::isDateType($this->formData['gro_valid_for_unit'])) {
             // Make sure date based units are valid until the end of the day.
-            $date = new \MUtil\Date(
-                    $this->formData['gto_valid_until'],
-                    $model->get('gto_valid_until', 'dateFormat')
-                    );
-            $date->setTimeToDayEnd();
-            $this->formData['gto_valid_until'] = $date;
+            $date = DateTimeImmutable::createFromFormat($model->get('gto_valid_until', 'dateFormat'), $this->formData['gto_valid_until']);
+            $this->formData['gto_valid_until'] = $date->setTime(23, 59, 59);
         }
         
         if (isset($this->formData['reset_mail']) && $this->formData['reset_mail']) {

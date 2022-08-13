@@ -11,12 +11,17 @@
 
 namespace Gems\Tracker;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Event\Application\TokenEvent;
 use Gems\Event\Application\RespondentTrackFieldUpdateEvent;
 use Gems\Event\Application\RespondentTrackFieldEvent;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Translate\DbTranslateUtilTrait;
+
+use MUtil\Model;
 
 /**
  * Object representing a track assignment to a respondent.
@@ -165,8 +170,8 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
 
         if ($values['gr2t_count'] == $values['gr2t_completed']) {
             if (null === $this->_respTrackData['gr2t_end_date']) {
-                $now =  new \MUtil\Date();
-                $values['gr2t_end_date'] = $now->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+                $now =  new DateTimeImmutable();
+                $values['gr2t_end_date'] = $now->format(Model::getTypeDefault(Model::TYPE_DATETIME, 'storageFormat'));
             }
             //Handle TrackCompletionEvent, send only changed fields in $values array
             $this->handleTrackCompletion($values, $userId);
@@ -803,7 +808,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return \MUtil\Date
+     * @return DateTimeInterface
      */
     public function getDate($fieldName)
     {
@@ -829,7 +834,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         }
 
         if ($date) {
-            return \MUtil\Date::ifDate($date, array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT));
+            return Model::getDateTimeInterface($date);
         }
     }
 
@@ -855,12 +860,12 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     /**
      * The end date of this track
      *
-     * @return \MUtil\Date or null
+     * @return ?DateTimeInterface
      */
     public function getEndDate()
     {
         if (isset($this->_respTrackData['gr2t_end_date'])) {
-            return new \MUtil\Date($this->_respTrackData['gr2t_end_date'], \Gems\Tracker::DB_DATETIME_FORMAT);
+            return DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $this->_respTrackData['gr2t_end_date']);
         }
     }
 
@@ -1088,12 +1093,12 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     /**
      * The start date of this track
      *
-     * @return \MUtil\Date
+     * @return ?DateTimeInterface
      */
     public function getStartDate()
     {
         if (isset($this->_respTrackData['gr2t_start_date'])) {
-            return new \MUtil\Date($this->_respTrackData['gr2t_start_date'], \Gems\Tracker::DB_DATETIME_FORMAT);
+            return DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $this->_respTrackData['gr2t_start_date'] );
         }
     }
 

@@ -148,10 +148,10 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
             // Not found
             if (array_key_exists('grr_birthdate', $relation)) {
                 $dateformats               = [
-                    'yyyy-MM-dd HH:mm:ss',
-                    'yyyy-MM-dd'
+                    'Y-m-d H:i:s',
+                    'Y-m-d'
                 ];
-                $relation['grr_birthdate'] = \MUtil\Date::ifDate($relation['grr_birthdate'], $dateformats);
+                $relation['grr_birthdate'] = \MUtil\Model::getDateTimeInterface($relation['grr_birthdate'], $dateformats);
             }
 
             $relation = ['grr_id_respondent' => $respondent->getId()] + $relation + $this->relationModel->loadNew();

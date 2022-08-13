@@ -11,6 +11,10 @@
 
 namespace Gems\Tracker\Field;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use MUtil\Model;
+
 /**
  *
  *
@@ -24,16 +28,15 @@ class DateField extends FieldAbstract
 {
     
     public $allowedDateFormats = [
-        'yyyy-MM-dd HH:mm:ss',
-        'yyyy-MM-dd HH:mm',
-        'yyyy-MM-dd',
+        'Y-m-d H:i:s',
+        'Y-m-d H:i',
+        'Y-m-d',
         'c',
-        'dd-MM-yyyy',
-        'dd-MM-yyyy HH:mm',
-        'dd-MM-yyyy HH:mm:ss'
+        'd-m-Y H:i',
+        'd-m-Y H:i',
+        'd-m-Y H:i:s'
     ];
 
-    
     /**
      *
      * @var \Gems\Loader
@@ -53,13 +56,6 @@ class DateField extends FieldAbstract
      * @var int
      */
     protected $type = \MUtil\Model::TYPE_DATE;
-
-    /**
-     * The format string for outputting dates
-     *
-     * @var string
-     */
-    protected $zendDateTimeFormat = 'dd MMM yyyy';
 
     /**
      * Add the model settings like the elementClass for this field.
@@ -91,10 +87,8 @@ class DateField extends FieldAbstract
             return null;
         }
 
-        if ($currentValue instanceof \Zend_Date) {
-            $value = $currentValue->toString($this->zendDateTimeFormat);
-        } elseif ($currentValue instanceof DateTime) {
-            $value = date($this->phpDateTimeFormat, $currentValue->getTimestamp());
+        if ($currentValue instanceof DateTimeInterface) {
+            $value = $currentValue->format($this->phpDateTimeFormat);
         } else {
             $value = $currentValue;
         }
@@ -131,11 +125,11 @@ class DateField extends FieldAbstract
             }
         }
 
-        if ($currentValue instanceof \MUtil\Date) {
+        if ($currentValue instanceof DateTimeInterface) {
             return $currentValue;
         }
         if ($currentValue) {
-            return \MUtil\Date::ifDate($currentValue, $this->allowedDateFormats);
+            return Model::getDateTimeInterface($currentValue, $this->allowedDateFormats);
         }
 
         return $currentValue;
@@ -148,7 +142,7 @@ class DateField extends FieldAbstract
      */
     protected function getDateFormat()
     {
-        return \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
+        return Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
     }
 
     /**
@@ -158,7 +152,7 @@ class DateField extends FieldAbstract
      */
     protected function getStorageFormat()
     {
-        return \Gems\Tracker::DB_DATE_FORMAT;
+        return Model::getTypeDefault(Model::TYPE_DATE, 'storageFormat');;
     }
 
     /**
@@ -174,7 +168,7 @@ class DateField extends FieldAbstract
             return null;
         }
 
-        return new \MUtil\Date($currentValue, $this->getStorageFormat());
+        return DateTimeImmutable::createFromFormat($this->getStorageFormat(), $currentValue);
     }
 
     /**
@@ -194,14 +188,14 @@ class DateField extends FieldAbstract
 
         $saveFormat = $this->getStorageFormat();
 
-        if ($currentValue instanceof \Zend_Date) {
-            return $currentValue->toString($saveFormat);
+        if ($currentValue instanceof DateTimeInterface) {
+            return $currentValue->format($saveFormat);
 
         } else {
             $displayFormat = $this->getDateFormat();
 
-            $saveDate = \MUtil\Date::ifDate($currentValue, array($displayFormat, $saveFormat, \Gems\Tracker::DB_DATETIME_FORMAT));
-            if ($saveDate instanceof \Zend_Date) {
+            $saveDate = Model::getDateTimeInterface($currentValue, [$displayFormat, $saveFormat, \Gems\Tracker::DB_DATETIME_FORMAT]);
+            if ($saveDate instanceof \DateTimeInterface) {
                 return $saveDate->toString($saveFormat);
             }
         }

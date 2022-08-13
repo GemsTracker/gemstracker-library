@@ -203,8 +203,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
                 }
 
                 // Fixing #582: autoextend the date
-                $now = new \MUtil\Date();
-                if ($this->token->getValidUntil() && $this->token->getValidUntil()->isEarlier($now)) {
+                if ($this->token->getValidUntil() && $this->token->getValidUntil()->getTimestamp() < time()) {
                     $otherValues = [
                         'gto_valid_until' => $now->addDay(7),
                         'gto_valid_until_manual' => 1,

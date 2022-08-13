@@ -133,7 +133,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return int|string
      */
     public function loadStaffRespondent($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {

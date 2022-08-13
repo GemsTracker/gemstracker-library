@@ -11,12 +11,17 @@
 
 namespace Gems\User;
 
+
+use DateTimeImmutable;
+
 use Gems\Locale\Locale;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Gems\Util\Translated;
+use MUtil\Model;
+
 use Laminas\Authentication\Result;
 use Laminas\Authentication\Adapter\AdapterInterface;
 
@@ -1330,12 +1335,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getPasswordAge()
     {
-        $date = \MUtil\Date::ifDate(
-                $this->_getVar('user_password_last_changed'),
-                array(\Gems\Tracker::DB_DATETIME_FORMAT, \Gems\Tracker::DB_DATE_FORMAT, \Zend_Date::ISO_8601)
-                );
-        if ($date instanceof \MUtil\Date) {
-            return abs($date->diffDays());
+        $date = Model::getDateTimeInterface($this->_getVar('user_password_last_changed'));
+        if ($date instanceof \DateTimeInterface) {
+            return abs($date->diff(new DateTimeImmutable())->days);
         } else {
             return 0;
         }
@@ -1955,7 +1957,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
                     ->setStorageFormat('yyyy-MM-dd');
 
             if ($format = $birthdayElem->getDateFormat()) {
-                $valueFormatted = \MUtil\Date::format($value, $format, $birthdayElem->getStorageFormat());
+                $valueFormatted = Model::reformatDate($value, $birthdayElem->getStorageFormat(), $format);
             } else {
                 $valueFormatted = $value;
             }

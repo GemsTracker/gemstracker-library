@@ -2,6 +2,10 @@
 
 namespace GemsTest\Agenda;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+
 /**
  * Description of AppointmentTest
  *
@@ -13,8 +17,8 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
     /**
      * Get a mock for the respondentTrack
      * 
-     * @param \MUtil\Date|null $endDate
-     * @param \MUtil\Date|null $startDate
+     * @param DateTimeInterface|null $endDate
+     * @param DateTimeInterface|null $startDate
      *
      * @return \Gems\Tracker\RespondentTrack
      */
@@ -41,12 +45,12 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      * Provide different waitDays to check if the desired result is true of false
      *  
      * @dataProvider createAfterWaitDays_NoEndDateProvider
-     * @param type $endDate
-     * @param type $waitDays
+     * @param DateTimeInterface $waitDays
+     * @param DateTimeInterface $endDate
      */
     public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
     {
-        $appointmentDate = new \MUtil\Date('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = DateTimeImmutable('2018-01-01', 'yyyy-MM-dd');
 
         if ($endDate) {
             $trackEndDate = clone $appointmentDate;
@@ -86,16 +90,15 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      * Provide different waitDays to check if the desired result is true of false
      * 
      * @dataProvider createFromStartProvider
-     * @param type $startDate
-     * @param type $waitDays
+     * @param DateTimeInterface $startDate
+     * @param DateTimeInterface $waitDays
      */
     public function testCreateFromStart($expected, $waitDays, $startDate)
     {
-        $appointmentDate = new \MUtil\Date('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = DateTimeImmutable::createFromFormat('Y-m-d', '2018-01-01');
 
         if ($startDate) {
-            $trackStartDate = clone $appointmentDate;
-            $trackStartDate->subDay(5);
+            $trackStartDate = $appointmentDate->sub(new DateInterval('P5D'));
             $respTrack    = $this->_getRespondentTrack(null, $trackStartDate);
         } else {
             $respTrack = $this->_getRespondentTrack();

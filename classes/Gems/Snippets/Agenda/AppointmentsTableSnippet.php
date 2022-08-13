@@ -204,25 +204,21 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Display the date field
      *
-     * @param \MUtil\Date $value
+     * @param mixed $value
      */
     public function formatDate($value)
     {
         return \MUtil\Html::create(
                 'span',
                 // array('class' => 'date'),
-                \MUtil\Date::format(
-                        $value,
-                        \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME_SHORT . ' ' . \Zend_Date::YEAR,
-                        'yyyy-MM-dd'
-                        )
+                \MUtil\Model::reformatDate($value,$this->_dateStorageFormat, 'j M Y') 
                 );
     }
 
     /**
      * Display the time field
      *
-     * @param \MUtil\Date $value
+     * @param mixed $value
      */
     public function formatTime($value)
     {
@@ -231,7 +227,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                 ' ',
                 // array('class' => 'time'),
                 // $this->_timeImg,
-                \MUtil\Date::format($value, 'HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
+                \MUtil\Model::reformatDate($value, $this->_dateStorageFormat, 'H:i') 
                 );
     }
     /**

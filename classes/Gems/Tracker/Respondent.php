@@ -174,10 +174,10 @@ class Respondent extends \Gems\Registry\TargetAbstract
     /**
      * Returns current age or at a given date when supplied
      *
-     * @param \MUtil\Date|null $date
+     * @param \DateTimeInterface|null $date
      * @return int
      */
-    public function getAge($date = null, $months = false)
+    public function getAge($date = null, $months = false): ?int
     {
         $birthDate = $this->getBirthDay();
         if (! $birthDate instanceof DateTimeInterface) {
@@ -213,7 +213,7 @@ class Respondent extends \Gems\Registry\TargetAbstract
     /**
      * Get the birthdate
      *
-     * @return \MUtil\Date|null
+     * @return \DateTimeInterface|null
      */
     public function getBirthday()
     {

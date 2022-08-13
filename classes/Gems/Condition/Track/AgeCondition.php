@@ -160,7 +160,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
         }
         switch ($this->_data['gcon_condition_text1']) {
             case 'NOW':
-                $validFrom = new \MUtil\Date();
+                $validFrom = new \DateTimeImmutable();
                 break;
             case 'TS':
             default:

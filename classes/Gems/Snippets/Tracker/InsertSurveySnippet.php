@@ -528,7 +528,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 'gto_id_survey'          => $surveyIds,
                 'gto_id_track'           => $this->request->getParam(\Gems\Model::TRACK_ID),
                 'gto_valid_from_manual'  => 1,
-                'gto_valid_from'         => new \MUtil\Date(),
+                'gto_valid_from'         => new \DateTimeImmutable(),
                 'gto_valid_until_manual' => 0,
                 'gto_valid_until'        => null, // Set in loadSurvey
                 );

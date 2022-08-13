@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Model;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Date\Period;
 use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use Gems\Util\Translated;
@@ -224,16 +227,16 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
             return true;
         }
 
-        if ($context['gto_valid_from'] instanceof \Zend_Date) {
+        if ($context['gto_valid_from'] instanceof DateTimeInterface) {
             $start = $context['gto_valid_from'];
         } else {
-            $start = new \MUtil\Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
+            $start = DateTimeImmutable::createFromFormat($this->get('gto_valid_from', 'dateFormat'), $context['gto_valid_from']);
         }
 
-        if ($context['gto_mail_sent_date'] instanceof \Zend_Date) {
+        if ($context['gto_mail_sent_date'] instanceof DateTimeInterface) {
             $sent = $context['gto_mail_sent_date'];
         } else {
-            $sent = new \MUtil\Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
+            $sent = DateTimeImmutable::createFromFormat($this->get('gto_valid_from', 'gto_mail_sent_date'), $context['gto_mail_sent_date']);
         }
 
         return $start->isLater($sent);
@@ -445,7 +448,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|null
+     * @return DateTimeInterface|\Zend_Db_Expr|null
      */
     public function formatValidFromDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -472,7 +475,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|null
+     * @return DateTimeInterface|\Zend_Db_Expr|null
      */
     public function formatValidUntilDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {

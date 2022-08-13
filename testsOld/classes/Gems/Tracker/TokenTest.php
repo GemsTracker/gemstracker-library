@@ -143,7 +143,7 @@ class TokenTest extends \Gems\Test\DbTestAbstract
     
     public function providerTokenValid() 
     {
-        $now = new MUtil\Date();
+        $now = new \DateTimeImmutable();
         $tomorrow = clone $now;
         $yesterday = clone $now;
         $tomorrow->addDay(1);

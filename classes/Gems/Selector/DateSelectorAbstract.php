@@ -11,6 +11,10 @@
 
 namespace Gems\Selector;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Util\Translated;
 
 /**
@@ -52,14 +56,14 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
     /**
      * The date the current period ends
      *
-     * @var \MUtil\Date
+     * @var DateTimeInterface
      */
     protected $dateCurrentEnd;
 
     /**
      * The date the current period starts
      *
-     * @var \MUtil\Date
+     * @var DateTimeInterface
      */
     protected $dateCurrentStart;
 
@@ -148,32 +152,30 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
     {
         $groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom)");
 
-        $date = new \MUtil\Date();
+        $date = new DateTimeImmutable();
 
         switch ($this->dateType) {
             case 'D':
                 $keyCount = 1;
                 $groupby['period_1'] = new \Zend_Db_Expr("CONVERT($this->dateFrom, DATE)");
 
-                $date->setTime(0);
-                $date->addDay($this->dateFactor - $this->dateRange);
+                $date = $date->setTime(0, 0, 0)->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'D'));
+                $lAdd = new DateInterval('P1D');
 
-                $start = $date->getIso();
+                $start = $date->format('c');
                 for ($i = -$this->dateRange; $i <= $this->dateRange; $i++) {
                     if (0 == $i) {
                         $this->dateCurrentStart = clone $date;
-                        $this->dateCurrentEnd   = clone $date;
-                        $this->dateCurrentEnd->setTimeToDayEnd();
+                        $this->dateCurrentEnd   = $date->setTime(23,59,59);
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get('yyyy-MM-dd');
+                    $values['period_1'] = $date->format('Y-m-d');
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
-                    $date->addDay(1);
+                    $date = $date->add($lAdd);
                 }
-                $date->subSecond(1);
-                $end = $date->getIso();
+                $end = $date->sub(new DateInterval('PT1S'))->format('c');
                 break;
 
             case 'W':
@@ -184,82 +186,81 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
                 //$groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
                 $groupby['period_2'] = new \Zend_Db_Expr("WEEK($this->dateFrom, 3)");
 
-                $date->setWeekday(1);
-                $date->setTime(0);
-                $date->addWeek($this->dateFactor - $this->dateRange);
+                $date = $date->setTime(0, 0, 0)->modify('this monday')
+                    ->add(new DateInterval('P' . (7 * ($this->dateFactor - $this->dateRange)) . 'D'));
+                $lAdd = new DateInterval('P7D');
+                $lSub = new DateInterval('PT1S');
 
-                $start = $date->getIso();
+                $start = $date->format('c');
                 for ($i = -$this->dateRange; $i <= $this->dateRange; $i++) {
                     if (0 == $i) {
                         $this->dateCurrentStart = clone $date;
-                        $this->dateCurrentEnd   = clone $date;
-                        $this->dateCurrentEnd->addWeek(1)->subSecond(1);
+                        $this->dateCurrentEnd   = $date->add($lAdd)->sub($lSub);
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
-                    $values['period_2'] = (int) $date->get(\Zend_Date::WEEK);   // Use constant but drop leading zero
+                    $values['period_1'] = (int) $date->format('Y');
+                    $values['period_2'] = (int) $date->format('W');   // Use constant but drop leading zero
                     // When monday is in the previous year, add one to the year
-                    if ($date->get(\Zend_Date::DAY_OF_YEAR)>14 && $date->get(\Zend_Date::WEEK) == 1) {
-                        $values['period_1'] =  $values['period_1'] + 1;
-                    }
+//                    if ($date->get(\Zend_Date::DAY_OF_YEAR)>14 && $date->get(\Zend_Date::WEEK) == 1) {
+//                        $values['period_1'] =  $values['period_1'] + 1;
+//                    }
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
-                    $date->addWeek(1);
+                    $date = $date->add($lAdd);
                 }
-                $date->subSecond(1);
-                $end = $date->getIso();
+                $end = $date->sub($lSub)->format('c');
                 break;
 
             case 'M':
                 $keyCount = 2;
                 $groupby['period_2'] = new \Zend_Db_Expr("MONTH($this->dateFrom)");
 
-                $date->setDay(1);
-                $date->setTime(0);
-                $date->addMonth($this->dateFactor - $this->dateRange);
+                $date = $date->setTime(0, 0, 0)->modify('first day of this month')
+                             ->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'M'));
+                $lAdd = new DateInterval('P1M');
+                $lSub = new DateInterval('PT1S');
 
-                $start = $date->getIso();
+                $start = $date->format('c');
                 for ($i = -$this->dateRange; $i <= $this->dateRange; $i++) {
                     if (0 == $i) {
                         $this->dateCurrentStart = clone $date;
-                        $this->dateCurrentEnd   = clone $date;
-                        $this->dateCurrentEnd->addMonth(1)->subSecond(1);
+                        $this->dateCurrentEnd   = $date->add($lAdd)->sub($lSub);
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
-                    $values['period_2'] = $date->get(\Zend_Date::MONTH);
+                    $values['period_1'] = $date->format('Y');
+                    $values['period_2'] = $date->format('m');
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
-                    $date->addMonth(1);
+                    $date = $date->add($lAdd);
                 }
-                $date->subSecond(1);
-                $end = $date->getIso();
+                $end = $date->sub($lSub)->format('c');
                 break;
 
             case 'Y':
                 $keyCount = 1;
-                $date->setDay(1);
-                $date->setMonth(1);
-                $date->setTime(0);
-                $date->addYear($this->dateFactor - $this->dateRange);
-                $start = $date->getIso();
+
+                $date = $date->setTime(0, 0, 0)->modify('first day of this January')
+                             ->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'Y'));
+                $lAdd = new DateInterval('P1Y');
+                $lSub = new DateInterval('PT1S');
+
+                $start = $date->format('c');
                 for ($i = -$this->dateRange; $i <= $this->dateRange; $i++) {
                     if (0 == $i) {
                         $this->dateCurrentStart = clone $date;
                         $this->dateCurrentEnd   = clone $date;
-                        $this->dateCurrentEnd->addYear(1)->subSecond(1);
+                        $this->dateCurrentEnd   = $date->add($lAdd)->sub($lSub);
                     }
 
                     $values = array();
-                    $values['period_1'] = $date->get(\Zend_Date::YEAR);
+                    $values['period_1'] = $date->format('Y');
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
-                    $date->addYear(1);
+                    $date = $date->add($lAdd);
                 }
-                $date->subSecond(1);
-                $end = $date->getIso();
+                $end = $date->sub($lSub)->format('c');
                 break;
 
             default:
@@ -289,11 +290,11 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         }
 
         if ($this->dateFactor) {
-            $today = new \MUtil\Date();
-            $this->dateFactorChanges['D'] = $this->dateCurrentStart->diffDays($today);
-            $this->dateFactorChanges['W'] = $this->dateCurrentStart->diffWeeks($today);
-            $this->dateFactorChanges['M'] = $this->dateCurrentStart->diffMonths($today);
-            $this->dateFactorChanges['Y'] = $this->dateCurrentStart->diffYears($today);
+            $diff = $this->dateCurrentStart->diff(new DateTimeImmutable());
+            $this->dateFactorChanges['D'] = $diff->d;
+            $this->dateFactorChanges['W'] = $diff->d * 7;
+            $this->dateFactorChanges['M'] = $diff->m;
+            $this->dateFactorChanges['Y'] = $diff->y;
         } else {
             $this->dateFactorChanges = array_fill_keys(array('D', 'W', 'M', 'Y'), 0);
         }
@@ -391,7 +392,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
     /**
      * Returns the base model.
      *
-     * @return \MUtil\Model\Transform\RequiredRowsTransformer
+     * @return \MUtil\Model\ModelAbstract
      */
     public function getModel()
     {
@@ -417,8 +418,8 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
             if (null === $dateField) {
                 $dateField = $this->dateFrom;
             }
-            $start = $this->dateCurrentStart->getIso();
-            $end   = $this->dateCurrentEnd->getIso();
+            $start = $this->dateCurrentStart->format('c');
+            $end   = $this->dateCurrentEnd->format('c');
             $newfilter[] = "$dateField BETWEEN '$start' AND '$end'";
         }
 

@@ -207,7 +207,7 @@ class TokenReadonly extends \Gems\Tracker\Token
 
     /**
      *
-     * @param string|\MUtil\Date $completionTime Completion time as a date or null
+     * @param string|\DateTimeInterface $completionTime Completion time as a date or null
      * @param int $userId The current user
      * @return \Gems\Tracker\Token (continuation pattern)
      */

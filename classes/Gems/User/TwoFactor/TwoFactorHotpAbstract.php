@@ -2,6 +2,11 @@
 
 namespace Gems\User\TwoFactor;
 
+use DateInterval;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
+
 abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements UserOtpInterface
 {
     /**
@@ -13,6 +18,9 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
 
     protected $userOtpCount;
 
+    /**
+     * @var DateTimeImmutable
+     */
     protected $userOtpRequested;
 
     /**
@@ -56,11 +64,11 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
         if ($this->userId === null) {
             throw new \Gems\Exception('No user ID set');
         }
-        $now = new \MUtil\Date();
+        $now = new \DateTimeImmutable();
 
         $values = [
             'gul_otp_count' => $count,
-            'gul_otp_requested' => \MUtil\Date::format($now, 'yyyy-MM-dd HH:mm:ss'),
+            'gul_otp_requested' => $now->format($now, 'y-M-d H:i:s'),
         ];
 
         $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->userId]);
@@ -79,9 +87,13 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
         $this->userOtpCount = $count;
     }
 
-    public function setUserOtpRequested(\MUtil\Date $requestedTime = null)
+    public function setUserOtpRequested(DateTimeInterface $requestedTime = null)
     {
-        $this->userOtpRequested = $requestedTime;
+        if ($requestedTime instanceof DateTime) {
+            $this->userOtpRequested = DateTimeImmutable::createFromMutable($requestedTime);
+        } else {
+            $this->userOtpRequested = $requestedTime;
+        }
     }
 
     /**
@@ -102,9 +114,9 @@ abstract class TwoFactorHotpAbstract extends TwoFactorTotpAbstract implements Us
 
         $currentOtpRequested = $this->userOtpRequested;
 
-        $otpValidUntil = $currentOtpRequested->addSecond($this->_codeValidSeconds);
+        $otpValidUntil = $this->userOtpRequested->add(new DateInterval('PT' . $this->_codeValidSeconds . 'S'));
 
-        if ($otpValidUntil->isEarlier(new \MUtil\Date)) {
+        if ($otpValidUntil->getTimestamp() < time()) {
             return false;
         }
 

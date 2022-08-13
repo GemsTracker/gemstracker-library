@@ -79,8 +79,8 @@ class PrefillAnswers extends FillBirthDayGender
         $this->addCheckedValue('rdAge', $respondent->getAge());
         $this->addCheckedValue('rdSex', $respondent->getGender());
         $birthDate = $respondent->getBirthday();
-        if (!is_null($birthDate) && $birthDate instanceof \MUtil\Date) {
-            $this->addCheckedValue('rdBirthDate', $birthDate->get('yyyy-MM-dd'));
+        if (!is_null($birthDate) && $birthDate instanceof \DateTimeInterface) {
+            $this->addCheckedValue('rdBirthDate', $birthDate->format('Y-m-d'));
         }
         
         parent::processOutput($token);

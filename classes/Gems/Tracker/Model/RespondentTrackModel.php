@@ -11,7 +11,11 @@
 
 namespace Gems\Tracker\Model;
 
+use DateTime;
+
 use Gems\Util\Translated;
+use MUtil\JQuery\Form\Element\DatePicker;
+use MUtil\Model;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
 /**
@@ -377,13 +381,14 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
             $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
             if ( ! $displayFormat) {
-                $displayFormat = \MUtil\Model\Bridge\FormBridge::getFixedOption('date', 'dateFormat');
+                $displayFormat = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
             }
 
             // Of course do not do so when we got a time format
-            if (! \MUtil\Date\Format::getTimeFormat($displayFormat)) {
-                $newValues['gr2t_end_date'] = new \MUtil\Date($newValues['gr2t_end_date'], $displayFormat);
-                $newValues['gr2t_end_date']->setTimeToDayEnd();
+            $list = DatePicker::splitTojQueryDateTimeFormat($displayFormat);
+            if (! $list[2]) {
+                $newValues['gr2t_end_date'] = DateTime::createFromFormat($displayFormat, $newValues['gr2t_end_date']);
+                $newValues['gr2t_end_date']->setTime(23, 59, 59);
             }
         }
 

@@ -361,7 +361,7 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
         $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
         $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
             'formatFunction', $this->translatedUtil->formatDate,
-            'default', \MUtil\Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
+            'default', new \DateTimeImmutable());
         $trackModel->set('gr2t_reception_code');
         $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));
         $trackModel->setFilter(array('gr2t_id_respondent_track' => $respTrack->getRespondentTrackId()));

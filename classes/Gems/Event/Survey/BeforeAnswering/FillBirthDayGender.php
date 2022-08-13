@@ -44,7 +44,7 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
         $this->addCheckedValue('gtRespondentNr', $respondent->getPatientNumber());
 
         $birthDay   = $respondent->getBirthday();
-        if ($birthDay instanceof \MUtil\Date) {
+        if ($birthDay instanceof \DateTimeInterface) {
             $now  = new \DateTimeImmutable();
             $then = $birthDay->getDateTime();
 

@@ -401,7 +401,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return \Zend_Db_Expr|string
      */
     public function calculateDuration($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -483,7 +483,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return \Zend_Db_Expr|string
      */
     public function calculateTrackCount($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {
@@ -519,7 +519,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return \MUtil\Date|\Zend_Db_Expr|string
+     * @return \Zend_Db_Expr|string
      */
     public function calculateTrackUsage($value, $isNew = false, $name = null, array $context = [], $isPost = false)
     {

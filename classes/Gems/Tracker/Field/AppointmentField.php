@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Field;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 use Gems\Date\Period;
 use Gems\Util\Translated;
 
@@ -70,7 +73,7 @@ class AppointmentField extends FieldAbstract
      *
      * @var string
      */
-    protected $appointmentTimeFormat = 'dd MMM yyyy HH:mm';
+    protected $appointmentTimeFormat = 'j M Y H:i';
 
     /**
      *
@@ -129,7 +132,7 @@ class AppointmentField extends FieldAbstract
             $time = $appointment->getAdmissionTime();
 
             if ($time) {
-                return $time->toString($this->appointmentTimeFormat);
+                return $time->format($this->appointmentTimeFormat);
             }
         }
 
@@ -162,13 +165,13 @@ class AppointmentField extends FieldAbstract
                     if ($trackData['gr2t_start_date'] instanceof \Zend_Date) {
                         $fromDate = $trackData['gr2t_start_date'];
                     } else {
-                        $fromDate = new \MUtil\Date($trackData['gr2t_start_date'], \Gems\Tracker::DB_DATETIME_FORMAT);
+                        $fromDate = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
                     }
                     // Always use start of the day for start date comparisons
                     $fromDate->setTime('00:00:00');
                 }
 
-                if ($fromDate instanceof \MUtil\Date) {
+                if ($fromDate instanceof DateTimeInterface) {
                     $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
                     $select->onlyActive()
                             ->forFilterId($this->_fieldDefinition['gtf_filter_id'])
@@ -313,7 +316,7 @@ class AppointmentField extends FieldAbstract
     /**
      * Dispaly an appoitment as text
      *
-     * @param value $value
+     * @param mixed $value
      * @return string
      */
     public function showAppointment($value)
