@@ -87,8 +87,8 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         // should be reset for this snippet
         $this->browse          = false;
         $this->extraFilter     = array("gtr_organizations LIKE '%|$orgId|%'");
-        $this->menuEditActions = 'view';
-        $this->menuShowActions = 'create';
+        $this->menuEditActions = ['view'];
+        $this->menuShowActions = ['create'];
     }
 
     /**

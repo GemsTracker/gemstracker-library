@@ -52,8 +52,6 @@ class RespondentLogAction extends \Gems\Actions\LogAction
             if ((! $respondent->exists) && $patientNumber && $organizationId) {
                 throw new \Gems\Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
-
-            $respondent->applyToMenuSource($this->menu->getParameterSource());
         }
 
         return $respondent;

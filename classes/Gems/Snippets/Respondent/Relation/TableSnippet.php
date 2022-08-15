@@ -37,8 +37,12 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
-        if ($editMenuItem = $this->getEditMenuItem()) {
-            $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
+        if ($this->showMenu) {
+            $editMenuItems = $this->getEditUrls($bridge);
+
+            foreach ($editMenuItems as $menuItem) {
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
+            }
         }
 
         // make sure search results are highlighted
@@ -62,8 +66,10 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric {
             }
         }
 
-        if ($deleteMenuItem = $this->findMenuItem($this->request->getControllerName(), 'delete')) {
-            $bridge->addItemLink($deleteMenuItem->toActionLinkLower($this->request, $bridge));
+        if ($deleteButtons = $this->findUrls(['action'], $bridge)) {
+            foreach($deleteButtons as $deleteButton) {
+                $bridge->addItemLink(\Gems\Html::actionLink($deleteButton, $this->_('Delete')));
+            }
         }
     }
 }

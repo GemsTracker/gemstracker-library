@@ -93,16 +93,16 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
 
-        if ($menuItem = $this->menu->find(['controller' => 'appointment', 'action' => 'show', 'allowed' => true])) {
-            $appButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
-        } else {
-            $appButton = null;
+        $appButton = null;
+        $showMenuItems = $this->getShowUrls($bridge);
+        if (count($showMenuItems)) {
+            $appButton = \Gems\Html::actionLink('test', $this->_('Show appointment'));
         }
-        if ($menuItem = $this->menu->find(['controller' => 'appointment', 'action' => 'edit', 'allowed' => true])) {
-            $editButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Edit appointment'));
-        } else {
-            $editButton = null;
+        $editButton = null;
+        if (count($showMenuItems)) {
+            $appButton = \Gems\Html::actionLink('test', $this->_('Edit appointment'));
         }
+
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
         $br      = \MUtil\Html::create('br');

@@ -261,44 +261,100 @@ class Menu
             'type' => 'route-link-item',
             'children' => [
                 [
-                    'name' => 'overview.summary',
+                    'name' => 'overview.summary.index',
                     'label' => $this->translator->trans('Track Summary'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.compliance',
+                    'name' => 'overview.compliance.index',
                     'label' => $this->translator->trans('Track Compliance'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.field-report',
+                    'name' => 'overview.field-report.index',
                     'label' => $this->translator->trans('Track Field Utilization'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.field-overview',
+                    'name' => 'overview.field-overview.index',
                     'label' => $this->translator->trans('Track Field Content'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.overview-plan',
+                    'name' => 'overview.overview-plan.index',
                     'label' => $this->translator->trans('By period'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.token-plan',
+                    'name' => 'overview.token-plan.index',
                     'label' => $this->translator->trans('By token'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.respondent-plan',
+                    'name' => 'overview.respondent-plan.index',
                     'label' => $this->translator->trans('By patient'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
-                    'name' => 'overview.consent-plan',
+                    'name' => 'overview.consent-plan.index',
                     'label' => $this->translator->trans('Patient status'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'overview.summary.export',
+                            'label' => $this->translator->trans('export'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -312,7 +368,7 @@ class Menu
             'type' => 'route-link-item',
             'children' => [
                 [
-                    'name' => 'project.tracks',
+                    'name' => 'project.tracks.index',
                     'label' => $this->translator->trans('Tracks'),
                     'type' => 'route-link-item',
                     'children' => [
@@ -324,7 +380,7 @@ class Menu
                     ]
                 ],
                 [
-                    'name' => 'project.surveys',
+                    'name' => 'project.surveys.index',
                     'label' => $this->translator->trans('Surveys'),
                     'type' => 'route-link-item',
                     'children' => [

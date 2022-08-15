@@ -30,7 +30,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public $menuEditActions = array();
+    public array $menuEditActions = [];
 
     /**
      * Menu actions to show in Show box.
@@ -40,7 +40,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public $menuShowActions = array('track' => 'show-track');
+    public array $menuShowActions = ['track' => 'show-track'];
 
     /**
      *
@@ -63,7 +63,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         $this->applyTextMarker();
 
         // Add link to patient to overview
-        $menuItems = $this->findUrls('respondent', 'show');
+        $menuItems = $this->findUrls('show', $bridge);
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
@@ -94,8 +94,10 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         $cDesc  = null;
         $thead->tr();
 
-        if ($showMenuItem = $this->getShowMenuItem()) {
-            $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
+        if ($showMenuItems = $this->getShowUrls($bridge)) {
+            foreach($showMenuItems as $showMenuItem) {
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
+            }
         }
 
         // Initialize alter

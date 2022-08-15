@@ -2,6 +2,8 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
+use MUtil\Lazy\Call;
+
 /**
  *
  * @package    Gems
@@ -24,20 +26,24 @@ class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
 {
     protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $menuItem = $this->menu->find(array('controller' => 'respondent', 'action' => 'show', 'allowed' => true));
-        if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
-            $href = $menuItem->toHRefAttribute($bridge);
+        $params = [
+            'id1' => $bridge->getLazy('gr2o_patient_nr'),
+            'id2' => $bridge->getLazy('gr2o_id_organization'),
+        ];
 
-            if ($href) {
-                $aElem = new \MUtil\Html\AElement($href);
-                $aElem->setOnEmpty('');
+        $href = new Call(function(string $routeName, array $params = []) {
+            return $this->routeHelper->getRouteUrl($routeName, $params);
+        }, ['respondent.show', $params]);
 
-                // Make sure org is known
-                $model->get('gr2o_id_organization');
+        if ($href) {
+            $aElem = new \MUtil\Html\AElement($href);
+            $aElem->setOnEmpty('');
 
-                $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-                $model->set('respondent_name', 'itemDisplay', $aElem);
-            }
+            // Make sure org is known
+            $model->get('gr2o_id_organization');
+
+            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $model->set('respondent_name', 'itemDisplay', $aElem);
         }
         
         parent::addBrowseTableColumns($bridge, $model);

@@ -49,9 +49,9 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @var \Gems\User\Organization
+     * @var \Gems\User\User
      */
-    public $currentOrganization;
+    public $currentUser;
 
     /**
      *
@@ -180,7 +180,7 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $orgId = $this->currentOrganization->getId();
+            $orgId = $this->currentUser->getCurrentOrganizationId();
             $this->defaultSearchData[-1] = "((gsu_insertable = 1 AND gsu_insert_organizations LIKE '%|$orgId|%') OR
                 EXISTS
                 (SELECT gro_id_track FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track

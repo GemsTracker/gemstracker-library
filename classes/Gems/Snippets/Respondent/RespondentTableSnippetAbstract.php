@@ -157,7 +157,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
             $showMenuItems = $this->getShowUrls($bridge);
 
             foreach ($showMenuItems as $menuItem) {
-                // $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
             }
         }
 
@@ -174,7 +174,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
             $editMenuItems = $this->getEditUrls($bridge);
 
             foreach ($editMenuItems as $menuItem) {
-                // $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
             }
         }
     }

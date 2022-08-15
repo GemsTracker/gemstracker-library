@@ -44,9 +44,9 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @var \Gems\User\Organization
+     * @var \Gems\User\User
      */
-    public $currentOrganization;
+    public $currentUser;
 
     /**
      *
@@ -136,7 +136,7 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $orgId = $this->currentOrganization->getId();
+            $orgId = $this->currentUser->getCurrentOrganizationId();
             $this->defaultSearchData[-1] = "gtr_organizations LIKE '%|$orgId|%'";
         }
 

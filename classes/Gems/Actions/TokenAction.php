@@ -40,14 +40,14 @@ class TokenAction extends \Gems\Actions\TokenSearchActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\TokenSearchSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\TokenSearchSnippet'];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Tracker\\TokenStatusLegenda');
+    protected $indexStopSnippets = ['Tracker\\TokenStatusLegenda'];
 
     /**
      *
@@ -62,7 +62,7 @@ class TokenAction extends \Gems\Actions\TokenSearchActionAbstract
      */
     public function getIndexTitle()
     {
-        return sprintf($this->_('Surveys assigned to respondent %s'), $this->_getParam(\MUtil\Model::REQUEST_ID1));
+        return sprintf($this->_('Surveys assigned to respondent %s'), $this->request->getAttribute(\MUtil\Model::REQUEST_ID1));
     }
 
     /**
@@ -75,8 +75,8 @@ class TokenAction extends \Gems\Actions\TokenSearchActionAbstract
         static $respondent;
 
         if (! $respondent) {
-            $patientNumber  = $this->_getParam(\MUtil\Model::REQUEST_ID1);
-            $organizationId = $this->_getParam(\MUtil\Model::REQUEST_ID2);
+            $patientNumber  = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
 
             $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
             
@@ -119,11 +119,11 @@ class TokenAction extends \Gems\Actions\TokenSearchActionAbstract
         // Survey action data
         $data['gto_id_respondent']   = $this->getRespondentId();
 
-        $orgsFor = $this->util->getOtherOrgsFor($this->_getParam(\MUtil\Model::REQUEST_ID2));
+        $orgsFor = $this->util->getOtherOrgsFor($this->request->getAttribute(\MUtil\Model::REQUEST_ID2));
         if (is_array($orgsFor)) {
             $data['gto_id_organization'] = $orgsFor;
         } elseif (true !== $orgsFor) {
-            $data['gto_id_organization'] = $this->_getParam(\MUtil\Model::REQUEST_ID2);
+            $data['gto_id_organization'] = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
         }
 
         return $data;
