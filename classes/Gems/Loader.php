@@ -35,7 +35,7 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @var \Gems\Events
+     * @var \Gems\TrackEvents
      */
     protected $events;
 
@@ -202,7 +202,7 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @return \Gems\Events
+     * @return \Gems\TrackEvents
      */
     public function getEvents()
     {

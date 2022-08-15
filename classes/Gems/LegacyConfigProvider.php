@@ -49,6 +49,7 @@ class LegacyConfigProvider
                 \Zend_Db_Adapter_Abstract::class => LegacyZendDatabaseFactory::class,
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
+                TrackEvents::class => LegacyFactory::class,
 
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],
@@ -58,6 +59,7 @@ class LegacyConfigProvider
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
                 'LegacyEvent' => EventDispatcher::class,
+                'LegacyTrackEvents' => TrackEvents::class,
                 'LegacyLoader' => \Gems\Loader::class,
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,

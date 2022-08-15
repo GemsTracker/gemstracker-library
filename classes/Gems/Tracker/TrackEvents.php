@@ -23,7 +23,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Events extends \Gems\Loader\TargetLoaderAbstract
+class TrackEvents extends \Gems\Loader\TargetLoaderAbstract
 {
     const RESPONDENT_CHANGE_EVENT       = 'Respondent/Change';
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
@@ -43,7 +43,7 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var array containing eventType => eventClass for all event classes
      */
-    protected $_eventClasses = array(
+    protected $_eventClasses = [
         self::RESPONDENT_CHANGE_EVENT       => 'Gems\\Event\\RespondentChangedEventInterface',
         self::TRACK_CALCULATION_EVENT       => '\\Gems\\Event\\TrackCalculationEventInterface',
         self::TRACK_COMPLETION_EVENT        => '\\Gems\\Event\\TrackCompletedEventInterface',
@@ -53,7 +53,7 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
         self::SURVEY_BEFORE_ANSWERING_EVENT => '\\Gems\\Event\\SurveyBeforeAnsweringEventInterface',
         self::SURVEY_COMPLETION_EVENT       => '\\Gems\\Event\\SurveyCompletedEventInterface',
         self::SURVEY_DISPLAY_EVENT          => '\\Gems\\Event\\SurveyDisplayEventInterface',
-    );
+    ];
 
     /**
      * @var Translated
@@ -116,7 +116,7 @@ class Events extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param string $eventName The class name of the individual event to load
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the event
-     * @return \Gems\Tracker\TrackerEventInterface or more specific a $eventClass type object
+     * @return EventInterface or more specific a $eventClass type object
      */
     protected function _loadEvent($eventName, $eventType)
     {
