@@ -155,9 +155,11 @@ class Form
 
         switch ($type) {
             case 'dateTime':
-                // A null value will sometimes be empty, causing errors in \Zend_Date
-                if (empty($value)) {$value = null;}
-                $output[$modelName] = new \Zend_Date($value, \Zend_Date::ISO_8601);
+                // A null value will sometimes be empty, causing errors in \DateTimeInterface
+                if (empty($value)) {
+                    $value = null;
+                }
+                $output[$modelName] = \DateTimeImmutable::createFromFormat('c', $value);
                 break;
 
             case 'select':

@@ -146,7 +146,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
                 } else {
                     $li->em($trackData['trackName']);
                 }
-                if ($trackData['trackStart'] instanceof \Zend_Date) {
+                if ($trackData['trackStart'] instanceof \DateTimeInterface) {
                     $startDate = $this->translatedUtil->describeDateFromNow($trackData['trackStart']);
                 } else {
                     $startDate = $this->_('startdate unknown');

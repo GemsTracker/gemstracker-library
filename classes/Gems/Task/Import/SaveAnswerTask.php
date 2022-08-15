@@ -115,8 +115,8 @@ class SaveAnswerTask extends \MUtil\Task\TaskAbstract
             if (isset($row['survey_id'])) {
                 $model = $this->targetModel;
                 foreach ($answers as $key => &$value) {
-                    if ($value instanceof \Zend_Date) {
-                        $value = $value->toString($model->getWithDefault($key, 'storageFormat', 'yyyy-MM-dd HH:mm:ss'));
+                    if ($value instanceof \DateTimeInterface) {
+                        $value = $value->format($model->getWithDefault($key, 'storageFormat', 'Y-m-d H:i:s'));
                     }
                 }
             }

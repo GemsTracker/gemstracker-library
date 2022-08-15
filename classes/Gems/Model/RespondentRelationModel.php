@@ -60,7 +60,7 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
         $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $this->translatedUtil->getGenders());
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
-        $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', \Zend_Date::DATE_MEDIUM, 'elementClass', 'Date');
+        $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', 'j M Y', 'elementClass', 'Date');
         $this->set('grr_email', 'label', $this->_('E-Mail'));
         $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->util->getDbLookup()->getRespondentMailCodes());
     }

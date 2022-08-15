@@ -8,6 +8,10 @@
 
 namespace Gems;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use phpDocumentor\Reflection\Types\Boolean;
+
 /**
  * Description of RespondentTest
  *
@@ -16,12 +20,14 @@ namespace Gems;
 class RespondentTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * 
-     * @param type $respondentData
-     * @param type $expected
+     * @param array              $respondentData
+     * @param \DateTimeInterface $date
+     * @param boolean            $months
+     * @param                    $expected
+     * @return void
      * @dataProvider getAgeProvider
      */
-    public function testGetAge($respondentData, $date, $months, $expected)
+    public function testGetAge(array $respondentData, DateTimeInterface $date, \boolean $months, $expected)
     {
         $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
@@ -32,19 +38,18 @@ class RespondentTest extends \PHPUnit_Framework_TestCase
     
     public function getAgeProvider()
     {
-        $ageNine = new \MUtil\Date();
-        $ageNine->sub(10, 'y');
-        $ageNine->addDay(1);
+        $date = new DateTimeImmutable();
+        $ageNine = $date->sub(new DateInterval('P9Y-1D'));
         return [
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-15', 'yyyy-MM-dd'), true, 120],  // Happy birthday!
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-16', 'yyyy-MM-dd'), true, 120],  // The day after
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-14', 'yyyy-MM-dd'), true, 120],  // Almost a month
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-14', 'yyyy-MM-dd'), true, 119],  // Tomorrow
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-15'), true, 120],  // Happy birthday!
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-16'), true, 120],  // The day after
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-04-14'), true, 120],  // Almost a month
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-14'), true, 119],  // Tomorrow
             
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-15', 'yyyy-MM-dd'), false, 10],  // Happy birthday!
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-14', 'yyyy-MM-dd'), false, 10],  // Almost another month
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-04-15', 'yyyy-MM-dd'), false, 10],  // One month is nothing
-            [['grs_birthday' => new \MUtil\Date('2000-03-15', 'yyyy-MM-dd')], new \MUtil\Date('2010-03-14', 'yyyy-MM-dd'), false, 9],   // One more day
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-15'), false, 10],  // Happy birthday!
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-04-14'), false, 10],  // Almost another month
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-04-15'), false, 10],  // One month is nothing
+            [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-14'), false, 9],   // One more day
             
             [['grs_birthday' => $ageNine], null, false, 9],
             

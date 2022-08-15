@@ -37,7 +37,6 @@ class ShowAllOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
     /**
      * @return array tokenId => \Gems\Tracker\Token
-     * @throws \Zend_Date_Exception
      */
     protected function getDisplayTokens()
     {
@@ -52,9 +51,8 @@ class ShowAllOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
         // We always look back from the entered token
         if ($this->token->isCompleted()) {
-            $filterTime = $this->token->getCompletionTime();
-            $filterTime->subHour(1);
-            $where .= $this->db->quoteInto(" OR gto_completion_time >= ?", $filterTime->toString('yyyy-MM-dd HH:mm:ss'));
+            $filterTime = $this->token->getCompletionTime()->sub(new \DateInterval('PT1H'));
+            $where .= $this->db->quoteInto(" OR gto_completion_time >= ?", $filterTime->format('Y-m-d H:i:s'));
         }
 
         // Get the tokens

@@ -181,10 +181,8 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         $model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $model->set('date_only', 'formatFunction', [$this, 'formatDate']);
-                // 'dateFormat', \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR);
         $model->set('gap_admission_time', 'label', $this->_('Time'),
                 'formatFunction', [$this, 'formatTime']);
-                // 'dateFormat', 'HH:mm ' . \Zend_Date::WEEKDAY);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
         // $this->_timeImg           = \MUtil\Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));

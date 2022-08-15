@@ -36,11 +36,10 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _getRespondentTrackMock($ageYears, $trackYears)
     {
-        $age = new \MUtil\Date();
+        $age = new \DateTimeImmutable($ageYears . 'years ago');
         $age->sub($ageYears, 'y');
 
-        $startDate = new \MUtil\Date();
-        $startDate->sub($trackYears, 'y');
+        $startDate = new \DateTimeImmutable($trackYears . 'years ago');
 
         $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondentData = ['grs_birthday' => $age];

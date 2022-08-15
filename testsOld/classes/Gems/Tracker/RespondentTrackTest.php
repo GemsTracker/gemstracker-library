@@ -51,8 +51,8 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
 
         // If this worked, we can check all elements and make sure we allow a delta in seconds if provided
         foreach ($expected as $key => $value) {
-            if (($value instanceof \Zend_Date) && ($actual[$key] instanceof \Zend_Date)) {
-                $this->assertEquals(0, $expected[$key]->diffSeconds($actual[$key]), $message, $deltaSeconds);
+            if (($value instanceof \DateTimeImmutable) && ($actual[$key] instanceof \DateTimeImmutable)) {
+                $this->assertEquals(0, $value->diff($actual[$key])->s, $message, $deltaSeconds);
             } else {
                 $this->assertEquals($expected[$key], $actual[$key], $message, $deltaGlobal);
             }
@@ -77,10 +77,10 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
 
         $actual = $respondentTrack->getCodeFields();
 
-        $date = new MUtil\Date('2010-10-08', 'yyyy-MM-dd');
+        $date = new \DateTimeImmutable('2010-10-08');
         $expected = array(
             'code' => 'test',
-            'datecode' => $date->toString('dd MMM yyyy'),
+            'datecode' => $date->format('j M Y'),
             'rel'  => 'Johnny Walker'
         );
         $this->assertEquals($expected, $actual);
@@ -102,7 +102,7 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
         $trackData = array('gr2t_id_respondent_track' => 1, 'gr2t_id_track' => 1);
         $respondentTrack = new \Gems\Tracker\RespondentTrack($trackData);
         $respondentTrack->answerRegistryRequest('tracker', $this->tracker);
-        $date = new MUtil\Date('2010-10-08', 'yyyy-MM-dd');
+        $date = new \DateTimeImmutable('2010-10-08');
         $expected = array(
             'f__1' => 'test',
             'code' => 'test',
@@ -123,7 +123,7 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
     {
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(1);
 
-        $date = new \MUtil\Date('2010-11-09', 'yyyy-MM-dd');
+        $date = new \DateTimeImmutable('2010-11-09');
         $expected = array(
             'f__1' => 'newvalue',
             'code' => 'newvalue',
@@ -164,15 +164,15 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
         return [
             'date' => [
                 '2019-03-22',
-                new \MUtil\Date('2019-03-22')
+                new \DateTimeImmutable('2019-03-22')
             ],
             'datetime' => [
                 '2019-03-23 15:45:59',
-                new \MUtil\Date('2019-03-23')
+                new \DateTimeImmutable('2019-03-23')
             ],
             'dateshorttime' => [
                 '2019-03-24 15:45',
-                new \MUtil\Date('2019-03-24')
+                new \DateTimeImmutable('2019-03-24')
             ]
         ];
     }
@@ -186,7 +186,7 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
         $respondentTrack = $this->loader->getTracker()->getRespondentTrack(2);
         $expected = $respondentTrack->getFieldData();
         $expected['a__1'] = 1;
-        $expected['f__6'] = new \MUtil\Date('2017-10-01', 'yyyy-MM-dd');
+        $expected['f__6'] = new \DateTimeImmutable('2017-10-01');
         $expected['f__6__manual'] = 0;
         $actual   = $respondentTrack->setFieldData(array('a__1' => 1));
 
@@ -254,7 +254,7 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
     public function testCreateTrackDefaultFields()
     {
         $trackData = [
-            'gr2t_start_date' => new \MUtil\Date('2000-01-01')
+            'gr2t_start_date' => new \DateTimeImmutable('2000-01-01')
             ];
         \MUtil\Batch\BatchAbstract::unload('tmptrack3');
         $respondentTrack = $this->loader->getTracker()->createRespondentTrack(1234, 1, 1, 1, $trackData);
@@ -282,7 +282,7 @@ class RespondentTrackTest extends \Gems\Test\DbTestAbstract
             'gr2t_id_track'        => 1,
             'gr2t_id_user'         => '1234',
             'gr2t_id_organization' => 1,
-            'gr2t_start_date'      => new \MUtil\Date('2000-01-01')
+            'gr2t_start_date'      => new \DateTimeImmutable('2000-01-01')
         ] + $data;
         
         $newData = $model->save($data);

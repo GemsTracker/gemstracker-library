@@ -80,7 +80,7 @@ class TrackModel extends \MUtil\Model\TableModel
 
         \Gems\Model::setChangeFieldsByPrefix($this, 'gtr');
 
-        $this->set('gtr_date_start', 'default', new \Zend_Date());
+        $this->set('gtr_date_start', 'default', new \DateTimeImmutable());
     }
 
     /**

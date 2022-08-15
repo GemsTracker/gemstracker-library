@@ -63,7 +63,7 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
 
         $respondent->expects($this->any())
                 ->method('getBirthday')
-                ->will($this->returnValue(new \MUtil\Date($respondentData['Dob'], 'yyyy-MM-dd')));
+                ->will($this->returnValue($respondentData['Dob']));
 
         $survey->expects($this->any())
                 ->method('getQuestionList')
@@ -116,12 +116,12 @@ class PrefillAnswersTest extends \PHPUnit_Framework_TestCase
                 // Raw track fields
                 [
                     'TEst' => 'waarde',
-                    'OKDate' => new \MUtil\Date('2019-05-10 10:11:12', 'yyyy-MM-dd HH:mm:ss')
+                    'OKDate' => new \DateTimeImmutable('2019-05-10 10:11:12')
                 ],
                 // RespondentFields
                 [
                     'Sex' => 'M', 
-                    'Dob' => new \MUtil\Date('15-12-2008', 'dd-MM-yyyy')
+                    'Dob' => new \DateTimeImmutable('15-12-2008')
                 ],
                 // Result
                 [

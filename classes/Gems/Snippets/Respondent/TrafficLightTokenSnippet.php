@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Respondent;
 
+use MUtil\Model;
+
 /**
  * Show the track in a different way, ordered by round and group showing
  * traffic light color indicating the status of a token and uses inline
@@ -431,10 +433,8 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         parent::afterRegistry();
 
         // Load the display dateformat
-        $dateOptions       = \MUtil\Model\Bridge\FormBridge::getFixedOptions('date');
-        $dateTimeOptions   = \MUtil\Model\Bridge\FormBridge::getFixedOptions('datetime');
-        $this->_dateFormat = $dateOptions['dateFormat'];
-        $this->_dateTimeFormat = $dateTimeOptions['dateFormat'];
+        $this->_dateFormat     = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
+        $this->_dateTimeFormat = Model::getTypeDefault(Model::TYPE_DATETIME, 'dateFormat');
 
         $this->creator = \MUtil\Html::getCreator();
 
@@ -586,10 +586,10 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $doelgroep       = null;
         $lastDate        = null;
         $lastDescription = null;
-        $now             = new \MUtil\Date();
+        $now             = time();
         $progressDiv     = null;
         $respTrackId     = 0;
-        $today           = $now->get($this->_dateFormat);
+        $today           = \DateTimeImmutable('today');
         $trackProgress   = null;
         $minIcon         = \MUtil\Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
         $summaryIcon     = \MUtil\Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
@@ -604,7 +604,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         foreach ($data as $row)
         {
             if ($respTrackId !== $row['gto_id_respondent_track']) {
-                if (isset($day) && new \MUtil\Date($lastDate, 'dd-MM-y') < $now) {
+                if (isset($day) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() <= $now) {
                     $day->class .= ' today';
 					unset($day);
                 }
@@ -654,8 +654,8 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
                 $trackHeader[] = $trackTitle;
                 $trackHeader[] = $this->_getDeleteIcon($row, $trackParameterSource, $trackReceptionCode->isSuccess());
 
-                if ($row['gr2t_start_date'] instanceof \Zend_Date) {
-                    $trackStartDate = $row['gr2t_start_date']->get($this->_dateFormat);
+                if ($row['gr2t_start_date'] instanceof \DateTimeInterface) {
+                    $trackStartDate = $row['gr2t_start_date']->format($this->_dateFormat);
                 } else {
                     $trackStartDate = $this->_('n/a');
                 }
@@ -668,24 +668,24 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             }
 
             $date = $row['gto_valid_from'];
-            if ($date instanceof \Zend_Date) {
-                $date = $date->get($this->_dateFormat);
-            } else {
-                continue;
+            if (! $date instanceof \DateTimeInterface) {
+                $date = Model::getDateTimeInterface($date);
+                if (! $date instanceof \DateTimeInterface) {
+                    continue;
+                }
             }
 
             $description = $row['gto_round_description'];
             if (is_null($description)) $description = '';
-            if (/* $date !== $lastDate || */ $lastDescription !== $description || !isset($day)) {
-                $last = new \MUtil\Date($lastDate, 'dd-MM-y');
-                if (isset($day) && $last < $now && $row['gto_valid_from'] > $now) {
+            if ($lastDescription !== $description || !isset($day)) {
+                if (isset($day) && $lastDate instanceof \DateTimeInterface && $lastDate->getTimestamp() < $now && $row['gto_valid_from']->getTimestamp() > $now) {
                     $day->class .= ' today';
                 }
                 $lastDescription = $description;
                 $progressDiv     = $this->finishGroup($progressDiv);
                 $lastDate        = $date;
                 $class           = 'object';
-                if ($date == $today) {
+                if ($date->getTimestamp() == $today) {
                     $class .= ' today';
                 }
                 $day = $subcontainer->div(array('class' => $class, 'renderClosingTag' => true));
@@ -733,7 +733,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
             $tokenDiv[] = $this->addToken($row);
         }
-        if (isset($day) && new \MUtil\Date($lastDate, 'dd-MM-y') < $now) {
+        if (isset($day) && $lastDate->getTimestamp() < $now) {
             $day->class .= ' today';
         }
         $progressDiv = $this->finishGroup($progressDiv);

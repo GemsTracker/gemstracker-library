@@ -43,8 +43,8 @@ class DateAnswerTranslator extends \Gems\Model\Translator\RespondentAnswerTransl
                 $row[$this->orgIdField] &&
                 $row[$this->completionField]) {
 
-            if ($row[$this->completionField] instanceof \Zend_Date) {
-                $compl = $row[$this->completionField]->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+            if ($row[$this->completionField] instanceof \DateTimeInterface) {
+                $compl = $row[$this->completionField]->format(\Gems\Tracker::DB_DATETIME_FORMAT);
             } else {
                 $compl = $row[$this->completionField];
             }

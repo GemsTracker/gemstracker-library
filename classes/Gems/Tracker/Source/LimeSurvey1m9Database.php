@@ -1501,7 +1501,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * Sets the completion time.
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @param \Zend_Date|null $completionTime \Zend_Date or null
+     * @param \DateTimeInterface|null $completionTime \DateTimeInterface or null
      * @param int $surveyId \Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
@@ -1518,9 +1518,9 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
         $where     = $lsDb->quoteInto("token = ?", $lsTokenId);
         $current   = new \MUtil\Db\Expr\CurrentTimestamp();
 
-        if ($completionTime instanceof \Zend_Date) {
-            $answers['submitdate']  = $completionTime->toString(self::LS_DB_DATETIME_FORMAT);
-            $tokenData['completed'] = $completionTime->toString(self::LS_DB_COMPLETION_FORMAT);
+        if ($completionTime instanceof \DateTimeInterface) {
+            $answers['submitdate']  = $completionTime->format(self::LS_DB_DATETIME_FORMAT);
+            $tokenData['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
         } else {
             $answers['submitdate']  = null;
             $tokenData['completed'] = 'N';
@@ -1530,7 +1530,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
         if ($lsDb->fetchOne("SELECT token FROM $lsTabSurv WHERE token = ?", $lsTokenId)) {
             $lsDb->update($lsTabSurv, $answers, $where);
 
-        } elseif ($completionTime instanceof \Zend_Date) {
+        } elseif ($completionTime instanceof \DateTimeInterface) {
             $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
             $answers['datestamp']     = $current;
@@ -1543,7 +1543,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
         if ($lsDb->fetchOne("SELECT token FROM $lsTabTok WHERE token = ?", $lsTokenId)) {
             $lsDb->update($lsTabTok, $tokenData, $where);
 
-        } elseif ($completionTime instanceof \Zend_Date) {
+        } elseif ($completionTime instanceof \DateTimeImmutable) {
 
             $tokenData['token'] = $lsTokenId;
             $tokenData = $tokenData + $this->_fillAttributeMap($token);

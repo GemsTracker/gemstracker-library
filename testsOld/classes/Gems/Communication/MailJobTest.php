@@ -107,7 +107,6 @@ class MailJobTest extends \Gems\Test\DbTestAbstract
      * @param int $subDays The number of days to subtract to get the start date
      * @param null|int $relationId Optional relation Id
      * @return \Gems\Tracker\RespondentTrack
-     * @throws \Zend_Date_Exception
      */
     protected function createRespondentTrack($respondentId, $organizationsId, $trackId, $subDays, $relationId = null, $mailCode = 100)
     {
@@ -119,10 +118,10 @@ class MailJobTest extends \Gems\Test\DbTestAbstract
             $respondentTrackid = $this->db->fetchOne("SELECT COALESCE(MAX(gr2t_id_respondent_track), 0) + 1 AS newId FROM gems__respondent2track");
         }
         
-        $startDate = new \MUtil\Date();
+        $startDate = new \DateTimeImmutable($subDays . ' days ago');
         $data      = [
             'gr2t_id_respondent_track' => ++$respondentTrackid,
-            'gr2t_start_date'          => $startDate->subDay($subDays),
+            'gr2t_start_date'          => $startDate,
             'gr2t_mailable'            => $mailCode,
             ];
         $fields    = [];

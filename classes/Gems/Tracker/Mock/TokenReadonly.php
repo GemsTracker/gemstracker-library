@@ -263,8 +263,8 @@ class TokenReadonly extends \Gems\Tracker\Token
 
     /**
      *
-     * @param mixed $validFrom \Zend_Date or string
-     * @param mixed $validUntil null, \Zend_Date or string. False values leave values unchangeds
+     * @param mixed $validFrom DateTimeInterface or string
+     * @param mixed $validUntil null, DateTimeInterface or string. False values leave values unchangeds
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */

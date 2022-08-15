@@ -649,8 +649,8 @@ class Token extends \Gems\Registry\TargetAbstract
         // Now make sure there are no more date objects
         foreach($newValues as &$value)
         {
-            if ($value instanceof \Zend_Date) {
-                $value = $value->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+            if ($value instanceof \DateTimeInterface) {
+                $value = $value->format(\Gems\Tracker::DB_DATETIME_FORMAT);
             }
         }
 
@@ -2087,8 +2087,8 @@ class Token extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @param mixed $validFrom \Zend_Date or string
-     * @param mixed $validUntil null, \Zend_Date or string. False values leave values unchangeds
+     * @param mixed $validFrom \DateTimeInterface or string
+     * @param mixed $validUntil null, \DateTimeInterface or string. False values leave values unchangeds
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */

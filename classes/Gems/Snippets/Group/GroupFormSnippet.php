@@ -120,8 +120,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
     }
 
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a value
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
@@ -160,7 +159,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
+     * @return int
      */
     public function saveIsRespondent($value, $isNew = false, $name = null, array $context = array())
     {
@@ -168,8 +167,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
+     * A ModelAbstract->setOnSave() function that returns the input value as an integer
      *
      * @see \MUtil\Model\ModelAbstract
      *
@@ -177,7 +175,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
+     * @return int
      */
     public function saveIsStaff($value, $isNew = false, $name = null, array $context = array())
     {

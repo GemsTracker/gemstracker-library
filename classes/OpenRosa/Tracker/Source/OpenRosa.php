@@ -11,6 +11,10 @@
 
 namespace OpenRosa\Tracker\Source;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use MUtil\Model;
+
 use OpenRosa\Tracker\Source\Form;
 use OpenRosa\Tracker\Model\SurveyModel;
 
@@ -243,15 +247,16 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getAnswerDateTime($fieldName, \Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
         $answers = $token->getRawAnswers();
 
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
-            if (\Zend_Date::isDate($answers[$fieldName], \Zend_Date::ISO_8601)) {
-                return new \MUtil\Date($answers[$fieldName], \Zend_Date::ISO_8601);
+            $date = Model::getDateTimeInterface($answers[$fieldName]);
+            if ($date) {
+                return $date;
             }
             if (\Gems\Tracker::$verbose)  {
                 \MUtil\EchoOut\EchoOut::r($answers[$fieldName], 'Missed answer date value:');
@@ -274,7 +279,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getCompletionTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
@@ -540,7 +545,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * @param \Gems\Tracker\Token $token \Gems token object
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return \MUtil\Date date time or null
+     * @return ?DateTimeInterface date time or null
      */
     public function getStartTime(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null)
     {
@@ -869,7 +874,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * Sets the completion time.
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @param \Zend_Date|null $completionTime \Zend_Date or null
+     * @param \DateTimeInterface|null $completionTime \DateTimeInterface or null
      * @param int $surveyId \Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */

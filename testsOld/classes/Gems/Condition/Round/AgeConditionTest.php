@@ -41,8 +41,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
      */
     protected function _getTokenMock($date = true)
     {
-        $ageTen = new \MUtil\Date();
-        $ageTen->sub(10, 'y');
+        $ageTen = new \DateTimeImmutable('10 years ago');
         $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondentData = ['grs_birthday' => $ageTen];
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
@@ -56,7 +55,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
                 ->will($this->returnValue($respondent));
         
         if ($date) {
-            $validFrom = new \MUtil\Date();
+            $validFrom = new \DateTimeImmutable();
         } else {
             $validFrom = null;
         }

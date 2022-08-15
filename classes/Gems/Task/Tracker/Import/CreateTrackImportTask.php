@@ -50,8 +50,8 @@ class CreateTrackImportTask extends \MUtil\Task\TaskAbstract
         $trackData['gtr_organizations'] = $formData['gtr_organizations'];
 
         // \MUtil\EchoOut\EchoOut::track($trackData);
-        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \Zend_Date)) {
-            $trackData['gtr_date_start'] = new \MUtil\Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
+        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \DateTimeInterface)) {
+            $trackData['gtr_date_start'] = \DateTimeImmutable::createFromFormat('Y-m-d', $trackData['gtr_date_start']);
         }
         $output = $model->save($trackData);
 

@@ -197,10 +197,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         $agenda     = $this->loader->getAgenda();
 
-        $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'),
-                // 'formatFunction', array($this->translatedUtil, 'describeTimeFromNow'),
-                'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $this->_('dd-mm-yyyy hh:mm'));
+        $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'));
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
 

@@ -62,20 +62,15 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstrac
 
     public function displayDate($date)
     {
-        if (! $date instanceof \Zend_Date) {
+        if (! $date instanceof \DateTimeInterface) {
             return $date;
         }
         $div = \MUtil\Html::create('div');
         $div->class = 'calendar';
-        if (0 < $date->getYear()->getTimestamp()) {
-            $div->span(ucfirst($date->toString(
-                    \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
-                    \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR
-                    )))->class = 'date';
-        }
+        $div->span(ucfirst($date->format('l j F Y')->class = 'date';
         // $div->strong($date->toString());
         // $div->br();
-        $td = $div->span($date->toString(\Zend_Date::TIME_SHORT));
+        $td = $div->span($date->format('H:i'));
         $td->class = 'time middleAlign';
         $td->append(' ');
         $td->img()->src = 'stopwatch.png';

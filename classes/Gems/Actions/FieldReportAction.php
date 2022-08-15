@@ -169,8 +169,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
     }
 
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a value
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
@@ -195,8 +194,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
     }
 
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a value
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
@@ -248,8 +246,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
     }
 
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a value
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.

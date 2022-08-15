@@ -45,8 +45,6 @@ class DateFieldModelTest extends MUtil\Model_AbstractModelTest
     {
         if (! $this->_model) {
             $this->_model = new MUtil\Model\TableModel('dfmt');
-            $this->_model->set('grs_birthday', 'storageFormat', 'yyyy-MM-dd');
-            $this->_model->set('grs_birthday', 'dateFormat', \Zend_Date::DATE_MEDIUM);
             $this->_model->setOnSave('grs_birthday', array($this->_model, 'formatSaveDate'));
             $this->_model->setOnLoad('grs_birthday', array($this->_model, 'formatLoadDate'));
         }
@@ -80,7 +78,7 @@ class DateFieldModelTest extends MUtil\Model_AbstractModelTest
         $model = $this->getModel();
         $row = $model->loadFirst();
 
-        $this->assertEquals($row['grs_birthday'], new MUtil\Date("2014-04-02", 'yyyy-MM-dd'));
+        $this->assertEquals($row['grs_birthday'], new \DateTimeImmutable("2014-04-02"));
     }
 
     /**
@@ -92,7 +90,7 @@ class DateFieldModelTest extends MUtil\Model_AbstractModelTest
         $row = $model->loadFirst();
 
         $rowsaved = $model->save($row);
-        $this->assertEquals($row['grs_birthday']->get('yyyy-MM-dd'), $rowsaved['grs_birthday']->get('yyyy-MM-dd'));
+        $this->assertEquals($row['grs_birthday']->format('Y-m-d'), $rowsaved['grs_birthday']->format('Y-m-d'));
     }
 
     /**
@@ -109,7 +107,7 @@ class DateFieldModelTest extends MUtil\Model_AbstractModelTest
         $postRow = array('grs_birthday'=>$postData) + $row;
         $postRow = $this->_model->processAfterLoad(array($postRow), false, true);
         $rowsaved = $model->save($postRow);
-        $this->assertEquals($row['grs_birthday']->get('yyyy-MM-dd'), $rowsaved[0]['grs_birthday']->get('yyyy-MM-dd'));
+        $this->assertEquals($row['grs_birthday']->format('Y-m-d'), $rowsaved[0]['grs_birthday']->format('Y-m-d'));
     }
 
     /**
@@ -126,7 +124,7 @@ class DateFieldModelTest extends MUtil\Model_AbstractModelTest
         $postRow = array('grs_birthday'=>$postData) + $row;
         $postRow = $this->_model->processAfterLoad(array($postRow), false, true);
         $rowsaved = $model->save($postRow);
-        $this->assertEquals($row['grs_birthday']->get('yyyy-MM-dd'), $rowsaved[0]['grs_birthday']->get('yyyy-MM-dd'));
+        $this->assertEquals($row['grs_birthday']->format('Y-m-d'), $rowsaved[0]['grs_birthday']->format('Y-m-d'));
     }
 
 }

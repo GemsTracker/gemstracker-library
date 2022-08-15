@@ -187,8 +187,8 @@ class AppointmentSelect extends \MUtil\Registry\TargetAbstract
             if ($from instanceof \Gems\Agenda\Appointment) {
                 $from = $from->getAdmissionTime();
             }
-            if ($from instanceof \Zend_Date) {
-                $from = $from->toString('yyyy-MM-dd HH:mm:ss');
+            if ($from instanceof DateTimeInterface) {
+                $from = $from->format('Y-m-d H:i:s');
             }
             $this->_select->where("gap_admission_time $oper ?", $from);
         }

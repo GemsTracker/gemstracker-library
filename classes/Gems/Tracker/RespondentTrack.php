@@ -773,14 +773,14 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     public function getCurrentRound()
     {
         $isStop = false;
-        $today  = new \Zend_Date();
+        $today  = new \DateTimeImmutable('today');
         $tokens = $this->getTokens();
         $stop   = $this->util->getReceptionCodeLibrary()->getStopString();
 
         foreach ($tokens as $token) {
             $validUntil = $token->getValidUntil();
 
-            if (! empty($validUntil) && $validUntil->isEarlier($today)) {
+            if (! empty($validUntil) && $validUntil->getTimezone() < $today->getTimezone()) {
                 continue;
             }
 

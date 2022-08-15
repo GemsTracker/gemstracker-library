@@ -64,7 +64,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var string Format used for displaying dates.
      */
-    protected $dateFormat = \Zend_Date::DATE_MEDIUM;
+    protected $dateFormat = 'j M Y';
 
     /**
      * @var \Gems\Event\EventDispatcher

@@ -44,7 +44,7 @@ class ReportHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
         $tr->td($this->currentUser->getFullName());
         $tr = $table->tr();
         $tr->th($this->_('Generated on'));
-        $tr->td(new \Zend_Date());
+        $tr->td(date('Y-m-d H:i:s'));
         $tr = $table->tr();
         $tr->th($this->_('Organization'));
         $tr->td($this->currentOrganization->getName());

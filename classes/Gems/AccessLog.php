@@ -288,9 +288,9 @@ class AccessLog
                     if (\MUtil\StringUtil\StringUtil::contains($key, 'password', true) || \MUtil\StringUtil\StringUtil::contains($key, 'pwd', true)) {
                         $value = '****';
                     }
-                } elseif ($value instanceof \Zend_Date) {
+                } elseif ($value instanceof \DateTimeInterface) {
                     // Output iso representation for date objects
-                    $value = $value->getIso();
+                    $value = $value->format('c');
                 }
                 $output[$key] = $value;
             }

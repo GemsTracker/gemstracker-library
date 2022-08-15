@@ -2,6 +2,11 @@
 
 namespace Gems\Tracker\Source;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+
+
 class LimeSurveyDatabaseTest extends \Gems\Test\DbTestAbstract
 {
     /**
@@ -35,8 +40,8 @@ class LimeSurveyDatabaseTest extends \Gems\Test\DbTestAbstract
     
     /**
      * 
-     * @param \MUtil\Date|null $fromDate
-     * @param \MUtil\Date|null $untilDate
+     * @param DateTimeInterface|null $fromDate
+     * @param DateTimeInterface|null $untilDate
      * @param [] $expected
      * @dataProvider validDatesProvider
      */
@@ -66,40 +71,36 @@ class LimeSurveyDatabaseTest extends \Gems\Test\DbTestAbstract
      */
     public function validDatesProvider()
     {
-        $now = new \MUtil\Date();
-        $now->setTimeToDayStart();
-        $nextWeek = clone $now;
-        $nextWeek->addDay(7);
-        $lastWeek = clone $now;
-        $lastWeek->subDay(7);
-        $tomorrow = clone $now;
-        $tomorrow->addDay(1);
+        $now      = new DateTimeImmutable('today');
+        $weekDiff = new DateInterval('P7D');
+        $nextWeek = $now->add($weekDiff);
+        $lastWeek = $now->sub($weekDiff);
+        $tomorrow = new DateTimeImmutable('tomorrow');;
 
-        $nextWeekUntil = clone $nextWeek;
-        $nextWeekUntil->setTimeToDayEnd();
+        $nextWeekUntil = $nextWeek->setTime(23,59,59);
         return [            
             'futureOpen' => [
                 $nextWeek, 
                 null,
                 [
-                    'validfrom'  => $nextWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $now->toString('yyyy-MM-dd 23:59:59'),
+                    'validfrom'  => $nextWeek->format('Y-m-d H:i:s'),
+                    'validuntil' => $now->format('Y-m-d 23:59:59'),
                 ]                                
             ],
             'futureClosed' => [
                 $tomorrow,
                 $nextWeekUntil,
                 [
-                    'validfrom'  => $tomorrow->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
+                    'validfrom'  => $tomorrow->format('Y-m-d H:i:s'),
+                    'validuntil' => $nextWeek->format('Y-m-d 23:59:59'),
                 ]                                
             ],
             'open' => [
                 $lastWeek,
                 $nextWeekUntil,
                 [
-                    'validfrom'  => $lastWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $nextWeek->toString('yyyy-MM-dd 23:59:59'),
+                    'validfrom'  => $lastWeek->format('Y-m-d H:i:s'),
+                    'validuntil' => $nextWeek->format('Y-m-d 23:59:59'),
                 ]                                
             ],
             'unknown' => [
@@ -122,8 +123,8 @@ class LimeSurveyDatabaseTest extends \Gems\Test\DbTestAbstract
                 $lastWeek, 
                 $lastWeek, 
                 [
-                    'validfrom'  => $lastWeek->toString('yyyy-MM-dd HH:mm:ss'),
-                    'validuntil' => $lastWeek->toString('yyyy-MM-dd HH:mm:ss'),
+                    'validfrom'  => $lastWeek->format('Y-m-d H:i:s'),
+                    'validuntil' => $lastWeek->format('Y-m-d H:i:s'),
                 ]                                
             ],
         ];

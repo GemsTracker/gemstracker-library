@@ -11,6 +11,8 @@
 
 namespace Gems\Task\Tracker\Merge;
 
+use MUtil\Model; 
+
 /**
  *
  *
@@ -57,8 +59,8 @@ class MergeTrackImportTask extends \MUtil\Task\TaskAbstract
         }
 
         // \MUtil\EchoOut\EchoOut::track($trackData);
-        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \Zend_Date)) {
-            $trackData['gtr_date_start'] = new \MUtil\Date($trackData['gtr_date_start'], 'yyyy-MM-dd');
+        if ($trackData['gtr_date_start'] && (! $trackData['gtr_date_start'] instanceof \DateTimeImmutable)) {
+            $trackData['gtr_date_start'] = Model::getDateTimeInterface($trackData['gtr_date_start']);
         }
         $output = $model->save($trackData);
 

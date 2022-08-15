@@ -81,16 +81,13 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see \MUtil\Model\ModelAbstract
+     * A ModelAbstract->setOnSave() function that returns a string describing the filter
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
+     * @return string
      */
     public function calcultateAndCheckName($value, $isNew = false, $name = null, array $context = array())
     {
@@ -98,8 +95,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
+     * A ModelAbstract->setOnSave() function that returns a string describing the filter
      *
      * @see \MUtil\Model\ModelAbstract
      *
@@ -107,7 +103,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return \Zend_Date
+     * @return string
      */
     abstract public function calcultateName($value, $isNew = false, $name = null, array $context = array());
 

@@ -89,35 +89,6 @@ class Localized
         }
     }
 
-    /*
-    public function formatDateTime($dateTimeValue, $showRecentTime = false)
-    {
-        if ($dateTimeValue) {
-            $locale = $this->locale;
-
-            $dateTime = strtotime($dateTimeValue);
-            $days = floor($dateTime / 86400) - floor(time() / 86400) + ($showRecentTime ? 0 : 1); // 86400 = 24*60*60
-
-            if ($descr = \Zend_Locale_Data::getContent($locale, 'relative', $days)) {
-                $recentTime = $showRecentTime ? ' ' . date('H:i', $dateTime) : '';
-                return $descr . $recentTime;
-            }
-
-            $daysDescr = '';
-            if (($days > -14) && ($days < 14)) {
-                if ($dayFormat = \Zend_Locale_Data::getContent($locale, 'unit', array('day', (abs($days) == 1) ? 'one' : 'other'))) {
-                    $daysDescr = ' ' . str_replace('{0}', $days, $dayFormat);
-                }
-            }
-
-            $date = new \Zend_Date($dateTimeValue);
-            return $date->toString($locale);
-            // return date('d-m-Y', $dateTime) . $daysDescr;
-        }
-
-        return null;
-    } // */
-
     public function formatNumber(int|float $value, int $precision = 2)
     {
         $formatter = new NumberFormatter($this->locale->getCurrentLanguage(), NumberFormatter::DECIMAL);

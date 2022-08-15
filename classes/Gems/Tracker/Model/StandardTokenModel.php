@@ -436,7 +436,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * dateformat read from the database to a \DateTimeInterface format
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
@@ -463,7 +463,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a \Zend_Date format
+     * dateformat read from the database to a \DateTimeInterface format
      *
      * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.

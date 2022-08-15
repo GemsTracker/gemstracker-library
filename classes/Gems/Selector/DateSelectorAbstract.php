@@ -201,10 +201,6 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
                     $values = array();
                     $values['period_1'] = (int) $date->format('Y');
                     $values['period_2'] = (int) $date->format('W');   // Use constant but drop leading zero
-                    // When monday is in the previous year, add one to the year
-//                    if ($date->get(\Zend_Date::DAY_OF_YEAR)>14 && $date->get(\Zend_Date::WEEK) == 1) {
-//                        $values['period_1'] =  $values['period_1'] + 1;
-//                    }
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
                     $date = $date->add($lAdd);

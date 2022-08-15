@@ -288,7 +288,7 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * Sets the completion time.
      *
      * @param \Gems\Tracker\Token $token \Gems token object
-     * @param \Zend_Date|null $completionTime \Zend_Date or null
+     * @param \DateTimeInterface|null $completionTime \DateTimeInterface or null
      * @param int $surveyId \Gems Survey Id (actually required)
      * @param string $sourceSurveyId Optional Survey Id used by source
      */

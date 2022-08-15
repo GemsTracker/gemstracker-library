@@ -2,6 +2,8 @@
 
 namespace Gems\Export;
 
+use MUtil\Model;
+
 use XMLWriter;
 /**
  *
@@ -218,18 +220,18 @@ class StreamingStataExport extends ExportAbstract
             $variableName = $this->model->get($columnName, 'variableName');
             $type = $this->model->get($columnName, 'type');
 
-            if (($type == \MUtil\Model::TYPE_DATE || $type == \MUtil\Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
+            if (($type == Model::TYPE_DATE || $type == Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
 
                 if (!empty($exportRow[$columnName])) {
-                    if ($exportRow[$columnName] instanceof \Zend_Date) {
-                        if ($type == \MUtil\Model::TYPE_DATE) {
+                    if ($exportRow[$columnName] instanceof \DateTimeInterface) {
+                        if ($type == Model::TYPE_DATE) {
                             $exportRow[$columnName] = floor(($exportRow[$columnName]->getTimestamp() + 315619200) / 86400);
                         } else {
                             $exportRow[$columnName] = ($exportRow[$columnName]->getTimestamp() + 315619200) * 1000;
                         }
 
                     } else {
-                        if ($type == \MUtil\Model::TYPE_DATE) {
+                        if ($type == Model::TYPE_DATE) {
                             $exportRow[$columnName] = floor((strtotime($exportRow[$columnName] . ' GMT') + 315619200) / 86400);
                         } else {
                             $exportRow[$columnName] = (strtotime($exportRow[$columnName] . ' GMT') + 315619200) * 1000 ;
@@ -237,7 +239,7 @@ class StreamingStataExport extends ExportAbstract
                     }
                 }
             }
-            if ($type == \MUtil\Model::TYPE_STRING && !$this->model->get($columnName, 'multiOptions')) {
+            if ($type == Model::TYPE_STRING && !$this->model->get($columnName, 'multiOptions')) {
                 $size = strlen($exportRow[$columnName]);
 
                 if ((!isset($stringSizes[$variableName]) || ($stringSizes[$variableName] < $size)) && $size > 0) {
@@ -603,28 +605,28 @@ class StreamingStataExport extends ExportAbstract
             $type = $model->get($colname, 'type');
 
             switch ($type) {
-                case \MUtil\Model::TYPE_DATE:
+                case Model::TYPE_DATE:
                     $type = 'double';
                     $format = '%tdDDmonCCYY';
                     break;
 
-                case \MUtil\Model::TYPE_DATETIME:
+                case Model::TYPE_DATETIME:
                     $type = 'double';
                     $format = '%tcDDmonCCYY';
                     break;
 
-                case \MUtil\Model::TYPE_TIME:
+                case Model::TYPE_TIME:
                     $type = 'double';
                     $format = '%tcDDmonCCYY';
                     break;
 
-                case \MUtil\Model::TYPE_NUMERIC:
+                case Model::TYPE_NUMERIC:
                     $type        = 'double';
                     $format      = '%10.0g';
                     break;
 
                 //When no type set... assume string
-                case \MUtil\Model::TYPE_STRING:
+                case Model::TYPE_STRING:
                 default:
 
                     if (isset($stringSizes[$variableName])) {
@@ -668,25 +670,25 @@ class StreamingStataExport extends ExportAbstract
             $this->model->remove($columnName, 'dateFormat');
             $type = $this->model->get($columnName, 'type');
             switch ($type) {
-                case \MUtil\Model::TYPE_DATE:
+                case Model::TYPE_DATE:
                     break;
 
-                case \MUtil\Model::TYPE_DATETIME:
+                case Model::TYPE_DATETIME:
                     break;
 
-                case \MUtil\Model::TYPE_TIME:
+                case Model::TYPE_TIME:
                     break;
 
-                case \MUtil\Model::TYPE_NUMERIC:
+                case Model::TYPE_NUMERIC:
                     break;
 
-                case \MUtil\Model::TYPE_CHILD_MODEL;
+                case Model::TYPE_CHILD_MODEL;
                     break;
 
                 //When no type set... assume string
-                case \MUtil\Model::TYPE_STRING:
+                case Model::TYPE_STRING:
                 default:
-                    $type                      = \MUtil\Model::TYPE_STRING;
+                    $type                      = Model::TYPE_STRING;
                     $options['formatFunction'] = 'formatString';
                     break;
             }

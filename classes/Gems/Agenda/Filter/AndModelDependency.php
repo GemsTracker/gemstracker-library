@@ -63,7 +63,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that returns a string desrcibing the filter
+     * A ModelAbstract->setOnSave() function that returns a string describing the filter
      *
      * @see \MUtil\Model\ModelAbstract
      *

@@ -11,6 +11,10 @@
 
 namespace Gems\Tracker\Snippets;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
+
 /**
  * Basic class for creating forward loop snippets
  *
@@ -33,7 +37,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
      * General date format
      * @var string
      */
-    protected $dateFormat = 'd MMMM yyyy';
+    protected $dateFormat = 'j M Y';
 
     /**
      *
@@ -159,7 +163,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
         $mail->setFrom($token->getOrganization()->getFrom());
         
         if ($mail->setTemplateByCode('continue')) {
-            $lastMailedDate = \MUtil\Date::ifDate($token->getMailSentDate(), 'yyyy-MM-dd');
+            $lastMailedDate = \MUtil\Model::getDateTimeInterface($token->getMailSentDate());
 
             // Do not send multiple mails a day
             if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
@@ -205,12 +209,12 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     /**
      * Formats an completion date for this display
      *
-     * @param \MUtil\Date $dateTime
+     * @param DateTimeInterface $dateTime
      * @return string
      */
-    public function formatCompletion(\MUtil\Date $dateTime)
+    public function formatCompletion(DateTimeInterface $dateTime)
     {
-        $days = abs($dateTime->diffDays());
+        $days = abs($dateTime->diff(new DateTimeImmutable())->days);
 
         switch ($days) {
             case 0:
@@ -226,7 +230,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
                 if ($days <= 14) {
                     return sprintf($this->_('We have received your answers %d days ago. Thank you.'), $days);
                 }
-                return sprintf($this->_('We have received your answers on %s. '), $dateTime->toString($this->dateFormat));
+                return sprintf($this->_('We have received your answers on %s. '), $dateTime->format($this->dateFormat));
         }
     }
 
@@ -273,10 +277,10 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     /**
      * Formats an until date for this display
      *
-     * @param \MUtil\Date $dateTime
+     * @param DateTimeInterface $dateTime
      * @return string
      */
-    public function formatUntil(\MUtil\Date $dateTime = null)
+    public function formatUntil(DateTimeInterface $dateTime = null)
     {
         if (false === $this->showUntil) { return; }
         
@@ -284,7 +288,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
             return $this->_('Survey has no time limit.');
         }
 
-        $days = $dateTime->diffDays();
+        $days = $dateTime->diff(new DateTimeImmutable())->days;
 
         switch ($days) {
             case 0:
@@ -313,7 +317,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
                     return $this->_('This survey can no longer be answered.');
                 }
 
-                return sprintf($this->_('Please answer this survey before %s.'), $dateTime->toString($this->dateFormat));
+                return sprintf($this->_('Please answer this survey before %s.'), $dateTime->format($this->dateFormat));
         }
     }
 

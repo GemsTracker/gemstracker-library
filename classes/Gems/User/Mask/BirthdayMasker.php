@@ -72,8 +72,8 @@ class BirthdayMasker extends MaskerAbstract
         $dateMask = $this->getDateMask($this->_choice);
 
         return function ($value) use ($dateMask) {
-            if ($value instanceof \Zend_Date) {
-                return $value->toString($dateMask);
+            if ($value instanceof \DateTimeInterface) {
+                return $value->format($dateMask);
             } else {
                 return $value;
             }

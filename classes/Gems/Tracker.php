@@ -326,11 +326,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
                      * but values read from database will be Date objects. Make
                      * sure we compare string with strings
                      */
-                    if ($value instanceof \Zend_Date) {
-                        $value = $value->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+                    if ($value instanceof \DateTimeInterface) {
+                        $value = $value->format(\Gems\Tracker::DB_DATETIME_FORMAT);
                     }
-                    if ($oldValues[$name] instanceof \Zend_Date) {
-                        $oldValues[$name] = $oldValues[$name]->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+                    if ($oldValues[$name] instanceof \DateTimeInterface) {
+                        $oldValues[$name] = $oldValues[$name]->format(\Gems\Tracker::DB_DATETIME_FORMAT);
                     }
                     // Extra condition for empty time in date values
                     if (($value === $oldValues[$name]) || ($value === $oldValues[$name] . ' 00:00:00')) {

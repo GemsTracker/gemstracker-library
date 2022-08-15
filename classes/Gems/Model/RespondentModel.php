@@ -304,7 +304,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
 
         $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
-                'dateFormat', \Zend_Date::DATE_MEDIUM);
+                'dateFormat', 'j M Y');
 
         $this->setIfExists('gr2o_opened',
                 'label', $this->_('Opened'),
@@ -371,7 +371,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 );
 
         $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
-                'dateFormat', \Zend_Date::DATE_MEDIUM
+                'dateFormat', 'j M Y'
                 );
 
         $this->setIfExists('gr2o_email',       'label', $this->_('E-Mail'),
@@ -413,7 +413,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $changers = $this->getChangersList();
 
         $this->setIfExists('gr2o_opened',     'label', $this->_('Opened'),
-                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'dateFormat', 'j M Y',
                 'default', '',
                 'elementClass', 'None',  // Has little use to show: is usually editor
                 'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
@@ -423,7 +423,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'multiOptions', $changers
                 );
         $this->setIfExists('gr2o_changed',    'label', $this->_('Changed on'),
-                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'dateFormat', 'j M Y',
                 'default', '',
                 'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
                 );
@@ -431,7 +431,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'multiOptions', $changers
                 );
         $this->setIfExists('gr2o_created',    'label', $this->_('Creation date'),
-                'dateFormat', \Zend_Date::DATE_MEDIUM,
+                'dateFormat', 'j M Y',
                 'default', '',
                 'formatFunction', [$this->translatedUtil, 'describeDateFromNow']
                 );
@@ -536,10 +536,8 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
-                // 'dateFormat', 'dd-MM-yyyy',
                 'elementClass', 'Date',
-                // TODO: re-enable validator after it has been updated to \Laminas Validator and DateTimeInterface dates
-                //'validator', new \MUtil\Validate\Date\DateBefore()
+                'validator', new \MUtil\Validate\Date\DateBefore()
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);

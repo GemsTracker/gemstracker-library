@@ -152,7 +152,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
         	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate,
-            'default', new \Zend_Date());
+            'default', new \DateTimeImmutable());
         $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
         	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
@@ -242,7 +242,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('assigned_by',         'elementClass', 'None');
         $this->set('gr2t_reception_code', 'elementClass', 'None');
         $this->set('gr2t_start_date',     'elementClass', 'Date',
-                'default',  new \Zend_Date(),
+                'default',  new \DateTimeImmutable(),
                 'required', true,
                 'size',     30
                 );

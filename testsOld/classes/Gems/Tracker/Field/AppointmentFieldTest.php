@@ -40,10 +40,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
     private function _toDayString($value)
     {
-        if ($value instanceof \MUtil\Date) {
-            $value = $value->getDateTime();
-        }
-        if ($value instanceof \DateTime) {
+        if ($value instanceof \DateTimeInterface) {
             return $value->format('Y-m-d');
         }
 
@@ -74,9 +71,9 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
     protected function loadRelativeYaml($filename)
     {
-        $lastMonth = new \DateTime('first day of last month');
-        $thisMonth = new \DateTime('first day of this month');
-        $nextMonth = new \DateTime('first day of next month');
+        $lastMonth = new \DateTimeImmutable('first day of last month');
+        $thisMonth = new \DateTimeImmutable('first day of this month');
+        $nextMonth = new \DateTimeImmutable('first day of next month');
         $replacements = [
             '{LAST_MONTH}' => $lastMonth->format('Y-m'),
             '{THIS_MONTH}' => $thisMonth->format('Y-m'),
@@ -173,7 +170,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
     public function testAppointmentTrackAssignment()
     {
         $appointment = $this->agenda->getAppointment(1);
-        $nextMonth   = new \DateTime('first day of next month');
+        $nextMonth   = new \DateTimeImmutable('first day of next month');
         $respTrack   = $this->tracker->getRespondentTrack(1);
         $token       = $respTrack->getFirstToken();
 
@@ -188,7 +185,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $respTrack->checkTrackTokens(1);
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 
     /**
@@ -196,7 +193,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackAutoAssignment()
     {
-        $nextMonth   = new \DateTime('first day of next month');
+        $nextMonth   = new \DateTimeImmutable('first day of next month');
         $respTrack   = $this->tracker->getRespondentTrack(1);
         $token       = $respTrack->getFirstToken();
 
@@ -211,7 +208,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -224,7 +221,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
         $appointment = $this->agenda->getAppointment(1);
         $this->assertSameDay($nextMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 
     /**
@@ -232,7 +229,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackCreate()
     {
-        $nextMonth     = new \DateTime('first day of next month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(0, count($preRespTracks));
 
@@ -245,7 +242,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -266,7 +263,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($nextMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
         
         \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
@@ -276,8 +273,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackCreateSecondClosed()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -287,7 +284,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
         $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment1->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
         \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
@@ -299,7 +296,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -320,7 +317,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment2->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
         \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
 
@@ -331,8 +328,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackCreateSecondOpen()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -342,7 +339,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
         $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment1->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
         \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
@@ -354,7 +351,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -375,7 +372,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment2->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 
     /**
@@ -383,8 +380,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackCreationBlockedClosed()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -394,7 +391,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
         \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
@@ -406,7 +403,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -426,7 +423,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 
     /**
@@ -434,8 +431,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackCreationBlockedOpen()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -445,7 +442,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
         \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
@@ -457,7 +454,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -477,7 +474,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment->getAdmissionTime());
         $this->assertSameDay($appointment->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
         
         \MUtil\Batch\BatchAbstract::unload('tmptrack2');  // Make sure there are no leftovers
     }
@@ -488,8 +485,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackLeaveClosedAlone()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -499,7 +496,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
         $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment1->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
         \MUtil\Batch\BatchAbstract::unload('tmptack2');  // Make sure there are no leftovers
@@ -511,7 +508,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -534,7 +531,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         // BUG: moet 2 x $appointment2 zijn
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment2->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 
     /**
@@ -542,7 +539,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackNotAssignment()
     {
-        $nextMonth   = new \DateTime('first day of next month');
+        $nextMonth   = new \DateTimeImmutable('first day of next month');
         $respTrack   = $this->tracker->getRespondentTrack(1);
         $token       = $respTrack->getFirstToken();
 
@@ -557,7 +554,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -579,8 +576,8 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
      */
     public function testAppointmentTrackOverwriteAssignment()
     {
-        $nextMonth     = new \DateTime('first day of next month');
-        $lastMonth     = new \DateTime('first day of last month');
+        $nextMonth     = new \DateTimeImmutable('first day of next month');
+        $lastMonth     = new \DateTimeImmutable('first day of last month');
         $preRespTracks = $this->tracker->getRespondentTracks(1, 1);
         $this->assertEquals(1, count($preRespTracks));
 
@@ -590,7 +587,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($lastMonth, $appointment1->getAdmissionTime());
         $this->assertSameDay($appointment1->getAdmissionTime(), $preToken->getValidFrom());
-        $this->assertSameDay($appointment1->getAdmissionTime()->addMonth(1), $preToken->getValidUntil());
+        $this->assertSameDay($appointment1->getAdmissionTime()->add(new \DateInterval('P1M')), $preToken->getValidUntil());
 
         // echo "\n" . print_r($this->db->fetchAll('SELECT * FROM gems__respondent2track2appointment'), true) . "\n";
 
@@ -601,7 +598,7 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
             'gap_manual_edit' => 0,
             'gap_code' => 'A',
             'gap_status' => 'AC',
-            'gap_admission_time' => new \MUtil\Date($nextMonth),
+            'gap_admission_time' => $nextMonth,
             'gap_id_attended_by' => 1,
             'gap_id_referred_by' => 1,
             'gap_id_activity' => 1,
@@ -622,6 +619,6 @@ class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 
         $this->assertSameDay($nextMonth, $appointment2->getAdmissionTime());
         $this->assertSameDay($appointment2->getAdmissionTime(), $token->getValidFrom());
-        $this->assertSameDay($appointment2->getAdmissionTime()->addMonth(1), $token->getValidUntil());
+        $this->assertSameDay($appointment2->getAdmissionTime()->add(new \DateInterval('P1M')), $token->getValidUntil());
     }
 }

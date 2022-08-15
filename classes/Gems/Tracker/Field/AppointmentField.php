@@ -162,7 +162,7 @@ class AppointmentField extends FieldAbstract
 
                 if ((! $fromDate) && isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
 
-                    if ($trackData['gr2t_start_date'] instanceof \Zend_Date) {
+                    if ($trackData['gr2t_start_date'] instanceof DateTimeInterface) {
                         $fromDate = $trackData['gr2t_start_date'];
                     } else {
                         $fromDate = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);

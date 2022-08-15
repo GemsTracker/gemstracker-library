@@ -63,7 +63,7 @@ class FillTrackFieldAnswersTest extends \PHPUnit_Framework_TestCase
 
         $respondent->expects($this->any())
                 ->method('getBirthday')
-                ->will($this->returnValue(new \MUtil\Date($respondentData['Dob'], 'yyyy-MM-dd')));
+                ->will($this->returnValue($respondentData['Dob']));
 
         $survey->expects($this->any())
                 ->method('getQuestionList')
@@ -118,7 +118,7 @@ class FillTrackFieldAnswersTest extends \PHPUnit_Framework_TestCase
                 // RespondentFields
                 [
                     'Sex' => 'M',
-                    'Dob' => new \MUtil\Date('15-12-2008', 'dd-MM-yyyy')
+                    'Dob' => new \DateTimeImmutable('2008-12-15')
                 ],
                 // Result
                 [

@@ -34,9 +34,10 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
      * @var array
      */
     public $datetimeFormats = array(
-        \Zend_Date::ISO_8601,
-        'yyyy-MM-ddTHH:mm:ss+z',
-        'yyyy-MM-dd HH:mm:ss',
+        'Y-m-d\TH:i:sP',
+        'Y-m-d\TH:i:s',
+        'Y-m-d H:i:sP',
+        'Y-m-d H:i:s',
         );
 
     /**

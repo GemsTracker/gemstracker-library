@@ -166,8 +166,8 @@ class RespondentAnswerTranslatorTest extends ControllerTestAbstract {
         $actual = $this->object->translateImport($data);
 
         foreach ($actual as &$row) {
-            if ($row['completion_date'] instanceof \MUtil\Date) {
-                $row['completion_date'] = $row['completion_date']->toString('yyyy-MM-dd HH:mm:ss');
+            if ($row['completion_date'] instanceof \DateTimeInterface) {
+                $row['completion_date'] = $row['completion_date']->format('Y-m-d H:i:s');
             }
         }
 

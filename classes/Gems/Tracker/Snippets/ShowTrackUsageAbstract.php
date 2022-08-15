@@ -140,7 +140,7 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->translatedUtil->formatDate,
-            'default', new \Zend_Date());
+            'default', new \DateTimeImmutable());
         $model->set('gr2t_reception_code');
 
         return $model;
