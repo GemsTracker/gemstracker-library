@@ -11,10 +11,12 @@
 
 namespace Gems\Tracker\Engine;
 
+use Gems\Conditions;
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Round;
 use Gems\Translate\DbTranslateUtilTrait;
+use Gems\Util\Translated;
 use MUtil\Model\Dependency\DependencyInterface;
 
 /**
@@ -63,9 +65,9 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
 
     /**
      *
-     * @var \Gems\Events
+     * @var \Gems\TrackEvents
      */
-    protected $events;
+    protected $trackEvents;
 
     /**
      *
@@ -78,6 +80,11 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      * @var \Gems\Tracker
      */
     protected $tracker;
+
+    /**
+     * @var Translated
+     */
+    protected $translatedUtil;
 
     /**
      *
@@ -578,7 +585,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     public function getFieldBeforeUpdateEvent()
     {
         if (isset($this->_trackData['gtr_beforefieldupdate_event']) && $this->_trackData['gtr_beforefieldupdate_event']) {
-            return $this->events->loadBeforeTrackFieldUpdateEvent($this->_trackData['gtr_beforefieldupdate_event']);
+            return $this->trackEvents->loadBeforeTrackFieldUpdateEvent($this->_trackData['gtr_beforefieldupdate_event']);
         }
     }
 
@@ -677,7 +684,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     public function getFieldUpdateEvent()
     {
         if (isset($this->_trackData['gtr_fieldupdate_event']) && $this->_trackData['gtr_fieldupdate_event']) {
-            return $this->events->loadTrackFieldUpdateEvent($this->_trackData['gtr_fieldupdate_event']);
+            return $this->trackEvents->loadTrackFieldUpdateEvent($this->_trackData['gtr_fieldupdate_event']);
         }
     }
 
@@ -790,7 +797,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         $roundId = $token->getRoundId();
 
         if (isset($this->_rounds[$roundId]['gro_display_event']) && $this->_rounds[$roundId]['gro_display_event']) {
-            $event = $this->events->loadSurveyDisplayEvent($this->_rounds[$roundId]['gro_display_event']);
+            $event = $this->trackEvents->loadSurveyDisplayEvent($this->_rounds[$roundId]['gro_display_event']);
 
             return $event->getAnswerDisplaySnippets($token);
         }
@@ -807,7 +814,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         $this->_ensureRounds();
 
         if (isset($this->_rounds[$roundId]['gro_changed_event']) && $this->_rounds[$roundId]['gro_changed_event']) {
-            return $this->events->loadRoundChangedEvent($this->_rounds[$roundId]['gro_changed_event']);
+            return $this->trackEvents->loadRoundChangedEvent($this->_rounds[$roundId]['gro_changed_event']);
         }
     }
 
@@ -897,11 +904,11 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
                 'size', '30'
                 );
 
-        $list = $this->events->listRoundChangedEvents();
+        $list = $this->trackEvents->listRoundChangedEvents();
         if (count($list) > 1) {
             $model->set('gro_changed_event', 'label', $this->_('After change'),   'multiOptions', $list);
         }
-        $list = $this->events->listSurveyDisplayEvents();
+        $list = $this->trackEvents->listSurveyDisplayEvents();
         if (count($list) > 1) {
             $model->set('gro_display_event', 'label', $this->_('Answer display'),
                     'multiOptions', $list
@@ -909,7 +916,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         }
         $model->set('gro_active',            'label', $this->_('Active'),
                 'elementClass', 'checkbox',
-                'multiOptions', $translated->getYesNo()
+                'multiOptions', $this->translatedUtil->getYesNo()
                 );
         $model->setIfExists('gro_code',      'label', $this->_('Round code'),
                 'description', $this->_('Optional code name to link the field to program code.'),
@@ -935,7 +942,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         $model->set('gro_condition',
                 'label', $this->_('Condition'),
                 'elementClass', 'Select',
-                'multiOptions', $this->loader->getConditions()->getConditionsFor(Gems\Conditions::ROUND_CONDITION)
+                'multiOptions', $this->loader->getConditions()->getConditionsFor(Conditions::ROUND_CONDITION)
                 );
 
         $model->set('condition_display', 'label', $this->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);
@@ -1020,7 +1027,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     public function getTrackCalculationEvent()
     {
         if (isset($this->_trackData['gtr_calculation_event']) && $this->_trackData['gtr_calculation_event']) {
-            return $this->events->loadTrackCalculationEvent($this->_trackData['gtr_calculation_event']);
+            return $this->trackEvents->loadTrackCalculationEvent($this->_trackData['gtr_calculation_event']);
         }
     }
 
@@ -1041,7 +1048,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     public function getTrackCompletionEvent()
     {
         if (isset($this->_trackData['gtr_completed_event']) && $this->_trackData['gtr_completed_event']) {
-            return $this->events->loadTrackCompletionEvent($this->_trackData['gtr_completed_event']);
+            return $this->trackEvents->loadTrackCompletionEvent($this->_trackData['gtr_completed_event']);
         }
     }
 

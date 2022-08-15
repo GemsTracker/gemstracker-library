@@ -11,6 +11,7 @@
 
 namespace Gems\Util;
 
+use Gems\User\User;
 use Gems\Util\UtilAbstract;
 
 /**
@@ -49,6 +50,11 @@ class TrackData extends UtilAbstract
      * @var int One of the self::SEE_ constants
      */
     public $accessMode = self::SEE_CURRENT_ONLY;
+
+    /**
+     * @var User
+     */
+    protected $currentUser;
 
     /**
      *
@@ -162,7 +168,7 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -176,7 +182,7 @@ class TrackData extends UtilAbstract
             	FROM gems__surveys ORDER BY gsu_survey_name';
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys'));
+        $this->cache->setCacheItem($cacheId, $results, ['surveys']);
         return $results;
     }
 
@@ -206,7 +212,7 @@ class TrackData extends UtilAbstract
      */
     public function getDateUnitsList()
     {
-        return array(
+        return [
             'S' => $this->translate->_('Seconds'),
             'N' => $this->translate->_('Minutes'),
             'H' => $this->translate->_('Hours'),
@@ -215,7 +221,7 @@ class TrackData extends UtilAbstract
             'M' => $this->translate->_('Months'),
             'Q' => $this->translate->_('Quarters'),
             'Y' => $this->translate->_('Years')
-        );
+        ];
     }
 
     /**
@@ -229,7 +235,7 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -245,7 +251,7 @@ class TrackData extends UtilAbstract
             ORDER BY gsu_survey_name";
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys'));
+        $this->cache->setCacheItem($cacheId, $results, ['surveys']);
         return $results;
     }
 
@@ -257,7 +263,7 @@ class TrackData extends UtilAbstract
     public function getRespondentTokenFilter($respId, $orgId = null)
     {
         if (null === $orgId) {
-            $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+            $orgId = $this->currentUser->getCurrentOrganizationId();
         }
     } // */
 
@@ -281,7 +287,7 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -291,7 +297,7 @@ class TrackData extends UtilAbstract
                     ORDER BY gtr_track_name";
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('tracks'));
+        $this->cache->setCacheItem($cacheId, $results, ['tracks']);
         return $results;
     }
 
@@ -350,18 +356,18 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $code;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
         $select = $this->db->select();
-        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_survey_name'))
+        $select->from('gems__surveys', ['gsu_id_survey', 'gsu_survey_name'])
                 ->where("gsu_code = ?", $code)
                 ->where("gsu_active = 1")
                 ->order('gsu_survey_name');
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys'));
+        $this->cache->setCacheItem($cacheId, $results, ['surveys']);
         return $results;
     }
 
@@ -431,20 +437,20 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $surveyId;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
         $select = $this->db->select();
-        $select->from('gems__tracks', array('gtr_id_track', 'gtr_track_name'))
-                ->joinInner('gems__rounds', 'gtr_id_track = gro_id_track', array())
+        $select->from('gems__tracks', ['gtr_id_track', 'gtr_track_name'])
+                ->joinInner('gems__rounds', 'gtr_id_track = gro_id_track', [])
                 ->where("gro_id_survey = ?", $surveyId)
                 ->where("gtr_active = 1")
                 ->where("gro_active = 1")
                 ->order('gtr_track_name');
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('surveys', 'tracks'));
+        $this->cache->setCacheItem($cacheId, $results, ['surveys', 'tracks']);
         return $results;
     }
 
@@ -483,7 +489,7 @@ class TrackData extends UtilAbstract
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if ($results = $this->cache->load($cacheId)) {
+        if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;
         }
 
@@ -493,7 +499,7 @@ class TrackData extends UtilAbstract
                     ORDER BY gtf_field_name";
 
         $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('tracks'));
+        $this->cache->setCacheItem($cacheId, $results, ['tracks']);
         return $results;
     }
 

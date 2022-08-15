@@ -386,14 +386,14 @@ class Route
                     'recalc-fields',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.track-fields',
+            ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-fields',
                 controllerClass: \Gems\Actions\TrackFieldsAction::class,
                 basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-fields',
                 parentParameters: [
                     'trackId',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.track-rounds',
+            ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-rounds',
                 controllerClass: \Gems\Actions\TrackFieldsAction::class,
                 basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-rounds',
                 parentParameters: [

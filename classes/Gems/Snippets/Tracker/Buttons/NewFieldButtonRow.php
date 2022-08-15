@@ -29,8 +29,8 @@ class NewFieldButtonRow extends CurrentButtonRowSnippet
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(\Gems\Menu\MenuList $menuList)
+    protected function addButtons(array $menuList)
     {
-        $menuList->addByController('track-fields', 'create', $this->_('New field'));
+        //$menuList->addByController('track-fields', 'create', $this->_('New field'));
     }
 }

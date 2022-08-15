@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Exception\Coding;
+
 /**
  * Provides a visual overview of the track definition
  *
@@ -48,7 +50,7 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     
     protected $db;
     
-    protected $showMenu = false;
+    protected bool $showMenu = false;
     
     /**
      * Id of the track to show
@@ -70,7 +72,7 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
         parent::afterRegistry();
         
         if (empty($this->trackId)) {
-            throw new Gems\Exception\Coding('Provide a trackId to this snippet!');
+            throw new Coding('Provide a trackId to this snippet!');
         }
 
         $model = $this->getModel();

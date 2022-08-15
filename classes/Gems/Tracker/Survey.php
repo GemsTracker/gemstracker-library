@@ -44,7 +44,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems\Events
+     * @var \Gems\TrackEvents
      */
     protected $events;
 

@@ -11,6 +11,11 @@
 
 namespace Gems\Actions;
 
+use Gems\Cache\HelperAdapter;
+use Mezzio\Helper\UrlHelper;
+use MUtil\Model;
+use Phinx\Util\Util;
+
 /**
  *
  * @package    Gems
@@ -28,18 +33,17 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public $accesslog;
 
     /**
+     * @var HelperAdapter
+     */
+    public $cache;
+
+    /**
      * @var array
      */
     public $config;
 
-    protected $_defaultParameters = array();
-    protected $defaultParameters = array();
-
-    /**
-     *
-     * @var \Gems\Escort
-     */
-    public $escort;
+    protected array $_defaultParameters = [];
+    protected array $defaultParameters = [];
 
     /**
      *
@@ -47,9 +51,9 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      */
     public $menu;
 
-    protected $monitorParameters = array(
+    protected $monitorParameters = [
         'monitorJob' => 'getMaintenanceMonitorJob'
-    );
+    ];
 
     protected $monitorSnippets = 'MonitorSnippet';
 
@@ -72,6 +76,11 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public $useHtmlView = true;
 
     /**
+     * @var Util
+     */
+    public $util;
+
+    /**
      * Returns the data to show in the index action
      *
      * Allows to easily add or modifiy the information at project level
@@ -91,32 +100,20 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         $data[$this->_('Project version')]         = $versions->getProjectVersion();
         $data[$this->_('Gems version')]            = $versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $versions->getBuild();
-        $data[$this->_('Gems project')]            = GEMS_PROJECT_NAME;
-        $data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
-        $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
-        $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
-        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
+        $data[$this->_('Gems project')]            = $projectName;
+        //$data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
+        //$data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
+        //$data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
+        //$data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
-        $data[$this->_('Zend version')]            = \Zend_Version::VERSION;
-        $data[$this->_('Application environment')] = APPLICATION_ENV;
-        $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
+        $data[$this->_('Application environment')] = getenv('APP_ENV');
+        $data[$this->_('Application baseuri')]     = $this->util->getCurrentURI();
         $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
         $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
         $data[$this->_('PHP version')]             = phpversion();
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
-
-        $driveVars = array(
-            $this->_('Session directory') => \Zend_Session::getOptions('save_path'),
-            $this->_('Temporary files directory') => realpath(getenv('TMP')),
-        );
-        if ($system =  getenv('SystemDrive')) {
-            $driveVars[$this->_('System Drive')] = realpath($system);
-        }
-        foreach ($driveVars as $name => $drive) {
-            $data[$name] = $this->getDirInfo($drive);
-        }
 
         return $data;
     }
@@ -164,7 +161,8 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     {
         $this->html->h2($caption);
 
-        if ($emptyLabel && (1 == $this->_getParam(\MUtil\Model::REQUEST_ID)) && file_exists($logFile)) {
+        $params = $this->requestHelper->getRouteResult()->getMatchedParams();
+        if ($emptyLabel && (isset($params[Model::REQUEST_ID]) && 1 == $params[\MUtil\Model::REQUEST_ID]) && file_exists($logFile)) {
             unlink($logFile);
         }
 
@@ -215,9 +213,9 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public function changelogAction()
     {
         if (file_exists(APPLICATION_PATH . '/CHANGELOG.md')) {
-            $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/CHANGELOG.md');
+            $this->_showText(sprintf($this->_('Changelog %s'), $this->project->getName()), APPLICATION_PATH . '/CHANGELOG.md');
         } else {
-            $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/changelog.txt');
+            $this->_showText(sprintf($this->_('Changelog %s'), $this->project->getName()), APPLICATION_PATH . '/changelog.txt');
         }
     }
 
@@ -231,8 +229,6 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
     public function errorsAction()
     {
-        $this->logger->shutdown();
-
         $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
     }
 
@@ -263,12 +259,12 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         $percent = intval($free / $total * 100);
 
         return sprintf(
-                $this->_('%s - %s free of %s = %d%% available'),
-                $directory,
-                \MUtil\File::getByteSized($free),
-                \MUtil\File::getByteSized($total),
-                $percent
-                );
+            $this->_('%s - %s free of %s = %d%% available'),
+            $directory,
+            \MUtil\File::getByteSized($free),
+            \MUtil\File::getByteSized($total),
+            $percent
+        );
     }
 
     public function indexAction()
@@ -286,9 +282,9 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         $request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
-                ->addByController($request->getControllerName(), 'maintenance', $label)
-                ->addByController($request->getControllerName(), 'monitor')
-                ->addByController($request->getControllerName(), 'cacheclean');
+            ->addByController($request->getControllerName(), 'maintenance', $label)
+            ->addByController($request->getControllerName(), 'monitor')
+            ->addByController($request->getControllerName(), 'cacheclean');
 
         // $this->html->buttonDiv($buttonList);
 
@@ -315,8 +311,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         }
 
         // Redirect
-        $request = $this->getRequest();
-        $this->_reroute(array($request->getActionKey() => 'index'));
+        $this->redirectUrl = $this->urlHelper->generate('setup.project-information.index');
     }
 
     public function monitorAction() {
@@ -329,11 +324,10 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
     public function cachecleanAction()
     {
-        $this->escort->cache->clean();
+        $this->cache->clear();
         $this->addMessage($this->_('Cache cleaned'));
         // Redirect
-        $request = $this->getRequest();
-        $this->_reroute(array($request->getActionKey() => 'index'));
+        $this->redirectUrl = $this->urlHelper->generate('setup.project-information.index');
     }
 
     public function phpAction()
@@ -342,7 +336,6 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
         $php = new \MUtil\Config\Php();
 
-        $this->view->headStyle($php->getStyle());
         $this->html->raw($php->getInfo());
     }
 
@@ -357,11 +350,17 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         $project = clone $this->project;
 
         //Now remove some keys want want to keep for ourselves
-        if (array_key_exists('admin', $project)) {
-            unset($project['admin']);
+        if ($project->offsetExists('admin')) {
+            $project->offsetUnset('admin');
         }
-        if (array_key_exists('salt', $project)) {
-            unset($project['salt']);
+        if ($project->offsetExists('salt')) {
+            $project->offsetUnset('salt');
+        }
+        if ($project->offsetExists('dependencies')) {
+            $project->offsetUnset('dependencies');
+        }
+        if ($project->offsetExists('routes')) {
+            $project->offsetUnset('routes');
         }
 
         $this->html->h2($this->_('Project settings'));

@@ -779,7 +779,7 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.track-maintenance.track-fields',
+                                    'name' => 'track-builder.track-maintenance.track-fields.index',
                                     'label' => $this->translator->trans('Fields'),
                                     'type' => 'route-link-item',
                                     'children' => [
@@ -808,7 +808,7 @@ class Menu
                                     ],
                                 ],
                                 [
-                                    'name' => 'track-builder.track-maintenance.track-rounds',
+                                    'name' => 'track-builder.track-maintenance.track-rounds.index',
                                     'label' => $this->translator->trans('Rounds'),
                                     'type' => 'route-link-item',
                                     'children' => [

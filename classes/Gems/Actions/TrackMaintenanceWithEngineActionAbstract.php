@@ -66,10 +66,7 @@ abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller
             throw new \Gems\Exception($this->_('Missing track identifier.'));
         }
 
-        $menuSource = $this->menu->getParameterSource();
         $this->trackEngine = $this->tracker->getTrackEngine($trackId);
-        $this->trackEngine->applyToMenuSource($menuSource);
-        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
         return $this->trackEngine;
    }
