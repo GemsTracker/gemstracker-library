@@ -65,7 +65,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
 
     /**
      *
-     * @var \Gems\TrackEvents
+     * @var \Gems\Tracker\TrackEvents
      */
     protected $trackEvents;
 

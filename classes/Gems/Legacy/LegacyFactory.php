@@ -34,7 +34,7 @@ class LegacyFactory implements FactoryInterface
             case \Gems\Loader::class:
             case \Gems\Util::class:
             case \Gems\Tracker::class:
-            case \Gems\TrackEvents::class:
+            case \Gems\Tracker\TrackEvents::class:
             case \Gems\Agenda::class:
             case \Gems\Model::class:
             case \Gems\Menu::class:

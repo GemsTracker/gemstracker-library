@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems;
+namespace Gems\Tracker;
 
 use Gems\Event\RespondentChangedEventInterface;
 use Gems\Util\Translated;
