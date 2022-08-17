@@ -34,10 +34,10 @@ abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $defaultParameters = array(
+    protected $defaultParameters = [
         'trackEngine' => 'getTrackEngine',
-        'trackId'     => '_getIdParam',
-    );
+        'trackId'     => 'getTrackId',
+    ];
 
     /**
      *
@@ -60,7 +60,7 @@ abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller
         if ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
             return $this->trackEngine;
         }
-        $trackId = $this->_getIdParam();
+        $trackId = $this->getTrackId();
 
         if (! $trackId) {
             throw new \Gems\Exception($this->_('Missing track identifier.'));
@@ -69,6 +69,11 @@ abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller
         $this->trackEngine = $this->tracker->getTrackEngine($trackId);
 
         return $this->trackEngine;
+   }
+
+   protected function getTrackId(): int
+   {
+       return (int)$this->request->getAttribute('trackId');
    }
 
 }

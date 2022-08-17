@@ -55,9 +55,22 @@ class RouteHelper
             return (str_starts_with($routeName, $baseRouteName) && count(explode('.', $routeName)) === $partsCount);
         }, ARRAY_FILTER_USE_KEY );
 
-        // TODO: Add filter for parameters
-
         return $sibblingRoutes;
+    }
+
+
+    public function getRouteParamsFromKnownParams(array $newRoute, array $knownParams): array
+    {
+        $params = [];
+        if (isset($newRoute['params'])) {
+
+            foreach($newRoute['params'] as $param) {
+                if (isset($knownParams[$param])) {
+                    $params[$param] = $knownParams[$param];
+                }
+            }
+        }
+        return $params;
     }
 
     public function getRouteUrl(string $name, array $routeParams = []): ?string

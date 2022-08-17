@@ -140,6 +140,10 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
         'Tracker\\TrackMaintenance\\TrackMaintenanceSearchSnippet'
         );
 
+    protected $showParameters = [
+        'trackId' => '_getIdParam'
+    ];
+
     /**
      * The snippets used for the show action
      *

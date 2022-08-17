@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Generic;
 
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use MUtil\Request\RequestInfo;
+
 /**
  * Displays the parent menu item (if existing) plus any current
  * level buttons that are visible
@@ -28,40 +32,48 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @var boolean
      */
-    protected $addCurrentChildren = false;
+    protected bool $addCurrentChildren = false;
 
     /**
      * Add the parent of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentParent = false;
+    protected bool $addCurrentParent = false;
 
     /**
      * Add the siblings of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentSiblings = false;
+    protected bool $addCurrentSiblings = false;
 
     /**
-     * Add siblings of the current menu item with any parameters.
-     *
-     * Add only those with the same when false.
-     *
-     * @var boolean
+     * @var RequestInfo
      */
-    protected $anyParameterSiblings = false;
+    protected $requestInfo;
 
     /**
-     * Set the menu items (allows for overruling in subclasses)
-     *
-     * @param \Gems\Menu\MenuList $menuList
+     * @var RouteHelper
      */
-    protected function addButtons(array $menuList)
+    protected $routeHelper;
+
+    /**
+     * @param array $menuList
+     * @return array
+     */
+    protected function addButtons(array $menuList): array
     {
+        $currentRoute = $this->requestInfo->getCurrentRouteResult();
+        $currentRouteName = $currentRoute->getMatchedRouteName();
+        $currentRouteParams = $currentRoute->getMatchedParams();
         if ($this->addCurrentParent) {
-            // $menuList->addCurrentParent($this->_('Cancel'));
+            $parent = $this->routeHelper->getRouteParent($currentRouteName);
+            $params = $this->routeHelper->getRouteParamsFromKnownParams($parent, $currentRouteParams);
+            $menuList[] = [
+                'label' => $this->_('Cancel'),
+                'url' => $this->routeHelper->getRouteUrl($parent['name'], $params),
+            ];
         }
         if ($this->addCurrentSiblings) {
             // $menuList->addCurrentSiblings($this->anyParameterSiblings);
@@ -70,6 +82,7 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
             // $menuList->addCurrentChildren();
         }
         // \MUtil\EchoOut\EchoOut::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
+        return $menuList;
     }
 
     /**
@@ -84,10 +97,15 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
     {
         $menuList = [];
 
-        $this->addButtons($menuList);
+        $menuList = $this->addButtons($menuList);
 
         if (count($menuList)) {
-            return \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+            $container = \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+            foreach($menuList as $buttonInfo) {
+                $container->append(\Gems\Html::actionLink($buttonInfo['url'], $buttonInfo['label']));
+            }
+
+            return $container;
         }
         return null;
     }

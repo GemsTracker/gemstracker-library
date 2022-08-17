@@ -11,6 +11,7 @@
 
 namespace Gems\Model;
 
+use Gems\Tracker\TrackEvents;
 use MUtil\Validate\RequireOtherField;
 
 /**
@@ -56,6 +57,11 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @var \Gems\Util\Translated
      */
     protected $translatedUtil;
+
+    /**
+     * @var TrackEvents
+     */
+    protected $trackEvents;
 
     /**
      *
@@ -318,22 +324,21 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         $this->set('gsu_code');
         $this->set('gsu_export_code');
 
-        $events = $this->loader->getEvents();
-        $beforeOptions = $events->listSurveyBeforeAnsweringEvents();
+        $beforeOptions = $this->trackEvents->listSurveyBeforeAnsweringEvents();
         if (count($beforeOptions) > 1) {
             $this->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'),
                     'multiOptions', $beforeOptions,
                     'elementClass', 'Select'
                     );
         }
-        $completedOptions = $events->listSurveyCompletionEvents();
+        $completedOptions = $this->trackEvents->listSurveyCompletionEvents();
         if (count($completedOptions) > 1) {
             $this->set('gsu_completed_event',       'label', $this->_('After completion'),
                     'multiOptions', $completedOptions,
                     'elementClass', 'Select'
                     );
         }
-        $displayOptions = $events->listSurveyDisplayEvents();
+        $displayOptions = $this->trackEvents->listSurveyDisplayEvents();
         if (count($displayOptions) > 1) {
             $this->set('gsu_display_event',         'label', $this->_('Answer display'),
                     'multiOptions', $displayOptions,

@@ -39,7 +39,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array
      */
-    public $cacheTags = array('track', 'tracks');
+    public $cacheTags = ['track', 'tracks'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -51,9 +51,9 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array(
+    protected $createEditParameters = [
         'roundId'     => 'getRoundId',
-    );
+    ];
 
     /**
      *
@@ -71,9 +71,9 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = array(
+    protected $deleteParameters = [
         'roundId'     => 'getRoundId',
-        );
+    ];
 
     /**
      * The snippets used for the delete action.
@@ -87,7 +87,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Tracker\\Rounds\\RoundsTitleSnippet', 'AutosearchWithIdSnippet');
+    protected $indexStartSnippets = ['Tracker\\Rounds\\RoundsTitleSnippet', 'AutosearchWithIdSnippet'];
 
     /**
      * The parameters used for the show action
@@ -99,10 +99,10 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'roundId'     => 'getRoundId',
         'surveyId'    => 'getSurveyId',
-    );
+    ];
     
     public function autofilterAction($resetMvc = true)
     {
@@ -132,12 +132,12 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
     {
         $this->createEditSnippets = $this->getTrackEngine()->getRoundEditSnippetNames();
 
-        \MUtil\JQuery::enableView($this->view);
+        /*\MUtil\JQuery::enableView($this->view);
         $this->view->headScript()->appendFile($this->basepath->getBasePath()  .  '/gems/js/jquery.showOnChecked.js');
 
         $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
             $('input[name=\"organizations[]\"]').closest('div').showOnChecked( { showInput: $('#org_specific_round-1') });
-        });");
+        });");*/
     }
 
     /**
@@ -205,7 +205,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      */
     protected function getRoundId()
     {
-        return $this->_getParam(\Gems\Model::ROUND_ID);
+        return $this->request->getAttribute(\Gems\Model::ROUND_ID);
     }
 
     /**

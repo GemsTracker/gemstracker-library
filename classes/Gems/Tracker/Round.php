@@ -95,7 +95,7 @@ class Round extends RaObject
      */
     public function getRoundDescription()
     {
-        return $this->offsetDefault('gro_round_description');
+        return (string) $this->offsetDefault('gro_round_description');
     }
 
     /**

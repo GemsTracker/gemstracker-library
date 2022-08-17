@@ -24,13 +24,32 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  */
 class NewRoundButtonRow extends CurrentButtonRowSnippet
 {
+
+
+    protected $trackId;
+
     /**
      * Set the menu items (allows for overruling in subclasses)
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(\Gems\Menu\MenuList $menuList)
+    protected function addButtons(array $menuList): array
     {
-        $menuList->addByController('track-rounds', 'create', $this->_('New round'));
+        $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-rounds.create');
+
+        $matchedParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();
+
+        if ($this->trackId) {
+            $matchedParams['trackId'] = (int)$this->trackId;
+        }
+
+        $params = $this->routeHelper->getRouteParamsFromKnownParams($route, $matchedParams);
+
+        $menuList[] = [
+            'label' => $this->_('New round'),
+            'url' => $this->routeHelper->getRouteUrl($route['name'], $params),
+        ];
+
+        return $menuList;
     }
 }

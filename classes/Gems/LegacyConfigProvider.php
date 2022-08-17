@@ -10,6 +10,7 @@ use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
+use Gems\Tracker\TrackEvents;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;

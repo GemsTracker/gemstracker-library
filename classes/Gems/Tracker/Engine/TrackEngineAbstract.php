@@ -136,6 +136,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      */
     protected function _getAvailableIcons()
     {
+        return [];
         $dir = GEMS_WEB_DIR . '/gems-responsive/images/icons';
         if (!file_exists($dir)) {
             $dir = GEMS_WEB_DIR . '/gems/icons';
@@ -962,12 +963,12 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
             case 'edit':
             case 'show':
             	$model->set('gro_icon_file',
-                        'multiOptions', $translated->getEmptyDropdownArray() + $this->_getAvailableIcons()
+                        'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->_getAvailableIcons()
                         );
                 $model->set('org_specific_round',
                         'label', $this->_('Organization specific round'),
                         'default', 0,
-                        'multiOptions', $translated->getYesNo(),
+                        'multiOptions', $this->translatedUtil->getYesNo(),
                         'elementClass', 'radio'
                         );
 

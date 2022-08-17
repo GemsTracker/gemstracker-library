@@ -12,6 +12,9 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Tracker;
+use Gems\User\User;
+
 /**
  * Short description for class
  *
@@ -25,14 +28,12 @@ namespace Gems\Tracker\Snippets;
  */
 class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
     protected $onlyUsedElements = true;
+
+    /**
+     * @var User
+     */
+    protected $currentUser;
 
     /**
      *
@@ -48,6 +49,11 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     protected $trackEngine;
 
     /**
+     * @var Tracker
+     */
+    protected $tracker;
+
+    /**
      * Optional, required when creating or $engine should be set
      *
      * @var int Track Id
@@ -58,17 +64,6 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      * @var \Gems\Util
      */
     protected $util;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->loader && parent::checkRegistryRequestsAnswers();
-    }
 
     protected function beforeSave()
     {
@@ -134,7 +129,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
             // Try to get $this->trackEngine filled
             if (! $this->trackEngine) {
                 // Set the engine used
-                $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
+                $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
         } else {
@@ -142,7 +137,10 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
         }
 
         if (! $this->roundId) {
-            $this->roundId = $this->request->getParam(\Gems\Model::ROUND_ID);
+            $matchedParams = $this->requestInfo->getRequestMatchedParams();
+            if (isset($matchedParams[\Gems\Model::ROUND_ID])) {
+                $this->roundId = $matchedParams[\Gems\Model::ROUND_ID];
+            }
         }
 
         $this->createData = (! $this->roundId);
@@ -159,7 +157,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     {
         parent::loadFormData();
 
-        if ($this->createData && !$this->request->isPost()) {
+        if ($this->createData && !$this->requestInfo->isPost()) {
             $this->formData = $this->trackEngine->getRoundDefaults() + $this->formData;
         }
 
@@ -209,6 +207,6 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
             $this->formData = $model->save($this->formData);
         }
 
-        $this->trackEngine->updateRoundCount($this->loader->getCurrentUser()->getUserId());
+        $this->trackEngine->updateRoundCount($this->currentUser->getUserId());
     }
 }

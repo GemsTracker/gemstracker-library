@@ -94,7 +94,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         ));
 
         // Add link to survey-edit
-        $menuItems = $this->findUrls('survey-maintenance', 'edit');
+        $menuItems = $this->findUrls('edit', $bridge);
         if ($menuItems) {
             $menuItem = reset($menuItems);
             if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
@@ -172,6 +172,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
+            $this->model->applyParameters(['gro_id_track' => $this->trackEngine->getTrackId()]);
         }
 
         // Now add the joins so we can sort on the real name

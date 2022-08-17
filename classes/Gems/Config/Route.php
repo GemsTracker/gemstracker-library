@@ -379,6 +379,9 @@ class Route
                     'check-track',
                     'recalc-fields',
                 ],
+                parameters: [
+                    'trackId' => '\d+',
+                ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'export',
@@ -388,14 +391,14 @@ class Route
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-fields',
                 controllerClass: \Gems\Actions\TrackFieldsAction::class,
-                basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-fields',
+                basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-fields',
                 parentParameters: [
                     'trackId',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-rounds',
-                controllerClass: \Gems\Actions\TrackFieldsAction::class,
-                basePath: 'track-builder/track-maintenance/{trackId:\d+}/track-rounds',
+                controllerClass: \Gems\Actions\TrackRoundsAction::class,
+                basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-rounds',
                 parentParameters: [
                     'trackId',
                 ],
