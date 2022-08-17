@@ -14,6 +14,7 @@ namespace Gems\Snippets\Tracker;
 use Gems\Cache\HelperAdapter;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
+use Gems\Model;
 use MUtil\Request\RequestInfo;
 
 /**
@@ -123,9 +124,9 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
                 break;
         }
         $orgId = null;
-        $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = (int) $queryParams[\MUtil\Model::REQUEST_ID2];
+        $params = $this->requestInfo->getRequestMatchedParams();
+        if (isset($params[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = (int) $params[\MUtil\Model::REQUEST_ID2];
         }
 
         $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
@@ -190,74 +191,75 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
         }
 
         if ($trackType != 'tracks') {
-            $div = \MUtil\Html::create()->div(array('class' => 'btn-group'));
+            $div = \MUtil\Html::create()->div(['class' => 'btn-group']);
         } else {
-            $div = \MUtil\Html::create()->div(array('class' => 'toolbox btn-group'));
+            $div = \MUtil\Html::create()->div(['class' => 'toolbox btn-group']);
         }
 
         if ($tracks) {
-            $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action);
+            $params = $this->requestInfo->getRequestMatchedParams();
+            $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
 
             if ($menuCreateUrl === null) {
                 return null;
             }
 
             $div->button($trackTypeDescription,
-                array('class' => 'toolanchor btn', 'data-toggle' => 'dropdown', 'type' => 'button'));
-            $dropdownButton = $div->button(array(
+                ['class' => 'toolanchor btn', 'data-toggle' => 'dropdown', 'type' => 'button']);
+            $dropdownButton = $div->button([
                 'class' => 'btn dropdown-toggle',
                 'data-toggle' => 'dropdown',
                 'type' => 'button',
-                ));
-            $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
+            ]);
+            $dropdownButton->span(['class' => 'caret', 'renderClosingTag' => true]);
 
             $data   = new \MUtil\Lazy\RepeatableByKeyValue($tracks);
 
             if ($trackType == 'tracks') {
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view');
-                $params = array('gtr_id_track' => $data->key);
+                $params[Model::TRACK_ID] = $data->key;
+                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view', $params);
             } else {
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey');
-                $params = array('gsu_id_survey' => $data->key);
+                $params[Model::SURVEY_ID] = $data->key;
+                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey', $params);
             }
 
             if (count($tracks) > $this->scrollTreshold) {
                 // Add a header and scroll class so we keep rounded corners
-                $top  = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'));
-                $link = $top->li(array('class' => 'disabled'))->a('#');
-                $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-left', 'renderClosingTag' => true));
-                $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-right', 'renderClosingTag' => true));
+                $top  = $div->ul(['class' => 'dropdown-menu', 'role' => 'menu']);
+                $link = $top->li(['class' => 'disabled'])->a('#');
+                $link->i(['class' => 'fa fa-chevron-down fa-fw pull-left', 'renderClosingTag' => true]);
+                $link->i(['class' => 'fa fa-chevron-down fa-fw pull-right', 'renderClosingTag' => true]);
                 // Add extra scroll-menu class
-                $li   = $top->li()->ul(array('class' => 'dropdown-menu scroll-menu', 'role' => 'menu'), $data)->li();
+                $li   = $top->li()->ul(['class' => 'dropdown-menu scroll-menu', 'role' => 'menu'], $data)->li();
             } else {
-                $li = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'), $data)->li();
+                $li = $div->ul(['class' => 'dropdown-menu', 'role' => 'menu'], $data)->li();
             }
 
-            $link = $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat info'));
-            $link->i(array('class' => 'fa fa-info-circle'))->raw('&nbsp;');
+            $link = $li->a($menuViewUrl, ['class' => 'rightFloat info']);
+            $link->i(['class' => 'fa fa-info-circle'])->raw('&nbsp;');
 
             if (count($tracks) > $this->scrollTreshold) {
                 // Add a footer so we keep rounded corners
-                $link = $top->li(array('class' => 'disabled'))->a('#');
-                $link->i(array('class' => 'fa fa-chevron-up fa-fw pull-left', 'renderClosingTag' => true));
-                $link->i(array('class' => 'fa fa-chevron-up fa-fw pull-right', 'renderClosingTag' => true));
+                $link = $top->li(['class' => 'disabled'])->a('#');
+                $link->i(['class' => 'fa fa-chevron-up fa-fw pull-left', 'renderClosingTag' => true]);
+                $link->i(['class' => 'fa fa-chevron-up fa-fw pull-right', 'renderClosingTag' => true]);
             }
 
-            $toolboxRowAttributes = array('class' => 'add');
-            $li->a($menuCreate->toHRefAttribute($this->request, $params),
-                    $data->value,
-                    $toolboxRowAttributes);
+            $toolboxRowAttributes = ['class' => 'add'];
+            $li->a($menuCreateUrl,
+                $data->value,
+                $toolboxRowAttributes);
 
         } else {
             $div->button($trackTypeDescription,
-                array('class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
-            $dropdownButton = $div->button(array(
+                ['class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button']);
+            $dropdownButton = $div->button([
                 'class' => 'disabled btn dropdown-toggle',
                 'data-toggle' => 'dropdown',
                 'type' => 'button',
-                ));
-            $dropdownButton->span(array('class' => 'caret', 'renderClosingTag' => true));
-            $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
+            ]);
+            $dropdownButton->span(['class' => 'caret', 'renderClosingTag' => true]);
+            $options = ['class' => 'dropdown-menu disabled', 'role' => 'menu'];
 
             $div->ul($this->_('None available'), $options);
         }
@@ -309,7 +311,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 
         $output  = false;
 
-        $addToLists = \MUtil\Html::create()->div(array('class' => 'tooldock'));
+        $addToLists = \MUtil\Html::create()->div(['class' => 'tooldock']);
         if ($this->showTitle) {
             $addToLists->strong($this->showTitle);
         }
@@ -321,8 +323,8 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             }
         }
         if ($this->showForRespondents || $this->showForStaff) {
-            $div = \MUtil\Html::create()->div(array('class' => 'toolbox btn-group'));
-            $div->button($this->_('Surveys for'), array('class' => 'toolanchor btn', 'type' => 'button'));
+            $div = \MUtil\Html::create()->div(['class' => 'toolbox btn-group']);
+            $div->button($this->_('Surveys for'), ['class' => 'toolanchor btn', 'type' => 'button']);
 
             if ($this->showForRespondents) {
                 $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);

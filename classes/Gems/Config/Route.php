@@ -182,6 +182,15 @@ class Route
             ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Actions\TrackAction::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                pages: [
+                    ...$this->defaultPages,
+                    'view',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'create',
+                    'view',
+                ],
                 parentParameters: [
                     'id1',
                     'id2',
@@ -399,6 +408,9 @@ class Route
             ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-rounds',
                 controllerClass: \Gems\Actions\TrackRoundsAction::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-rounds',
+                parameters: [
+                    \Gems\Model::ROUND_ID => '\d+',
+                ],
                 parentParameters: [
                     'trackId',
                 ],

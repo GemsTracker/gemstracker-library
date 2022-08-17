@@ -458,32 +458,32 @@ class Menu
                     ],
                 ],
                 [
-                    'name' => 'settings.codes',
+                    'name' => 'setup.codes',
                     'label' => $this->translator->trans('Codes'),
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'settings.codes.reception.index',
+                            'name' => 'setup.codes.reception.index',
                             'label' => $this->translator->trans('Reception codes'),
                             'type' => 'route-link-item',
                             'children' => [
                                 [
-                                    'name' => 'settings.codes.reception.create',
+                                    'name' => 'setup.codes.reception.create',
                                     'label' => $this->translator->trans('New'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'settings.codes.reception.show',
+                                    'name' => 'setup.codes.reception.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
                                     'children' => [
                                         [
-                                            'name' => 'settings.codes.reception.edit',
+                                            'name' => 'setup.codes.reception.edit',
                                             'label' => $this->translator->trans('Edit'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'settings.codes.reception.delete',
+                                            'name' => 'setup.codes.reception.delete',
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
@@ -491,27 +491,27 @@ class Menu
                                 ],
                             ],
                             [
-                                'name' => 'settings.codes.consents.index',
+                                'name' => 'setup.codes.consents.index',
                                 'label' => $this->translator->trans('Consents'),
                                 'type' => 'route-link-item',
                                 'children' => [
                                     [
-                                        'name' => 'settings.codes.consents.create',
+                                        'name' => 'setup.codes.consents.create',
                                         'label' => $this->translator->trans('New'),
                                         'type' => 'route-link-item',
                                     ],
                                     [
-                                        'name' => 'settings.codes.consents.show',
+                                        'name' => 'setup.codes.consents.show',
                                         'label' => $this->translator->trans('Show'),
                                         'type' => 'route-link-item',
                                         'children' => [
                                             [
-                                                'name' => 'settings.codes.consents.edit',
+                                                'name' => 'setup.codes.consents.edit',
                                                 'label' => $this->translator->trans('Edit'),
                                                 'type' => 'route-link-item',
                                             ],
                                             [
-                                                'name' => 'settings.codes.consents.delete',
+                                                'name' => 'setup.codes.consents.delete',
                                                 'label' => $this->translator->trans('Delete'),
                                                 'type' => 'route-link-item',
                                             ],
@@ -520,27 +520,27 @@ class Menu
                                 ],
                             ],
                             [
-                                'name' => 'settings.codes.mail-codes.index',
+                                'name' => 'setup.codes.mail-codes.index',
                                 'label' => $this->translator->trans('Mail codes'),
                                 'type' => 'route-link-item',
                                 'children' => [
                                     [
-                                        'name' => 'settings.codes.mail-codes.create',
+                                        'name' => 'setup.codes.mail-codes.create',
                                         'label' => $this->translator->trans('New'),
                                         'type' => 'route-link-item',
                                     ],
                                     [
-                                        'name' => 'settings.codes.mail-codes.show',
+                                        'name' => 'setup.codes.mail-codes.show',
                                         'label' => $this->translator->trans('Show'),
                                         'type' => 'route-link-item',
                                         'children' => [
                                             [
-                                                'name' => 'settings.codes.mail-codes.edit',
+                                                'name' => 'setup.codes.mail-codes.edit',
                                                 'label' => $this->translator->trans('Edit'),
                                                 'type' => 'route-link-item',
                                             ],
                                             [
-                                                'name' => 'settings.codes.mail-codes.delete',
+                                                'name' => 'setup.codes.mail-codes.delete',
                                                 'label' => $this->translator->trans('Delete'),
                                                 'type' => 'route-link-item',
                                             ],

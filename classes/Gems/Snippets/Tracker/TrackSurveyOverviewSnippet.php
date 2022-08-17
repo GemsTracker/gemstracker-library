@@ -82,10 +82,10 @@ class TrackSurveyOverviewSnippet extends \Gems\Snippets\MenuSnippetAbstract
         $trackRepeater = $this->getRepeater($this->trackId);
         $table = $html->div(array('class' => 'table-container'))->table($trackRepeater, array('class' => 'browser table'));
 
-        if ($link = $this->findMenuItem('project-tracks', 'questions')) {
+        /*if ($link = $this->findMenuItem('project-tracks', 'questions')) {
             $table->tr()->onclick = array('location.href=\'', $link->toHRefAttribute($trackRepeater), '\';');
             $table->addColumn($link->toActionLinkLower($trackRepeater));
-        }
+        }*/
 
         $surveyName[] = $trackRepeater->gsu_survey_name;
         $surveyName[] = \MUtil\Lazy::iif($trackRepeater->gro_icon_file, \MUtil\Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));

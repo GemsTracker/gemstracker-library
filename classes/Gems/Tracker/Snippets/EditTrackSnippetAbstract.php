@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Model;
 use Gems\Util\Translated;
 
 /**
@@ -200,7 +201,10 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
             if ($this->respondentTrack) {
                 $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
             } else {
-                $this->respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK);
+                $matchedParams = $this->requestInfo->getRequestMatchedParams();
+                if (isset($matchedParams[Model::RESPONDENT_TRACK])) {
+                    $this->respondentTrackId = $matchedParams[Model::RESPONDENT_TRACK];
+                }
             }
         }
         // Try to get $this->respondentTrack filled
@@ -261,7 +265,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 
         // When creating and not posting nor having $this->formData set already
         // we gotta make a special call
-        if ($this->createData && (! ($this->formData || $this->request->isPost()))) {
+        if ($this->createData && (! ($this->formData || $this->requestInfo->isPost()))) {
 
             $filter['gtr_id_track']         = $this->trackId;
             $filter['gr2o_patient_nr']      = $this->patientId;

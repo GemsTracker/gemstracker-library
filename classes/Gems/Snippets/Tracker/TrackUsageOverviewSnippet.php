@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Model;
+
 /**
  *
  *
@@ -36,7 +38,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuEditActions = array('edit-track');
+    public array $menuEditActions = ['edit-track'];
 
     /**
      * Menu actions to show in Show box.
@@ -46,7 +48,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuShowActions = array('show-track');
+    public array $menuShowActions = ['show-track'];
 
     /**
      * Are we working in a multi tracks environment?
@@ -152,9 +154,10 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         $this->tracker = $this->loader->getTracker();
+        $matchedParams = $this->requestInfo->getRequestMatchedParams();
 
-        if (! $this->respondentTrackId) {
-            $this->respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK);
+        if (! $this->respondentTrackId && isset($matchedParams[Model::RESPONDENT_TRACK])) {
+            $this->respondentTrackId = $matchedParams[Model::RESPONDENT_TRACK];
         }
 
         if ($this->respondentTrackId) {
@@ -191,9 +194,11 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->onEmpty = $this->_('This track is not assigned to this respondent.');
         }
 
-        if (! $this->trackId) {
-            $this->trackId = $this->request->getParam(\Gems\Model::TRACK_ID);
+        if (! $this->trackId && isset($matchedParams[Model::TRACK_ID])) {
+            $this->trackId = $matchedParams[Model::TRACK_ID];
         }
+
+
         if ((! $this->trackId) && $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
             $this->trackId = $this->trackEngine->getTrackId();
         }
@@ -212,7 +217,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             'gr2t_id_track'        => $this->trackId,
             'gr2t_id_user'         => $this->respondentId,
             'gr2t_id_organization' => $this->organizationId,
-            ));
+        ));
         if ($this->respondentTrackId) {
             $model->addFilter(array(sprintf('gr2t_id_respondent_track != %d', intval($this->respondentTrackId))));
         }

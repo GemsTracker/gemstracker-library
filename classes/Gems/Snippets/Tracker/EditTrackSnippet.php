@@ -25,14 +25,29 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
      *
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList()
+    protected function getMenuList(): array
     {
-        $links = $this->menu->getMenuList();
+        /*$links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
         $links->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'));
+                ->addByController('track', 'show-track', $this->_('Show track'));*/
+
+        $links = [];
+
+        $routes = [
+            'respondent.show',
+            'respondent.tracks.index',
+            'respondent.tracks.show',
+        ];
+        $currentParams = $this->requestInfo->getRequestMatchedParams();
+
+        foreach($routes as $routeName) {
+            $route = $this->routeHelper->getRoute($routeName);
+            $routeParams = $this->routeHelper->getRouteParamsFromKnownParams($route, $currentParams);
+            $links[$this->_('Show respondent')] = $this->routeHelper->getRouteUrl($routeName, $routeParams);
+        }
 
         return $links;
     }
@@ -62,7 +77,7 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
         if ($this->createData) {
             $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
             $this->respondentTrack   = $this->loader->getTracker()->getRespondentTrack($this->formData);
-            
+
             // Explicitly save the fields as the transformer in the model only handles
             // before save event (like default values) for existing respondenttracks
             $this->respondentTrack->setFieldData($this->formData);

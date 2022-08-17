@@ -101,7 +101,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     protected $checkTokenSnippets = [
         'Token\\CheckTokenEvents',
         'Survey\\SurveyQuestionsSnippet'
-        ];
+    ];
 
     /**
      * The parameters used for the correct action.
@@ -206,12 +206,12 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
     ];
-    
+
     /**
      * Parameters for editing a track token
      *
      * @var mixed String or array of snippets name
-     */    
+     */
     protected $editParameters = [
         'formTitle'     => null,
         'topicCallable' => 'getTokenTopicCallable',
@@ -438,7 +438,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
                 403, null,
                 sprintf($this->_('Access to this token is not allowed for current role: %s.'), $this->currentUser->getRole()));
         }
-        
+
         $snippets = $token->getAnswerSnippetNames();
 
         if ($snippets) {
@@ -471,21 +471,21 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $where      = $this->db->quoteInto('gto_id_respondent = ?', $respondent->getId());
 
         $batch = $this->loader->getTracker()->recalculateTokens(
-                'answersCheckAllResp_' . $respondent->getId(),
-                $this->currentUser->getUserId(),
-                $where
-                );
+            'answersCheckAllResp_' . $respondent->getId(),
+            $this->currentUser->getUserId(),
+            $where
+        );
 
         $title = sprintf(
-                $this->_('Checking all surveys of respondent %s, %s for answers.'),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Checking all surveys of respondent %s, %s for answers.'),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task (re)checks all tokens of this respondent for answers.')
-                );
+            'itemDescription', $this->_('This task (re)checks all tokens of this respondent for answers.')
+        );
     }
 
     /**
@@ -497,16 +497,16 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
 
         $batch = $this->loader->getTracker()->checkTrackRounds(
-                'trackCheckRoundsResp_' . $respondent->getId(),
-                $this->currentUser->getUserId(),
-                $where
-                );
+            'trackCheckRoundsResp_' . $respondent->getId(),
+            $this->currentUser->getUserId(),
+            $where
+        );
 
         $title = sprintf(
-                $this->_('Checking round assignments for all tracks of respondent %s, %s.'),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Checking round assignments for all tracks of respondent %s, %s.'),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\CheckRoundsInformation');
@@ -545,7 +545,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                          'itemDescription', $this->_('This task checks one token for answers.')
+            'itemDescription', $this->_('This task checks one token for answers.')
         );
     }
 
@@ -559,17 +559,17 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
         $batch = $this->loader->getTracker()->checkTrackRounds(
-                'trackCheckRoundsFor_' . $respTrackId,
-                $this->currentUser->getUserId(),
-                $where
-                );
+            'trackCheckRoundsFor_' . $respTrackId,
+            $this->currentUser->getUserId(),
+            $where
+        );
 
         $title = sprintf(
-                $this->_("Checking round assignments for track '%s' of respondent %s, %s."),
-                $trackEngine->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_("Checking round assignments for track '%s' of respondent %s, %s."),
+            $trackEngine->getTrackName(),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\CheckRoundsInformation');
@@ -585,22 +585,22 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gto_id_respondent_track = ?', $respTrackId);
         $batch = $this->loader->getTracker()->recalculateTokens(
-                'answersCheckAllFor__' . $respTrackId,
-                $this->currentUser->getUserId(),
-                $where
-                );
+            'answersCheckAllFor__' . $respTrackId,
+            $this->currentUser->getUserId(),
+            $where
+        );
 
         $title = sprintf(
-                $this->_("Checking the surveys in track '%s' of respondent %s, %s for answers."),
-                $trackEngine->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_("Checking the surveys in track '%s' of respondent %s, %s for answers."),
+            $trackEngine->getTrackName(),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks all tokens for this track for this respondent for answers.')
-                );
+            'itemDescription', $this->_('This task checks all tokens for this track for this respondent for answers.')
+        );
     }
 
     /**
@@ -626,7 +626,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
             $model   = $this->getModel();
 
             $model->setFilter(array()) // First clear existing filter
-                    ->applyRequest($request);
+            ->applyRequest($request);
             $data = $model->loadFirst();
 
             if ($data) {
@@ -762,10 +762,10 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $token = $this->getToken();
 
         return sprintf(
-                $this->_('Correct answers for survey %s, round %s'),
-                $token->getSurveyName(),
-                $token->getRoundDescription()
-                );
+            $this->_('Correct answers for survey %s, round %s'),
+            $token->getSurveyName(),
+            $token->getRoundDescription()
+        );
     }
 
     /**
@@ -778,11 +778,11 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $respondent = $this->getRespondent();
 
         return sprintf(
-                $this->_('Adding the %s track to respondent %s: %s'),
-                $this->getTrackEngine()->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Adding the %s track to respondent %s: %s'),
+            $this->getTrackEngine()->getTrackName(),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
     }
 
     /**
@@ -797,11 +797,11 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
 
         // Set params
         return sprintf(
-                $this->_('Send mail to %s respondent nr %s for token %s'),
-                $token->getEmail(),          // When using relations, this is the right email address
-                $respondent->getPatientNumber(),
-                $token->getTokenId()
-                );
+            $this->_('Send mail to %s respondent nr %s for token %s'),
+            $token->getEmail(),          // When using relations, this is the right email address
+            $respondent->getPatientNumber(),
+            $token->getTokenId()
+        );
     }
 
     /**
@@ -814,10 +814,10 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $respondent = $this->getRespondent();
 
         return sprintf(
-                $this->_('Tracks assigned to %s: %s'),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Tracks assigned to %s: %s'),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
     }
 
     /**
@@ -830,10 +830,10 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $respondent = $this->getRespondent();
 
         return sprintf(
-                $this->_('Inserting a survey in a track for respondent %s: %s'),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Inserting a survey in a track for respondent %s: %s'),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
     }
 
     /**
@@ -859,7 +859,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         return array(
             'gr2t_id_user'         => $respondent->getId(),
             'gr2t_id_organization' => $respondent->getOrganizationId(),
-            );
+        );
     }
 
     /**
@@ -888,10 +888,10 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
 
             $respondent = $this->getRespondent();
             $respTracks = $tracker->getRespondentTracks(
-                    $respondent->getId(),
-                    $respondent->getOrganizationId(),
-                    array('grc_success DESC', 'gr2t_start_date')
-                    );
+                $respondent->getId(),
+                $respondent->getOrganizationId(),
+                array('grc_success DESC', 'gr2t_start_date')
+            );
             $trackId = $this->escort->getTrackId();
             if ($trackId) {
                 foreach ($respTracks as $respTrack) {
@@ -1088,7 +1088,6 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
 
             $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         }
-        $engine->applyToMenuSource($this->menu->getParameterSource());
 
         return $engine;
     }
@@ -1161,16 +1160,16 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
 
             // Set params
             return sprintf(
-                    $this->_('%s track assignments for respondent nr %s: %s'),
-                    $trackEngine->getTrackName(),
-                    $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
-                    $this->getRespondent()->getFullName()
-                    );
+                $this->_('%s track assignments for respondent nr %s: %s'),
+                $trackEngine->getTrackName(),
+                $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
+                $this->getRespondent()->getFullName()
+            );
         } else {
             return sprintf(
-                    $this->_('%s track overview'),
-                    $trackEngine->getTrackName()
-                    );
+                $this->_('%s track overview'),
+                $trackEngine->getTrackName()
+            );
         }
     }
 
@@ -1188,8 +1187,8 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         if (in_array($this->requestHelper->getActionName(), $this->tokenReturnActions)) {
             // Tell the system where to return to after a survey has been taken
             $route = [
-                'route' => $this->requestHelper->getRouteResult()->getMatchedRouteName(),
-            ] + $this->requestHelper->getRouteResult()->getMatchedParams();
+                    'route' => $this->requestHelper->getRouteResult()->getMatchedRouteName(),
+                ] + $this->requestHelper->getRouteResult()->getMatchedParams();
             $this->currentUser->setSurveyReturn($route);
         }
     }
@@ -1244,7 +1243,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         }
     }
 
-     /**
+    /**
      * Action for checking all assigned rounds using a batch
      */
     public function recalcAllFieldsAction()
@@ -1253,15 +1252,15 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
 
         $batch = $this->loader->getTracker()->recalcTrackFields(
-                'trackRecalcFieldsResp_' . $respondent->getId(),
-                $where
-                );
+            'trackRecalcFieldsResp_' . $respondent->getId(),
+            $where
+        );
 
         $title = sprintf(
-                $this->_('Recalculating fields for all tracks of respondent %s, %s.'),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_('Recalculating fields for all tracks of respondent %s, %s.'),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\RecalcFieldsInformation');
@@ -1277,22 +1276,22 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
         $batch = $this->loader->getTracker()->recalcTrackFields(
-                'trackRecalcFieldsFor_' . $respTrackId,
-                $where
-                );
+            'trackRecalcFieldsFor_' . $respTrackId,
+            $where
+        );
 
         $title = sprintf(
-                $this->_("Recalculating fields for track '%s' of respondent %s, %s."),
-                $trackEngine->getTrackName(),
-                $respondent->getPatientNumber(),
-                $respondent->getFullName()
-                );
+            $this->_("Recalculating fields for track '%s' of respondent %s, %s."),
+            $trackEngine->getTrackName(),
+            $respondent->getPatientNumber(),
+            $respondent->getFullName()
+        );
         $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
         $this->addSnippet('Track\\RecalcFieldsInformation');
     }
 
-   /**
+    /**
      * Show a single token, mind you: it can be a SingleSurveyTrack
      */
     public function showAction()
@@ -1315,7 +1314,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         }
     }
 
-     /**
+    /**
      * Delete a single token
      */
     public function undeleteAction()
@@ -1338,7 +1337,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         }
     }
 
-   /**
+    /**
      * Show information on a single track type assigned to a respondent
      */
     public function viewAction()
