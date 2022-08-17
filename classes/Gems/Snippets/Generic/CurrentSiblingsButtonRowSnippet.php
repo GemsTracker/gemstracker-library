@@ -28,19 +28,19 @@ class CurrentSiblingsButtonRowSnippet extends ButtonRowSnippet
      *
      * @var boolean
      */
-    protected $addCurrentChildren = true;
+    protected bool $addCurrentChildren = true;
 
     /**
      * Add the parent of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentParent = true;
+    protected bool $addCurrentParent = true;
 
     /**
      * Add the siblings of the current menu item
      *
      * @var boolean
      */
-    protected $addCurrentSiblings = true;
+    protected bool $addCurrentSiblings = true;
 }
