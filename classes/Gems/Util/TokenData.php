@@ -127,7 +127,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
             'I' => $this->_('Incomplete - missed deadline'),
             'M' => $this->_('Missed deadline'),
             'D' => $this->_('Token does not exist'),
-            );
+        );
 
         return $status;
     }
@@ -358,16 +358,16 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTokenAnswerLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $keepCaps = false)
     {
-        if (! $this->currentUser->hasPrivilege($this->_getAnswerMenuItem()->getPrivilege())) {
+        if (! $this->currentUser->hasPrivilege('pr.answer')) {
             return null;
         }
 
         return \MUtil\Lazy::method($this, 'getTokenAnswerLink',
-                $bridge->getLazy('gto_id_token'),
-                $bridge->getLazy('token_status'),
-                $keepCaps,
-                $bridge->getLazy('show_answers')
-                );
+            $bridge->getLazy('gto_id_token'),
+            $bridge->getLazy('token_status'),
+            $keepCaps,
+            $bridge->getLazy('show_answers')
+        );
     }
 
     /**
@@ -419,22 +419,22 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTokenAskButtonForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
     {
-        if (! $this->currentUser->hasPrivilege($this->_getAskMenuItem()->getPrivilege())) {
+        if (! $this->currentUser->hasPrivilege('pr.ask')) {
             return null;
         }
 
         if ($forceButton) {
             return \MUtil\Lazy::method($this, 'getTokenAskButton',
-                    $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), true, $keepCaps
-                    );
+                $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), true, $keepCaps
+            );
         }
 
         return \MUtil\Lazy::method($this, 'getTokenAskButton',
-                $bridge->getLazy('gto_id_token'),
-                $bridge->getLazy('token_status'),
-                $bridge->getLazy('ggp_staff_members'),
-                $keepCaps
-                );
+            $bridge->getLazy('gto_id_token'),
+            $bridge->getLazy('token_status'),
+            $bridge->getLazy('ggp_staff_members'),
+            $keepCaps
+        );
     }
 
     /**
@@ -451,16 +451,16 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
 
         if (! $method) {
             $method = \MUtil\Lazy::method($this, 'getTokenCopyLink',
-                    $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status')
-                    );
+                $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status')
+            );
         }
 
         return [
             $method,
             'class' => \MUtil\Lazy::method($this, 'getTokenCopyLinkClass',
-                    $bridge->getLazy('token_status'), $bridge->getLazy('ggp_staff_members')
-                    ),
-            ];
+                $bridge->getLazy('token_status'), $bridge->getLazy('ggp_staff_members')
+            ),
+        ];
     }
 
     /**
@@ -533,8 +533,8 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
         }
 
         return \MUtil\Lazy::method($this, 'getTokenEmailLink',
-                $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), $bridge->getLazy('can_email')
-                );
+            $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), $bridge->getLazy('can_email')
+        );
     }
 
     /**
@@ -550,12 +550,12 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
 
         if ($plusLabel) {
             $link = $menuItem->toActionLink(
-                    \MUtil\Html::create()->strong($this->_('+')),
-                    [
-                        'gto_id_token' => $tokenId,
-                        \Gems\Model::ID_TYPE => 'token',
-                    ]
-                    );
+                \MUtil\Html::create()->strong($this->_('+')),
+                [
+                    'gto_id_token' => $tokenId,
+                    \Gems\Model::ID_TYPE => 'token',
+                ]
+            );
         } else {
             $link = $menuItem->toActionLinkLower([
                 'gto_id_token' => $tokenId,
@@ -579,7 +579,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTokenShowLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $plusLabel = true)
     {
-        if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
+        if (! $this->currentUser->hasPrivilege('respondent.track.show')) {
             return null;
         }
 
@@ -646,15 +646,15 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTokenStatusLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge)
     {
-        if (! $this->currentUser->hasPrivilege($this->_getShowMenuItem()->getPrivilege())) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.show')) {
             return $this->getTokenStatusShowForBridge($bridge);
         }
 
         return \MUtil\Lazy::method($this, 'getTokenStatusLink',
-                $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'),
-                $bridge->getLazy('gr2o_patient_nr'), $bridge->getLazy('gto_round_description'),
-                $bridge->getLazy('gsu_survey_name'), $bridge->getLazy('gto_result')
-                );
+            $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'),
+            $bridge->getLazy('gr2o_patient_nr'), $bridge->getLazy('gto_round_description'),
+            $bridge->getLazy('gsu_survey_name'), $bridge->getLazy('gto_result')
+        );
     }
 
     /**
@@ -672,10 +672,10 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
         }
 
         return $this->getTokenStatusLink(
-                $tokenId, $token->getStatusCode(),
-                $token->getPatientNumber(), $token->getRoundDescription(),
-                $token->getSurveyName(), $token->getResult()
-                );
+            $tokenId, $token->getStatusCode(),
+            $token->getPatientNumber(), $token->getRoundDescription(),
+            $token->getSurveyName(), $token->getResult()
+        );
     }
 
     /**
