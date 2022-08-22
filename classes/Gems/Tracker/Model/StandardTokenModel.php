@@ -379,14 +379,14 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
         // Token, display part
         $this->set('gto_mail_sent_date',     'label', $this->_('Last contact'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', $translated->formatDateTimeNever,
+                'formatFunction', $this->translatedUtil->formatDateTimeNever,
                 'tdClass', 'date');
         $this->set('gto_mail_sent_num',      'label', $this->_('Number of contact moments'),
                 'elementClass', 'Exhibitor'
                 );
         $this->set('gto_completion_time',    'label', $this->_('Completed'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', $translated->formatDateTimeNa,
+                'formatFunction', $this->translatedUtil->formatDateTimeNa,
                 'tdClass', 'date');
         $this->set('gto_duration_in_sec',    'label', $this->_('Duration in seconds'),
                 'elementClass', 'Exhibitor'
@@ -400,7 +400,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
                 );
         $this->set('gto_changed',            'label', $this->_('Changed on'),
                 'elementClass', 'Exhibitor',
-                'formatFunction', $translated->formatDateUnknown
+                'formatFunction', $this->translatedUtil->formatDateUnknown
                 );
         $this->set('assigned_by',            'label', $this->_('Assigned by'),
                 'elementClass', 'Exhibitor'

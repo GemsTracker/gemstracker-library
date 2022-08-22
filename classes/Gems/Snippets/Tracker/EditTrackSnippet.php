@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  * @package    Gems
@@ -21,6 +23,11 @@ namespace Gems\Snippets\Tracker;
  */
 class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
 {
+    /**
+     * @var SessionInterface
+     */
+    protected $session;
+
     /**
      *
      * @return \Gems\Menu\MenuList
@@ -83,7 +90,7 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
             $this->respondentTrack->setFieldData($this->formData);
 
             // Create the actual tokens!!!!
-            $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);
+            $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->session, $this->userId);
             $refresh = true;
 
         } else {

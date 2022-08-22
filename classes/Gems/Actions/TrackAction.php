@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionMiddleware;
+
 /**
  * Controller for editing respondent tracks, including their tokens
  *
@@ -129,6 +132,8 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'formTitle'   => 'getCreateTrackTitle',
         'multiTracks' => 'isMultiTracks',
         'trackEngine' => 'getTrackEngine',
+        'csrfGuard'     => 'getCsrfGuard',
+        'session'     => 'getSession',
     ];
 
     /**
@@ -915,8 +920,6 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
             }
         }
 
-        $respTrack->applyToMenuSource($this->menu->getParameterSource());
-
         // Otherwise return the last created track (yeah some implementations are not correct!)
         return $respTrack;
     }
@@ -933,6 +936,11 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         if ($respTrack) {
             return $respTrack->getRespondentTrackId();
         }
+    }
+
+    public function getSession(): ?SessionInterface
+    {
+        return $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
     }
 
     /**

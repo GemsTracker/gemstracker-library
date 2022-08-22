@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Model;
 use Gems\Util\Translated;
 
 /**
@@ -31,11 +32,11 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedFilter = array(
+    protected $_fixedFilter = [
         'gtr_active' => 1,
         'gtr_date_start <= CURRENT_DATE',
         '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)',
-        );
+    ];
 
     /**
      * Set a fixed model sort.
@@ -44,7 +45,7 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array('gtr_track_name' => SORT_ASC, 'gtr_date_start' => SORT_ASC);
+    protected $_fixedSort = ['gtr_track_name' => SORT_ASC, 'gtr_date_start' => SORT_ASC];
 
     /**
      * Sets pagination on or off.
@@ -86,9 +87,9 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         // These values are set for the generic table snippet and
         // should be reset for this snippet
         $this->browse          = false;
-        $this->extraFilter     = array("gtr_organizations LIKE '%|$orgId|%'");
-        $this->menuEditActions = ['view'];
-        $this->menuShowActions = ['create'];
+        $this->extraFilter     = ["gtr_organizations LIKE '%|$orgId|%'"];
+        $this->menuEditActions = [$this->_('View') => 'view'];
+        $this->menuShowActions = [$this->_('Create') => 'create'];
     }
 
     /**
@@ -110,6 +111,10 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                 'dateFormat', $this->translatedUtil->formatDateForever,
                 'tdClass', 'date'
                 );
+
+        $model->setKeys([
+            Model::TRACK_ID => 'gtr_id_track'
+        ]);
 
         $this->loader->getModels()->addDatabaseTranslations($model);
 

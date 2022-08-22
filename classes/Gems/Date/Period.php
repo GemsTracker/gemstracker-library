@@ -73,8 +73,10 @@ class Period
                     throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
 
             }
+            return $date->add(new DateInterval($periodString));
         }
-        return $date->add(new DateInterval($periodString));
+
+        return $date;
     }
 
     /**

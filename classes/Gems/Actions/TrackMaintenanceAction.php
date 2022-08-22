@@ -37,18 +37,18 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('gtr_track_name' => SORT_ASC),
+    protected $autofilterParameters = [
+        'extraSort'   => ['gtr_track_name' => SORT_ASC],
         'trackEngine' => null,
         'trackId'     => null,
-        );
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('track', 'tracks');
+    public $cacheTags = ['track', 'tracks'];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -61,9 +61,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = array(
+    protected $createParameters = [
         'trackEngine' => null,
-    );
+    ];
 
     /**
      *
@@ -78,9 +78,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      */
     protected $defaultSearchData = ['active' => 1];
     
-    protected $deleteParameters = array(
+    protected $deleteParameters = [
         'trackId' => '_getIdParam'
-    );
+    ];
 
     /**
      * The snippets used for the delete action.
@@ -99,7 +99,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $exportParameters = array();
+    protected $exportParameters = [];
 
     /**
      * The snippets used for the export action
@@ -118,10 +118,10 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $importParameters = array(
+    protected $importParameters = [
         'trackEngine' => null,
         'trackId'     => null,
-    );
+    ];
 
     /**
      * The snippets used for the import action
@@ -135,10 +135,10 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array(
+    protected $indexStartSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackMaintenance\\TrackMaintenanceSearchSnippet'
-        );
+    ];
 
     protected $showParameters = [
         'trackId' => '_getIdParam'
@@ -149,7 +149,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\TrackVisualDefinitionTitleSnippet',
@@ -160,7 +160,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
         'Tracker\\Rounds\\RoundsTitleSnippet',
         'Tracker\\Rounds\\RoundsTableSnippet',
         'Tracker\\Buttons\\NewRoundButtonRow',
-        );
+    ];
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -173,7 +173,17 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'check-all', 'recalc-all-fields');
+    public $summarizedActions = ['index', 'autofilter', 'check-all', 'recalc-all-fields'];
+
+    /**
+     * The request ID value
+     *
+     * @return ?string The request ID value
+     */
+    protected function _getIdParam(): ?string
+    {
+        return $this->request->getAttribute('trackId');
+    }
 
     /**
      * Action for making a copy of a track
@@ -184,7 +194,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
         $engine     = $this->getTrackEngine();
         $newTrackId = $engine->copyTrack($trackId);
 
-        $this->_reroute(array('action' => 'edit', \MUtil\Model::REQUEST_ID => $newTrackId));
+        $this->_reroute(urlOptions: array('action' => 'edit', \MUtil\Model::REQUEST_ID => $newTrackId));
     }
 
     /**

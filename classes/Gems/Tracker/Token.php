@@ -311,21 +311,6 @@ class Token extends \Gems\Registry\TargetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->initTranslateable();
-    }
-
-    /**
      * Set menu parameters from this token
      *
      * @param \Gems\Menu\ParameterSource $source

@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Engine;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  * @package    Gems
@@ -68,7 +70,7 @@ interface TrackEngineInterface
      * @param int $userId Id of the user who takes the action (for logging)
      * @param \Gems\Task\TaskRunnerBatch $changes batch for counters
      */
-    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, $userId, \Gems\Task\TaskRunnerBatch $batch = null);
+    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, SessionInterface $session, $userId, \Gems\Task\TaskRunnerBatch $batch = null);
 
     /**
      * Check the valid from and until dates in the track starting at a specified token

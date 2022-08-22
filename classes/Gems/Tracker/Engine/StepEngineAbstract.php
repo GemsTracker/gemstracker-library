@@ -15,6 +15,7 @@ use Gems\Date\Period;
 use Gems\Locale\Locale;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Tracker\Token;
 use Gems\Util\Translated;
 
 use DateTimeImmutable;
@@ -330,7 +331,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      * @param \Gems\Tracker\RespondentTrack Current respondent track
      * @return int 1 if the token has changed
      */
-    protected function checkTokenDates($token, $round, $userId, \Gems\Tracker\RespondentTrack $respTrack)
+    protected function checkTokenDates(Token $token, $round, $userId, \Gems\Tracker\RespondentTrack $respTrack)
     {
         $skipCode = $this->util->getReceptionCodeLibrary()->getSkipString();
 

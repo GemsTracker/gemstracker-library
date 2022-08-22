@@ -44,7 +44,7 @@ class NewFieldButtonRow extends CurrentButtonRowSnippet
         $params = $this->routeHelper->getRouteParamsFromKnownParams($route, $matchedParams);
 
         $menuList[] = [
-            'label' => $this->_('New round'),
+            'label' => $this->_('New field'),
             'url' => $this->routeHelper->getRouteUrl($route['name'], $params),
         ];
 

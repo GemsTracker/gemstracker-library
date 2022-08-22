@@ -150,7 +150,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
-        	'dateFormat', 'dd-MM-yyyy',
+        	'dateFormat', 'Y-m-d',
             'formatFunction', $formatDate,
             'default', new \DateTimeImmutable());
         $this->set('gr2t_end_date',   'label', $this->_('Ending on'),

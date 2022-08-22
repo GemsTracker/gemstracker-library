@@ -12,6 +12,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
 
 /**
@@ -53,6 +54,11 @@ class TrackModel extends \MUtil\Model\TableModel
      * @var \Gems\Tracker
      */
     protected $tracker;
+
+    /**
+     * @var TrackEvents
+     */
+    protected $trackEvents;
 
     /**
      * @var \Zend_Translate
@@ -123,30 +129,29 @@ class TrackModel extends \MUtil\Model\TableModel
         $this->loader->getModels()->addDatabaseTranslationEditFields($this);
 
         if ($detailed) {
-            $events = $this->loader->getEvents();
 
-            $caList = $events->listTrackCalculationEvents();
+            $caList = $this->trackEvents->listTrackCalculationEvents();
             if (count($caList) > 1) {
                 $this->setIfExists('gtr_calculation_event', 'label', $translator->_('Before (re)calculation'),
                         'multiOptions', $caList
                         );
             }
 
-            $coList = $events->listTrackCompletionEvents();
+            $coList = $this->trackEvents->listTrackCompletionEvents();
             if (count($coList) > 1) {
                 $this->setIfExists('gtr_completed_event', 'label', $translator->_('After completion'),
                         'multiOptions', $coList
                         );
             }
 
-            $bfuList = $events->listTrackBeforeFieldUpdateEvents();
+            $bfuList = $this->trackEvents->listTrackBeforeFieldUpdateEvents();
             if (count($bfuList) > 1) {
                 $this->setIfExists('gtr_beforefieldupdate_event', 'label', $translator->_('Before field update'),
                         'multiOptions', $bfuList
                         );
             }
 
-            $fuList = $events->listTrackFieldUpdateEvents();
+            $fuList = $this->trackEvents->listTrackFieldUpdateEvents();
             if (count($fuList) > 1) {
                 $this->setIfExists('gtr_fieldupdate_event', 'label', $translator->_('After field update'),
                         'multiOptions', $fuList

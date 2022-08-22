@@ -17,7 +17,9 @@ use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Round;
 use Gems\Translate\DbTranslateUtilTrait;
 use Gems\Util\Translated;
+use Mezzio\Session\SessionInterface;
 use MUtil\Model\Dependency\DependencyInterface;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * Utility class containing functions used by most track engines.
@@ -74,6 +76,11 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var ProjectOverloader
+     */
+    protected $overLoader;
 
     /**
      *
@@ -408,17 +415,11 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         return true;
     }
 
-    /**
-     * Check for the existence of all tokens and create them otherwise
-     *
-     * @param \Gems\Tracker\RespondentTrack $respTrack The respondent track to check
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @param \Gems\Task\TaskRunnerBatch $changes batch for counters
-     */
-    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, $userId, \Gems\Task\TaskRunnerBatch $batch = null)
+
+    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, SessionInterface $session, $userId, \Gems\Task\TaskRunnerBatch $batch = null)
     {
         if (null === $batch) {
-            $batch = new \Gems\Task\TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId());
+            $batch = new \Gems\Task\TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId(), $this->overLoader, $session);
         }
         // Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));

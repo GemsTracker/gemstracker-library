@@ -198,11 +198,6 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 
         if ($tracks) {
             $params = $this->requestInfo->getRequestMatchedParams();
-            $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
-
-            if ($menuCreateUrl === null) {
-                return null;
-            }
 
             $div->button($trackTypeDescription,
                 ['class' => 'toolanchor btn', 'data-toggle' => 'dropdown', 'type' => 'button']);
@@ -218,9 +213,11 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             if ($trackType == 'tracks') {
                 $params[Model::TRACK_ID] = $data->key;
                 $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view', $params);
+                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
             } else {
                 $params[Model::SURVEY_ID] = $data->key;
                 $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey', $params);
+                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
             }
 
             if (count($tracks) > $this->scrollTreshold) {

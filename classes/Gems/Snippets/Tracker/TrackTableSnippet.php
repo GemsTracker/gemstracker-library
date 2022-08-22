@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Tracker\Respondent;
+use Gems\Util;
+
 /**
  *
  * @package    Gems
@@ -29,13 +32,13 @@ class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Pulse_Tracker_Respondent
+     * @var Respondent
      */
     protected $respondent;
 
     /**
      *
-     * @var \Pulse_Util
+     * @var Util
      */
     protected $util;
 

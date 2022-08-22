@@ -142,9 +142,13 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
         if ($this->showMenu) {
             $showMenuItems = $this->getShowUrls($bridge);
+            foreach ($showMenuItems as $keyOrLabel => $menuItem) {
+                $showLabel = $keyOrLabel;
+                if (is_int($showLabel)) {
+                    $showLabel = $this->_('Show');
+                }
 
-            foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $showLabel));
             }
         }
 
@@ -156,8 +160,12 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
         if ($this->showMenu) {
             $editMenuItems = $this->getEditUrls($bridge);
 
-            foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
+            foreach ($editMenuItems as $keyOrLabel => $menuItem) {
+                $editLabel = $keyOrLabel;
+                if (is_int($editLabel)) {
+                    $editLabel = $this->_('Edit');
+                }
+                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $editLabel));
             }
         }
     }
@@ -241,7 +249,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     {
         $output = [];
 
-        foreach ((array) $actions as $key=>$action) {
+        foreach ((array) $actions as $keyOrLabel=>$action) {
 
             try {
                 $route = $this->routeHelper->getRoute($action);
@@ -272,7 +280,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
                 }
             }
 
-            $output[] = new Call(function(string $routeName, array $params = []) {
+            $output[$keyOrLabel] = new Call(function(string $routeName, array $params = []) {
                 return $this->routeHelper->getRouteUrl($routeName, $params);
             }, [$routeName, $params]);
         }
