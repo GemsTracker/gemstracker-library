@@ -168,6 +168,10 @@ class TokenLibrary extends \Gems\Registry\TargetAbstract
      */
     public function filter($token)
     {
+        if (null === $token) {
+            return null;
+        }
+
         // Apply replacements
         if ($this->tokenFrom) {
             $token = strtr($token, $this->tokenFrom, $this->tokenTo);
