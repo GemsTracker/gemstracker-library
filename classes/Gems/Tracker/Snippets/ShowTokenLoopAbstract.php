@@ -14,6 +14,7 @@ namespace Gems\Tracker\Snippets;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use MUtil\Request\RequestInfo;
 
 /**
  * Basic class for creating forward loop snippets
@@ -29,10 +30,10 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     const CONTINUE_LATER_PARAM = 'continueLater';
 
     /**
-     * @var string 
+     * @var string
      */
     protected $action = 'forward';
-    
+
     /**
      * General date format
      * @var string
@@ -52,11 +53,9 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     protected $menu;
 
     /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
+     * @var RequestInfo
      */
-    protected $request;
+    protected $requestInfo;
 
     /**
      * Switch for showing the duration.
@@ -136,7 +135,11 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
      */
     public function checkContinueLinkClicked()
     {
-        return $this->request->getParam(self::CONTINUE_LATER_PARAM, false);
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        if (isset($queryParams[self::CONTINUE_LATER_PARAM]) && $queryParams[self::CONTINUE_LATER_PARAM] == 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -161,7 +164,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
         /** @var \Gems\Mail\TokenMailer $mail */
         $mail       = $mailLoader->getMailer('token', $token->getTokenId());
         $mail->setFrom($token->getOrganization()->getFrom());
-        
+
         if ($mail->setTemplateByCode('continue')) {
             $lastMailedDate = \MUtil\Model::getDateTimeInterface($token->getMailSentDate());
 
@@ -198,9 +201,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
 
             $this->wasAnswered = $this->token->isCompleted();
 
-            return ($this->request instanceof \Zend_Controller_Request_Abstract) &&
-                    ($this->view instanceof \Zend_View) &&
-                    parent::checkRegistryRequestsAnswers();
+            return parent::checkRegistryRequestsAnswers();
         } else {
             return false;
         }
@@ -248,23 +249,23 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     }
 
     /**
-     * Return a no further questions statement (or nothing) 
+     * Return a no further questions statement (or nothing)
      *
      * @return \MUtil\Html\HtmlElement
      */
     public function formatNoFurtherQuestions()
     {
-        return \MUtil\Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));    
+        return \MUtil\Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));
     }
 
     /**
      * Return a thanks greeting depending on showlastName switch
-     * 
+     *
      * @return \MUtil\Html\HtmlElement
      */
-    public function formatThanks() 
+    public function formatThanks()
     {
-        $output = \MUtil\Html::create('pInfo'); 
+        $output = \MUtil\Html::create('pInfo');
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
             $output->sprintf($this->_('Thank you %s,'), $this->token->getRespondentName());
@@ -283,7 +284,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     public function formatUntil(DateTimeInterface $dateTime = null)
     {
         if (false === $this->showUntil) { return; }
-        
+
         if (null === $dateTime) {
             return $this->_('Survey has no time limit.');
         }
@@ -296,14 +297,14 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
                     \MUtil\Html::create('strong', $this->_('Warning!!!')),
                     ' ',
                     $this->_('This survey must be answered today!')
-                    ];
+                ];
 
             case 1:
                 return [
                     \MUtil\Html::create('strong', $this->_('Warning!!')),
                     ' ',
                     $this->_('This survey can only be answered until tomorrow!')
-                    ];
+                ];
 
             case 2:
                 return $this->_('Warning! This survey can only be answered for another 2 days!');
@@ -339,7 +340,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
             return [
                 $output,
                 \MUtil\Html::create('pInfo', sprintf(
-                    $this->_('We kindly ask you to answer a survey about %s.'), 
+                    $this->_('We kindly ask you to answer a survey about %s.'),
                     $this->token->getRespondent()->getName()
                 ))];
         }
@@ -366,10 +367,10 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
          * Get the url *
          ***************/
         $params = array(
-            $this->request->getActionKey() => 'to-survey',
-            \MUtil\Model::REQUEST_ID        => $token->getTokenId(),
-            'RouteReset'                   => false,
-            );
+            'action'                 => 'to-survey',
+            \MUtil\Model::REQUEST_ID => $token->getTokenId(),
+            'RouteReset'             => false,
+        );
 
         return new \MUtil\Html\HrefArrayAttribute($params);
     }

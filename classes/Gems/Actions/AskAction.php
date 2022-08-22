@@ -11,6 +11,12 @@
 
 namespace Gems\Actions;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\RouteNotFoundException;
+use Gems\Tracker\Token;
+use Mezzio\Session\SessionMiddleware;
+use MUtil\Model;
+
 /**
  *
  * @package    Gems
@@ -25,7 +31,7 @@ class AskAction extends \Gems\Controller\Action
      * @var \Gems\User\Organization
      */
     public $currentOrganization;
-    
+
     /**
      *
      * @var \Gems\User\User
@@ -100,7 +106,7 @@ class AskAction extends \Gems\Controller\Action
      * @var array Mixed key => value array for snippet initialization
      */
     protected $resumeLaterParameters = [];
-    
+
     /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
      * Ask_ShowAllOpenSnippet or Ask_ShowFirstOpenSnippet or
@@ -109,7 +115,12 @@ class AskAction extends \Gems\Controller\Action
      * @var array Or string of snippet names, presumably \Gems\Tracker\Snippets\ShowTokenLoopAbstract snippets
      */
     protected $resumeLaterSnippets = 'Ask\\ResumeLaterSnippet';
-        
+
+    /**
+     * @var RouteHelper
+     */
+    public $routeHelper;
+
     /**
      * The current token ID
      *
@@ -135,7 +146,7 @@ class AskAction extends \Gems\Controller\Action
      *
      * @var \Gems\Tracker
      */
-    protected $tracker;
+    public $tracker;
 
     /**
      * Set to true in child class for automatic creation of $this->html.
@@ -152,7 +163,7 @@ class AskAction extends \Gems\Controller\Action
     /**
      * Leave on top, so we won't miss this
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -160,10 +171,11 @@ class AskAction extends \Gems\Controller\Action
          * If not in the index action, add the following to the head section
          *      <meta name="robots" content="noindex">
          */
-        $action = $this->getRequest()->getActionName();
+        $action = $this->requestHelper->getActionName();
+
         if ($action !== 'index') {
-            $view = \Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
-            $this->view->getHelper('headMeta')->appendName('robots', 'noindex, nofollow');
+            // $view = \Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
+            // $this->view->getHelper('headMeta')->appendName('robots', 'noindex, nofollow');
         }
     }
 
@@ -174,12 +186,23 @@ class AskAction extends \Gems\Controller\Action
      */
     protected function _initToken()
     {
-        if ($this->tracker) {
+        if ($this->tracker && $this->token instanceof Token) {
             return $this->token && $this->token->exists;
         }
 
-        $this->tracker = $this->loader->getTracker();
-        $this->tokenId = $this->tracker->filterToken($this->_getParam(\MUtil\Model::REQUEST_ID));
+        $tokenId = $this->request->getAttribute(Model::REQUEST_ID);
+        if (null === $tokenId && $this->requestHelper->isPost()) {
+            $postData = $this->request->getParsedBody();
+            if (isset($postData[Model::REQUEST_ID])) {
+                $tokenId = $postData[Model::REQUEST_ID];
+            }
+        }
+
+        if (null === $tokenId) {
+            return false;
+        }
+
+        $this->tokenId = $this->tracker->filterToken($tokenId);
         // Now check if the token is valid
         $validator = $this->tracker->getTokenValidator();
 
@@ -193,24 +216,24 @@ class AskAction extends \Gems\Controller\Action
             return false;
         }
 
-        if (! \Gems\Cookies::getLocale($this->getRequest())) {
-            if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
-                $tokenLang = strtolower($this->token->getRespondentLanguage());
-                $tokenOrg = $this->token->getOrganization();
+        //if (! \Gems\Cookies::getLocale($this->getRequest())) {
+        if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
+            $tokenLang = strtolower($this->token->getRespondentLanguage());
+            $tokenOrg = $this->token->getOrganization();
 
-                if ($tokenOrg->getId() != $this->currentOrganization->getId()) {
-                    $this->currentUser->setCurrentOrganization($tokenOrg);
-                }
-                // \MUtil\EchoOut\EchoOut::track($tokenLang, $this->locale->getLanguage());
-                if ($tokenLang != $this->locale->getLanguage()) {
-                    if ($this->currentUser->switchLocale($tokenLang)) {
-                        // Reload url as the menu has already been loaded in the previous language 
-                        $url = $tokenOrg->getLoginUrl() . '/ask/forward/' . \MUtil\Model::REQUEST_ID . '/' . $this->tokenId;
-                        $this->getResponse()->setRedirect($url);
-                    }
+            if ($tokenOrg->getId() != $this->currentOrganization->getId()) {
+                $this->currentUser->setCurrentOrganization($tokenOrg);
+            }
+            // \MUtil\EchoOut\EchoOut::track($tokenLang, $this->locale->getLanguage());
+            if ($tokenLang != $this->locale->getLanguage()) {
+                if ($this->currentUser->switchLocale($tokenLang)) {
+                    // Reload url as the menu has already been loaded in the previous language
+                    $url = $tokenOrg->getLoginUrl() . '/ask/forward/' . $this->tokenId;
+                    $this->redirectUrl = $url;
                 }
             }
         }
+        //}
 
         return true;
     }
@@ -242,7 +265,7 @@ class AskAction extends \Gems\Controller\Action
                 $output['token'] = $this->token;
             }
         }
-        
+
         return $output;
     }
 
@@ -253,7 +276,7 @@ class AskAction extends \Gems\Controller\Action
      */
     protected function displayTokenForm(\Gems\Tracker\Form\AskTokenForm $form)
     {
-        $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->name));
+        $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->getName()));
         $this->html->h3($form->getDescription());
         $this->html[] = $form;
         $this->html->pInfo($this->_('Tokens identify a survey that was assigned to you personally.') . ' ' . $this->_('Entering the token and pressing OK will open that survey.'));
@@ -267,13 +290,20 @@ class AskAction extends \Gems\Controller\Action
         $this->html->pInfo(
             $this->_('A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive.'), ' ',
             $this->_('The number zero and the letter O are treated as the same; the same goes for the number one and the letter L.')
-            );
+        );
 
         $p = $this->html->p();
-        $lostItem = $this->menu->findAllowedController('ask', 'lost');
-        if ($lostItem) {
-            $p->append($lostItem->toActionLink($this->request), ' ');
+
+        try {
+            $lostUrl = $this->getActionUrl('lost');
+            $p->append(\Gems\Html::actionLink($lostUrl, $this->_('Token lost?')), ' ');
+        } catch(RouteNotFoundException $exception) {
         }
+    }
+
+    protected function forward(string $action): void
+    {
+        $this->redirectUrl = $this->getActionUrl($action);
     }
 
     /**
@@ -291,9 +321,9 @@ class AskAction extends \Gems\Controller\Action
             if ($this->tokenId) {
                 // There is a token but is incorrect
                 $this->addMessage(sprintf(
-                        $this->_('The token %s does not exist (any more).'),
-                        strtoupper($this->tokenId)
-                        ));
+                    $this->_('The token %s does not exist (any more).'),
+                    strtoupper($this->tokenId)
+                ));
             }
             $this->forward('index');
             return;
@@ -307,11 +337,15 @@ class AskAction extends \Gems\Controller\Action
         /****************************
          * Update open tokens first *
          ****************************/
+
+        $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+
         $this->tracker->processCompletedTokens(
-                $this->token->getRespondentId(),
-                $this->token->getChangedBy(),
-                $this->token->getOrganizationId()
-                );
+            $session,
+            $this->token->getRespondentId(),
+            $this->token->getChangedBy(),
+            $this->token->getOrganizationId()
+        );
 
         $screen = $this->token->getOrganization()->getTokenAskScreen();
         if ($screen) {
@@ -323,26 +357,49 @@ class AskAction extends \Gems\Controller\Action
         }
         $params['token'] = $this->token;
 
+        $params['requestInfo'] = $this->getRequestInfo();
+
         // Display token when possible
         if ($this->html->snippet($this->forwardSnippets, $params)) {
             return;
         }
 
         // Snippet had nothing to display, because of an answer
-        if ($this->getRequest()->getActionName() == 'return') {
+        if ($this->requestHelper->getActionName() == 'return') {
             $this->addMessage(sprintf(
-                    $this->_('Thank you for answering. At the moment we have no further surveys for you to take.'),
-                    strtoupper($this->tokenId)
-                    ));
+                $this->_('Thank you for answering. At the moment we have no further surveys for you to take.'),
+                strtoupper($this->tokenId)
+            ));
         } else {
             $this->addMessage(sprintf(
-                    $this->_('The survey for token %s has been answered and no further surveys are open.'),
-                    strtoupper($this->tokenId)
-                    ));
+                $this->_('The survey for token %s has been answered and no further surveys are open.'),
+                strtoupper($this->tokenId)
+            ));
         }
 
         // Do not enter a loop!! Reroute!
         $this->_reroute(array('controller' => 'ask', 'action' => 'index'), true);
+    }
+
+    protected function getActionUrl(string $action): string
+    {
+        $currentRoute = $this->requestHelper->getRouteResult();
+        $currentRouteName = $currentRoute->getMatchedRouteName();
+        $routeParts = explode('.', $currentRouteName);
+        array_pop($routeParts);
+        $routeParts[] = $action;
+
+        $newRouteName = join('.', $routeParts);
+        $newRouteInfo = $this->routeHelper->getRoute($newRouteName);
+        $newRouteParams = $this->routeHelper->getRouteParamsFromKnownParams($newRouteInfo, $currentRoute->getMatchedParams());
+
+        return $this->routeHelper->getRouteUrl($newRouteName, $newRouteParams);
+    }
+
+    public function getRequestInfo(): \MUtil\Request\RequestInfo
+    {
+        $factory = new \MUtil\Request\RequestInfoFactory($this->request);
+        return $factory->getRequestInfo();
     }
 
     /**
@@ -360,19 +417,17 @@ class AskAction extends \Gems\Controller\Action
         // Make sure to return to the forward screen
         $this->currentUser->setSurveyReturn();
 
-        $request = $this->getRequest();
-        $tracker = $this->loader->getTracker();
-        $form    = $tracker->getAskTokenForm(array(
+        $form    = $this->tracker->getAskTokenForm(array(
             'displayOrder' => array('element', 'description', 'errors'),
             'labelWidthFactor' => 0.8
-            ));
+        ));
 
-        if ($request->isPost() && $form->isValid($request->getParams(), false)) {
-            $this->forward('forward');
+        if ($this->requestHelper->isPost() && $form->isValid($this->request->getParsedBody(), false)) {
+            $this->forwardAction();
             return;
         }
 
-        $form->populate($request->getParams());
+        $form->populate($this->request->getParsedBody());
         $this->displayTokenForm($form);
     }
 
@@ -407,14 +462,14 @@ class AskAction extends \Gems\Controller\Action
             $this->forward('resume-later');
             return;
         }
-        
+
         if ($url = $this->token->getReturnUrl()) {
             // Check for completed tokens
             $this->tracker->processCompletedTokens(
-                    $this->token->getRespondentId(),
-                    $this->token->getChangedBy(),
-                    $this->token->getOrganizationId()
-                    );
+                $this->token->getRespondentId(),
+                $this->token->getChangedBy(),
+                $this->token->getOrganizationId()
+            );
 
             // Redirect at once, might be another site url
             header('Location: ' . $url);
@@ -442,7 +497,7 @@ class AskAction extends \Gems\Controller\Action
 
         $this->_reroute($parameters, true);
     }
-    
+
     /**
      * Duplicate of to-survey to enable separate rights
      */
@@ -474,9 +529,9 @@ class AskAction extends \Gems\Controller\Action
 
         try {
             $url  = $this->token->getUrl(
-                    $language,
-                    $this->currentUser->getUserId() ? $this->currentUser->getUserId() : $this->token->getRespondentId()
-                    );
+                $language,
+                $this->currentUser->getUserId() ? $this->currentUser->getUserId() : $this->token->getRespondentId()
+            );
 
             /************************
              * Optional user logout *
@@ -491,9 +546,9 @@ class AskAction extends \Gems\Controller\Action
 
         } catch (\Gems\Tracker\Source\SurveyNotFoundException $e) {
             $this->addMessage(sprintf(
-                    $this->_('The survey for token %s is no longer active.'),
-                    strtoupper($this->tokenId)
-                    ));
+                $this->_('The survey for token %s is no longer active.'),
+                strtoupper($this->tokenId)
+            ));
 
             // Default option
             $this->forward('index');

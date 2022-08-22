@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Ask;
 
+use Gems\MenuNew\RouteHelper;
+
 /**
  * Show a single button for an unanswered survey or nothing.
  *
@@ -25,6 +27,11 @@ namespace Gems\Snippets\Ask;
 class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 {
     protected $config;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      * Show this snippet show a thank you screen when there are no more tokens to answer?
@@ -80,9 +87,9 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
         }
 
         $delay = $this->getAskDelay();
-        $href  = $this->getTokenHref($this->showToken);
-        $url   = $href->render($view);
-        
+
+        $url = $this->routeHelper->getRouteUrl('ask.to-survey', ['id' => $this->showToken->getTokenId()]);
+
         switch ($delay) {
             case 0:
                 // Redirect at once
@@ -107,16 +114,16 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
         if ($this->wasAnswered) {
             $html->pInfo(sprintf(
-                             $this->_('Thank you for answering the "%s" survey.'),
-                             $this->getSurveyName($this->token)));
+                $this->_('Thank you for answering the "%s" survey.'),
+                $this->getSurveyName($this->token)));
             $html->pInfo($this->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
                 $html->pInfo()->bbcode($welcome);
             }
             $html->pInfo(sprintf(
-                             $this->_('Please click the button below to answer the survey for token %s.'),
-                             strtoupper($this->showToken->getTokenId())));
+                $this->_('Please click the button below to answer the survey for token %s.'),
+                strtoupper($this->showToken->getTokenId())));
         }
         if ($delay > 0) {
             $html->pInfo(sprintf($this->plural(
@@ -126,7 +133,7 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
         }
 
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $buttonDiv->actionLink($href, $this->getSurveyName($this->showToken));
+        $buttonDiv->actionLink($url, $this->getSurveyName($this->showToken));
 
         $buttonDiv->append(' ');
         $buttonDiv->append($this->formatDuration($this->showToken->getSurvey()->getDuration()));
@@ -157,21 +164,21 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
     /**
      * Count the number of other surveys not yet answered
-     * 
+     *
      * @param \Gems\Tracker\Token $token
      * @return int
      */
     protected function getOtherTokenCountUnanswered(\Gems\Tracker\Token $token)
     {
         $count = $token->getTokenCountUnanswered();
-        
+
         // In case of null
         return $count ? $count : 0;
     }
 
     /**
      * Allow for overruling
-     * 
+     *
      * @param \Gems\Tracker\Token $token
      * @return string
      */
