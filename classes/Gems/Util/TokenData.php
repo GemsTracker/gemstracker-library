@@ -338,7 +338,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
             $routeName = 'respondent.tracks.answer';
-            $label = $this->_('Answer');
+            $label = $this->_('Answers');
 
             $link = Html::actionLink($this->routeHelper->getRouteUrl($routeName, [
                 'id' => $tokenId,
@@ -391,7 +391,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
             if ($staffToken) {
-                $routeName = 'respondent.tracks.answer';
+                $routeName = 'ask.take';
                 $label = $this->_('Fill in');
 
                 if ('P' == $tokenStatus) {
@@ -426,12 +426,17 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     public function getTokenAskButtonForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $forceButton = false, $keepCaps = false)
     {
         if (! $this->currentUser->hasPrivilege('pr.ask')) {
-            return null;
+            //return null;
         }
 
         if ($forceButton) {
             return \MUtil\Lazy::method($this, 'getTokenAskButton',
-                $bridge->getLazy('gto_id_token'), $bridge->getLazy('token_status'), true, $keepCaps
+                $bridge->getLazy('gr2o_patient_nr'),
+                $bridge->getLazy('gto_id_organization'),
+                $bridge->getLazy('gto_id_token'),
+                $bridge->getLazy('token_status'),
+                true,
+                $keepCaps
             );
         }
 
@@ -537,7 +542,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     public function getTokenEmailLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge)
     {
         if (! $this->currentUser->hasPrivilege($this->_getEmailMenuItem()->getPrivilege())) {
-            return null;
+            //return null;
         }
 
         return \MUtil\Lazy::method($this, 'getTokenEmailLink',

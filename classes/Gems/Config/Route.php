@@ -207,11 +207,11 @@ class Route
                 controllerClass: \Gems\Actions\TrackAction::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
-                    ...$this->defaultPages,
+                    'index',
+                    'create',
                     'view',
                 ],
                 parameterRoutes: [
-                    ...$this->defaultParameterRoutes,
                     'create',
                     'view',
                 ],
@@ -240,6 +240,29 @@ class Route
                 ],
                 parameters: [
                     \Gems\Model::RESPONDENT_TRACK => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
+                controllerClass: \Gems\Actions\TrackAction::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                pages: [
+                    'answer',
+                    'delete',
+                    'edit',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'answer',
+                    'delete',
+                    'edit',
+                    'show',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                parameters: [
+                    'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.tokens',

@@ -104,7 +104,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
             $bridge->tr();
             $bridge->tdh($this->_('Token copied from'));
             $bridge->td(array('colspan' => 2, 'skiprowclass' => true))
-                    ->a([\MUtil\Model::REQUEST_ID => $copiedFrom], $copiedFrom);
+                ->a([\MUtil\Model::REQUEST_ID => $copiedFrom], $copiedFrom);
         }
         $copiedTo = $this->token->getCopiedTo();
         if ($copiedTo) {
@@ -121,21 +121,21 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         $bridge->tr();
         $bridge->tdh($this->_('Status'));
         $td = $bridge->td(
-                ['colspan' => 2, 'skiprowclass' => true],
-                $tData->getTokenStatusShowForBridge($bridge),
-                ' ',
-                $tData->getTokenStatusDescriptionForBridge($bridge)
-                );
+            ['colspan' => 2, 'skiprowclass' => true],
+            $tData->getTokenStatusShowForBridge($bridge),
+            ' ',
+            $tData->getTokenStatusDescriptionForBridge($bridge)
+        );
 
         // Buttons
         $bridge->gto_in_source;
         $buttons = $links->getActionLinks(true,
-                'ask', 'take',
-                'pdf', 'show',
-                $controller, 'questions',
-                $controller, 'answer',
-                $controller, 'answer-export'
-                );
+            'ask', 'take',
+            'pdf', 'show',
+            $controller, 'questions',
+            $controller, 'answer',
+            $controller, 'answer-export'
+        );
         if (count($buttons)) {
             if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil\Html\HtmlElement)) {
                 if ('a' == $buttons['ask.take']->tagName) {
@@ -252,7 +252,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         $bridge->getRow();
 
         $links = $this->getMenuList();
-        $links->addParameterSources($this->request, $bridge);
+        //$links->addParameterSources($this->request, $bridge);
 
         if ($this->addHeaderGroup($bridge, $model, $links)) {
             $bridge->addMarkerRow();
@@ -316,13 +316,13 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
         $button = $links->getActionLink($this->request->getControllerName(), 'edit', true);
         $bridge->addWithThird(
-                'gto_valid_from_manual',
-                'gto_valid_from',
-                'gto_valid_until_manual',
-                'gto_valid_until',
-                'gto_comment',
-                $button
-                );
+            'gto_valid_from_manual',
+            'gto_valid_from',
+            'gto_valid_until_manual',
+            'gto_valid_until',
+            'gto_comment',
+            $button
+        );
 
         return true;
     }
@@ -335,11 +335,11 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
     {
         $links = $this->menu->getMenuList();
         $links->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addCurrentParent($this->_('Show track'))
-                ->addCurrentSiblings()
-                ->addCurrentChildren()
-                ->showDisabled();
+            ->addByController('track', 'index', $this->_('Show tracks'))
+            ->addCurrentParent($this->_('Show track'))
+            ->addCurrentSiblings()
+            ->addCurrentChildren()
+            ->showDisabled();
 
         // \MUtil\EchoOut\EchoOut::track(array_keys($links->getArrayCopy()));
 

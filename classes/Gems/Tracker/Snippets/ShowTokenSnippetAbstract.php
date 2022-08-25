@@ -115,6 +115,7 @@ abstract class ShowTokenSnippetAbstract extends \MUtil\Snippets\ModelVerticalTab
             $model->set('gto_id_token', 'formatFunction', 'strtoupper');
         }
         $model->setBridgeFor('itemTable', 'ThreeColumnTableBridge');
+        $model->applyParameters(['gto_id_token' => $this->tokenId]);
 
         return $model;
     }

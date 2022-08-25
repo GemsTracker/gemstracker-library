@@ -84,11 +84,11 @@ class AppointmentModel extends \Gems\Model\JoinModel
         parent::__construct('appointments', 'gems__appointments', 'gap');
 
         $this->addTable(
-                'gems__respondent2org',
-                array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization'),
-                'gr2o',
-                false
-                );
+            'gems__respondent2org',
+            array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization'),
+            'gr2o',
+            false
+        );
 
         $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems\Model::ID_TYPE);
         $this->setKeys(array(\Gems\Model::APPOINTMENT_ID => 'gap_id_appointment'));
@@ -103,19 +103,19 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         if ($this->has('gap_id_organization')) {
             $this->addTable(
-                    'gems__organizations',
-                    array('gap_id_organization' => 'gor_id_organization'),
-                    'gor',
-                    false
-                    );
+                'gems__organizations',
+                array('gap_id_organization' => 'gor_id_organization'),
+                'gor',
+                false
+            );
         }
         if ($this->has('gap_id_attended_by')) {
             $this->addLeftTable(
-                    'gems__agenda_staff',
-                    array('gap_id_attended_by' => 'gas_id_staff'),
-                    'gas',
-                    false
-                    );
+                'gems__agenda_staff',
+                array('gap_id_attended_by' => 'gas_id_staff'),
+                'gas',
+                false
+            );
         }
         /*
         if ($this->has('gap_id_referred_by')) {
@@ -126,27 +126,27 @@ class AppointmentModel extends \Gems\Model\JoinModel
         } // */
         if ($this->has('gap_id_activity')) {
             $this->addLeftTable(
-                    'gems__agenda_activities',
-                    array('gap_id_activity' => 'gaa_id_activity'),
-                    'gap',
-                    false
-                    );
+                'gems__agenda_activities',
+                array('gap_id_activity' => 'gaa_id_activity'),
+                'gap',
+                false
+            );
         }
         if ($this->has('gap_id_procedure')) {
             $this->addLeftTable(
-                    'gems__agenda_procedures',
-                    array('gap_id_procedure' => 'gapr_id_procedure'),
-                    'gapr',
-                    false
-                    );
+                'gems__agenda_procedures',
+                array('gap_id_procedure' => 'gapr_id_procedure'),
+                'gapr',
+                false
+            );
         }
         if ($this->has('gap_id_location')) {
             $this->addLeftTable(
-                    'gems__locations',
-                    array('gap_id_location' => 'glo_id_location'),
-                    'glo',
-                    false
-                    );
+                'gems__locations',
+                array('gap_id_location' => 'glo_id_location'),
+                'glo',
+                false
+            );
         }
     }
 
@@ -164,11 +164,11 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         if ($agenda) {
             $this->addColumn(
-                    "CASE WHEN gap_status IN ('" .
-                        implode("', '", $agenda->getStatusKeysInactive()) .
-                        "') THEN 'deleted' ELSE '' END",
-                    'row_class'
-                    );
+                "CASE WHEN gap_status IN ('" .
+                implode("', '", $agenda->getStatusKeysInactive()) .
+                "') THEN 'deleted' ELSE '' END",
+                'row_class'
+            );
 
             $codes = $agenda->getStatusCodesInactive();
             if (isset($codes['CA'])) {
@@ -199,11 +199,11 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'));
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
-                'multiOptions', $agenda->getStatusCodes());
+            'multiOptions', $agenda->getStatusCodes());
 
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                    'formatFunction', [$this, 'showEpisode']);
+                'formatFunction', [$this, 'showEpisode']);
         }
 
         $this->setIfExists('gas_name',              'label', $this->_('With'));
@@ -217,9 +217,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $dels = $this->loader->getAgenda()->getStatusKeysInactiveDbQuoted();
         if ($dels) {
             $this->addColumn(
-                    new \Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "),
-                    'row_class'
-                    );
+                new \Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "),
+                'row_class'
+            );
         }
 
         $this->refreshGroupSettings();
@@ -242,31 +242,31 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $empty      = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gap_admission_time',  'label', $this->_('Appointment'),
-                'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $this->_('dd-mm-yyyy hh:mm'));
+            'dateFormat',  'd-m-Y H:i',
+            'description', $this->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_discharge_time',  'label', $this->_('Discharge'),
-                'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $this->_('dd-mm-yyyy hh:mm'));
+            'dateFormat',  'd-m-Y H:i',
+            'description', $this->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_code',            'label', $this->_('Type'),
-                'multiOptions', $agenda->getTypeCodes());
+            'multiOptions', $agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $this->_('Status'),
-                'multiOptions', $agenda->getStatusCodes());
+            'multiOptions', $agenda->getStatusCodes());
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                    'formatFunction', [$this, 'showEpisode'],
-                    'required', false);
+                'formatFunction', [$this, 'showEpisode'],
+                'required', false);
         }
 
         $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
-                'multiOptions', $empty + $agenda->getHealthcareStaff());
+            'multiOptions', $empty + $agenda->getHealthcareStaff());
         $this->setIfExists('gap_id_referred_by',  'label', $this->_('Referrer'),
-                'multiOptions', $empty + $agenda->getHealthcareStaff());
+            'multiOptions', $empty + $agenda->getHealthcareStaff());
         $this->setIfExists('gap_id_activity',     'label', $this->_('Activities'));
         $this->setIfExists('gap_id_procedure',    'label', $this->_('Procedures'));
         $this->setIfExists('gap_id_location',     'label', $this->_('Location'));
         $this->setIfExists('gap_id_organization', 'label', $this->_('Organization'),
-                'elementClass', 'Exhibitor',
-                'multiOptions', $empty + $dbLookup->getOrganizations());
+            'elementClass', 'Exhibitor',
+            'multiOptions', $empty + $dbLookup->getOrganizations());
         $this->setIfExists('gap_subject',         'label', $this->_('Subject'));
         $this->setIfExists('gap_comment',         'label', $this->_('Comment'));
 
@@ -344,16 +344,16 @@ class AppointmentModel extends \Gems\Model\JoinModel
         // When appointment id is not set, then check for existing instances of
         // this appointment using the source information
         if ((!isset($newValues['gap_id_appointment'])) &&
-                isset($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])) {
+            isset($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])) {
 
             $sql = "SELECT gap_id_appointment
                 FROM gems__appointments
                 WHERE gap_id_in_source = ? AND gap_id_organization = ? AND gap_source = ?";
 
             $id = $this->db->fetchOne(
-                    $sql,
-                    array($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])
-                    );
+                $sql,
+                array($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])
+            );
 
             if ($id) {
                 $newValues['gap_id_appointment'] = $id;
