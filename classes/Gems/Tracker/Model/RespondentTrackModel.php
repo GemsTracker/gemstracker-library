@@ -87,9 +87,11 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         // No need to send all this information to the user
         $this->setCol($this->getItemsFor('table', 'gems__staff'), 'elementClass', 'None');
 
-        // TODO: altkeys implementatie
-        // $this->setKeys($this->_getKeysFor('gems__respondent2track');
-        $this->setKeys($this->_getKeysFor('gems__respondent2org') + $this->_getKeysFor('gems__tracks'));
+        $this->setKeys([
+            \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
+            \MUtil\Model::REQUEST_ID1 => 'gr2o_patient_nr',
+            \MUtil\Model::REQUEST_ID2 => 'gr2t_id_organization',
+        ]);
 
         $this->addColumn(
             "CASE WHEN gsf_id_user IS NULL

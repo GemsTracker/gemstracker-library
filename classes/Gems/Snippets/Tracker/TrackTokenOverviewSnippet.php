@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Model;
+
 /**
  * Snippet for showing the all tokens for a single track for a single patient
  *
@@ -33,10 +35,10 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedFilter = array(
+    protected $_fixedFilter = [
         'gro_active = 1 OR gro_active IS NULL',
         'gsu_active' => 1,
-    );
+    ];
 
     /**
      * Set a fixed model sort.
@@ -45,10 +47,10 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array(
+    protected $_fixedSort = [
             'gto_round_order' => SORT_ASC,
             'gto_created'     => SORT_ASC
-        );
+    ];
 
     /**
      * The respondent2track ID
@@ -134,6 +136,22 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         return $tableContainer;
     }
 
+    protected function getRespondentTrackId(): ?int
+    {
+        if (isset($this->trackData['gr2t_id_respondent_track'])) {
+            return (int) $this->trackData['gr2t_id_respondent_track'];
+        }
+        if (isset($this->trackData['gto_id_respondent_track'])) {
+            return (int) $this->trackData['gto_id_respondent_track'];
+        }
+        $params = $this->requestInfo->getRequestMatchedParams();
+        if (isset($params[Model::RESPONDENT_TRACK])) {
+            return (int) $params[Model::RESPONDENT_TRACK];
+        }
+
+        return null;
+    }
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -148,15 +166,7 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
     public function hasHtmlOutput()
     {
         if (! $this->respondentTrackId) {
-            if (isset($this->trackData['gr2t_id_respondent_track'])) {
-                $this->respondentTrackId = $this->trackData['gr2t_id_respondent_track'];
-
-            } elseif (isset($this->trackData['gto_id_respondent_track'])) {
-                $this->respondentTrackId = $this->trackData['gto_id_respondent_track'];
-
-            } elseif ($this->request && ($respondentTrackId = $this->request->getParam(\Gems\Model::RESPONDENT_TRACK))) {
-                $this->respondentTrackId = $respondentTrackId;
-            }
+            $this->respondentTrackId = $this->getRespondentTrackId();
         }
         if ($this->respondentTrackId) {
             return parent::hasHtmlOutput();
@@ -172,7 +182,7 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
-        $model->setFilter(array('gto_id_respondent_track' => $this->respondentTrackId));
+        $model->setFilter(['gto_id_respondent_track' => $this->respondentTrackId]);
 
         $this->processSortOnly($model);
     }

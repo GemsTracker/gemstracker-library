@@ -11,6 +11,10 @@
 
 namespace Gems\Util;
 
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use MUtil\Model;
+
 /**
  * Class that bundles information on tokens
  *
@@ -39,6 +43,11 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @var \Gems\Menu
      */
     protected $menu;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      *
@@ -325,20 +334,17 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $showAnswers
      * @return \MUtil\Html\AElement
      */
-    public function getTokenAnswerLink($tokenId, $tokenStatus, $keepCaps, $showAnswers = true)
+    public function getTokenAnswerLink($patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps, $showAnswers = true)
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
-            $menuItem = $this->_getAnswerMenuItem();
-            $label    = $menuItem->get('label');
+            $routeName = 'respondent.tracks.answer';
+            $label = $this->_('Answer');
 
-            $link = $menuItem->toActionLink(
-                ($keepCaps ? $label : strtolower($label)),
-                [
-                    'gto_id_token' => $tokenId,
-                    'gto_in_source' => 1,
-                    \Gems\Model::ID_TYPE => 'token',
-                    'show_answers' => $showAnswers,
-                ]);
+            $link = Html::actionLink($this->routeHelper->getRouteUrl($routeName, [
+                'id' => $tokenId,
+                Model::REQUEST_ID1 => $patientNr,
+                Model::REQUEST_ID2 => $organizationId,
+            ]), $label);
 
             if ($link) {
                 $link->title = sprintf($this->_('See answers for token %s'), strtoupper($tokenId));
@@ -359,10 +365,12 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     public function getTokenAnswerLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $keepCaps = false)
     {
         if (! $this->currentUser->hasPrivilege('pr.answer')) {
-            return null;
+            //return null;
         }
 
         return \MUtil\Lazy::method($this, 'getTokenAnswerLink',
+            $bridge->getLazy('gr2o_patient_nr'),
+            $bridge->getLazy('gto_id_organization'),
             $bridge->getLazy('gto_id_token'),
             $bridge->getLazy('token_status'),
             $keepCaps,
@@ -379,24 +387,22 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $keepCaps Keep the capital letters in the label
      * @return \MUtil\Html\AElement
      */
-    public function getTokenAskButton($tokenId, $tokenStatus, $staffToken, $keepCaps)
+    public function getTokenAskButton($patientNr, $organizationId, $tokenId, $tokenStatus, $staffToken, $keepCaps)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
             if ($staffToken) {
-                $menuItem = $this->_getAskMenuItem();
-                $label    = $menuItem->get('label');
+                $routeName = 'respondent.tracks.answer';
+                $label = $this->_('Fill in');
 
                 if ('P' == $tokenStatus) {
                     $label = $this->_('Continue');
                 }
 
-                $link = $menuItem->toActionLink(
-                    ($keepCaps ? $label : strtolower($label)),
-                    [
-                        'gto_id_token' => $tokenId,
-                        'can_be_taken' => 1,
-                        \Gems\Model::ID_TYPE => 'token',
-                    ]);
+                $link = Html::actionLink($this->routeHelper->getRouteUrl($routeName, [
+                    'id' => $tokenId,
+                    Model::REQUEST_ID1 => $patientNr,
+                    Model::REQUEST_ID2 => $organizationId,
+                ]), $label);
 
                 if ($link) {
                     $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
@@ -430,6 +436,8 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
         }
 
         return \MUtil\Lazy::method($this, 'getTokenAskButton',
+            $bridge->getLazy('gr2o_patient_nr'),
+            $bridge->getLazy('gto_id_organization'),
             $bridge->getLazy('gto_id_token'),
             $bridge->getLazy('token_status'),
             $bridge->getLazy('ggp_staff_members'),
@@ -544,24 +552,20 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $plusLabel Show plus instead of label
      * @return \MUtil\Html\AElement
      */
-    public function getTokenShowLink($tokenId, $plusLabel)
+    public function getTokenShowLink($patientNr, $organizationId, $tokenId, $plusLabel)
     {
-        $menuItem = $this->_getShowMenuItem();
+        $routeName = 'respondent.tracks.show';
+        $label = $this->_('Show');
 
         if ($plusLabel) {
-            $link = $menuItem->toActionLink(
-                \MUtil\Html::create()->strong($this->_('+')),
-                [
-                    'gto_id_token' => $tokenId,
-                    \Gems\Model::ID_TYPE => 'token',
-                ]
-            );
-        } else {
-            $link = $menuItem->toActionLinkLower([
-                'gto_id_token' => $tokenId,
-                \Gems\Model::ID_TYPE => 'token',
-            ]);
+            $label = $this->_('+');
         }
+
+        $link = Html::actionLink($this->routeHelper->getRouteUrl($routeName, [
+            Model::REQUEST_ID1 => $patientNr,
+            Model::REQUEST_ID2 => $organizationId,
+            Model::REQUEST_ID => $tokenId,
+        ]), $label);
 
         if ($link) {
             $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
@@ -580,10 +584,15 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
     public function getTokenShowLinkForBridge(\MUtil\Model\Bridge\TableBridgeAbstract $bridge, $plusLabel = true)
     {
         if (! $this->currentUser->hasPrivilege('respondent.track.show')) {
-            return null;
+            //return null;
         }
 
-        return \MUtil\Lazy::method($this, 'getTokenShowLink', $bridge->getLazy('gto_id_token'), $plusLabel);
+        return \MUtil\Lazy::method($this, 'getTokenShowLink',
+            $bridge->getLazy('gr2o_patient_nr'),
+            $bridge->getLazy('gto_id_organization'),
+            $bridge->getLazy('gto_id_token'),
+            $plusLabel
+        );
     }
 
     /**

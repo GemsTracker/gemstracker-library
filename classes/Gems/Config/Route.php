@@ -17,11 +17,35 @@ class Route
     public function __invoke(): array
     {
         return [
+            ...$this->getAskRoutes(),
             ...$this->getRespondentRoutes(),
             ...$this->getOverviewRoutes(),
             ...$this->getProjectRoutes(),
             ...$this->getSetupRoutes(),
             ...$this->getTrackBuilderRoutes(),
+        ];
+    }
+
+    public function getAskRoutes(): array
+    {
+        return [
+            ...$this->createBrowseRoutes(baseName: 'ask',
+                controllerClass: \Gems\Actions\AskAction::class,
+                pages: [
+                    'index',
+                    'forward',
+                    'take',
+                    'to-survey',
+                ],
+                parameterRoutes: [
+                    'forward',
+                    'take',
+                    'to-survey',
+                ],
+                parameters: [
+                    'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                ],
+            ),
         ];
     }
 
@@ -197,6 +221,25 @@ class Route
                 ],
                 parameters: [
                     \Gems\Model::TRACK_ID => '\d+',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
+                controllerClass: \Gems\Actions\TrackAction::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                pages: [
+                    'show-track',
+                    'edit-track',
+                ],
+                parameterRoutes: [
+                    'show-track',
+                    'edit-track',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                parameters: [
+                    \Gems\Model::RESPONDENT_TRACK => '\d+',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.tokens',

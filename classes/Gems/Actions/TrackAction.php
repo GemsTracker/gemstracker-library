@@ -351,7 +351,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippetGeneric',
-        'Tracker\\Buttons\\TrackActionButtonRow',
+        //'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
@@ -985,9 +985,6 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
                     403, null,
                     sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->currentUser->getRole()));
             }
-
-            // Set variables for the menu
-            $token->applyToMenuSource($this->menu->getParameterSource());
 
             return $token;
         }

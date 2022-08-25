@@ -42,6 +42,8 @@ class ModelItemTableSnippetGeneric extends \Gems\Snippets\ModelItemTableSnippetA
      */
     protected function createModel()
     {
+        $this->model->applyParameters($this->requestInfo->getRequestMatchedParams());
+
         return $this->model;
     }
 }
