@@ -5,10 +5,14 @@ namespace Gems\Site;
 use Gems\Cache\HelperAdapter;
 use Gems\Model\SiteModel;
 use Gems\Model\Transform\TranslateDatabaseFields;
+use Gems\Util\OrganizationUtil;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Hydrator\ReflectionHydrator;
+use MUtil\Model\ModelAbstract;
+use MUtil\Model\TableModel;
 use MUtil\Model\Transform\TranslateFieldNames;
+use MUtil\Model\Type\ConcatenatedRow;
 use Psr\Http\Message\ServerRequestInterface;
 
 class SiteUtil
@@ -35,7 +39,9 @@ class SiteUtil
 
     protected array $sites;
 
-    public function __construct(Adapter $db, HelperAdapter $cache, array $config)
+    protected OrganizationUtil $organizatonUtil;
+
+    public function __construct(Adapter $db, HelperAdapter $cache, OrganizationUtil $organizatonUtil, array $config)
     {
         $this->db = $db;
         $this->cache = $cache;
@@ -43,6 +49,7 @@ class SiteUtil
             $this->config = $config['sites'];
         }
         $this->sites = $this->getSites();
+        $this->organizatonUtil = $organizatonUtil;
     }
 
     /**
@@ -71,6 +78,16 @@ class SiteUtil
 
         $this->cache->setCacheItem($this->cacheKey, $sites);
         return $sites;
+    }
+
+    public function getNamedOrganizationsFromSiteUrl(SiteUrl $siteUrl): array
+    {
+        $siteOrganizations = $siteUrl->getOrganizations();
+        if (count($siteOrganizations) === 0) {
+            return [];
+        }
+        $namedSites = $this->organizatonUtil->getOrganizationsForLogin();
+        return array_intersect_key($namedSites, array_flip($siteOrganizations));
     }
 
     public function getSiteFromUrl(string $url): ?SiteUrl
@@ -120,10 +137,10 @@ class SiteUtil
         return [];
     }
 
-    protected function getSitesModel(): \MUtil_Model_ModelAbstract
+    protected function getSitesModel(): ModelAbstract
     {
-        $model = new \MUtil_Model_TableModel('gems__sites');
-        $ct = new \MUtil_Model_Type_ConcatenatedRow(static::ORG_SEPARATOR, ', ', true);
+        $model = new TableModel('gems__sites');
+        $ct = new ConcatenatedRow(static::ORG_SEPARATOR, ', ', true);
         $ct->apply($model, 'gsi_organizations');
         $model->addTransformer(new TranslateFieldNames($this->databaseFieldTranslations));
 
