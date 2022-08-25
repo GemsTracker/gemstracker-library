@@ -461,6 +461,7 @@ class ConfigProvider
             'gems' => [__DIR__ . '/../../templates/Auth'],
             'paths' => [
                 'menu' => [__DIR__ . '/../../templates/menu'],
+                'gems' => [__DIR__ . '/../../templates/gems'],
             ],
         ];
     }

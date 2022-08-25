@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GemsTracker 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/style/carefacts.css">
+</head>
+<body>
+<div id="container" class="container-fluid">
+    <header>
+        <div class="logo"></div>
+    </header>
+
+    <div class="content">
+        <div id="main-container" class="include-menu">
+            <div id="main" class="container-fluid">
+                {% if flashMessages is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <div id="menu" role="navigation">
+            {% if menuHtml is defined %}
+                {{ menuHtml }}
+            {% endif %}
+            {% if mainMenu is defined %}
+                {{ mainMenu.renderMenu()|raw }}
+            {% endif %}
+        </div>
+        <footer>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

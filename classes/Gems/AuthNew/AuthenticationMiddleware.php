@@ -3,6 +3,8 @@
 namespace Gems\AuthNew;
 
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router\RouterInterface;
+use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -11,21 +13,29 @@ use Psr\Http\Server\RequestHandlerInterface;
 class AuthenticationMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly AuthenticationService $authenticationService,
-        private readonly TfaService $tfaService,
+        private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly RouterInterface $router,
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (!$this->authenticationService->isLoggedIn()) {
-            throw new \Exception('Redirect to login');
-            return new RedirectResponse(); // to login page
+        $session = $request->getAttribute(SessionInterface::class);
+
+        if ($session === null) {
+            throw new \LogicException('Session middleware should be executed before authentication middleware');
         }
 
-        $user = $this->authenticationService->getLoggedInUser();
+        $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-        if ($this->tfaService->requiresAuthentication($user)) {
+        if (!$authenticationService->isLoggedIn()) {
+            return new RedirectResponse($this->router->generateUri('login'));
+        }
+
+        $user = $authenticationService->getLoggedInUser();
+
+        $tfaService = new TfaService($session, $authenticationService, $request);
+        if ($tfaService->requiresAuthentication($user)) {
             throw new \Exception('Redirect to tfa');
             return new RedirectResponse(); // to tfa page
         }

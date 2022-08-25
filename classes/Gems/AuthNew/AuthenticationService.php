@@ -10,7 +10,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AuthenticationService
 {
-
     public function __construct(
         private readonly SessionInterface $session,
         private readonly UserLoader $userLoader,

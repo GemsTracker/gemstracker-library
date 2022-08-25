@@ -4,11 +4,16 @@ namespace Gems\Config;
 
 use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\LoginHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Session\SessionMiddleware;
 
 class Route
 {
@@ -17,12 +22,25 @@ class Route
     public function __invoke(): array
     {
         return [
+            ...$this->getLoggedOutRoutes(),
             ...$this->getAskRoutes(),
             ...$this->getRespondentRoutes(),
             ...$this->getOverviewRoutes(),
             ...$this->getProjectRoutes(),
             ...$this->getSetupRoutes(),
             ...$this->getTrackBuilderRoutes(),
+        ];
+    }
+
+    public function getLoggedOutRoutes(): array
+    {
+        return [
+            [
+                'name' => 'login',
+                'path' => '/login',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [LocaleMiddleware::class, SessionMiddleware::class, FlashMessageMiddleware::class, LoginHandler::class],
+            ],
         ];
     }
 

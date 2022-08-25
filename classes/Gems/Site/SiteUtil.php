@@ -83,10 +83,10 @@ class SiteUtil
     public function getNamedOrganizationsFromSiteUrl(SiteUrl $siteUrl): array
     {
         $siteOrganizations = $siteUrl->getOrganizations();
-        if (count($siteOrganizations) === 0) {
-            return [];
-        }
         $namedSites = $this->organizatonUtil->getOrganizationsForLogin();
+        if (count($siteOrganizations) === 0) {
+            return $namedSites;
+        }
         return array_intersect_key($namedSites, array_flip($siteOrganizations));
     }
 
@@ -130,7 +130,7 @@ class SiteUtil
         if (isset($this->config['allowed'])) {
             return $this->config['allowed'];
         }
-        if (isset($config['useDatabase']) && $config['useDatabase'] === true) {
+        if (isset($this->config['useDatabase']) && $this->config['useDatabase'] === true) {
             return $this->getDatabaseSites();
         }
 
@@ -141,7 +141,7 @@ class SiteUtil
     {
         $model = new TableModel('gems__sites');
         $ct = new ConcatenatedRow(static::ORG_SEPARATOR, ', ', true);
-        $ct->apply($model, 'gsi_organizations');
+        $ct->apply($model, 'organizations');
         $model->addTransformer(new TranslateFieldNames($this->databaseFieldTranslations));
 
         return $model;

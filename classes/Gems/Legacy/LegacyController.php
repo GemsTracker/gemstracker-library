@@ -94,7 +94,7 @@ class LegacyController implements RequestHandlerInterface
                 $headers = [];
 
                 if ($this->template) {
-                    return new HtmlResponse($this->template->render('app::legacy-view', $data), $statusCode, $headers);
+                    return new HtmlResponse($this->template->render('gems::legacy-view', $data), $statusCode, $headers);
                 }
 
                 return new HtmlResponse($content, $statusCode, $headers);
