@@ -89,6 +89,7 @@ class ConfigProvider
             'roles'         => $this->getRoles(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
+            'sites'         => $this->getSitesSettings(),
             'templates'     => $this->getTemplates(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
@@ -452,6 +453,13 @@ class ConfigProvider
                     'X-Frame-Options' => 'deny',
                 ]
             ],
+        ];
+    }
+
+    protected function getSitesSettings(): array
+    {
+        return [
+            'useDatabase' => true,
         ];
     }
 

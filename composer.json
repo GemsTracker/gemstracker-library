@@ -95,7 +95,8 @@
         "symfony/intl": "^6.1",
         "mezzio/mezzio-session-ext": "^1.12",
         "doctrine/dbal": "^3.4",
-        "doctrine/orm": "^2.13"
+        "doctrine/orm": "^2.13",
+        "laminas/laminas-filter": "^2.17"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",

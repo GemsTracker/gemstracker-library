@@ -7,6 +7,7 @@ namespace Gems\AuthNew;
 use Gems\Site\SiteUtil;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Validator\Digits;
 use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
@@ -22,6 +23,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginHandler implements RequestHandlerInterface
 {
+    private FlashMessagesInterface $flash;
+    private array $organizations;
+
     public function __construct(
         private readonly TemplateRendererInterface $template,
         private readonly TranslatorInterface $translator,
@@ -33,15 +37,14 @@ class LoginHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+
+        $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
+        $this->organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
+
         if ($request->getMethod() === 'POST') {
             return $this->handlePost($request);
         }
-
-        /** @var FlashMessagesInterface $flashMessenger */
-        $flashMessenger = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-
-        $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
-        $organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
 
         $data = [
             'trans' => [
@@ -50,9 +53,9 @@ class LoginHandler implements RequestHandlerInterface
                 'password' => $this->translator->trans('Password'),
                 'login' => $this->translator->trans('Login'),
             ],
-            'organizations' => $organizations,
-            'input' => $flashMessenger->getFlash('login_input'),
-            'errors' => $flashMessenger->getFlash('login_errors'),
+            'organizations' => $this->organizations,
+            'input' => $this->flash->getFlash('login_input'),
+            'errors' => $this->flash->getFlash('login_errors'),
         ];
 
         return new HtmlResponse($this->template->render('gems::login', $data));
@@ -65,13 +68,11 @@ class LoginHandler implements RequestHandlerInterface
 
         $input = $request->getParsedBody();
 
-        $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
-        $organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
-
         $organizationValidation = new ValidatorChain();
         $organizationValidation->attach(new NotEmpty());
+        $organizationValidation->attach(new Digits());
         $organizationValidation->attach(new InArray([
-            'haystack' => array_keys($organizations),
+            'haystack' => array_keys($this->organizations),
         ]));
 
         $notEmptyValidation = new ValidatorChain();
@@ -86,7 +87,7 @@ class LoginHandler implements RequestHandlerInterface
         }
 
         $result = $authenticationService->routedAuthenticate(
-            $input['organization'],
+            (int)$input['organization'],
             $input['username'],
             $input['password'],
         );
@@ -95,20 +96,19 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $this->translator->trans('The provided credentials are invalid'));
         }
 
-        return new RedirectResponse($this->urlHelper->generate('track-builder.source.index'));
+        return new RedirectResponse($this->urlHelper->generate('track-builder.source.index')); // TODO: Which route?
     }
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse
     {
-        /** @var FlashMessagesInterface $flashMessenger */
-        $flashMessenger = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $input = $request->getParsedBody();
 
-        $flashMessenger->flash('login_input', [
+        $this->flash->flash('login_input', [
             'organization' => $input['organization'] ?? null,
             'username' => $input['username'] ?? null,
         ]);
 
-        $flashMessenger->flash('login_errors', [$error]);
+        $this->flash->flash('login_errors', [$error]);
 
         return new RedirectResponse($request->getUri());
     }

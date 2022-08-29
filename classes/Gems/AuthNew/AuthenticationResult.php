@@ -10,14 +10,14 @@ class AuthenticationResult
     public const FAILURE = 0;
 
     public function __construct(
-        private readonly AuthenticationAdapterType $type,
+        private readonly ?AuthenticationAdapterType $type,
         private readonly int $code,
         private readonly ?User $user,
         private readonly array $messages = []
     ) {
     }
 
-    public function getAuthenticationType(): AuthenticationAdapterType
+    public function getAuthenticationType(): ?AuthenticationAdapterType
     {
         return $this->type;
     }

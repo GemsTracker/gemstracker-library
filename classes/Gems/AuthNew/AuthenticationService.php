@@ -25,6 +25,10 @@ class AuthenticationService
             $organizationId,
         );
 
+        if ($user === null || $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) { // TODO: Remove NOLOGIN
+            return new AuthenticationResult(null, AuthenticationResult::FAILURE, null);
+        }
+
         $adapter = match($user->getUserDefinitionClass()) {
             UserLoader::USER_STAFF => GemsTrackerAuthentication::fromUser($this->db, $user, $password),
         };

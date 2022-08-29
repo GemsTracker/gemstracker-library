@@ -8,7 +8,6 @@ use Laminas\Db\Adapter\Adapter;
 class TotpTfa implements TfaAdapterInterface
 {
     public function __construct(
-        private readonly Adapter $db,
         private readonly User $user,
         private readonly string $passcode,
     ) {

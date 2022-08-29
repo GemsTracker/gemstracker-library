@@ -6,6 +6,7 @@ use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\LoginHandler;
+use Gems\AuthNew\TfaLoginHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -13,6 +14,7 @@ use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Session\SessionMiddleware;
 
 class Route
@@ -36,10 +38,26 @@ class Route
     {
         return [
             [
-                'name' => 'login',
+                'name' => 'auth.login',
                 'path' => '/login',
                 'allowed_methods' => ['GET', 'POST'],
-                'middleware' => [LocaleMiddleware::class, SessionMiddleware::class, FlashMessageMiddleware::class, LoginHandler::class],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'tfa.login',
+                'path' => '/tfa',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    TfaLoginHandler::class,
+                ],
             ],
         ];
     }

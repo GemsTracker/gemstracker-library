@@ -57,15 +57,16 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
         $select = $sql->select()
             ->columns(['gup_password'])
             ->from('gems__user_passwords')
-            ->where('gup_id_user = ?', $this->user->getUserLoginId());
+            ->where(['gup_id_user' => $this->user->getUserLoginId()]);
 
         $resultSet = $sql->prepareStatementForSqlObject($select)->execute();
+        $resultSet->buffer();
 
         if (count($resultSet) !== 1) {
             return $this->makeResult(AuthenticationResult::FAILURE);
         }
 
-        $passwordHash = iterator_to_array($resultSet)[0][0];
+        $passwordHash = iterator_to_array($resultSet)[1]['gup_password'];
 
         if (!password_verify($this->password, $passwordHash)) {
             return $this->makeResult(AuthenticationResult::FAILURE);
