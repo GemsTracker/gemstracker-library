@@ -22,6 +22,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TfaLoginHandler implements RequestHandlerInterface
 {
     private FlashMessagesInterface $flash;
+    private AuthenticationService $authenticationService;
+    private TfaService $tfaService;
 
     public function __construct(
         private readonly TemplateRendererInterface $template,
@@ -34,6 +36,14 @@ class TfaLoginHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $session = $request->getAttribute(SessionInterface::class);
+        $this->authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
+        $user = $this->authenticationService->getLoggedInUser();
+        $this->tfaService = new TfaService($session, $this->authenticationService, $request);
+
+        if ($this->tfaService->isLoggedIn($user)) {
+            return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
+        }
 
         if ($request->getMethod() === 'POST') {
             return $this->handlePost($request);
@@ -53,10 +63,8 @@ class TfaLoginHandler implements RequestHandlerInterface
     private function handlePost(ServerRequestInterface $request): ResponseInterface
     {
         $session = $request->getAttribute(SessionInterface::class);
-        $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
-        $user = $authenticationService->getLoggedInUser();
 
-        $tfaService = new TfaService($session, $authenticationService, $request);
+        $user = $this->authenticationService->getLoggedInUser();
 
         $input = $request->getParsedBody();
 
@@ -68,7 +76,7 @@ class TfaLoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $this->translator->trans('Please provide the 6-digit TFA code'));
         }
 
-        $result = $tfaService->authenticate(new TotpTfa($user, $input['tfa_code']));
+        $result = $this->tfaService->authenticate(new TotpTfa($user, $input['tfa_code']));
 
         if (!$result->isValid()) {
             return $this->redirectBack($request, $this->translator->trans('The provided TFA code is invalid'));

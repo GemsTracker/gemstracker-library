@@ -7,6 +7,7 @@ use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\AuthNew\LoginHandler;
+use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\AuthNew\TfaLoginHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
@@ -55,6 +56,7 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
                     LoginHandler::class,
                 ],
             ],
