@@ -5,6 +5,7 @@ namespace Gems\Config;
 use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\AuthNew\LoginHandler;
 use Gems\AuthNew\TfaLoginHandler;
 use Gems\Legacy\LegacyController;
@@ -13,24 +14,33 @@ use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Util\RouteGroupTrait;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Session\SessionMiddleware;
 
 class Route
 {
     use ModelSnippetActionRouteHelpers;
+    use RouteGroupTrait;
 
     public function __invoke(): array
     {
         return [
             ...$this->getLoggedOutRoutes(),
-            ...$this->getAskRoutes(),
-            ...$this->getRespondentRoutes(),
-            ...$this->getOverviewRoutes(),
-            ...$this->getProjectRoutes(),
             ...$this->getSetupRoutes(),
-            ...$this->getTrackBuilderRoutes(),
+            ...$this->routeGroup([
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    AuthenticationMiddleware::class,
+                ],
+            ], [
+                ...$this->getAskRoutes(),
+                ...$this->getRespondentRoutes(),
+                ...$this->getOverviewRoutes(),
+                ...$this->getProjectRoutes(),
+                ...$this->getTrackBuilderRoutes(),
+            ]),
         ];
     }
 
@@ -56,6 +66,7 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
                     TfaLoginHandler::class,
                 ],
             ],

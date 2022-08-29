@@ -74,7 +74,7 @@ class TfaLoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $this->translator->trans('The provided TFA code is invalid'));
         }
 
-        return new RedirectResponse($this->urlHelper->generate('track-builder.source.index')); // TODO: Which route?
+        return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
     }
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse

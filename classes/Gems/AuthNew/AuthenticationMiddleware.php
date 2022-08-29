@@ -3,6 +3,7 @@
 namespace Gems\AuthNew;
 
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,6 +13,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
+    private const LOGIN_INTENDED_URL_SESSION_KEY = 'login_intended_url';
+
+    protected const CHECK_TFA = true;
+
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly RouterInterface $router,
@@ -29,18 +34,44 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
         if (!$authenticationService->isLoggedIn()) {
-            return new RedirectResponse($this->router->generateUri('auth.login'));
+            return $this->redirectWithIntended($request, $this->router->generateUri('auth.login'));
         }
 
         $user = $authenticationService->getLoggedInUser();
 
-        $tfaService = new TfaService($session, $authenticationService, $request);
-        if ($tfaService->requiresAuthentication($user)) {
-            return new RedirectResponse($this->router->generateUri('tfa.login'));
+        if (static::CHECK_TFA) {
+            $tfaService = new TfaService($session, $authenticationService, $request);
+            if ($tfaService->requiresAuthentication($user)) {
+                return $this->redirectWithIntended($request, $this->router->generateUri('tfa.login'));
+            }
+
+            $request = $request->withAttribute('current_user', $user);
+        } else {
+            $request = $request->withAttribute('current_user_without_tfa', $user);
         }
 
-        $request = $request->withAttribute('current_user', $user);
-
         return $handler->handle($request);
+    }
+
+    private function redirectWithIntended(ServerRequestInterface $request, string $url): RedirectResponse
+    {
+        $session = $request->getAttribute(SessionInterface::class);
+
+        $session->set(self::LOGIN_INTENDED_URL_SESSION_KEY, (string)$request->getUri());
+
+        return new RedirectResponse($url);
+    }
+
+    public static function redirectToIntended(SessionInterface $session, UrlHelper $urlHelper): RedirectResponse
+    {
+        if ($session->has(self::LOGIN_INTENDED_URL_SESSION_KEY)) {
+            $loginRedirect = $session->get(self::LOGIN_INTENDED_URL_SESSION_KEY);
+
+            $session->unset(self::LOGIN_INTENDED_URL_SESSION_KEY);
+
+            return new RedirectResponse($loginRedirect);
+        }
+
+        return new RedirectResponse($urlHelper->generate('track-builder.source.index')); // TODO: Which route?
     }
 }
