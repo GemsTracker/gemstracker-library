@@ -46,6 +46,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             }
 
             $request = $request->withAttribute('current_user', $user);
+            $request = $request->withAttribute('current_identity', $authenticationService->getIdentity());
         } else {
             $request = $request->withAttribute('current_user_without_tfa', $user);
         }

@@ -6,6 +6,7 @@ use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\AuthNew\EmbedLoginHandler;
 use Gems\AuthNew\LoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\AuthNew\TfaLoginHandler;
@@ -70,6 +71,17 @@ class Route
                     FlashMessageMiddleware::class,
                     AuthenticationWithoutTfaMiddleware::class,
                     TfaLoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'embed.login',
+                'path' => '/embed/login',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    AuthenticationMiddleware::class,
+                    EmbedLoginHandler::class,
                 ],
             ],
         ];

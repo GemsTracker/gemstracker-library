@@ -26,7 +26,7 @@ class AuthenticationService
         );
 
         if ($user === null || $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) { // TODO: Remove NOLOGIN
-            return new AuthenticationResult(null, AuthenticationResult::FAILURE, null);
+            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
         }
 
         $adapter = match($user->getUserDefinitionClass()) {
@@ -41,12 +41,11 @@ class AuthenticationService
         $result = $adapter->authenticate();
 
         if ($result->isValid()) {
-            $user = $result->getUser();
+            $identity = $result->getIdentity();
 
             $this->session->set('auth_data', [
-                'auth_type' => $result->getAuthenticationType()->value,
-                'login_name' => $user->getLoginName(),
-                'organization_id' => $user->getCurrentOrganizationId(),
+                'auth_type' => $identity::class,
+                'auth_params' => $identity->toArray(),
             ]);
 
             $event = new AuthenticatedEvent($result);
@@ -58,36 +57,36 @@ class AuthenticationService
         return $result;
     }
 
+    public function getIdentity(): ?AuthenticationIdentityInterface
+    {
+        $authData = $this->session->get('auth_data');
+        if ($authData === null) {
+            return null;
+        }
+
+        $type = AuthenticationIdentityType::from($authData['auth_type']);
+        /** @var class-string<AuthenticationIdentityInterface> $class */
+        $class = $type->value;
+        return $class::fromArray($authData['auth_params']);
+    }
+
     public function isLoggedIn(): bool
     {
-        $auth_data = $this->session->get('auth_data');
-
-        return $auth_data !== null && !empty($auth_data['login_name']);
+        return $this->getIdentity() !== null;
     }
 
     public function getLoggedInUser(): ?User
     {
-        $auth_data = $this->session->get('auth_data');
+        $identity = $this->getIdentity();
 
-        if ($auth_data === null) {
+        if ($identity === null) {
             return null; //new NotLoggedInUser();
         }
 
         return $this->userLoader->getUser(
-            $auth_data['login_name'],
-            $auth_data['organization_id'],
+            $identity->getLoginName(),
+            $identity->getOrganizationId(),
         );
-    }
-
-    public function getAuthenticationType(): ?AuthenticationAdapterType
-    {
-        $auth_data = $this->session->get('auth_data');
-
-        if ($auth_data === null) {
-            return null;
-        }
-
-        return AuthenticationAdapterType::from($auth_data['auth_type']);
     }
 
     public function logout(): void

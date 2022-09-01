@@ -37,8 +37,8 @@ class TfaService
 
     public function requiresAuthentication(User $user): bool
     {
-        $authType = $this->authenticationService->getAuthenticationType();
-        if ($authType === AuthenticationAdapterType::Epd) {
+        $identity = $this->authenticationService->getIdentity();
+        if ($identity instanceof EmbedIdentity) {
             return false;
         }
 

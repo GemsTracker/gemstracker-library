@@ -44,7 +44,12 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
 
     private function makeResult(int $code, array $messages = []): AuthenticationResult
     {
-        return new AuthenticationResult(AuthenticationAdapterType::GemsTracker, $code, $this->user, $messages);
+        $identity = null;
+        if ($this->user) {
+            $identity = new GemsTrackerIdentity($this->user->getLoginName(), $this->user->getCurrentOrganizationId());
+        }
+
+        return new GemsTrackerAuthenticationResult($code, $identity, $messages, $this->user);
     }
 
     public function authenticate(): AuthenticationResult
@@ -71,6 +76,8 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
         if (!password_verify($this->password, $passwordHash)) {
             return $this->makeResult(AuthenticationResult::FAILURE);
         }
+
+        // TODO: Check active?
 
         return $this->makeResult(AuthenticationResult::SUCCESS);
     }

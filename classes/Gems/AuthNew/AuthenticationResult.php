@@ -2,24 +2,16 @@
 
 namespace Gems\AuthNew;
 
-use Gems\User\User;
-
-class AuthenticationResult
+abstract class AuthenticationResult
 {
     public const SUCCESS = 1;
     public const FAILURE = 0;
 
     public function __construct(
-        private readonly ?AuthenticationAdapterType $type,
         private readonly int $code,
-        private readonly ?User $user,
+        private readonly ?AuthenticationIdentityInterface $identity,
         private readonly array $messages = []
     ) {
-    }
-
-    public function getAuthenticationType(): ?AuthenticationAdapterType
-    {
-        return $this->type;
     }
 
     public function isValid(): bool
@@ -32,9 +24,9 @@ class AuthenticationResult
         return $this->code;
     }
 
-    public function getUser(): ?User
+    public function getIdentity(): ?AuthenticationIdentityInterface
     {
-        return $this->user;
+        return $this->identity;
     }
 
     public function getMessages(): array
