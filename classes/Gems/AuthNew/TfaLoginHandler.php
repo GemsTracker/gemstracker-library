@@ -41,7 +41,7 @@ class TfaLoginHandler implements RequestHandlerInterface
         $user = $this->authenticationService->getLoggedInUser();
         $this->tfaService = new TfaService($session, $this->authenticationService, $request);
 
-        if ($this->tfaService->isLoggedIn($user)) {
+        if ($this->tfaService->isLoggedIn($user) || !$this->tfaService->requiresAuthentication($user)) {
             return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
         }
 

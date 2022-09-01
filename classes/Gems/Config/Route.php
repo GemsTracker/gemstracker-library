@@ -80,7 +80,6 @@ class Route
                 'middleware' => [
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
-                    AuthenticationMiddleware::class,
                     EmbedLoginHandler::class,
                 ],
             ],
