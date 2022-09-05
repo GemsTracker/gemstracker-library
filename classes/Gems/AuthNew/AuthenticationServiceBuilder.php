@@ -6,6 +6,7 @@ use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Mezzio\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationServiceBuilder
 {
@@ -13,6 +14,7 @@ class AuthenticationServiceBuilder
         private readonly UserLoader $userLoader,
         private readonly EventDispatcher $eventDispatcher,
         private readonly Adapter $db,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -23,6 +25,7 @@ class AuthenticationServiceBuilder
             $this->userLoader,
             $this->eventDispatcher,
             $this->db,
+            $this->translator,
         );
     }
 }

@@ -90,10 +90,12 @@ class LoginHandler implements RequestHandlerInterface
             (int)$input['organization'],
             $input['username'],
             $input['password'],
+            $request->getServerParams()['REMOTE_ADDR'] ?? null,
         );
 
         if (!$result->isValid()) {
-            return $this->redirectBack($request, $this->translator->trans('The provided credentials are invalid'));
+            $messages = $result->getMessages() ?: [$this->translator->trans('The provided credentials are invalid')];
+            return $this->redirectBack($request, implode(PHP_EOL, $messages));
         }
 
         return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);

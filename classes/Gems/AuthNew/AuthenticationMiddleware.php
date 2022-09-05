@@ -3,6 +3,8 @@
 namespace Gems\AuthNew;
 
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
@@ -10,6 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -20,6 +23,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly RouterInterface $router,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -49,6 +53,21 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $request = $request->withAttribute('current_identity', $authenticationService->getIdentity());
         } else {
             $request = $request->withAttribute('current_user_without_tfa', $user);
+        }
+
+        if (!$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)) {
+            $authenticationService->logout();
+            if (isset($tfaService)) {
+                $tfaService->logout();
+            }
+
+            /** @var FlashMessagesInterface $flash */
+            $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+            $flash?->flash('login_errors', [
+                $this->translator->trans('You are not allowed to login from this location.'),
+            ]);
+
+            return $this->redirectWithIntended($request, $this->router->generateUri('auth.login'));
         }
 
         return $handler->handle($request);

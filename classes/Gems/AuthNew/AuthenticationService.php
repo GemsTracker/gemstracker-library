@@ -7,6 +7,7 @@ use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Mezzio\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationService
 {
@@ -15,11 +16,16 @@ class AuthenticationService
         private readonly UserLoader $userLoader,
         private readonly EventDispatcher $eventDispatcher,
         private readonly Adapter $db,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
-    public function routedAuthenticate(int $organizationId, string $username, string $password): AuthenticationResult
-    {
+    public function routedAuthenticate(
+        int $organizationId,
+        string $username,
+        string $password,
+        string $ipAddress
+    ): AuthenticationResult {
         $user = $this->userLoader->getUser(
             $username,
             $organizationId,
@@ -27,6 +33,12 @@ class AuthenticationService
 
         if ($user === null || $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) { // TODO: Remove NOLOGIN
             return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
+        }
+
+        if (!$user->isAllowedIpForLogin($ipAddress)) {
+            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE, [
+                $this->translator->trans('You are not allowed to login from this location.'),
+            ]);
         }
 
         $adapter = match($user->getUserDefinitionClass()) {

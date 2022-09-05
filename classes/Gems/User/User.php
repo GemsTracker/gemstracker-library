@@ -713,6 +713,29 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Checks whether the user is allowed to log in using the given IP address
+     * according to his group and BASE organization
+     */
+    public function isAllowedIpForLogin(?string $ipAddress): bool
+    {
+        if (empty($ipAddress)) {
+            return false;
+        }
+
+        // Check group list
+        if (!$this->util->isAllowedIP($ipAddress, $this->getAllowedIPRanges() ?? '')) {
+            return false;
+        }
+
+        // Check base organization list
+        if (!$this->util->isAllowedIP($ipAddress, $this->getBaseOrganization()->getAllowedIpRanges() ?? '')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * True when the current url is one where this user is allowed to login.
      *
      * If the url is a fixed organization url and the user is not allowed to
