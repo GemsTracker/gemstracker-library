@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Elsewhere;
 
+use Gems\AuthNew\Adapter\EmbedAuthentication;
+use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
+use Gems\AuthNew\Adapter\EmbedIdentity;
+use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;

@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Elsewhere;
 
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\AuthenticationService;
+use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\AuthNew\TfaService;
+use Gems\AuthNew\TotpTfa;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;

@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew;
 
+use Gems\AuthNew\Adapter\AuthenticationResult;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Insert;

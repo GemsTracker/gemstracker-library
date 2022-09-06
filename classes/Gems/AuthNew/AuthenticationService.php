@@ -2,6 +2,12 @@
 
 namespace Gems\AuthNew;
 
+use Gems\AuthNew\Adapter\AuthenticationAdapterInterface;
+use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
+use Gems\AuthNew\Adapter\AuthenticationIdentityType;
+use Gems\AuthNew\Adapter\AuthenticationResult;
+use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
+use Gems\AuthNew\Elsewhere\AuthenticatedEvent;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;

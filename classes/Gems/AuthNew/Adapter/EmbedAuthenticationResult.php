@@ -1,16 +1,17 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Adapter;
 
 use Gems\User\User;
 
-class GemsTrackerAuthenticationResult extends AuthenticationResult
+class EmbedAuthenticationResult extends AuthenticationResult
 {
     public function __construct(
         int $code,
         ?AuthenticationIdentityInterface $identity,
         array $messages = [],
-        public readonly ?User $user = null,
+        public readonly ?User $systemUser = null,
+        public readonly ?User $deferredUser = null,
     ) {
         parent::__construct(
             $code,

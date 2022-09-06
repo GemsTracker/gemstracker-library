@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Elsewhere;
 
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Site\SiteUtil;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;

@@ -1,7 +1,8 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Elsewhere;
 
+use Gems\AuthNew\Adapter\AuthenticationResult;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class AuthenticatedEvent extends Event

@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew;
 
+use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;

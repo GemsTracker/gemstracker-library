@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Adapter;
 
 use Gems\User\User;
 use Gems\User\UserLoader;

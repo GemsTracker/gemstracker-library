@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthNew\Adapter;
 
 class EmbedIdentity implements AuthenticationIdentityInterface
 {
