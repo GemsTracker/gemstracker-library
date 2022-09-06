@@ -6,6 +6,7 @@ abstract class AuthenticationResult
 {
     public const SUCCESS = 1;
     public const FAILURE = 0;
+    public const DISALLOWED_IP = -1;
 
     public function __construct(
         private readonly int $code,

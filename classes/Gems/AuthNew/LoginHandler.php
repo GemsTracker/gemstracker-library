@@ -31,6 +31,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly TranslatorInterface $translator,
         private readonly SiteUtil $siteUtil,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly UrlHelper $urlHelper,
     ) {
     }
@@ -83,7 +84,17 @@ class LoginHandler implements RequestHandlerInterface
             || !$notEmptyValidation->isValid($input['username'] ?? null)
             || !$notEmptyValidation->isValid($input['password'] ?? null)
         ) {
-            return $this->redirectBack($request, $this->translator->trans('Make sure you fill in all fields'));
+            return $this->redirectBack($request, [$this->translator->trans('Make sure you fill in all fields')]);
+        }
+
+        $loginThrottle = $this->loginThrottleBuilder->buildLoginThrottle(
+            $input['username'],
+            (int)$input['organization'],
+        );
+
+        $blockMinutes = $loginThrottle->checkBlock();
+        if ($blockMinutes > 0) {
+            return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
 
         $result = $authenticationService->routedAuthenticate(
@@ -93,15 +104,29 @@ class LoginHandler implements RequestHandlerInterface
             $request->getServerParams()['REMOTE_ADDR'] ?? null,
         );
 
+        $blockMinutes = $loginThrottle->processAuthenticationResult($result);
+
         if (!$result->isValid()) {
             $messages = $result->getMessages() ?: [$this->translator->trans('The provided credentials are invalid')];
-            return $this->redirectBack($request, implode(PHP_EOL, $messages));
+            if ($blockMinutes > 0) {
+                $messages[] = $this->blockMessage($blockMinutes);
+            }
+            return $this->redirectBack($request, $messages);
         }
 
         return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
     }
 
-    private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse
+    private function blockMessage(int $minutes)
+    {
+        return $this->translator->plural(
+            'Your account is temporarily blocked, please wait a minute.',
+            'Your account is temporarily blocked, please wait %count% minutes.',
+            $minutes
+        );
+    }
+
+    private function redirectBack(ServerRequestInterface $request, array $errors): RedirectResponse
     {
         $input = $request->getParsedBody();
 
@@ -110,7 +135,7 @@ class LoginHandler implements RequestHandlerInterface
             'username' => $input['username'] ?? null,
         ]);
 
-        $this->flash->flash('login_errors', [$error]);
+        $this->flash->flash('login_errors', $errors);
 
         return new RedirectResponse($request->getUri());
     }

@@ -35,8 +35,12 @@ class AuthenticationService
             return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
         }
 
+        if (!$user->isActive()) {
+            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
+        }
+
         if (!$user->isAllowedIpForLogin($ipAddress)) {
-            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE, [
+            return new GenericFailedAuthenticationResult(AuthenticationResult::DISALLOWED_IP, [
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
         }

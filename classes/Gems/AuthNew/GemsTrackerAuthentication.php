@@ -77,8 +77,6 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
             return $this->makeResult(AuthenticationResult::FAILURE);
         }
 
-        // TODO: Check active?
-
         return $this->makeResult(AuthenticationResult::SUCCESS);
     }
 }
