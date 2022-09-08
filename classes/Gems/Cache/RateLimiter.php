@@ -2,6 +2,8 @@
 
 namespace Gems\Cache;
 
+use Symfony\Component\Cache\CacheItem;
+
 class RateLimiter
 {
     /**
@@ -76,7 +78,7 @@ class RateLimiter
         $addTimeInterval = new \DateInterval('PT'. $decaySeconds . 'S');
 
         $timerKey = $key . $this->timerSuffix;
-        $this->cache->setCacheItem($now->add($addTimeInterval), $timerKey, $this->tags, $decaySeconds);
+        $this->cache->setCacheItem($timerKey, $now->add($addTimeInterval), $this->tags, $decaySeconds);
 
         $attempts = $this->cache->getCacheItem($key);
         if ($attempts === null) {
@@ -85,7 +87,7 @@ class RateLimiter
 
         $attempts += 1;
 
-        $this->cache->setCacheItem($attempts, $key, $this->tags, $decaySeconds);
+        $this->cache->setCacheItem($key, $attempts, $this->tags, $decaySeconds);
 
         return 1;
     }

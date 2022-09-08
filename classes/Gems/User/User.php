@@ -1344,6 +1344,24 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Increment the HOTP count
+     */
+    public function incrementOtpCount()
+    {
+        $count = $this->_getVar('user_otp_count') + 1;
+        $this->_setVar('user_otp_count', $count);
+
+        $now = new \DateTimeImmutable();
+
+        $values = [
+            'gul_otp_count' => $count,
+            'gul_otp_requested' => $now->format('y-M-d H:i:s'),
+        ];
+
+        $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->getUserId()]);
+    }
+
+    /**
      * Get the HOTP requested time
      */
     public function getOtpRequested()
