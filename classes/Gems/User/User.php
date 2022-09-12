@@ -14,6 +14,7 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
+use Gems\AuthTfa\OtpMethodInterface;
 use Gems\Locale\Locale;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
@@ -1545,6 +1546,25 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getSurveyReturn()
     {
         return $this->_getVar('surveyReturn', array());
+    }
+
+    public function getTfaMethodClass(): string
+    {
+        if ($this->_hasVar('user_two_factor_key')) {
+            $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
+                $this->_getVar('user_two_factor_key'),
+                TwoFactorAuthenticatorInterface::SEPERATOR
+            );
+        } else {
+            $authClass = $this->defaultAuthenticatorClass;
+        }
+
+        return match($authClass) {
+            'GoogleAuthenticator' => 'AppTotp',
+            'MailHotp' => 'MailHotp',
+            'SmsHotp' => 'SmsHotp',
+            default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
+        };
     }
 
     /**

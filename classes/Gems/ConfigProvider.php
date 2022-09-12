@@ -91,6 +91,7 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'sites'         => $this->getSitesSettings(),
             'templates'     => $this->getTemplates(),
+            'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
         ];
@@ -470,6 +471,30 @@ class ConfigProvider
             'paths' => [
                 'menu' => [__DIR__ . '/../../templates/menu'],
                 'gems' => [__DIR__ . '/../../templates/gems'],
+            ],
+        ];
+    }
+
+    protected function getTwoFactor(): array
+    {
+        return [
+            'methods' => [
+                'SmsHotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                    'maxSendOtpAttempts' => 2,
+                    'maxSendOtpAttemptsPerPeriod' => 3600,
+                ],
+                'MailHotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                    'maxSendOtpAttempts' => 2,
+                    'maxSendOtpAttemptsPerPeriod' => 3600,
+                ],
+                'AppTotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                ],
             ],
         ];
     }

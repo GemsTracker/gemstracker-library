@@ -8,7 +8,6 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationService;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\TfaService;
-use Gems\AuthNew\TotpTfa;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -69,8 +68,6 @@ class TfaLoginHandler implements RequestHandlerInterface
     {
         $session = $request->getAttribute(SessionInterface::class);
 
-        $user = $this->authenticationService->getLoggedInUser();
-
         $input = $request->getParsedBody();
 
         $tfaValidation = new ValidatorChain();
@@ -78,12 +75,10 @@ class TfaLoginHandler implements RequestHandlerInterface
         $tfaValidation->attach(new Digits());
 
         if (!$tfaValidation->isValid($input['tfa_code'] ?? null)) {
-            return $this->redirectBack($request, $this->translator->trans('Please provide the 6-digit TFA code'));
+            return $this->redirectBack($request, $this->translator->trans('Please provide a valid TFA code'));
         }
 
-        $result = $this->tfaService->authenticate(new TotpTfa($user, $input['tfa_code']));
-
-        if (!$result->isValid()) {
+        if (!$this->tfaService->verify($input['tfa_code'])) {
             return $this->redirectBack($request, $this->translator->trans('The provided TFA code is invalid'));
         }
 

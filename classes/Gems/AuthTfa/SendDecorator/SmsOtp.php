@@ -1,20 +1,35 @@
 <?php
 
-namespace Gems\AuthTfa\Decorator;
+namespace Gems\AuthTfa\SendDecorator;
 
-use Gems\AuthTfa\Adapter\OtpInterface;
+use Gems\AuthTfa\Adapter\OtpAdapterInterface;
+use Gems\Cache\HelperAdapter;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SmsOtp extends AbstractOtp implements SendsTfaCodeInterface
+class SmsOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
 {
+    use ThrottleTrait;
+
     public function __construct(
+        array $settings,
         TranslatorInterface $translator,
-        OtpInterface $otp,
+        OtpAdapterInterface $otp,
         private readonly SmsClientInterface $smsClient,
+        private readonly HelperAdapter $throttleCache,
     ) {
         parent::__construct($translator, $otp);
+
+        $this->initThrottleTrait(
+            isset($settings['maxSendOtpAttempts']) ? (int)$settings['maxSendOtpAttempts'] : null,
+            isset($settings['maxSendOtpAttemptsPerPeriod']) ? (int)$settings['maxSendOtpAttemptsPerPeriod'] : null,
+        );
+    }
+
+    private function getThrottleCache(): HelperAdapter
+    {
+        return $this->throttleCache;
     }
 
     public function sendCode(\Gems\User\User $user): bool
@@ -33,7 +48,7 @@ class SmsOtp extends AbstractOtp implements SendsTfaCodeInterface
                 return true;
             }
         }
-        throw new \Gems\Exception($this->translator->trans('OTP could not be sent'));
+        throw new \Gems\Exception($this->translator->trans('OTP could not be sent, maximum number of OTP send attempts reached'));
     }
 
     public function getSentFeedbackMessage(\Gems\User\User $user): string

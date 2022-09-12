@@ -5,19 +5,19 @@ namespace Gems\AuthTfa\Adapter;
 use Gems\User\User;
 use OTPHP\TOTP;
 
-class TotpAdapter implements OtpInterface
+class TotpAdapter implements OtpAdapterInterface
 {
     private readonly TOTP $otp;
 
     public function __construct(
-        array $config,
-        private readonly User $user,
+        array $settings,
+        User $user,
     ) {
         $this->otp = TOTP::create(
             $user->getTwoFactorKey(),
-            (int)$config['codeValidSeconds'],
+            (int)$settings['codeValidSeconds'],
             'sha1',
-            (int)$config['codeLength'],
+            (int)$settings['codeLength'],
         );
     }
 

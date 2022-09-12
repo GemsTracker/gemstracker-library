@@ -1,8 +1,8 @@
 <?php
 
-namespace Gems\AuthTfa\Decorator;
+namespace Gems\AuthTfa\SendDecorator;
 
-interface SendsTfaCodeInterface
+interface SendsOtpCodeInterface
 {
     public function sendCode(\Gems\User\User $user): bool;
 

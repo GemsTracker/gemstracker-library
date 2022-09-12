@@ -2,7 +2,7 @@
 
 namespace Gems\AuthTfa\Adapter;
 
-interface OtpInterface
+interface OtpAdapterInterface
 {
     public function generateCode(): string;
 
