@@ -23,6 +23,11 @@ abstract class AbstractOtpSendDecorator implements OtpAdapterInterface
         return $this->otp->verify($code);
     }
 
+    public function getCodeValidSeconds(): int
+    {
+        return $this->otp->getCodeValidSeconds();
+    }
+
     public function getMinLength(): int
     {
         return $this->otp->getMinLength();

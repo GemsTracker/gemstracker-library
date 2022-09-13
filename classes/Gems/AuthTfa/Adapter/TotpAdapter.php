@@ -11,15 +11,18 @@ class TotpAdapter implements OtpAdapterInterface
 
     private readonly int $codeLength;
 
+    private readonly int $codeValidSeconds;
+
     public function __construct(
         array $settings,
         User $user,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
+        $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
 
         $this->otp = TOTP::create(
             $user->getTwoFactorKey(),
-            (int)$settings['codeValidSeconds'],
+            $this->codeValidSeconds,
             'sha1',
             $this->codeLength,
         );
@@ -33,6 +36,11 @@ class TotpAdapter implements OtpAdapterInterface
     public function verify(string $code): bool
     {
         return $this->otp->verify($code, null, $this->otp->getPeriod() - 1);
+    }
+
+    public function getCodeValidSeconds(): int
+    {
+        return $this->codeValidSeconds;
     }
 
     public function getMinLength(): int

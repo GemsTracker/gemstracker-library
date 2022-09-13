@@ -43,6 +43,7 @@ class TfaLoginHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
         $this->authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
         $user = $this->authenticationService->getLoggedInUser();
@@ -53,14 +54,31 @@ class TfaLoginHandler implements RequestHandlerInterface
         }
 
         if ($request->getMethod() === 'POST') {
+            if (isset($request->getParsedBody()['resend'])) {
+                $otpMethod = $this->tfaService->getOtpMethod();
+                if ($otpMethod instanceof SendsOtpCodeInterface) {
+                    $otpMethod->sendCode();
+                    $session->set('tfa_login_last_send', time());
+
+                    $this->flash->flash('tfa_login_info_messages', [$otpMethod->getSentFeedbackMessage()]);
+
+                    return new RedirectResponse($request->getUri());
+                }
+            }
+
             return $this->handlePost($request);
         }
 
-        $messages = [];
+        $messages = $this->flash->getFlash('tfa_login_info_messages') ?: [];
+
         $otpMethod = $this->tfaService->getOtpMethod();
         if ($otpMethod instanceof SendsOtpCodeInterface) {
-            $otpMethod->sendCode();
-            $messages[] = $otpMethod->getSentFeedbackMessage();
+            $lastSend = $session->get('tfa_login_last_send');
+            if ($lastSend === null || time() - $lastSend > $otpMethod->getCodeValidSeconds()) {
+                $otpMethod->sendCode();
+                $session->set('tfa_login_last_send', time());
+                $messages[] = $otpMethod->getSentFeedbackMessage();
+            }
         }
 
         $data = [
@@ -68,11 +86,13 @@ class TfaLoginHandler implements RequestHandlerInterface
                 'code_input_label' => $this->translator->trans('Enter authenticator code'),
                 'code_input_description' => $otpMethod->getCodeInputDescription(),
                 'continue' => $this->translator->trans('Continue'),
+                'resend_code' => $this->translator->trans('Resend code'),
             ],
             'code_min_length' => $otpMethod->getMinLength(),
             'code_max_length' => $otpMethod->getMaxLength(),
             'errors' => $this->flash->getFlash('tfa_login_errors'),
             'info_messages' => $messages,
+            'sendable' => $otpMethod instanceof SendsOtpCodeInterface,
         ];
 
         return new HtmlResponse($this->template->render('gems::tfa/login', $data));

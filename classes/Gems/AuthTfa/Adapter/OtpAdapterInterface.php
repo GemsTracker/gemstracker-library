@@ -8,6 +8,8 @@ interface OtpAdapterInterface
 
     public function verify(string $code): bool;
 
+    public function getCodeValidSeconds(): int;
+
     public function getMinLength(): int;
 
     public function getMaxLength(): int;

@@ -52,6 +52,11 @@ class HotpAdapter implements OtpAdapterInterface
         return $this->otp->verify($code, $this->user->getOtpCount(), 0);
     }
 
+    public function getCodeValidSeconds(): int
+    {
+        return $this->codeValidSeconds;
+    }
+
     public function getMinLength(): int
     {
         return $this->codeLength;

@@ -37,5 +37,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary">{{ trans.continue }}</button>
+
+        {% if sendable %}
+            <button type="submit" name="resend" class="btn btn-secondary">{{ trans.resend_code }}</button>
+        {% endif %}
     </form>
 {% endblock %}
