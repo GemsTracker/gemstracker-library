@@ -57,10 +57,14 @@ class TfaLoginHandler implements RequestHandlerInterface
             if (isset($request->getParsedBody()['resend'])) {
                 $otpMethod = $this->tfaService->getOtpMethod();
                 if ($otpMethod instanceof SendsOtpCodeInterface) {
-                    $otpMethod->sendCode();
-                    $session->set('tfa_login_last_send', time());
+                    try {
+                        $otpMethod->sendCode();
+                        $session->set('tfa_login_last_send', time());
 
-                    $this->flash->flash('tfa_login_info_messages', [$otpMethod->getSentFeedbackMessage()]);
+                        $this->flash->flash('tfa_login_info_messages', [$otpMethod->getSentFeedbackMessage()]);
+                    } catch (\Gems\Exception $e) {
+                        $this->flash->flash('tfa_login_errors', [$e->getMessage()]);
+                    }
 
                     return new RedirectResponse($request->getUri());
                 }
@@ -70,14 +74,19 @@ class TfaLoginHandler implements RequestHandlerInterface
         }
 
         $messages = $this->flash->getFlash('tfa_login_info_messages') ?: [];
+        $errors = $this->flash->getFlash('tfa_login_errors') ?: [];
 
         $otpMethod = $this->tfaService->getOtpMethod();
         if ($otpMethod instanceof SendsOtpCodeInterface) {
             $lastSend = $session->get('tfa_login_last_send');
             if ($lastSend === null || time() - $lastSend > $otpMethod->getCodeValidSeconds()) {
-                $otpMethod->sendCode();
-                $session->set('tfa_login_last_send', time());
-                $messages[] = $otpMethod->getSentFeedbackMessage();
+                try {
+                    $otpMethod->sendCode();
+                    $session->set('tfa_login_last_send', time());
+                    $messages[] = $otpMethod->getSentFeedbackMessage();
+                } catch (\Gems\Exception $e) {
+                    $errors[] = $e->getMessage();
+                }
             }
         }
 
@@ -90,7 +99,7 @@ class TfaLoginHandler implements RequestHandlerInterface
             ],
             'code_min_length' => $otpMethod->getMinLength(),
             'code_max_length' => $otpMethod->getMaxLength(),
-            'errors' => $this->flash->getFlash('tfa_login_errors'),
+            'errors' => $errors,
             'info_messages' => $messages,
             'sendable' => $otpMethod instanceof SendsOtpCodeInterface,
         ];
