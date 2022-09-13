@@ -31,7 +31,7 @@ class RateLimiter
      */
     public function attempts($key)
     {
-        if ($this->cache->hasItem($key) !== null) {
+        if ($this->cache->hasItem($key)) {
             return $this->cache->getCacheItem($key);
         }
         return 0;
@@ -127,7 +127,7 @@ class RateLimiter
     public function tooManyAttempts($key, $maxAttempts)
     {
         if ($this->attempts($key) >= $maxAttempts) {
-            if ($this->cache->test($key.$this->timerSuffix) !== false) {
+            if ($this->cache->hasItem($key.$this->timerSuffix)) {
                 return true;
             }
 
