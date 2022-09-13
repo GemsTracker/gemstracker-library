@@ -8,6 +8,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationService;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\TfaService;
+use Gems\AuthTfa\OtpMethodBuilder;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -33,6 +34,7 @@ class TfaLoginHandler implements RequestHandlerInterface
         private readonly TemplateRendererInterface $template,
         private readonly TranslatorInterface $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly UrlHelper $urlHelper,
     ) {
     }
@@ -43,7 +45,7 @@ class TfaLoginHandler implements RequestHandlerInterface
         $session = $request->getAttribute(SessionInterface::class);
         $this->authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
         $user = $this->authenticationService->getLoggedInUser();
-        $this->tfaService = new TfaService($session, $this->authenticationService, $request);
+        $this->tfaService = new TfaService($session, $this->authenticationService, $request, $this->otpMethodBuilder);
 
         if ($this->tfaService->isLoggedIn($user) || !$this->tfaService->requiresAuthentication($user)) {
             return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
@@ -55,9 +57,12 @@ class TfaLoginHandler implements RequestHandlerInterface
 
         $data = [
             'trans' => [
-                'tfa_code' => $this->translator->trans('TFA code'),
+                'code_input_label' => $this->translator->trans('Enter authenticator code'),
+                'code_input_description' => $this->tfaService->getOtpMethod()->getCodeInputDescription(),
                 'continue' => $this->translator->trans('Continue'),
             ],
+            'code_min_length' => $this->tfaService->getOtpMethod()->getMinLength(),
+            'code_max_length' => $this->tfaService->getOtpMethod()->getMaxLength(),
             'errors' => $this->flash->getFlash('tfa_login_errors'),
         ];
 

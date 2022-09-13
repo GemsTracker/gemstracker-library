@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew;
 
+use Gems\AuthTfa\OtpMethodBuilder;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Flash\FlashMessagesInterface;
@@ -22,6 +23,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public function __construct(
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly RouterInterface $router,
         private readonly TranslatorInterface $translator,
     ) {
@@ -44,7 +46,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $user = $authenticationService->getLoggedInUser();
 
         if (static::CHECK_TFA) {
-            $tfaService = new TfaService($session, $authenticationService, $request);
+            $tfaService = new TfaService($session, $authenticationService, $request, $this->otpMethodBuilder);
             if ($tfaService->requiresAuthentication($user)) {
                 return $this->redirectWithIntended($request, $this->router->generateUri('tfa.login'));
             }

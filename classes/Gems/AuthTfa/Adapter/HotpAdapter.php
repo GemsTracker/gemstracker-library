@@ -10,17 +10,21 @@ class HotpAdapter implements OtpAdapterInterface
 {
     private readonly HOTP $otp;
 
+    private readonly int $codeLength;
+
     private int $codeValidSeconds = 300;
 
     public function __construct(
         array $settings,
         private readonly User $user,
     ) {
+        $this->codeLength = (int)$settings['codeLength'];
+
         $this->otp = HOTP::create(
             $user->getTwoFactorKey(),
             $user->getOtpCount(),
             'sha1',
-            (int)$settings['codeLength'],
+            $this->codeLength,
         );
 
         if (isset($settings['codeValidSeconds'])) {
@@ -48,5 +52,15 @@ class HotpAdapter implements OtpAdapterInterface
         }
 
         return $this->otp->verify($code, $this->user->getOtpCount(), 0);
+    }
+
+    public function getMinLength(): int
+    {
+        return $this->codeLength;
+    }
+
+    public function getMaxLength(): int
+    {
+        return $this->codeLength;
     }
 }
