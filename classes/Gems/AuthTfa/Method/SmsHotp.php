@@ -18,7 +18,7 @@ class SmsHotp extends SmsOtp implements OtpMethodInterface
         SmsClientInterface $smsClient,
         HelperAdapter $throttleCache,
     ) {
-        parent::__construct($settings, $translator, new HotpAdapter($settings, $user), $smsClient, $throttleCache);
+        parent::__construct($settings, $translator, new HotpAdapter($settings, $user), $smsClient, $throttleCache, $user);
     }
 
     public function getCodeInputDescription(): string

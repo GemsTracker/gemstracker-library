@@ -16,7 +16,7 @@ class MailHotp extends MailOtp implements OtpMethodInterface
         User $user,
         HelperAdapter $throttleCache,
     ) {
-        parent::__construct($settings, $translator, new HotpAdapter($settings, $user), $throttleCache);
+        parent::__construct($settings, $translator, new HotpAdapter($settings, $user), $throttleCache, $user);
     }
 
     public function getCodeInputDescription(): string

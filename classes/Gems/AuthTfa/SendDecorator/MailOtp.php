@@ -4,6 +4,7 @@ namespace Gems\AuthTfa\SendDecorator;
 
 use Gems\AuthTfa\Adapter\OtpAdapterInterface;
 use Gems\Cache\HelperAdapter;
+use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
@@ -15,6 +16,7 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
         TranslatorInterface $translator,
         OtpAdapterInterface $otp,
         private readonly HelperAdapter $throttleCache,
+        private readonly User $user,
     ) {
         parent::__construct($translator, $otp);
 
@@ -29,18 +31,18 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
         return $this->throttleCache;
     }
 
-    public function sendCode(\Gems\User\User $user): bool
+    public function sendCode(): bool
     {
-        if ($this->canSendOtp($user)) {
+        if ($this->canSendOtp($this->user)) {
             $subject = 'Authentication code';
 
             $code = $this->otp->generateCode();
 
             $body = 'Your code is ' . $code;
 
-            $result = $user->sendMail($subject, $body);
+            $result = $this->user->sendMail($subject, $body);
             if ($result === null) {
-                $this->hitSendOtp($user);
+                $this->hitSendOtp($this->user);
                 return true;
             }
         }
@@ -48,7 +50,7 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
         throw new \Gems\Exception($this->translator->trans('OTP could not be sent, maximum number of OTP send attempts reached'));
     }
 
-    public function getSentFeedbackMessage(\Gems\User\User $user): string
+    public function getSentFeedbackMessage(): string
     {
         return $this->translator->trans('An authentication code has been sent to your email address');
     }

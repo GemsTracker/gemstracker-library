@@ -34,11 +34,9 @@ class HotpAdapter implements OtpAdapterInterface
 
     public function generateCode(): string
     {
-        $code = $this->otp->at($this->user->getOtpCount());
-
         $this->user->incrementOtpCount();
 
-        return $code;
+        return $this->otp->at($this->user->getOtpCount());
     }
 
     public function verify(string $code): bool

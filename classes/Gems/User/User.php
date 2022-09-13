@@ -1356,10 +1356,10 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
         $values = [
             'gul_otp_count' => $count,
-            'gul_otp_requested' => $now->format('y-M-d H:i:s'),
+            'gul_otp_requested' => $now->format('Y-m-d H:i:s'),
         ];
 
-        $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->getUserId()]);
+        $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->getUserLoginId()]);
     }
 
     /**

@@ -9,6 +9,7 @@ use Gems\AuthNew\AuthenticationService;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\TfaService;
 use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\AuthTfa\SendDecorator\SendsOtpCodeInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -55,15 +56,23 @@ class TfaLoginHandler implements RequestHandlerInterface
             return $this->handlePost($request);
         }
 
+        $messages = [];
+        $otpMethod = $this->tfaService->getOtpMethod();
+        if ($otpMethod instanceof SendsOtpCodeInterface) {
+            $otpMethod->sendCode();
+            $messages[] = $otpMethod->getSentFeedbackMessage();
+        }
+
         $data = [
             'trans' => [
                 'code_input_label' => $this->translator->trans('Enter authenticator code'),
-                'code_input_description' => $this->tfaService->getOtpMethod()->getCodeInputDescription(),
+                'code_input_description' => $otpMethod->getCodeInputDescription(),
                 'continue' => $this->translator->trans('Continue'),
             ],
-            'code_min_length' => $this->tfaService->getOtpMethod()->getMinLength(),
-            'code_max_length' => $this->tfaService->getOtpMethod()->getMaxLength(),
+            'code_min_length' => $otpMethod->getMinLength(),
+            'code_max_length' => $otpMethod->getMaxLength(),
             'errors' => $this->flash->getFlash('tfa_login_errors'),
+            'info_messages' => $messages,
         ];
 
         return new HtmlResponse($this->template->render('gems::tfa/login', $data));

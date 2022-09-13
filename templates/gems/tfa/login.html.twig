@@ -11,6 +11,16 @@
         </div>
     {% endif %}
 
+    {% if info_messages|length > 0 %}
+        <div>
+            {% for info_message in info_messages %}
+                <div class="alert alert-info">
+                    {{ info_message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form method="post">
         <div class="form-group">
             <label class="control-label" for="tfa_code">{{ trans.code_input_label }}</label>
