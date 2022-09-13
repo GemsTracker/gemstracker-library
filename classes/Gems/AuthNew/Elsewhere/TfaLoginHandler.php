@@ -100,6 +100,7 @@ class TfaLoginHandler implements RequestHandlerInterface
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface
     {
+        /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
 
         $input = $request->getParsedBody();
@@ -115,6 +116,8 @@ class TfaLoginHandler implements RequestHandlerInterface
         if (!$this->tfaService->verify($input['tfa_code'])) {
             return $this->redirectBack($request, $this->translator->trans('The provided TFA code is invalid'));
         }
+
+        $session->unset('tfa_login_last_send');
 
         return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
     }
