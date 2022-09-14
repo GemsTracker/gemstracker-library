@@ -10,6 +10,7 @@ use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\TfaService;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\SendDecorator\SendsOtpCodeInterface;
+use Gems\User\User;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -30,6 +31,7 @@ class TfaLoginHandler implements RequestHandlerInterface
     private FlashMessagesInterface $flash;
     private AuthenticationService $authenticationService;
     private TfaService $tfaService;
+    private User $user;
 
     public function __construct(
         private readonly TemplateRendererInterface $template,
@@ -46,10 +48,10 @@ class TfaLoginHandler implements RequestHandlerInterface
         /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
         $this->authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
-        $user = $this->authenticationService->getLoggedInUser();
+        $this->user = $this->authenticationService->getLoggedInUser();
         $this->tfaService = new TfaService($session, $this->authenticationService, $request, $this->otpMethodBuilder);
 
-        if ($this->tfaService->isLoggedIn($user) || !$this->tfaService->requiresAuthentication($user)) {
+        if ($this->tfaService->isLoggedIn($this->user) || !$this->tfaService->requiresAuthentication($this->user)) {
             return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
         }
 
@@ -122,7 +124,15 @@ class TfaLoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $this->translator->trans('Please provide a valid TFA code'));
         }
 
+        $otpMethod = $this->tfaService->getOtpMethod();
+        if (!$otpMethod->canVerifyOtp($this->user)) {
+            return $this->redirectBack($request, $this->translator->trans(
+                'Maximum number of OTP attempts reached, please try again within a few minutes'
+            ));
+        }
+
         if (!$this->tfaService->verify($input['tfa_code'])) {
+            $otpMethod->hitVerifyOtp($this->user);
             return $this->redirectBack($request, $this->translator->trans('The provided TFA code is invalid'));
         }
 

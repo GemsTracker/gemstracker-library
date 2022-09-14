@@ -3,11 +3,14 @@
 namespace Gems\AuthTfa\Adapter;
 
 use DateInterval;
+use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\HOTP;
 
 class HotpAdapter implements OtpAdapterInterface
 {
+    use ThrottleVerifyTrait;
+
     private readonly HOTP $otp;
 
     private readonly int $codeLength;
@@ -17,6 +20,7 @@ class HotpAdapter implements OtpAdapterInterface
     public function __construct(
         array $settings,
         private readonly User $user,
+        private readonly HelperAdapter $throttleCache,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
 
@@ -30,6 +34,15 @@ class HotpAdapter implements OtpAdapterInterface
         if (isset($settings['codeValidSeconds'])) {
             $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
         }
+
+        $this->initThrottleVerifyTrait(
+            isset($settings['maxVerifyOtpAttempts']) ? (int)$settings['maxVerifyOtpAttempts'] : null,
+        );
+    }
+
+    private function getThrottleCache(): HelperAdapter
+    {
+        return $this->throttleCache;
     }
 
     public function generateCode(): string

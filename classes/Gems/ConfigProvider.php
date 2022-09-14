@@ -484,16 +484,19 @@ class ConfigProvider
                     'codeValidSeconds' => 300,
                     'maxSendOtpAttempts' => 2,
                     'maxSendOtpAttemptsPerPeriod' => 3600,
+                    'maxVerifyOtpAttempts' => 5,
                 ],
                 'MailHotp' => [
                     'codeLength' => 6,
                     'codeValidSeconds' => 300,
                     'maxSendOtpAttempts' => 2,
                     'maxSendOtpAttemptsPerPeriod' => 3600,
+                    'maxVerifyOtpAttempts' => 5,
                 ],
                 'AppTotp' => [
                     'codeLength' => 6,
                     'codeValidSeconds' => 300,
+                    'maxVerifyOtpAttempts' => 5,
                 ],
             ],
         ];

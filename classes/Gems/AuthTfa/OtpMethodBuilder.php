@@ -29,7 +29,7 @@ class OtpMethodBuilder
         $settings = $this->config['twofactor']['methods'][$className] ?? [];
 
         return match($className) {
-            'AppTotp' => new AppTotp($settings, $this->translator, $user),
+            'AppTotp' => new AppTotp($settings, $this->translator, $user, $this->throttleCache),
             'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache),
             'SmsHotp' => new SmsHotp(
                 $settings,

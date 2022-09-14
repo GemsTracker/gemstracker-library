@@ -3,6 +3,7 @@
 namespace Gems\AuthTfa\SendDecorator;
 
 use Gems\AuthTfa\Adapter\OtpAdapterInterface;
+use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractOtpSendDecorator implements OtpAdapterInterface
@@ -36,5 +37,15 @@ abstract class AbstractOtpSendDecorator implements OtpAdapterInterface
     public function getMaxLength(): int
     {
         return $this->otp->getMaxLength();
+    }
+
+    public function canVerifyOtp(User $user): bool
+    {
+        return $this->otp->canVerifyOtp($user);
+    }
+
+    public function hitVerifyOtp(User $user): void
+    {
+        $this->otp->hitVerifyOtp($user);
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
 {
-    use ThrottleTrait;
+    use ThrottleSendTrait;
 
     public function __construct(
         array $settings,
@@ -20,7 +20,7 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
     ) {
         parent::__construct($translator, $otp);
 
-        $this->initThrottleTrait(
+        $this->initThrottleSendTrait(
             isset($settings['maxSendOtpAttempts']) ? (int)$settings['maxSendOtpAttempts'] : null,
             isset($settings['maxSendOtpAttemptsPerPeriod']) ? (int)$settings['maxSendOtpAttemptsPerPeriod'] : null,
         );

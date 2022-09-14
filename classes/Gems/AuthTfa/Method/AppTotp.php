@@ -3,6 +3,7 @@
 namespace Gems\AuthTfa\Method;
 
 use Gems\AuthTfa\Adapter\TotpAdapter;
+use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -12,8 +13,9 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
         array $settings,
         private readonly TranslatorInterface $translator,
         User $user,
+        HelperAdapter $throttleCache,
     ) {
-        parent::__construct($settings, $user);
+        parent::__construct($settings, $user, $throttleCache);
     }
 
     public function getCodeInputDescription(): string

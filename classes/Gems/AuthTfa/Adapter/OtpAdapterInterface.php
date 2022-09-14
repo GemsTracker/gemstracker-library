@@ -2,6 +2,8 @@
 
 namespace Gems\AuthTfa\Adapter;
 
+use Gems\User\User;
+
 interface OtpAdapterInterface
 {
     public function generateCode(): string;
@@ -13,4 +15,8 @@ interface OtpAdapterInterface
     public function getMinLength(): int;
 
     public function getMaxLength(): int;
+
+    public function canVerifyOtp(User $user): bool;
+
+    public function hitVerifyOtp(User $user): void;
 }

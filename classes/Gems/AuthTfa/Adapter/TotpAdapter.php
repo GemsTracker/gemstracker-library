@@ -2,11 +2,14 @@
 
 namespace Gems\AuthTfa\Adapter;
 
+use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\TOTP;
 
 class TotpAdapter implements OtpAdapterInterface
 {
+    use ThrottleVerifyTrait;
+
     private readonly TOTP $otp;
 
     private readonly int $codeLength;
@@ -16,6 +19,7 @@ class TotpAdapter implements OtpAdapterInterface
     public function __construct(
         array $settings,
         User $user,
+        private readonly HelperAdapter $throttleCache,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
         $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
@@ -26,6 +30,15 @@ class TotpAdapter implements OtpAdapterInterface
             'sha1',
             $this->codeLength,
         );
+
+        $this->initThrottleVerifyTrait(
+            isset($settings['maxVerifyOtpAttempts']) ? (int)$settings['maxVerifyOtpAttempts'] : null,
+        );
+    }
+
+    private function getThrottleCache(): HelperAdapter
+    {
+        return $this->throttleCache;
     }
 
     public function generateCode(): string

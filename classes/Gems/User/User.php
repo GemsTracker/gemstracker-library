@@ -14,7 +14,6 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
-use Gems\AuthTfa\OtpMethodInterface;
 use Gems\Locale\Locale;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
@@ -1560,7 +1559,8 @@ class User extends \MUtil\Translate\TranslateableAbstract
         }
 
         return match($authClass) {
-            'GoogleAuthenticator' => 'AppTotp',
+            'GoogleAuthenticator' => 'AppTotp', // TODO: Legacy
+            'AppTotp' => 'AppTotp',
             'MailHotp' => 'MailHotp',
             'SmsHotp' => 'SmsHotp',
             default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
