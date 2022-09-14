@@ -3,6 +3,7 @@
 namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\AuthTfa\TfaService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Flash\FlashMessagesInterface;

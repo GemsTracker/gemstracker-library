@@ -1,10 +1,10 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthTfa;
 
 use Gems\AuthNew\Adapter\EmbedIdentity;
+use Gems\AuthNew\AuthenticationService;
 use Gems\AuthTfa\Method\OtpMethodInterface;
-use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;
