@@ -1,8 +1,10 @@
 <?php
 
-namespace Gems\AuthNew;
+namespace Gems\AuthTfa;
 
 use Gems\AuthNew\Adapter\EmbedIdentity;
+use Gems\AuthNew\AuthenticationService;
+use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,22 +15,38 @@ class TfaService
         private readonly SessionInterface $session,
         private readonly AuthenticationService $authenticationService,
         private readonly ServerRequestInterface $request,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
     ) {
     }
 
-    public function authenticate(TfaAdapterInterface $adapter): TfaResult
+    public function getOtpMethod(): OtpMethodInterface
     {
-        $result = $adapter->authenticate();
-
-        if ($result->isValid()) {
-            $user = $result->getUser();
-
-            $this->session->set('tfa_logged_in', $user->getUserId());
-        } else {
-            $this->session->set('tfa_logged_in', null);
+        if (!$this->authenticationService->isLoggedIn()) {
+            throw new \Exception('Not logged in');
         }
 
-        return $result;
+        $user = $this->authenticationService->getLoggedInUser();
+
+        return $this->otpMethodBuilder->buildOtpMethod($user);
+    }
+
+    public function verify(string $code): bool
+    {
+        $tfaLoggedInValue = null;
+
+        if ($this->authenticationService->isLoggedIn()) {
+            $user = $this->authenticationService->getLoggedInUser();
+
+            $otpMethod = $this->otpMethodBuilder->buildOtpMethod($user);
+
+            if($otpMethod->verify($code)) {
+                $tfaLoggedInValue = $user->getUserId();
+            }
+        }
+
+        $this->session->set('tfa_logged_in', $tfaLoggedInValue);
+
+        return $tfaLoggedInValue !== null;
     }
 
     public function isLoggedIn(User $user): bool

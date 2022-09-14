@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew\Elsewhere;
+namespace Gems\Handlers\Auth;
 
 use Gems\AuthNew\Adapter\EmbedAuthentication;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;

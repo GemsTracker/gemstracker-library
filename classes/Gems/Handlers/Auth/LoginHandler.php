@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew\Elsewhere;
+namespace Gems\Handlers\Auth;
 
+use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginThrottleBuilder;
@@ -36,6 +37,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly UrlHelper $urlHelper,
+        private readonly AccesslogRepository $accesslogRepository,
     ) {
     }
 
@@ -139,6 +141,17 @@ class LoginHandler implements RequestHandlerInterface
         ]);
 
         $this->flash->flash('login_errors', $errors);
+
+        // TODO: Log
+        /*// Also log the error to the log table  when the project has logging enabled
+        $logErrors = join(' - ', $errors);
+        $msg = sprintf(
+            'Failed login for : %s (%s) - %s',
+            $input['username'],
+            $input['organization'],
+            $logErrors
+        );
+        $this->accesslogRepository->logChange($request, $msg);*/
 
         return new RedirectResponse($request->getUri());
     }

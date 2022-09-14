@@ -11,12 +11,35 @@
         </div>
     {% endif %}
 
+    {% if info_messages|length > 0 %}
+        <div>
+            {% for info_message in info_messages %}
+                <div class="alert alert-info">
+                    {{ info_message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <form method="post">
         <div class="form-group">
-            <label class="control-label" for="tfa_code">{{ trans.tfa_code }}</label>
-            <input type="password" class="form-control" name="tfa_code" id="tfa_code">
+            <label class="control-label" for="tfa_code">{{ trans.code_input_label }}</label>
+            <input
+                    type="password"
+                    class="form-control"
+                    name="tfa_code"
+                    id="tfa_code"
+                    minlength="{{ code_min_length }}"
+                    maxlength="{{ code_max_length }}"
+                    size="{{ code_max_length + 2 }}"
+            >
+            <p class="description">{{ trans.code_input_description }}</p>
         </div>
 
         <button type="submit" class="btn btn-primary">{{ trans.continue }}</button>
+
+        {% if sendable %}
+            <button type="submit" name="resend" class="btn btn-secondary">{{ trans.resend_code }}</button>
+        {% endif %}
     </form>
 {% endblock %}
