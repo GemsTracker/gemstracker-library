@@ -7,7 +7,7 @@ use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityType;
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
-use Gems\AuthNew\Elsewhere\AuthenticatedEvent;
+use Gems\Event\Application\AuthenticatedEvent;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -70,7 +70,7 @@ class AuthenticationService
                 'auth_params' => $identity->toArray(),
             ]);
 
-            $event = new AuthenticatedEvent($result);
+            $event = new AuthenticatedEvent($result); // TODO: Not used yet
             $this->eventDispatcher->dispatch($event);
         } else {
             $this->session->set('auth_data', null);

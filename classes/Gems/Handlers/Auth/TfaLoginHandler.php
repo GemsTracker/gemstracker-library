@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gems\AuthNew\Elsewhere;
+namespace Gems\Handlers\Auth;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationService;

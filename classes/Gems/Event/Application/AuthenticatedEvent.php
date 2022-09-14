@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\AuthNew\Elsewhere;
+namespace Gems\Event\Application;
 
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Symfony\Contracts\EventDispatcher\Event;
