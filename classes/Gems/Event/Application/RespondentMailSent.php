@@ -2,6 +2,8 @@
 
 namespace Gems\Event\Application;
 
+use Gems\Tracker\Respondent;
+use Gems\User\User;
 use Symfony\Component\Mime\Email;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -11,13 +13,13 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
 
     protected Email $email;
 
-    protected \Gems_Tracker_Respondent $respondent;
+    protected Respondent $respondent;
 
-    protected \Gems_User_User $currentUser;
+    protected User $currentUser;
 
     private array $communicationJob;
 
-    public function __construct(Email $email, \Gems_Tracker_Respondent $respondent, \Gems_User_User $currentUser, array $communicationJob = [], )
+    public function __construct(Email $email, Respondent $respondent, User $currentUser, array $communicationJob = [], )
     {
         $this->email = $email;
         $this->respondent = $respondent;
@@ -26,9 +28,9 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
     }
 
     /**
-     * @return \Gems_User_User
+     * @return User
      */
-    public function getCurrentUser(): \Gems_User_User
+    public function getCurrentUser(): User
     {
         return $this->currentUser;
     }
@@ -50,9 +52,9 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
     }
 
     /**
-     * @return \Gems_Tracker_Respondent
+     * @return Respondent
      */
-    public function getRespondent(): \Gems_Tracker_Respondent
+    public function getRespondent(): Respondent
     {
         return $this->respondent;
     }
