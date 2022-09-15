@@ -49,11 +49,7 @@ class TokenSelect
      * @param \Zend_Db_Adapter_Abstract $db Adapter to use
      * @param string|array $fields Optional select fieldlist
      */
-<<<<<<< HEAD
-    public function __construct(\Zend_Db_Adapter_Abstract $db, Util $util, $fields = "*")
-=======
-    public function __construct(\Zend_Db_Adapter_Abstract $db, \Gems_Util $util)
->>>>>>> 2.x-mail
+    public function __construct(\Zend_Db_Adapter_Abstract $db, Util $util)
     {
         $this->db   = $db;
         $this->util = $util;
