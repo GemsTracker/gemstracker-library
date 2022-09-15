@@ -4,15 +4,15 @@ namespace Gems\Site;
 
 class SiteUrl
 {
-    protected bool $active;
+    protected bool $active = true;
 
-    protected bool $blocked;
+    protected bool $blocked = false;
 
     protected string $lang = 'en';
 
     protected array $organizations = [];
 
-    protected string $style;
+    protected ?string $style = null;
 
     protected string $url;
 
@@ -38,9 +38,9 @@ class SiteUrl
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getStyle(): string
+    public function getStyle(): ?string
     {
         return $this->style;
     }
