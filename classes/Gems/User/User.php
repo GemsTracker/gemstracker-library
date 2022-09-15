@@ -80,6 +80,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
     protected $basepath;
 
     /**
+     * @var \Gems\Communication\CommunicationRepository
+     */
+    protected $communicationRepository;
+
+    /**
      * @var array
      */
     protected $config;
@@ -1029,10 +1034,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * Get the propper Dear mr./mrs/ greeting of respondent
      * @return string
      */
-    public function getDearGreeting()
+    public function getDearGreeting(string $language = null)
     {
-
-        $genderDears = $this->translatedUtil->getGenderDear();
+        $genderDears = $this->translatedUtil->getGenderDear($language);
 
         $gender = $this->_getVar('user_gender');
         if (isset($genderDears[$gender])) {
@@ -1086,6 +1090,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $this->_embedderData = $this->loader->getEmbedDataObject($this->getUserId(), $this->db);
 
         return $this->_embedderData;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->_getVar('user_first_name');
     }
 
     /**
@@ -1164,9 +1173,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * In practice: starts uppercase
      *
      * @param string $locale
-     * @return array gender => string
+     * @return string Greeting
      */
-    protected function getGenderHello($locale = null)
+    public function getGenderHello($locale = null)
     {
         $greetings = $this->translatedUtil->getGenderHello($locale);
 
@@ -1354,6 +1363,16 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Return a password reset key
+     *
+     * @return int hours valid
+     */
+    public function getPasswordResetKeyDuration(): int
+    {
+        return $this->definition->getResetKeyDurationInHours();
+    }
+
+    /**
      * Return the (unfiltered) phonenumber if the user has one
      *
      * @return string|null
@@ -1494,6 +1513,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getSessionPatientNr()
     {
         return $this->_getVar('current_user_patNr', null);
+    }
+
+    public function getSurnamePrefix(): ?string
+    {
+        return $this->_getVar('user_surname_prefix');
     }
 
     /**
@@ -2107,7 +2131,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @param string $locale Optional locale
      * @return mixed String or array of warnings when something went wrong
      */
-    public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
+    public function sendMail($subjectTemplate, $bodyTemplate, $useResetFields = false, $locale = null)
     {
         if ($useResetFields && (! $this->canResetPassword())) {
             return $this->_('Trying to send a password reset to a user that cannot be reset.');
@@ -2117,29 +2141,24 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
         $mail->setFrom($this->getFrom());
 
-        $staffBounce = false;
-        if (isset($config['email']['staffBounce'])) {
-            $staffBounce = $config['email']['staffBounce'];
-        }
-
-        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $staffBounce);
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new \Symfony\Component\Mime\Address($this->getEmailAddress(), $this->getFullName()));
         if (isset($config['email']['bcc'])) {
-            $mail->addBcc($config['email']['bcc']);
+            $email->addBcc($config['email']['bcc']);
         }
 
         if ($useResetFields) {
-            $fields = $this->getResetPasswordMailFields($locale);
+            $fields = $this->communicationRepository->getUserPasswordMailFields($this, $locale);
         } else {
-            $fields = $this->getMailFields($locale);
+            $fields = $this->communicationRepository->getUserMailFields($this, $locale);
         }
-        // \MUtil\EchoOut\EchoOut::track($fields, $bbBodyTemplate);
-        $fields = \MUtil\Ra::braceKeys($fields, '{', '}');
 
-        $mail->setSubject(strtr($subjectTemplate, $fields));
-        $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
+        $email->htmlTemplate($this->communicationRepository->getTemplate($this->getBaseOrganization()), $bodyTemplate, $fields);
+
+        $mailer = $this->communicationRepository->getMailer($this->getFrom());
 
         try {
-            $mail->send();
+            $mailer->send($email);
             return null;
 
         } catch (\Exception $e) {

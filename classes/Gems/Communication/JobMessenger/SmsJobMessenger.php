@@ -2,42 +2,65 @@
 
 namespace Gems\Communication\JobMessenger;
 
-
-use Gems\Batch\BatchHandlerTrait;
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Event\Application\TokenCommunicationSent;
 use Gems\Exception\ClientException;
 use Gems\Log\LogHelper;
+use Gems\Communication\CommunicationRepository;
+use Gems\Tracker;
+use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
+use Gems\User\User;
+use League\HTMLToMarkdown\HtmlConverter;
+use MUtil\Registry\TargetInterface;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 
-class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\TargetInterface
+class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
 {
     use TargetTrait;
     use TranslateableTrait;
 
     /**
-     * @var \Zend_Db_Adapter_Abstract
+     * @var CommunicationRepository
      */
-    protected $db;
+    protected $communicationRepository;
 
     /**
-     * @var \Gems\Loader
+     * @var array
      */
-    protected $loader;
+    protected $config;
+
+    /**
+     * @var User
+     */
+    protected $currentUser;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
+
     protected function getFallbackPhonenumber($job)
     {
         return $job['gcj_fallback_fixed'];
     }
 
-    protected function getFrom(array $job, \Gems\Tracker\Token $token)
+    protected function getFrom(array $job, Token $token)
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
@@ -54,11 +77,27 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\Ta
 
     protected function getMessage(array $job, array $tokenData)
     {
-        $mailLoader = $this->loader->getMailLoader();
-        $mailer       = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
-        $mailer->setTemplate($job['gcj_id_message']);
+        $token = $this->tracker->getToken($tokenData);
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        return $mailer->getBodyText();
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+        $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
+
+        $twigLoader = new ArrayLoader([
+            'message' => $mailTexts['body'],
+        ]);
+
+        $twig = new Environment($twigLoader, [
+            'autoescape' => false,
+        ]);
+
+        $converter = new HtmlConverter([
+            'hard_break' => true,
+            'strip_tags' => true,
+            'remove_nodes' => 'head style',
+        ]);
+
+        return $converter->convert($twig->render('message', $mailFields));
     }
 
     protected function getPhonenumber(array $job, \Gems\Tracker\Token $token, $canBeMessaged)
@@ -109,15 +148,14 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\Ta
         }
     }
 
-    public function sendCommunication(array $job, array $tokenData, $preview)
+    public function sendCommunication(array $job, array $tokenData, bool $preview): ?bool
     {
-        $token = $this->loader->getTracker()->getToken($tokenData);
+        $token = $this->tracker->getToken($tokenData);
         $clientId = 'sms';
         if (isset($job['gcm_method_identifier'])) {
             $clientId = $job['gcm_method_identifier'];
         }
-        $communicationLoader = $this->loader->getCommunicationLoader();
-        $smsClient = $communicationLoader->getSmsClient($clientId);
+        $smsClient = $this->communicationRepository->getSmsClient($clientId);
 
         if (!($smsClient instanceof SmsClientInterface)) {
             throw new \Gems\Communication\Exception(sprintf('No Sms Client with id %s found', $clientId));
@@ -137,8 +175,13 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\Ta
             try {
 
                 $smsClient->sendMessage($filteredNumber, $message, $from);
-                $token->setMessageSent();
-                $this->logRespondentCommunication($token, $job, $number, $from);
+
+                $event = new TokenCommunicationSent($token, $this->currentUser, $job);
+                $event->setFrom([$from]);
+                $event->setSubject($job['gct_name']);
+                $event->setTo([$filteredNumber]);
+                $this->event->dispatch($event, $event::NAME);
+
             } catch (ClientException $e) {
 
                 $info = sprintf("Error sending sms to %s respondent %s with email address %s.",
@@ -154,44 +197,8 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\Ta
                 return false;
             }
         }
+        return true;
     }
 
-    /**
-     * Log the communication for the respondent.
-     */
-    protected function logRespondentCommunication(\Gems\Tracker\Token $token, $job, $number, $from)
-    {
-        $respondent = $token->getRespondent();
 
-        $currentUserId                = $this->loader->getCurrentUser()->getUserId();
-        $changeDate                   = new \MUtil\Db\Expr\CurrentTimestamp();
-
-        $logData['grco_id_to']        = $respondent->getId();
-
-        $by = $job['gcj_id_user_as'];
-
-        if (!$by) {
-            $by = $currentUserId;
-        }
-
-        $logData['grco_id_by']        = $by;
-        $logData['grco_organization'] = $token->getOrganizationId();
-        $logData['grco_id_token']     = $token->getTokenId();
-
-        $logData['grco_method']       = 'sms';
-        $logData['grco_topic']        = substr($job['gct_name'], 0, 120);
-
-        $logData['grco_address']      = $number;
-        $logData['grco_sender']       = $from;
-
-        $logData['grco_id_message']   = $job['gct_id_template'];
-        $logData['grco_id_job']       = $job['gcj_id_job'];
-
-        $logData['grco_changed']      = $changeDate;
-        $logData['grco_changed_by']   = $currentUserId;
-        $logData['grco_created']      = $changeDate;
-        $logData['grco_created_by']   = $currentUserId;
-
-        $this->db->insert('gems__log_respondent_communications', $logData);
-    }
 }

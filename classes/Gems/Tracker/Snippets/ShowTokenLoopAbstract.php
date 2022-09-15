@@ -15,6 +15,8 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use MUtil\Request\RequestInfo;
+use MUtil\Snippets\SnippetAbstract;
+use Symfony\Component\Mime\Address;
 
 /**
  * Basic class for creating forward loop snippets
@@ -25,7 +27,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
+class ShowTokenLoopAbstract extends SnippetAbstract
 {
     const CONTINUE_LATER_PARAM = 'continueLater';
 
@@ -33,6 +35,11 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
      * @var string
      */
     protected $action = 'forward';
+
+    /**
+     * @var \Gems\Communication\CommunicationRepository
+     */
+    protected $communicationRepository;
 
     /**
      * General date format
@@ -53,6 +60,8 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
     protected $menu;
 
     /**
+     * Required
+     *
      * @var RequestInfo
      */
     protected $requestInfo;
@@ -160,19 +169,37 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
 
         $html->h3($this->getHeaderLabel());
 
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new Address($token->getEmail(), $token->getRespondentName()));
+        $email->addFrom(new Address($token->getOrganization()->getEmail()));
+
+        $template = $this->communicationRepository->getTemplate($token->getOrganization());
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
+        $templateId = $this->communicationRepository->getTemplateIdFromCode('continue');
+
         $mailLoader = $this->loader->getMailLoader();
         /** @var \Gems\Mail\TokenMailer $mail */
         $mail       = $mailLoader->getMailer('token', $token->getTokenId());
         $mail->setFrom($token->getOrganization()->getFrom());
+        
+        if ($templateId) {
 
-        if ($mail->setTemplateByCode('continue')) {
-            $lastMailedDate = \MUtil\Model::getDateTimeInterface($token->getMailSentDate());
+            $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+            $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+            $mailer = $this->communicationRepository->getMailer($token->getOrganization()->getEmail());
+            $email->subject($mailTexts['subject'], $mailFields);
+            $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+
+            $mailSentDate = $token->getMailSentDate();
+            if ($mailSentDate) {
+                $lastMailedDate = new \DateTimeImmutable($mailSentDate);
+            }
 
             // Do not send multiple mails a day
             if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
                 $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
             } else {
-                $mail->send();
+                $mailer->send($email);
                 $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
             }
 
@@ -201,7 +228,7 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
 
             $this->wasAnswered = $this->token->isCompleted();
 
-            return parent::checkRegistryRequestsAnswers();
+            return ($this->requestInfo instanceof \MUtil\Request\RequestInfo);
         } else {
             return false;
         }
@@ -367,10 +394,10 @@ class ShowTokenLoopAbstract extends \MUtil\Snippets\SnippetAbstract
          * Get the url *
          ***************/
         $params = array(
-            'action'                 => 'to-survey',
-            \MUtil\Model::REQUEST_ID => $token->getTokenId(),
-            'RouteReset'             => false,
-        );
+            'action' => 'to-survey',
+            \MUtil\Model::REQUEST_ID        => $token->getTokenId(),
+            'RouteReset'                   => false,
+            );
 
         return new \MUtil\Html\HrefArrayAttribute($params);
     }

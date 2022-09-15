@@ -14,6 +14,7 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Registry\TargetAbstract;
 use Gems\Translate\GenderTranslation;
 use Gems\Util\Translated;
 
@@ -28,7 +29,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Respondent extends \Gems\Registry\TargetAbstract
+class Respondent extends TargetAbstract
 {
     use GenderTranslation;
 
@@ -266,10 +267,13 @@ class Respondent extends \Gems\Registry\TargetAbstract
      * 
      * @return string
      */
-    public function getDearGreeting()
+    public function getDearGreeting(string $language = null): string
     {
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
 
-        $genderDears = $this->translatedUtil->getGenderDear($this->getLanguage());
+        $genderDears = $this->translatedUtil->getGenderDear($language);
 
         $gender = $this->getGender();
         if (isset($genderDears[$gender])) {
@@ -327,10 +331,13 @@ class Respondent extends \Gems\Registry\TargetAbstract
      * Get the proper greeting of respondent
      * @return string
      */
-    public function getGreeting()
+    public function getGreeting(string $language = null)
     {
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
 
-        $genderGreetings = $this->translatedUtil->getGenderGreeting($this->getLanguage());
+        $genderGreetings = $this->translatedUtil->getGenderGreeting($language);
 
         $gender = $this->getGender();
         if (isset($genderGreetings[$gender])) {
@@ -488,9 +495,12 @@ class Respondent extends \Gems\Registry\TargetAbstract
      * Get the propper salutation of respondent
      * @return string
      */
-    public function getSalutation()
+    public function getSalutation(string $language = null)
     {
-        return sprintf($this->_('Dear %s', null, $this->getGender()), $this->getGreeting());
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
+        return sprintf($this->_('Dear %s', $language, $this->getGender()), $this->getGreeting());
     }
 
     /**

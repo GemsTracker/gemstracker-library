@@ -13,6 +13,7 @@ namespace Gems;
 
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Token\TokenSelect;
 use Mezzio\Session\SessionInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -665,11 +666,13 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      */
     public function getTokenSelect($fields = '*')
     {
-        return $this->_loadClass('Token\\TokenSelect', true, [
-            $this->db,
-            $this->loader->getUtil(),
-            $fields
-        ]);
+        /**
+         * @var TokenSelect
+         */
+        $tokenSelect = $this->_loadClass('Token\\TokenSelect', true, array($this->db, $this->loader->getUtil()));
+
+        $tokenSelect->columns($fields);
+        return $tokenSelect;
     }
 
     /**

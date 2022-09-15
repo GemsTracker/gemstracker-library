@@ -3,42 +3,77 @@
 namespace Gems\Communication\JobMessenger;
 
 
+use Gems\Event\Application\TokenMailSent;
 use Gems\Log\LogHelper;
+use Gems\Communication\CommunicationRepository;
+use Gems\Tracker;
+use Gems\Tracker\Token;
+use Gems\User\UserRepository;
+use MUtil\Registry\TargetInterface;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mime\Address;
 
-class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\TargetInterface
+class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
 {
     use TargetTrait;
     use TranslateableTrait;
 
     /**
-     * @var \Zend_Db_Adapter_Abstract
+     * @var CommunicationRepository
      */
-    protected $db;
+    protected $communicationRepository;
 
     /**
-     * @var \Gems\Loader
+     * @var array config
      */
-    protected $loader;
+    protected $config;
+
+    /**
+     * @var \Gems\User\User
+     */
+    protected $currentUser;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $event;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
-    public function sendCommunication(array $job, array $tokenData, $preview)
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
+
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    public function sendCommunication(array $job, array $tokenData, bool $preview): ?bool
     {
-        $mailLoader = $this->loader->getMailLoader();
-        $mailer     = $mailLoader->getMailer('token', $tokenData['gto_id_token']);
-        /* @var $mailer \Gems\Mail\TokenMailer */
-        $token  = $mailer->getToken();
+        $token = $this->tracker->getToken($tokenData);
 
-        $sendById = $job['gcj_id_user_as'];
-        $email    = $this->getToEmail($job, $mailer, $token, $tokenData['can_email']);
+        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
-        if (empty($email)) {
+        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+        $mailTexts = $this->communicationRepository->getCommunicationTexts($job['gcj_id_message'], $language);
+        if ($mailTexts === null) {
+            throw new \MailException('No template data found');
+        }
+
+        $email = $this->communicationRepository->getNewEmail();
+        $email->subject($mailTexts['subject'], $mailFields);
+
+        $to = $this->getToEmail($job, $token, $tokenData['can_email']);
+
+        if (empty($to)) {
             if ($preview) {
                 $this->addBatchMessage(sprintf(
                     $this->_('%s %s can not be sent because no email address is available.'), $token->getPatientNumber(), $token->getSurveyName()
@@ -49,13 +84,15 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
         }
 
         // If the email is sent to a fall back address, we need to change it!
-        if ($token->getEmail() !== $email) {
-            $mailer->setTo($email, $token->getRespondentName());
+        if ($token->getEmail() !== $to) {
+            $email->addTo(new Address($to, $token->getRespondentName()));
         }
 
         // The variable from is used in the preview message
-        $from = $this->getFromEmail($job, $mailer);
-        $fromName = $this->getFromName($job, $mailer);
+        $from = $this->getFromEmail($job, $token);
+        $fromName = $this->getFromName($job, $token);
+
+        $mailer = $this->communicationRepository->getMailer($from);
 
         if ($preview) {
             $this->addBatchMessage(sprintf(
@@ -63,17 +100,19 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
             ));
         } else {
             try {
-                $mailer->setFrom($from, $fromName);
+                $email->addFrom(new Address($from, $fromName));
 
-                $mailer->setBy($sendById);
+                $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
+                $mailer->send($email);
 
-                $mailer->setTemplate($job['gcj_id_message']);
-                $mailer->setMailjob($job['gcj_id_job']);
-                $mailer->send();
+                $event = new TokenMailSent($email, $token, $this->currentUser, $job);
+                $this->event->dispatch($event, $event::NAME);
+
             } catch (\Zend_Mail_Exception $exception) {
-                $fields = $mailer->getMailFields(false);
-
-                $info = sprintf("Error mailing to %s respondent %s with email address %s.", $fields['organization'], $fields['full_name'], $fields['email']
+                $info = sprintf("Error mailing to %s respondent %s with email address %s.",
+                    $mailFields['organization'],
+                    $mailFields['full_name'],
+                    $mailFields['email']
                 );
 
                 // Use a gems exception to pass extra information to the log
@@ -84,94 +123,70 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
                 return false;
             }
         }
+        return true;
     }
 
-    /**
-     *
-     * @param array $job
-     * @param \Gems\Mail\TokenMailer $mailer
-     * @return string or null
-     * @throws \Gems\Exception
-     */
-    public function getFallbackEmail(array $job, \Gems\Mail\TokenMailer $mailer)
+    public function getFallbackEmail(array $job, Token $token): string
     {
         // Set the from address to use in this job
         switch ($job['gcj_fallback_method']) {
             case 'O':   // Send on behalf of organization
-                $organization = $mailer->getOrganization();
+                $organization = $token->getOrganization();
                 return $organization->getEmail();
 
             case 'U':   // Send on behalf of fixed user
-                return $this->getUserEmail($job['gcj_id_user_as']);
+                return $this->getUserEmail((int)$job['gcj_id_user_as']);
 
             case 'F':   // Send on behalf of fixed email address
                 return $job['gcj_fallback_fixed'];
 
             case 'S':   // Use site email
-                return $this->project->email['site'];
+                if (isset($this->config['email']['site'])) {
+                    return $this->config['email']['site'];
+                }
+
 
             default:
                 throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
         }
     }
 
-    /**
-     *
-     * @param array $job
-     * @param \Gems\Mail\TokenMailer $mailer
-     * @return string or null
-     * @throws \Gems\Exception
-     */
-    public function getFromEmail(array $job, \Gems\Mail\TokenMailer $mailer)
+    public function getFromEmail(array $job, Token $token): string
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
             case 'O':   // Send on behalf of organization
-                return $mailer->getOrganization()->getEmail();
+                return $token->getOrganization()->getEmail();
 
             case 'U':   // Send on behalf of fixed user
-                return $this->getUserEmail($job['gcj_id_user_as']);
+                return $this->getUserEmail((int)$job['gcj_id_user_as']);
 
             case 'F':   // Send on behalf of fixed email address
                 return $job['gcj_from_fixed'];
 
             case 'S':   // Use site email
-                return $this->project->email['site'];
+                if (isset($this->config['email']['site'])) {
+                    return $this->config['email']['site'];
+                }
 
             default:
                 throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
         }
     }
 
-    /**
-     *
-     * @param array $job
-     * @param \Gems\Mail\TokenMailer $mailer
-     * @return string or null
-     * @throws \Gems\Exception
-     */
-    public function getFromName(array $job, \Gems\Mail\TokenMailer $mailer)
+    public function getFromName(array $job, Token $token): ?string
     {
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
             case 'O':   // Send on behalf of organization
-                return $mailer->getOrganization()->getContactName();
+                return $token->getOrganization()->getContactName();
 
             default:
                 return null;
         }
     }
 
-    /**
-     *
-     * @param array $job
-     * @param \Gems\Mail\TokenMailer $mailer
-     * @param \Gems\Tracker\Token $token
-     * @param boolean $canBeMailed True when allowed to mail respondent
-     * @return string or null
-     * @throws \Gems\Exception
-     */
-    public function getToEmail(array $job, \Gems\Mail\TokenMailer $mailer, \Gems\Tracker\Token $token, $canBeMailed)
+    public function getToEmail(array $job, Token $token, bool $canBeMailed): string
     {
         $email = null;
 
@@ -195,7 +210,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
                 break;
 
             case '3':
-                return $this->getFallbackEmail($job, $mailer);
+                return $this->getFallbackEmail($job, $token);
 
             default:
                 throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
@@ -212,7 +227,7 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
                 }
             // Intentional fall through
             case 'F':
-                return $this->getFallbackEmail($job, $mailer);
+                return $this->getFallbackEmail($job, $token);
 
             default:
                 throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
@@ -225,8 +240,8 @@ class MailJobMessenger extends JobMessengerAbstract implements \MUtil\Registry\T
      * @param int $userId
      * @return string
      */
-    protected function getUserEmail($userId)
+    protected function getUserEmail(int $userId): ?string
     {
-        return $this->db->fetchOne("SELECT gsf_email FROM gems__staff WHERE gsf_id_user = ?", $userId);
+        return $this->userRepository->getEmailFromUserId($userId);
     }
 }

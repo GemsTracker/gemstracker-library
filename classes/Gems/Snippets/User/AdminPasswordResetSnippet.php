@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\User;
 
+use Gems\Communication\CommunicationRepository;
+use Symfony\Component\Mime\Address;
+
 /**
  *
  *
@@ -26,6 +29,11 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
      * @var bool Normally we check if the user is active ON THIS SITE, but not in the admin panel
      */
     protected $checkCurrentOrganization = true;
+
+    /**
+     * @var CommunicationRepository
+     */
+    protected $communicationRepository;
 
     /**
      *
@@ -86,10 +94,25 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
      */
     protected function onFakeSubmit()
     {
+        $organization = $this->user->getBaseOrganization();
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new Address($this->user->getEmailAddress(), $this->user->getFullName()));
+        $email->addFrom(new Address($organization->getEmail()));
+
+        $template = $this->communicationRepository->getTemplate($organization);
+        $language = $this->communicationRepository->getCommunicationLanguage($this->user->getLocale());
+        $mailFields = $this->communicationRepository->getUserPasswordMailFields($this->user, $language);
+        $mailer = $this->communicationRepository->getMailer($organization->getEmail());
+
         if (isset($this->formData['create_account']) && $this->formData['create_account']) {
-            $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->user->getUserId());
-            if ($mail->setCreateAccountTemplate()) {
-                $mail->send();
+            $templateId = $this->communicationRepository->getCreateAccountTemplate($organization);
+            if ($templateId) {
+                $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+                $email->subject($mailTexts['subject'], $mailFields);
+                $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+
+                $mailer->send($email);
+
                 $this->addMessage($this->_('Create account mail sent'));
                 $this->setAfterSaveRoute();
             } else {
@@ -99,9 +122,14 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
         }
 
         if (isset($this->formData['reset_password']) && $this->formData['reset_password']) {
-            $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->user->getUserId());
-            if ($mail->setResetPasswordTemplate()) {
-                $mail->send();
+            $templateId = $this->communicationRepository->getResetPasswordTemplate($organization);
+            if ($templateId) {
+                $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+                $email->subject($mailTexts['subject'], $mailFields);
+                $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
+
+                $mailer->send($email);
+
                 $this->addMessage($this->_('Reset password mail sent'));
                 $this->setAfterSaveRoute();
             } else {

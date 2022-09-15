@@ -78,6 +78,7 @@ class ConfigProvider
             'db'            => $this->getDbSettings(),
             'dependencies'  => $this->getDependencies(),
             'email'         => $this->getEmailSettings(),
+            'events'        => $this->getEventSubscribers(),
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'messenger'     => $messengerSettings(),
@@ -247,6 +248,14 @@ class ConfigProvider
             testing without altering staff e-mail addresses.
             When not set, bounce is used. */
             'staffBounce' => false,
+        ];
+    }
+
+    protected function getEventSubscribers(): array
+    {
+        return [
+            EventSubscriber::class,
+            \Gems\Communication\EventSubscriber::class,
         ];
     }
 

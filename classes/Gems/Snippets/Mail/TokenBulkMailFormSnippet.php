@@ -11,6 +11,12 @@
 
 namespace Gems\Snippets\Mail;
 
+use Gems\Loader;
+use Gems\Tracker;
+use MUtil\Model\Bridge\FormBridgeInterface;
+use MUtil\Model\ModelAbstract;
+use Symfony\Component\Mime\Address;
+
 /**
  *
  *
@@ -20,15 +26,23 @@ namespace Gems\Snippets\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
+class TokenBulkMailFormSnippet extends MailFormSnippet
 {
-    protected $identifier;
+    /**
+     * @var \Gems\Communication\CommunicationRepository
+     */
+    protected $communicationRepository;
 
-    protected $loader;
+    protected $identifier;
 
     protected $multipleTokenData;
 
     protected $otherTokenData;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      * Called after the check that all required registry values
@@ -53,7 +67,7 @@ class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addFormElements(FormBridgeInterface $bridge, ModelAbstract $model)
     {
         $bridge->addElement($this->createToElement());
         $bridge->addElement($this->mailElements->createMethodElement());
@@ -116,9 +130,7 @@ class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
             $title = null;
         }
 
-        $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-        /* @var $mailer \Gems\Mail\TokenMailer */
-        $token = $mailer->getToken();
+        $token = $this->tracker->getToken($tokenData);
 
         return $this->createMultiOption($tokenData,
             $token->getRespondentName(),
@@ -161,7 +173,7 @@ class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
     {
         parent::loadFormData();
         //if (!isset($this->formData['to']) || !is_array($this->formData['to'])) {
-        if (!$this->request->isPost()) {
+        if (!$this->requestInfo->isPost()) {
             $this->formData['token_select'] = array();
             foreach ($this->multipleTokenData as $tokenData) {
                 if ($tokenData['can_email']) {
@@ -182,20 +194,24 @@ class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
 
         foreach($this->multipleTokenData as $tokenData) {
             if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
-                $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-                /* @var $mailer \Gems\Mail\TokenMailer */
-                $token = $mailer->getToken();
-                $email = $token->getEmail();
+                $token = $this->loader->getTracker()->getToken($tokenData);
+                $tokenEmail = $token->getEmail();
 
-                if (!empty($email)) {
+                if (!empty($tokenEmail)) {
                     if ($this->formData['multi_method'] == 'M') {
-                        $mailer->setFrom($this->fromOptions[$this->formData['from']]);
-                        $mailer->setSubject($this->formData['subject']);
-                        $mailer->setBody(htmlspecialchars_decode($this->formData['mailBody']));
-                        $mailer->setTemplateId($this->formData['select_template']);
+                        $email = $this->communicationRepository->getNewEmail();
+                        $email->addTo(new Address($token->getEmail(), $token->getRespondentName()));
+                        $email->addFrom($this->fromOptions[$this->formData['from']]);
+                        $email->subject($this->formData['subject']);
+
+                        $template = $this->communicationRepository->getTemplate($token->getOrganization());
+                        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
+                        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+                        $email->htmlTemplate($template, htmlspecialchars_decode($this->formData['mailBody']), $mailFields);
+                        $mailer = $this->communicationRepository->getMailer($this->fromOptions[$this->formData['from']]);
 
                         try {
-                            $mailer->send();
+                            $mailer->send($email);
 
                             $mails++;
                             $updates++;
@@ -205,18 +221,24 @@ class TokenBulkMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
                             $this->addMessage(sprintf($this->_('Sending failed for token %s with reason: %s.'), $token->getTokenId(), $exc->getMessage()));
                         }
 
-                    } elseif (!isset($sentMailAddresses[$email])) {
-                        $mailer->setFrom($this->fromOptions[$this->formData['from']]);
-                        $mailer->setSubject($this->formData['subject']);
-                        $mailer->setBody(htmlspecialchars_decode($this->formData['mailBody']));
-                        $mailer->setTemplateId($this->formData['select_template']);
+                    } elseif (!isset($sentMailAddresses[$tokenEmail])) {
+                        $email = $this->communicationRepository->getNewEmail();
+                        $email->addTo(new Address($token->getEmail(), $token->getRespondentName()));
+                        $email->addFrom($this->fromOptions[$this->formData['from']]);
+                        $email->subject($this->formData['subject']);
+
+                        $template = $this->communicationRepository->getTemplate($token->getOrganization());
+                        $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
+                        $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
+                        $email->htmlTemplate($template, htmlspecialchars_decode($this->formData['mailBody']), $mailFields);
+                        $mailer = $this->communicationRepository->getMailer($this->fromOptions[$this->formData['from']]);
 
                         try {
-                            $mailer->send();
+                            $mailer->send($email);
                             $mails++;
                             $updates++;
 
-                            $sentMailAddresses[$email] = true;
+                            $sentMailAddresses[$tokenEmail] = true;
 
                         } catch (\Zend_Mail_Transport_Exception $exc) {
                             // Sending failed
