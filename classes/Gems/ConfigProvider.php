@@ -469,7 +469,8 @@ class ConfigProvider
     protected function getSitesSettings(): array
     {
         return [
-            'useDatabase' => true,
+            //'useDatabase' => true,
+            //'allow' => []
         ];
     }
 
