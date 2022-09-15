@@ -100,7 +100,9 @@
         "symfony/finder": "^6.1",
         "symfony/mailer": "^6.1",
         "league/html-to-markdown": "^5.1",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.4",
+        "laminas/laminas-filter": "^2.17",
+        "spomky-labs/otphp": "^11.0"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",

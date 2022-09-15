@@ -718,6 +718,29 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Checks whether the user is allowed to log in using the given IP address
+     * according to his group and BASE organization
+     */
+    public function isAllowedIpForLogin(?string $ipAddress): bool
+    {
+        if (empty($ipAddress)) {
+            return false;
+        }
+
+        // Check group list
+        if (!$this->util->isAllowedIP($ipAddress, $this->getAllowedIPRanges() ?? '')) {
+            return false;
+        }
+
+        // Check base organization list
+        if (!$this->util->isAllowedIP($ipAddress, $this->getBaseOrganization()->getAllowedIpRanges() ?? '')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * True when the current url is one where this user is allowed to login.
      *
      * If the url is a fixed organization url and the user is not allowed to
@@ -1330,6 +1353,24 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Increment the HOTP count
+     */
+    public function incrementOtpCount()
+    {
+        $count = $this->_getVar('user_otp_count') + 1;
+        $this->_setVar('user_otp_count', $count);
+
+        $now = new \DateTimeImmutable();
+
+        $values = [
+            'gul_otp_count' => $count,
+            'gul_otp_requested' => $now->format('Y-m-d H:i:s'),
+        ];
+
+        $this->db->update('gems__user_logins', $values, ['gul_id_user = ?' => $this->getUserLoginId()]);
+    }
+
+    /**
      * Get the HOTP requested time
      */
     public function getOtpRequested()
@@ -1528,6 +1569,26 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getSurveyReturn()
     {
         return $this->_getVar('surveyReturn', array());
+    }
+
+    public function getTfaMethodClass(): string
+    {
+        if ($this->_hasVar('user_two_factor_key')) {
+            $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
+                $this->_getVar('user_two_factor_key'),
+                TwoFactorAuthenticatorInterface::SEPERATOR
+            );
+        } else {
+            $authClass = $this->defaultAuthenticatorClass;
+        }
+
+        return match($authClass) {
+            'GoogleAuthenticator' => 'AppTotp', // TODO: Legacy
+            'AppTotp' => 'AppTotp',
+            'MailHotp' => 'MailHotp',
+            'SmsHotp' => 'SmsHotp',
+            default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
+        };
     }
 
     /**

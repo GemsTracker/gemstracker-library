@@ -7,6 +7,8 @@ namespace Gems\Cache;
 
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Exception\LogicException;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class HelperAdapter extends TagAwareAdapter
@@ -32,11 +34,16 @@ class HelperAdapter extends TagAwareAdapter
         return null;
     }
 
-    public function setCacheItem($key, $value, $tag=null)
+    public function setCacheItem($key, $value, $tag=null, $expiresAfter=null)
     {
         $item = $this->pool->getItem($key);
-        if ($tag !== null && $item instanceof CacheItem && $item->isTaggable) {
-            $item->tag($tag);
+        if ($tag !== null && $item instanceof CacheItem) {
+            try {
+                $item->tag($tag);
+            } catch (LogicException) {}
+        }
+        if ($expiresAfter !== null) {
+            $item->expiresAfter($expiresAfter);
         }
         $item->set($value);
         $this->pool->save($item);

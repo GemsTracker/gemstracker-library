@@ -4,25 +4,85 @@ namespace Gems\Config;
 
 use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\Handlers\Auth\EmbedLoginHandler;
+use Gems\Handlers\Auth\LoginHandler;
+use Gems\Handlers\Auth\TfaLoginHandler;
+use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
+use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Util\RouteGroupTrait;
+use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Session\SessionMiddleware;
 
 class Route
 {
     use ModelSnippetActionRouteHelpers;
+    use RouteGroupTrait;
 
     public function __invoke(): array
     {
         return [
-            ...$this->getAskRoutes(),
-            ...$this->getRespondentRoutes(),
-            ...$this->getOverviewRoutes(),
-            ...$this->getProjectRoutes(),
+            ...$this->getLoggedOutRoutes(),
             ...$this->getSetupRoutes(),
-            ...$this->getTrackBuilderRoutes(),
+            ...$this->routeGroup([
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    AuthenticationMiddleware::class,
+                ],
+            ], [
+                ...$this->getAskRoutes(),
+                ...$this->getRespondentRoutes(),
+                ...$this->getOverviewRoutes(),
+                ...$this->getProjectRoutes(),
+                ...$this->getTrackBuilderRoutes(),
+            ]),
+        ];
+    }
+
+    public function getLoggedOutRoutes(): array
+    {
+        return [
+            [
+                'name' => 'auth.login',
+                'path' => '/login',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
+                    LoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'tfa.login',
+                'path' => '/tfa',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
+                    TfaLoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'embed.login',
+                'path' => '/embed/login',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    EmbedLoginHandler::class,
+                ],
+            ],
         ];
     }
 
