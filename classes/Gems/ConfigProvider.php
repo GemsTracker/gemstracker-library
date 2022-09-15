@@ -567,6 +567,7 @@ class ConfigProvider
     {
         return [
             'staff' => [],
+            'super' => [],
         ];
     }
 }
