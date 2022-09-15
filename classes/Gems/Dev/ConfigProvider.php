@@ -10,6 +10,7 @@ class ConfigProvider
             return [
                 'dev' => $this->getDevSettings(),
                 'migrations'   => $this->getMigrations(),
+                'sites' => $this->getSitesSettings(),
             ];
         }
 
@@ -39,6 +40,17 @@ class ConfigProvider
             'seeds' => [
                 __DIR__ . '/configs/db/seeds',
             ],
+        ];
+    }
+
+    protected function getSitesSettings(): array
+    {
+        return [
+            'allowed' => [
+                [
+                    'url' => 'http://gemstracker.test',
+                ],
+            ]
         ];
     }
 }
