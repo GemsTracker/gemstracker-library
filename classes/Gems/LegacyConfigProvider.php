@@ -40,6 +40,7 @@ class LegacyConfigProvider
         return [
             'factories'  => [
                 \Gems\Loader::class => LegacyFactory::class,
+                \Gems\User\UserLoader::class => LegacyFactory::class,
                 \Gems\Menu::class => LegacyFactory::class,
                 \Gems\Tracker::class => LegacyFactory::class,
                 \Gems\Util::class => LegacyFactory::class,

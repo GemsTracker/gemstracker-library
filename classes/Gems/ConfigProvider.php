@@ -89,7 +89,9 @@ class ConfigProvider
             'roles'         => $this->getRoles(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
+            'sites'         => $this->getSitesSettings(),
             'templates'     => $this->getTemplates(),
+            'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
         ];
@@ -455,12 +457,47 @@ class ConfigProvider
         ];
     }
 
+    protected function getSitesSettings(): array
+    {
+        return [
+            'useDatabase' => true,
+        ];
+    }
+
     protected function getTemplates(): array
     {
         return [
             'gems' => [__DIR__ . '/../../templates/Auth'],
             'paths' => [
                 'menu' => [__DIR__ . '/../../templates/menu'],
+                'gems' => [__DIR__ . '/../../templates/gems'],
+            ],
+        ];
+    }
+
+    protected function getTwoFactor(): array
+    {
+        return [
+            'methods' => [
+                'SmsHotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                    'maxSendOtpAttempts' => 2,
+                    'maxSendOtpAttemptsPerPeriod' => 3600,
+                    'maxVerifyOtpAttempts' => 5,
+                ],
+                'MailHotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                    'maxSendOtpAttempts' => 2,
+                    'maxSendOtpAttemptsPerPeriod' => 3600,
+                    'maxVerifyOtpAttempts' => 5,
+                ],
+                'AppTotp' => [
+                    'codeLength' => 6,
+                    'codeValidSeconds' => 300,
+                    'maxVerifyOtpAttempts' => 5,
+                ],
             ],
         ];
     }

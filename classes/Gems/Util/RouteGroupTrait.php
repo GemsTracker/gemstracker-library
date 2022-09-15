@@ -12,10 +12,10 @@ trait RouteGroupTrait
             }
 
             if (isset($groupOptions['middleware'])) {
-                $route['middleware'] = array_merge(
+                $route['middleware'] = array_unique(array_merge(
                     (array)$groupOptions['middleware'],
                     (array)($route['middleware'] ?? [])
-                );
+                ));
             }
 
             if (isset($groupOptions['options'])) {
