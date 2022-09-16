@@ -54,7 +54,7 @@ class TestUsers extends \Phinx\Seed\AbstractSeed
             ],
         ];
 
-        $userLogins = $this->table('gems__user_logins');
+        $userLogins = $this->table('gems__user_passwords');
         $userLogins->insert($data)
               ->saveData();
 
@@ -109,7 +109,7 @@ class TestUsers extends \Phinx\Seed\AbstractSeed
             ],
         ];
 
-        $userLogins = $this->table('gems__user_logins');
+        $userLogins = $this->table('gems__user_passwords');
         $userLogins->insert($data)
               ->saveData();
 
