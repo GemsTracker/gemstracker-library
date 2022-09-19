@@ -453,28 +453,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
             }
         }
 
-        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
-            if ($this->_hasVar('current_user_style')) {
-                $style = $this->_getVar('current_user_style');
-            } else {
-                $style = null;
-            }
-
-            // Cookie org is often either \Gems\User\UserLoader::SYSTEM_NO_ORG (-1) or 0 if not set
-            if (! ($style || \Gems\Cookies::getOrganization($this->getRequest()) > 0)) {
-                $site = $this->util->getSites()->getSiteForCurrentUrl();
-                if ($site) {
-                    $style = $site->getStyle();
-                }
-            }
-                
-            if (! $style) {
-                $style = $this->getCurrentOrganization()->getStyle();
-            }
-
-            $escort->layoutSwitch($style);
-        }
-
         return $this;
     }
 
@@ -1831,7 +1809,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     {
         if ($this->_getVar('user_active')) {
             if ($checkCurrentOrganization) {
-                return $this->canLoginHere();
+                //return $this->canLoginHere();
             }
             return true;
         }
