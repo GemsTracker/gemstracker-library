@@ -13,8 +13,8 @@ class ValueEncryptor
         if (isset($this->config['security'], $this->config['security']['encryption'])) {
             $this->config = $config['security']['encryption'];
         }
-        if (isset($this->config['app']['salt'])) {
-            $this->salt = $this->config['app']['salt'];
+        if (isset($this->config['app']['key'])) {
+            $this->key = $this->config['app']['key'];
         }
     }
 
@@ -35,7 +35,7 @@ class ValueEncryptor
             $method = $methods[$methodKey];
         }
         if ($key === null) {
-            $key = $this->getEncryptionSaltKey();
+            $key = $this->getEncryptionKey();
         }
 
         $decoded = base64_decode($base64);
@@ -74,7 +74,7 @@ class ValueEncryptor
         $method     = reset($methods);
         $methodKey  = key($methods);
         if ($key === null) {
-            $key = $this->getEncryptionSaltKey();
+            $key = $this->getEncryptionKey();
         }
 
         $result = $this->encryptOpenSsl($input, $method, $key);
@@ -98,17 +98,17 @@ class ValueEncryptor
         return $iv . openssl_encrypt($input, $method, $key, 0, $iv);
     }
 
-    protected function getEncryptionMethods()
+    protected function getEncryptionMethods(): array
     {
         if (isset($this->config['methods'])) {
             // reverse so first item is used as default
             return array_reverse($this->config['methods']);
         }
-
+        return ['AES-256-CBC'];
     }
 
-    protected function getEncryptionSaltKey(): string
+    protected function getEncryptionKey(): string
     {
-        return $this->salt;
+        return $this->key;
     }
 }
