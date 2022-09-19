@@ -11,6 +11,7 @@
 
 namespace Gems\User;
 
+use Gems\Exception\AuthenticationException;
 use Gems\User\Group;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Laminas\ServiceManager\ServiceManager;
@@ -623,7 +624,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
             // \MUtil\EchoOut\EchoOut::track($e->getMessage());
         }
 
-        return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
+        throw new AuthenticationException('no login');
     }
 
     /**
@@ -662,7 +663,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
                 ->order('tolerance');
         }
         $wheres[] = $this->db->quoteInto('gul_login = ?', $login_name);
-        $isEmail  = \MUtil\StringUtil\StringUtil::contains($login_name, '@');
+        $isEmail  = str_contains($login_name, '@');
 
         if ($isEmail && $this->allowStaffEmailLogin) {
             $rows = $this->db->fetchAll(

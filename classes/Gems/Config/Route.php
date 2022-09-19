@@ -6,10 +6,12 @@ use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
+use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -17,6 +19,7 @@ use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
 
@@ -29,18 +32,23 @@ class Route
     {
         return [
             ...$this->getLoggedOutRoutes(),
-            ...$this->getSetupRoutes(),
+
             ...$this->routeGroup([
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
                     AuthenticationMiddleware::class,
+                    MenuMiddleware::class,
                 ],
             ], [
                 ...$this->getAskRoutes(),
                 ...$this->getRespondentRoutes(),
                 ...$this->getOverviewRoutes(),
                 ...$this->getProjectRoutes(),
+                ...$this->getSetupRoutes(),
                 ...$this->getTrackBuilderRoutes(),
             ]),
         ];
@@ -116,7 +124,9 @@ class Route
                 'name' => 'overview',
                 'path' => '/overview',
                 'allowed_methods' => ['GET'],
-                'middleware' => $this->modelSnippetCustomMiddleware,
+                'middleware' => [
+                    EmptyHandler::class,
+                ]
             ],
             ...$this->createBrowseRoutes(baseName: 'overview.summary',
                 controllerClass: \Gems\Actions\SummaryAction::class,
@@ -192,7 +202,9 @@ class Route
                 'name' => 'project',
                 'path' => '/project',
                 'allowed_methods' => ['GET'],
-                'middleware' => $this->modelSnippetCustomMiddleware,
+                'middleware' => [
+                    EmptyHandler::class
+                ],
             ],
             ...$this->createBrowseRoutes(baseName: 'project.tracks',
                 controllerClass: \Gems\Actions\ProjectTracksAction::class,
@@ -369,7 +381,9 @@ class Route
                 'name' => 'setup',
                 'path' => '/setup',
                 'allowed_methods' => ['GET'],
-                'middleware' => $this->modelSnippetCustomMiddleware,
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
             ],
             ...$this->createBrowseRoutes(baseName: 'setup.project-information',
                 controllerClass: \Gems\Actions\ProjectInformationAction::class,
@@ -426,8 +440,7 @@ class Route
                 'path' => '/track-builder',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
-                    MenuMiddleware::class,
-                    TrackBuilderAction::class,
+                    EmptyHandler::class,
                 ],
             ],
 

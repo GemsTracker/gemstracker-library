@@ -40,14 +40,7 @@ trait ModelSnippetActionRouteHelpers
     ];
 
     protected array $modelSnippetCustomMiddleware = [
-        SecurityHeadersMiddleware::class,
-        SessionMiddleware::class,
-        FlashMessageMiddleware::class,
-        CsrfMiddleware::class,
         LegacyCurrentUserMiddleware::class,
-        LocaleMiddleware::class,
-        TestCurrentUserMiddleware::class,
-        MenuMiddleware::class,
         LegacyController::class,
     ];
 
