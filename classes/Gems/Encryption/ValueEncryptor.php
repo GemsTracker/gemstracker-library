@@ -6,7 +6,7 @@ class ValueEncryptor
 {
     protected array $config = [];
 
-    protected string $salt = '';
+    protected string $key = '';
 
     public function __construct(array $config)
     {
