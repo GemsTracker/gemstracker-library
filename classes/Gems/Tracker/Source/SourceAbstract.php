@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Source;
 
+use Gems\Encryption\ValueEncryptor;
+
 /**
  * Abstract implementation of SourceInterface containing basic utilities and logical
  * separation between the \Gems database and the Source database
@@ -60,15 +62,14 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
      * @var \Gems\Tracker
      */
     protected $tracker;
+
+    /**
+     * @var ValueEncryptor
+     */
+    protected $valueEncryptor;
 
     /**
      * Standard constructor for sources
@@ -335,7 +336,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                         ? $this->_sourceData['gso_ls_username']
                         : $gemsConfig['username'];
                     $dbConfig['password'] = $this->_sourceData['gso_ls_password']
-                        ? $this->project->decrypt($this->_sourceData['gso_ls_password'])
+                        ? $this->valueEncryptor->decrypt($this->_sourceData['gso_ls_password'])
                         : $gemsConfig['password'];
 
                     $this->_sourceDb = \Zend_Db::factory($adapter, $dbConfig);
