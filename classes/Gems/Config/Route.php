@@ -396,6 +396,7 @@ class Route
                     'session',
                     'changelog-gems',
                     'changelog',
+                    'cacheclean',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',

@@ -12,7 +12,9 @@
 namespace Gems\Actions;
 
 use Gems\Cache\HelperAdapter;
+use Gems\MenuNew\RouteHelper;
 use Mezzio\Helper\UrlHelper;
+use MUtil\Html;
 use MUtil\Model;
 use Phinx\Util\Util;
 
@@ -64,6 +66,11 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public $project;
 
     /**
+     * @var RouteHelper
+     */
+    public $routeHelper;
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -108,8 +115,8 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
         $data[$this->_('Application environment')] = getenv('APP_ENV');
         $data[$this->_('Application baseuri')]     = $this->util->getCurrentURI();
-        $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
-        $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
+        //$data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
+        //$data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
         $data[$this->_('PHP version')]             = phpversion();
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
@@ -279,12 +286,16 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         } else {
             $label = $this->_('Turn Maintenance Mode ON');
         }
-        $request = $this->getRequest();
+        /*$request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
             ->addByController($request->getControllerName(), 'maintenance', $label)
             ->addByController($request->getControllerName(), 'monitor')
-            ->addByController($request->getControllerName(), 'cacheclean');
+            ->addByController($request->getControllerName(), 'cacheclean');*/
+
+        $buttonList = [
+            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
+        ];
 
         // $this->html->buttonDiv($buttonList);
 
