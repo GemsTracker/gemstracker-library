@@ -9,6 +9,8 @@
 
 namespace Gems\Form\Decorator;
 
+use Mezzio\Flash\FlashMessagesInterface;
+
 /**
  * Takes care of rendering errors in tabbed forms
  *
@@ -110,18 +112,28 @@ class TabErrors extends \Zend_Form_Decorator_Abstract
             // Now browse through the tabs with errors
             foreach ($subFormsWithErrors as $tabIdx => $tabName)
             {
+                $messenger = null;
+                if (method_exists($form, 'hasMessenger') && $form->hasMessenger()) {
+                    $messenger = $form->getMessenger();
+                }
                 // If more then one tab, show in which tab we found the errors
                 if ($tabId > 1) {
-                    $translator = \Zend_Registry::get('Zend_Translate');
-                    \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($translator->_('Error in tab "%s"'), $tabName));
+                    $message = 'Error in tab "%s"';
+                    if ($form->hasTranslator()) {
+                        $translator = $form->getTranslator();
+                        $message = $translator->_('Error in tab "%s"');
+                    }
+                    if ($messenger instanceof FlashMessagesInterface) {
+                        $messenger->flash('form-messages', sprintf($message, $tabName));
+                    }
                 }
 
-                // If we have them, show the tab custom error messages
-                foreach ($subFormMessages[$tabIdx] as $subFormMessage)
-                {
-                    foreach ($subFormMessage as $message)
-                    {
-                        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage("--> " . $message);
+                if ($messenger) {
+                    // If we have them, show the tab custom error messages
+                    foreach ($subFormMessages[$tabIdx] as $subFormMessage) {
+                        foreach ($subFormMessage as $message) {
+                            $messenger->flash('form-messages', "--> " . $message);
+                        }
                     }
                 }
             }

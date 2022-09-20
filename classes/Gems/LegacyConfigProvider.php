@@ -61,6 +61,7 @@ class LegacyConfigProvider
                 'LegacyAcl' => Acl::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
+                'LegacyConfig' => 'config',
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyTrackEvents' => TrackEvents::class,
                 'LegacyLoader' => \Gems\Loader::class,

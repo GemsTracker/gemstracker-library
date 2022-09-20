@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
 
 /**
@@ -28,6 +29,11 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var TrackEvents
+     */
+    protected $trackEvents;
 
     /**
      * @var Translated
@@ -91,15 +97,14 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
         
         $yesNo      = $this->translatedUtil->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));
-        
-        $events = $this->loader->getEvents();
+
         $eList['!Gems_Event_Survey'] = $this->_('(any event)');
         $eList['!Gems\Event\SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
-        $eList += $events->listSurveyBeforeAnsweringEvents();
+        $eList += $this->trackEvents->listSurveyBeforeAnsweringEvents();
         $eList['!Gems\Event\SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
-        $eList += $events->listSurveyCompletionEvents();
+        $eList += $this->trackEvents->listSurveyCompletionEvents();
         $eList['!Gems\Event\SurveyDisplayEventInterface'] = $this->_('(any display event)');
-        $eList += $events->listSurveyDisplayEvents();
+        $eList += $this->trackEvents->listSurveyDisplayEvents();
         $elements[] = $this->_createSelectElement('events', $eList, $this->_('(all surveys)'));
 
         return $elements;

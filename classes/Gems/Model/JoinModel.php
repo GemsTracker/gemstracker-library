@@ -206,19 +206,6 @@ class JoinModel extends \MUtil\Model\JoinModel
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-    }
-
-    /**
      * Get a minimized select statement with a less complicated join using only the fields in the filter  
      *
      * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
@@ -283,29 +270,6 @@ class JoinModel extends \MUtil\Model\JoinModel
         }
 
         return $outputSelect;
-    }
-
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string using plural notations
-     * Returns the translated string
-     *
-     * @see \Zend_Locale
-     * @param  string             $singular Singular translation string
-     * @param  string             $plural   Plural translation string
-     * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function plural($singular, $plural, $number, $locale = null)
-    {
-        if (! $this->translateAdapter) {
-            $this->initTranslateable();
-        }
-        $args = func_get_args();
-        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 
     /**
