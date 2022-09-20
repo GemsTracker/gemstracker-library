@@ -12,6 +12,7 @@
 
 namespace Gems\Model;
 
+use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
 
 /**
@@ -52,6 +53,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var TrackEvents
+     */
+    protected $trackEvents;
 
     /**
      * @var Translated
@@ -202,7 +208,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
 
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
-                'multiOptions', $this->loader->getEvents()->listRespondentChangedEvents()
+                'multiOptions', $this->trackEvents->listRespondentChangedEvents()
                 );
         $this->setIfExists('gor_iso_lang',      'label', $this->_('Language'),
                 'multiOptions', $localized->getLanguages()

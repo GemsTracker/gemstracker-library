@@ -124,28 +124,28 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $bridge->addMultiSort('gor_name', $br, 'glo_name');
         } else {
             $bridge->addMultiSort(
-                    [$bridge->date_only],
-                    $br,
-                    [$bridge->gap_admission_time, $model->get('gap_admission_time', 'label')]
-                    );
+                [$bridge->date_only],
+                $br,
+                [$bridge->gap_admission_time, $model->get('gap_admission_time', 'label')]
+            );
             if ($episode) {
                 $bridge->addMultiSort([$bridge->gap_id_episode, $model->get('gap_id_episode', 'label')]);
             }
             $bridge->addMultiSort(
-                    [$bridge->gap_subject, $model->get('gap_subject', 'label')],
-                    $br,
-                    [$bridge->gas_name, $model->get('gas_name', 'label')]
-                    );
+                [$bridge->gap_subject, $model->get('gap_subject', 'label')],
+                $br,
+                [$bridge->gas_name, $model->get('gas_name', 'label')]
+            );
             $bridge->addMultiSort(
-                    [$bridge->gaa_name, $model->get('gaa_name', 'label')],
-                    $br,
-                    [$bridge->gapr_name, $model->get('gapr_name', 'label')]
-                    );
+                [$bridge->gaa_name, $model->get('gaa_name', 'label')],
+                $br,
+                [$bridge->gapr_name, $model->get('gapr_name', 'label')]
+            );
             $bridge->addMultiSort(
-                    [$bridge->gor_name, $model->get('gor_name', 'label')],
-                    $br,
-                    [$bridge->glo_name, $model->get('glo_name', 'label')]
-                    );
+                [$bridge->gor_name, $model->get('gor_name', 'label')],
+                $br,
+                [$bridge->glo_name, $model->get('glo_name', 'label')]
+            );
         }
         if ($editButton) {
             $bridge->addItemLink($editButton)->class = 'middleAlign rightAlign';
@@ -182,7 +182,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $model->set('date_only', 'formatFunction', [$this, 'formatDate']);
         $model->set('gap_admission_time', 'label', $this->_('Time'),
-                'formatFunction', [$this, 'formatTime']);
+            'formatFunction', [$this, 'formatTime']);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
         // $this->_timeImg           = \MUtil\Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
@@ -207,10 +207,10 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function formatDate($value)
     {
         return \MUtil\Html::create(
-                'span',
-                // array('class' => 'date'),
-                \MUtil\Model::reformatDate($value,$this->_dateStorageFormat, 'j M Y') 
-                );
+            'span',
+            // array('class' => 'date'),
+            \MUtil\Model::reformatDate($value, 'Y-m-d', 'j M Y')
+        );
     }
 
     /**
@@ -221,12 +221,12 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function formatTime($value)
     {
         return \MUtil\Html::create(
-                'span',
-                ' ',
-                // array('class' => 'time'),
-                // $this->_timeImg,
-                \MUtil\Model::reformatDate($value, $this->_dateStorageFormat, 'H:i') 
-                );
+            'span',
+            ' ',
+            // array('class' => 'time'),
+            // $this->_timeImg,
+            \MUtil\Model::reformatDate($value, $this->_dateStorageFormat, 'H:i')
+        );
     }
     /**
      * Overrule to implement snippet specific filtering and sorting.

@@ -30,12 +30,6 @@ class StaffModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems\User\Organization
-     */
-    protected $currentOrganization;
-
-    /**
-     *
      * @var \Gems\User\User
      */
     protected $currentUser;
@@ -80,20 +74,20 @@ class StaffModel extends \Gems\Model\JoinModel
         parent::__construct('staff', 'gems__staff', 'gsf', true);
 
         $this->addColumn(
-                new \Zend_Db_Expr("CONCAT(
+            new \Zend_Db_Expr("CONCAT(
                     COALESCE(CONCAT(gsf_last_name, ', '), '-, '),
                     COALESCE(CONCAT(gsf_first_name, ' '), ''),
                     COALESCE(gsf_surname_prefix, '')
                     )"),
-                'name');
+            'name');
         $this->addColumn(
-                new \Zend_Db_Expr("CASE WHEN gsf_email IS NULL OR gsf_email = '' THEN 0 ELSE 1 END"),
-                'can_mail'
-                );
+            new \Zend_Db_Expr("CASE WHEN gsf_email IS NULL OR gsf_email = '' THEN 0 ELSE 1 END"),
+            'can_mail'
+        );
         $this->addColumn(
-                new \Zend_Db_Expr("CASE WHEN gsf_active = 1 THEN '' ELSE 'deleted' END"),
-                'row_class'
-                );
+            new \Zend_Db_Expr("CASE WHEN gsf_active = 1 THEN '' ELSE 'deleted' END"),
+            'row_class'
+        );
     }
 
     /**
@@ -109,27 +103,27 @@ class StaffModel extends \Gems\Model\JoinModel
             $options = $this->currentUser->getAllowedOrganizations();
         }
         $this->set('gsf_id_organization',      'label', $this->_('Organization'),
-                'default', $this->currentOrganization->getId(),
-                'multiOptions', $options,
-                'required', true
-                );
+            'default', $this->currentUser->getCurrentOrganizationId(),
+            'multiOptions', $options,
+            'required', true
+        );
 
         $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
         if (1 == count($defaultStaffDefinitions)) {
             reset($defaultStaffDefinitions);
             $this->set('gul_user_class',
-                    'default', key($defaultStaffDefinitions),
-                    'elementClass', 'Hidden',
-                    'multiOptions', $defaultStaffDefinitions,
-                    'required', false
-                    );
+                'default', key($defaultStaffDefinitions),
+                'elementClass', 'Hidden',
+                'multiOptions', $defaultStaffDefinitions,
+                'required', false
+            );
         } else {
             $this->set('gul_user_class',       'label', $this->_('User Definition'),
-                    'default', $this->currentOrganization->getDefaultUserClass(),
-                    'multiOptions', $defaultStaffDefinitions,
-                    'order', $this->getOrder('gsf_id_organization') + 1,
-                    'required', true
-                    );
+                'default', $this->currentUser->getCurrentOrganization()->getDefaultUserClass(),
+                'multiOptions', $defaultStaffDefinitions,
+                'order', $this->getOrder('gsf_id_organization') + 1,
+                'required', true
+            );
             $this->addDependency('StaffUserClassDependency');
         }
 
@@ -139,17 +133,17 @@ class StaffModel extends \Gems\Model\JoinModel
             } else {
                 // per organization
                 $this->set(
-                        'gsf_login',
-                        'validator',
-                        $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
-                        );
+                    'gsf_login',
+                    'validator',
+                    $this->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
+                );
             }
         }
         $this->set('gsf_login',                'label', $this->_('Username'),
-                'minlength', 3,
-                'required', true,
-                'size', 15
-                );
+            'minlength', 3,
+            'required', true,
+            'size', 15
+        );
     }
 
     /**
@@ -162,12 +156,12 @@ class StaffModel extends \Gems\Model\JoinModel
     {
         parent::afterRegistry();
 
-        $allowedGroups = $this->loader->getCurrentUser()->getAllowedStaffGroups();
+        $allowedGroups = $this->currentUser->getAllowedStaffGroups();
         if ($allowedGroups) {
             $expr = new \Zend_Db_Expr(sprintf(
-                    "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",
-                    implode(", ", array_keys($allowedGroups))
-                    ));
+                "CASE WHEN gsf_id_primary_group IN (%s) THEN 1 ELSE 0 END",
+                implode(", ", array_keys($allowedGroups))
+            ));
         } else {
             $expr = new \Zend_Db_Expr('0');
         }
@@ -185,31 +179,31 @@ class StaffModel extends \Gems\Model\JoinModel
 
         $this->set('gsf_id_user',        'elementClass', 'None');
         $this->set('gsf_login',          'label', $this->_('Login Name'),
-                'elementClass', 'Exhibitor'
-                );
+            'elementClass', 'Exhibitor'
+        );
         $this->set('gsf_email',          'label', $this->_('E-Mail'),
-                'size', 30,
-                'validator', new \MUtil_Validate_SimpleEmail()
-                );
+            'size', 30,
+            'validator', new \MUtil_Validate_SimpleEmail()
+        );
         $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),
-                'description', 'de, van der, \'t, etc...',
-                'validator', $noscript
-                );
+            'description', 'de, van der, \'t, etc...',
+            'validator', $noscript
+        );
         $this->set('gsf_last_name',      'label', $this->_('Last name'),
-                'required', true,
-                'validator', $noscript
-                );
+            'required', true,
+            'validator', $noscript
+        );
         $this->set('gsf_gender',         'label', $this->_('Gender'),
-                'multiOptions', $this->translatedUtil->getGenders(),
-                'elementClass', 'Radio',
-                'separator', ''
-                );
+            'multiOptions', $this->translatedUtil->getGenders(),
+            'elementClass', 'Radio',
+            'separator', ''
+        );
         $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
 
         $this->set('gsf_iso_lang',       'label', $this->_('Language'),
-                'multiOptions', $this->util->getLocalized()->getLanguages()
-                );
+            'multiOptions', $this->util->getLocalized()->getLanguages()
+        );
 
         $this->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
 
@@ -236,10 +230,10 @@ class StaffModel extends \Gems\Model\JoinModel
         if ($detailed) {
             $this->set('gsf_first_name',       'label', $this->_('First name'));
             $this->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'),
-                    'description', $this->_('de, van der, \'t, etc...')
-                    );
+                'description', $this->_('de, van der, \'t, etc...')
+            );
             $this->set('gsf_last_name',        'label', $this->_('Last name'),
-                    'required', true);
+                'required', true);
 
             if ($editing) {
                 $ucfirst = new \Zend_Filter_Callback('ucfirst');
@@ -254,65 +248,65 @@ class StaffModel extends \Gems\Model\JoinModel
 
 
         $this->set('gsf_gender',               'label', $this->_('Gender'),
-                'elementClass', 'Radio',
-                'multiOptions', $this->translatedUtil->getGenders(),
-                'separator', ' '
-                );
+            'elementClass', 'Radio',
+            'multiOptions', $this->translatedUtil->getGenders(),
+            'separator', ' '
+        );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
-                'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'),
-                'size', 30,
-                'validators[email]', 'SimpleEmail'
-                );
+            'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'),
+            'size', 30,
+            'validators[email]', 'SimpleEmail'
+        );
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
-                'default', $this->currentUser->getDefaultNewStaffGroup(),
-                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
-                );
+            'default', $this->currentUser->getDefaultNewStaffGroup(),
+            'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
+        );
 
 
         if ($detailed) {
-            $this->set('gsf_id_organization', 'default', $this->currentOrganization->getId());
+            $this->set('gsf_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
 
             $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
             if (1 == count($defaultStaffDefinitions)) {
                 reset($defaultStaffDefinitions);
                 $this->set('gul_user_class',
-                        'default', key($defaultStaffDefinitions),
-                        'elementClass', 'Hidden',
-                        'multiOptions', $defaultStaffDefinitions,
-                        'required', false
-                        );
+                    'default', key($defaultStaffDefinitions),
+                    'elementClass', 'Hidden',
+                    'multiOptions', $defaultStaffDefinitions,
+                    'required', false
+                );
             } else {
                 $this->set('gul_user_class',       'label', $this->_('User Definition'),
-                        'default', $this->currentOrganization->getDefaultUserClass(),
-                        'multiOptions', $defaultStaffDefinitions,
-                        'order', $this->getOrder('gsf_id_organization') + 1,
-                        'required', true
-                        );
+                    'default', $this->currentUser->getCurrentOrganization()->getDefaultUserClass(),
+                    'multiOptions', $defaultStaffDefinitions,
+                    'order', $this->getOrder('gsf_id_organization') + 1,
+                    'required', true
+                );
                 $this->addDependency('StaffUserClassDependency');
             }
             $this->set('gsf_iso_lang',         'label', $this->_('Language'),
-                    'default', $this->project->locale['default'],
-                    'multiOptions', $this->util->getLocalized()->getLanguages()
-                    );
+                'default', $this->project->locale['default'],
+                'multiOptions', $this->util->getLocalized()->getLanguages()
+            );
             $this->set('gul_can_login',        'label', $this->_('Can login'),
-                    'default', 1,
-                    'description', $this->_('Users can only login when this box is checked.'),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $yesNo
-                    );
+                'default', 1,
+                'description', $this->_('Users can only login when this box is checked.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+            );
             $this->set('gsf_mail_watcher', 'label', $this->_('Check cron job mail'),
-                    'description', $this->_('If checked the user will be mailed when the cron job does not run on time.'),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $yesNo
-                    );
+                'description', $this->_('If checked the user will be mailed when the cron job does not run on time.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+            );
         }
 
         $this->set('gsf_active', 'label', $this->_('Active'),
-                'elementClass', 'None',
-                'multiOptions', $yesNo
-                );
+            'elementClass', 'None',
+            'multiOptions', $yesNo
+        );
 
         $factorOptions = [
             2 => $this->_('Enabled'),
@@ -321,15 +315,15 @@ class StaffModel extends \Gems\Model\JoinModel
             -1 => $this->_('Not possible'),
         ];
         $this->setIfExists('has_2factor', 'label', $this->_('Two factor'),
-                'elementClass', 'Exhibitor',
-                'multiOptions', $factorOptions
-                );
+            'elementClass', 'Exhibitor',
+            'multiOptions', $factorOptions
+        );
         if ($detailed) {
             $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                    'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $yesNo
-                    );
+                'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+            );
         }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
@@ -360,39 +354,39 @@ class StaffModel extends \Gems\Model\JoinModel
         $this->_addLoginSettings($editing);
 
         $this->set('gsf_last_name',        'label', $this->_('Description'),
-                'description', $this->_('A description what this user is for.'),
-                'required', true);
+            'description', $this->_('A description what this user is for.'),
+            'required', true);
 
         $this->set('gul_can_login',        'label', $this->_('Can login'),
-                'default', 1,
-                'description', $this->_('System users can only be used when this box is checked.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-                );
+            'default', 1,
+            'description', $this->_('System users can only be used when this box is checked.'),
+            'elementClass', 'Checkbox',
+            'multiOptions', $yesNo
+        );
         $this->set('gsf_is_embedded',      'label', $this->_('Type'),
-                'default', 1,
-                'description', $this->_('The type of system user.'),
-                'elementClass', 'Radio',
-                'multiOptions', $this->getSystemUserTypes(),
-                'separator', ' '
-                );
+            'default', 1,
+            'description', $this->_('The type of system user.'),
+            'elementClass', 'Radio',
+            'multiOptions', $this->getSystemUserTypes(),
+            'separator', ' '
+        );
 
         $this->set('gsf_id_primary_group', 'label', $this->_('Primary group'),
-                'default', $this->currentUser->getDefaultNewStaffGroup(),
-                'description', $this->_('The group of the system user.'),
-                'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
-                );
+            'default', $this->currentUser->getDefaultNewStaffGroup(),
+            'description', $this->_('The group of the system user.'),
+            'multiOptions', $editing ? $this->currentUser->getAllowedStaffGroups() : $dbLookup->getStaffGroups()
+        );
 
         $this->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'),
-                'description', $this->_('If checked the user will logoff when answering a survey.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo,
-                'validator', new \Gems\Validate\OneOf(
-                        $this->get('gsf_is_embedded', 'label'),
-                        'gsf_is_embedded',
-                        $this->_('Logout on survey.')
-                        )
-                );
+            'description', $this->_('If checked the user will logoff when answering a survey.'),
+            'elementClass', 'Checkbox',
+            'multiOptions', $yesNo,
+            'validator', new \Gems\Validate\OneOf(
+                $this->get('gsf_is_embedded', 'label'),
+                'gsf_is_embedded',
+                $this->_('Logout on survey.')
+            )
+        );
 
         // Set groups for both types of system users
         $dbLookup = $this->util->getDbLookup();
@@ -410,76 +404,76 @@ class StaffModel extends \Gems\Model\JoinModel
         }
 
         $this->set('gsus_deferred_user_group',
-                'label', $this->_('Used group'),
-                'description', $this->_('The group the deferred user should be changed to'),
-                'multiOptions', $groups
-                );
+            'label', $this->_('Used group'),
+            'description', $this->_('The group the deferred user should be changed to'),
+            'multiOptions', $groups
+        );
 
         $this->set('gsus_create_user',
-                'label', $this->_('Can create users'),
-                'description', $this->_('If the asked for user does not exist, can this embedded user create that user? If it cannot the authentication will fail.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-                );
+            'label', $this->_('Can create users'),
+            'description', $this->_('If the asked for user does not exist, can this embedded user create that user? If it cannot the authentication will fail.'),
+            'elementClass', 'Checkbox',
+            'multiOptions', $yesNo
+        );
 
         $this->set('gsus_authentication',
-                'label', $this->_('Authentication'),
-                'default', 'Gems\\User\\Embed\\Auth\\HourKeySha256',
-                'description', $this->_('The authentication method used to authenticate the embedded user.'),
-                'multiOptions', $embeddedLoader->listAuthenticators()
-                );
+            'label', $this->_('Authentication'),
+            'default', 'Gems\\User\\Embed\\Auth\\HourKeySha256',
+            'description', $this->_('The authentication method used to authenticate the embedded user.'),
+            'multiOptions', $embeddedLoader->listAuthenticators()
+        );
 
         $this->set('gsus_deferred_user_loader',
-                'label', $this->_('Deferred user loader'),
-                'default', 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
-                'description', $this->_('The method used to load an embedded user.'),
-                'multiOptions', $embeddedLoader->listDeferredUserLoaders()
-                );
+            'label', $this->_('Deferred user loader'),
+            'default', 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
+            'description', $this->_('The method used to load an embedded user.'),
+            'multiOptions', $embeddedLoader->listDeferredUserLoaders()
+        );
 
         $this->set('gsus_redirect',
-                'label', $this->_('Redirect method'),
-                'default', 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
-                'description', $this->_('The page the user is redirected to after successful login.'),
-                'multiOptions', $embeddedLoader->listRedirects()
-                );
+            'label', $this->_('Redirect method'),
+            'default', 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
+            'description', $this->_('The page the user is redirected to after successful login.'),
+            'multiOptions', $embeddedLoader->listRedirects()
+        );
 
         $this->set('gsus_deferred_mvc_layout',
-                'label', $this->_('Layout'),
-                'description', $this->_('The layout frame used.'),
-                'multiOptions', $embeddedLoader->listLayouts()
-                );
+            'label', $this->_('Layout'),
+            'description', $this->_('The layout frame used.'),
+            'multiOptions', $embeddedLoader->listLayouts()
+        );
 
         $this->set('gsus_deferred_user_layout',
-                'label', $this->_('Style'),
-                'description', $this->_('The display style used.'),
-                'multiOptions', $embeddedLoader->listStyles()
-                );
+            'label', $this->_('Style'),
+            'description', $this->_('The display style used.'),
+            'multiOptions', $embeddedLoader->listStyles()
+        );
         $this->set('gsus_hide_breadcrumbs',
-                'label', $this->_('Crumbs display'),
-                'default', '',
-                'description', $this->_('The display style used.'),
-                'elementClass', 'Radio',
-                'multiOptions', $embeddedLoader->listCrumbOptions(),
-                'separator', ' '
-                );
+            'label', $this->_('Crumbs display'),
+            'default', '',
+            'description', $this->_('The display style used.'),
+            'elementClass', 'Radio',
+            'multiOptions', $embeddedLoader->listCrumbOptions(),
+            'separator', ' '
+        );
 
         $this->set('gsf_iso_lang',         'label', $this->_('Language'),
-                'default', $this->project->locale['default'],
-                'multiOptions', $this->util->getLocalized()->getLanguages()
-                );
+            'default', $this->project->locale['default'],
+            'multiOptions', $this->util->getLocalized()->getLanguages()
+        );
         $this->set('gsus_secret_key',      'label', $this->_('Secret key'),
-                'description', $this->_('Key used for authentication'),
-                'elementClass', 'Textarea',
-                'rows', 3
-                );
+            'description', $this->_('Key used for authentication'),
+            'elementClass', 'Textarea',
+            'rows', 3
+        );
         $seeKey = ! ($this->currentUser->hasPrivilege('pr.systemuser.seepwd') || $editing);
         $type   = new \Gems\Model\Type\EncryptedField($this->project, $seeKey);
         $type->apply($this, 'gsus_secret_key');
 
         $this->set('gsf_active', 'label', $this->_('Active'),
-                'elementClass', 'None',
-                'multiOptions', $yesNo
-                );
+            'elementClass', 'None',
+            'multiOptions', $yesNo
+        );
 
         $check  = ['elementClass' => 'Checkbox'];
         $hidden = ['elementClass' => 'Hidden', 'label' => null];
@@ -497,7 +491,7 @@ class StaffModel extends \Gems\Model\JoinModel
                 'gsus_deferred_mvc_layout'  => $hidden,
                 'gsus_deferred_user_layout' => $hidden,
                 'gsus_hide_breadcrumbs'     => $hidden,
-                ],
+            ],
             1 => [
                 'gsf_logout_on_survey'      => $hidden,
                 'gsus_authentication'       => $select,
@@ -508,8 +502,8 @@ class StaffModel extends \Gems\Model\JoinModel
                 'gsus_deferred_mvc_layout'  => $select,
                 'gsus_deferred_user_layout' => $select,
                 'gsus_hide_breadcrumbs'     => ['elementClass' => 'Radio'],
-                ],
-            ]);
+            ],
+        ]);
         $this->addDependency($switch);
 
         return $this;
@@ -524,7 +518,7 @@ class StaffModel extends \Gems\Model\JoinModel
         return [
             1 => $this->_('Embedded (EPD) login user'),
             0 => $this->_('Guest - for answering surveys at the hospital'),
-            ];
+        ];
     }
 
     /**

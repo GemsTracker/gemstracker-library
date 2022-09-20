@@ -438,6 +438,21 @@ class Route
                 controllerClass: \Gems\Actions\MailCodeAction::class,
             ),
 
+            [
+                'name' => 'setup.access',
+                'path' => '/setup/access',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
+            ],
+            ...$this->createBrowseRoutes(baseName: 'setup.access.organizations',
+                controllerClass: \Gems\Actions\OrganizationAction::class,
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.access.staff',
+                controllerClass: \Gems\Actions\StaffAction::class,
+            ),
+
         ];
     }
 

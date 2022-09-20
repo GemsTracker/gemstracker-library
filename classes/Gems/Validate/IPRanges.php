@@ -11,6 +11,7 @@ namespace Gems\Validate;
 
 use IPLib\Factory as IpFactory;
 use IPLib\Range\RangeInterface;
+use Laminas\Validator\AbstractValidator;
 
 /**
  * Not used anymore, checked if we could use soap connection. As soap is no longer a reliable
@@ -22,7 +23,7 @@ use IPLib\Range\RangeInterface;
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class IPRanges extends \Zend_Validate_Abstract
+class IPRanges extends AbstractValidator
 {
     /**
      * Error constants
@@ -33,9 +34,9 @@ class IPRanges extends \Zend_Validate_Abstract
      * Error messages
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $messageTemplates = [
         self::ERROR_INVALID_IP => 'One or more IPs are illegal.'
-    );
+    ];
 
     /**
      * Returns true if and only if $value meets the validation requirements
@@ -46,9 +47,8 @@ class IPRanges extends \Zend_Validate_Abstract
      *
      * @param  mixed $value
      * @return boolean
-     * @todo ip2long is broken on Windows, find a replacement
      */
-    public function isValid($value, $context = array())
+    public function isValid($value, $context = [])
     {
         $result = true;
 
@@ -56,10 +56,10 @@ class IPRanges extends \Zend_Validate_Abstract
 
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
-                $range = IpFactory::rangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
+                $range = IpFactory::getRangeFromBoundaries(substr($range, 0, $sep), substr($range, $sep + 1));
 
             } else {
-                $range = IpFactory::rangeFromString($range);
+                $range = IpFactory::parseRangeString($range);
             }
             if (! $range instanceof RangeInterface) {
                 $result = false;
@@ -68,7 +68,7 @@ class IPRanges extends \Zend_Validate_Abstract
         }
 
         if (!$result) {
-            $this->_error(self::ERROR_INVALID_IP);
+            $this->error(self::ERROR_INVALID_IP);
         }
 
         return $result;

@@ -34,8 +34,8 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         'extraFilter' => [
             'gsf_is_embedded' => 0,
             'gsf_logout_on_survey' => 0,
-            ],
-        ];
+        ],
+    ];
 
     /**
      * The snippets used for the autofilter action.
@@ -64,7 +64,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $createEditParameters = [
         'routeAction' => 'reset',
-        ];
+    ];
 
     /**
      * The snippets used for the create and edit actions.
@@ -108,7 +108,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         'identifier'  => '_getIdParam',
         'routeAction' => 'show',
         'formTitle'   => 'getMailFormTitle',
-        );
+    );
 
     /**
      * Snippets for mail
@@ -141,7 +141,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         'menuShowSiblings' => true,
         'routeAction'      => 'show',
         'user'             => 'getSelectedUser',
-        );
+    );
 
     /**
      * Snippets for reset
@@ -157,7 +157,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $switchParameters = array(
         'switch' => true,
-        );
+    );
 
     /**
      * Snippets for mail
@@ -194,11 +194,11 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
             if ($user) {
                 if (! ($this->currentUser->hasPrivilege('pr.staff.see.all') ||
-                        $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
+                    $this->currentUser->isAllowedOrganization($user->getBaseOrganizationId()))) {
                     throw new \Gems\Exception($this->_('No access to page'), 403, null, sprintf(
-                            $this->_('You have no right to access users from the organization %s.'),
-                            $user->getBaseOrganization()->getName()
-                            ));
+                        $this->_('You have no right to access users from the organization %s.'),
+                        $user->getBaseOrganization()->getName()
+                    ));
                 }
 
                 switch ($action) {
@@ -210,10 +210,10 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
                     default:
                         if (! $user->inAllowedGroup()) {
                             throw new \Gems\Exception($this->_('No access to page'), 403, null, sprintf(
-                                    $this->_('In the %s group you have no right to change users in the %s group.'),
-                                    $this->currentUser->getGroup()->getName(),
-                                    $user->getGroup()->getName()
-                                    ));
+                                $this->_('In the %s group you have no right to change users in the %s group.'),
+                                $this->currentUser->getGroup()->getName(),
+                                $user->getGroup()->getName()
+                            ));
                         }
                 }
             }
@@ -319,8 +319,6 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         $staffId = $this->_getIdParam();
         if ($staffId) {
             $user   = $this->loader->getUserLoader()->getUserByStaffId($staffId);
-            $source = $this->menu->getParameterSource();
-            $user->applyToMenuSource($source);
         } else {
             $user = false;
         }
@@ -387,9 +385,9 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         $user = $this->getSelectedUser();
         $user->clearTwoFactorKey();
         $this->addMessage(
-                sprintf($this->_('Two factor key cleared for user %s'),
-                        $user->getLoginName()),
-                'success');
+            sprintf($this->_('Two factor key cleared for user %s'),
+                $user->getLoginName()),
+            'success');
         $router = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
         $router->gotoRoute(['controller'=>'staff', 'action'=>'show'], null, false);
     }

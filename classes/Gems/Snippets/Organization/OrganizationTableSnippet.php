@@ -45,8 +45,14 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
     {
         $bridge->tr()->class = $bridge->row_class;
 
-        if ($showMenuItem = $this->getShowMenuItem()) {
-            $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
+        $showMenuItems = $this->getShowUrls($bridge);
+        foreach ($showMenuItems as $keyOrLabel => $menuItem) {
+            $showLabel = $keyOrLabel;
+            if (is_int($showLabel)) {
+                $showLabel = $this->_('Show');
+            }
+
+            $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $showLabel));
         }
 
         // make sure search results are highlighted
@@ -55,13 +61,13 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         $br = \MUtil\Html::create()->br();
 
         $orgName[] = \MUtil\Lazy::iff($bridge->gor_url,
-                \MUtil\Html\AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank', 'class' => 'globe')),
-                $bridge->gor_name);
+            \MUtil\Html\AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank', 'class' => 'globe')),
+            $bridge->gor_name);
         $orgName[] = $bridge->createSortLink('gor_name');
 
         $mailName[] = \MUtil\Lazy::iff($bridge->gor_contact_email,
-                \MUtil\Html\AElement::email(\MUtil\Lazy::first($bridge->gor_contact_name, $bridge->gor_contact_email), array('href' => array('mailto:', $bridge->gor_contact_email))),
-                $bridge->gor_contact_name);
+            \MUtil\Html\AElement::email(\MUtil\Lazy::first($bridge->gor_contact_name, $bridge->gor_contact_email), array('href' => array('mailto:', $bridge->gor_contact_email))),
+            $bridge->gor_contact_name);
         $mailName[] = $bridge->createSortLink('gor_contact_name');
 
         $bridge->addMultiSort($orgName, $br, 'gor_task', $br, 'gor_location');
@@ -73,8 +79,14 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
         }
         $bridge->add('gor_accessible_by');
 
-        if ($editMenuItem = $this->getEditMenuItem()) {
-            $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
+
+        $editMenuItems = $this->getEditUrls($bridge);
+        foreach ($editMenuItems as $keyOrLabel => $menuItem) {
+            $editLabel = $keyOrLabel;
+            if (is_int($editLabel)) {
+                $editLabel = $this->_('Edit');
+            }
+            $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $editLabel));
         }
     }
 }
