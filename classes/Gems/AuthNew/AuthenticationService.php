@@ -65,6 +65,7 @@ class AuthenticationService
         if ($result->isValid()) {
             $identity = $result->getIdentity();
 
+            $this->session->regenerate();
             $this->session->set('auth_data', [
                 'auth_type' => $identity::class,
                 'auth_params' => $identity->toArray(),
@@ -73,6 +74,7 @@ class AuthenticationService
             $event = new AuthenticatedEvent($result); // TODO: Not used yet
             $this->eventDispatcher->dispatch($event);
         } else {
+            $this->session->regenerate();
             $this->session->set('auth_data', null);
         }
 
@@ -114,5 +116,6 @@ class AuthenticationService
     public function logout(): void
     {
         $this->session->unset('auth_data');
+        $this->session->regenerate();
     }
 }
