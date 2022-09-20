@@ -430,6 +430,9 @@ class Route
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Actions\ConsentAction::class,
+                parameters: [
+                    'id' => '[a-zA-Z0-9-_]+',
+                ],
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.codes.mail-code',
                 controllerClass: \Gems\Actions\MailCodeAction::class,

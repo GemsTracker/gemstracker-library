@@ -490,60 +490,60 @@ class Menu
                                     ],
                                 ],
                             ],
-                            [
-                                'name' => 'setup.codes.consents.index',
-                                'label' => $this->translator->trans('Consents'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'setup.codes.consents.create',
-                                        'label' => $this->translator->trans('New'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'setup.codes.consents.show',
-                                        'label' => $this->translator->trans('Show'),
-                                        'type' => 'route-link-item',
-                                        'children' => [
-                                            [
-                                                'name' => 'setup.codes.consents.edit',
-                                                'label' => $this->translator->trans('Edit'),
-                                                'type' => 'route-link-item',
-                                            ],
-                                            [
-                                                'name' => 'setup.codes.consents.delete',
-                                                'label' => $this->translator->trans('Delete'),
-                                                'type' => 'route-link-item',
-                                            ],
+                        ],
+                        [
+                            'name' => 'setup.codes.consent.index',
+                            'label' => $this->translator->trans('Consents'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.codes.consent.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.codes.consent.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.codes.consent.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.codes.consent.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
                                         ],
                                     ],
                                 ],
                             ],
-                            [
-                                'name' => 'setup.codes.mail-codes.index',
-                                'label' => $this->translator->trans('Mail codes'),
-                                'type' => 'route-link-item',
-                                'children' => [
-                                    [
-                                        'name' => 'setup.codes.mail-codes.create',
-                                        'label' => $this->translator->trans('New'),
-                                        'type' => 'route-link-item',
-                                    ],
-                                    [
-                                        'name' => 'setup.codes.mail-codes.show',
-                                        'label' => $this->translator->trans('Show'),
-                                        'type' => 'route-link-item',
-                                        'children' => [
-                                            [
-                                                'name' => 'setup.codes.mail-codes.edit',
-                                                'label' => $this->translator->trans('Edit'),
-                                                'type' => 'route-link-item',
-                                            ],
-                                            [
-                                                'name' => 'setup.codes.mail-codes.delete',
-                                                'label' => $this->translator->trans('Delete'),
-                                                'type' => 'route-link-item',
-                                            ],
+                        ],
+                        [
+                            'name' => 'setup.codes.mail-code.index',
+                            'label' => $this->translator->trans('Mail codes'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.codes.mail-code.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.codes.mail-code.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.codes.mail-code.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.codes.mail-code.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
                                         ],
                                     ],
                                 ],

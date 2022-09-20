@@ -10,6 +10,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Project\ProjectSettings;
+
 /**
  *
  * @package    Gems
@@ -25,16 +27,21 @@ class ConsentAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = array('consent', 'consents');
+    public $cacheTags = ['consent', 'consents'];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
-        'extraSort' => array('gco_order' => SORT_ASC, ),
-        );
+    protected $autofilterParameters = [
+        'extraSort' => ['gco_order' => SORT_ASC,],
+    ];
+
+    /**
+     * @var ProjectSettings
+     */
+    public $project;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -52,7 +59,7 @@ class ConsentAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model = new \MUtil\Model\TableModel('gems__consents');
         // $model->copyKeys(); // The user can edit the keys.
         $model->addColumn('gco_description', 'origKey');
-        
+
         $model->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
         $model->set('gco_order',       'label', $this->_('Order'), 'size', '10',

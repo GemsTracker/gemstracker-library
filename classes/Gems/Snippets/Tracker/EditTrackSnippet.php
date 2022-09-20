@@ -46,7 +46,7 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
         $routes = [
             'respondent.show',
             'respondent.tracks.index',
-            'respondent.tracks.show',
+            'respondent.tracks.view',
         ];
         $currentParams = $this->requestInfo->getRequestMatchedParams();
 
