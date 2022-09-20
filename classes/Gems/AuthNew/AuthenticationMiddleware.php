@@ -40,7 +40,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-        if (!$authenticationService->isLoggedIn()) {
+        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid()) {
             return $this->redirectWithIntended($request, $this->router->generateUri('auth.login'));
         }
 

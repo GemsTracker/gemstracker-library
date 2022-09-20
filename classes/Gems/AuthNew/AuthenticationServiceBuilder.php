@@ -15,6 +15,7 @@ class AuthenticationServiceBuilder
         private readonly EventDispatcher $eventDispatcher,
         private readonly Adapter $db,
         private readonly TranslatorInterface $translator,
+        private readonly array $config,
     ) {
     }
 
@@ -26,6 +27,7 @@ class AuthenticationServiceBuilder
             $this->eventDispatcher,
             $this->db,
             $this->translator,
+            $this->config,
         );
     }
 }

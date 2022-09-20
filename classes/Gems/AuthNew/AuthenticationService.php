@@ -23,6 +23,7 @@ class AuthenticationService
         private readonly EventDispatcher $eventDispatcher,
         private readonly Adapter $db,
         private readonly TranslatorInterface $translator,
+        private readonly array $config,
     ) {
     }
 
@@ -69,6 +70,8 @@ class AuthenticationService
             $this->session->set('auth_data', [
                 'auth_type' => $identity::class,
                 'auth_params' => $identity->toArray(),
+                'auth_login_at' => time(),
+                'auth_last_active_at' => time(),
             ]);
 
             $event = new AuthenticatedEvent($result); // TODO: Not used yet
@@ -117,5 +120,28 @@ class AuthenticationService
     {
         $this->session->unset('auth_data');
         $this->session->regenerate();
+    }
+
+    public function checkValid(): bool
+    {
+        $authData = $this->session->get('auth_data');
+        if ($authData === null) {
+            return false;
+        }
+
+        if (time() - $authData['auth_login_at'] > $this->config['session']['max_total_time']) {
+            $this->logout();
+            return false;
+        }
+
+        if (time() - $authData['auth_last_active_at'] > $this->config['session']['max_away_time']) {
+            $this->logout();
+            return false;
+        }
+
+        $authData['auth_last_active_at'] = time();
+        $this->session->set('auth_data', $authData);
+
+        return true;
     }
 }
