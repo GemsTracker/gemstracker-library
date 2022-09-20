@@ -17,8 +17,8 @@ trait ModelSnippetActionRouteHelpers
     protected array $defaultPages = [
         'index',
         'autofilter',
-        'show',
         'create',
+        'show',
         'edit',
         'delete'
     ];

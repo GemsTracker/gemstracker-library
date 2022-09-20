@@ -418,10 +418,15 @@ class Route
                 'name' => 'setup.codes',
                 'path' => '/setup/codes',
                 'allowed_methods' => ['GET'],
-                'middleware' => $this->modelSnippetCustomMiddleware,
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
             ],
             ...$this->createBrowseRoutes(baseName: 'setup.codes.reception',
                 controllerClass: \Gems\Actions\ReceptionAction::class,
+                parameters: [
+                    'id' => '[a-zA-Z0-9-_]+',
+                ],
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Actions\ConsentAction::class,
