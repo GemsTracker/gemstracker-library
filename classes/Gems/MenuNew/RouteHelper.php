@@ -2,6 +2,7 @@
 
 namespace Gems\MenuNew;
 
+use Gems\Html;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 
@@ -19,6 +20,32 @@ class RouteHelper
         foreach ($config['routes'] as $route) {
             $this->routes[$route['name']] = $route;
         }
+    }
+
+    /**
+     * @param array $items
+     * @return []ElementInterface
+     */
+    public function getActionLinksFromRouteItems(array $items, array $knownParameters = []): array
+    {
+        $links = [];
+        foreach($items as $item) {
+            if (isset($item['disabled']) && $item['disabled'] === true) {
+                $links[] = Html::actionDisabled($item['label']);
+                continue;
+            }
+            if (isset($item['parameters'])) {
+                $knownParameters = $item['parameters'] + $knownParameters;
+            }
+            $route = $this->getRoute($item['route']);
+            if ($route) {
+                $url = $this->getRouteUrl($item['route'], $this->getRouteParamsFromKnownParams($route, $knownParameters));
+
+                $links[] = Html::actionLink($url, $item['label']);
+            }
+        }
+
+        return $links;
     }
 
     public function getRoute(string $name): ?array

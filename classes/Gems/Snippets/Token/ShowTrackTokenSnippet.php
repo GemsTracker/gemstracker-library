@@ -11,6 +11,11 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use MUtil\Lazy\Call;
+
 /**
  * Display snippet for standard track tokens
  *
@@ -22,6 +27,11 @@ namespace Gems\Snippets\Token;
  */
 class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstract
 {
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
+
     /**
      *
      * @var \Gems\Util
@@ -39,7 +49,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addCompletionBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addCompletionBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
         // COMPLETION DATE
         $fields = array();
@@ -54,8 +64,21 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         if ($this->token->hasResult()) {
             $fields[] = 'gto_result';
         }
-        $controller = $this->request->getControllerName();
-        $fields[]   = $links->getActionLinks(true, $controller, 'correct', $controller, 'delete');
+
+        $items = [
+            [
+                'route' => 'respondent.tracks.correct',
+                'label' => $this->_('Correct answers'),
+                'disabled' => $this->token->isCompleted(),
+            ],
+            [
+                'route' => 'respondent.tracks.delete',
+                'label' => $this->_('Delete'),
+            ],
+        ];
+
+        $buttons = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
+        $fields[] = $buttons;
 
         $bridge->addWithThird($fields);
 
@@ -73,11 +96,18 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addContactBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addContactBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
         // E-MAIL
-        $button = $links->getActionLink($this->request->getControllerName(), 'email', true);
-        $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $button);
+        $items = [
+            [
+                'route' => 'respondent.tracks.email',
+                'label' => $this->_('E-mail now!'),
+            ],
+        ];
+
+        $buttons = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
+        $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
 
         return true;
     }
@@ -93,9 +123,8 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addHeaderGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addHeaderGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
-        $controller = $this->request->getControllerName();
         $tData      = $this->util->getTokenData();
 
         $bridge->addItem('gto_id_token', null, array('colspan' => 1.5));
@@ -127,17 +156,36 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
             $tData->getTokenStatusDescriptionForBridge($bridge)
         );
 
-        // Buttons
-        $bridge->gto_in_source;
-        $buttons = $links->getActionLinks(true,
-            'ask', 'take',
-            'pdf', 'show',
-            $controller, 'questions',
-            $controller, 'answer',
-            $controller, 'answer-export'
-        );
+        $items = [
+            [
+                'route' => 'ask.take',
+                'label' => $this->_('Take'),
+                'disabled' => $this->token->isCompleted(),
+            ],
+            /*[
+                'route' => 'pdf.show',
+                'label' => $this->_('PDF'),
+            ],*/
+            [
+                'route' => 'respondent.tracks.questions',
+                'label' => $this->_('Preview'),
+            ],
+            [
+                'route' => 'respondent.tracks.answer',
+                'label' => $this->_('Answers'),
+                'disabled' => $this->token->isCurrentlyValid(),
+            ],
+            [
+                'route' => 'respondent.tracks.answer-export',
+                'label' => $this->_('Answer export'),
+                'disabled' => $this->token->isCurrentlyValid(),
+            ],
+        ];
+
+        $buttons = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
+
         if (count($buttons)) {
-            if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil\Html\HtmlElement)) {
+            /*if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil\Html\HtmlElement)) {
                 if ('a' == $buttons['ask.take']->tagName) {
                     $buttons['ask.take'] = $tData->getTokenAskButtonForBridge($bridge, true, true);
                 }
@@ -146,7 +194,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
                 if ('a' == $buttons['track.answer']->tagName) {
                     $buttons['track.answer'] = $tData->getTokenAnswerLinkForBridge($bridge, true);
                 }
-            }
+            }*/
 
             $bridge->tr();
             $bridge->tdh($this->_('Actions'));
@@ -167,9 +215,41 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addLastitems(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addLastitems(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $links)
     {
-        if ($links->count()) {
+        $items = [
+            [
+                'route' => 'respondent.show',
+                'label' => $this->_('Show patient'),
+            ],
+            [
+                'route' => 'respondent.tracks.index',
+                'label' => $this->_('Show tracks'),
+            ],
+            [
+                'route' => 'respondent.tracks.show-track',
+                'label' => $this->_('Show track'),
+                'parameters' => [
+                    Model::RESPONDENT_TRACK => $this->token->getRespondentTrackId(),
+                ]
+            ],
+            /*[
+                'route' => 'respondent.tracks.undelete',
+                'label' => $this->_('Undelete!'),
+                'label'
+            ],*/
+            [
+                'route' => 'respondent.tracks.check-token',
+                'label' => $this->_('Token check'),
+            ],
+            [
+                'route' => 'respondent.tracks.check-token-answers',
+                'label' => $this->_('(Re)check answers'),
+            ],
+        ];
+
+        $links = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
+        if ($links) {
             $bridge->tfrow($links, array('class' => 'centerAlign'));
         }
 
@@ -197,19 +277,24 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addRespondentGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addRespondentGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $item = $this->menu->findAllowedController('respondent', 'show');
-        if ($item) {
-            $href = $item->toHRefAttribute($bridge, $this->request);
-            $model->set('gr2o_patient_nr', 'itemDisplay', \MUtil\Html::create('a', $href));
-        }
+        $params = [
+            'id1' => $bridge->getLazy('gr2o_patient_nr'),
+            'id2' => $bridge->getLazy('gr2o_id_organization'),
+        ];
+
+        $href = new Call(function(string $routeName, array $params = []) {
+            return $this->routeHelper->getRouteUrl($routeName, $params);
+        }, ['respondent.show', $params]);
+
+        $model->set('gr2o_patient_nr', 'itemDisplay', \MUtil\Html::create('a', $href));
+
         // ThreeColumnTableBridge->add()
         $bridge->add('gr2o_patient_nr');
         if (! $this->currentUser->isFieldMaskedWhole('respondent_name')) {
             $bridge->add('respondent_name');
         }
-
 
         return true;
     }
@@ -225,7 +310,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addRoundGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addRoundGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
         $bridge->add('gsu_survey_name');
         $bridge->add('gto_round_description');
@@ -252,24 +337,23 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         $bridge->getRow();
 
         $links = $this->getMenuList();
-        //$links->addParameterSources($this->request, $bridge);
 
-        if ($this->addHeaderGroup($bridge, $model, $links)) {
+        if ($this->addHeaderGroup($bridge)) {
             $bridge->addMarkerRow();
         }
-        if ($this->addRespondentGroup($bridge, $model, $links)) {
+        if ($this->addRespondentGroup($bridge, $model)) {
             $bridge->addMarkerRow();
         }
-        if ($this->addTrackGroup($bridge, $model, $links)) {
+        if ($this->addTrackGroup($bridge, $model)) {
             $bridge->addMarkerRow();
         }
-        if ($this->addRoundGroup($bridge, $model, $links)) {
+        if ($this->addRoundGroup($bridge)) {
             $bridge->addMarkerRow();
         }
 
-        $this->addValidFromBlock($bridge, $model, $links);
-        $this->addContactBlock($bridge, $model, $links);
-        $this->addCompletionBlock($bridge, $model, $links);
+        $this->addValidFromBlock($bridge, $model);
+        $this->addContactBlock($bridge);
+        $this->addCompletionBlock($bridge);
 
         $this->addLastitems($bridge, $model, $links);
     }
@@ -285,13 +369,19 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addTrackGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addTrackGroup(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $item = $this->menu->findAllowedController('track', 'show-track');
-        if ($item) {
-            $href = $item->toHRefAttribute($bridge, $this->request);
-            $model->set('gtr_track_name', 'itemDisplay', \MUtil\Html::create('a', $href));
-        }
+        $params = [
+            'id1' => $bridge->getLazy('gr2o_patient_nr'),
+            'id2' => $bridge->getLazy('gr2o_id_organization'),
+            Model::RESPONDENT_TRACK => $bridge->getLazy('gto_id_respondent_track'),
+        ];
+
+        $href = new Call(function(string $routeName, array $params = []) {
+            return $this->routeHelper->getRouteUrl($routeName, $params);
+        }, ['respondent.tracks.show-track', $params]);
+        $model->set('gtr_track_name', 'itemDisplay', \MUtil\Html::create('a', $href));
+
         // ThreeColumnTableBridge->add()
         $bridge->add('gtr_track_name');
         $bridge->add('gr2t_track_info');
@@ -311,39 +401,28 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addValidFromBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, \Gems\Menu\MenuList $links)
+    protected function addValidFromBlock(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
         // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
-        $button = $links->getActionLink($this->request->getControllerName(), 'edit', true);
+        $items = [
+            [
+                'route' => 'respondent.tracks.edit',
+                'label' => $this->_('edit'),
+            ],
+        ];
+
+        $links = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
+
         $bridge->addWithThird(
             'gto_valid_from_manual',
             'gto_valid_from',
             'gto_valid_until_manual',
             'gto_valid_until',
             'gto_comment',
-            $button
+            $links,
         );
 
         return true;
-    }
-
-    /**
-     *
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList()
-    {
-        $links = $this->menu->getMenuList();
-        $links->addByController('respondent', 'show', $this->_('Show respondent'))
-            ->addByController('track', 'index', $this->_('Show tracks'))
-            ->addCurrentParent($this->_('Show track'))
-            ->addCurrentSiblings()
-            ->addCurrentChildren()
-            ->showDisabled();
-
-        // \MUtil\EchoOut\EchoOut::track(array_keys($links->getArrayCopy()));
-
-        return $links;
     }
 
     /**
