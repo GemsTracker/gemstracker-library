@@ -555,7 +555,72 @@ class Menu
                             ],
                         ],
                     ],
-                ]
+                ],
+                [
+                    'name' => 'setup.access',
+                    'label' => $this->translator->trans('Access'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.access.organizations.index',
+                            'label' => $this->translator->trans('Organizations'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.organizations.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.organizations.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.organizations.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.organizations.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.access.staff.index',
+                            'label' => $this->translator->trans('Staff'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.staff.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.staff.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.staff.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.staff.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
