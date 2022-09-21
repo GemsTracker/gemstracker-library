@@ -560,7 +560,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      */
     public function getConversionTargets(array $options)
     {
-        $classParts = explode('_', get_class($this));
+        $classParts = explode('\\', get_class($this));
         $className  = end($classParts);
 
         return array($className => $options[$className]);
