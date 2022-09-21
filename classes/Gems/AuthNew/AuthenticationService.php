@@ -7,6 +7,7 @@ use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityType;
 use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\Event\Application\AuthenticatedEvent;
+use Gems\Event\Application\AuthenticationFailedLoginEvent;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Mezzio\Session\SessionInterface;
@@ -48,6 +49,9 @@ class AuthenticationService
         } else {
             $this->session->regenerate();
             $this->session->set('auth_data', null);
+
+            $event = new AuthenticationFailedLoginEvent($result); // TODO: Not used yet
+            $this->eventDispatcher->dispatch($event);
         }
 
         return $result;
