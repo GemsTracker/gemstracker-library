@@ -259,6 +259,7 @@ class ConfigProvider
         return [
             EventSubscriber::class,
             \Gems\Communication\EventSubscriber::class,
+            \Gems\AuthNew\EventSubscriber::class,
         ];
     }
 

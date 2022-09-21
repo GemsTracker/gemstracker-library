@@ -45,13 +45,13 @@ class AuthenticationService
             $user->setSessionKey($sessionKey);
 
             $event = new AuthenticatedEvent($result); // TODO: Not used yet
-            $this->eventDispatcher->dispatch($event);
+            $this->eventDispatcher->dispatch($event, $event::NAME);
         } else {
             $this->session->regenerate();
             $this->session->set('auth_data', null);
 
             $event = new AuthenticationFailedLoginEvent($result); // TODO: Not used yet
-            $this->eventDispatcher->dispatch($event);
+            $this->eventDispatcher->dispatch($event, $event::NAME);
         }
 
         return $result;

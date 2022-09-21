@@ -8,7 +8,7 @@ class GemsTrackerAuthenticationResult extends AuthenticationResult
 {
     public function __construct(
         int $code,
-        ?AuthenticationIdentityInterface $identity,
+        ?GemsTrackerIdentity $identity,
         array $messages = [],
         public readonly ?User $user = null,
     ) {
