@@ -90,6 +90,7 @@ class ConfigProvider
             'roles'         => $this->getRoles(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
+            'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
             'templates'     => $this->getTemplates(),
             'twofactor'     => $this->getTwoFactor(),
@@ -463,6 +464,14 @@ class ConfigProvider
                     'X-Frame-Options' => 'deny',
                 ]
             ],
+        ];
+    }
+
+    protected function getSession(): array
+    {
+        return [
+            'max_away_time' => 15 * 60,
+            'max_total_time' => 10 * 60 * 60,
         ];
     }
 

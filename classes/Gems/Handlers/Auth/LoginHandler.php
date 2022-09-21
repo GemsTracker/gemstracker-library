@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Site\SiteUtil;
+use Gems\User\UserLoader;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -37,6 +40,8 @@ class LoginHandler implements RequestHandlerInterface
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly UrlHelper $urlHelper,
+        private readonly Adapter $db,
+        private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
     ) {
     }
@@ -102,12 +107,15 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
 
-        $result = $authenticationService->routedAuthenticate(
+        $result = $authenticationService->authenticate(new GenericRoutedAuthentication(
+            $this->userLoader,
+            $this->translator,
+            $this->db,
             (int)$input['organization'],
             $input['username'],
             $input['password'],
             $request->getServerParams()['REMOTE_ADDR'] ?? null,
-        );
+        ));
 
         $blockMinutes = $loginThrottle->processAuthenticationResult($result);
 

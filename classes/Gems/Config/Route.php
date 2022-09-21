@@ -9,6 +9,7 @@ use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
+use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\EmptyHandler;
@@ -44,6 +45,7 @@ class Route
                     MenuMiddleware::class,
                 ],
             ], [
+                ...$this->getGeneralRoutes(),
                 ...$this->getAskRoutes(),
                 ...$this->getRespondentRoutes(),
                 ...$this->getOverviewRoutes(),
@@ -89,6 +91,20 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     EmbedLoginHandler::class,
+                ],
+            ],
+        ];
+    }
+
+    public function getGeneralRoutes(): array
+    {
+        return [
+            [
+                'name' => 'auth.logout',
+                'path' => '/logout',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    LogoutHandler::class,
                 ],
             ],
         ];
