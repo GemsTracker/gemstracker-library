@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use Gems\Tracker\Model\TrackModel;
+use MUtil\Model;
+
 /**
  *
  * @package Gems
@@ -103,17 +106,17 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
         'roundId'     => 'getRoundId',
         'surveyId'    => 'getSurveyId',
     ];
-    
+
     public function autofilterAction($resetMvc = true)
     {
         parent::autofilterAction($resetMvc);
-        
+
         //If allowed, add the sort action
-        if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
+        /*if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
             $buttons = $this->_helper->SortableTable('sort', 'rid');
             // First element is the wrapper
             $this->html[0]->append($buttons);
-        }
+        }*/
     }
 
     /**
@@ -149,7 +152,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \Gems\Model_TrackModel
+     * @return TrackModel
      */
     public function createModel($detailed, $action)
     {
@@ -158,14 +161,15 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
 
         $model = $trackEngine->getRoundModel($detailed, $action);
         $model->set('gro_id_track', 'default', $trackId);
+        $model->applyParameters(['gro_id_track' => $trackId]);
 
         if ($detailed) {
             if ($action == 'create') {
                 // Set the default round order
                 $newOrder = $this->db->fetchOne(
-                        "SELECT MAX(gro_id_order) FROM gems__rounds WHERE gro_id_track = ?",
-                        $trackId
-                        );
+                    "SELECT MAX(gro_id_order) FROM gems__rounds WHERE gro_id_track = ?",
+                    $trackId
+                );
 
                 if ($newOrder) {
                     $model->set('gro_id_order', 'default', $newOrder + 10);
@@ -211,14 +215,19 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
     /**
      * Get the current survey id using the round id
      *
-     * @return int
+     * @return ?int
      */
-    protected function getSurveyId()
+    protected function getSurveyId(): ?int
     {
-        return $this->db->fetchOne(
-                "SELECT gro_id_survey FROM gems__rounds WHERE gro_id_round = ?",
-                $this->_getParam(\Gems\Model::ROUND_ID)
-                );
+        $roundId = $this->request->getAttribute(Model::REQUEST_ID);
+        if ($roundId) {
+
+            $surveyId = $this->db->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_id_round = ?', $roundId);
+            if ($surveyId !== null || $surveyId !== false) {
+                return (int)$surveyId;
+            }
+        }
+        return null;
     }
 
     /**
@@ -241,9 +250,9 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
 
         return parent::showAction();
     }
-    
+
     public function sortAction()
     {
-        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__rounds','gro_id_round', 'gro_id_order');        
+        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__rounds','gro_id_round', 'gro_id_order');
     }
 }

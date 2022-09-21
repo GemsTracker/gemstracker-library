@@ -31,7 +31,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array('gro_id_order' => SORT_ASC);
+    protected $_fixedSort = ['gro_id_order' => SORT_ASC];
 
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
@@ -127,29 +127,33 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $br = \MUtil\Html::create('br');
         $sp = \MUtil\Html::raw(' ');
 
-        $this->columns[10] = array('gro_id_order');
-        $this->columns[20] = array('gro_id_survey');
-        $this->columns[30] = array('gro_round_description');
-        $this->columns[40] = array('gro_icon_file');
-        $this->columns[45] = array('ggp_name');
-        $fromHeader = array(
+        if (!is_array($this->columns)) {
+            $this->columns = [];
+        }
+
+        $this->columns[10] = ['gro_id_order'];
+        $this->columns[20] = ['gro_id_survey'];
+        $this->columns[30] = ['gro_round_description'];
+        $this->columns[40] = ['gro_icon_file'];
+        $this->columns[45] = ['ggp_name'];
+        $fromHeader = [
             '', // No content
-            array($this->_('Valid from'), $br)  // Force break in the header
-        );
-        $untilHeader = array('', array($this->_('Valid until'), $br));
-        $this->columns[50] = array($fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id');
-        $this->columns[60] = array($untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id');
-        $this->columns[70] = array('gro_active');
+            [$this->_('Valid from'), $br]  // Force break in the header
+        ];
+        $untilHeader = ['', [$this->_('Valid until'), $br]];
+        $this->columns[50] = [$fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id'];
+        $this->columns[60] = [$untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id'];
+        $this->columns[70] = ['gro_active'];
         if ($label = $model->get('gro_changed_event', 'label')) {
-            $this->columns[80] = array('gro_changed_event');
+            $this->columns[80] = ['gro_changed_event'];
         }
         if ($label = $model->get('gro_changed_event', 'label')) {
-            $this->columns[90] = array('gro_display_event');
+            $this->columns[90] = ['gro_display_event'];
         }
-        $this->columns[100] = array('gro_code');
-        $this->columns[110] = array('condition_display');
+        $this->columns[100] = ['gro_code'];
+        $this->columns[110] = ['condition_display'];
         // Organizations can possibly be replaced with a condition
-        $this->columns[120] = array('organizations');
+        $this->columns[120] = ['organizations'];
     }
 
     /**

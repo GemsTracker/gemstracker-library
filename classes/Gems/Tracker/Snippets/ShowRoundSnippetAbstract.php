@@ -12,6 +12,10 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use MUtil\Html\Raw;
+
 /**
  * Short description for class
  *
@@ -44,6 +48,11 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      * @var \Gems\Menu
      */
     public $menu;
+
+    /**
+     * @var RouteHelper
+     */
+    public $routeHelper;
 
     /**
      *
@@ -157,23 +166,65 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      */
     protected function getMenuList()
     {
-        $links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
+        $currentRoute = $this->requestInfo->getCurrentRouteResult();
+        $currentRouteName = $currentRoute->getMatchedRouteName();
+        $routeParameters = $currentRoute->getMatchedParams();
+        $routeParts = explode('.', $currentRouteName);
+        array_pop($routeParts);
+        $routePrefix = join('.', $routeParts);
 
-        $source = new \Gems\Menu\ParameterSource(array(
-            'gro_id_track' => $this->trackId,
-            'gro_id_round' => $this->trackEngine->getPreviousRoundId($this->roundId),
-            ));
+        $previousRoundId = $this->trackEngine->getPreviousRoundId($this->roundId);
+        $nextRoundId = $this->trackEngine->getNextRoundId($this->roundId);
 
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('&lt; Previous')), $source));
-        $links->addCurrentParent($this->_('Cancel'));
-        $links->addCurrentChildren();
-        $links->addCurrentSiblings();
+        $actions = [
+            [
+                'action' => 'show',
+                'label' => $this->_('&lt; Previous'),
+                'disabled' => ($previousRoundId === null),
+                'parameters' => [
+                    \Gems\Model::ROUND_ID => $previousRoundId,
+                ]
+            ],
+            [
+                'action' => 'index',
+                'label' => $this->_('Cancel'),
+            ],
+            [
+                'action' => 'edit',
+                'label' => $this->_('Edit'),
+            ],
+            [
+                'action' => 'delete',
+                'label' => $this->_('Delete'),
+            ],
+            [
+                'action' => 'show',
+                'label' => $this->_('Next &gt;'),
+                'disabled' => ($nextRoundId === null),
+                'parameters' => [
+                    \Gems\Model::ROUND_ID => $nextRoundId,
+                ]
+            ],
+        ];
 
-        $source->offsetSet('gro_id_round', $this->trackEngine->getNextRoundId($this->roundId));
-        $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('Next &gt;')), $source));
+        $urls = [];
+        foreach($actions as $action) {
+            if (isset($action['disabled']) && $action['disabled'] === true) {
+                $urls[] = Html::actionDisabled(Raw::raw($action['label']));
+                continue;
+            }
+            $routeName = $routePrefix . '.' . $action['action'];
+            $route = $this->routeHelper->getRoute($routeName);
+            $knownParameters = $routeParameters;
+            if (isset($action['parameters'])) {
+                $knownParameters = $action['parameters'] + $routeParameters;
+            }
+            $params = $this->routeHelper->getRouteParamsFromKnownParams($route, $knownParameters);
+            $url = $this->routeHelper->getRouteUrl($routeName, $params);
+            $urls[] = Html::actionLink($url, Raw::raw($action['label']));
+        }
 
-        return $links;
+        return $urls;
     }
 
     /**
@@ -205,7 +256,10 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
         }
 
         if (! $this->roundId) {
-            $this->roundId = $this->request->getParam(\Gems\Model::ROUND_ID);
+            $params = $this->requestInfo->getRequestMatchedParams();
+            if (isset($params[\Gems\Model::ROUND_ID])) {
+                $this->roundId = $params[\Gems\Model::ROUND_ID];
+            }
         }
 
         return $this->roundId && parent::hasHtmlOutput();
