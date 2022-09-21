@@ -47,12 +47,19 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'gul_user_class',
             ])
+            ->addColumn('gul_session_key', 'string', [
+                'null' => true,
+                'limit' => 32,
+                'collation' => 'utf8mb4_unicode_ci',
+                'encoding' => 'utf8mb4',
+                'after' => 'gul_can_login',
+            ])
             ->addColumn('gul_two_factor_key', 'string', [
                 'null' => true,
                 'limit' => 100,
                 'collation' => 'utf8mb4_unicode_ci',
                 'encoding' => 'utf8mb4',
-                'after' => 'gul_can_login',
+                'after' => 'gul_session_key',
             ])
             ->addColumn('gul_enable_2factor', 'boolean', [
                 'null' => false,

@@ -129,4 +129,11 @@ interface UserDefinitionInterface
      * @return $this
      */
     public function setTwoFactorKey(\Gems\User\User $user, $newKey);
+
+    /**
+     * @param User $user The user whose session key to set
+     * @param string $newKey
+     * @return $this
+     */
+    public function setSessionKey(\Gems\User\User $user, string $newKey): static;
 }

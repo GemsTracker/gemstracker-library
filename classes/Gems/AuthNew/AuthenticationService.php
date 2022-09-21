@@ -66,13 +66,19 @@ class AuthenticationService
         if ($result->isValid()) {
             $identity = $result->getIdentity();
 
+            $sessionKey = bin2hex(random_bytes(16));
+
             $this->session->regenerate();
             $this->session->set('auth_data', [
                 'auth_type' => $identity::class,
                 'auth_params' => $identity->toArray(),
                 'auth_login_at' => time(),
                 'auth_last_active_at' => time(),
+                'auth_session_key' => $sessionKey,
             ]);
+
+            $user = $this->getLoggedInUser();
+            $user->setSessionKey($sessionKey);
 
             $event = new AuthenticatedEvent($result); // TODO: Not used yet
             $this->eventDispatcher->dispatch($event);
@@ -125,7 +131,9 @@ class AuthenticationService
     public function checkValid(): bool
     {
         $authData = $this->session->get('auth_data');
-        if ($authData === null) {
+        $user = $this->getLoggedInUser();
+
+        if ($authData === null || $user === null) {
             return false;
         }
 
@@ -135,6 +143,11 @@ class AuthenticationService
         }
 
         if (time() - $authData['auth_last_active_at'] > $this->config['session']['max_away_time']) {
+            $this->logout();
+            return false;
+        }
+
+        if ($user->getSessionKey() !== $authData['auth_session_key']) {
             $this->logout();
             return false;
         }
