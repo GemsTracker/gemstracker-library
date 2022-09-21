@@ -28,7 +28,7 @@ class LogoutHandler implements RequestHandlerInterface
         /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
-        $tfaService = new TfaService($session, $authenticationService, $request, $this->otpMethodBuilder);
+        $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
 
         $tfaService->logout();
         $authenticationService->logout();

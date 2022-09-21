@@ -126,6 +126,7 @@ class AuthenticationService
     {
         $this->session->unset('auth_data');
         $this->session->regenerate();
+        $this->session->clear();
     }
 
     public function checkValid(): bool
