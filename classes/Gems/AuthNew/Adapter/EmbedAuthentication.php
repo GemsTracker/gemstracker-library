@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew\Adapter;
 
+use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
@@ -11,6 +12,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 {
     public function __construct(
         private readonly UserLoader $userLoader,
+        private readonly RespondentRepository $respondentRepository,
         private readonly string $systemUserLoginName,
         private readonly string $systemUserSecretKey,
         private readonly string $deferredLoginName,
@@ -55,12 +57,16 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
             return $this->makeFailResult(AuthenticationResult::FAILURE);
         }
 
-        // TODO: Validate patient_id?
+        $respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
+
+        if ($respondent === false) {
+            return $this->makeFailResult(AuthenticationResult::FAILURE);
+        }
 
         $identity = new EmbedIdentity(
             $systemUser->getLoginName(),
             $deferredUser->getLoginName(),
-            $this->patientId, // TODO: Untrusted data?
+            $respondent['gr2o_patient_nr'],
             $systemUser->getCurrentOrganizationId(),
         );
 

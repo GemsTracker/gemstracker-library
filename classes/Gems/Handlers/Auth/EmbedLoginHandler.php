@@ -8,6 +8,7 @@ use Gems\AuthNew\Adapter\EmbedAuthentication;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\Repository\RespondentRepository;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
@@ -24,6 +25,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
+        private readonly RespondentRepository $respondentRepository,
     ) {
     }
 
@@ -48,6 +50,7 @@ class EmbedLoginHandler implements RequestHandlerInterface
             /** @var EmbedAuthenticationResult $result */
             $result = $authenticationService->authenticate(new EmbedAuthentication(
                 $this->userLoader,
+                $this->respondentRepository,
                 $input['epd'],
                 $input['key'],
                 $input['usr'],
@@ -67,24 +70,15 @@ class EmbedLoginHandler implements RequestHandlerInterface
             //    $redirector->answerRegistryRequest('request', $this->getRequest());
             //}
 
-            $url = $redirector?->getRedirectRoute(
+            $url = $redirector?->getRedirectUrl(
+                $this->urlHelper,
                 $result->systemUser,
                 $result->deferredUser,
                 $identity->getPatientId(),
                 [$identity->getOrganizationId()],
             );
 
-            if ($url === null) {
-                // Back to start screen
-                $url = [
-                    'controller' => 'index',
-                    'action' => 'index',
-                ];
-            }
-
-            throw new \Exception('TODO: Logged in'); // TODO
-            //return new RedirectResponse($url);
-            //$this->_helper->redirector->gotoRoute($url, null, true);
+            return new RedirectResponse($url);
         } else {
             throw new \Gems\Exception($this->translator->trans("Unable to authenticate"));
         }
