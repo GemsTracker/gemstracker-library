@@ -416,16 +416,6 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
             if (!array_key_exists('controller', $this->afterSaveRouteUrl)) {
                 $this->afterSaveRouteUrl['controller'] = $this->requestInfo->getCurrentController();
             }
-
-            // Search array for menu item
-            $find['controller'] = $this->afterSaveRouteUrl['controller'];
-            $find['action'] = $this->afterSaveRouteUrl['action'];
-
-            // If not allowed, redirect to index
-            if ((! $this->menu) || (null == $this->menu->find($find))) {
-                $this->afterSaveRouteUrl['action'] = 'index';
-                $this->resetRoute = true;
-            }
         }
         // \MUtil\EchoOut\EchoOut::track($this->routeAction, $this->resetRoute);
 
