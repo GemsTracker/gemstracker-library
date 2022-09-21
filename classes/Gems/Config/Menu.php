@@ -32,6 +32,11 @@ class Menu
             $this->getProjectMenu(),
             $this->getSetupMenu(),
             $this->getTrackBuilderMenu(),
+            [
+                'name' => 'auth.logout',
+                'label' => $this->translator->trans('Log out'),
+                'type' => 'route-link-item',
+            ],
         ];
     }
 

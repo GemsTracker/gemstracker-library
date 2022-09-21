@@ -14,7 +14,6 @@ class TfaService
     public function __construct(
         private readonly SessionInterface $session,
         private readonly AuthenticationService $authenticationService,
-        private readonly ServerRequestInterface $request,
         private readonly OtpMethodBuilder $otpMethodBuilder,
     ) {
     }
@@ -54,7 +53,7 @@ class TfaService
         return $this->session->get('tfa_logged_in') === $user->getUserId();
     }
 
-    public function requiresAuthentication(User $user): bool
+    public function requiresAuthentication(User $user, ServerRequestInterface $request): bool
     {
         $identity = $this->authenticationService->getIdentity();
         if ($identity instanceof EmbedIdentity) {
@@ -63,7 +62,7 @@ class TfaService
 
         // todo: check if organization has TFA enabled at all?
 
-        if (!$user->isTwoFactorRequired($this->request->getServerParams()['REMOTE_ADDR'])) {
+        if (!$user->isTwoFactorRequired($request->getServerParams()['REMOTE_ADDR'])) {
             return false;
         }
 

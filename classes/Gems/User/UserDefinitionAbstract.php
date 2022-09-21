@@ -155,4 +155,14 @@ abstract class UserDefinitionAbstract extends \MUtil\Registry\TargetAbstract imp
         throw new \Gems\Exception\Coding(sprintf('A Two Factor key cannot be set for %s users.', get_class($this)));
         return $this;
     }
+
+    /**
+     * @param User $user The user whose session key to set
+     * @param string $newKey
+     * @return $this
+     */
+    public function setSessionKey(\Gems\User\User $user, string $newKey): static
+    {
+        throw new \Gems\Exception\Coding(sprintf('A Session key cannot be set for %s users.', get_class($this)));
+    }
 }

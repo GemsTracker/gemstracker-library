@@ -50,6 +50,7 @@ class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
                     'user_otp_count'      =>'gul_otp_count',
                     'user_otp_requested'  =>'gul_otp_requested',
                     'user_active'         => 'gul_can_login',
+                    'user_session_key'    => 'gul_session_key',
                     ))
                 ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
                     'user_login'       => 'gr2o_patient_nr',

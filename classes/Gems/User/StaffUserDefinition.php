@@ -52,6 +52,7 @@ class StaffUserDefinition extends \Gems\User\DbUserDefinitionAbstract
                     'user_enable_2factor' => 'gul_enable_2factor',
                     'user_otp_count'      =>'gul_otp_count',
                     'user_otp_requested'  =>'gul_otp_requested',
+                    'user_session_key'    => 'gul_session_key',
                     ))
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
                     'user_id'             => 'gsf_id_user',

@@ -2590,4 +2590,24 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
         return $this;
     }
+
+    /**
+     * Get the current session key for the user. The session key is stored in the session variable
+     * auth_session_key and is only used to ensure a user can only log in on one device at the same time.
+     */
+    public function getSessionKey(): string
+    {
+        return $this->_getVar('user_session_key');
+    }
+
+    /**
+     * Set the current session key for the user.
+     * @see getSessionKey()
+     */
+    public function setSessionKey(string $sessionKey): void
+    {
+        $this->_setVar('user_session_key', $sessionKey);
+
+        $this->definition->setSessionKey($this, $sessionKey);
+    }
 }

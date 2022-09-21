@@ -471,4 +471,23 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
         return $this;
     }
+
+    /**
+     *
+     * @param \Gems\User\User $user The user whose session key to set
+     * @param string $newKey
+     * @return $this
+     */
+    public function setSessionKey(\Gems\User\User $user, string $newKey): static
+    {
+        $data['gul_id_user'] = $user->getUserLoginId();
+        $data['gul_session_key'] = $newKey;
+
+        $model = new \MUtil\Model\TableModel('gems__user_logins');
+        \Gems\Model::setChangeFieldsByPrefix($model, 'gul', $user->getUserId());
+
+        $model->save($data);
+
+        return $this;
+    }
 }
