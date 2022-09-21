@@ -6,14 +6,11 @@ use Gems\AuthNew\Adapter\AuthenticationAdapterInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\Adapter\AuthenticationIdentityType;
 use Gems\AuthNew\Adapter\AuthenticationResult;
-use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\Event\Application\AuthenticatedEvent;
 use Gems\User\User;
 use Gems\User\UserLoader;
-use Laminas\Db\Adapter\Adapter;
 use Mezzio\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationService
 {
@@ -21,42 +18,8 @@ class AuthenticationService
         private readonly SessionInterface $session,
         private readonly UserLoader $userLoader,
         private readonly EventDispatcher $eventDispatcher,
-        private readonly Adapter $db,
-        private readonly TranslatorInterface $translator,
         private readonly array $config,
     ) {
-    }
-
-    public function routedAuthenticate(
-        int $organizationId,
-        string $username,
-        string $password,
-        string $ipAddress
-    ): AuthenticationResult {
-        $user = $this->userLoader->getUser(
-            $username,
-            $organizationId,
-        );
-
-        if ($user === null || $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) { // TODO: Remove NOLOGIN
-            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
-        }
-
-        if (!$user->isActive()) {
-            return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
-        }
-
-        if (!$user->isAllowedIpForLogin($ipAddress)) {
-            return new GenericFailedAuthenticationResult(AuthenticationResult::DISALLOWED_IP, [
-                $this->translator->trans('You are not allowed to login from this location.'),
-            ]);
-        }
-
-        $adapter = match($user->getUserDefinitionClass()) {
-            UserLoader::USER_STAFF => GemsTrackerAuthentication::fromUser($this->db, $user, $password),
-        };
-
-        return $this->authenticate($adapter);
     }
 
     public function authenticate(AuthenticationAdapterInterface $adapter): AuthenticationResult
