@@ -2092,7 +2092,7 @@ class Token extends \Gems\Registry\TargetAbstract
                 $start = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $validFrom);
             }
 
-            if ($start->isLater($mailSentDate)) {
+            if ($start < $mailSentDate) {
                 $values['gto_mail_sent_date'] = null;
                 $values['gto_mail_sent_num']  = 0;
 
@@ -2118,7 +2118,7 @@ class Token extends \Gems\Registry\TargetAbstract
         } elseif ('' === $validFrom) {
             $validFrom = null;
         }
-        if ($validUntil instanceof DateTimeInterface1) {
+        if ($validUntil instanceof DateTimeInterface) {
             $validUntil = $validUntil->format(\Gems\Tracker::DB_DATETIME_FORMAT);
         } elseif ('' === $validUntil) {
             $validUntil = null;

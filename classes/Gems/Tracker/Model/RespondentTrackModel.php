@@ -75,11 +75,11 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         parent::__construct($name, 'gems__respondent2track', 'gr2t', true);
         $this->addTable('gems__respondents',     array('gr2t_id_user' => 'grs_id_user'), 'grs', false);
         $this->addTable(
-                'gems__respondent2org',
-                array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'),
-                'gr2o',
-                false
-                );
+            'gems__respondent2org',
+            array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'),
+            'gr2o',
+            false
+        );
         $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'), 'gtr', false);
         $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'), 'grc', false);
         $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));
@@ -145,18 +145,18 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
             \Gems\Model::RESPONDENT_TRACK => 'gr2t_id_respondent_track',
             \MUtil\Model::REQUEST_ID1     => 'gr2o_patient_nr',
             \MUtil\Model::REQUEST_ID2 => 'gr2o_id_organization',
-            ));
+        ));
 
         $this->set('gtr_track_name',    'label', $this->_('Track'));
         $this->set('gr2t_track_info',   'label', $this->_('Description'),
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
-        	'dateFormat', 'Y-m-d',
+            'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate,
             'default', new \DateTimeImmutable());
         $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
-        	'dateFormat', 'dd-MM-yyyy',
+            'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate);
         $this->set('gr2t_reception_code');
         $this->set('gr2t_comment',       'label', $this->_('Comment'));
@@ -190,34 +190,34 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         end($mailCodes);
         $defaultMailCode = key($mailCodes);
         $this->set('gr2t_mailable',
-                'label', $this->_('May be mailed'),
-                'default', $defaultMailCode,
-                'elementClass', 'radio',
-                'separator', ' ',
-                'multiOptions', $mailCodes 
-                );
+            'label', $this->_('May be mailed'),
+            'default', $defaultMailCode,
+            'elementClass', 'radio',
+            'separator', ' ',
+            'multiOptions', $mailCodes
+        );
 
         $this->set('assigned_by',          'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',      'label', $this->_('Start'),
-            'dateFormat', 'dd-MM-yyyy',
+            'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate);
 
         // Integrate fields
         $trackEngine->addFieldsToModel($this, $edit);
 
         $this->set('gr2t_end_date_manual', 'label', $this->_('Set ending on'),
-                'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
-                'elementClass', 'Radio',
-                'multiOptions', $this->translatedUtil->getDateCalculationOptions(),
-                'separator', ' '
-                );
+            'description', $this->_('Manually set dates are fixed and will never be (re)calculated.'),
+            'elementClass', 'Radio',
+            'multiOptions', $this->translatedUtil->getDateCalculationOptions(),
+            'separator', ' '
+        );
         $this->set('gr2t_end_date',        'label', $this->_('Ending on'),
-            'dateFormat', 'dd-MM-yyyy',
+            'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate);
         $this->set('gr2t_track_info',      'label', $this->_('Description'));
         $this->set('gr2t_comment',         'label', $this->_('Comment'));
         $this->set('grc_description',      'label', $this->_('Reception code'),
-                'elementClass', 'Exhibitor');
+            'elementClass', 'Exhibitor');
         $this->refreshGroupSettings();
 
         return $this;
@@ -244,18 +244,18 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('assigned_by',         'elementClass', 'None');
         $this->set('gr2t_reception_code', 'elementClass', 'None');
         $this->set('gr2t_start_date',     'elementClass', 'Date',
-                'default',  new \DateTimeImmutable(),
-                'required', true,
-                'size',     30
-                );
+            'default',  new \DateTimeImmutable(),
+            'required', true,
+            'size',     30
+        );
         $this->set('gr2t_end_date',   'elementClass', 'Date',
-                'default', null,
-                'size',    30
-                );
+            'default', null,
+            'size',    30
+        );
         $this->set('gr2t_comment',    'elementClass', 'Textarea',
-                'cols', 80,
-                'rows', 5
-                );
+            'cols', 80,
+            'rows', 5
+        );
 
         $this->loader->getModels()->addDatabaseTranslations($this);
 

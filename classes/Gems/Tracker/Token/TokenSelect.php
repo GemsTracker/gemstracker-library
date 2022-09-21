@@ -266,9 +266,9 @@ class TokenSelect
     }
 
     /**
-     * @return array
+     * @return array|bool
      */
-    public function fetchRow(): array
+    public function fetchRow(): array|bool
     {
         $this->sql_select->limit(1);
 
