@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
+use Gems\AuthNew\Adapter\AuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedAuthentication;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\Cache\HelperAdapter;
+use Gems\Cache\RateLimiter;
 use Gems\Repository\RespondentRepository;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -20,13 +23,24 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmbedLoginHandler implements RequestHandlerInterface
 {
+    private const MAX_ATTEMPTS_KEY = 'embed_login_max_attempts';
+
+    private readonly RateLimiter $rateLimiter;
+    private readonly int $throttleMaxAttempts;
+    private readonly int $throttleBlockSeconds;
+
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly RespondentRepository $respondentRepository,
+        HelperAdapter $cacheHelper,
+        private readonly array $config,
     ) {
+        $this->rateLimiter = new RateLimiter($cacheHelper);
+        $this->throttleMaxAttempts = $this->config['embedThrottle']['maxAttempts'] ?? 5;
+        $this->throttleBlockSeconds = $this->config['embedThrottle']['blockSeconds'] ?? 600;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -37,6 +51,10 @@ class EmbedLoginHandler implements RequestHandlerInterface
         $input = ($request->getMethod() === 'POST') ? $request->getParsedBody() : $request->getQueryParams();
 
         $result = null;
+
+        if ($this->rateLimiter->tooManyAttempts(self::MAX_ATTEMPTS_KEY, $this->throttleMaxAttempts)) {
+            throw new \Gems\Exception($this->translator->trans("Too many login attempts"));
+        }
 
         // TODO: org should be an existing organization?
 
@@ -57,6 +75,10 @@ class EmbedLoginHandler implements RequestHandlerInterface
                 $input['pid'],
                 (int)$input['org'],
             ));
+
+            if (!$result->isValid() && $result->getCode() !== AuthenticationResult::FAILURE_DEFERRED) {
+                $this->rateLimiter->hit(self::MAX_ATTEMPTS_KEY, $this->throttleBlockSeconds);
+            }
         }
 
         if ($result && $result->isValid()) {

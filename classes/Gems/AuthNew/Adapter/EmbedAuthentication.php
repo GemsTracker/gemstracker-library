@@ -54,13 +54,13 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
         $deferredUser = $systemUserData->getDeferredUser($systemUser, $this->deferredLoginName);
         if (!$deferredUser instanceof User || !$deferredUser->isActive()) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE, ['No deferred user']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user']);
         }
 
         $respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
 
         if ($respondent === false) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Nonexistent patient']);
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['Nonexistent patient']);
         }
 
         $identity = new EmbedIdentity(
