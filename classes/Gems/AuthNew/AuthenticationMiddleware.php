@@ -18,6 +18,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
+    public const CURRENT_USER_ATTRIBUTE = 'current_user';
+    public const CURRENT_IDENTITY_ATTRIBUTE = 'current_identity';
+
+
     private const LOGIN_INTENDED_URL_SESSION_KEY = 'login_intended_url';
 
     protected const CHECK_TFA = true;
@@ -52,8 +56,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 return $this->redirectWithIntended($request, $this->router->generateUri('tfa.login'));
             }
 
-            $request = $request->withAttribute('current_user', $user);
-            $request = $request->withAttribute('current_identity', $authenticationService->getIdentity());
+            $request = $request->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user);
+            $request = $request->withAttribute(self::CURRENT_IDENTITY_ATTRIBUTE, $authenticationService->getIdentity());
         } else {
             $request = $request->withAttribute('current_user_without_tfa', $user);
         }

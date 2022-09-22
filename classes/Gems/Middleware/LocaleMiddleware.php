@@ -12,6 +12,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class LocaleMiddleware implements MiddlewareInterface
 {
+    public const LOCALE_ATTRIBUTE = 'locale';
+
     protected array $config = [];
 
     private Locale $locale;
@@ -31,6 +33,8 @@ class LocaleMiddleware implements MiddlewareInterface
         if ($language !== null) {
             $this->locale->setCurrentLanguage($language);
         }
+
+        $request = $request->withAttribute(self::LOCALE_ATTRIBUTE, $this->locale);
 
         $response = $handler->handle($request);
         if ($language === null) {

@@ -16,6 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class MenuMiddleware implements MiddlewareInterface
 {
+    public const MENU_ATTRIBUTE = 'mainMenu';
+
     public function __construct(
         private readonly array $config,
         private readonly TemplateRendererInterface $template,
@@ -36,7 +38,10 @@ class MenuMiddleware implements MiddlewareInterface
 
         $menu = new Menu($this->template, $routeHelper, $this->menuConfig);
 
-        $this->template->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, 'mainMenu', $menu);
+        // TODO: Disable default param
+        $this->template->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, self::MENU_ATTRIBUTE, $menu);
+
+        $request = $request->withAttribute(self::MENU_ATTRIBUTE, $menu);
 
         $menu->openRouteResult($routeResult);
 
