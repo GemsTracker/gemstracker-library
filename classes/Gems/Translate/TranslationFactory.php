@@ -2,10 +2,8 @@
 
 namespace Gems\Translate;
 
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Gems\Locale\Locale;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\Loader\JsonFileLoader;
@@ -24,13 +22,16 @@ class TranslationFactory implements FactoryInterface
      */
     protected $config;
 
+    protected Locale $locale;
+
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Translator
     {
         $this->config = $container->get('config');
+        $this->locale = $container->get(Locale::class);
 
-        $defaultLocale = $this->getDefaultLocale();
+        $language = $this->locale->getCurrentLanguage();
 
-        $translator = $this->getTranslator($defaultLocale);
+        $translator = $this->getTranslator($language);
 
         return $translator;
     }
@@ -72,15 +73,6 @@ class TranslationFactory implements FactoryInterface
         }
 
         return $translator;
-    }
-
-    protected function getDefaultLocale(): string
-    {
-        if (isset($this->config['locale'], $this->config['locale']['default'])) {
-            return $this->config['locale']['default'];
-        }
-
-        return 'en';
     }
 
     protected function getLoaderFromExtension(string $extension): ?LoaderInterface

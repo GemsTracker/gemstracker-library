@@ -37,12 +37,11 @@ class Route
             ...$this->routeGroup([
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
-
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
-                    AuthenticationMiddleware::class,
                     LocaleMiddleware::class,
+                    AuthenticationMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [

@@ -4,7 +4,6 @@ namespace Gems\Middleware;
 
 use Gems\Locale\Locale;
 use Gems\Site\SiteUrl;
-use Gems\User\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,10 +36,10 @@ class LocaleMiddleware implements MiddlewareInterface
         $request = $request->withAttribute(self::LOCALE_ATTRIBUTE, $this->locale);
 
         $response = $handler->handle($request);
+
         if ($language === null) {
             return $response;
         }
-
 
         return $response->withAddedHeader('Content-Language', $language);
     }
@@ -50,19 +49,17 @@ class LocaleMiddleware implements MiddlewareInterface
         if (!isset($this->config['availableLocales'])) {
             return null;
         }
+
+        // Default Language from cookie
+        $cookies = $request->getCookieParams();
+        if (isset($cookies[self::LOCALE_ATTRIBUTE]) && in_array($cookies[self::LOCALE_ATTRIBUTE], $this->config['availableLocales'])) {
+            return $cookies[self::LOCALE_ATTRIBUTE];
+        }
+
         // Is the language specifically asked for in the headers?
         $headerLanguage = $request->getHeaderLine('Accept-Language');
         if (!empty($headerLanguage) && in_array($headerLanguage, $this->config['availableLocales'])) {
             return $headerLanguage;
-        }
-
-        // Default Language from CurrentUser
-        $currentUser = $request->getAttribute('current_user');
-        if ($currentUser instanceof User) {
-            $language = $currentUser->getLocale();
-            if ($language !== null && in_array($language, $this->config['availableLocales'])) {
-                return $language;
-            }
         }
 
         // Default language from site
