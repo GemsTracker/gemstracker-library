@@ -6,9 +6,13 @@ declare(strict_types=1);
 namespace Gems\Legacy;
 
 
+use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouteResult;
@@ -26,16 +30,16 @@ class LegacyController implements RequestHandlerInterface
 
     protected ProjectOverloader $loader;
     protected \Zend_View $view;
-    protected TemplateRendererInterface $template;
     private UrlHelper $urlHelper;
+    private LayoutRenderer $layoutRenderer;
 
-    public function __construct(ProjectOverloader $loader, TemplateRendererInterface $template, \Zend_View $view, UrlHelper $urlHelper)
+    public function __construct(ProjectOverloader $loader, LayoutRenderer $layoutRenderer, \Zend_View $view, UrlHelper $urlHelper)
     {
         $this->container = $loader->getContainer();
         $this->loader = $loader;
         $this->view = $view;
-        $this->template = $template;
         $this->urlHelper = $urlHelper;
+        $this->layoutRenderer = $layoutRenderer;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -84,19 +88,15 @@ class LegacyController implements RequestHandlerInterface
 
                 //$flashMessages = $this->getFlashMessages($request);
 
-                $messenger = $request->getAttribute('flash');
-
                 $data = [
                     'content' => $content,
-                    'menuHtml' => null,
-                    'flash' => $messenger,
                 ];
 
                 $statusCode = 200;
                 $headers = [];
 
-                if ($this->template) {
-                    return new HtmlResponse($this->template->render('gems::legacy-view', $data), $statusCode, $headers);
+                if ($this->layoutRenderer) {
+                    return new HtmlResponse($this->layoutRenderer->render('gems::legacy-view', $request, $data), $statusCode, $headers);
                 }
 
                 return new HtmlResponse($content, $statusCode, $headers);
