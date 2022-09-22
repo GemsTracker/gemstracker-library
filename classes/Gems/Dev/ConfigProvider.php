@@ -50,6 +50,9 @@ class ConfigProvider
                 [
                     'url' => 'http://gemstracker.test',
                 ],
+                [
+                    'url' => 'http://localhost',
+                ],
             ]
         ];
     }

@@ -14,16 +14,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class SiteGateMiddleware implements MiddlewareInterface
 {
+    public const SITE_URL_ATTRIBUTE = 'site';
+
     private SiteUtil $siteUtil;
-    private Loggers $loggers;
 
     private string $logName = 'siteLogger';
     private TemplateRendererInterface $template;
 
-    public function __construct(SiteUtil $siteUtil, Loggers $loggers, TemplateRendererInterface $template)
+    public function __construct(SiteUtil $siteUtil, TemplateRendererInterface $template)
     {
         $this->siteUtil = $siteUtil;
-        $this->loggers = $loggers;
         $this->template = $template;
     }
 
@@ -32,12 +32,15 @@ class SiteGateMiddleware implements MiddlewareInterface
         try {
             $this->siteUtil->isRequestFromAllowedUrl($request);
         } catch(NotAllowedUrlException $e) {
-            $logger = $this->loggers->getLogger($this->logName);
-            $logger->warning(sprintf('Unknown host: %s', $e->getUrl()));
+            /*$logger = $this->loggers->getLogger($this->logName);
+            $logger->warning(sprintf('Unknown host: %s', $e->getUrl()));*/
 
             // For now fall back to 404! 403 might be appropriate as well
             return new HtmlResponse($this->template->render('error::404'), 404);
         }
+
+        $site = $this->siteUtil->getCurrentSite($request);
+        $request = $request->withAttribute(self::SITE_URL_ATTRIBUTE, $site);
 
         return $handler->handle($request);
     }

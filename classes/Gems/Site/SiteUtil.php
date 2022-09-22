@@ -52,6 +52,29 @@ class SiteUtil
         $this->organizatonUtil = $organizatonUtil;
     }
 
+    public function getCurrentSite(ServerRequestInterface $request): ?SiteUrl
+    {
+        $hosts = [];
+        $serverParams = $request->getServerParams();
+
+        if (isset($serverParams['HTTP_HOST'])) {
+            $hosts[] = $serverParams['HTTP_HOST'];
+        }
+        if (isset($serverParams['SERVER_NAME'])) {
+            $hosts[] = $serverParams['SERVER_NAME'];
+        }
+
+        foreach(array_unique($hosts) as $host) {
+            $url = $this->getUrlFromHost($request, $host);
+            $site = $this->getSiteFromUrl($url);
+            if ($site !== null) {
+                return $site;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @param $orgId
      * @return string Preferred url for organization

@@ -3,6 +3,8 @@
 namespace Gems\Middleware;
 
 use Gems\Locale\Locale;
+use Gems\Site\SiteUrl;
+use Gems\User\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,6 +18,7 @@ class LocaleMiddleware implements MiddlewareInterface
 
     public function __construct(Locale $locale, array $config)
     {
+        // TODO: Locale should not be a serviceas it is stateful
         if (isset($config['locale'])) {
             $this->config = $config['locale'];
         }
@@ -50,8 +53,22 @@ class LocaleMiddleware implements MiddlewareInterface
         }
 
         // Default Language from CurrentUser
+        $currentUser = $request->getAttribute('current_user');
+        if ($currentUser instanceof User) {
+            $language = $currentUser->getLocale();
+            if ($language !== null && in_array($language, $this->config['availableLocales'])) {
+                return $language;
+            }
+        }
 
         // Default language from site
+        $site = $request->getAttribute(SiteGateMiddleware::SITE_URL_ATTRIBUTE);
+        if ($site instanceof SiteUrl) {
+            $language = $site->getLang();
+            if ($language !== null && in_array($language, $this->config['availableLocales'])) {
+                return $language;
+            }
+        }
 
         // Default language from config
         if (isset($this->config['default']) && in_array($this->config['default'], $this->config['availableLocales'])) {

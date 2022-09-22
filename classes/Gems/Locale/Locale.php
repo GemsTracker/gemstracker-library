@@ -12,13 +12,23 @@ class Locale
 
     public function __construct(array $config)
     {
-        $this->config = $config;
+        if (isset($config['locale'])) {
+            $this->config = $config['locale'];
+        }
+    }
+
+    public function getAvailableLanguages(): array
+    {
+        if (isset($this->config, $this->config['availableLocales'])) {
+            return $this->config['availableLocales'];
+        }
+        return [];
     }
 
     public function getDefaultLanguage(): string
     {
-        if (isset($this->config['locale'], $this->config['locale']['default'])) {
-            return $this->config['locale']['default'];
+        if (isset($this->config, $this->config['default'])) {
+            return $this->config['default'];
         }
         return 'en';
     }
@@ -39,6 +49,29 @@ class Locale
         return $this->getCurrentLanguage();
     }
 
+    public function getModelTypeDefaults($language = null): array
+    {
+        if ($language === null) {
+            $language = $this->getCurrentLanguage();
+        }
+
+        $typeDefaults = [];
+
+        if (isset($this->config['defaultTypes'])) {
+            $typeDefaults = $this->config['defaultTypes'];
+        }
+
+        if (isset($this->config['localeTypes'][$language])) {
+            foreach($this->config['localeTypes'][$language] as $modelType => $settings) {
+                foreach($settings as $settingName => $value) {
+                    $typeDefaults[$modelType][$settingName] = $value;
+                }
+            }
+        }
+
+        return $typeDefaults;
+    }
+
     public function isCurrentLanguageDefault(): bool
     {
         return ($this->currentLanguage === $this->getDefaultLanguage());
@@ -50,27 +83,8 @@ class Locale
     public function setCurrentLanguage(string $currentLanguage): void
     {
         $this->currentLanguage = $currentLanguage;
-        
-        $config = $this->config['locale'] ?? [];
-        
-        if (isset($config['defaultTypes'])) {
-            $settings = $config['defaultTypes'];
-        }
-        if (isset($config['localeTypes'][$currentLanguage])) {
-            if (isset($settings)) {
-                foreach ($config['defaultTypes'][$currentLanguage] as $type => $settings) {
-                    foreach ($settings as $key => $value) {
-                        // Set each value seperately, each overrules existing settings.
-                        $settings[$type][$key] = $value;
-                    }
-                }
-            } else {
-                $settings = $this->config['localeTypes'][$currentLanguage];
-            }
-        }
-        
-        if (isset($settings)) {
-            Model::addTypesDefaults($settings);
-        }
+
+        // TODO: Remove state
+        Model::addTypesDefaults($this->getModelTypeDefaults());
     }
 }
