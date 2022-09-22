@@ -349,11 +349,11 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
             $bridge->addMarkerRow();
         }
 
-        $this->addValidFromBlock($bridge, $model);
+        $this->addValidFromBlock($bridge);
         $this->addContactBlock($bridge);
         $this->addCompletionBlock($bridge);
 
-        $this->addLastitems($bridge, $model, $links);
+        $this->addLastitems($bridge, $model);
     }
 
     /**
