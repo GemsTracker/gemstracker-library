@@ -215,7 +215,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
-    protected function addLastitems(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $links)
+    protected function addLastitems(\Gems\Model\Bridge\ThreeColumnTableBridge $bridge)
     {
         $items = [
             [
@@ -353,7 +353,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         $this->addContactBlock($bridge);
         $this->addCompletionBlock($bridge);
 
-        $this->addLastitems($bridge, $model);
+        $this->addLastitems($bridge);
     }
 
     /**
