@@ -336,8 +336,6 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
         // Don't know why, but is needed now
         $bridge->getRow();
 
-        $links = $this->getMenuList();
-
         if ($this->addHeaderGroup($bridge)) {
             $bridge->addMarkerRow();
         }
