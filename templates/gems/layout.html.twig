@@ -9,12 +9,15 @@
 <div id="container" class="container-fluid">
     <header>
         <div class="logo"></div>
+        <div class="tools">
+            {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+        </div>
     </header>
 
     <div class="content">
         <div id="main-container" class="include-menu">
             <div id="main" class="container-fluid">
-                {% if flashMessages is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+                {% if flash is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
 
                 {% block content %}{% endblock %}
             </div>

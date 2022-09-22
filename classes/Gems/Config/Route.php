@@ -12,6 +12,7 @@ use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
+use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
@@ -64,6 +65,7 @@ class Route
                 'path' => '/login',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -76,6 +78,7 @@ class Route
                 'path' => '/tfa',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
@@ -88,9 +91,21 @@ class Route
                 'path' => '/embed/login',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     EmbedLoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'language.change',
+                'path' => '/change-language/{language:[a-zA-Z0-9]+}/{url}',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    ChangeLanguageHandler::class,
                 ],
             ],
         ];
@@ -104,6 +119,8 @@ class Route
                 'path' => '/logout',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
                     LogoutHandler::class,
                 ],
             ],

@@ -1,0 +1,9 @@
+<div class="languages">
+    {% for language in locale.getAvailableLanguages() %}
+        {% if language == locale.getCurrentLanguage() %}
+            <span class="language {{ language }}">{{ language }}</span>
+        {% else %}
+            <a class="language {{ language }}" href="{{ path('language.change', {'language': language, 'url': locale.getUrlHash(url())}) }}">{{ language }}</a>
+        {% endif %}
+    {% endfor %}
+</div>

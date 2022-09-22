@@ -1,0 +1,9 @@
+<div class="errors">
+
+{% for messageInfo in flash.getFlash('action-messages') %}
+    <div class="alert alert-{{ messageInfo[1] }}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ messageInfo[0] }}
+    </div>
+{% endfor %}
+</div>

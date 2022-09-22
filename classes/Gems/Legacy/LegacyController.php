@@ -82,12 +82,14 @@ class LegacyController implements RequestHandlerInterface
 
                 $content = $controllerObject->html->render($this->view);
 
-                $flashMessages = $this->getFlashMessages($request);
+                //$flashMessages = $this->getFlashMessages($request);
+
+                $messenger = $request->getAttribute('flash');
 
                 $data = [
                     'content' => $content,
                     'menuHtml' => null,
-                    'flashMessages' => $flashMessages,
+                    'flash' => $messenger,
                 ];
 
                 $statusCode = 200;
