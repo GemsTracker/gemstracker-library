@@ -12,6 +12,7 @@
 namespace Gems\User\Embed\Redirect;
 
 use Gems\User\Embed\RedirectAbstract;
+use Mezzio\Helper\UrlHelper;
 
 /**
  *
@@ -47,5 +48,20 @@ class RespondentShowPage extends RedirectAbstract
             \MUtil\Model::REQUEST_ID1           => $patientId,
             \MUtil\Model::REQUEST_ID2           => $orgId,
         ];
+    }
+
+    public function getRedirectUrl(
+        UrlHelper $urlHelper,
+        \Gems\User\User $embeddedUser,
+        \Gems\User\User $deferredUser,
+        $patientId,
+        $organizations,
+    ): string {
+        $orgId = $deferredUser->getCurrentOrganizationId();
+
+        return $urlHelper->generate('respondent.show', [
+            \MUtil\Model::REQUEST_ID1 => $patientId,
+            \MUtil\Model::REQUEST_ID2 => $orgId,
+        ]);
     }
 }

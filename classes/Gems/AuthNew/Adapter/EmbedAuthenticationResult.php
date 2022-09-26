@@ -8,7 +8,7 @@ class EmbedAuthenticationResult extends AuthenticationResult
 {
     public function __construct(
         int $code,
-        ?AuthenticationIdentityInterface $identity,
+        ?EmbedIdentity $identity,
         array $messages = [],
         public readonly ?User $systemUser = null,
         public readonly ?User $deferredUser = null,
