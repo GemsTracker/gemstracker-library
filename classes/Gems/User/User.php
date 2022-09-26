@@ -14,6 +14,7 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
+use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
@@ -181,6 +182,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @var \Gems\Util
      */
     protected $util;
+
+    /**
+     * @var ValueEncryptor
+     */
+    protected $valueEncryptor;
 
     /**
      * Creates the class for this user.
@@ -1013,7 +1019,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      *
      * @return int
      */
-    public function getCurrentOrganizationId()
+    public function getCurrentOrganizationId(): int
     {
         $orgId = $this->_getVar('user_organization_id');
 
@@ -1028,7 +1034,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             }
             $this->_setVar('user_organization_id', $orgId);
         }
-        return $orgId;
+        return (int)$orgId;
     }
 
     /**
@@ -1512,7 +1518,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
                     $this->refreshEmbeddingData();
                 }
                 $key = $this->_getVar('gsus_secret_key');
-                $this->_setVar('secretKey', $key ? $this->project->decrypt($key) : null);
+                $this->_setVar('secretKey', $key ? $this->valueEncryptor->decrypt($key) : null);
             }
             return $this->_getVar('secretKey', null);
         }

@@ -112,15 +112,16 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
     {
         $helperClass = $this->_getInterface($helperType);
 
-        $helper = new $helperName();
+        //$helper = new $helperName();
+        $helper = $this->_loadClass($helperName, true);
 
         if (! $helper instanceof $helperClass) {
             throw new \Gems\Exception\Coding("The class '$helperName' of type '$helperType' is not an instance of '$helperClass'.");
         }
 
-        if ($helper instanceof \MUtil\Registry\TargetInterface) {
+        /*if ($helper instanceof \MUtil\Registry\TargetInterface) {
             $this->applySource($helper);
-        }
+        }*/
 
         return $helper;
     }

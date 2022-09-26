@@ -28,11 +28,6 @@ abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\Translateable
     protected $currentOrganization;
 
     /**
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
      * @var \Gems\Loader
      */
     protected $loader;
@@ -86,7 +81,7 @@ abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\Translateable
     {
         // \MUtil\EchoOut\EchoOut::track($userLogin, $organisations );
 
-        $user       = $this->currentUser;
+        //$user       = $this->currentUser;
         $userLoader = $this->loader->getUserLoader();
 
         // Set to current organization if not passed and no organization is allowed
@@ -104,6 +99,7 @@ abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\Translateable
             }
         }
 
-        return $user;
+        throw new \Exception(); // TODO: Better name
+        //return $user;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Gems\AuthNew\Adapter;
 
+use Gems\Repository\RespondentRepository;
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\User;
@@ -11,6 +12,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 {
     public function __construct(
         private readonly UserLoader $userLoader,
+        private readonly RespondentRepository $respondentRepository,
         private readonly string $systemUserLoginName,
         private readonly string $systemUserSecretKey,
         private readonly string $deferredLoginName,
@@ -28,17 +30,17 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
     {
         $systemUser = $this->userLoader->getUser($this->systemUserLoginName, $this->organizationId);
         if ($systemUser === null || !$systemUser->isActive()) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Nonexistent or inactive']);
         }
 
         $systemUserData = $systemUser->getEmbedderData();
         if (! $systemUserData instanceof EmbeddedUserData) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['No user data']);
         }
 
         $authClass = $systemUserData->getAuthenticator();
         if (!$authClass instanceof EmbeddedAuthAbstract) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['No authenticator']);
         }
 
         $authClass->setDeferredLogin($this->deferredLoginName);
@@ -47,20 +49,24 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
         $result = $authClass->authenticate($systemUser, $this->systemUserSecretKey);
 
         if (!$result) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE);
+            return $this->makeFailResult(AuthenticationResult::FAILURE, ['Invalid credentials']);
         }
 
         $deferredUser = $systemUserData->getDeferredUser($systemUser, $this->deferredLoginName);
         if (!$deferredUser instanceof User || !$deferredUser->isActive()) {
-            return $this->makeFailResult(AuthenticationResult::FAILURE);
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['No deferred user']);
         }
 
-        // TODO: Validate patient_id?
+        $respondent = $this->respondentRepository->getPatient($this->patientId, $systemUser->getCurrentOrganizationId());
+
+        if ($respondent === false) {
+            return $this->makeFailResult(AuthenticationResult::FAILURE_DEFERRED, ['Nonexistent patient']);
+        }
 
         $identity = new EmbedIdentity(
             $systemUser->getLoginName(),
             $deferredUser->getLoginName(),
-            $this->patientId, // TODO: Untrusted data?
+            $respondent['gr2o_patient_nr'],
             $systemUser->getCurrentOrganizationId(),
         );
 
