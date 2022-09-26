@@ -2,8 +2,8 @@
 
 namespace Gems\Handlers;
 
+use Gems\Layout\LayoutRenderer;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -11,7 +11,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class EmptyHandler implements RequestHandlerInterface
 {
     public function __construct(
-        protected TemplateRendererInterface $template
+        protected LayoutRenderer $layoutRenderer
     ) {
     }
 
@@ -20,6 +20,6 @@ class EmptyHandler implements RequestHandlerInterface
         $data = [
             'content' => null,
         ];
-        return new HtmlResponse($this->template->render('gems::legacy-view', $data));
+        return new HtmlResponse($this->layoutRenderer->render('gems::legacy-view', $request, $data));
     }
 }
