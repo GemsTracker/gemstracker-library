@@ -700,7 +700,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public final function getFieldLabels()
     {
-        $output = \Mutil_Ra::column('label', $this->getFieldData());
+        $output = \Mutil\Ra::column('label', $this->getFieldData());
 
         asort($output);
 

@@ -14,6 +14,7 @@ namespace Gems\Agenda\Filter;
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Agenda\SubFilterDependencyInterface;
 use Gems\Util\Translated;
+use MUtil\Validate\NotEqualTo;
 
 /**
  *
@@ -134,10 +135,10 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
 
         if ($showMenuItem instanceof \Gems\Menu\SubMenuItem) {
             return \MUtil\Html\AElement::a(
-                    $showMenuItem->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]),
-                    $text,
-                    ['class' => $class]
-                    );
+                $showMenuItem->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]),
+                $text,
+                ['class' => $class]
+            );
         }
 
         return \MUtil\Html::create('span', $text, ['class' => $class]);
@@ -185,7 +186,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
         $messages = array(
             'gaf_id' => $this->_('Sub filter may not be the same as this filter.'),
             $this->_('Filters may be chosen only once.')
-                );
+        );
 
         return [
             'gaf_filter_text1' => [
@@ -194,36 +195,36 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
                 'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'required'       => true,
-                'validator'      => new \MUtil_Validate_NotEqualTo('gaf_id', $messages),
-                ],
+                'validator'      => new NotEqualTo('gaf_id', $messages),
+            ],
             'gaf_filter_text2' => [
                 'label'          => $this->_('Filter 2'),
                 'elementClass'   => 'Select',
                 'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
                 'required'       => true,
-                'validator'      => new \MUtil_Validate_NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
-                ],
+                'validator'      => new NotEqualTo(array('gaf_id', 'gaf_filter_text1'), $messages),
+            ],
             'gaf_filter_text3' => [
                 'label'          => $this->_('Filter 3'),
                 'elementClass'   => 'Select',
                 'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
-                'validator'      => new \MUtil_Validate_NotEqualTo(
-                        ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2'],
-                        $messages
-                        ),
-                ],
+                'validator'      => new NotEqualTo(
+                    ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2'],
+                    $messages
+                ),
+            ],
             'gaf_filter_text4' => [
                 'label'          => $this->_('Filter 4'),
                 'elementClass'   => 'Select',
                 'formatFunction' => [$this, 'displayFilterLink', true],
                 'multiOptions'   => $this->_filters,
-                'validator'      => new \MUtil_Validate_NotEqualTo(
-                        ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3'],
-                        $messages
-                        ),
-                ],
-            ];
+                'validator'      => new NotEqualTo(
+                    ['gaf_id', 'gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3'],
+                    $messages
+                ),
+            ],
+        ];
     }
 }

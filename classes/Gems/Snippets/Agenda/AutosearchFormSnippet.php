@@ -10,8 +10,6 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\Snippets\AutosearchFormSnippet;
-
 /**
  *
  *

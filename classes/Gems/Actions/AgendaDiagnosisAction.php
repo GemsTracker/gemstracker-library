@@ -120,33 +120,33 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->setDeleteValues('gapr_active', 0);
 
         $model->set('gad_diagnosis_code',           'label', $this->_('Diagnosis code'),
-                'description', $this->_('A code as defined by the coding system'),
-                'required', true
-                );
+            'description', $this->_('A code as defined by the coding system'),
+            'required', true
+        );
         $model->set('gad_description',              'label', $this->_('Activity'),
-                'description', $this->_('Description of the diagnosis'),
-                'required', true
-                );
+            'description', $this->_('Description of the diagnosis'),
+            'required', true
+        );
 
         $model->setIfExists('gad_coding_method',    'label', $this->_('Coding system'),
-                'description', $this->_('The coding system used.'),
-                'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
-                );
+            'description', $this->_('The coding system used.'),
+            'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
+        );
 
         $model->setIfExists('gad_code',             'label', $this->_('Diagnosis code'),
-                'size', 10,
-                'description', $this->_('Optional code name to link the diagnosis to program code.'));
+            'size', 10,
+            'description', $this->_('Optional code name to link the diagnosis to program code.'));
 
         $model->setIfExists('gad_active',           'label', $this->_('Active'),
-                'description', $this->_('Inactive means assignable only through automatich processes.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $this->translatedUtil->getYesNo()
-                );
+            'description', $this->_('Inactive means assignable only through automatich processes.'),
+            'elementClass', 'Checkbox',
+            'multiOptions', $this->translatedUtil->getYesNo()
+        );
         $model->setIfExists('gad_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When checked appointments with these diagnoses are not imported.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $translated->getYesNo()
-                );
+            'description', $this->_('When checked appointments with these diagnoses are not imported.'),
+            'elementClass', 'Checkbox',
+            'multiOptions', $translated->getYesNo()
+        );
 
         $model->addColumn("CASE WHEN gad_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 

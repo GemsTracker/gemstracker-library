@@ -498,6 +498,75 @@ class Route
                 controllerClass: \Gems\Actions\StaffAction::class,
             ),
 
+            [
+                'name' => 'setup.agenda',
+                'path' => '/setup/agenda',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
+            ],
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.activity',
+                controllerClass: \Gems\Actions\AgendaActivityAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'cleanup',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'cleanup',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.procedure',
+                controllerClass: \Gems\Actions\AgendaProcedureAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'cleanup',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'cleanup',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.diagnosis',
+                controllerClass: \Gems\Actions\AgendaDiagnosisAction::class,
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.location',
+                controllerClass: \Gems\Actions\LocationAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'cleanup',
+                    'merge',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'cleanup',
+                    'merge',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.staff',
+                controllerClass: \Gems\Actions\AgendaStaffAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'merge',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'merge',
+                ],
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.agenda.filter',
+                controllerClass: \Gems\Actions\AgendaFilterAction::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'check-filter',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'check-filter',
+                ],
+            ),
+
         ];
     }
 

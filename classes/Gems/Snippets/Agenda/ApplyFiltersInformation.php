@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use MUtil\Request\RequestInfo;
 
 /**
  *
@@ -23,11 +24,11 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  */
 class ApplyFiltersInformation extends \MUtil\Snippets\SnippetAbstract
 {
+
     /**
-     *
-     * @var \Zend_Controller_Request_Abstract
+     * @var RequestInfo
      */
-    protected $request;
+    protected $requestInfo;
 
     /**
      * Create the snippets content
@@ -87,6 +88,12 @@ class ApplyFiltersInformation extends \MUtil\Snippets\SnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        return FieldMaintenanceModel::APPOINTMENTS_NAME == $this->request->getParam('sub', FieldMaintenanceModel::APPOINTMENTS_NAME);
+        $postData = $this->requestInfo->getRequestPostParams();
+
+        if (isset($postData['sub']) && $postData['sub'] !== FieldMaintenanceModel::APPOINTMENTS_NAME) {
+            return false;
+        }
+
+        return true;
     }
 }
