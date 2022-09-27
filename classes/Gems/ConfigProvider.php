@@ -25,6 +25,7 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
+use Gems\Twig\Trans;
 use Gems\Twig\Vite;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
@@ -501,6 +502,7 @@ class ConfigProvider
     {
         return [
             'extensions' => [
+                Trans::class,
                 Vite::class,
             ]
         ];
