@@ -2,6 +2,7 @@
 
 namespace Gems\Twig;
 
+use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -9,7 +10,7 @@ use Twig\TwigFunction;
 
 class Trans extends AbstractExtension
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private ContainerInterface $container)
     {}
 
     public function getFilters()
@@ -26,8 +27,14 @@ class Trans extends AbstractExtension
         ];
     }
 
+    protected function getTranslator(): TranslatorInterface
+    {
+        return $this->container->get(TranslatorInterface::class);
+    }
+
     public function translate(string $message): string
     {
-        return $this->translator->trans($message);
+        $translator = $this->getTranslator();
+        return $translator->trans($message);
     }
 }
