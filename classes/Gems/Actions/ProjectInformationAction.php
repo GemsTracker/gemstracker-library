@@ -13,6 +13,7 @@ namespace Gems\Actions;
 
 use Gems\Cache\HelperAdapter;
 use Gems\MenuNew\RouteHelper;
+use Gems\Versions;
 use Mezzio\Helper\UrlHelper;
 use MUtil\Html;
 use MUtil\Model;
@@ -88,6 +89,11 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public $util;
 
     /**
+     * @var Versions
+     */
+    public $versions;
+
+    /**
      * Returns the data to show in the index action
      *
      * Allows to easily add or modifiy the information at project level
@@ -96,7 +102,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      */
     protected function _getData()
     {
-        $versions = $this->loader->getVersions();
+
 
         $projectName = null;
         if (isset($this->config['app']['name'])) {
@@ -104,9 +110,9 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         }
 
         $data[$this->_('Project name')]            = $projectName;
-        $data[$this->_('Project version')]         = $versions->getProjectVersion();
-        $data[$this->_('Gems version')]            = $versions->getGemsVersion();
-        $data[$this->_('Gems build')]              = $versions->getBuild();
+        $data[$this->_('Project version')]         = $this->versions->getProjectVersion();
+        $data[$this->_('Gems version')]            = $this->versions->getGemsVersion();
+        $data[$this->_('Gems build')]              = $this->versions->getBuild();
         $data[$this->_('Gems project')]            = $projectName;
         //$data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
         //$data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
@@ -241,7 +247,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
     public function getMaintenanceMonitorJob()
     {
-        return $this->loader->getUtil()->getMonitor()->getReverseMaintenanceMonitor();
+        return $this->util->getMonitor()->getReverseMaintenanceMonitor();
     }
 
     /**

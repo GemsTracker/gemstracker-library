@@ -80,6 +80,7 @@ class LegacyConfigProvider
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,
                 'LegacyDb2' => Adapter::class,
                 'LegacyValueEncryptor' => ValueEncryptor::class,
+                'LegacyVersions' => Versions::class,
             ],
         ];
     }

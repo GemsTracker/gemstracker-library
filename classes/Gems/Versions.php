@@ -17,6 +17,15 @@ namespace Gems;
  */
 class Versions
 {
+    protected string $environment;
+
+    public function __construct(array $config)
+    {
+        if (isset($config['app'], $config['app']['env'])) {
+            $this->environment = $config['app']['env'];
+        }
+    }
+
     /**
      * Build number
      *
@@ -35,7 +44,7 @@ class Versions
          * This means that future patches for will be loaded,
          * but that previous patches are ignored.
          */
-        return 68;
+        return 100;
     }
 
     /**
@@ -45,7 +54,7 @@ class Versions
      */
     public final function getGemsVersion()
     {
-        return '1.9.2';
+        return '2.0.0';
     }
 
     /**
@@ -92,8 +101,8 @@ class Versions
     {
         $version = $this->getProjectVersion();
 
-        if (APPLICATION_ENV !== 'production' && APPLICATION_ENV !== 'acceptance' && APPLICATION_ENV !== 'demo') {
-            $version .= '.' . $this->getBuild() . ' [' . APPLICATION_ENV . ']';
+        if ($this->environment !== 'production' && $this->environment !== 'acceptance' && $this->environment !== 'demo') {
+            $version .= '.' . $this->getBuild() . ' [' . $this->environment . ']';
         }
 
         return $version;
