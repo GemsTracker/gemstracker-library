@@ -25,6 +25,7 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
+use Gems\Twig\Vite;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
@@ -93,6 +94,7 @@ class ConfigProvider
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
             'templates'     => $this->getTemplates(),
+            'twig'          => $this->getTwigSettings(),
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
@@ -487,12 +489,20 @@ class ConfigProvider
     protected function getTemplates(): array
     {
         return [
-            'gems' => [__DIR__ . '/../../templates/Auth'],
             'paths' => [
                 'gems' => [__DIR__ . '/../../templates/gems'],
                 'layout' => [__DIR__ . '/../../templates/layout'],
                 'menu' => [__DIR__ . '/../../templates/menu'],
             ],
+        ];
+    }
+
+    protected function getTwigSettings(): array
+    {
+        return [
+            'extensions' => [
+                Vite::class,
+            ]
         ];
     }
 
