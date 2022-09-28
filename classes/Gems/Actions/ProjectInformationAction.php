@@ -106,7 +106,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
         $projectName = null;
         if (isset($this->config['app']['name'])) {
-            return $this->config['app']['name'];
+            $projectName = $this->config['app']['name'];
         }
 
         $data[$this->_('Project name')]            = $projectName;
