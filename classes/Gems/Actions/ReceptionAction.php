@@ -48,6 +48,11 @@ class ReceptionAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $cacheTags = ['receptionCode', 'receptionCodes'];
 
     /**
+     * @var ProjectSettings
+     */
+    public $project;
+
+    /**
      * @var Translated
      */
     public $translatedUtil;
