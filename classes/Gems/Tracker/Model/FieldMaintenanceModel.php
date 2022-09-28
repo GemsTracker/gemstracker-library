@@ -16,6 +16,7 @@ use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
+use Laminas\Validator\GreaterThan;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 
 /**
@@ -390,7 +391,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
                 'validators[int]',    'Int',
-                'validators[gt]',     new \Zend_Validate_GreaterThan(0),
+                'validators[gt]',     new GreaterThan(0),
                 'validators[unique]', $this->createUniqueValidator(array('gtf_id_order', 'gtf_id_track'))
                 );
 
