@@ -1065,22 +1065,22 @@ class Menu
                                     'type' => 'route-link-item',
                                     'children' => [
                                         [
-                                            'name' => 'track-builder.track-fields.create',
+                                            'name' => 'track-builder.track-maintenance.track-fields.create',
                                             'label' => $this->translator->trans('Create'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'track-builder.track-fields.show',
+                                            'name' => 'track-builder.track-maintenance.track-fields.show',
                                             'label' => $this->translator->trans('Show'),
                                             'type' => 'route-link-item',
                                             'children' => [
                                                 [
-                                                    'name' => 'track-builder.track-fields.edit',
+                                                    'name' => 'track-builder.track-maintenance.track-fields.edit',
                                                     'label' => $this->translator->trans('Edit'),
                                                     'type' => 'route-link-item',
                                                 ],
                                                 [
-                                                    'name' => 'track-builder.track-fields.delete',
+                                                    'name' => 'track-builder.track-maintenance.track-fields.delete',
                                                     'label' => $this->translator->trans('Delete'),
                                                     'type' => 'route-link-item',
                                                 ],
@@ -1094,22 +1094,22 @@ class Menu
                                     'type' => 'route-link-item',
                                     'children' => [
                                         [
-                                            'name' => 'track-builder.track-rounds.create',
+                                            'name' => 'track-builder.track-maintenance.track-rounds.create',
                                             'label' => $this->translator->trans('Create'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'track-builder.track-rounds.show',
+                                            'name' => 'track-builder.track-maintenance.track-rounds.show',
                                             'label' => $this->translator->trans('Show'),
                                             'type' => 'route-link-item',
                                             'children' => [
                                                 [
-                                                    'name' => 'track-builder.track-rounds.edit',
+                                                    'name' => 'track-builder.track-maintenance.track-rounds.edit',
                                                     'label' => $this->translator->trans('Edit'),
                                                     'type' => 'route-link-item',
                                                 ],
                                                 [
-                                                    'name' => 'track-builder.track-rounds.delete',
+                                                    'name' => 'track-builder.track-maintenance.track-rounds.delete',
                                                     'label' => $this->translator->trans('Delete'),
                                                     'type' => 'route-link-item',
                                                 ],
