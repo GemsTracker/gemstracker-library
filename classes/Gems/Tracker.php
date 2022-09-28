@@ -60,7 +60,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
         'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB',
         'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
-        'LimeSurvey4m00Database' => 'Lime Survey 4.00 DB',
+        'LimeSurvey5m00Database' => 'Lime Survey 5.00 DB',
         );
 
     /**
