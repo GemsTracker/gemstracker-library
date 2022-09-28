@@ -27,6 +27,9 @@ class DutchZipcode implements \Zend_Filter_Interface
      */
     public function filter($value)
     {
+        if ($value === null) {
+            return null;
+        }
         // perform some transformation upon $value to arrive on $valueFiltered
         $valueFiltered = strtoupper(trim($value));
         if (strlen($valueFiltered) == 6) {
