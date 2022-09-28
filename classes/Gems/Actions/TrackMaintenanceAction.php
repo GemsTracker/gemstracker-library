@@ -70,6 +70,11 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * @var \Gems\User\User
      */
     public $currentUser;
+
+    /**
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
     
     /**
      * The default search data to use.
