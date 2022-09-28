@@ -91,8 +91,8 @@ class RespondentConsentLogSnippet extends \MUtil\Snippets\ModelTableSnippetAbstr
         $model->set('glrc_new_consent', 'label', $this->_('New consent'),
                 'multiOptions', $valueOptions);
         $model->set('glrc_created', 'label', $this->_('Changed on'),
-                'dateFormat', $respModel->get('gr2o_changed_by', 'dateFormat'),
-                'formatFunction', $respModel->get('gr2o_changed_by', 'formatFunction'));
+                'dateFormat', $respModel->get('gr2o_changed', 'dateFormat'),
+                'formatFunction', $respModel->get('gr2o_changed', 'formatFunction'));
         $model->set('glrc_created_by', 'label', $this->_('Changed by'),
                 'multiOptions', $respModel->get('gr2o_changed_by', 'multiOptions'));
 
