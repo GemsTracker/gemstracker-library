@@ -7,6 +7,7 @@ use MUtil\Batch\BatchAbstract;
 use MUtil\Batch\Progress;
 use MUtil\Request\RequestInfo;
 use MUtil\Snippets\SnippetAbstract;
+use Psr\Http\Message\ResponseInterface;
 
 class BatchRunnerSnippet extends SnippetAbstract
 {
@@ -20,46 +21,59 @@ class BatchRunnerSnippet extends SnippetAbstract
      */
     protected $requestInfo;
 
+    protected null|string|array $jobInfo = null;
+
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if ($this->batch->isFinished()) {
-            return $this->showFinished();
-        }
-        if ($this->batch->count()) {
-            return $this->showStart();
-        }
-
         return null;
         // Nothing to do
     }
 
-    public function getResponse()
+    public function getResponse(): ?ResponseInterface
     {
-        if ($this->batch->run($this->requestInfo->getRequestQueryParams())) {
-            return $this->reportProgress($this->batch->getProgress(), $this->batch->getLastMessage());
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+
+        if (isset($queryParams[$this->batch->progressParameterName]) && $queryParams[$this->batch->progressParameterName] == 'init') {
+            $progress = $this->batch->getProgress();
+            $data = [
+                'count' => $progress->getCount(),
+                'translations' => [
+                    'cancel' => $this->_('Cancel'),
+                    'restart' => $this->_('Restart'),
+                    'start' => sprintf($this->_('Start %s jobs'), $progress->getCount()),
+                ],
+                'info' => $this->jobInfo,
+            ];
+            return new JsonResponse($data);
         }
+        if (isset($queryParams[$this->batch->progressParameterName]) && $queryParams[$this->batch->progressParameterName] == $this->batch->progressParameterRunValue) {
+            if ($this->batch->isFinished()) {
+                $this->batch->reset();
+                return $this->reportProgress($this->batch->getProgress(), $this->batch->getMessages());
+            }
+            if ($this->batch->run($this->requestInfo->getRequestQueryParams())) {
+                return $this->reportProgress($this->batch->getProgress(), $this->batch->getMessages());
+            }
+        }
+
+        if (isset($queryParams[$this->batch->progressParameterName]) && $queryParams[$this->batch->progressParameterName] == $this->batch->progressParameterRestartValue) {
+            $this->batch->reset();
+            return $this->reportProgress($this->batch->getProgress(), $this->batch->getMessages());
+        }
+
+        return null;
     }
 
-    public function reportProgress(Progress $progress, ?string $message)
+    public function reportProgress(Progress $progress, ?array $messages)
     {
         $data = [
+            'count' => $progress->getCount(),
             'percent' => $progress->getPercent(),
-            'text' => $message,
+            'messages' => $messages,
             'timeElapsed' => $progress->getEstimated(),
             'timeRemaining' => $progress->getRemaining(),
         ];
 
         return new JsonResponse($data);
     }
-
-    protected function showFinished()
-    {
-
-    }
-
-    protected function showStart()
-    {
-
-    }
-
 }

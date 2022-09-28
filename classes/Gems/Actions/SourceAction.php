@@ -12,11 +12,15 @@
 namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\Layout\LayoutRenderer;
 use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\Batch\BatchRunnerSnippet;
 use Gems\Snippets\Batch\ContinuousBatchRunnerSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\TrackerInterface;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Session\SessionInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Controller for Source maintenance
@@ -54,6 +58,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+
+    /**
+     * @var LayoutRenderer
+     */
+    public $layoutRenderer;
 
     /**
      * @var RouteHelper
@@ -94,11 +103,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected function addSynchronizationInformation()
     {
         $this->html->pInfo($this->_(
-                'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
-                ));
+            'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
+        ));
         $this->html->pInfo($this->_(
-                'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
-                ));
+            'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
+        ));
     }
 
     /**
@@ -114,7 +123,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
-                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
         $params = [
             'batch' => $batch,
@@ -160,7 +169,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
-                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
         $params = [
             'batch' => $batch,
@@ -170,8 +179,8 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks all tokens using this source for answers .')
-                );
+            'itemDescription', $this->_('This task checks all tokens using this source for answers .')
+        );
     }
 
     /**
@@ -192,8 +201,8 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
         $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks all tokens in all sources for answers.')
-                );
+            'itemDescription', $this->_('This task checks all tokens in all sources for answers.')
+        );
     }
 
     /**
@@ -213,66 +222,66 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model   = new \MUtil\Model\TableModel('gems__sources');
 
         $model->set('gso_source_name', 'label', $this->_('Name'),
-                'description', $this->_('E.g. the name of the project - for single source projects.'),
-                'size', 15,
-                'minlength', 4,
-                //'validator', $model->createUniqueValidator('gso_source_name')
-                );
+            'description', $this->_('E.g. the name of the project - for single source projects.'),
+            'size', 15,
+            'minlength', 4,
+        //'validator', $model->createUniqueValidator('gso_source_name')
+        );
         $model->set('gso_ls_url',      'label', $this->_('Source Url'),
-                'default', 'http://',
-                'description', $this->_('For creating token-survey url.'),
-                'size', 50,
-                //'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
-                //'validators[url]', new \MUtil_Validate_Url()
-                );
+            'default', 'http://',
+            'description', $this->_('For creating token-survey url.'),
+            'size', 50,
+        //'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
+        //'validators[url]', new \MUtil_Validate_Url()
+        );
 
         $sourceClasses = $tracker->getSourceClasses();
         end($sourceClasses);
         $model->set('gso_ls_class',    'label', $this->_('Adaptor class'),
-                'default', key($sourceClasses),
-                'multiOptions', $sourceClasses
-                );
+            'default', key($sourceClasses),
+            'multiOptions', $sourceClasses
+        );
         $model->set('gso_ls_adapter',  'label', $this->_('Database Server'),
-                'default', substr(get_class($this->db), strlen('Zend_Db_Adapter_')),
-                'description', $this->_('The database server used by the source.'),
-                'multiOptions', $tracker->getSourceDatabaseClasses()
-                );
+            'default', substr(get_class($this->db), strlen('Zend_Db_Adapter_')),
+            'description', $this->_('The database server used by the source.'),
+            'multiOptions', $tracker->getSourceDatabaseClasses()
+        );
         $model->set('gso_ls_table_prefix', 'label', $this->_('Table prefix'),
-                'default', 'ls__',
-                'description', $this->_('Do not forget the underscores.'),
-                'size', 15
-                );
+            'default', 'ls__',
+            'description', $this->_('Do not forget the underscores.'),
+            'size', 15
+        );
 
 
         if ($detailed) {
             $inGems = $this->_('Leave empty for the Gems database settings.');
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'),
-                    'description', $inGems,
-                    'size', 15
-                    );
+                'description', $inGems,
+                'size', 15
+            );
             $model->set('gso_ls_dbport',       'label', $this->_('Database port'),
-                    'description', $inGems . ' ' . $this->_('Usually port 3306'),
-                    'size', 6,
-                    'validators[int]', 'Int',
-                    'validators[between]', ['Between', true, [0, 65535]]
-                    );
+                'description', $inGems . ' ' . $this->_('Usually port 3306'),
+                'size', 6,
+                'validators[int]', 'Int',
+                'validators[between]', ['Between', true, [0, 65535]]
+            );
             $model->set('gso_ls_database',     'label', $this->_('Database'),
-                    'description', $inGems,
-                    'size', 15
-                    );
+                'description', $inGems,
+                'size', 15
+            );
             $model->set('gso_ls_username',     'label', $this->_('Database Username'),
-                    'description', $inGems,
-                    'size', 15
-                    );
+                'description', $inGems,
+                'size', 15
+            );
 
             $model->set('gso_ls_password',     'label', $this->_('Database Password'),
-                    'elementClass', 'Password',
-                    'renderPassword', true,
-                    'repeatLabel', $this->_('Repeat password'),
-                    'required', false,
-                    'size', 15
-                    );
+                'elementClass', 'Password',
+                'renderPassword', true,
+                'repeatLabel', $this->_('Repeat password'),
+                'required', false,
+                'size', 15
+            );
             if ('create' == $action) {
                 $model->set('gso_ls_password', 'description', $inGems);
             } else {
@@ -282,22 +291,22 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             $type->apply($model, 'gso_ls_password');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
-                    'description', $inGems,
-                    'size', 15
-                    );
+                'description', $inGems,
+                'size', 15
+            );
             $model->set('gso_active',         'label', $this->_('Active'),
-                    'default', 0,
-                    'multiOptions', $this->translatedUtil->getYesNo(),
-                    );
+                'default', 0,
+                'multiOptions', $this->translatedUtil->getYesNo(),
+            );
         }
 
         $model->set('gso_status',             'label', $this->_('Status'),
-                'default', 'Not checked',
-                'elementClass', 'Exhibitor'
-                );
+            'default', 'Not checked',
+            'elementClass', 'Exhibitor'
+        );
         $model->set('gso_last_synch',         'label', $this->_('Last synchronisation'),
-                'elementClass', 'Exhibitor'
-                );
+            'elementClass', 'Exhibitor'
+        );
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gso');
 
@@ -391,16 +400,38 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch = $this->tracker->synchronizeSources($session, $sourceId, $this->currentUser->getUserId());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
-                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
         $params = [
             'batch' => $batch,
             'requestInfo' => $this->getRequestInfo(),
             'title' => $title,
+            'jobInfo' => [
+                $this->_(
+                    'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
+                ),
+                $this->_(
+                    'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
+                ),
+            ],
         ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
+        $result = $this->addSnippets([BatchRunnerSnippet::class], $params);
 
-        $this->addSynchronizationInformation();
+        if ($result instanceof ResponseInterface) {
+            return $result;
+        }
+
+        $data = [
+            'tag' => 'batch-runner',
+            'attributes' => [
+                'title' => $title,
+            ],
+            'resources' => [
+                'resource/js/gems-vue.js',
+            ]
+        ];
+
+        return new HtmlResponse($this->layoutRenderer->render('gems::vue', $this->request, $data));
     }
 
     /**

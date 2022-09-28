@@ -7,6 +7,7 @@ namespace Gems;
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Communication\CommunicationRepository;
 use Gems\Encryption\ValueEncryptor;
+use Gems\Layout\LayoutRenderer;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
@@ -79,6 +80,7 @@ class LegacyConfigProvider
                 'LegacyCommunicationRepository' => CommunicationRepository::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,
                 'LegacyDb2' => Adapter::class,
+                'LegacyLayoutRenderer' => LayoutRenderer::class,
                 'LegacyValueEncryptor' => ValueEncryptor::class,
                 'LegacyVersions' => Versions::class,
             ],

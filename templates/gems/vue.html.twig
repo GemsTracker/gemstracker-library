@@ -1,0 +1,15 @@
+{% extends '@gems/layout.html.twig' %}
+
+{% block header %}
+    {% for resource in resources %}
+        {{ vite(resource) }}
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="app">
+    <{{ tag }} {% if attributes is defined %}{% for attributeName, attributeValue in attributes %}{{ attributeName }}="{{ attributeValue }}" {% endfor %}{% endif %}></{{ tag }}>
+    </div>
+
+{% endblock %}
