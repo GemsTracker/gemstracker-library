@@ -2,6 +2,7 @@
 
 namespace Gems\Config;
 
+use Gems\Actions\CalendarAction;
 use Gems\Actions\ProjectInformationAction;
 use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
@@ -19,6 +20,7 @@ use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
+use Gems\Model;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -48,6 +50,7 @@ class Route
             ], [
                 ...$this->getGeneralRoutes(),
                 ...$this->getAskRoutes(),
+                ...$this->getCalendarRoutes(),
                 ...$this->getRespondentRoutes(),
                 ...$this->getOverviewRoutes(),
                 ...$this->getProjectRoutes(),
@@ -99,7 +102,7 @@ class Route
             ],
             [
                 'name' => 'language.change',
-                'path' => '/change-language/{language:[a-zA-Z0-9]+}/{url}',
+                'path' => '/change-language/{language:[a-zA-Z0-9]+}',
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
@@ -145,6 +148,18 @@ class Route
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                ],
+            ),
+        ];
+    }
+
+    public function getCalendarRoutes(): array
+    {
+        return [
+            ...$this->createBrowseRoutes(baseName: 'calendar',
+                controllerClass: CalendarAction::class,
+                parameters: [
+                    Model::APPOINTMENT_ID =>  '\d+',
                 ],
             ),
         ];
