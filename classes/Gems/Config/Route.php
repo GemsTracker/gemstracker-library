@@ -8,6 +8,7 @@ use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
+use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
@@ -98,6 +99,30 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     EmbedLoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.idle.poll',
+                'path' => '/auth/idle-poll',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    AuthIdleCheckHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.idle.alive',
+                'path' => '/auth/idle-alive',
+                'allowed_methods' => ['POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    AuthIdleCheckHandler::class,
                 ],
             ],
             [
