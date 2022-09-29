@@ -232,4 +232,13 @@ class SiteUtil
 
         return true;
     }
+
+    public function isAllowedUrl(string $url): bool
+    {
+        $site = $this->getSiteByFullUrl($url);
+        if ($site instanceof SiteUrl && $site->isActive() && !$site->isBlocked()) {
+            return true;
+        }
+        return false;
+    }
 }

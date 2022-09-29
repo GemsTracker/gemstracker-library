@@ -4,6 +4,7 @@ namespace Gems\Handlers;
 
 use Gems\Locale\LocaleCookie;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Site\SiteUtil;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
@@ -12,7 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ChangeLanguageHandler implements RequestHandlerInterface
 {
-    public function __construct(private UrlHelper $urlHelper, private LocaleCookie $localeCookie)
+    public function __construct(private SiteUtil $siteUtil, private UrlHelper $urlHelper, private LocaleCookie $localeCookie)
     {
     }
 
@@ -28,11 +29,11 @@ class ChangeLanguageHandler implements RequestHandlerInterface
 
     protected function getUrl(ServerRequestInterface $request): string
     {
-        $encodedUrl = $request->getAttribute('url');
-        if ($encodedUrl === null) {
-            return $this->urlHelper->generate('/');
+        $serverParams = $request->getServerParams();
+        if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
+            return $serverParams['HTTP_REFERER'];
         }
 
-        return base64_decode(urldecode($encodedUrl));
+        return $this->urlHelper->generate('/');
     }
 }

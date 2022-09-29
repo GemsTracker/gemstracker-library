@@ -33,11 +33,6 @@ class Locale
         return 'en';
     }
 
-    public function getUrlHash(string $url): string
-    {
-        return urlencode(base64_encode($url));
-    }
-
     /**
      * @return string
      */
