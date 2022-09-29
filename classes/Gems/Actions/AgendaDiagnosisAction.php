@@ -145,7 +145,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->setIfExists('gad_filter',      'label', $this->_('Filter'),
             'description', $this->_('When checked appointments with these diagnoses are not imported.'),
             'elementClass', 'Checkbox',
-            'multiOptions', $translated->getYesNo()
+            'multiOptions', $this->translatedUtil->getYesNo()
         );
 
         $model->addColumn("CASE WHEN gad_active = 1 THEN '' ELSE 'deleted' END", 'row_class');

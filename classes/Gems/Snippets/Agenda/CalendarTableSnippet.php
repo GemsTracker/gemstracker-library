@@ -12,6 +12,10 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use MUtil\Lazy\Call;
 
 /**
  *
@@ -29,7 +33,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $calSearchFilter;
 
-    
+
     /**
      *
      * @var \Gems\Loader
@@ -41,6 +45,11 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -56,15 +65,31 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         $bridge->gr2o_id_organization;
 
-        if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'show', 'allowed' => true))) {
-            $appButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
-        } else {
-            $appButton = null;
+        $appointmentParams = [
+            Model::APPOINTMENT_ID => $bridge->getLazy('gap_id_appointment'),
+        ];
+
+        $appointmentHref = new Call(function(string $routeName, array $params = []) {
+            return $this->routeHelper->getRouteUrl($routeName, $params);
+        }, ['calendar.show', $appointmentParams]);
+
+        $appButton = null;
+        if ($appointmentHref) {
+            $appButton = Html::actionLink($appointmentHref, $this->_('Show appointment'));//$menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
         }
-        if ($menuItem = $this->menu->find(array('controller' => 'respondent', 'action' => 'show', 'allowed' => true))) {
-            $respButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show respondent'));
-        } else {
-            $respButton = null;
+
+        $respondentParams = [
+            'id1' => $bridge->getLazy('gr2o_patient_nr'),
+            'id2' => $bridge->getLazy('gr2o_id_organization'),
+        ];
+
+        $respondentHref = new Call(function(string $routeName, array $params = []) {
+            return $this->routeHelper->getRouteUrl($routeName, $params);
+        }, ['respondent.show', $respondentParams]);
+
+        $respondentButton = null;
+        if ($respondentHref) {
+            $respondentButton = Html::actionLink($appointmentHref, $this->_('Show appointment'));//$menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
         }
 
         $br = \MUtil\Html::create('br');
@@ -93,7 +118,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));
         $bridge->addMultiSort(array($this->_('With')), array(' '), 'gas_name', $br, 'gaa_name', array(' '), 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
-        $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
+        $bridge->addColumn($respondentButton)->class = 'middleAlign rightAlign';
 
         unset($table[\MUtil\Html\TableElement::THEAD]);
     }
@@ -111,13 +136,13 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if (null !== $this->calSearchFilter) {
             $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
             $this->caption    = $this->_('Example appointments');
-            
+
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
                 $this->searchFilter = [
                     \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
                     $this->calSearchFilter->getSqlAppointmentsWhere(),
                     'limit' => 10,
-                    ];
+                ];
                 // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter->getSqlAppointmentsWhere());
 
                 $this->onEmpty = $this->_('No example appointments found');

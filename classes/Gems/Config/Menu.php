@@ -28,6 +28,7 @@ class Menu
     {
         return [
             $this->getRespondentMenu(),
+            $this->getCalendarMenu(),
             $this->getOverviewMenu(),
             $this->getProjectMenu(),
             $this->getSetupMenu(),
@@ -36,6 +37,29 @@ class Menu
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
                 'type' => 'route-link-item',
+            ],
+        ];
+    }
+
+    public function getCalendarMenu(): array
+    {
+        return [
+            'name' => 'calendar.index',
+            'label' => $this->translator->trans('Calendar'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'calendar.show',
+                    'label' => $this->translator->trans('Show'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'calendar.edit',
+                            'label' => $this->translator->trans('Edit'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
+                ],
             ],
         ];
     }

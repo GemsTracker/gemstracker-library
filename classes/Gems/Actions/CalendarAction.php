@@ -48,9 +48,9 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @var \Gems\User\Organization
+     * @var \Gems\User\User
      */
-    public $currentOrganization;
+    public $currentUser;
 
     /**
      *
@@ -119,12 +119,12 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
-            $org = $this->currentOrganization;
-            $this->defaultSearchData = array(
+            $org = $this->currentUser->getCurrentOrganization();
+            $this->defaultSearchData = [
                 'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',
                 'datefrom'            => new DateTimeImmutable('today'),
-                );
+            ];
         }
 
         return parent::getSearchDefaults();
