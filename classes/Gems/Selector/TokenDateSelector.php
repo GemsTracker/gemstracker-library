@@ -87,8 +87,8 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
      */
     protected function processSelect(\Zend_Db_Select $select)
     {
-        $select->columns(['gto_id_token']);
-        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', ['gsu_id_primary_group', 'gsu_active']);
-        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', ['grc_success']);
+        // $select->columns(['gto_id_token']);
+        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', []); // ['gsu_id_primary_group', 'gsu_active']);
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', []); // , ['grc_success']);
     } // */
 }

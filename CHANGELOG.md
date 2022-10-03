@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [1.9.1p9]
+### Fixed
+- Activity search snippet shows result when non should be there (#736)
+- DateSelectorAbstract is dependent on older MySQL beahaviour (#743)
+
 ## [1.9.1p8]
 ### Fixed
 - Date fields use dates from inactive appointments (#731)
@@ -14,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - One click copy of token in traffic light view (#723)
 
 ### Fixed
+- Activity search snippet shows result when non should be there (#736)
 - Answers in traffic light screen do not show up inline (#722)
 
 ## [1.9.1p6]

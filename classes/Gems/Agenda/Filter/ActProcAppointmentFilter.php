@@ -120,7 +120,10 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
      */
     public function getSqlAppointmentsWhere()
     {
-        if ($this->_activities && ($this->_activities !== true)) {
+        if (is_array($this->_activities)) {
+            if (! $this->_activities) {
+                return parent::NO_MATCH_SQL;
+            }
             $where = 'gap_id_activity IN (' . implode(', ', $this->_activities) . ')';
 
             if ($this->_procedures !== true) {
@@ -129,7 +132,10 @@ class ActProcAppointmentFilter extends AppointmentFilterAbstract
         } else {
             $where = '';
         }
-        if ($this->_procedures && ($this->_procedures !== true)) {
+        if (is_array($this->_procedures)) {
+            if (! $this->_procedures) {
+                return parent::NO_MATCH_SQL;
+            }
             $where .= 'gap_id_procedure IN (' . implode(', ', $this->_procedures) . ')';
         } elseif ($where && (! $this->_procedures)) {
             $where .= parent::NO_MATCH_SQL;
