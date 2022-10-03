@@ -295,10 +295,11 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
         $select->from($this->dataTableName, $groupby + $this->getDbFields());
         $select->where($where);
         $select->group($groupby);
+        $select->order($groupby);
 
         $this->processSelect($select);
 
-        // \MUtil_Echo::r((string) $select);
+        \MUtil_Echo::r((string) $select);
 
         $model = new \MUtil_Model_SelectModel($select, $this->dataTableName);
 
