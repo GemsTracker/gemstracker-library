@@ -20,6 +20,6 @@ class EmptyHandler implements RequestHandlerInterface
         $data = [
             'content' => null,
         ];
-        return new HtmlResponse($this->layoutRenderer->render('gems::legacy-view', $request, $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::legacy-view', $request, $data));
     }
 }
