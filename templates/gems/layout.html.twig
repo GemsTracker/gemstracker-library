@@ -4,6 +4,7 @@
     <title>GemsTracker 2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/style/carefacts.css">
+    <link rel="stylesheet" href="/style/custom.css">
     {% block header %}{% endblock %}
 </head>
 <body
@@ -52,94 +53,5 @@
     </div>
 </div>
 
-{% if current_identity is defined %}
-    <script>
-        const AuthIdleChecker = function () {
-            this.requestTime = new Date();
-            this.maxIdleTime = parseInt(document.getElementsByTagName('body')[0].getAttribute('data-max-idle-time'));
-            this.authPollInterval = parseInt(document.getElementsByTagName('body')[0].getAttribute('data-auth-poll-interval'));
-
-            this.init();
-
-            this.schedule();
-        };
-
-        AuthIdleChecker.prototype.init = function () {
-            const buttonAlive = document.getElementById('authIdleCheckerWarningAlive');
-            buttonAlive?.addEventListener('click', () => {
-                fetch('/auth/idle-alive', {method: 'post'})
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error();
-                        }
-
-                        return response.json();
-                    })
-                    .then((data) => {
-                        this.requestTime = new Date();
-
-                        this.toggleIdleLogoutWarning(false);
-
-                        if (data.redirect) {
-                            window.location.href = data.redirect;
-                        }
-                    });
-            });
-
-            const buttonIgnore = document.getElementById('authIdleCheckerWarningIgnore');
-            buttonIgnore?.addEventListener('click', () => {
-                this.toggleIdleLogoutWarning(false);
-            });
-        };
-
-        AuthIdleChecker.prototype.schedule = function () {
-            setTimeout(() => {
-                this.check();
-                this.schedule();
-            }, this.authPollInterval * 1000);
-        };
-
-        AuthIdleChecker.prototype.check = function () {
-            fetch('/auth/idle-poll')
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error();
-                    }
-
-                    return response.json();
-                })
-                .then((data) => {
-                    if (data.show_idle_logout_warning) {
-                        this.toggleIdleLogoutWarning(true);
-                    }
-
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    }
-                })
-                .catch(() => {
-                    // Fallback in case of e.g. network failure
-                    if ((+ new Date()) - (+this.requestTime) > this.maxIdleTime * 1000) {
-                        window.location.href = '/';
-                    }
-                });
-        };
-
-        AuthIdleChecker.prototype.toggleIdleLogoutWarning = function (show) {
-            const warning = document.getElementById('authIdleCheckerWarning');
-            if (warning) {
-                if (show) {
-                    warning.classList.remove('hidden');
-                } else {
-                    warning.classList.add('hidden');
-                }
-            }
-        };
-
-        window.addEventListener('load', () => {
-            const authIdleChecker = new AuthIdleChecker();
-        });
-    </script>
-{% endif %}
 </body>
 </html>

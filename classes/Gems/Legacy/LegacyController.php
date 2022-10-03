@@ -91,6 +91,9 @@ class LegacyController implements RequestHandlerInterface
 
                 $data = [
                     'content' => $content,
+                    'resources' => [
+                        'resource/js/authenticated.js',
+                    ],
                 ];
 
                 $statusCode = 200;
