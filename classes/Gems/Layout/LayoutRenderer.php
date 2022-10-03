@@ -23,13 +23,6 @@ class LayoutRenderer
     public function __construct(protected TemplateRendererInterface $template)
     {}
 
-    public function render(string $name, ServerRequestInterface $request, $params = []): string
-    {
-        $params += $this->getDefaultParams($request);
-
-        return $this->template->render($name, $params);
-    }
-
     protected function getDefaultParams(ServerRequestInterface $request)
     {
         $params = [];
@@ -41,4 +34,23 @@ class LayoutRenderer
         return $params;
     }
 
+    public function render(LayoutSettings $layoutSettings, $request, $params = []): string
+    {
+        $defaultParams = $this->getDefaultParams($request);
+        if (!$layoutSettings->showMenu()) {
+            $defaultParams[MenuMiddleware::class] = null;
+        }
+        $params['resources'] = $layoutSettings->getResources();
+
+        $params += $defaultParams;
+
+        return $this->template->render($layoutSettings->getTemplate(), $params);
+    }
+
+    public function renderTemplate(string $name, ServerRequestInterface $request, $params = []): string
+    {
+        $settings = new LayoutSettings($name);
+
+        return $this->render($settings, $request, $params);
+    }
 }

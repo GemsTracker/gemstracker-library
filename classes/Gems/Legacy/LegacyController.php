@@ -7,6 +7,7 @@ namespace Gems\Legacy;
 
 
 use Gems\Layout\LayoutRenderer;
+use Gems\Layout\LayoutSettings;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\EmptyResponse;
@@ -96,7 +97,9 @@ class LegacyController implements RequestHandlerInterface
                 $headers = [];
 
                 if ($this->layoutRenderer) {
-                    return new HtmlResponse($this->layoutRenderer->render('gems::legacy-view', $request, $data), $statusCode, $headers);
+                    $layoutSettings = new LayoutSettings();
+                    $layoutSettings->setTemplate( 'gems::legacy-view');
+                    return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $request, $data), $statusCode, $headers);
                 }
 
                 return new HtmlResponse($content, $statusCode, $headers);
