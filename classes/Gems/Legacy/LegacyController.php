@@ -92,6 +92,7 @@ class LegacyController implements RequestHandlerInterface
                 $data = [
                     'content' => $content,
                     'resources' => [
+                        'resource/js/general.js',
                         'resource/js/authenticated.js',
                     ],
                 ];
