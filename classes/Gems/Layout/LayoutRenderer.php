@@ -47,9 +47,10 @@ class LayoutRenderer
         return $this->template->render($layoutSettings->getTemplate(), $params);
     }
 
-    public function renderTemplate(string $name, ServerRequestInterface $request, $params = []): string
+    public function renderTemplate(string $templateName, ServerRequestInterface $request, $params = []): string
     {
-        $settings = new LayoutSettings($name);
+        $settings = new LayoutSettings();
+        $settings->setTemplate($templateName);
 
         return $this->render($settings, $request, $params);
     }
