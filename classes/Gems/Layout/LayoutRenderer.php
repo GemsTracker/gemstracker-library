@@ -42,6 +42,11 @@ class LayoutRenderer
         }
         $params['resources'] = $layoutSettings->getResources();
 
+        if ($request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE)) {
+            array_unshift($params['resources'], 'resource/js/authenticated.js');
+        }
+        array_unshift($params['resources'], 'resource/js/general.js');
+
         $params += $defaultParams;
 
         $params['_config'] = [
