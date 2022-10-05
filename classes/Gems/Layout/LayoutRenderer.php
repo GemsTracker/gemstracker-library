@@ -20,7 +20,7 @@ class LayoutRenderer
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
     ];
 
-    public function __construct(protected TemplateRendererInterface $template)
+    public function __construct(protected TemplateRendererInterface $template, private readonly array $config)
     {}
 
     protected function getDefaultParams(ServerRequestInterface $request)
@@ -42,7 +42,17 @@ class LayoutRenderer
         }
         $params['resources'] = $layoutSettings->getResources();
 
+        if ($request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE)) {
+            array_unshift($params['resources'], 'resource/js/authenticated.js');
+        }
+        array_unshift($params['resources'], 'resource/js/general.js');
+
         $params += $defaultParams;
+
+        $params['_config'] = [
+            'max_idle_time' => $this->config['session']['max_idle_time'],
+            'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
+        ];
 
         return $this->template->render($layoutSettings->getTemplate(), $params);
     }

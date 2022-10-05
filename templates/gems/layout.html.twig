@@ -4,9 +4,16 @@
     <title>GemsTracker 2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/style/carefacts.css">
+    <link rel="stylesheet" href="/style/custom.css">
+    <base href="{{ path('home') }}" />
     {% block header %}{% endblock %}
 </head>
-<body>
+<body
+        {% if current_identity is defined %}
+            data-max-idle-time="{{ _config.max_idle_time }}"
+            data-auth-poll-interval="{{ _config.auth_poll_interval }}"
+        {% endif %}
+>
 <div id="container" class="container-fluid">
     <header>
         <div class="logo"></div>
@@ -35,5 +42,17 @@
         </footer>
     </div>
 </div>
+
+<div id="authIdleCheckerWarning" class="hidden">
+    <div class="alert alert-warning clearfix">
+        <p>{{ trans('You have been inactive for a while. You will be logged out shortly.') }}</p>
+
+        <div class="pull-right">
+            <button class="btn btn-primary" id="authIdleCheckerWarningAlive">{{ trans('Stay logged in') }}</button>
+            <button class="btn btn-secondary" id="authIdleCheckerWarningIgnore">{{ trans('Ignore') }}</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

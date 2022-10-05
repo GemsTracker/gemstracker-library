@@ -1,0 +1,7 @@
+{% extends '@gems/layout.html.twig' %}
+
+{% block header %}
+    {% for resource in resources ?? [] %}
+        {{ vite(resource) }}
+    {% endfor %}
+{% endblock %}
