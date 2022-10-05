@@ -908,21 +908,21 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                             ],
-                            [
-                                'name' => 'track-builder.source.synchronize-all',
-                                'label' => $this->translator->trans('Synchronize all surveys'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.source.check-all',
-                                'label' => $this->translator->trans('Check all is answered'),
-                                'type' => 'route-link-item',
-                            ],
-                            [
-                                'name' => 'track-builder.source.attributes-all',
-                                'label' => $this->translator->trans('Check all attributes'),
-                                'type' => 'route-link-item',
-                            ],
+                        ],
+                        [
+                            'name' => 'track-builder.source.synchronize-all',
+                            'label' => $this->translator->trans('Synchronize all surveys'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.source.check-all',
+                            'label' => $this->translator->trans('Check all is answered'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
+                            'name' => 'track-builder.source.attributes-all',
+                            'label' => $this->translator->trans('Check all attributes'),
+                            'type' => 'route-link-item',
                         ],
                     ],
                 ],
@@ -989,11 +989,6 @@ class Menu
                     'label' => $this->translator->trans('Surveys'),
                     'type' => 'route-link-item',
                     'children' => [
-                        [
-                            'name' => 'track-builder.survey-maintenance.create',
-                            'label' => $this->translator->trans('Create'),
-                            'type' => 'route-link-item',
-                        ],
                         [
                             'name' => 'track-builder.survey-maintenance.show',
                             'label' => $this->translator->trans('Show'),
