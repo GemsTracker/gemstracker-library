@@ -30,6 +30,12 @@ class LayoutSettings
         $this->resources[] = $resource;
     }
 
+    public function addVue(): void
+    {
+        $this->setTemplate('gems::vue');
+        $this->addResource('resource/js/gems-vue.js');
+    }
+
     public function enableMenu(): void
     {
         $this->showMenu = true;

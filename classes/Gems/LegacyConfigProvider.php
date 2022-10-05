@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Layout\LayoutRenderer;
@@ -61,6 +62,7 @@ class LegacyConfigProvider
                 'LegacyAccesslog' => AccesslogRepository::class,
                 'LegacyAcl' => Acl::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
+                'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
                 'LegacyConfig' => 'config',
                 'LegacyEvent' => EventDispatcher::class,
