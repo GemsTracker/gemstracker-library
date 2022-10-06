@@ -8,7 +8,6 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Batch\Progress;
-use MUtil\Request\RequestInfo;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -23,11 +22,13 @@ class BatchRunner
     protected null|string $title = null;
 
     public function __construct(protected BatchAbstract $batch,
-        protected TranslatorInterface $translate,
+        TranslatorInterface $translate,
         protected LayoutRenderer $layoutRenderer,
         protected LayoutSettings $layoutSettings,
     )
-    {}
+    {
+        $this->translate = $translate;
+    }
 
     public function getResponse(ServerRequestInterface $request): ?ResponseInterface
     {
@@ -77,7 +78,7 @@ class BatchRunner
         return $this->title;
     }
 
-    public function reportProgress(Progress $progress, ?array $messages)
+    public function reportProgress(Progress $progress, ?array $messages): JsonResponse
     {
         $data = [
             'count' => $progress->getCount(),
