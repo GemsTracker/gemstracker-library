@@ -74,6 +74,7 @@
         "laminas/laminas-servicemanager": "^3.11",
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "2.x-dev",
+        "magnafacta/zalt-html": "dev-main",
         "magnafacta/zalt-loader": "dev-psr-11",
         "mezzio/mezzio-csrf": "^1.5",
         "mezzio/mezzio-fastroute": "^3.5.0",
@@ -126,7 +127,15 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/MagnaFacta/zalt-html.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/MagnaFacta/zalt-loader.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/MagnaFacta/zalt-model.git"
         },
         {
             "type": "git",
