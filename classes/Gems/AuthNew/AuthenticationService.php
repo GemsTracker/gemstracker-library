@@ -38,6 +38,7 @@ class AuthenticationService
                 'auth_params' => $identity->toArray(),
                 'auth_login_at' => time(),
                 'auth_last_active_at' => time(),
+                'auth_last_seen_at' => time(),
                 'auth_session_key' => $sessionKey,
             ]);
 
@@ -96,7 +97,7 @@ class AuthenticationService
         $this->session->clear();
     }
 
-    public function checkValid(): bool
+    public function checkValid(bool $activeRequest = true): bool
     {
         $authData = $this->session->get('auth_data');
         $user = $this->getLoggedInUser();
@@ -105,12 +106,13 @@ class AuthenticationService
             return false;
         }
 
-        if (time() - $authData['auth_login_at'] > $this->config['session']['max_total_time']) {
-            $this->logout();
-            return false;
-        }
+        $validUntil = min(
+            $authData['auth_login_at'] + $this->config['session']['max_total_time'],
+            $authData['auth_last_seen_at'] + $this->config['session']['max_away_time'],
+            $authData['auth_last_active_at'] + $this->config['session']['max_idle_time'],
+        );
 
-        if (time() - $authData['auth_last_active_at'] > $this->config['session']['max_away_time']) {
+        if (time() > $validUntil) {
             $this->logout();
             return false;
         }
@@ -120,9 +122,23 @@ class AuthenticationService
             return false;
         }
 
-        $authData['auth_last_active_at'] = time();
+        if ($activeRequest) {
+            $authData['auth_last_active_at'] = time();
+        }
+        $authData['auth_last_seen_at'] = time();
         $this->session->set('auth_data', $authData);
 
         return true;
+    }
+
+    public function getIdleAllowedUntil(): ?int
+    {
+        $authData = $this->session->get('auth_data');
+
+        if ($authData === null) {
+            return null;
+        }
+
+        return $authData['auth_last_active_at'] + $this->config['session']['max_idle_time'];
     }
 }

@@ -13,6 +13,7 @@ namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Layout\LayoutRenderer;
+use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\RouteHelper;
 use Gems\Snippets\Batch\BatchRunnerSnippet;
 use Gems\Snippets\Batch\ContinuousBatchRunnerSnippet;
@@ -426,12 +427,13 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             'attributes' => [
                 'title' => $title,
             ],
-            'resources' => [
-                'resource/js/gems-vue.js',
-            ]
         ];
 
-        return new HtmlResponse($this->layoutRenderer->render('gems::vue', $this->request, $data));
+        $layoutSettings = new LayoutSettings();
+        $layoutSettings->setTemplate('gems::vue');
+        $layoutSettings->addResource('resource/js/gems-vue.js');
+
+        return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $this->request, $data));
     }
 
     /**

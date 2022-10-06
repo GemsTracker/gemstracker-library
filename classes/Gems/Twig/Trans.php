@@ -23,7 +23,7 @@ class Trans extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('t', [$this, 'translate']),
+            new TwigFunction('trans', [$this, 'translate']),
         ];
     }
 

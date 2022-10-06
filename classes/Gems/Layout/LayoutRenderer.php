@@ -20,15 +20,8 @@ class LayoutRenderer
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
     ];
 
-    public function __construct(protected TemplateRendererInterface $template)
+    public function __construct(protected TemplateRendererInterface $template, private readonly array $config)
     {}
-
-    public function render(string $name, ServerRequestInterface $request, $params = []): string
-    {
-        $params += $this->getDefaultParams($request);
-
-        return $this->template->render($name, $params);
-    }
 
     protected function getDefaultParams(ServerRequestInterface $request)
     {
@@ -41,4 +34,34 @@ class LayoutRenderer
         return $params;
     }
 
+    public function render(LayoutSettings $layoutSettings, $request, $params = []): string
+    {
+        $defaultParams = $this->getDefaultParams($request);
+        if (!$layoutSettings->showMenu()) {
+            $defaultParams[MenuMiddleware::class] = null;
+        }
+        $params['resources'] = $layoutSettings->getResources();
+
+        if ($request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE)) {
+            array_unshift($params['resources'], 'resource/js/authenticated.js');
+        }
+        array_unshift($params['resources'], 'resource/js/general.js');
+
+        $params += $defaultParams;
+
+        $params['_config'] = [
+            'max_idle_time' => $this->config['session']['max_idle_time'],
+            'auth_poll_interval' => $this->config['session']['auth_poll_interval'],
+        ];
+
+        return $this->template->render($layoutSettings->getTemplate(), $params);
+    }
+
+    public function renderTemplate(string $templateName, ServerRequestInterface $request, $params = []): string
+    {
+        $settings = new LayoutSettings();
+        $settings->setTemplate($templateName);
+
+        return $this->render($settings, $request, $params);
+    }
 }
