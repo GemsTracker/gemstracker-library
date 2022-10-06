@@ -12,16 +12,12 @@
 namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\Batch\BatchRunnerLoader;
 use Gems\Layout\LayoutRenderer;
-use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\RouteHelper;
-use Gems\Snippets\Batch\BatchRunnerSnippet;
 use Gems\Snippets\Batch\ContinuousBatchRunnerSnippet;
-use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\TrackerInterface;
-use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Session\SessionInterface;
-use Psr\Http\Message\ResponseInterface;
 
 /**
  * Controller for Source maintenance
@@ -48,6 +44,11 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected $autofilterParameters = [
         'extraSort'   => ['gso_source_name' => SORT_ASC],
     ];
+
+    /**
+     * @var BatchRunnerLoader
+     */
+    public $batchRunnerLoader;
 
     /**
      *
@@ -398,42 +399,22 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $session = $this->request->getAttribute(SessionInterface::class);
 
-        $batch = $this->tracker->synchronizeSources($session, $sourceId, $this->currentUser->getUserId());
+        $batch = $this->tracker->synchronizeSources($session, $sourceId);
 
         $title = sprintf($this->_('Synchronize the %s source.'),
             $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-            'jobInfo' => [
-                $this->_(
-                    'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
-                ),
-                $this->_(
-                    'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
-                ),
-            ],
-        ];
-        $result = $this->addSnippets([BatchRunnerSnippet::class], $params);
-
-        if ($result instanceof ResponseInterface) {
-            return $result;
-        }
-
-        $data = [
-            'tag' => 'batch-runner',
-            'attributes' => [
-                'title' => $title,
-            ],
-        ];
-
-        $layoutSettings = new LayoutSettings();
-        $layoutSettings->setTemplate('gems::vue');
-        $layoutSettings->addResource('resource/js/gems-vue.js');
-
-        return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $this->request, $data));
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'
+            ),
+            $this->_(
+                'Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'
+            ),
+        ]);
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -447,13 +428,9 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-        ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
-        $this->addSynchronizationInformation();
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        return $batchRunner->getResponse($this->request);
     }
 }

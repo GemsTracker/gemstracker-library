@@ -645,7 +645,10 @@ class Route
             ...$this->createBrowseRoutes(baseName: 'track-builder.survey-maintenance',
                 controllerClass: \Gems\Actions\SurveyMaintenanceAction::class,
                 pages: [
-                    ...$this->defaultPages,
+                    'index',
+                    'autofilter',
+                    'show',
+                    'edit',
                     'check-all',
                     'answer-imports',
                     'check',
