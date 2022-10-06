@@ -390,7 +390,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
                 );
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
-                'validators[int]',    'Int',
+                'validators[int]',    'Digits',
                 'validators[gt]',     new GreaterThan(0),
                 'validators[unique]', $this->createUniqueValidator(array('gtf_id_order', 'gtf_id_track'))
                 );

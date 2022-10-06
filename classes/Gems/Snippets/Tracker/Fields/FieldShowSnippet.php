@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Tracker\Field\FieldInterface;
+use MUtil\Request\RequestInfo;
 
 /**
  *
@@ -42,7 +43,7 @@ class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
     {
         parent::afterRegistry();
 
-        $this->menuList = $this->getMenuList();
+        //$this->menuList = $this->getMenuList();
     }
 
 
@@ -66,9 +67,19 @@ class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
 //            $fid) ?: null;
 //
 //        $this->loader
-        $fid  = $this->request->getParam(\Gems\Model::FIELD_ID);
-        $sub  = $this->request->getParam('sub');
-        $tid  = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+        $queryParams = $this->requestInfo->getRequestQueryParams();
+        $fid = null;
+        if (isset($queryParams[\Gems\Model::FIELD_ID])) {
+            $fid = $queryParams[\Gems\Model::FIELD_ID];
+        }
+        $sub = null;
+        if (isset($queryParams['sub'])) {
+            $sub = $queryParams['sub'];
+        }
+        $tid = null;
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID])) {
+            $tid = $queryParams[\MUtil\Model::REQUEST_ID];
+        }
 
         $trackEngine = $this->loader->getTracker()->getTrackEngine($tid);
         $fieldDef    = $trackEngine->getFieldsDefinition();

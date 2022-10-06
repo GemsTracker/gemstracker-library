@@ -25,6 +25,8 @@ use MUtil\Model\Dependency\DependencyAbstract;
  */
 class FieldTypeChangeableDependency extends DependencyAbstract
 {
+    protected $_dependentOn = ['gtf_id_field'];
+
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
      *
@@ -32,7 +34,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gtf_field_type' => array('elementClass', 'onchange'));
+    protected $_effecteds = ['gtf_field_type' => ['elementClass', 'onchange']];
 
     /**
      *
@@ -51,27 +53,12 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      *
      * @param string $dependsOn the model field to depend on
      */
-    public function __construct($dependsOn)
+    public function __construct($fieldName)
     {
-        $this->_dependentOn = array($dependsOn);
+        $this->_dependentOn[] = $fieldName;
+        $this->fieldName = $fieldName;
 
         parent::__construct();
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        // Loaded from tracker and tracker does not always have the request as source value
-        if (! $this->request instanceof \Zend_Controller_Request_Abstract) {
-            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-        }
     }
 
     /**
@@ -99,11 +86,9 @@ class FieldTypeChangeableDependency extends DependencyAbstract
         $subChange = true;
 
         if (! $new) {
-            $fieldName = reset($this->_dependentOn);
-
-            if (isset($context[$fieldName])) {
-                $sql = $this->getSql($context[$fieldName]);
-                $fid = $this->request->getParam(\Gems\Model::FIELD_ID);
+            if (isset($context[$this->fieldName], $context['gtf_id_field'])) {
+                $sql = $this->getSql($context[$this->fieldName]);
+                $fid = $context['gtf_id_field'];
 
                 if ($sql && $fid) {
                     $subChange = ! $this->db->fetchOne($sql, $fid);
@@ -115,7 +100,7 @@ class FieldTypeChangeableDependency extends DependencyAbstract
             return array('gtf_field_type' => array(
                 'elementClass' => 'Select',
                 'onchange'     => 'this.form.submit();',
-                ));
+            ));
         }
     }
 

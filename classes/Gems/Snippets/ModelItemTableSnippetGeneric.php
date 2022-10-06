@@ -27,7 +27,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelItemTableSnippetGeneric extends \Gems\Snippets\ModelItemTableSnippetAbstract
+class ModelItemTableSnippetGeneric extends ModelTableSnippetAbstract
 {
     /**
      *

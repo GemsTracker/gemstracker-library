@@ -42,6 +42,26 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public $menuActionController = 'track-fields';
 
     /**
+     * Menu actions to show in Edit box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public array $menuEditActions = ['track-builder.track-maintenance.track-fields.edit'];
+
+    /**
+     * Menu actions to show in Show box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public array $menuShowActions = ['track-builder.track-maintenance.track-fields.show'];
+
+    /**
      *
      * @var \Gems\Tracker\Model\RoundModel
      */

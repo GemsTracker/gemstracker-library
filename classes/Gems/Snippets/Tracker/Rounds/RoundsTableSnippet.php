@@ -48,6 +48,26 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public $menuActionController = 'track-rounds';
 
     /**
+     * Menu actions to show in Edit box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public array $menuEditActions = ['track-builder.track-maintenance.track-rounds.edit'];
+
+    /**
+     * Menu actions to show in Show box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public array $menuShowActions = ['track-builder.track-maintenance.track-rounds.show'];
+
+    /**
      *
      * @var \Gems\Tracker\Model\RoundModel
      */

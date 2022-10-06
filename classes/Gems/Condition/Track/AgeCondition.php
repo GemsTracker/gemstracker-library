@@ -83,9 +83,9 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
 
         return [
             'gcon_condition_text1' => ['label' => $this->_('Compare when'), 'multiOptions' => $compareOptions, 'value' => $compVal],
-            'gcon_condition_text2' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text', 'validators[int]' => 'Int', 'required' => false],
+            'gcon_condition_text2' => ['label' => $this->_('Minimum age'), 'elementClass' => 'text', 'validators[int]' => 'Digits', 'required' => false],
             'gcon_condition_text3' => ['label' => $this->_('Age in'), 'elementClass' => 'Select', 'multiOptions' => $ageUnits, 'value' => $value],
-            'gcon_condition_text4' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text', 'validators[int]' => 'Int', 'required' => false],
+            'gcon_condition_text4' => ['label' => $this->_('Maximum age'), 'elementClass' => 'text', 'validators[int]' => 'Digits', 'required' => false],
         ];
     }
 

@@ -263,7 +263,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             $model->set('gso_ls_dbport',       'label', $this->_('Database port'),
                 'description', $inGems . ' ' . $this->_('Usually port 3306'),
                 'size', 6,
-                'validators[int]', 'Int',
+                'validators[int]', 'Digits',
                 'validators[between]', ['Between', true, [0, 65535]]
             );
             $model->set('gso_ls_database',     'label', $this->_('Database'),

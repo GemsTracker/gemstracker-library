@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use Gems\Batch\BatchRunnerLoader;
+use Mezzio\Session\SessionMiddleware;
+
 /**
  *
  * @package Gems
@@ -42,6 +45,11 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
         'trackEngine' => null,
         'trackId'     => null,
     ];
+
+    /**
+     * @var BatchRunnerLoader
+     */
+    public $batchRunnerLoader;
 
     /**
      * Variable to set tags for cache cleanup after changes
@@ -222,15 +230,18 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
         $track = $this->getTrackEngine();
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->checkTrackRounds(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
                 'trackCheckRounds' . $id,
                 $this->currentUser->getUserId(),
                 $where
                 );
 
         $title = sprintf($this->_("Checking round assignments for track %d '%s'."), $id, $track->getTrackName());
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Track\\CheckRoundsInformation');
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**

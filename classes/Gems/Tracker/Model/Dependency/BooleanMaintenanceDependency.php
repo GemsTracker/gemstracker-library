@@ -33,7 +33,7 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_field_type', 'gtf_field_values', 'gtf_required');
+    protected $_dependentOn = ['gtf_field_type', 'gtf_field_values', 'gtf_required'];
     
     /**
      * Returns the changes that must be made in an array consisting of
@@ -57,9 +57,12 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
      */
     public function getChanges(array $context, $new)
     {
-        $multi = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
-        if (empty($context['gtf_field_values']) || empty($multi)) {
-            $multi = $this->translatedUtil->getYesNo();
+        $multi = $this->translatedUtil->getYesNo();
+        if (isset($context['gtf_field_values'])) {
+            $values = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
+            if (count($multi)) {
+                $multi = $values;
+            }
         }
 
         $empty = [];
@@ -67,20 +70,20 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
             $empty = $this->translatedUtil->getEmptyDropdownArray();
         }
 
-        return array(
-            'gtf_field_values' => array(
+        return [
+            'gtf_field_values' => [
                 'label'          => $this->_('Values'),
                 'description'    => $this->_('Leave empty for Yes|No. Add two values as replacement. Separate multiple values with a vertical bar (|)'),
                 'elementClass'   => 'Text',
-                'formatFunction' => array($this, 'formatValues'),
+                'formatFunction' => [$this, 'formatValues'],
                 'minlength'      => 3,// At least two single chars and a separator
-                ),
-            'gtf_field_default' => array(
+            ],
+            'gtf_field_default' => [
                 'label'        => $this->_('Default'),
                 'description'  => $this->_('Choose the default value'),
                 'elementClass' => 'Select',
                 'multiOptions' => $empty + array_combine(BooleanField::$keyValues, array_slice($multi,0,2)),
-                ),
-            );
+            ],
+        ];
     }
 }
