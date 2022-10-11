@@ -110,13 +110,6 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
         if ($this->_roundData['org_specific_round']) {
             $bridge->addItem('organizations');
         }
-
-        $menuItem = $this->menu->find(array(
-            $this->request->getControllerKey() => $this->request->getControllerName(),
-            $this->request->getActionKey() => 'edit'));
-        if ($menuItem) {
-            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
-        }
     }
 
     /**

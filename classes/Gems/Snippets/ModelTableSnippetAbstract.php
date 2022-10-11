@@ -282,7 +282,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
             $output[$keyOrLabel] = new Call(function(string $routeName, array $params = []) {
                 return $this->routeHelper->getRouteUrl($routeName, $params);
-            }, [$routeName, $params]);
+            }, [$route['name'], $params]);
         }
 
         return $output;

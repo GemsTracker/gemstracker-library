@@ -1000,11 +1000,6 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.survey-maintenance.delete',
-                                    'label' => $this->translator->trans('Delete'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
                                     'name' => 'track-builder.survey-maintenance.check',
                                     'label' => $this->translator->trans('Check all is answered'),
                                     'type' => 'route-link-item',
