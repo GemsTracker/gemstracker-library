@@ -40,7 +40,6 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
                 $this->translator->trans('You have been automatically logged out from the application'),
             ]);
 
-
             $serverParams = $request->getServerParams();
             if (isset($serverParams['HTTP_REFERER']) && $this->siteUtil->isAllowedUrl($serverParams['HTTP_REFERER'])) {
                 AuthenticationMiddleware::registerIntended(
