@@ -127,7 +127,7 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $messages);
         }
 
-        return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
+        return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
     }
 
     private function blockMessage(int $minutes)

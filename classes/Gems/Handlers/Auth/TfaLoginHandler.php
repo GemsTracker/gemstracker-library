@@ -52,7 +52,7 @@ class TfaLoginHandler implements RequestHandlerInterface
         $this->tfaService = new TfaService($session, $this->authenticationService, $this->otpMethodBuilder);
 
         if ($this->tfaService->isLoggedIn($this->user) || !$this->tfaService->requiresAuthentication($this->user, $request)) {
-            return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
+            return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
         }
 
         if ($request->getMethod() === 'POST') {
@@ -138,7 +138,7 @@ class TfaLoginHandler implements RequestHandlerInterface
 
         $session->unset('tfa_login_last_send');
 
-        return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
+        return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
     }
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse
