@@ -81,14 +81,26 @@ class Gems_Selector_TokenDateSelector extends \Gems_Selector_DateSelectorAbstrac
     }
 
     /**
+     * Stub function to allow extension of model with extra columns
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function processModel(\MUtil_Model_ModelAbstract $model)
+    {  
+        $model->set('gto_id_token');
+        $model->set('gsu_id_primary_group');
+        $model->set('gsu_active');
+        $model->set('grc_success');
+    }
+
+    /**
      * Stub function to allow extension of standard one table select.
      *
      * @param \Zend_Db_Select $select
      */
     protected function processSelect(\Zend_Db_Select $select)
     {
-        // $select->columns(['gto_id_token']);
-        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', []); // ['gsu_id_primary_group', 'gsu_active']);
-        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', []); // , ['grc_success']);
+        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', []);
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', []);
     } // */
 }

@@ -251,29 +251,20 @@ class Gems_Model_JoinModel extends \MUtil_Model_JoinModel
         $outputSelect->from($from, $cols);
         // \MUtil_Echo::track($usedTables, $froms, $filter);
 
-        // Join the used tables
+        // Keep track of added tables
+        $joined[$from] = $from;
+
+        // Join the other used tables
         foreach ($usedTables as $table) {
-            if (isset($froms[$table])) {
+            if (isset($froms[$table]) && (! isset($joined[$table]))) {
+                $joined[$table] = $table;
                 if ($table == $froms[$table]['tableName']) {
                     $joinTable = $table;
                 } else {
                     $joinTable = [$table => $froms[$table]['tableName']];
                 }
-                switch ($froms[$table]['joinType']) {
-                    case \Zend_Db_Select::INNER_JOIN:
-                        $outputSelect->joinInner($joinTable, $froms[$table]['joinCondition'], []);
-                        break;
-
-                    case \Zend_Db_Select::LEFT_JOIN:
-                        $outputSelect->joinLeft($joinTable, $froms[$table]['joinCondition'], []);
-                        break;
-                        
-                    case \Zend_Db_Select::RIGHT_JOIN:
-                        $outputSelect->joinRight($joinTable, $froms[$table]['joinCondition'], []);
-                        break;
-
-                        // Other Join types can currently not be used in a JoinModel
-                }
+                // Since we filter on where values all search joins can be inner joins!
+                $outputSelect->joinInner($joinTable, $froms[$table]['joinCondition'], []);
             }
         }
 
