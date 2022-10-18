@@ -4,10 +4,10 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\DecoratedFlashMessagesInterface;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
@@ -68,9 +68,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $tfaService->logout();
             }
 
-            /** @var FlashMessagesInterface $flash */
+            /** @var DecoratedFlashMessagesInterface $flash */
             $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-            $flash?->flash('login_errors', [
+            $flash?->flashErrors([
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
 

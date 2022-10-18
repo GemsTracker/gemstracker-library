@@ -181,7 +181,7 @@ class ConfigProvider
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
-                FlashMessageMiddleware::class => FlashMessageMiddleware::class,
+                FlashMessageMiddleware::class => fn () => new FlashMessageMiddleware(DecoratedFlashMessages::class),
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
 
                 // Translation

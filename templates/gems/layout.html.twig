@@ -34,7 +34,7 @@
             {% if menuHtml is defined %}
                 {{ menuHtml }}
             {% endif %}
-            {% if mainMenu is defined %}
+            {% if mainMenu is defined and mainMenu is not null %}
                 {{ mainMenu.renderMenu()|raw }}
             {% endif %}
         </div>
