@@ -97,10 +97,20 @@ class AuthenticationService
         $this->session->clear();
     }
 
-    public function checkValid(bool $activeRequest = true): bool
+    public function checkValid(bool $activeRequest = true, ?User $user = null): bool
     {
         $authData = $this->session->get('auth_data');
-        $user = $this->getLoggedInUser();
+        if ($user === null) {
+            $user = $this->getLoggedInUser();
+        } else {
+            // User can be passed to skip an extra DB query, but we must check that this is actually
+            // the right user
+            $identity = $this->getIdentity();
+            if ($identity === null || $identity->getLoginName() !== $user->getLoginName()) {
+                $this->logout();
+                return false;
+            }
+        }
 
         if ($authData === null || $user === null) {
             return false;

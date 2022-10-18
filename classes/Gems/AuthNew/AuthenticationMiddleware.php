@@ -44,12 +44,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
+        $user = $authenticationService->getLoggedInUser();
 
-        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid()) {
+        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid(true, $user)) {
             return $this->redirectWithIntended(null, $request, $this->router->generateUri('auth.login'));
         }
-
-        $user = $authenticationService->getLoggedInUser();
 
         if (static::CHECK_TFA) {
             $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
