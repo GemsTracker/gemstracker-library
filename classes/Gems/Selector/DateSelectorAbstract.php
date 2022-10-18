@@ -303,6 +303,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
 
         $model = new \MUtil_Model_SelectModel($select, $this->dataTableName);
 
+        $this->processModel($model);
+        
         // Display by column cannot use formatFunction as it is a simple repeater
         // $model->set('duration_avg', 'formatFunction', $this->util->getLocalized()->formatNumber);
 
@@ -449,13 +451,21 @@ abstract class Gems_Selector_DateSelectorAbstract extends \MUtil_Translate_Trans
     abstract protected function loadFields();
 
     /**
+     * Stub function to allow extension of model with extra columns
+     *
+     * @param \MUtil_Model_ModelAbstract $model
+     */
+    protected function processModel(\MUtil_Model_ModelAbstract $model)
+    {  }
+
+    /**
      * Stub function to allow extension of standard one table select.
      *
      * @param \Zend_Db_Select $select
      */
     protected function processSelect(\Zend_Db_Select $select)
     {  }
-
+    
     /**
      * Processing of filter, sets the selected position in the overview table.
      * Can be overriden.
