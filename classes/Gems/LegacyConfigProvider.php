@@ -50,7 +50,6 @@ class LegacyConfigProvider
                 \Zend_Locale::class => LegacyFactory::class,
                 \Zend_Translate::class => LegacyFactory::class,
                 \Zend_View::class => LegacyFactory::class,
-                Adapter::class => AdapterServiceFactory::class,
                 \Zend_Db_Adapter_Abstract::class => LegacyZendDatabaseFactory::class,
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
