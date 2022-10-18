@@ -4,6 +4,7 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Flash\FlashMessagesInterface;
@@ -45,7 +46,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid()) {
-            return $this->redirectWithIntended($request, $this->router->generateUri('auth.login'));
+            return $this->redirectWithIntended(null, $request, $this->router->generateUri('auth.login'));
         }
 
         $user = $authenticationService->getLoggedInUser();
@@ -53,7 +54,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         if (static::CHECK_TFA) {
             $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
             if ($tfaService->requiresAuthentication($user, $request)) {
-                return $this->redirectWithIntended($request, $this->router->generateUri('tfa.login'));
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('tfa.login'));
             }
 
             $request = $request->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user);
@@ -74,29 +75,52 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
 
-            return $this->redirectWithIntended($request, $this->router->generateUri('auth.login'));
+            return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.login'));
         }
 
         return $handler->handle($request);
     }
 
-    private function redirectWithIntended(ServerRequestInterface $request, string $url): RedirectResponse
-    {
+    private function redirectWithIntended(
+        ?User $user,
+        ServerRequestInterface $request,
+        string $url
+    ): RedirectResponse {
         $session = $request->getAttribute(SessionInterface::class);
 
-        $session->set(self::LOGIN_INTENDED_URL_SESSION_KEY, (string)$request->getUri());
+        if ($request->getMethod() === 'GET') {
+            self::registerIntended($user, $session, (string)$request->getUri());
+        }
 
         return new RedirectResponse($url);
     }
 
-    public static function redirectToIntended(SessionInterface $session, UrlHelper $urlHelper): RedirectResponse
-    {
+    public static function registerIntended(
+        ?User $user,
+        SessionInterface $session,
+        string $intendedUrl,
+    ) {
+        $session->set(self::LOGIN_INTENDED_URL_SESSION_KEY, [
+            'url' => $intendedUrl,
+            'loginname' => $user?->getLoginName(),
+        ]);
+    }
+
+    public static function redirectToIntended(
+        AuthenticationService $authenticationService,
+        SessionInterface $session,
+        UrlHelper $urlHelper
+    ): RedirectResponse {
         if ($session->has(self::LOGIN_INTENDED_URL_SESSION_KEY)) {
+            $loginName = $authenticationService->getIdentity()?->getLoginName();
+
             $loginRedirect = $session->get(self::LOGIN_INTENDED_URL_SESSION_KEY);
 
             $session->unset(self::LOGIN_INTENDED_URL_SESSION_KEY);
 
-            return new RedirectResponse($loginRedirect);
+            if (empty($loginRedirect['loginname']) || $loginRedirect['loginname'] === $loginName) {
+                return new RedirectResponse($loginRedirect['url']);
+            }
         }
 
         return new RedirectResponse($urlHelper->generate('track-builder.source.index')); // TODO: Which route?

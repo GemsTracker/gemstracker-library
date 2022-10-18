@@ -28,7 +28,7 @@ class NotAuthenticatedMiddleware implements MiddlewareInterface
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
         if ($authenticationService->isLoggedIn()) {
-            return AuthenticationMiddleware::redirectToIntended($session, $this->urlHelper);
+            return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
         }
 
         return $handler->handle($request);
