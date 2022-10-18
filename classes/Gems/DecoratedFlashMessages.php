@@ -36,11 +36,17 @@ class DecoratedFlashMessages implements DecoratedFlashMessagesInterface
         $this->base = FlashMessages::createFromSession($session, $sessionKey);
     }
 
+    /**
+     * Add a message to display on the next request
+     */
     public function flashMessage(string $type, string $message): void
     {
         $this->flashMessages($type, [$message]);
     }
 
+    /**
+     * Add messages to display on the next request
+     */
     public function flashMessages(string $type, array $messages): void
     {
         if (!in_array($type, self::TYPES)) {
@@ -108,11 +114,17 @@ class DecoratedFlashMessages implements DecoratedFlashMessagesInterface
         $this->flashDangers($messages);
     }
 
+    /**
+     * Add a message to display on the current request
+     */
     public function appendMessage(string $type, string $message): void
     {
         $this->appendMessages($type, [$message]);
     }
 
+    /**
+     * Add messages to display on the current request
+     */
     public function appendMessages(string $type, array $messages): void
     {
         if (!in_array($type, self::TYPES)) {
