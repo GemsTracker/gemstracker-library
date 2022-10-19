@@ -69,7 +69,9 @@ class LegacyZendDatabaseFactory implements FactoryInterface
             if ($adapter instanceof \Zend_Db_Adapter_Abstract) {
                 $adapter->setConnection($container->get(\PDO::class));
             }
-        } else {
+        }
+
+        if ($adapter === null) {
             $adapter = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
         }
 
