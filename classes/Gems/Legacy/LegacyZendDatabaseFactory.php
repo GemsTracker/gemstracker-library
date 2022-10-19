@@ -38,6 +38,15 @@ class LegacyZendDatabaseFactory implements FactoryInterface
             throw new Exception('No database adapter set in config');
         }
 
+        if (!isset($databaseConfig['dbname']) && isset($databaseConfig['database'])) {
+            $databaseConfig['dbname'] = $databaseConfig['database'];
+        }
+
+        if (!isset($databaseConfig['dbname'])) {
+            throw new Exception('No database set in config');
+        }
+
+        $adapter = null;
         if ($container->has(\PDO::class)) {
             switch(strtolower($databaseConfig['driver'])) {
                 case 'pdo_mysql':
@@ -59,23 +68,14 @@ class LegacyZendDatabaseFactory implements FactoryInterface
 
             if ($adapter instanceof \Zend_Db_Adapter_Abstract) {
                 $adapter->setConnection($container->get(\PDO::class));
-                return $adapter;
             }
+        } else {
+            $adapter = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
         }
 
-        if (!isset($databaseConfig['dbname']) && isset($databaseConfig['database'])) {
-            $databaseConfig['dbname'] = $databaseConfig['database'];
-        }
+        \Zend_Db_Table::setDefaultAdapter($adapter);
+        \Zend_Registry::set('db', $adapter);
 
-        if (!isset($databaseConfig['dbname'])) {
-            throw new Exception('No database set in config');
-        }
-
-        $db = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
-
-        \Zend_Db_Table::setDefaultAdapter($db);
-        \Zend_Registry::set('db', $db);
-
-        return $db;
+        return $adapter;
     }
 }
