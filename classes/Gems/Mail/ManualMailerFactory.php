@@ -55,7 +55,7 @@ class ManualMailerFactory
         $sql = new Sql($this->db);
         $select = $sql->select('gems__mail_servers')
             ->columns(['gms_server', 'gms_port', 'gms_user', 'gms_password'])
-            ->where(new Like($from, 'gms_from'))
+            ->where(new Like(new Expression("'$from'"), 'gms_from'))
             ->order(new Expression('LENGTH(gms_from) DESC'))
             ->limit(1);
 

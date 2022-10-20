@@ -11,6 +11,9 @@ class ConfigProvider
                 'dev' => $this->getDevSettings(),
                 'migrations'   => $this->getMigrations(),
                 'sites' => $this->getSitesSettings(),
+                'mail' => [
+                    'dsn' => 'smtp://mailhog:1025',
+                ]
             ];
         }
 

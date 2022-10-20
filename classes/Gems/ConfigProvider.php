@@ -54,6 +54,7 @@ use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
 
 class ConfigProvider
@@ -505,6 +506,7 @@ class ConfigProvider
             'paths' => [
                 'gems' => [__DIR__ . '/../../templates/gems'],
                 'layout' => [__DIR__ . '/../../templates/layout'],
+                'mail' => [__DIR__ . '/../../templates/mail'],
                 'menu' => [__DIR__ . '/../../templates/menu'],
             ],
         ];
@@ -516,6 +518,7 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                StringLoaderExtension::class,
             ]
         ];
     }
