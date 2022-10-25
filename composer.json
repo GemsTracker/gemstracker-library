@@ -42,7 +42,7 @@
         "classes/"
     ],
     "minimum-stability": "dev",
-    "prefer-stable": true,
+    "prefer-stable": false,
     "require": {
         "php": ">=8.1.0",
         "ext-gd": "*",

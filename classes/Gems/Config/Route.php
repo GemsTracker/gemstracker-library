@@ -13,6 +13,7 @@ use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
+use Gems\Handlers\InfoHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\EmptyHandler;
@@ -27,6 +28,7 @@ use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddleware;
 
 class Route
 {
@@ -134,6 +136,19 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     ChangeLanguageHandler::class,
+                ],
+            ],
+            [
+                'name' => 'info.show',
+                'path' => '/info',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    MenuMiddleware::class,
+                    InfoHandler::class,
                 ],
             ],
         ];

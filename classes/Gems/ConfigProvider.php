@@ -54,8 +54,13 @@ use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\MezzioLaminasSnippetResponderFactory;
+use Zalt\SnippetsLoader\SnippetLoader;
+use Zalt\SnippetsLoader\SnippetLoaderFactory;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zalt\SnippetsLoader\SnippetMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddlewareFactory;
 
 class ConfigProvider
 {
@@ -206,6 +211,9 @@ class ConfigProvider
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
+                SnippetLoader::class => SnippetLoaderFactory::class,
+                SnippetMiddleware::class => SnippetMiddlewareFactory::class,
+                SnippetResponderInterface::class => MezzioLaminasSnippetResponderFactory::class, 
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
@@ -226,6 +234,7 @@ class ConfigProvider
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
+                \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
             ]
         ];
     }
@@ -518,7 +527,6 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
-                StringLoaderExtension::class,
             ]
         ];
     }
