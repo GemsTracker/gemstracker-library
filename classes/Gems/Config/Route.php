@@ -12,6 +12,7 @@ use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
+use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
@@ -134,6 +135,19 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     ChangeLanguageHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.password-reset.request',
+                'path' => '/password-reset',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
+                    RequestPasswordResetHandler::class,
                 ],
             ],
         ];

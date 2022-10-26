@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\AccessLog\AccesslogRepository;
-use Gems\AuthNew\Adapter\AuthenticationResult;
-use Gems\AuthNew\GenericFailedAuthenticationResult;
-use Gems\AuthNew\LoginThrottleBuilder;
+use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
 use Gems\User\UserLoader;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
@@ -35,9 +32,8 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
         private readonly SiteUtil $siteUtil,
-        private readonly LoginThrottleBuilder $loginThrottleBuilder,
+        private readonly PasswordResetThrottleBuilder $passwordResetThrottleBuilder,
         private readonly UrlHelper $urlHelper,
-        private readonly Adapter $db,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
     ) {
@@ -82,13 +78,12 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->translator->trans('Make sure you fill in all fields')]);
         }
 
-        // TODO We do not want the login throttle as we do not want to throttle on username but on IP only (Throttle in DB)
-        $loginThrottle = $this->loginThrottleBuilder->buildLoginThrottle(
-            $input['username'],
+        $passwordResetThrottle = $this->passwordResetThrottleBuilder->buildPasswordResetThrottle(
+            $request->getServerParams()['REMOTE_ADDR'] ?? '',
             (int)$input['organization'],
         );
 
-        $blockMinutes = $loginThrottle->checkBlock();
+        $blockMinutes = $passwordResetThrottle->checkBlock();
         if ($blockMinutes > 0) {
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
@@ -99,20 +94,17 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             $user = null;
         }
 
-        $result = new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
-        if ($user && !$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)) {
-            $result = new GenericFailedAuthenticationResult(AuthenticationResult::DISALLOWED_IP);
-        } elseif (
+        if (
             $user !== null
             && $user->isActive()
             && $user->canResetPassword()
-            && $user->isAllowedOrganization($context['organization'])
+            && $user->isAllowedOrganization((int)$input['organization'])
             && $user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
         ) {
             $errors = $this->sendUserResetEMail($user);
 
             if ($errors) {
-                $this->accesslog->logChange(
+                $this->accesslogRepository->logChange(
                     $request,
                     sprintf(
                         "User %s requested reset password but got %d error(s). %s",
@@ -123,14 +115,15 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
                 );
             }
 
-            $this->accesslog->logChange($request);
+            $this->accesslogRepository->logChange($request);
         }
 
         $this->flash->flashInfo($this->translator->trans(
             'If the entered username or e-mail is valid, we have sent you an e-mail with a reset link. Click on the link in the e-mail.'
         ));
 
-        $blockMinutes = $loginThrottle->processAuthenticationResult($result);
+        $passwordResetThrottle->registerAttempt();
+        $blockMinutes = $passwordResetThrottle->checkBlock();
         if ($blockMinutes > 0) {
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
@@ -141,8 +134,8 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
     private function blockMessage(int $minutes)
     {
         return $this->translator->plural(
-            'Your account is temporarily blocked, please wait a minute.',
-            'Your account is temporarily blocked, please wait %count% minutes.',
+            'You have attempted a password reset multiple times. Please wait a minute before trying again.',
+            'You have attempted a password reset multiple times. Please wait %count% minutes before trying again.',
             $minutes
         );
     }

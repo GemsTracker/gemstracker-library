@@ -507,6 +507,7 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                \Gems\Twig\Route::class,
             ]
         ];
     }
