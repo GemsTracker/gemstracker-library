@@ -2182,10 +2182,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
             return $this->_('Trying to send a password reset to a user that cannot be reset.');
         }
 
-        $mail = $this->loader->getMail();
-        $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
-        $mail->setFrom($this->getFrom());
-
         $email = $this->communicationRepository->getNewEmail();
         $email->addTo(new \Symfony\Component\Mime\Address($this->getEmailAddress(), $this->getFullName()));
         if (isset($config['email']['bcc'])) {
@@ -2199,6 +2195,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
         }
 
         $email->htmlTemplate($this->communicationRepository->getTemplate($this->getBaseOrganization()), $bodyTemplate, $fields);
+
+        $email->from($this->getFrom());
+        $email->subject($subjectTemplate, $fields);
 
         $mailer = $this->communicationRepository->getMailer($this->getFrom());
 

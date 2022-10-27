@@ -15,6 +15,8 @@ class Locale
         if (isset($config['locale'])) {
             $this->config = $config['locale'];
         }
+
+        $this->currentLanguage = $this->getDefaultLanguage();
     }
 
     public function getAvailableLanguages(): array

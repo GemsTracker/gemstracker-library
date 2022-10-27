@@ -18,6 +18,7 @@ use Gems\Config\Survey;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
+use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
@@ -27,6 +28,8 @@ use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
@@ -51,6 +54,7 @@ use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
 
 class ConfigProvider
@@ -172,6 +176,12 @@ class ConfigProvider
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
+
+                // Database
+                \PDO::class => PdoFactory::class,
+
+                // Laminas DB
+                Adapter::class => AdapterServiceFactory::class,
 
                 // Doctrine
                 Connection::class => DoctrineDbalFactory::class,
@@ -496,6 +506,7 @@ class ConfigProvider
             'paths' => [
                 'gems' => [__DIR__ . '/../../templates/gems'],
                 'layout' => [__DIR__ . '/../../templates/layout'],
+                'mail' => [__DIR__ . '/../../templates/mail'],
                 'menu' => [__DIR__ . '/../../templates/menu'],
             ],
         ];
@@ -507,6 +518,7 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                StringLoaderExtension::class,
                 \Gems\Twig\Route::class,
             ]
         ];

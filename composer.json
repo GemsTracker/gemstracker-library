@@ -103,7 +103,8 @@
         "symfony/messenger": "^6.1",
         "symfony/redis-messenger": "^6.1",
         "symfony/translation": "^6.1",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.4",
+        "middlewares/debugbar": "^2.1"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",

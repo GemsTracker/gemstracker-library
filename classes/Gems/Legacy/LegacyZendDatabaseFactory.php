@@ -3,7 +3,11 @@
 namespace Gems\Legacy;
 
 use Exception;
+use Gems\Db\LegacyDbAdapter\PdoMysqlAdapter;
+use Gems\Db\LegacyDbAdapter\PdoSqliteAdapter;
 use Interop\Container\ContainerInterface;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class LegacyZendDatabaseFactory implements FactoryInterface
@@ -42,11 +46,38 @@ class LegacyZendDatabaseFactory implements FactoryInterface
             throw new Exception('No database set in config');
         }
 
-        $db = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
+        $adapter = null;
+        if ($container->has(\PDO::class)) {
+            switch(strtolower($databaseConfig['driver'])) {
+                case 'pdo_mysql':
+                    $adapter = new PdoMysqlAdapter($databaseConfig);
+                    break;
+                case 'pdo_sqlite':
+                    $adapter = new PdoSqliteAdapter($databaseConfig);
+                    break;
+                case 'pdo_pgsql':
+                    $adapter = new PdoSqliteAdapter($databaseConfig);
+                    break;
+                case 'pdo_sqlsrv':
+                    $adapter = new PdoSqliteAdapter($databaseConfig);
+                    break;
+                default:
+                    $adapter = null;
+                    break;
+            }
 
-        \Zend_Db_Table::setDefaultAdapter($db);
-        \Zend_Registry::set('db', $db);
+            if ($adapter instanceof \Zend_Db_Adapter_Abstract) {
+                $adapter->setConnection($container->get(\PDO::class));
+            }
+        }
 
-        return $db;
+        if ($adapter === null) {
+            $adapter = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
+        }
+
+        \Zend_Db_Table::setDefaultAdapter($adapter);
+        \Zend_Registry::set('db', $adapter);
+
+        return $adapter;
     }
 }
