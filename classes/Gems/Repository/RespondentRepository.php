@@ -13,22 +13,21 @@ use Laminas\Db\Sql\Sql;
 
 class RespondentRepository
 {
-    public function __construct(Adapter $db)
+    public function __construct(protected Adapter $db)
     {
-        $this->db = $db;
     }
 
-    public function getRespondentId($patientNr, $organizationId=null)
+    public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int
     {
         if ($patient = $this->getPatient($patientNr, $organizationId)) {
             if (array_key_exists('gr2o_id_user', $patient)) {
-                return $patient['gr2o_id_user'];
+                return (int)$patient['gr2o_id_user'];
             }
         }
-        return false;
+        return null;
     }
 
-    public function getPatient($patientNr, $organizationId=null)
+    public function getPatient(string $patientNr, ?int $organizationId=null): ?array
     {
         $sql = new Sql($this->db);
         $select = $sql->select();
@@ -45,10 +44,62 @@ class RespondentRepository
         if ($result->valid()) {
             return $result->current();
         }
-        return false;
+        return null;
     }
 
-    public function getOtherPatientNumbers($patientNr, $organizationId, $combined=false)
+    /**
+     * Get all existing patients with a specific ssn
+     *
+     * @param $ssn
+     * @return array|null
+     */
+    public function getPatientsBySsn(string $ssn, string $epdId): ?array
+    {
+        $sql = new Sql($this->db);
+        $select = $sql->select();
+        $select->from('gems__respondent2org')
+            ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
+            ->join('gems__organizations', 'gor_id_organization = gr2o_id_organi')
+            ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
+            ->where(['grs_ssn' => $ssn,]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
+
+        $patients = iterator_to_array($result);
+
+        if (count($patients) === 0) {
+            return null;
+        }
+
+        return $patients;
+    }
+
+    /**
+     * Get RespondentId from SSN
+     *
+     * @param $ssn
+     * @return ?int
+     */
+    public function getRespondentIdBySsn(string $ssn): ?int
+    {
+        $sql = new Sql($this->db);
+        $select = $sql->select();
+        $select->from('gems__respondents')
+            ->columns(['grs_id_user'])
+            ->where(['grs_ssn' => $ssn]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if ($result->valid() && $result->current()) {
+            $user = $result->current();
+            return (int)$user['grs_id_user'];
+        }
+        return null;
+    }
+
+    public function getOtherPatientNumbers(string $patientNr, int $organizationId, bool $combined=false): array
     {
         $sql = new Sql($this->db);
         $subSelect = $sql->select('gems__respondent2org')
