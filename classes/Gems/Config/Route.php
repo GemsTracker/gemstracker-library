@@ -153,7 +153,7 @@ class Route
             ],
             [
                 'name' => 'auth.password-reset.change',
-                'path' => '/password-reset/change/{key:[a-zA-Z0-9]+}',
+                'path' => '/index/resetpassword/key/{key:[a-zA-Z0-9]+}',
                 'allowed_methods' => ['GET', 'POST'],
                 'middleware' => [
                     SecurityHeadersMiddleware::class,

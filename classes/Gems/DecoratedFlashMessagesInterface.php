@@ -10,6 +10,14 @@ interface DecoratedFlashMessagesInterface extends FlashMessagesInterface
 
     public function flashMessages(string $type, array $messages): void;
 
+    public function flashValidationError(string $field, string $message): void;
+
+    public function flashValidationErrors(string $field, array $messages): void;
+
+    public function hasFieldValidationErrors(string $field): bool;
+
+    public function getFieldValidationErrors(string $field): array;
+
     public function flashSuccess(string $message): void;
 
     public function flashSuccesses(array $messages): void;

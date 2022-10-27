@@ -89,19 +89,19 @@ class ChangePasswordHandler implements RequestHandlerInterface
 
         $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
-            $this->flash->flashErrors($newPasswordValidator->getMessages());
+            $this->flash->flashValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
 
-        $newConfirmValidator = new \MUtil\Validate\IsConfirmed('repeat_password', $this->translator->trans('Repeat password'));
-        $newConfirmValidator->setMessage(
-            $this->translator->trans('Must be the same as %fieldDescription%.'),
-            \MUtil\Validate\IsConfirmed::NOT_SAME
-        );
-        if (!$newConfirmValidator->isValid($input['new_password'] ?? null, $input)) {
-            $this->flash->flashErrors($newConfirmValidator->getMessages());
-            return new RedirectResponse($request->getUri());
-        }
+        // $newConfirmValidator = new \MUtil\Validate\IsConfirmed('repeat_password', $this->translator->trans('Repeat password'));
+        // $newConfirmValidator->setMessage(
+        //     $this->translator->trans('Must be the same as %fieldDescription%.'),
+        //     \MUtil\Validate\IsConfirmed::NOT_SAME
+        // );
+        // if (!$newConfirmValidator->isValid($input['new_password'] ?? null, $input)) {
+        //     $this->flash->flashValidationErrors('new_password', $newConfirmValidator->getMessages());
+        //     return new RedirectResponse($request->getUri());
+        // }
 
         $repeatConfirmValidator = new \MUtil\Validate\IsConfirmed('new_password', $this->translator->trans('New password'));
         $repeatConfirmValidator->setMessage(
@@ -109,7 +109,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             \MUtil\Validate\IsConfirmed::NOT_SAME
         );
         if (!$repeatConfirmValidator->isValid($input['repeat_password'] ?? null, $input)) {
-            $this->flash->flashErrors($repeatConfirmValidator->getMessages());
+            $this->flash->flashValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
 

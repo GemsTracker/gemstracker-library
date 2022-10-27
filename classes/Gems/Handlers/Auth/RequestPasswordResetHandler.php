@@ -158,7 +158,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         $subjectTemplate = $this->translator->trans('Password reset requested');
 
         // Multi line strings did not come through correctly in poEdit
-        $bbBodyTemplate = $this->translator->trans("Dear {greeting},\n\n\nA new password was requested for your [b]{organization}[/b] account on the [b]{project}[/b] site, please click within {reset_in_hours} hours on [url={reset_url}]this link[/url] to enter the password of your choice.\n\n\n{organization_signature}\n\n[url={reset_url}]{reset_url}[/url]\n");
+        $bbBodyTemplate = $this->translator->trans("Dear {{greeting}},\n\n\nA new password was requested for your [b]{{organization}}[/b] account on the [b]{{project}}[/b] site, please click within {{reset_in_hours}} hours on [url={{reset_url}}]this link[/url] to enter the password of your choice.\n\n\n{{organization_signature}}\n\n[url={{reset_url}}]{{reset_url}}[/url]\n");
 
         return $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
     }

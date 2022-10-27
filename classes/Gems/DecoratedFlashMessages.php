@@ -9,6 +9,7 @@ use Mezzio\Session\SessionInterface;
 class DecoratedFlashMessages implements DecoratedFlashMessagesInterface
 {
     public const FLASH_KEY = 'action-messages';
+    public const VALIDATION_KEY = 'validation-messages';
 
     public const TYPE_SUCCESS = 'success';
     public const TYPE_INFO = 'info';
@@ -62,6 +63,34 @@ class DecoratedFlashMessages implements DecoratedFlashMessagesInterface
         );
 
         $this->flash(self::FLASH_KEY, $messageList);
+    }
+
+    public function flashValidationError(string $field, string $message): void
+    {
+        $this->flashValidationErrors($field, [$message]);
+    }
+
+    public function flashValidationErrors(string $field, array $messages): void
+    {
+        $storedFlash = $this->getStoredMessages();
+        $messageList = $storedFlash[self::VALIDATION_KEY]['value'] ?? [];
+
+        $messageList[$field] = array_merge(
+            $messageList[$field] ?? [],
+            $messages,
+        );
+
+        $this->flash(self::VALIDATION_KEY, $messageList);
+    }
+
+    public function hasFieldValidationErrors(string $field): bool
+    {
+        return array_key_exists($field, $this->getFlash(self::VALIDATION_KEY));
+    }
+
+    public function getFieldValidationErrors(string $field): array
+    {
+        return $this->getFlash(self::VALIDATION_KEY)[$field] ?? [];
     }
 
     public function flashSuccess(string $message): void
