@@ -25,6 +25,8 @@ use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\SnippetsLoader\GemsSnippetResponderFactory;
 use Gems\Translate\TranslationFactory;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
@@ -213,7 +215,7 @@ class ConfigProvider
 
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
-                SnippetResponderInterface::class => MezzioLaminasSnippetResponderFactory::class, 
+                GemsSnippetResponder::class => GemsSnippetResponderFactory::class, 
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
@@ -234,6 +236,7 @@ class ConfigProvider
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
+                SnippetResponderInterface::class => GemsSnippetResponder::class,
                 \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
             ]
         ];
