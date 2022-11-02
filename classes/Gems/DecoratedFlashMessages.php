@@ -85,7 +85,7 @@ class DecoratedFlashMessages implements DecoratedFlashMessagesInterface
 
     public function hasFieldValidationErrors(string $field): bool
     {
-        return array_key_exists($field, $this->getFlash(self::VALIDATION_KEY));
+        return array_key_exists($field, $this->getFlash(self::VALIDATION_KEY, []));
     }
 
     public function getFieldValidationErrors(string $field): array

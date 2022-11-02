@@ -5,74 +5,85 @@ declare(strict_types=1);
 namespace Gems\Handlers\Auth;
 
 use Gems\AccessLog\AccesslogRepository;
-use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
-use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\AuthNew\LoginStatusTracker;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
-use Gems\User\User;
-use Laminas\Db\Adapter\Adapter;
+use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
-use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ChangePasswordHandler implements RequestHandlerInterface
+class ResetPasswordChangeHandler implements RequestHandlerInterface
 {
     private DecoratedFlashMessagesInterface $flash;
 
     public function __construct(
-        private readonly Adapter $db,
         private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
         private readonly UrlHelper $urlHelper,
+        private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $session = $request->getAttribute(SessionInterface::class);
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-        /** @var User $user */
-        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        $user = $this->userLoader->getUserByResetKey($request->getAttribute('key'));
+        if ($user && $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
+            // TODO: Remove NOLOGIN
+            $user = null;
+        }
+
+        if (!$user || !$user->hasValidResetKey()) {
+            if ($user && $user->getLoginName()) {
+                $logMessage = sprintf('User %s used old reset key.', $user->getLoginName());
+            } else {
+                $logMessage = 'Someone used a non existent reset key.';
+            }
+            $this->accesslogRepository->logChange($request, $logMessage);
+
+            if ($user && ($user->hasPassword() || !$user->isActive())) {
+                $userMessage = $this->translator->trans('Your password reset request is no longer valid, please request a new link.');
+            } else {
+                $userMessage = $this->translator->trans('Your password input request is no longer valid, please request a new link.');
+            }
+            $this->flash->flashError($userMessage);
+
+            if ($user && $user->isActive()) {
+                $this->flash->flash('request_password_reset_input', [
+                    'organization' => $user->getBaseOrganizationId(),
+                    'username' => $user->getLoginName(),
+                ]);
+            }
+
+            return new RedirectResponse($this->urlHelper->generate('auth.password-reset.request'));
+        }
 
         if (
             !$user->isActive()
             || !$user->canResetPassword()
             || !$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
         ) {
-            $this->flash->appendError($this->translator->trans('You cannot reset your password.'));
-            if ($request->getMethod() === 'POST') {
-                return new RedirectResponse($request->getUri());
-            }
+            $this->flash->flashError($this->translator->trans('You cannot reset your password.'));
+            return new RedirectResponse($this->urlHelper->generate('auth.password-reset.request'));
         }
 
         if ($request->getMethod() !== 'POST') {
+            $this->accesslogRepository->logChange($request, sprintf("User %s opened valid reset link.", $user->getLoginName()));
+
             $data = [
-                'ask_old' => true,
+                'ask_old' => false,
             ];
 
             return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::change-password', $request, $data));
         }
 
         $input = $request->getParsedBody();
-
-        $authResult = GemsTrackerAuthentication::fromUser(
-            $this->db,
-            $user,
-            $input['old_password'] ?? null
-        )->authenticate();
-
-        if (!$authResult->isValid()) {
-            $this->flash->flashValidationErrors('old_password', [$this->translator->trans('Wrong password.')]);
-            return new RedirectResponse($request->getUri());
-        }
 
         $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
@@ -91,10 +102,10 @@ class ChangePasswordHandler implements RequestHandlerInterface
         }
 
         $user->setPassword($input['new_password']);
-        LoginStatusTracker::make($session, $user)->setPasswordResetActive(false);
 
         $this->flash->flashSuccess($this->translator->trans('New password is active.'));
+        $this->accesslogRepository->logChange($request, $this->translator->trans('User reset password.'));
 
-        return new RedirectResponse($request->getUri());
+        return new RedirectResponse($this->urlHelper->generate('auth.login'));
     }
 }

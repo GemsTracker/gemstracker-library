@@ -10,6 +10,7 @@ use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\ChangePasswordHandler;
+use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
@@ -161,7 +162,7 @@ class Route
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     NotAuthenticatedMiddleware::class,
-                    ChangePasswordHandler::class,
+                    ResetPasswordChangeHandler::class,
                 ],
             ],
         ];
@@ -178,6 +179,16 @@ class Route
                     SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     LogoutHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.change-password',
+                'path' => '/change-password',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    ChangePasswordHandler::class,
                 ],
             ],
         ];

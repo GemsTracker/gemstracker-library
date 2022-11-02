@@ -8,10 +8,12 @@ use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
+use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -124,6 +126,12 @@ class LoginHandler implements RequestHandlerInterface
                 $messages[] = $this->blockMessage($blockMinutes);
             }
             return $this->redirectBack($request, $messages);
+        }
+
+        /** @var User $user */
+        $user = $result->user;
+        if ($user->isPasswordResetRequired() || $user->reportPasswordWeakness($input['password'])) {
+            LoginStatusTracker::make($session, $user)->setPasswordResetActive();
         }
 
         return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);

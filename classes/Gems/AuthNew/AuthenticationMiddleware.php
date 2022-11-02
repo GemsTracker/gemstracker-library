@@ -9,6 +9,7 @@ use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -75,6 +76,24 @@ class AuthenticationMiddleware implements MiddlewareInterface
             ]);
 
             return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.login'));
+        }
+
+        if (LoginStatusTracker::make($session, $user)->isPasswordResetActive()) {
+            /** @var RouteResult $routeResult */
+            $routeResult = $request->getAttribute(RouteResult::class);
+            if (!in_array($routeResult->getMatchedRouteName(), [
+                'auth.change-password',
+                'tfa.login',
+                'auth.logout',
+            ])) {
+                /** @var DecoratedFlashMessagesInterface $flash */
+                $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+                $flash?->flashErrors([
+                    $this->translator->trans('Your password must be changed.'),
+                ]);
+
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.change-password'));
+            }
         }
 
         return $handler->handle($request);
