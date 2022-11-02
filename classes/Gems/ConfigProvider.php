@@ -519,7 +519,6 @@ class ConfigProvider
                 Trans::class,
                 Vite::class,
                 StringLoaderExtension::class,
-                \Gems\Twig\Route::class,
             ]
         ];
     }
