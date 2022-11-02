@@ -11,6 +11,8 @@
 
 namespace Gems\User;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  *
  *
@@ -20,51 +22,23 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class PasswordChecker extends \MUtil\Registry\TargetAbstract
+class PasswordChecker
 {
-    /**
-     *
-     * @var array
-     */
-    protected $_errors = array();
+    protected array $errors = [];
 
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    protected ?User $user = null;
 
-    /**
-     * @var \Gems\Cache\HelperAdapter
-     */
-    protected $cache;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Gems\User\User $user
-     */
-    protected $user;
-
-    /**
-     *
-     * @param type $errorMsg
-     */
-    protected function _addError($errorMsg)
-    {
-        $this->_errors[] = $errorMsg;
+    public function __construct(
+        protected readonly \Gems\Cache\HelperAdapter $cache,
+        protected readonly array $config,
+        protected readonly TranslatorInterface $translator,
+    ) {
     }
 
+    protected function _addError(string $errorMsg): void
+    {
+        $this->errors[] = $errorMsg;
+    }
 
     /**
      * Test the password for minimum number of upper case characters.
@@ -75,10 +49,9 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     protected function capsCount($parameter, $password)
     {
         $len = intval($parameter);
-        $results = array();
-        if ($len && (preg_match_all('/[A-Z]/', $password, $results) < $len)) {
+        if ($len && (preg_match_all('/[A-Z]/', $password) < $len)) {
             $this->_addError(sprintf(
-                    $this->translate->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
+                    $this->translator->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
                     $len));
         }
     }
@@ -118,8 +91,8 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
         // \MUtil\EchoOut\EchoOut::track($codes);
 
         $rules = [];
-        if (isset($this->config['passwords']) && is_array($this->config['passwords'])) {
-            $this->_getPasswordRules($this->config['passwords'], $codes, $rules);
+        if (isset($this->config['password']) && is_array($this->config['password'])) {
+            $this->_getPasswordRules($this->config['password'], $codes, $rules);
         }
 
         return $rules;
@@ -157,9 +130,9 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
         }
 
         if (null === $password) {
-            $this->_addError($this->translate->_('should not appear in the list of common passwords'));
+            $this->_addError($this->translator->trans('should not appear in the list of common passwords'));
         } elseif (in_array(strtolower($password), $passwordList)) {
-            $this->_addError($this->translate->_('appears in the list of common passwords'));
+            $this->_addError($this->translator->trans('appears in the list of common passwords'));
         }
     }
 
@@ -172,10 +145,9 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     protected function lowerCount($parameter, $password)
     {
         $len = intval($parameter);
-        $results = array();
-        if ($len && (preg_match_all('/[a-z]/', $password, $results) < $len)) {
+        if ($len && (preg_match_all('/[a-z]/', $password) < $len)) {
             $this->_addError(sprintf(
-                    $this->translate->plural('should contain at least one lowercase character', 'should contain at least %d lowercase characters', $len),
+                    $this->translator->plural('should contain at least one lowercase character', 'should contain at least %d lowercase characters', $len),
                     $len));
         }
     }
@@ -192,10 +164,10 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
 
         if (is_null($password)) {
             // We return the description of this rule
-            $this->_addError(sprintf($this->translate->_('should be changed at least every %d days'), $age));
+            $this->_addError(sprintf($this->translator->trans('should be changed at least every %d days'), $age));
         } elseif ($age > 0 && !$this->user->isPasswordResetRequired() && $this->user->getPasswordAge() > $age) {
             // Skip this if we already should change the password
-            $this->_addError(sprintf($this->translate->_('has not been changed the last %d days and should be changed'), $age));
+            $this->_addError(sprintf($this->translator->trans('has not been changed the last %d days and should be changed'), $age));
             $this->user->setPasswordResetRequired();
         }
     }
@@ -210,7 +182,7 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     {
         $len = intval($parameter);
         if ($len && (strlen($password) < $len)) {
-            $this->_addError(sprintf($this->translate->_('should be at least %d characters long'), $len));
+            $this->_addError(sprintf($this->translator->trans('should be at least %d characters long'), $len));
         }
     }
 
@@ -224,14 +196,13 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     {
         $len = intval($parameter);
         if ($len) {
-            $results = array(); // Not used but required
-            $count   = strlen($password) - preg_match_all('/[A-Za-z]/', $password, $results);
+            $count = strlen($password) - preg_match_all('/[A-Za-z]/', $password);
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
-                        $this->translate->plural('should contain at least one non alphabetic character', 'should contain at least %d non alphabetic characters', $len),
+                        $this->translator->plural('should contain at least one non alphabetic character', 'should contain at least %d non alphabetic characters', $len),
                         $len));
             } elseif (($len < 0) && (($count > 0) || (null === $password))) {
-                $this->_addError($this->translate->_('should not contain non alphabetic characters'));
+                $this->_addError($this->translator->trans('should not contain non alphabetic characters'));
             }
         }
     }
@@ -246,14 +217,13 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     {
         $len = intval($parameter);
         if ($len) {
-            $results = array(); // Not used but required
-            $count   = strlen($password) - preg_match_all('/[0-9A-Za-z]/', $password, $results);
+            $count = strlen($password) - preg_match_all('/[0-9A-Za-z]/', $password);
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
-                        $this->translate->plural('should contain at least one non alphanumeric character', 'should contain at least %d non alphanumeric characters', $len),
+                        $this->translator->plural('should contain at least one non alphanumeric character', 'should contain at least %d non alphanumeric characters', $len),
                         $len));
             } elseif (($len < 0) && (($count > 0) || (null === $password))) {
-                $this->_addError($this->translate->_('should not contain non alphanumeric characters'));
+                $this->_addError($this->translator->trans('should not contain non alphanumeric characters'));
             }
         }
     }
@@ -271,7 +241,7 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
             $lpwd = strtolower($password);
 
             if ((false !== strpos($lpwd, strtolower($this->user->getLoginName()))) || (null === $password)) {
-                $this->_addError($this->translate->_('should not contain your login name'));
+                $this->_addError($this->translator->trans('should not contain your login name'));
             }
         }
     }
@@ -286,14 +256,13 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
     {
         $len = intval($parameter);
         if ($len) {
-            $results = array(); // Not used but required
-            $count   = preg_match_all('/[0-9]/', $password, $results);
+            $count = preg_match_all('/[0-9]/', $password);
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
-                        $this->translate->plural('should contain at least one number', 'should contain at least %d numbers', $len),
+                        $this->translator->plural('should contain at least one number', 'should contain at least %d numbers', $len),
                         $len));
             } elseif (($len < 0) && (($count > 0) || (null === $password))) {
-                $this->_addError($this->translate->_('may not contain numbers'));
+                $this->_addError($this->translator->trans('may not contain numbers'));
             }
         }
     }
@@ -303,29 +272,30 @@ class PasswordChecker extends \MUtil\Registry\TargetAbstract
      *
      * @param \Gems\User\User $user
      * @param string $password Or null when you want a report on all the rules for this password.
-     * @param array  $codes An array of code names that identify rules that should be used only for those codes.
      * @param boolean $skipAge When setting a new password, we should not check for age
-     * @return mixed String or array of strings containing warning messages
+     * @return string[]|null String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(\Gems\User\User $user, $password, array $codes, $skipAge = false)
+    public function reportPasswordWeakness(\Gems\User\User $user, string $password, bool $skipAge = false): ?array
     {
-        $this->user = $user;
-        $this->_errors = array();
+        if (!$user->canSetPassword()) {
+            return null;
+        }
 
-        $rules = $this->getPasswordRules($codes);
+        $this->user = $user;
+        $this->errors = [];
+
+        $rules = $this->getPasswordRules($user->getPasswordCheckerCodes());
 
         if ($skipAge) {
             unset($rules['maxAge']);
         }
-        // \MUtil\EchoOut\EchoOut::track($rules);
 
         foreach ($rules as $rule => $parameter) {
             if (method_exists($this, $rule)) {
                 $this->$rule($parameter, $password);
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($this->_errors);
 
-        return $this->_errors;
+        return $this->errors;
     }
 }

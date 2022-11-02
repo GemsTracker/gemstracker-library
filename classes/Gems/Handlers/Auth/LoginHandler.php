@@ -13,6 +13,7 @@ use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
+use Gems\User\PasswordChecker;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -45,6 +46,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly PasswordChecker $passwordChecker,
     ) {
     }
 
@@ -130,7 +132,10 @@ class LoginHandler implements RequestHandlerInterface
 
         /** @var User $user */
         $user = $result->user;
-        if ($user->isPasswordResetRequired() || $user->reportPasswordWeakness($input['password'])) {
+        if (
+            $user->isPasswordResetRequired()
+            || $this->passwordChecker->reportPasswordWeakness($user, $input['password'])
+        ) {
             LoginStatusTracker::make($session, $user)->setPasswordResetActive();
         }
 

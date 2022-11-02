@@ -7,6 +7,7 @@ namespace Gems\Handlers\Auth;
 use Gems\AccessLog\AccesslogRepository;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -27,6 +28,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly PasswordChecker $passwordChecker,
     ) {
     }
 
@@ -85,7 +87,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
 
         $input = $request->getParsedBody();
 
-        $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user);
+        $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
             $this->flash->flashValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());

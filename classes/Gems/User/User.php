@@ -2145,26 +2145,18 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Check for password weakness.
-     *
-     * @param string $password Or null when you want a report on all the rules for this password.
-     * @param boolean $skipAge When setting a new password, we should not check for age
-     * @return mixed String or array of strings containing warning messages or nothing
+     * @return string[] An array of code names that identify which sets of password rules are applicable for this user
      */
-    public function reportPasswordWeakness($password = null, $skipAge = false)
+    public function getPasswordCheckerCodes(): array
     {
-        if ($this->canSetPassword()) {
-            $checker = $this->userLoader->getPasswordChecker();
-
-            $codes[] = $this->getCurrentOrganization()->getCode();
-            $codes[] = $this->getRoles();
-            $codes[] = $this->_getVar('__user_definition');
-            if ($this->isStaff()) {
-                $codes[] = 'staff';
-            }
-
-            return $checker->reportPasswordWeakness($this, $password, \MUtil\Ra::flatten($codes), $skipAge);
+        $codes = [];
+        $codes[] = $this->getCurrentOrganization()->getCode();
+        $codes[] = $this->getRoles();
+        $codes[] = $this->_getVar('__user_definition');
+        if ($this->isStaff()) {
+            $codes[] = 'staff';
         }
+        return \MUtil\Ra::flatten($codes);
     }
 
     /**

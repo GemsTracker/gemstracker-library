@@ -10,6 +10,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\User\PasswordChecker;
 use Gems\User\User;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -32,6 +33,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         private readonly LayoutRenderer $layoutRenderer,
         private readonly UrlHelper $urlHelper,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly PasswordChecker $passwordChecker,
     ) {
     }
 
@@ -74,7 +76,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             return new RedirectResponse($request->getUri());
         }
 
-        $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user);
+        $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
             $this->flash->flashValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());
