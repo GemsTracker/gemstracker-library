@@ -6,6 +6,7 @@ namespace Gems\Handlers\Auth;
 
 use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
+use Gems\Communication\CommunicationRepository;
 use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
@@ -36,6 +37,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         private readonly UrlHelper $urlHelper,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly CommunicationRepository $communicationRepository,
     ) {
     }
 
@@ -155,11 +157,19 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
      */
     public function sendUserResetEMail(\Gems\User\User $user)
     {
-        $subjectTemplate = $this->translator->trans('Password reset requested');
+        $templateId = $this->communicationRepository->getResetPasswordTemplate($user->getBaseOrganization());
+        if ($templateId) {
+            [
+                'subject' => $subjectTemplate,
+                'gctt_body' => $bodyTemplate
+            ] = $this->communicationRepository->getCommunicationTexts($templateId, $user->getLocale());
+        } else {
+            $subjectTemplate = $this->translator->trans('Password reset requested');
 
-        // Multi line strings did not come through correctly in poEdit
-        $bbBodyTemplate = $this->translator->trans("Dear {{greeting}},\n\n\nA new password was requested for your [b]{{organization}}[/b] account on the [b]{{project}}[/b] site, please click within {{reset_in_hours}} hours on [url={{reset_url}}]this link[/url] to enter the password of your choice.\n\n\n{{organization_signature}}\n\n[url={{reset_url}}]{{reset_url}}[/url]\n");
+            // Multi line strings did not come through correctly in poEdit
+            $bodyTemplate = $this->translator->trans("Dear {{greeting}},<br><br><br>A new password was requested for your <strong>{{organization}}</strong> account on the <strong>{{project}}</strong> site, please click within {{reset_in_hours}} hours on <a href=\"{{reset_url}}\">this link</a> to enter the password of your choice.<br><br><br>{{organization_signature}}<br><br><a href=\"{{reset_url}}\">{{reset_url}}</a><br>");
+        }
 
-        return $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
+        return $user->sendMail($subjectTemplate, $bodyTemplate, true);
     }
 }
