@@ -132,6 +132,10 @@
         },
         {
             "type": "git",
+            "url": "https://github.com/MagnaFacta/zalt-late.git"
+        },
+        {
+            "type": "git",
             "url": "https://github.com/MagnaFacta/zalt-loader.git"
         },
         {
