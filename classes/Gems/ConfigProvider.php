@@ -24,6 +24,7 @@ use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
+use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
 use Gems\Twig\Trans;
@@ -199,9 +200,10 @@ class ConfigProvider
 
                 // Messenger
                 MessageBusInterface::class => MessengerFactory::class,
-                // message.bus.other => [MessengerFactory::class, 'message.bus.other'],
+                // messenger.bus.other => [MessengerFactory::class, 'message.bus.other'],
 
-                // message.transport.name => TransportFactory::class,
+                'messenger.transport.default' => TransportFactory::class,
+                // messenger.transport.name => TransportFactory::class,
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
@@ -216,6 +218,9 @@ class ConfigProvider
 
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
+
+                // Messenger
+                'messenger.bus.default' => MessageBusInterface::class,
 
                 // Session
                 //SessionPersistenceInterface::class => CacheSessionPersistence::class,

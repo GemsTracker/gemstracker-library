@@ -14,6 +14,7 @@ use Symfony\Component\Messenger\Bridge\Doctrine\Transport\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
+use Symfony\Component\Messenger\Transport\Sync\SyncTransport;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class TransportFactory implements FactoryInterface
@@ -38,6 +39,8 @@ class TransportFactory implements FactoryInterface
                 return $this->getRedisTransport($transportConfig);
             case 'doctrine':
                 return $this->getDoctrineTransport($transportConfig, $container);
+            case 'sync':
+                return $this->getSyncTransport($transportConfig);
             default:
                 throw new \Exception(sprintf('Transport %s not supported', $dsnParts[0]));
         }
@@ -64,11 +67,15 @@ class TransportFactory implements FactoryInterface
             $driverConnection = $entityManager->getConnection();
 
             $useNotify = true;
-            if (isset($transportConfig['use_notify'])) {
-                $useNotify = $transportConfig['use_notify'];
+            $configOptions = [];
+            if (isset($transportConfig['options'])) {
+                $configOptions = $transportConfig['options'];
+                if (isset($transportConfig['options']['use_notify'])) {
+                    $useNotify = $transportConfig['options']['use_notify'];
+                }
             }
 
-            $configuration = PostgreSqlConnection::buildConfiguration($transportConfig['dsn'], $transportConfig);
+            $configuration = Connection::buildConfiguration($transportConfig['dsn'], $configOptions);
 
             if ($useNotify && $driverConnection->getDatabasePlatform() instanceof PostgreSQLPlatform) {
                 $connection = new PostgreSqlConnection($configuration, $driverConnection);
@@ -98,5 +105,11 @@ class TransportFactory implements FactoryInterface
         }
 
         return new RedisTransport(RedisConnection::fromDsn($transportConfig['dsn']));
+    }
+
+    protected function getSyncTransport(array $transportConfig): SyncTransport
+    {
+
+        return new SyncTransport();
     }
 }
