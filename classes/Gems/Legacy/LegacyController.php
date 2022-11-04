@@ -41,6 +41,8 @@ class LegacyController implements RequestHandlerInterface
         $this->view = $view;
         $this->urlHelper = $urlHelper;
         $this->layoutRenderer = $layoutRenderer;
+        
+        \Zalt\Html\Html::getRenderer()->setView($this->view);
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

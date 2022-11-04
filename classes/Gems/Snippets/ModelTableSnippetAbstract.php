@@ -178,7 +178,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      *
      * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(\MUtil\Html\TableElement $table, \Zend_Paginator $paginator)
+    protected function addPaginator($table, \Zend_Paginator $paginator)
     {
         //$table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
     }
