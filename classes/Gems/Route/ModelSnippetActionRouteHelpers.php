@@ -3,6 +3,7 @@
 namespace Gems\Route;
 
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
+use Gems\Handlers\ModelSnippetLegacyHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -69,6 +70,94 @@ trait ModelSnippetActionRouteHelpers
 
         if ($customMiddleware === null) {
             $customMiddleware = $this->modelSnippetCustomMiddleware;
+        }
+
+        $routes = [];
+
+        if ($parameters === null) {
+            $parameters = $this->defaultParameters;
+        }
+
+        if ($parameterRoutes === null) {
+            $parameterRoutes = $this->defaultParameterRoutes;
+        }
+
+        if ($postRoutes === null) {
+            $postRoutes = $this->defaultPostRoutes;
+        }
+
+        $combinedParameters = [];
+        foreach ($parameters as $parameterName => $parameterRegex) {
+            $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
+        }
+
+        $parameterString = join('/', $combinedParameters);
+
+        foreach($pages as $pageName) {
+            $route = [
+                'name' => $baseName . '.' . $pageName,
+                'path' => $basePath . '/' . $pageName,
+                'middleware' => $customMiddleware,
+                'allowed_methods' => ['GET'],
+                'options' => [
+                    'controller' => $controllerClass,
+                    'action' => $pageName,
+                    'privilege' => $basePrivilege . '.' . $pageName,
+                ],
+            ];
+
+            if ($pageName === 'index' || $pageName === 'show') {
+                $route['path'] = $basePath;
+            }
+
+            if ($parentParameters !== null) {
+                $route['params'] = $parentParameters;
+            }
+
+            if (in_array($pageName, $parameterRoutes)) {
+                $route['path'] .= '/' . $parameterString;
+
+                if (!array_key_exists('params', $route)) {
+                    $route['params'] = [];
+                }
+                $route['params'] = [...$route['params'], ...array_keys($parameters)];
+            }
+
+            if (in_array($pageName, $postRoutes)) {
+                $route['allowed_methods'][] = 'POST';
+            }
+
+            $routes[$baseName . '.' . $pageName] = $route;
+        }
+
+        return $routes;
+    }
+
+    public function createSnippetRoutes(string $baseName,
+                                       string $controllerClass,
+                                       ?string $basePath = null,
+                                       ?string $basePrivilege = null,
+                                       ?array $pages = null,
+                                       ?array $customMiddleware = null,
+                                       ?array $parameters = null,
+                                       ?array $parameterRoutes = null,
+                                       ?array $postRoutes = null,
+                                       ?array $parentParameters = null): array
+    {
+        if ($basePath === null) {
+            $basePath = '/' . str_replace('.', '/', $baseName);
+        }
+
+        if ($basePrivilege === null) {
+            $basePrivilege = 'pr.' . $baseName;
+        }
+
+        if ($pages === null) {
+            $pages = $this->defaultPages;
+        }
+
+        if ($customMiddleware === null) {
+            $customMiddleware = [ModelSnippetLegacyHandler::class];
         }
 
         $routes = [];
