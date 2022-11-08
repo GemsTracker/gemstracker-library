@@ -12,6 +12,7 @@
 namespace Gems\Snippets\User;
 
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedUserData;
 
 /**
@@ -130,6 +131,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
         $url['org'] = $this->formData['org_id'];
         $url['usr'] = $this->formData['login_id'];
         $url['pid'] = $this->formData['pid'];
+        
+        if ($auth instanceof EmbeddedAuthAbstract) {
+            $auth->setPatientNumber($url['pid']);
+            $auth->setDeferredLogin($url['usr']);
+            $auth->setOrganizations($url['org']);
+        }
+        
         $url['key'] = $auth->getExampleKey($this->selectedUser);
 
         $url_string = '';

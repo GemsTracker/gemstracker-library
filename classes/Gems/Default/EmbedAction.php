@@ -13,6 +13,7 @@
 use Gems\User\Embed\EmbeddedAuthAbstract;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\Embed\UpdatingAuthInterface;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\Embed\RedirectInterface;
 
@@ -60,7 +61,7 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
      * @param mixed $organisations (Array of) organization id's or objects
      * @return boolean
      */
-    protected function authenticateEmbedded(\Gems_User_User $embeddedUser, $secretKey, $deferredLogin, $patientId, $organizations)
+    protected function authenticateEmbedded(\Gems_User_User $embeddedUser, $secretKey, &$deferredLogin, &$patientId, &$organizations)
     {
         $embeddedUserData = $embeddedUser->getEmbedderData();
         if (! ($embeddedUser->isActive() && $embeddedUserData instanceof EmbeddedUserData)) {
@@ -74,8 +75,30 @@ class Gems_Default_EmbedAction extends \Gems_Controller_Action
             $authClass->setOrganizations($organizations);
         }
 
-        if ($authClass instanceof EmbeddedAuthInterface) {
-            return $authClass->authenticate($embeddedUser, $secretKey);
+        if ($authClass->authenticate($embeddedUser, $secretKey)) {
+            if ($authClass instanceof UpdatingAuthInterface) {
+                foreach ($authClass->getEmbeddedParams() as $key => $value) {
+                    switch (strtolower($key)) {
+                        case 'usr':
+                            $deferredLogin = $value;
+                            break;
+                            
+                        case 'pid':
+                            $patientId = $value;
+                            break;
+                            
+                        case 'org':
+                            $organizations = $value;
+                            break;
+                            
+                        default:
+                            // Intentianal fall through
+                    }
+                }
+            }                
+            return true;
+        } else {
+            return false;
         }
 
         return false;

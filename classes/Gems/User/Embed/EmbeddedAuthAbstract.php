@@ -22,6 +22,13 @@ namespace Gems\User\Embed;
 abstract class EmbeddedAuthAbstract extends \MUtil_Translate_TranslateableAbstract implements EmbeddedAuthInterface
 {
     /**
+     * Default key to use when no two factor key was set
+     *
+     * @var string
+     */
+    protected $defaultKey = 'test';
+
+    /**
      *
      * @var string User to defer to after authentication
      */
