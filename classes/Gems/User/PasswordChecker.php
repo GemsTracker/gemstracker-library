@@ -49,7 +49,7 @@ class PasswordChecker
     protected function capsCount($parameter, $password)
     {
         $len = intval($parameter);
-        if ($len && (preg_match_all('/[A-Z]/', $password) < $len)) {
+        if ($len && (preg_match_all('/[A-Z]/', $password ?? '') < $len)) {
             $this->_addError(sprintf(
                     $this->translator->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
                     $len));
@@ -145,7 +145,7 @@ class PasswordChecker
     protected function lowerCount($parameter, $password)
     {
         $len = intval($parameter);
-        if ($len && (preg_match_all('/[a-z]/', $password) < $len)) {
+        if ($len && (preg_match_all('/[a-z]/', $password ?? '') < $len)) {
             $this->_addError(sprintf(
                     $this->translator->plural('should contain at least one lowercase character', 'should contain at least %d lowercase characters', $len),
                     $len));
@@ -181,7 +181,7 @@ class PasswordChecker
     protected function minLength($parameter, $password)
     {
         $len = intval($parameter);
-        if ($len && (strlen($password) < $len)) {
+        if ($len && (strlen($password ?? '') < $len)) {
             $this->_addError(sprintf($this->translator->trans('should be at least %d characters long'), $len));
         }
     }
@@ -196,7 +196,7 @@ class PasswordChecker
     {
         $len = intval($parameter);
         if ($len) {
-            $count = strlen($password) - preg_match_all('/[A-Za-z]/', $password);
+            $count = strlen($password ?? '') - preg_match_all('/[A-Za-z]/', $password ?? '');
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
                         $this->translator->plural('should contain at least one non alphabetic character', 'should contain at least %d non alphabetic characters', $len),
@@ -217,7 +217,7 @@ class PasswordChecker
     {
         $len = intval($parameter);
         if ($len) {
-            $count = strlen($password) - preg_match_all('/[0-9A-Za-z]/', $password);
+            $count = strlen($password ?? '') - preg_match_all('/[0-9A-Za-z]/', $password ?? '');
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
                         $this->translator->plural('should contain at least one non alphanumeric character', 'should contain at least %d non alphanumeric characters', $len),
@@ -238,7 +238,7 @@ class PasswordChecker
     {
         $on = $parameter != 0;
         if ($on) {
-            $lpwd = strtolower($password);
+            $lpwd = strtolower($password ?? '');
 
             if ((false !== strpos($lpwd, strtolower($this->user->getLoginName()))) || (null === $password)) {
                 $this->_addError($this->translator->trans('should not contain your login name'));
@@ -256,7 +256,7 @@ class PasswordChecker
     {
         $len = intval($parameter);
         if ($len) {
-            $count = preg_match_all('/[0-9]/', $password);
+            $count = preg_match_all('/[0-9]/', $password ?? '');
             if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
                         $this->translator->plural('should contain at least one number', 'should contain at least %d numbers', $len),
@@ -270,12 +270,12 @@ class PasswordChecker
     /**
      * Check for password weakness.
      *
-     * @param \Gems\User\User $user
-     * @param string $password Or null when you want a report on all the rules for this password.
+     * @param User $user
+     * @param string|null $password Or null when you want a report on all the rules for this password.
      * @param boolean $skipAge When setting a new password, we should not check for age
      * @return string[]|null String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(\Gems\User\User $user, string $password, bool $skipAge = false): ?array
+    public function reportPasswordWeakness(\Gems\User\User $user, ?string $password, bool $skipAge = false): ?array
     {
         if (!$user->canSetPassword()) {
             return null;

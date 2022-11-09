@@ -80,6 +80,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
 
             $data = [
                 'ask_old' => false,
+                'rules' => $this->passwordChecker->reportPasswordWeakness($user, null, true),
             ];
 
             return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::change-password', $request, $data));

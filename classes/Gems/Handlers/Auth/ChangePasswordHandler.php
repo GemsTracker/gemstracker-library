@@ -58,6 +58,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
         if ($request->getMethod() !== 'POST') {
             $data = [
                 'ask_old' => true,
+                'rules' => $this->passwordChecker->reportPasswordWeakness($user, null, true),
             ];
 
             return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::change-password', $request, $data));
