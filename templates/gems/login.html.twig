@@ -2,6 +2,8 @@
 
 {% block content %}
     <form method="post">
+        {{ csrf() }}
+
         <div class="form-group">
             <label class="control-label" for="organization">{{ trans.organization }}</label>
             <select class="form-control" name="organization" id="organization">

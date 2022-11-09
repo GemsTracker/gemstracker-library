@@ -26,6 +26,7 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
+use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
 use Laminas\Db\Adapter\Adapter;
@@ -518,6 +519,7 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                Csrf::class,
                 StringLoaderExtension::class,
             ]
         ];

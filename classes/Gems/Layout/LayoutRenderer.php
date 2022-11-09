@@ -7,6 +7,7 @@ namespace Gems\Layout;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,6 +19,7 @@ class LayoutRenderer
         FlashMessageMiddleware::FLASH_ATTRIBUTE,
         LocaleMiddleware::LOCALE_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
+        CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 
     public function __construct(protected TemplateRendererInterface $template, private readonly array $config)

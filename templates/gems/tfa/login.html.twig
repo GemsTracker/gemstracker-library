@@ -2,6 +2,8 @@
 
 {% block content %}
     <form method="post">
+        {{ csrf() }}
+
         <div class="form-group">
             <label class="control-label" for="tfa_code">{{ trans.code_input_label }}</label>
             <input

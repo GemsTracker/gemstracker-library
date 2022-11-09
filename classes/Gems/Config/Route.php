@@ -20,6 +20,7 @@ use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
@@ -76,6 +77,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     NotAuthenticatedMiddleware::class,
                     LoginHandler::class,
                 ],
@@ -89,6 +92,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     AuthenticationWithoutTfaMiddleware::class,
                     TfaLoginHandler::class,
                 ],
@@ -148,6 +153,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     NotAuthenticatedMiddleware::class,
                     RequestPasswordResetHandler::class,
                 ],
@@ -161,6 +168,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     NotAuthenticatedMiddleware::class,
                     ResetPasswordChangeHandler::class,
                 ],
