@@ -1502,6 +1502,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getRoles()
     {
+        $role = $this->getRole();
+        return [$role => $role]; // TODO: Fix workaround
+
         return $this->acl->getRoleAndParents($this->getRole());
     }
 

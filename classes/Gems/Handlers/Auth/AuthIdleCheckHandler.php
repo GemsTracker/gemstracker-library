@@ -33,9 +33,11 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
+        /** @var DecoratedFlashMessagesInterface $flash */
+        $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $flash?->prolongFlash();
+
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid($request->getMethod() === 'POST')) {
-            /** @var DecoratedFlashMessagesInterface $flash */
-            $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
             $flash?->flashErrors([
                 $this->translator->trans('You have been automatically logged out from the application'),
             ]);

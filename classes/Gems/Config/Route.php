@@ -197,6 +197,7 @@ class Route
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     ChangePasswordHandler::class,
                 ],
             ],
