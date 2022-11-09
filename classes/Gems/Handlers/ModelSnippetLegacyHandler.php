@@ -906,8 +906,8 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
         
         $this->$function();
 
-//        file_put_contents('modelsnippet.txt', print_r($this->_snippetNames, true) . "\n", FILE_APPEND);
-//        file_put_contents('modelsnippet.txt', print_r(array_keys($this->_snippetParams), true) . "\n", FILE_APPEND);
+//        file_put_contents('modelsnippet.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . print_r($this->_snippetNames, true) . "\n", FILE_APPEND);
+//        file_put_contents('modelsnippet.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . array_keys($this->_snippetParams), true) . "\n", FILE_APPEND);
         
         if ($this->html->count() || (! $this->_snippetNames)) {
             $this->_snippetNames[] = 'HtmlContentSnippet';

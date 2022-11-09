@@ -180,7 +180,7 @@ class HiddenOrganizationModel extends \Gems\Model\JoinModel
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array or \Traversable Nested
      */
-    public function processAfterLoad($data, $new = false, $isPostData = false)
+    public function processAfterLoad($data, $new = false, $isPostData = false): mixed
     {
         // Repeat settings here, because the might be overloaded in the meantime
         $this->refreshGroupSettings();
