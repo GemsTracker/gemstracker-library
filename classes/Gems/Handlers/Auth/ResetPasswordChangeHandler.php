@@ -56,12 +56,12 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
             }
             $this->flash->flashError($userMessage);
 
-            if ($user && $user->isActive()) {
+            /*if ($user && $user->isActive()) {
                 $this->flash->flash('request_password_reset_input', [
                     'organization' => $user->getBaseOrganizationId(),
                     'username' => $user->getLoginName(),
                 ]);
-            }
+            }*/
 
             return new RedirectResponse($this->urlHelper->generate('auth.password-reset.request'));
         }
