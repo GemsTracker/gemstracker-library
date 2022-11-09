@@ -20,12 +20,14 @@ class GemsRespondent2Track2Field extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
+            ->addForeignKey('gr2t2f_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track')
             ->addColumn('gr2t2f_id_field', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gr2t2f_id_respondent_track',
             ])
+            ->addForeignKey('gr2t2f_id_field', 'gems__track_fields', 'gtf_id_field')
             ->addColumn('gr2t2f_value', 'text', [
                 'null' => true,
                 'limit' => 65535,

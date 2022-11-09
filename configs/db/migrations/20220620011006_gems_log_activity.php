@@ -27,24 +27,28 @@ class GemsLogActivity extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gla_id',
             ])
+            ->addForeignKey('gla_action', 'gems__log_setup', 'gls_id_action')
             ->addColumn('gla_respondent_id', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gla_action',
             ])
+            ->addForeignKey('gla_respondent_id', 'gems__respondents', 'grs_id_user')
             ->addColumn('gla_by', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gla_respondent_id',
             ])
+            ->addForeignKey('gla_by', 'gems__staff', 'gsf_id_user')
             ->addColumn('gla_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gla_by',
             ])
+            ->addForeignKey('gla_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gla_role', 'string', [
                 'null' => false,
                 'limit' => 20,

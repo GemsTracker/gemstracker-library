@@ -23,10 +23,11 @@ class GemsTrackFields extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gtf_id_track', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gtf_id_field',
             ])
+            ->addForeignKey('gtf_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gtf_id_order', 'integer', [
                 'null' => false,
                 'default' => '10',

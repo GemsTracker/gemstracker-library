@@ -27,36 +27,42 @@ class GemsTokens extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gto_id_token',
             ])
+            ->addForeignKey('gto_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track')
             ->addColumn('gto_id_round', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gto_id_respondent_track',
             ])
+            ->addForeignKey('gto_id_round', 'gems__rounds', 'gro_id_round')
             ->addColumn('gto_id_respondent', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gto_id_round',
             ])
+            ->addForeignKey('gto_id_respondent', 'gems__respondents', 'grs_id_user')
             ->addColumn('gto_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gto_id_respondent',
             ])
+            ->addForeignKey('gto_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gto_id_track', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gto_id_organization',
             ])
+            ->addForeignKey('gto_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gto_id_survey', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gto_id_track',
             ])
+            ->addForeignKey('gto_id_survey', 'gems__surveys', 'gsu_id_survey')
             ->addColumn('gto_round_order', 'integer', [
                 'null' => false,
                 'default' => '10',

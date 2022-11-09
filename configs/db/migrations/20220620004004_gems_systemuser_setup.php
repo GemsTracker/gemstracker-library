@@ -20,6 +20,7 @@ class GemsSystemuserSetup extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
+            ->addForeignKey('gsus_id_user', 'gems__staff', 'gsf_id_user')
             ->addColumn('gsus_secret_key', 'string', [
                 'null' => true,
                 'limit' => 400,

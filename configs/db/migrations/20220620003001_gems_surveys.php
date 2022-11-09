@@ -17,7 +17,7 @@ class GemsSurveys extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gsu_id_survey', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'identity' => 'enable',
             ])
@@ -94,6 +94,7 @@ class GemsSurveys extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gsu_display_event',
             ])
+            ->addForeignKey('gsu_id_source', 'gems__sources', 'gso_id_source')
             ->addColumn('gsu_active', 'boolean', [
                 'null' => false,
                 'default' => '0',
@@ -120,6 +121,7 @@ class GemsSurveys extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gsu_survey_warnings',
             ])
+            ->addForeignKey('gsu_id_primary_group', 'gems__groups', 'ggp_id_group')
             ->addColumn('gsu_answers_by_group', 'boolean', [
                 'null' => false,
                 'default' => '0',
@@ -145,6 +147,7 @@ class GemsSurveys extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'gsu_allow_export',
             ])
+            ->addForeignKey('gsu_mail_code', 'gems__mail_codes', 'gmc_id')
             ->addColumn('gsu_insertable', 'boolean', [
                 'null' => false,
                 'default' => '0',

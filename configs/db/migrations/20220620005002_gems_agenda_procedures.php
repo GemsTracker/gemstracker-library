@@ -34,6 +34,7 @@ class GemsAgendaProcedures extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gapr_name',
             ])
+            ->addForeignKey('gapr_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gapr_name_for_resp', 'string', [
                 'null' => true,
                 'limit' => 50,

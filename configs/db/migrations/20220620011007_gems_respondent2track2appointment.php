@@ -20,18 +20,21 @@ class GemsRespondent2Track2appointment extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
+            ->addForeignKey('gr2t2a_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track')
             ->addColumn('gr2t2a_id_app_field', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gr2t2a_id_respondent_track',
             ])
+            ->addForeignKey('gr2t2a_id_app_field', 'gems__track_appointments', 'gtap_id_app_field')
             ->addColumn('gr2t2a_id_appointment', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gr2t2a_id_app_field',
             ])
+            ->addForeignKey('gr2t2a_id_appointment', 'gems__appointments', 'gap_id_appointment')
             ->addColumn('gr2t2a_value_manual', 'boolean', [
                 'null' => false,
                 'default' => '0',

@@ -27,12 +27,14 @@ class GemsEpisodesOfCare extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gec_episode_of_care_id',
             ])
+            ->addForeignKey('gec_id_user', 'gems__respondents', 'grs_id_user')
             ->addColumn('gec_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gec_id_user',
             ])
+            ->addForeignKey('gec_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gec_source', 'string', [
                 'null' => false,
                 'default' => 'manual',
@@ -76,6 +78,7 @@ class GemsEpisodesOfCare extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gec_enddate',
             ])
+            ->addForeignKey('gec_id_attended_by', 'gems__agenda_staff', 'gas_id_staff')
             ->addColumn('gec_subject', 'string', [
                 'null' => true,
                 'limit' => 250,

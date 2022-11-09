@@ -33,18 +33,21 @@ class GemsCommJobs extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gcj_id_order',
             ])
+            ->addForeignKey('gcj_id_communication_messenger', 'gems__comm_messengers', 'gcm_id_messenger')
             ->addColumn('gcj_id_message', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gcj_id_communication_messenger',
             ])
+            ->addForeignKey('gcj_id_message', 'gems__comm_templates', 'gct_id_template')
             ->addColumn('gcj_id_user_as', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gcj_id_message',
             ])
+            ->addForeignKey('gcj_id_user_as', 'gems__staff', 'gsf_id_user')
             ->addColumn('gcj_active', 'boolean', [
                 'null' => false,
                 'default' => '1',
@@ -135,12 +138,14 @@ class GemsCommJobs extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gcj_target_group',
             ])
+            ->addForeignKey('gcj_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gcj_id_track', 'integer', [
                 'null' => true,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gcj_id_organization',
             ])
+            ->addForeignKey('gcj_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gcj_round_description', 'string', [
                 'null' => true,
                 'limit' => 100,
@@ -150,10 +155,11 @@ class GemsCommJobs extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gcj_id_survey', 'integer', [
                 'null' => true,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gcj_round_description',
             ])
+            ->addForeignKey('gcj_id_survey', 'gems__surveys', 'gsu_id_survey')
             ->addColumn('gcj_changed', 'timestamp', [
                 'null' => false,
                 'default' => 'CURRENT_TIMESTAMP',

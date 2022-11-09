@@ -20,6 +20,7 @@ class GemsUserPasswords extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
+            ->addForeignKey('gup_id_user', 'gems__user_logins', 'gul_id_user')
             ->addColumn('gup_password', 'string', [
                 'null' => true,
                 'limit' => 255,

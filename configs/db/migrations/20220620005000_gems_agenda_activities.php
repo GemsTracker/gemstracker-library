@@ -34,6 +34,7 @@ class GemsAgendaActivities extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gaa_name',
             ])
+            ->addForeignKey('gaa_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gaa_name_for_resp', 'string', [
                 'null' => true,
                 'limit' => 50,

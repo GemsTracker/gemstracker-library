@@ -27,18 +27,21 @@ class GemsAppointments extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gap_id_appointment',
             ])
+            ->addForeignKey('gap_id_user', 'gems__respondents', 'grs_id_user')
             ->addColumn('gap_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_user',
             ])
+            ->addForeignKey('gap_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gap_id_episode', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_organization',
             ])
+            ->addForeignKey('gap_id_episode', 'gems__episodes_of_care', 'gec_episode_of_care_id')
             ->addColumn('gap_source', 'string', [
                 'null' => false,
                 'default' => 'manual',
@@ -94,30 +97,35 @@ class GemsAppointments extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gap_discharge_time',
             ])
+            ->addForeignKey('gap_id_attended_by', 'gems__agenda_staff', 'gas_id_staff')
             ->addColumn('gap_id_referred_by', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_attended_by',
             ])
+            ->addForeignKey('gap_id_referred_by', 'gems__agenda_staff', 'gas_id_staff')
             ->addColumn('gap_id_activity', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_referred_by',
             ])
+            ->addForeignKey('gap_id_activity', 'gems__agenda_activities', 'gaa_id_activity')
             ->addColumn('gap_id_procedure', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_activity',
             ])
+            ->addForeignKey('gap_id_procedure', 'gems__agenda_procedures', 'gapr_id_procedure')
             ->addColumn('gap_id_location', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gap_id_procedure',
             ])
+            ->addForeignKey('gap_id_location', 'gems__locations', 'glo_id_location')
             ->addColumn('gap_diagnosis_code', 'string', [
                 'null' => true,
                 'limit' => 50,
@@ -125,6 +133,7 @@ class GemsAppointments extends Phinx\Migration\AbstractMigration
                 'encoding' => 'utf8mb4',
                 'after' => 'gap_id_location',
             ])
+            ->addForeignKey('gap_diagnosis_code', 'gems__agenda_diagnoses', 'gad_diagnosis_code')
             ->addColumn('gap_subject', 'string', [
                 'null' => true,
                 'limit' => 250,

@@ -27,12 +27,14 @@ class GemsRespondent2org extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gr2o_patient_nr',
             ])
+            ->addForeignKey('gr2o_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gr2o_id_user', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gr2o_id_organization',
             ])
+            ->addForeignKey('gr2o_id_user', 'gems__respondents', 'grs_id_user')
             ->addColumn('gr2o_email', 'string', [
                 'null' => true,
                 'limit' => 100,
@@ -46,6 +48,7 @@ class GemsRespondent2org extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'gr2o_email',
             ])
+            ->addForeignKey('gr2o_mailable', 'gems__mail_codes', 'gmc_id')
             ->addColumn('gr2o_comments', 'text', [
                 'null' => true,
                 'limit' => 65535,

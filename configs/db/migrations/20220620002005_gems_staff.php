@@ -30,8 +30,10 @@ class GemsStaff extends Phinx\Migration\AbstractMigration
             ->addColumn('gsf_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
+                'signed' => false,
                 'after' => 'gsf_login',
             ])
+            ->addForeignKey('gsf_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gsf_active', 'boolean', [
                 'null' => true,
                 'default' => '1',
