@@ -138,7 +138,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->menu) {
             if (isset($this->config['survey']['defaultTrackId'])) {

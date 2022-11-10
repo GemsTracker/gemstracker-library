@@ -118,7 +118,7 @@ class RespondentConsentLogSnippet extends \MUtil\Snippets\ModelTableSnippetAbstr
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return parent::hasHtmlOutput() &&
                 ($this->respondent instanceof \Gems\Tracker\Respondent) &&

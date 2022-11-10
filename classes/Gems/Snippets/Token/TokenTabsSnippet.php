@@ -83,7 +83,7 @@ class TokenTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $reqFilter = null;
         $queryParams = $this->requestInfo->getRequestQueryParams();

@@ -14,16 +14,10 @@ namespace Gems\Handlers;
 use Gems\Loader;
 use Gems\Project\ProjectSettings;
 use Gems\Util;
-use Laminas\ServiceManager\ServiceManager;
-use Mezzio\Session\SessionInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Mezzio\Csrf\CsrfGuardInterface;
+use Mezzio\Csrf\CsrfMiddleware;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\RequestInfo;
-use Zalt\Base\RequestInfoFactory;
-use Zalt\Base\TranslateableTrait;
 use Zalt\Html\Sequence;
-use Zalt\Ra\Ra;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -33,140 +27,125 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @subpackage Handlers
  * @since      Class available since version 1.9.2
  */
-class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterface
+class ModelSnippetLegacyHandler extends \MUtil\Handler\ModelSnippetLegacyHandler
 {
-    use TranslateableTrait;
-    
     /**
-     * Default parameters for the autofilter action. Can be overruled
+     * \Gems only parameters used for the autofilter action. Can be overruled
      * by setting $this->autofilterParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_defaultAutofilterParameters = [
-        'searchData'    => 'getSearchData',
-        'searchFilter'  => 'getSearchFilter',
-    ];
+    private $_autofilterExtraParameters = array(
+        'browse'        => true,
+        'containingId'  => 'autofilter_target',
+        'keyboard'      => true,
+        'onEmpty'       => 'getOnEmptyText',
+        'sortParamAsc'  => 'asrt',
+        'sortParamDesc' => 'dsrt',
+        'menuActionController'  => 'getControllerName',
+        'requestQueryParams'    => 'getRequestQueryParams',
+        'requestPost'           => 'getRequestParsedBody',
+        'isPost'                => 'getRequestIsPost'
+    );
 
     /**
-     * Default parameters for createAction, can be overruled by $this->createParameters
-     * or $this->createEditParameters values with the same key.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array
-     */
-    private $_defaultCreateParameters = [
-        'createData' => true,
-    ];
-
-    /**
-     * Default parameters for editAction, can be overruled by $this->editParameters
-     * or $this->createEditParameters values with the same key.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array
-     */
-    private $_defaultEditParameters = [
-        'createData' => false,
-    ];
-
-    /**
-     * Default parameters used for the import action
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
+     * \Gems only parameters used for the create action. Can be overruled
+     * by setting $this->createParameters or $this->createEditParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_defaultImportParameters = [
-        'defaultImportTranslator' => 'getDefaultImportTranslator',
-        'importTranslators'       => 'getImportTranslators',
+    private $_createExtraParameters = array(
+        'formTitle'     => 'getCreateTitle',
+        'topicCallable' => 'getTopicCallable',
+        'csrfGuard'     => 'getCsrfGuard',
+    );
+
+    /**
+     * \Gems only parameters used for the deactivate action. Can be overruled
+     * by setting $this->deactivateParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_deactivateExtraParameters = array(
+        'confirmQuestion' => 'getDeactivateQuestion',
+        'displayTitle'    => 'getDeactivateTitle',
+        'formTitle'       => 'getDeactivateTitle',
+        'topicCallable'   => 'getTopicCallable',
+    );
+
+    /**
+     * \Gems only parameters used for the delete action. Can be overruled
+     * by setting $this->deleteParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_deleteExtraParameters = array(
+        'deleteQuestion' => 'getDeleteQuestion',
+        'displayTitle'   => 'getDeleteTitle',
+        'formTitle'      => 'getDeleteTitle',
+        'topicCallable'  => 'getTopicCallable',
+    );
+
+    /**
+     * \Gems only parameters used for the edit action. Can be overruled
+     * by setting $this->editParameters or $this->createEditParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_editExtraParameters = array(
+        'formTitle'     => 'getEditTitle',
+        'topicCallable' => 'getTopicCallable',
+        'csrfGuard'     => 'getCsrfGuard',
+    );
+
+    /**
+     * \Gems only parameters used for the export action. Can be overruled
+     * by setting $this->editParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_exportExtraParameters = [
+        'exportClasses' => 'getExportClasses',
     ];
 
     /**
-     * Default parameters for all actions, unless overruled by values with the same key at
-     * the action level
+     * \Gems only parameters used for the import action. Can be overruled
+     * by setting $this->inmportParameters
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array
+     * @var array Mixed key => value array for snippet initializPdfation
      */
-    private $_defaultParameters = [
-        'cacheTags'             => 'getCacheTags',
-        'includeNumericFilters' => 'getIncludeNumericFilters',
-        '_messenger'             => 'getMessenger',
-        'model'                 => 'getModel',
-    ];
+    private $_importExtraParameters = array(
+        'formatBoxClass'   => 'browser table',
+        'importer'         => 'getImporter',
+        'tempDirectory'    => 'getImportTempDirectory',
+        'topicCallable'    => 'getTopic',
+    );
 
     /**
-     * Created in createModel().
+     * \Gems only parameters used for the deactivate action. Can be overruled
+     * by setting $this->deactivateParameters
      *
-     * Always retrieve using $this->getModel().
-     *
-     * $var \MUtil\Model\ModelAbstract $_model The model in use
+     * @var array Mixed key => value array for snippet initialization
      */
-    private $_model;
-
-    /**
-     *
-     * @var array The search data
-     */
-    private $_searchData = false;
+    private $_reactivateExtraParameters = array(
+        'confirmQuestion' => 'getReactivateQuestion',
+        'displayTitle'    => 'getReactivateTitle',
+        'formTitle'       => 'getReactivateTitle',
+        'topicCallable'   => 'getTopicCallable',
+    );
 
     /**
      *
-     * @var array The search data
+     * @var \Gems\AccessLog
      */
-    private $_searchFilter = false;
-
-    /**
-     * @var array Local store of parameters
-     */
-    private $_snippetParams = [];
-
-    /**
-     * @var array local store of snippets
-     */
-    private $_snippetNames = [];
-
-    /**
-     * The parameters used for the autofilter action.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialisation
-     */
-    protected $autofilterParameters = array('columns' => 'getBrowseColumns');
+    public $accesslog;
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'ModelTableSnippet';
-
-    /**
-     * Tags for cache cleanup after changes, passed to snippets
-     *
-     * @var array
-     */
-    public $cacheTags = [];
+    // protected $autofilterSnippets = 'ModelTableSnippet';
 
     /**
      * The parameters used for the create and edit actions.
@@ -185,134 +164,30 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippet';
-
-    /**
-     * The parameters used for the edit actions, overrules any values in
-     * $this->createEditParameters.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $createParameters = [];
-
-    /**
-     * Model level parameters used for all actions, overruled by any values set in any other
-     * parameters array except the private $_defaultParamters values in this module.
-     *
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $defaultParameters = [];
-
-    /**
-     * The default search data to use.
-     *
-     * @var array()
-     */
-    protected $defaultSearchData = [];
-
-    /**
-     * The parameters used for the deactivate action.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $deactivateParameters = [];
-
-    /**
-     * The snippets used for the deactivate  action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $deactivateSnippets = 'ModelConfirmDataChangeSnippet';
-
-    /**
-     * The parameters used for the delete action.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $deleteParameters = [];
+    protected $createEditSnippets = 'ModelFormSnippetGeneric';
 
     /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'ModelYesNoDeleteSnippet';
+    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippetGeneric';
 
     /**
-     * The parameters used for the edit actions, overrules any values in
-     * $this->createEditParameters.
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var \Gems\Escort
      */
-    protected $editParameters = [];
+    public $escort;
 
     /**
-     * Array of the actions that use the model in form version.
-     *
-     * This determines the value of forForm().
-     *
-     * @var array $formActions Array of the actions that use the model with a form.
-     */
-    public $formActions = array('create', 'delete', 'edit', 'import');
-
-    /**
-     * @var Zalt\Html\Sequence
-     */
-    protected $html;
-    
-    /**
-     * The parameters used for the import action
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $importParameters = [];
-
-    /**
-     * The snippets used for the import action
+     * The snippets used for the export action
      *
      * @var mixed String or array of snippets name
      */
-    protected $importSnippets = 'ModelImportSnippet';
+    protected $exportFormSnippets = 'Export\\ExportFormSnippet';
 
     /**
-     *
-     * @var boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
-     */
-    public $includeNumericFilters = false;
-
-    /**
-     * The parameters used for the index action minus those in autofilter.
+     * The parameters used for the export actions.
      *
      * When the value is a function name of that object, then that functions is executed
      * with the array key as single parameter and the return value is set as the used value
@@ -321,88 +196,37 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = [];
+    protected $exportParameters = [];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = null;
+    protected $indexStartSnippets = [
+        'Generic\\ContentTitleSnippet', 
+        // 'AutosearchFormSnippet',
+        ];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = null;
+    // protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
 
     /**
-     * The parameters used for the reactivate action.
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var \Zend_Controller_Action_Helper_FlashMessenger
      */
-    protected $reactivateParameters = [];
-
-    /**
-     * The snippets used for the reactivate action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $reactivateSnippets = 'ModelConfirmDataChangeSnippet';
-
-    /**
-     * @var \Psr\Http\Message\ServerRequestInterface 
-     */
-    protected ServerRequestInterface $request;
-    
-    /**
-     * @var \Zalt\Base\RequestInfo 
-     */
-    protected RequestInfo $requestInfo;
-    
-    /**
-     * Optional search field renames
-     *
-     * The optional sharing of searches between action using searchSessionId's means that sometimes
-     * the fields in the search have to be renamed for a specific action.
-     *
-     * @var array
-     */
-    protected $searchFieldRenames = [];
-
-    /**
-     * An optional search session id.
-     *
-     * When set, autosearch gets a session memory. Multiple controllers can share one session id
-     *
-     * @var string
-     */
-    protected $searchSessionId;
-
-    /**
-     * The parameters used for the show action
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected $showParameters = [];
+    public $messenger;
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = 'ModelVerticalTableSnippet';
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -415,155 +239,57 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter');
+    public $summarizedActions = array('index', 'autofilter', 'export');
 
-    /**
-     *
-     * @var boolean $useHtmlView true
-     */
-    public $useHtmlView = true;  // Overrule parent
-    
     public function __construct(
-        protected ProjectSettings $project,
         protected Loader $loader,
-        protected SnippetResponderInterface $responder, 
-        protected SnippetLoader $snippetLoader,
-        protected Util $util,         
-        TranslatorInterface $translate) 
+        protected ProjectSettings $project,
+        protected Util $util, 
+        SnippetResponderInterface $responder,
+        SnippetLoader $snippetLoader,
+        TranslatorInterface $translate)
     {
-        $this->translate = $translate;
-
-        $this->html = new Sequence();
-        $this->_snippetParams['htmlContent'] = $this->html;
-    }
-
-    /**
-     * The request ID value
-     *
-     * @return ?string The request ID value
-     */
-    protected function _getIdParam(): ?string
-    {
-        return $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID);
-    }
-
-    /**
-     *
-     * @param array $input
-     * @return array
-     */
-    protected function _processParameters(array $input)
-    {
-        $output = [];
-
-        foreach ($input + $this->defaultParameters + $this->_defaultParameters as $key => $value) {
-            if (is_string($value) && method_exists($this, $value)) {
-                $value = $this->$value($key);
-
-                if (is_integer($key) || ($value === null)) {
-                    continue;
-                }
-            }
-            $output[$key] = $value;
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param string $filename The name of the snippet
-     * @param \MUtil\Ra::pairs $parameter_value_pairs name/value pairs ot add to the source for this snippet
-     */
-    public function addSnippet(string $filename, $parameter_value_pairs = null): void
-    {
-        $this->addSnippets([$filename], Ra::pairs(func_get_args(), 1));
-    }
-
-    /**
-     * @param string[]|string $filenames Names of snippets
-     * @param \MUtil\Ra::pairs $parameter_value_pairs name/value pairs ot add to the source for this snippet
-     * @return mixed The snippet if content was possibly added.
-     */
-    public function addSnippets(mixed $filenames, $parameter_value_pairs = null): void
-    {
-        foreach ((array) $filenames as $filename) {
-            $this->_snippetNames[] = $filename;
-        }
-        foreach (Ra::pairs(func_get_args(), 1) as $key => $value) {
-            $this->_snippetParams[$key] = $value;
-        }
+        parent::__construct($responder, $snippetLoader, $translate);
     }
     
-    /**
-     * Set the action key in request
-     *
-     * Use this when an action is a Ajax action for retrieving
-     * information for use within the screen of another action
-     *
-     * @param string $alias
-     */
-    protected function aliasAction($alias)
-    {
-        /**
-         * TODO reimplement alias action
-         */
-        /*$request = $this->getRequest();
-        $request->setActionName($alias);
-        $request->setParam($request->getActionKey(), $alias);*/
-    }
-
-    /**
-     * Apply this source to the target.
-     *
-     * @param \MUtil\Registry\TargetInterface $target
-     * @return boolean True if $target is OK with loaded requests
-     */
-    public function applySource(\MUtil\Registry\TargetInterface $target)
-    {
-        return $this->snippetLoader->getOverLoader()->applyToLegacyTarget($target);
-    }
-
-
     /**
      * The automatically filtered result
      *
-     * @param $resetMvc bool When true only the filtered resulsts
+     * @param bool $resetMvc When true only the filtered resulsts
      */
     public function autofilterAction($resetMvc = true)
     {
-        // \MUtil\Model::$verbose = true;
+        //$htmlOrig = $this->html;
+        //$div      = $this->html->div(array('id' => 'autofilter_target', 'class' => 'table-container'));
 
-        // We do not need to return the layout, just the above table
+        // Already done when this value is false
         if ($resetMvc) {
-            // Make sure all links are generated as if the current request was index.
-            $this->aliasAction('index');
-
-            \Zend_Layout::resetMvcInstance();
+            $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
         }
 
-        if ($this->autofilterSnippets) {
-            $params = $this->_processParameters($this->autofilterParameters + $this->_defaultAutofilterParameters);
-
-            $this->addSnippets($this->autofilterSnippets, $params);
-        }
-
-        if ($resetMvc) {
-            // Lazy call here, because any echo calls in the snippets have not yet been
-            // performed. so they will appear only in the next call when not lazy.
-            $this->html->raw(\MUtil\Lazy::call(array('\\MUtil\\EchoOut\\EchoOut', 'out')));
-        }
+        // $this->html = $div;
+        parent::autofilterAction($resetMvc);
+        // $this->html = $htmlOrig;
     }
 
     /**
-     * Action for showing a create new item page
+     * Action for showing a create new item page with extra title
      */
     public function createAction()
     {
-        if ($this->createEditSnippets) {
-            $params = $this->_processParameters($this->createParameters + $this->createEditParameters + $this->_defaultCreateParameters);
+        $this->createEditParameters = $this->createEditParameters + $this->_createExtraParameters;
 
-            $this->addSnippets($this->createEditSnippets, $params);
-        }
+        parent::createAction();
+    }
+
+    /**
+     * Action for showing a deactivate item page with extra titles
+     */
+    public function deactivateAction()
+    {
+        $this->deactivateParameters = $this->deactivateParameters + $this->_deactivateExtraParameters;
+
+        parent::deactivateAction();
     }
 
     public function createConsentModel($detailed, $action)
@@ -608,85 +334,199 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return \
      */
     protected function createModel($detailed, $action)
     {
         switch (strtolower($this->requestInfo->getCurrentController())) {
             case 'gems\actions\consentaction':
                 return $this->createConsentModel($detailed, $action);
-                
+
             default:
                 return null;
         }
     }
 
     /**
-     * Action for showing a deactivate item page
-     */
-    public function deactivateAction()
-    {
-        if ($this->deactivateSnippets) {
-            $params = $this->_processParameters($this->deactivateParameters);
-
-            $this->addSnippets($this->deactivateSnippets, $params);
-        }
-    }
-
-    /**
-     * Action for showing a delete item page
+     * Action for showing a delete item page with extra titles
      */
     public function deleteAction()
     {
-        if ($this->deleteSnippets) {
-            $params = $this->_processParameters($this->deleteParameters);
+        $this->deleteParameters = $this->deleteParameters + $this->_deleteExtraParameters;
 
-            $this->addSnippets($this->deleteSnippets, $params);
-        }
+        parent::deleteAction();
     }
 
     /**
-     * Action for showing a edit item page
+     * Action for showing a edit item page with extra title
      */
     public function editAction()
     {
-        if ($this->createEditSnippets) {
-            $params = $this->_processParameters($this->editParameters + $this->createEditParameters + $this->_defaultEditParameters);
+        $this->createEditParameters = $this->createEditParameters + $this->_editExtraParameters;
 
-            $this->addSnippets($this->createEditSnippets, $params);
+        parent::editAction();
+    }
+
+    /**
+     * Export model data
+     */
+    public function exportAction()
+    {
+        $step = $this->request->getParam('step');
+        $post = $this->request->getPost();
+
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
+        $model = $this->getExportModel();
+
+        if (isset($this->autofilterParameters['sortParamAsc'])) {
+            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
+        }
+        if (isset($this->autofilterParameters['sortParamDesc'])) {
+            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
+        }
+
+        $model->applyParameters($this->getSearchFilter(false), true);
+
+        if (!empty($post)) {
+            $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
+        }
+
+        // Add any defaults.
+        if (isset($this->autofilterParameters['extraFilter'])) {
+            $model->addFilter($this->autofilterParameters['extraFilter']);
+        }
+        if (isset($this->autofilterParameters['extraSort'])) {
+            $model->addSort($this->autofilterParameters['extraSort']);
+        }
+
+        if ((!$step) || ($post && $step == 'form')) {
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+            $this->addSnippet($this->exportFormSnippets, $params);
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $batch->reset();
+        } elseif ($step == 'batch') {
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+
+
+            $batch->setVariable('model', $model);
+            if (!$batch->count()) {
+                $batch->minimalStepDurationMs = 2000;
+                $batch->finishUrl = $this->view->url(array('step' => 'download'));
+
+                $batch->setSessionVariable('files', array());
+
+                if (! isset($post['type'])) {
+                    // Export type is needed, use most basic type
+                    $post['type'] = 'CsvExport';
+                }
+                $batch->addTask('Export\\ExportCommand', $post['type'], 'addExport', $post);
+                $batch->addTask('addTask', 'Export\\ExportCommand', $post['type'], 'finalizeFiles', $post);
+
+                $export = $this->loader->getExport()->getExport($post['type']);
+                if ($snippet = $export->getHelpSnippet()) {
+                    $this->addSnippet($snippet);
+                }
+
+                $batch->autoStart = true;
+            }
+
+            if (\MUtil\Console::isConsole()) {
+                // This is for unit tests, if we want to be able to really export from
+                // cli we need to place the exported file somewhere.
+                // This is out of scope for now.
+                $batch->runContinuous();
+            } elseif ($batch->run($this->request)) {
+                exit;
+            } else {
+                $controller = $this;
+
+                if ($batch->isFinished()) {
+                    /*\MUtil\EchoOut\EchoOut::track('finished');
+                    $file = $batch->getSessionVariable('file');
+                    if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
+                        // Forward to download action
+                        $this->_session->exportFile = $file;
+                    }*/
+                } else {
+                    if ($batch->count()) {
+                        $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
+                    } else {
+                        $controller->html->pInfo($controller->_('Nothing to do.'));
+                    }
+                    $url = $this->getExportReturnLink();
+                    if ($url) {
+                        $controller->html->pInfo()->a(
+                            $url,
+                            array('class'=>'actionlink'),
+                            $this->_('Back')
+                        );
+                    }
+                }
+            }
+        } elseif ($step == 'download') {
+            $batch = $this->loader->getTaskRunnerBatch('export_data');
+            $file  = $batch->getSessionVariable('file');
+            if ($file && is_array($file) && is_array($file['headers'])) {
+                $this->view->layout()->disableLayout();
+                $this->_helper->viewRenderer->setNoRender(true);
+
+                foreach($file['headers'] as $header) {
+                    header($header);
+                }
+                while (ob_get_level()) {
+                    ob_end_clean();
+                }
+                readfile($file['file']);
+                // Now clean up the file
+                unlink($file['file']);
+
+                exit;
+            }
+            $this->addMessage($this->_('Download no longer available.'), 'warning');
         }
     }
 
+
     /**
+     * Finds the first item with one of the actions specified as parameter and using the current controller
      *
-     * @param string $action The current action.
-     * @return boolean True when this actions uses a form
+     * @param string $action
+     * @param string $action2
+     * @return \Gems\Menu\SubMenuItem
      */
-    public function forForm($action)
+    protected function firstAllowedMenuItem($action, $action2 = null)
     {
-        return in_array($action, $this->formActions);
+        $actions = \MUtil\Ra::args(func_get_args());
+        $controller = $this->_getParam('controller');
+
+        foreach ($actions as $action) {
+            $menuItem = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+
+            if ($menuItem) {
+                return $menuItem;
+            }
+        }
+    }
+
+    public function getCsrfGuard(): ?CsrfGuardInterface
+    {
+        return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+    }
+
+    public function getControllerName()
+    {
+        return $this->requestInfo->getCurrentController();
     }
 
     /**
-     * Set column usage to use for the browser.
+     * Helper function to get the title for the create action.
      *
-     * Must be an array of arrays containing the input for TableBridge->setMultisort()
-     *
-     * @return array or false
+     * @return $string
      */
-    public function getBrowseColumns(): mixed
+    public function getCreateTitle()
     {
-        return false;
-    }
-
-    /**
-     * Get the cache tags for this model (if any)
-     *
-     * @return array
-     */
-    public function getCacheTags()
-    {
-        return (array) $this->cacheTags;
+        return sprintf($this->_('New %s...'), $this->getTopic(1));
     }
 
     /**
@@ -696,223 +536,243 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      */
     public function getDefaultImportTranslator()
     {
-        return 'default';
+        return $this->loader->getImportLoader()->getDefaultTranslator($this->getRequest()->getControllerName());
+    }
+
+    /**
+     * Helper function to get the question for the deactivate action.
+     *
+     * @return $string
+     */
+    public function getDeactivateQuestion()
+    {
+        return sprintf($this->_('Do you want to deactivate this %s?'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the deactivate action.
+     *
+     * @return $string
+     */
+    public function getDeactivateTitle()
+    {
+        return sprintf($this->_('Deactivate %s'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the question for the delete action.
+     *
+     * @return $string
+     */
+    public function getDeleteQuestion()
+    {
+        return sprintf($this->_('Do you want to delete this %s?'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the delete action.
+     *
+     * @return $string
+     */
+    public function getDeleteTitle()
+    {
+        return sprintf($this->_('Delete %s'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the edit action.
+     *
+     * @return $string
+     */
+    public function getEditTitle()
+    {
+        return sprintf($this->_('Edit %s'), $this->getTopic(1));
+    }
+
+    public function getExportClasses()
+    {
+        return $this->loader->getExport()->getExportClasses();
+    }
+
+    /**
+     * Get the model for export and have the option to change it before using for export
+     * @return
+     */
+    protected function getExportModel()
+    {
+        $model = $this->getModel();
+        $noExportColumns = $model->getColNames('noExport');
+        foreach($noExportColumns as $colName) {
+            $model->remove($colName, 'label');
+        }
+        return $model;
+    }
+
+    /**
+     * Get the return url
+     *
+     * @return array
+     */
+    protected function getExportReturnLink()
+    {
+        return \MUtil\Html\UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index', 'step' => false));
+    }
+
+    /**
+     * Get an Importer object for this actions
+     *
+     * @return \MUtil\Model\Importer
+     */
+    public function getImporter()
+    {
+        return $this->loader->getImportLoader()->getImporter(
+            $this->getRequest()->getControllerName(),
+            $this->getModel()
+        );
+    }
+
+    /**
+     * The directory to use for temporary storage
+     *
+     * @return string
+     */
+    public function getImportTempDirectory()
+    {
+        return $this->loader->getImportLoader()->getTempDirectory();
     }
 
     /**
      * Get the possible translators for the import snippet.
      *
-     * @return array of \MUtil\Model\ModelTranslatorInterface objects
+     * @return \MUtil\Model\ModelTranslatorInterface[]
      */
     public function getImportTranslators()
     {
-        $trs = new \MUtil\Model\Translator\StraightTranslator($this->_('Direct import'));
-        $this->applySource($trs);
-
-        return array('default' => $trs);
+        return $this->loader->getImportLoader()->getTranslators($this->getRequest()->getControllerName());
     }
 
     /**
+     * Helper function to get the title for the index action.
      *
-     * @return boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     * @return $string
      */
-    public function getIncludeNumericFilters()
+    public function getIndexTitle()
     {
-        return $this->includeNumericFilters;
+        return ucfirst((string) $this->getTopic(100));
     }
 
     /**
-     * Returns the model for the current $action.
+     * Return the current request ID, if any.
      *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
+     * Overrule this function if the last item in the page title
+     * should be something other than te value of
+     * \MUtil\Model::REQUEST_ID.
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return mixed
      */
-    protected function getModel()
+    public function getInstanceId()
     {
-        $action = strtolower($this->requestInfo->getCurrentAction());
-
-        // Only get new model if there is no model or the model was for a different action
-        if (! ($this->_model && $this->_model->isMeta('action', $action))) {
-            $detailed = ! $this->isSummarized($action);
-
-            $container = \MUtil\Model::getSource()->getContainer();
-            if ($container instanceof ServiceManager) {
-                $container->setService('action', $action);
-                $container->setService('detailed', $detailed);
-                $container->setService('forForm', $this->forForm($action));
-            }
-
-            $this->_model = $this->createModel($detailed, $action);
-            $this->_model->setMeta('action', $action);
-
-            // Detailed models DO NOT USE $_POST for filtering,
-            // multirow models DO USE $_POST parameters for filtering.
-            $parameters = $this->request->getQueryParams();
-            if (!$detailed) {
-                $parameters += $this->request->getParsedBody();
-            }
-
-            // Remove all empty values (but not arrays)
-            $parameters = array_filter($parameters, function($i) {
-                return is_array($i) || strlen($i);
-            });
-
-            $this->_model->applyParameters($parameters, $this->includeNumericFilters);
-        }
-
-        return $this->_model;
+        return $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
     }
 
     /**
-     * Get the data to use for searching: the values passed in the request + any defaults
-     * used in the search form (or any other search request mechanism).
+     * Returns the on empty texts for the autofilter snippets
      *
-     * It does not return the actual filter used in the query.
-     *
-     * @see getSearchFilter()
-     *
-     * @param boolean $useRequest Use the request as source (when false, the session is used)
-     * @return array
+     * @return string
      */
-    public function getSearchData($useRequest = true)
+    public function getOnEmptyText()
     {
-        if (is_array($this->_searchData)) {
-            return $this->_searchData;
-        }
-
-        $sessionId = 'ModelSnippetActionAbstract_getSearchData';
-        if ($this->searchSessionId) {
-            $sessionId .= $this->searchSessionId;
-        } else {
-            // Always use a search id
-            $sessionId .= get_class($this);
-        }
-
-        /**
-         * @var $session SessionInterface
-         */
-        $session = $this->request->getAttribute(SessionInterface::class);
-
-        $sessionData = [];
-        if ($session->has($sessionId)) {
-            $sessionData = $session->get($sessionId);
-        }
-
-        $defaults = $this->getSearchDefaults();
-
-        if ($useRequest) {
-            $data = $this->request->getQueryParams();
-            $data += $this->request->getParsedBody();
-
-            if (isset($data[\MUtil\Model::AUTOSEARCH_RESET]) && $data[\MUtil\Model::AUTOSEARCH_RESET]) {
-                // Clean up values
-                $sessionData = [];
-
-                //$request->setParam(\MUtil\Model::AUTOSEARCH_RESET, null);
-            } else {
-                $data = $data + $sessionData;
-            }
-
-            // Always remove
-            unset($data[\MUtil\Model::AUTOSEARCH_RESET]);
-
-            // Store cleaned values in session (we do not store the defaults now as they may change
-            // depending on the request and this way the filter data responds to that).
-            // On the other hand we do store empty values in the session when they are in the defaults
-            // array. The reason is that otherwise a non-empty default can later overrule an empty
-            // value.
-            $tmp = [];
-            foreach ($data as $k => $v) {
-                if (is_array($v) || strlen($v) || array_key_exists($k, $defaults)) {
-                    $tmp[$k] = $v;
-                }
-            }
-            $session->set($sessionId, $tmp);
-        } else {
-            $data = $sessionData;
-        }
-
-        // Add defaults to data without cleanup
-        if ($defaults) {
-            $data = $data + $defaults;
-        }
-
-        // \MUtil\EchoOut\EchoOut::track($data, $this->searchSessionId);
-
-        // Remove empty strings and nulls HERE as they are not part of
-        // the filter itself, but the values should be stored in the session.
-        //
-        // Remove all empty values (but not arrays) from the filter
-        $this->_searchData = array_filter($data, function($i) { return is_array($i) || $i instanceof \DateTimeInterface || strlen($i); });
-
-        // \MUtil\EchoOut\EchoOut::track($this->_searchData, $this->searchSessionId);
-
-        return $this->_searchData;
+        return sprintf($this->_('No %s found...'), $this->getTopic(0));
     }
 
     /**
-     * Function to allow the creation of search defaults in code
+     * Helper function to get the question for the reactivate action.
      *
-     * @see getSearchFilter()
-     *
-     * @return array
+     * @return $string
      */
-    public function getSearchDefaults()
+    public function getReactivateQuestion()
     {
-        return $this->defaultSearchData;
+        return sprintf($this->_('Do you want to reactivate this %s?'), $this->getTopic(1));
     }
 
     /**
-     * Get the filter to use with the model for searching including model sorts, etc..
+     * Helper function to get the title for the reactivate action.
      *
-     * @param boolean $useRequest Use the request as source (when false, the session is used)
-     * @return array or false
+     * @return $string
      */
-    public function getSearchFilter($useRequest = true)
+    public function getReactivateTitle()
     {
-        if (false !== $this->_searchFilter) {
-            return $this->_searchFilter;
-        }
-
-        $filter = $this->getSearchData($useRequest);
-        $this->_searchFilter = [];
-
-        foreach ($filter as $field => $value) {
-            if (isset($this->searchFieldRenames[$field])) {
-                $field = $this->searchFieldRenames[$field];
-            }
-
-            $this->_searchFilter[$field] = $value;
-        }
-
-        // \MUtil\EchoOut\EchoOut::track($this->_searchFilter);
-
-        return $this->_searchFilter;
+        return sprintf($this->_('Reactivate %s'), $this->getTopic(1));
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function getRequestIsPost(): bool
     {
-        $this->request = $request;
-        $this->requestInfo = RequestInfoFactory::getMezzioRequestInfo($request);
-        
-        $action   = $this->requestInfo->getCurrentAction() ?: 'index'; 
-        $function = $action . 'Action';
+        return $this->requestInfo->isPost();
+    }
 
-//        file_put_contents('modelsnippet.txt', strtolower($this->requestInfo->getCurrentController()) . "\n", FILE_APPEND);
-//        file_put_contents('modelsnippet.txt', $function . "\n", FILE_APPEND);
-        
-        $this->$function();
+    public function getRequestParsedBody(): array
+    {
+        return $this->request->getParsedBody();
+    }
 
-//        file_put_contents('modelsnippet.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . print_r($this->_snippetNames, true) . "\n", FILE_APPEND);
-//        file_put_contents('modelsnippet.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . array_keys($this->_snippetParams), true) . "\n", FILE_APPEND);
-        
-        if ($this->html->count() || (! $this->_snippetNames)) {
-            $this->_snippetNames[] = 'HtmlContentSnippet';
+    public function getRequestQueryParams(): array
+    {
+        return $this->request->getQueryParams();
+    }
+
+    /**
+     * Helper function to get the title for the show action.
+     *
+     * @return $string
+     */
+    public function getShowTitle()
+    {
+        return sprintf($this->_('Showing %s'), $this->getTopic(1));
+    }
+
+    /**
+     * Returns the current html/head/title for this page.
+     *
+     * If the title is an array the seperator concatenates the parts.
+     *
+     * @param string $separator
+     * @return string
+     */
+    public function getTitle(string $separator = null): string
+    {
+        if ($titleSet = parent::getTitle($separator)) {
+            return $titleSet;
         }
-        return $this->responder->getSnippetsResponse($this->_snippetNames, $this->_snippetParams, $request);
+
+        $title = array();
+        foreach($this->menu->getActivePath($this->getRequest()) as $menuItem) {
+            $title[] = $menuItem->get('label');
+        }
+        if ($id = $this->getInstanceId()) {
+            $title[] = $id;
+        }
+
+        return implode($separator, $title);
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('item', 'items', $count);
+    }
+
+    /**
+     * Get a callable for the gettopic function
+     * @return callable
+     */
+    public function getTopicCallable()
+    {
+        return array($this, 'getTopic');
     }
 
     /**
@@ -920,11 +780,9 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      */
     public function importAction()
     {
-        if ($this->importSnippets) {
-            $params = $this->_processParameters($this->importParameters + $this->_defaultImportParameters);
+        $this->importParameters = $this->importParameters + $this->_importExtraParameters;
 
-            $this->addSnippets($this->importSnippets, $params);
-        }
+        parent::importAction();
     }
 
     /**
@@ -932,54 +790,70 @@ class ModelSnippetLegacyHandler implements \Psr\Http\Server\RequestHandlerInterf
      */
     public function indexAction()
     {
-        if ($this->indexStartSnippets || $this->indexStopSnippets) {
-            $params = $this->_processParameters(
-                $this->indexParameters + $this->autofilterParameters + $this->_defaultAutofilterParameters
-            );
-
-            if ($this->indexStartSnippets) {
-                $this->addSnippets($this->indexStartSnippets, $params);
-            }
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+        if (! isset($this->indexParameters['contentTitle'])) {
+            $this->indexParameters['contentTitle'] = $this->getIndexTitle();
         }
 
-        $this->autofilterAction(false);
-
-        if ($this->indexStopSnippets) {
-            $this->addSnippets($this->indexStopSnippets, $params);
-        }
+        return parent::indexAction();
     }
 
     /**
+     * Intializes the html component.
      *
-     * @param string $action The current action.
-     * @return boolean True when this actions uses only summary data
+     * @param boolean $reset Throws away any existing html output when true
+     * @return void
      */
-    public function isSummarized($action)
+    public function initHtml(bool $reset = false): void
     {
-        return in_array($action, $this->summarizedActions);
+        if (! $this->html) {
+            \Gems\Html::init();
+        }
+
+        parent::initHtml($reset);
     }
 
     /**
-     * Action for showing a reactivate item page
+     * Stub for overruling default snippet loader initiation.
+     * /
+    protected function loadSnippetLoader(): void
+    {
+        // Create the snippet with this controller as the parameter source
+        $this->snippetLoader = $this->loader->getSnippetLoader($this);
+    }
+
+    /**
+     * Action for showing a reactivate item page with extra titles
      */
     public function reactivateAction()
     {
-        if ($this->reactivateSnippets) {
-            $params = $this->_processParameters($this->reactivateParameters);
+        $this->reactivateParameters = $this->reactivateParameters + $this->_reactivateExtraParameters;
 
-            $this->addSnippets($this->reactivateSnippets, $params);
-        }
+        parent::reactivateAction();
     }
 
     /**
-     * Action for showing an item page
+     * Set the session based message store.
+     *
+     * @param \Zend_Controller_Action_Helper_FlashMessenger $messenger
+     * @return \MUtil\Controller\Action
+     */
+    public function setMessenger(\Zend_Controller_Action_Helper_FlashMessenger $messenger): self
+    {
+        $this->messenger = $messenger;
+
+        return $this;
+    }
+
+    /**
+     * Action for showing an item page with title
      */
     public function showAction()
     {
-        if ($this->showSnippets) {
-            $params = $this->_processParameters($this->showParameters);
-
-            $this->addSnippets($this->showSnippets, $params);
+        if (! isset($this->showParameters['contentTitle'])) {
+            $this->showParameters['contentTitle'] = $this->getShowTitle();
         }
+
+        parent::showAction();
     }
 }

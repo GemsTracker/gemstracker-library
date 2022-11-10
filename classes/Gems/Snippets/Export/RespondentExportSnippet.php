@@ -119,7 +119,7 @@ class RespondentExportSnippet extends \MUtil\Snippets\SnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         if ($this->request->isPost()) {
             $this->export->render(

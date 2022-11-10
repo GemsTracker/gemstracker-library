@@ -96,7 +96,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGene
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return $this->afterSaveRouteUrl;
     }
@@ -125,7 +125,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGene
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->request->getParam($this->confirmParameter)) {
             $this->performAction();

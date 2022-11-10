@@ -75,7 +75,7 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         if ($this->checkContinueLinkClicked()) {
             // Continue later was clicked, handle the click
@@ -198,7 +198,7 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->wasAnswered) {
             $this->showToken = $this->token->getNextUnansweredToken();

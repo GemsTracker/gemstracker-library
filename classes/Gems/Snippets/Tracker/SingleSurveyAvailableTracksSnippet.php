@@ -60,7 +60,7 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return ($this->respondent instanceof \Gems\Tracker\Respondent) &&
                 $this->respondent->exists &&

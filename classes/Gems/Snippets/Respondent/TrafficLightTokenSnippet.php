@@ -573,7 +573,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $this->_initView($view);
 
@@ -817,7 +817,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return $this->respondent && $this->request;
     }

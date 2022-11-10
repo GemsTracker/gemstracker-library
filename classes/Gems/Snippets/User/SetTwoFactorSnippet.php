@@ -236,7 +236,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! ($this->user->hasTwoFactor() || $this->user->canSaveTwoFactorKey())) {
             $this->addMessage(sprintf(

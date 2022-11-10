@@ -72,7 +72,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
             $links        = array();
             $childItems   = $currentItem->getChildren();
             $parameters   = $currentItem->getParameters();
-            $request      = $this->getRequest();
+            $request      = $this->request;
             $showDisabled = $includeLevel > 99;
             $menuSource   = $this->menu->getParameterSource();
 
@@ -119,12 +119,14 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
 
             return $links;
         }
+        
+        return null;
     }
 
     protected function findAllowedMenuItem($action)
     {
-        $actions = \MUtil\Ra::args(func_get_args());
-        $controller = $this->_getParam('controller');
+        $actions = \Zalt\Ra\Ra::args(func_get_args());
+        $controller = $this->request->getParam('controller');
 
         foreach ($actions as $action) {
             $menuItem = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
@@ -159,7 +161,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
      * @param string $separator
      * @return string
      */
-    public function getTitle($separator = null)
+    public function getTitle(string $separator = ''): string
     {
         if ($title_set = parent::getTitle($separator)) {
             return $title_set;
@@ -198,7 +200,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
      * @param boolean $reset Throws away any existing html output when true
      * @return void
      */
-    public function initHtml($reset = false)
+    public function initHtml($reset = false): void
     {
         if (! $this->html) {
             \Gems\Html::init();
@@ -209,10 +211,10 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
 
     /**
      * Stub for overruling default snippet loader initiation.
-     */
+     * /
     protected function loadSnippetLoader()
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
-    }
+    } // */
 }

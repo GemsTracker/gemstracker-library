@@ -138,7 +138,7 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return $this->respondent && $this->request && parent::hasHtmlOutput();
     }

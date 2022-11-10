@@ -177,7 +177,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
         }
     }
 
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return $this->redirectRoute;
     }
@@ -237,7 +237,7 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->user && $this->user->isTwoFactorRequired($this->_getIp())) {
             if (! $this->user->hasTwoFactor()) {

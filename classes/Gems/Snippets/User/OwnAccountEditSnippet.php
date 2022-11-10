@@ -124,7 +124,7 @@ class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->currentUser->getUserId() == \Gems\User\UserLoader::SYSTEM_USER_ID) {
             $this->addMessage($this->getNotAllowedMessage());

@@ -147,7 +147,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->multiTracks) {
             return false;

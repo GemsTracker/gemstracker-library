@@ -70,7 +70,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $this->loadFormData();
 

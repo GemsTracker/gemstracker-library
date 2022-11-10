@@ -133,7 +133,7 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->condition instanceof RoundConditionInterface) {
             return true;

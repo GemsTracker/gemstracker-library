@@ -287,7 +287,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
 
         // If there is data, populate
@@ -336,7 +336,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return $this->afterSendRouteUrl;
     }
@@ -365,7 +365,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (parent::hasHtmlOutput()) {
             if ($this->mailer->getDataLoaded()) {

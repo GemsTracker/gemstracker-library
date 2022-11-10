@@ -17,6 +17,7 @@ use MUtil\Html\AElement;
 use MUtil\Lazy\Call;
 use MUtil\Model\Bridge\BridgeAbstract;
 use MUtil\Model\Bridge\TableBridge;
+use MUtil\Request\RequestInfo;
 
 /**
  * Adds \Gems specific display details and helper functions:
@@ -193,7 +194,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     {
         parent::afterRegistry();
 
-        if (! $this->menuActionController) {
+        if ($this->requestInfo && ! $this->menuActionController) {
             $this->menuActionController = $this->requestInfo->getCurrentController();
         }
     }
@@ -309,7 +310,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';

@@ -177,7 +177,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! ($this->user->inAllowedGroup() && $this->user->canSetPassword($this->checkCurrentOrganization))) {
             $this->addMessage($this->getNotAllowedMessage());

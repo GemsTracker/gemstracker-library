@@ -33,7 +33,7 @@ class FullAnswerToggleSnippet extends \MUtil\Snippets\SnippetAbstract {
      */
     public $menu;
 
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
 
@@ -64,7 +64,7 @@ class FullAnswerToggleSnippet extends \MUtil\Snippets\SnippetAbstract {
         return $html;
     }
 
-    public function hasHtmlOutput() {
+    public function hasHtmlOutput(): bool {
         // Only show toggle for individual answer display
         if ($this->request->getActionName() !== 'answer') {
             return false;

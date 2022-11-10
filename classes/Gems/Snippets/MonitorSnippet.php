@@ -53,7 +53,7 @@ class MonitorSnippet extends \MUtil\Snippets\SnippetAbstract
         }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $seq = $this->getHtmlSequence();
         $seq->h3($this->title);

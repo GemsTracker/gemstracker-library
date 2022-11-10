@@ -36,7 +36,7 @@ class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
         }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view = null) {
         $post = $this->request->getPost();
 
         if (isset($post['type'])) {

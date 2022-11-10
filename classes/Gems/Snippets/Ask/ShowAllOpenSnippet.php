@@ -75,7 +75,7 @@ class ShowAllOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
         $org  = $this->token->getOrganization();

@@ -24,7 +24,7 @@ class ReportFooterSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     public $loader;
 
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
 

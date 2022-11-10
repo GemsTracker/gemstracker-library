@@ -111,7 +111,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view) 
+    public function getHtmlOutput(\Zend_View_Abstract $view = null) 
     {
         // Make sure we can use jQuery
 

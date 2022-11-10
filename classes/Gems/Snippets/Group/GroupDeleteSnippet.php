@@ -55,7 +55,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $model = $this->getModel();
         $data  = $model->loadFirst();

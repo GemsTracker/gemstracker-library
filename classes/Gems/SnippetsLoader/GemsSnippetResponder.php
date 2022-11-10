@@ -50,7 +50,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         if ($this->layoutRenderer) {
             $layoutSettings = new LayoutSettings();
             $layoutSettings->setTemplate( 'gems::legacy-view');
-            return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $request, $data), $statusCode, $headers);
+            return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $this->request, $data), $statusCode, $headers);
         }
         
         return $output;

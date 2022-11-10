@@ -420,7 +420,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * 
      * @return boolean
      */
-    public function hasHtmlOutput() {
+    public function hasHtmlOutput(): bool {
         $this->initTracks();
         $canDo = count($this->tracksList) > 0;
         if ($canDo === false) { 

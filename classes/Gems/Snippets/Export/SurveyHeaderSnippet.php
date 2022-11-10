@@ -25,7 +25,7 @@ class SurveyHeaderSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     public $token;
 
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
         $html->div($this->token->getSurveyName(), array('class'=>'surveyTitle'), ' ');
