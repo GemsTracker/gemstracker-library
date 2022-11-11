@@ -19,6 +19,8 @@
         <div class="logo"></div>
         <div class="tools">
             {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+            {{ include('@layout/auth-info.html.twig') }}
+            {{ include('@layout/organization-switcher.html.twig') }}
         </div>
     </header>
 
@@ -43,7 +45,7 @@
     </div>
 </div>
 
-<div id="authIdleCheckerWarning" class="hidden">
+<div id="authIdleCheckerWarning" hidden class="hidden">
     <div class="alert alert-warning clearfix">
         <p>{{ trans('You have been inactive for a while. You will be logged out shortly.') }}</p>
 

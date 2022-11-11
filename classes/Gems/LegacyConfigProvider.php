@@ -13,6 +13,7 @@ use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
@@ -70,6 +71,7 @@ class LegacyConfigProvider
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
+                'LegacyOrganizationRepository' => OrganizationRepository::class,
                 'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 'LegacyUtil' => \Gems\Util::class,

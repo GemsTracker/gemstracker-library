@@ -16,6 +16,7 @@ use DateTimeImmutable;
 
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
+use Gems\Repository\OrganizationRepository;
 use Gems\User\Group;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\EmbeddedUserData;
@@ -135,6 +136,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @var Locale
      */
     protected $locale;
+
+    /**
+     * @var OrganizationRepository
+     */
+    protected $organizationRepository;
 
     /**
      * Array containing the parameter names that may point to an organization
@@ -881,7 +887,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getAllowedOrganizations()
     {
-
         if (! $this->_hasVar('__allowedOrgs')) {
             $this->refreshAllowedOrganizations();
         }
@@ -1443,7 +1448,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getRespondentOrganizations()
     {
-
         if (! $this->_hasVar('__allowedRespOrgs')) {
             $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
             $allowedOrganizations   = $this->getAllowedOrganizations();
@@ -2088,12 +2092,12 @@ class User extends \MUtil\Translate\TranslateableAbstract
     {
         // Privilege overrules organizational settings
         if ($this->hasPrivilege('pr.organization-switch')) {
-            $orgs = $this->util->getDbLookup()->getOrganizations();
+            $orgs = $this->organizationRepository->getOrganizations();
         } else {
             $org = $this->getBaseOrganization();
 
-            $orgs = array($org->getId() => $org->getName()) +
-                    $org->getAllowedOrganizations();
+            $orgs = [$org->getId() => $org->getName()] +
+                $this->organizationRepository->getAllowedOrganizationsFor($org->getId());
         }
         // \MUtil\EchoOut\EchoOut::track($orgs);
 

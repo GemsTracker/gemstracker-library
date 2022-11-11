@@ -2,6 +2,7 @@
 
 namespace Gems\Handlers;
 
+use Gems\CookieResponse;
 use Gems\Locale\LocaleCookie;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Site\SiteUtil;
@@ -13,7 +14,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ChangeLanguageHandler implements RequestHandlerInterface
 {
-    public function __construct(private SiteUtil $siteUtil, private UrlHelper $urlHelper, private LocaleCookie $localeCookie)
+    public function __construct(private SiteUtil $siteUtil, private UrlHelper $urlHelper)
     {
     }
 
@@ -23,8 +24,7 @@ class ChangeLanguageHandler implements RequestHandlerInterface
         $url = $this->getUrl($request);
         $language = $request->getAttribute('language');
         $response = new RedirectResponse($url);
-        $response = $this->localeCookie->addLocaleCookieToResponse($response, $language);
-        return $response;
+        return CookieResponse::addCookieToResponse($request, $response, LocaleMiddleware::LOCALE_ATTRIBUTE, $language);
     }
 
     protected function getUrl(ServerRequestInterface $request): string

@@ -15,8 +15,10 @@ use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
+use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
@@ -46,6 +48,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [
@@ -150,6 +153,14 @@ class Route
                     SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     LogoutHandler::class,
+                ],
+            ],
+            [
+                'name' => 'organization.switch-ui',
+                'path' => '/organization/switch-ui',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeOrganizationHandler::class,
                 ],
             ],
         ];

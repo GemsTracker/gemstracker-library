@@ -1,4 +1,4 @@
-<div class="languages">
+<div class="language-select">
     {% for language in locale.getAvailableLanguages() %}
         {% if language == locale.getCurrentLanguage() %}
             <span class="language {{ language }}">{{ language }}</span>
