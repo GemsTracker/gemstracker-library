@@ -12,6 +12,7 @@ use Gems\Middleware\SecurityHeadersMiddleware;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddleware;
 
 trait ModelSnippetActionRouteHelpers
 {
@@ -41,6 +42,7 @@ trait ModelSnippetActionRouteHelpers
     ];
 
     protected array $modelSnippetCustomMiddleware = [
+        SnippetMiddleware::class,
         LegacyCurrentUserMiddleware::class,
         LegacyController::class,
     ];

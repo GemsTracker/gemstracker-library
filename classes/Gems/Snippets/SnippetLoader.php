@@ -65,6 +65,53 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
     }
 
     /**
+     * Create or loads the class. When only loading, this function returns a StaticCall object that
+     * can be invoked lazely.
+     *
+     * @see \MUtil\Lazy\StaticCall
+     * @see \MUtil\Registry\TargetInterface
+     *
+     * @param string $name The class name, minus the part in $this->_dirs.
+     * @param boolean $create Create the object, or only when an \MUtil\Registry\TargetInterface instance.
+     * @param array $arguments Class initialization arguments.
+     * @return mixed A class instance or a \MUtil\Lazy\StaticCall object
+     */
+    protected function _loadClass($name, $create = false, array $arguments = array())
+    {
+        $className = $this->_loader->find($name);
+
+        // \MUtil\EchoOut\EchoOut::track($className);
+
+        if (is_subclass_of($className, __CLASS__)) {
+            $create    = true;
+            $arguments = array();
+
+            if (isset($this->_containers[0])) {
+                $arguments[] = $this->_containers[0];
+            } else {
+                $arguments[] = null;
+            }
+
+            $arguments[] = $this->_dirs;
+            $arguments[] = $this->_loader;
+
+        } elseif (is_subclass_of($className, \MUtil\Registry\TargetInterface::class)) {
+            $create = true;
+        } elseif (is_subclass_of($className, \Zalt\Snippets\SnippetAbstract::class)) {
+            return \Zalt\Html\Html::getSnippetLoader()->getSnippet($className, $arguments);
+        }
+
+        if (! $create) {
+            return new \MUtil\Lazy\StaticCall($className);
+        }
+
+        // $mergedArguments = array_values(array_merge(['className' => $className], $arguments));
+        $obj = call_user_func_array([$this->_loader, 'create'], ['className' => $className]);
+
+        return $obj;
+    }
+
+    /**
      * Add prefixed paths to the registry of paths
      *
      * @param string $prefix
@@ -97,7 +144,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
     {
         try {
             $this->addRegistryContainer($extraSourceParameters, 'tmpContainer');
-            $snippet = $this->_loadClass($filename, true);
+            $snippet = $this->_loadClass($filename, true, $extraSourceParameters);
             $this->removeRegistryContainer('tmpContainer');
             if (self::$verbose) {
                 \MUtil\EchoOut\EchoOut::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));

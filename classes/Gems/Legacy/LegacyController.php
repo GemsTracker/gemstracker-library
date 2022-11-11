@@ -29,18 +29,13 @@ class LegacyController implements RequestHandlerInterface
 {
     protected ContainerInterface $container;
 
-    protected ProjectOverloader $loader;
-    protected \Zend_View $view;
-    private UrlHelper $urlHelper;
-    private LayoutRenderer $layoutRenderer;
-
-    public function __construct(ProjectOverloader $loader, LayoutRenderer $layoutRenderer, \Zend_View $view, UrlHelper $urlHelper)
+    public function __construct(
+        protected ProjectOverloader $loader, 
+        private LayoutRenderer $layoutRenderer, 
+        protected \Zend_View $view, 
+        private UrlHelper $urlHelper)
     {
         $this->container = $loader->getContainer();
-        $this->loader = $loader;
-        $this->view = $view;
-        $this->urlHelper = $urlHelper;
-        $this->layoutRenderer = $layoutRenderer;
         
         \Zalt\Html\Html::getRenderer()->setView($this->view);
     }
