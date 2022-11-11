@@ -98,7 +98,7 @@ class LoginThrottle
 
         $values = $resultSet->current();
 
-        if ($values === null) {
+        if ($values === null || $values === false) {
             // The first login attempt
             $values = [
                 'gula_login'           => $this->loginName,
