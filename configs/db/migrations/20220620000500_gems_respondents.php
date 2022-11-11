@@ -20,7 +20,7 @@ class GemsRespondents extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
-            ->addForeignKey('grs_id_user', 'gems__user_ids', 'gui_id_user')
+            //->addForeignKey('grs_id_user', 'gems__user_ids', 'gui_id_user')
             ->addColumn('grs_ssn', 'string', [
                 'null' => true,
                 'limit' => 128,

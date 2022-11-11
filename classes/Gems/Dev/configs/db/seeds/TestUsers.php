@@ -2,7 +2,7 @@
 
 class TestUsers extends \Phinx\Seed\AbstractSeed
 {
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             'DefaultGroups',
@@ -18,7 +18,7 @@ class TestUsers extends \Phinx\Seed\AbstractSeed
      * More information on writing seeders is available here:
      * https://book.cakephp.org/phinx/0/en/seeding.html
      */
-    public function run()
+    public function run(): void
     {
         $now = new \DateTimeImmutable();
         $data = [

@@ -27,7 +27,7 @@ class GemsRounds extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gro_id_round',
             ])
-            ->addForeignKey('gro_id_track', 'gems__tracks', 'gtr_id_track')
+            //->addForeignKey('gro_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gro_id_order', 'integer', [
                 'null' => false,
                 'default' => '10',
@@ -40,7 +40,7 @@ class GemsRounds extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gro_id_order',
             ])
-            ->addForeignKey('gro_id_survey', 'gems__surveys', 'gsu_id_survey')
+            //->addForeignKey('gro_id_survey', 'gems__surveys', 'gsu_id_survey')
             ->addColumn('gro_id_relationfield', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
@@ -87,7 +87,7 @@ class GemsRounds extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gro_display_event',
             ])
-            ->addForeignKey('gro_valid_after_id', 'gems__rounds', 'gro_id_round')
+            //->addForeignKey('gro_valid_after_id', 'gems__rounds', 'gro_id_round')
             ->addColumn('gro_valid_after_source', 'string', [
                 'null' => false,
                 'default' => 'tok',
@@ -124,7 +124,7 @@ class GemsRounds extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gro_valid_after_length',
             ])
-            ->addForeignKey('gro_valid_for_id', 'gems__rounds', 'gro_id_round')
+            //->addForeignKey('gro_valid_for_id', 'gems__rounds', 'gro_id_round')
             ->addColumn('gro_valid_for_source', 'string', [
                 'null' => false,
                 'default' => 'nul',
