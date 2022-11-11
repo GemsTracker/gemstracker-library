@@ -11,8 +11,9 @@
 
 namespace Gems;
 
-use Zalt\Html\Html as ZaltHtml;
+use Zalt\Html\AElement;
 use Zalt\Html\ImgElement;
+use Zalt\Late\Late;
 
 /**
  * \Gems specific Html elements and settings
@@ -23,25 +24,25 @@ use Zalt\Html\ImgElement;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Html
+class Html extends \Zalt\Html\Html
 {
     public static function actionDisabled(...$args)
     {
-        $element = ZaltHtml::createArray('span', $args);
+        $element = parent::createArray('span', $args);
         $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
         return $element;
     }
 
-    public static function actionLink(...$args)
+    public static function actionLink(...$args): AElement
     {
-        $element = ZaltHtml::createArray('a', $args);
+        $element = parent::createArray('a', $args);
         $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
     }
 
     public static function buttonDiv(...$args)
     {
-        $element = ZaltHtml::createArray('div', $args);
+        $element = parent::createArray('div', $args);
         $element->appendAttrib('class', 'buttons'); // Keeps existing classes
         return $element;
     }
@@ -50,7 +51,7 @@ class Html
     {
         if (null === $creator) {
             $mutilCreator = \MUtil\Html::getCreator();
-            $zaltCreator = ZaltHtml::getCreator();
+            $zaltCreator = parent::getCreator();
         }
 
         // \MUtil\Html::$verbose = true;
@@ -159,7 +160,7 @@ class Html
     {
         $args = func_get_args();
 
-        $element = \MUtil\Html::createArray('p', $args);
+        $element = parent::createArray('p', $args);
 
         $element->appendAttrib('class', 'info'); // Keeps existing classes
         return $element;
@@ -168,9 +169,7 @@ class Html
     public static function smallData($value, $args_array = null)
     {
         $args = func_get_args();
-
-        $element = \MUtil\Lazy::iff($value, \MUtil\Html::createArray('small', array(' [', $args, ']')));
-
+        $element = Late::iff($value, parent::createArray('small', array(' [', $args, ']')));
         return $element;
     }
 }

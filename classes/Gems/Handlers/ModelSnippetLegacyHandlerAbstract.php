@@ -205,7 +205,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected $indexStartSnippets = [
         'Generic\\ContentTitleSnippet', 
-        // 'AutosearchFormSnippet',
+        'AutosearchFormSnippet',
         ];
 
     /**
@@ -250,6 +250,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         TranslatorInterface $translate)
     {
         parent::__construct($responder, $snippetLoader, $translate);
+        \Gems\Html::init();
     }
     
     /**

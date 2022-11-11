@@ -11,13 +11,19 @@
 
 namespace Gems\Snippets;
 
+use Gems\Html;
 use Gems\MenuNew\RouteHelper;
 use Gems\MenuNew\RouteNotFoundException;
-use MUtil\Html\AElement;
-use MUtil\Lazy\Call;
-use MUtil\Model\Bridge\BridgeAbstract;
-use MUtil\Model\Bridge\TableBridge;
-use MUtil\Request\RequestInfo;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\AElement;
+use Zalt\Late\Late;
+use Zalt\Late\LateCall;
+use Zalt\Model\Bridge\BridgeAbstract;
+use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Adds \Gems specific display details and helper functions:
@@ -36,7 +42,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnippetAbstract
+abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -100,11 +106,6 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     public array $menuShowActions = ['show'];
 
     /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
      * Option to manually diasable the menu
      *
      * @var boolean
@@ -125,18 +126,30 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
      */
     protected $sortParamDesc = 'dsrt';
 
+    public function __construct(SnippetOptions $snippetOptions,
+                                protected RequestInfo $requestInfo,
+                                protected RouteHelper $routeHelper,
+                                TranslatorInterface $translate)
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+
+        $this->menuActionController = $this->requestInfo->getCurrentController();
+    }
+    
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $model = $dataModel->getMetaModel();
+        
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
@@ -149,14 +162,14 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
                     $showLabel = $this->_('Show');
                 }
 
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $showLabel));
+                $bridge->addItemLink(Html::actionLink($menuItem, $showLabel));
             }
         }
 
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
 
         if ($this->showMenu) {
             $editMenuItems = $this->getEditUrls($bridge);
@@ -185,21 +198,6 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if ($this->requestInfo && ! $this->menuActionController) {
-            $this->menuActionController = $this->requestInfo->getCurrentController();
-        }
-    }
-
-    /**
      * Make sure generic search text results are marked
      *
      * @return void
@@ -223,30 +221,13 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
     }
 
     /**
-     *
-     * @param mixed $parameterSource
-     * @param string $controller
-     * @param string $action
-     * @param string $label
-     * @return \MUtil\Html\AElement
-     */
-    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
-    {
-        $menuItem = $this->findUrls([$action]);
-        if ($menuItem) {
-            return \Gems\Html::actionLink($menuItem, $this->_('Create'));
-        }
-        return null;
-    }
-
-    /**
      * Finds a specific active menu item
      *
      * @param string $defaultController
      * @param string|array $actions
      * @return array of \Gems\Menu\SubMenuItem
      */
-    protected function findUrls(array|string $actions = ['index'], ?TableBridge $bridge = null)
+    protected function findUrls(array|string $actions = ['index'], BridgeInterface $bridge = null)
     {
         $output = [];
 
@@ -255,7 +236,7 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
             try {
                 $route = $this->routeHelper->getRoute($action);
             } catch (RouteNotFoundException $e) {
-                $currentRouteName = $this->requestInfo->getCurrentRouteResult()->getMatchedRouteName();
+                $currentRouteName = $this->requestInfo->getRouteName();
                 $routeParts = explode('.', $currentRouteName);
                 $routeParts[count($routeParts)-1] = $action;
                 $routeName = join('.', $routeParts);
@@ -269,20 +250,20 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
             $params = [];
             if (isset($route['params'])) {
-                $currentParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();
+                $currentParams = $this->requestInfo->getRequestMatchedParams();
                 foreach($route['params'] as $paramName) {
                     if (isset($currentParams[$paramName])) {
                         $params[$paramName] = $currentParams[$paramName];
                         continue;
                     }
-                    if ($bridge instanceof BridgeAbstract) {
-                        $params[$paramName] = $bridge->getLazy($paramName);
+                    if ($bridge instanceof BridgeInterface) {
+                        $params[$paramName] = $bridge->getLate($paramName);
                     }
                 }
             }
 
-            $output[$keyOrLabel] = new Call(function(string $routeName, array $params = []) {
-                return $this->routeHelper->getRouteUrl($routeName, $params);
+            $output[$keyOrLabel] = new LateCall(function(string $routeName, array $params = []) {
+                return $this->routeHelper->getRouteUrl($routeName, Late::riseRa($params, Late::getStack()));
             }, [$route['name'], $params]);
         }
 
@@ -302,20 +283,12 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
         return [];
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
+        \MUtil\Model::setDefaultBridge('display',  \Zalt\Model\Bridge\DisplayBridge::class);
+        \MUtil\Model::setDefaultBridge('table', \Zalt\Snippets\ModelBridge\TableBridge::class);
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
-
-        return $table;
 
         if (($this->containingId || $this->keyboard) && (! self::$keyboardUsed)) {
             // Assign keyboard tracking only once
@@ -325,13 +298,15 @@ abstract class ModelTableSnippetAbstract extends \MUtil\Snippets\ModelTableSnipp
 
             // If we are already in a containing div it is simple
             if ($this->containingId) {
-                return [$table, new \Gems\JQuery\TableRowKeySelector($this->containingId)];
+                return $table;
+                // return [$table, new \Gems\JQuery\TableRowKeySelector($this->containingId)];
             }
 
             // Create a new containing div
-            $div = \MUtil\Html::create()->div(['id' => 'keys_target', 'class' => 'table-container'], $table);
+            $div = Html::create()->div(['id' => 'keys_target', 'class' => 'table-container'], $table);
 
-            return [$div, new \Gems\JQuery\TableRowKeySelector($div)];
+            return $div;
+            // return [$div, new \Gems\JQuery\TableRowKeySelector($div)];
 
         } else {
             return $table;

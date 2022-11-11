@@ -16,7 +16,7 @@ use DateTimeInterface;
 use Gems\JQuery\Form\Element\DatePicker;
 use Gems\MenuNew\RouteHelper;
 use MUtil\Model;
-use MUtil\Request\RequestInfo;
+use Zalt\Html\Html;
 
 /**
  * Display a search form that selects on typed text only
@@ -27,7 +27,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
+class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      * Field name for period filters
@@ -86,11 +86,6 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      * @var boolean
      */
     protected $orgIsMultiCheckbox = true;
-
-    /**
-     * @var RequestInfo
-     */
-    protected $requestInfo;
 
     protected $routeHelper;
 
@@ -468,12 +463,11 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     protected function getAutoSearchReset()
     {
-        $routeResult = $this->requestInfo->getCurrentRouteResult();
-        $routeName = $routeResult->getMatchedRouteName();
-        $params = $routeResult->getMatchedParams();
-        $url = $this->routeHelper->getRouteUrl($routeName, $params);
+        $routeName = $this->requestInfo->getRouteName();
+        $params = $this->requestInfo->getRequestMatchedParams();
+        $url = 'abc'; // $this->routeHelper->getRouteUrl($routeName, $params);
 
-        $link = \MUtil\Html::create()->actionLink($url, $this->_('Reset search'));
+        $link = Html::create()->actionLink($url, $this->_('Reset search'));
 
         $element = new \MUtil\Form\Element\Html('reset');
         $element->setValue($link);

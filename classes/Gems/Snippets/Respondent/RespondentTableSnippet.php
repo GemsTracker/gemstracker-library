@@ -11,8 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
 use Zalt\Html\AElement;
-use Zalt\Html\Html;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -34,12 +36,13 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn1(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn1(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $model = $dataModel->getMetaModel();
         $br = Html::create('br');
 
         if (isset($this->searchFilter['grc_success']) && (! $this->searchFilter['grc_success'])) {
@@ -66,16 +69,17 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn2(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         if ($this->currentUser->isFieldMaskedWhole('name') && $this->currentUser->isFieldMaskedWhole('gr2o_email')) {
             return;
         }
 
+        $model = $dataModel->getMetaModel();
         $br = Html::create('br');
 
         $model->setIfExists('gr2o_email', 'formatFunction', array(AElement::class, 'ifmail'));
@@ -92,39 +96,41 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn3(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
     {
+        $model = $dataModel->getMetaModel();
         $br = Html::create('br');
 
         if ($model->hasAlias('gems__respondent2track')) {
             $model->set('gtr_track_name',  'label', $this->_('Track'));
             $model->set('gr2t_track_info', 'label', $this->_('Track description'));
 
-            $items = $this->findUrls('track', 'show-track');
+            // TODO: make this a link
+//            $items = $this->findUrls('track', 'show-track');
             $track = 'gtr_track_name';
-            if ($items) {
-                $menuItem = reset($items);
-                if ($menuItem instanceof \Gems\Menu\MenuAbstract) {
-                    $href  = $menuItem->toHRefAttribute(
-                            $this->request,
-                            $bridge,
-                            array('gr2t_id_respondent_track' => $bridge->gr2t_id_respondent_track)
-                            );
-                    $track = array();
-                    $track[0] = \MUtil\Lazy::iif($bridge->gr2t_id_respondent_track,
-                            Html::create()->a(
-                                    $href,
-                                    $bridge->gtr_track_name,
-                                    array('onclick' => "event.cancelBubble = true;")
-                                    )
-                            );
-                    $track[1] = $bridge->createSortLink('gtr_track_name');
-                }
-            }
+//            if ($items) {
+//                $menuItem = reset($items);
+//                if ($menuItem instanceof \Gems\Menu\MenuAbstract) {
+//                    $href  = $menuItem->toHRefAttribute(
+//                            $this->request,
+//                            $bridge,
+//                            array('gr2t_id_respondent_track' => $bridge->gr2t_id_respondent_track)
+//                            );
+//                    $track = array();
+//                    $track[0] = \MUtil\Lazy::iif($bridge->gr2t_id_respondent_track,
+//                            Html::create()->a(
+//                                    $href,
+//                                    $bridge->gtr_track_name,
+//                                    array('onclick' => "event.cancelBubble = true;")
+//                                    )
+//                            );
+//                    $track[1] = $bridge->createSortLink('gtr_track_name');
+//                }
+//            }
 
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
@@ -165,11 +171,11 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn4(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $maskBirthday = $this->currentUser->isFieldMaskedWhole('grs_birthday');
         $maskPhone    = $this->currentUser->isFieldMaskedWhole('grs_phone_1');
@@ -205,10 +211,10 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn5(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn5(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 }
