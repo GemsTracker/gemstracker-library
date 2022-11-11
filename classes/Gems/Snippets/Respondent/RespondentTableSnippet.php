@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Zalt\Html\AElement;
+use Zalt\Html\Html;
+
 /**
  *
  *
@@ -37,7 +40,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn1(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
 
         if (isset($this->searchFilter['grc_success']) && (! $this->searchFilter['grc_success'])) {
             $model->set('grc_description', 'label', $this->_('Rejection code'));
@@ -73,9 +76,9 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
             return;
         }
 
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
 
-        $model->setIfExists('gr2o_email', 'formatFunction', array('\\MUtil\\Html\\AElement', 'ifmail'));
+        $model->setIfExists('gr2o_email', 'formatFunction', array(AElement::class, 'ifmail'));
 
         $bridge->addMultiSort('name', $br, 'gr2o_email');
     }
@@ -95,7 +98,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn3(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
 
         if ($model->hasAlias('gems__respondent2track')) {
             $model->set('gtr_track_name',  'label', $this->_('Track'));
@@ -113,7 +116,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
                             );
                     $track = array();
                     $track[0] = \MUtil\Lazy::iif($bridge->gr2t_id_respondent_track,
-                            \MUtil\Html::create()->a(
+                            Html::create()->a(
                                     $href,
                                     $bridge->gtr_track_name,
                                     array('onclick' => "event.cancelBubble = true;")
@@ -147,7 +150,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
                 return;
             }
 
-            $citysep  = \MUtil\Html::raw('&nbsp;&nbsp;');
+            $citysep  = Html::raw('&nbsp;&nbsp;');
 
             $bridge->addMultiSort('grs_address_1', $br, 'grs_zipcode', $citysep, 'grs_city');
         }
@@ -183,13 +186,13 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
         if (! $maskPhone)  {
 
             // Display separator and phone sign only if phone exist.
-            $phonesep = \MUtil\Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil\Html::raw('&#9743; '));
+            $phonesep = Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, Html::raw('&#9743; '));
         }
         if ($maskBirthday) {
             $bridge->addMultiSort($phonesep, 'grs_phone_1');
         }
 
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
         $bridge->addMultiSort('grs_birthday', $br, $phonesep, 'grs_phone_1');
     }
 

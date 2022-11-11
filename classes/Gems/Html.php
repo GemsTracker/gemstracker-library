@@ -11,6 +11,9 @@
 
 namespace Gems;
 
+use Zalt\Html\Html as ZaltHtml;
+use Zalt\Html\ImgElement;
+
 /**
  * \Gems specific Html elements and settings
  *
@@ -22,32 +25,23 @@ namespace Gems;
  */
 class Html
 {
-    public static function actionDisabled($arg_array = null)
+    public static function actionDisabled(...$args)
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('span', $args);
-
+        $element = ZaltHtml::createArray('span', $args);
         $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
         return $element;
     }
 
-    public static function actionLink($arg_array = null)
+    public static function actionLink(...$args)
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('a', $args);
-
+        $element = ZaltHtml::createArray('a', $args);
         $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
     }
 
-    public static function buttonDiv($arg_array = null)
+    public static function buttonDiv(...$args)
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('div', $args);
-
+        $element = ZaltHtml::createArray('div', $args);
         $element->appendAttrib('class', 'buttons'); // Keeps existing classes
         return $element;
     }
@@ -55,7 +49,8 @@ class Html
     public static function init(\MUtil\Html\Creator $creator = null)
     {
         if (null === $creator) {
-            $creator = \MUtil\Html::getCreator();
+            $mutilCreator = \MUtil\Html::getCreator();
+            $zaltCreator = ZaltHtml::getCreator();
         }
 
         // \MUtil\Html::$verbose = true;
@@ -65,17 +60,21 @@ class Html
         $escort = \Gems\Escort::getInstance();
         if (isset($escort->project->imagedir)) {
             \MUtil\Html\ImgElement::addImageDir($escort->project->imagedir);
+            ImgElement::addImageDir($escort->project->imagedir);
         }
 
-        // \Gems specific element functions
-        $creator->addElementFunction(
+        $addFunctions = [
             'actionDisabled', array(__CLASS__, 'actionDisabled'),
             'actionLink',     array(__CLASS__, 'actionLink'),
             'buttonDiv',      array(__CLASS__, 'buttonDiv'),
             'pagePanel',      array(__CLASS__, 'pagePanel'),
             'pInfo',          array(__CLASS__, 'pInfo'),
-            'smallData',      array(__CLASS__, 'smallData'));
-
+            'smallData',      array(__CLASS__, 'smallData'),
+            ]; 
+        
+        // \Gems specific element functions
+        $mutilCreator->addElementFunction(...$addFunctions);
+        $zaltCreator->addElementFunction(...$addFunctions);
 
         // \Gems\Util::callProjectClass('Html', 'init', $creator);
         // Allow in-project overruling

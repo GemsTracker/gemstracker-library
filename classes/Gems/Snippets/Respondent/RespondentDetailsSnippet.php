@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Zalt\Html\AElement;
+use Zalt\Html\Html;
+use Zalt\Html\Raw;
+
 /**
  * Displays a respondent's details
  *
@@ -30,7 +34,7 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
      */
     protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
     {
-        $HTML = \MUtil\Html::create();
+        $HTML = Html::create();
 
         $bridge->caption($this->getCaption());
 
@@ -75,7 +79,7 @@ class RespondentDetailsSnippet extends \Gems\Snippets\RespondentDetailSnippetAbs
         }
         if ($this->model->has('grs_zipcode') && (! $this->currentUser->isFieldMaskedWhole('grs_zipcode'))) {
             $address[] = $bridge->grs_zipcode;
-            $address[] = $bridge->itemIf('grs_zipcode', new \MUtil\Html\Raw('&nbsp;&nbsp;'));
+            $address[] = $bridge->itemIf('grs_zipcode', new Raw('&nbsp;&nbsp;'));
         }
         if ($this->model->has('grs_city') && (! $this->currentUser->isFieldMaskedWhole('grs_city'))) {
             $address[] = $bridge->grs_city;
