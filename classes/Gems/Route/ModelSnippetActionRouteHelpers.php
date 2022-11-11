@@ -3,7 +3,7 @@
 namespace Gems\Route;
 
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
-use Gems\Handlers\ModelSnippetLegacyHandler;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -151,7 +151,7 @@ trait ModelSnippetActionRouteHelpers
             $controllerClass, 
             $basePath, $basePrivilege,
             $pages, 
-            $customMiddleware ?: [ModelSnippetLegacyHandler::class], 
+            $customMiddleware ?: [$controllerClass], 
             $parameters, 
             $parameterRoutes, 
             $postRoutes, 

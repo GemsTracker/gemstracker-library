@@ -529,7 +529,7 @@ class Route
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
-                controllerClass: \Gems\Actions\ConsentAction::class,
+                controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
