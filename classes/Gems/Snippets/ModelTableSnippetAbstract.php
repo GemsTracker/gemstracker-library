@@ -285,8 +285,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
-        \MUtil\Model::setDefaultBridge('display',  \Zalt\Model\Bridge\DisplayBridge::class);
-        \MUtil\Model::setDefaultBridge('table', \Zalt\Snippets\ModelBridge\TableBridge::class);
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
 

@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets;
 
+use \Zalt\Model\Data\DataReaderInterface;
+
 /**
  * Displays each fields of a single item in a model in a row in a Html table
  * the model set through the $model snippet parameter.
@@ -31,19 +33,17 @@ class ModelItemTableSnippetGeneric extends  ModelItemTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var \DataReaderInterface
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return \Zalt\Model\Data\DataReaderInterface
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
-        $this->model->applyParameters($this->requestInfo->getRequestMatchedParams());
-
         return $this->model;
     }
 }

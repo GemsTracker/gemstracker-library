@@ -5,11 +5,11 @@
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  */
 
 namespace Gems\Snippets;
+
+use \Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Displays multiple items from a model in a tabel by row using
@@ -21,24 +21,22 @@ namespace Gems\Snippets;
  *
  * @package    Gems
  * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelTableSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
+class ModelTableSnippetGeneric extends ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var \DataReaderInterface
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return \Zalt\Model\Data\DataReaderInterface
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }

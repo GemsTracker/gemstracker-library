@@ -231,7 +231,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelDetailTableSnippetGeneric');
 
     /**
      * Array of the actions that use a summarized version of the model.

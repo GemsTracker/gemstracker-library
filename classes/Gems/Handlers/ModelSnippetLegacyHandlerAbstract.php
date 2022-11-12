@@ -226,7 +226,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
+    protected $showSnippets = [
+        'Generic\\ContentTitleSnippet', 
+        'ModelDetailTableSnippetGeneric',
+        ];
 
     /**
      * Array of the actions that use a summarized version of the model.
