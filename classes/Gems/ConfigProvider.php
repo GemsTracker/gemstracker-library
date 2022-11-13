@@ -496,11 +496,11 @@ class ConfigProvider
     protected function getSession(): array
     {
         return [
-            'max_away_time' => 5 * 60,
+            'max_away_time' => 30 * 60,
             'max_total_time' => 10 * 60 * 60,
-            'max_idle_time' => 20 * 60,
+            'max_idle_time' => 60 * 60,
             'auth_poll_interval' => 60,
-            'idle_warning_before_logout' => 2 * 60,
+            'idle_warning_before_logout' => 28 * 60,
         ];
     }
 
