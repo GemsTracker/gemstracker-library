@@ -465,7 +465,7 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
     {
         $routeName = $this->requestInfo->getRouteName();
         $params = $this->requestInfo->getRequestMatchedParams();
-        $url = 'abc'; // $this->routeHelper->getRouteUrl($routeName, $params);
+        $url = [$this->requestInfo->getBasePath(), \MUtil\Model::AUTOSEARCH_RESET => 1];
 
         $link = Html::create()->actionLink($url, $this->_('Reset search'));
 
