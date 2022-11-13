@@ -21,7 +21,7 @@ namespace Gems\Snippets\Agenda;
  * @since      Class available since version 1.7.1
  */
 
-class YesNoAppointmentDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetGeneric
+class YesNoAppointmentDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
 {
     /**
      * The action to go to when the user clicks 'Yes' and the data is deleted.

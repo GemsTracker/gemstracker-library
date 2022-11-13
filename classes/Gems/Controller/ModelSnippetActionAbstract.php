@@ -167,7 +167,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippetGeneric';
+    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippet';
 
     /**
      *

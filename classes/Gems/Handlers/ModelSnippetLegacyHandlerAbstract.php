@@ -171,7 +171,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippetGeneric';
+    protected $deleteSnippets = [
+        'ModelItemYesNoDeleteSnippet',
+        ];
 
     /**
      *

@@ -20,7 +20,7 @@ namespace Gems\Snippets\Respondent\Relation;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetGeneric
+class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
 {
     public function render(\Zend_View_Abstract $view)
     {

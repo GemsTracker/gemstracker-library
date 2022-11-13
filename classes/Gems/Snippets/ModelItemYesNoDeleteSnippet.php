@@ -4,12 +4,12 @@
  *
  * @package    Gems
  * @subpackage Snippets
- * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
 
 namespace Gems\Snippets;
+
+use \Zalt\Model\Data\FullDataInterface;
 
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
@@ -22,24 +22,22 @@ namespace Gems\Snippets;
  *
  * @package    Gems
  * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelItemYesNoDeleteSnippetGeneric extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
+class ModelItemYesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var \Zalt\Model\Data\FullDataInterface
      */
     protected $model;
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return \Zalt\Model\Data\FullDataInterface
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         return $this->model;
     }
