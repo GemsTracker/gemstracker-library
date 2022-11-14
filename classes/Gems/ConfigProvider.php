@@ -99,6 +99,7 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
+            'style'         => 'gems.scss',
             'templates'     => $this->getTemplates(),
             'twig'          => $this->getTwigSettings(),
             'twofactor'     => $this->getTwoFactor(),
