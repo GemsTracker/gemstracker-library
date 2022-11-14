@@ -58,12 +58,17 @@ class LayoutRenderer
         }
         $params['available_organizations'] = $this->getAvailableOrganizations($request);
 
-        $params['resources'] = $layoutSettings->getResources();
+        $params['resources'] = [
+            'general' => 'resource/js/general.js'
+        ];
 
         if ($request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE)) {
-            array_unshift($params['resources'], 'resource/js/authenticated.js');
+            $params['resources']['authenticated'] = 'resource/js/authenticated.js';
         }
-        array_unshift($params['resources'], 'resource/js/general.js');
+
+        if (isset($this->config['style']) && is_string($this->config['style'])) {
+            $params['resources']['style'] = "resource/css/{$this->config['style']}";
+        }
 
         $params += $defaultParams;
 
