@@ -143,7 +143,7 @@ class GemsSurveys extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gsu_mail_code', 'integer', [
                 'null' => false,
-                'default' => '1',
+                'default' => 100,
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'gsu_allow_export',
             ])
