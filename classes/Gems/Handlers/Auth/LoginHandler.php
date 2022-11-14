@@ -9,6 +9,7 @@ use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginThrottleBuilder;
+use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -34,7 +35,7 @@ class LoginHandler implements RequestHandlerInterface
     private array $organizations;
 
     public function __construct(
-        private readonly TemplateRendererInterface $template,
+        private readonly LayoutRenderer $layoutRenderer,
         private readonly TranslatorInterface $translator,
         private readonly SiteUtil $siteUtil,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
@@ -69,7 +70,7 @@ class LoginHandler implements RequestHandlerInterface
             'errors' => $this->flash->getFlash('login_errors'),
         ];
 
-        return new HtmlResponse($this->template->render('gems::login', $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::login', $data));
     }
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface

@@ -33,7 +33,7 @@ class LayoutRenderer
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
         //if ($user->hasPrivilege('pr.organization-switch')) {
-        if (true) {
+        if ($user instanceof User /*&& $user->hasPrivilege('pr.organization-switch')*/) {
             return $user->getAllowedOrganizations();
         }
         return null;
@@ -44,7 +44,10 @@ class LayoutRenderer
         $params = [];
 
         foreach($this->requestAttributes as $requestAttributeName) {
-            $params[$requestAttributeName] = $request->getAttribute($requestAttributeName);
+            $attributeValue = $request->getAttribute($requestAttributeName);
+            if ($attributeValue !== null) {
+                $params[$requestAttributeName] = $request->getAttribute($requestAttributeName);
+            }
         }
 
         return $params;
@@ -69,6 +72,8 @@ class LayoutRenderer
         if (isset($this->config['style']) && is_string($this->config['style'])) {
             $params['resources']['style'] = "resource/css/{$this->config['style']}";
         }
+
+        $params['resources'] = array_merge($params['resources'], $layoutSettings->getResources());
 
         $params += $defaultParams;
 
