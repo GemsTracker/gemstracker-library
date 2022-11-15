@@ -11,6 +11,7 @@
 
 namespace Gems\Condition;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Condition\Comparator\Between;
 use Gems\Condition\Comparator\ComparatorInterface;
 use Gems\Condition\Comparator\Contains;
@@ -112,7 +113,8 @@ class ConditionLoader
     public function __construct(
         protected ProjectOverloader $overloader,
         TranslatorInterface $translator,
-        protected Translated $translatedUtil
+        protected Translated $translatedUtil,
+        protected HelperAdapter $cache
     ) {
         $this->conditionLoader = clone $this->overloader;
         $this->conditionLoader->setDependencyResolver(new ConstructorDependencyResolver());
@@ -145,6 +147,11 @@ class ConditionLoader
      */
     protected function _listConditions(string $conditionType): array
     {
+        $key = HelperAdapter::cleanupForCacheId(static::class . 'listConditions_' . $conditionType);
+        if ($this->cache->hasItem($key)) {
+            return $this->translatedUtil->getEmptyDropdownArray() + $this->cache->getCacheItem($key);
+        }
+
         $conditions = $this->getConditionClasses($conditionType);
 
         $conditionList = [];
@@ -154,6 +161,8 @@ class ConditionLoader
                 $conditionList[$conditionClassName] = $condition->getName();
             }
         }
+
+        $this->cache->setCacheItem($key, $conditionList);
 
         return $this->translatedUtil->getEmptyDropdownArray() + $conditionList;
     }
