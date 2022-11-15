@@ -42,6 +42,7 @@ class BatchRunner
                     'cancel' => $this->_('Cancel'),
                     'restart' => $this->_('Restart'),
                     'start' => sprintf($this->_('Start %s jobs'), $progress->getCount()),
+                    'empty' => $this->_('No tasks to do'),
                 ],
                 'info' => $this->jobInfo,
             ];
