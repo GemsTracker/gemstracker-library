@@ -11,9 +11,11 @@
 
 namespace Gems\Condition\Track;
 
-use Gems\Conditions;
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
+use Gems\Tracker;
+use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
 
 /**
@@ -25,25 +27,13 @@ use Gems\Util\Translated;
  */
 class LocationCondition extends ConditionAbstract implements TrackConditionInterface
 {
-    /**
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * @inheritDoc
-     */
-    public function afterRegistry()
+    public function __construct(protected ConditionLoader $conditions,
+        protected Tracker $tracker,
+        protected Translated $translatedUtil,
+        protected Agenda $agenda,
+    )
     {
-        parent::afterRegistry();
-        if ($this->loader && !$this->tracker) {
-            $this->tracker = $this->loader->getTracker();
-        }
+        parent::__construct($conditions);
     }
 
     /**
@@ -53,7 +43,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      *
      * @return string|void
      */
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Track condition will be true when:\n- one of the location fields in a track is equal to\n- either a location in a track field\n- or the location field with the track field code.");
     }
@@ -61,10 +51,10 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     /**
      * @return array locId => Location label
      */
-    protected function getLocations()
+    protected function getLocations(): array
     {
         return $this->translatedUtil->getEmptyDropdownArray() +
-            $this->loader->getAgenda()->getLocationsWithOrganization();;
+            $this->agenda->getLocationsWithOrganization();
     }
 
     /**
@@ -74,7 +64,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      * @param boolean $new
      * @return array textN => array(modelFieldName => fieldValue)
      */
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
         $fields    = $this->getTrackFields();
         $locations = $this->getLocations();
@@ -103,12 +93,12 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Location');
     }
 
-    public function getNotValidReason($value, $context)
+    public function getNotValidReason(int $value, array $context): string
     {
         // Not used at the moment
         // Reasons could be:
@@ -122,7 +112,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     /**
      * @inheritDoc
      */
-    public function getTrackDisplay($trackId)
+    public function getTrackDisplay(int $trackId): string
     {
         if ($this->_data['gcon_condition_text4']) {
             $start = sprintf($this->_('A location field with code %s set to: '),
@@ -131,7 +121,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
             $start = $this->_('A location field set to: ');
         }
 
-        $locations = $this->loader->getAgenda()->getLocations();
+        $locations = $this->agenda->getLocations();
         $output    = [];
         foreach ($this->getUsedLocations() as $locId) {
             if (isset($locations[$locId])) {
@@ -148,7 +138,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     /**
      * @return array code => code
      */
-    protected function getTrackFields()
+    protected function getTrackFields(): array
     {
         // Load the track fields that have a code, and return code => name array
         $fields = $this->tracker->getAllCodeFields();
@@ -168,7 +158,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return array fieldKey => value
      */
-    protected function getUsedFieldsValues(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
+    protected function getUsedFieldsValues(RespondentTrack $respTrack, array $fieldData = null): array
     {
         $defs      = $respTrack->getTrackEngine()->getFieldsDefinition();
         $fields    = $fieldData ? $fieldData : $respTrack->getFieldData();
@@ -189,7 +179,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     /**
      * @return array locId => locId
      */
-    protected function getUsedLocations()
+    protected function getUsedLocations(): array
     {
         $output = array_filter([
                                    $this->_data['gcon_condition_text1'],
@@ -203,7 +193,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
     /**
      * @inheritDoc
      */
-    public function isValid($value, $context)
+    public function isValid(int $value, array $context): bool
     {
         // \MUtil\EchoOut\EchoOut::track($value, $context);
         // Not used at the moment
@@ -219,7 +209,7 @@ class LocationCondition extends ConditionAbstract implements TrackConditionInter
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
     {
         $locations = $this->getUsedLocations();
 

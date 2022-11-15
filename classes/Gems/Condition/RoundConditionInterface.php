@@ -11,6 +11,8 @@
 
 namespace Gems\Condition;
 
+use Gems\Tracker\Token;
+
 /**
  *
  * @package    Gems
@@ -28,7 +30,7 @@ interface RoundConditionInterface extends ConditionInterface
      * AgeConditionAbstract, parameters 10 and 12 could result in
      * "Respondent between 10 year and 12 year"
      */
-    public function getRoundDisplay($trackId, $roundId);
+    public function getRoundDisplay(int $trackId, int $roundId): string;
        
     /**
      * Is the condition for this round (token) valid or not
@@ -38,5 +40,5 @@ interface RoundConditionInterface extends ConditionInterface
      * @param \Gems\Tracker\Token $token
      * @return bool
      */
-    public function isRoundValid(\Gems\Tracker\Token $token);    
+    public function isRoundValid(Token $token): bool;
 }

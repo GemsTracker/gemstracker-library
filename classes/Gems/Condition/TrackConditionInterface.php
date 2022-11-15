@@ -11,6 +11,8 @@
 
 namespace Gems\Condition;
 
+use Gems\Tracker\RespondentTrack;
+
 /**
  *
  * @package    Gems\Condition
@@ -26,7 +28,7 @@ interface TrackConditionInterface extends ConditionInterface
      * AgeConditionAbstract, parameters 10 and 12 could result in
      * "Respondent between 10 year and 12 year"
      */
-    public function getTrackDisplay($trackId);
+    public function getTrackDisplay(int $trackId): string;
 
     /**
      * Is the condition for this round (token) valid or not
@@ -37,5 +39,5 @@ interface TrackConditionInterface extends ConditionInterface
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null);
+    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool;
 }

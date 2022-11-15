@@ -11,39 +11,28 @@
 
 namespace Gems\Condition;
 
+use Gems\Condition\Comparator\ComparatorInterface;
+use Zalt\Base\TranslateableTrait;
+
 /**
  *
  * @package    Gems
  * @subpackage Condition
  * @since      Class available since version 1.8.8
  */
-abstract class ConditionAbstract extends \MUtil\Translate\TranslateableAbstract implements ConditionInterface
+abstract class ConditionAbstract implements ConditionInterface
 {
+    use TranslateableTrait;
+
     protected $_data;
 
-    /**
-     *
-     * @var \Gems\Conditions
-     */
-    protected $conditions;
-
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @inheritDoc
-     * /
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-    }
+    public function __construct(protected ConditionLoader $conditions)
+    {}
 
     /**
      * @param array $data
      */
-    public function exchangeArray(array $data)
+    public function exchangeArray(array $data): array
     {
         $this->_data = $data;
     }
@@ -53,7 +42,7 @@ abstract class ConditionAbstract extends \MUtil\Translate\TranslateableAbstract 
      *
      * @return int
      */
-    public function getConditionId()
+    public function getConditionId(): int
     {
         return $this->_data['gcon_id'];
     }
@@ -61,9 +50,9 @@ abstract class ConditionAbstract extends \MUtil\Translate\TranslateableAbstract 
     /**
      * Return a comparator
      *
-     * @return \Gems\Condition\Comparator\ComparatorInterface
+     * @return ComparatorInterface
      */
-    public function getComparator($name, $options = array())
+    public function getComparator(string $name, $options = array()): ComparatorInterface
     {
         return $this->conditions->loadComparator($name, $options);
     }

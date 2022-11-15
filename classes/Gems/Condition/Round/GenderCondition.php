@@ -11,8 +11,10 @@
 
 namespace Gems\Condition\Round;
 
-use Gems\Conditions;
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Tracker;
+use Gems\Tracker\Token;
 use Gems\Util\Translated;
 
 /**
@@ -25,28 +27,26 @@ use Gems\Util\Translated;
  */
 class GenderCondition extends RoundConditionAbstract
 {
-    /**
-     * @var \Gems\Tracker
-     */
-    public $tracker;
+    public function __construct(protected ConditionLoader $conditions,
+        protected Tracker $tracker,
+        protected Translated $translatedUtil
+    )
+    {
+        parent::__construct($conditions);
+    }
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-        
-    protected function getComparators()
+    protected function getComparators(): array
     {
         $comparators = [
-            \Gems\Conditions::COMPARATOR_EQUALS   => $this->_('Equals'),
-            \Gems\Conditions::COMPARATOR_NOT      => $this->_('Does not equal'),
+            \Gems\ConditionLoader::COMPARATOR_EQUALS   => $this->_('Equals'),
+            \Gems\ConditionLoader::COMPARATOR_NOT      => $this->_('Does not equal'),
         ];
         natsort($comparators);
 
         return $comparators;
     }
     
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Round will be valid depending on the gender of the respondent or the relation assinged to the survey.");
         /**
@@ -55,7 +55,7 @@ class GenderCondition extends RoundConditionAbstract
          */
     }
 
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {        
         $subjects = [
             'r' => $this->_('Respondent'),
@@ -79,12 +79,12 @@ class GenderCondition extends RoundConditionAbstract
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Respondent or relation gender');
     }
 
-    public function getNotValidReason($conditionId, $context)
+    public function getNotValidReason(int $conditionId, array $context): string
     {
         if ($this->_data['gcon_condition_text1'] === 'f') {
             $reason = $this->_('Round is not for relations');
@@ -95,7 +95,7 @@ class GenderCondition extends RoundConditionAbstract
         return $reason;
     }
 
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): bool
     {
         $subjects = [
             'r' => $this->_('Respondent'),
@@ -119,7 +119,7 @@ class GenderCondition extends RoundConditionAbstract
         return $comparatorDescription;
     }
 
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $subject    = $this->_data['gcon_condition_text1'];
         $comparator = $this->_data['gcon_condition_text2'];
@@ -136,7 +136,7 @@ class GenderCondition extends RoundConditionAbstract
         return $comparator->isValid($actualGender);        
     }
 
-    public function isValid($conditionId, $context)
+    public function isValid(int $conditionId, array $context): bool
     {
         $result = false;
 

@@ -11,7 +11,7 @@
 
 namespace Gems\Model;
 
-use Gems\Conditions;
+use Gems\Condition\ConditionLoader;
 
 /**
  *
@@ -165,7 +165,7 @@ class ConditionModel extends \Gems\Model\JoinModel
     {
         $this->applyDetailSettings();
 
-        $this->set('gcon_type', 'default', Conditions::ROUND_CONDITION);
+        $this->set('gcon_type', 'default', ConditionLoader::ROUND_CONDITION);
 
         $this->set('gcon_name', 'validators[unique]', $this->createUniqueValidator(['gcon_name', 'gcon_type'], ['gcon_id']));
 

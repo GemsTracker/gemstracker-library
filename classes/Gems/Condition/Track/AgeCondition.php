@@ -11,7 +11,8 @@
 
 namespace Gems\Condition\Track;
 
-use Gems\Conditions;
+use Gems\Condition\Comparator\ComparatorInterface;
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
 
@@ -24,21 +25,17 @@ use Gems\Condition\TrackConditionInterface;
  */
 class AgeCondition extends ConditionAbstract implements TrackConditionInterface
 {
-    /**
-     *
-     * @return \Gems\Condition\Comparator\ComparatorInterface
-     */
-    protected function getActiveComparator()
+    protected function getActiveComparator(): ComparatorInterface
     {
         $minAge = $this->_data['gcon_condition_text2'];
         $maxAge = $this->_data['gcon_condition_text4'];
 
         if ('' == trim($minAge)) {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_EQUALLESS, [$maxAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_EQUALLESS, [$maxAge]);
         } elseif ('' == trim($maxAge)) {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_EQUALMORE, [$minAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_EQUALMORE, [$minAge]);
         } else {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_BETWEEN, [$minAge, $maxAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_BETWEEN, [$minAge, $maxAge]);
         }
 
         return $comparator;
@@ -47,7 +44,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Track condition will be true when respondent is:\n - At least minimum age\n - But no older than maximum age");
     }
@@ -55,7 +52,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
         $compareOptions = [
             'NOW' => $this->_('Now (actual current time)'),
@@ -92,7 +89,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Respondent age');
     }
@@ -100,7 +97,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function getNotValidReason($value, $context)
+    public function getNotValidReason(int $value, array$context): string
     {
         // Never triggered
         return '';

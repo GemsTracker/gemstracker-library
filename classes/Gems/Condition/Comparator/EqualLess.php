@@ -21,7 +21,8 @@ namespace Gems\Condition\Comparator;
  */
 class EqualLess extends ComparatorAbstract {
 
-    public function getDescription($subject) {
+    public function getDescription(string $subject): string
+    {
         return sprintf(
                 $this->_('%s <= %s'),
                 $subject,
@@ -29,12 +30,13 @@ class EqualLess extends ComparatorAbstract {
                 );
     }
     
-    public function getNumParams()
+    public function getNumParams(): int
     {
         return 1;
     }
 
-    public function isValid($value) {
+    public function isValid(mixed $value): bool
+    {
         return $value <= $this->_options[0];
     }
 

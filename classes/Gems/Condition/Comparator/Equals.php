@@ -20,19 +20,19 @@ namespace Gems\Condition\Comparator;
  * @since      Class available since version 1.8.4
  */
 class Equals extends ComparatorAbstract {
-    public function getDescription($subject) {
+    public function getDescription(string $subject): string {
         return sprintf(
                 $this->_('%s equals %s'),
                 ucfirst($subject),
                 $this->_options[0]);
     }
     
-    public function getNumParams()
+    public function getNumParams(): int
     {
         return 1;
     }
 
-    public function isValid($value) {
+    public function isValid(mixed $value): bool {
         return $value == $this->_options[0];
     }
 

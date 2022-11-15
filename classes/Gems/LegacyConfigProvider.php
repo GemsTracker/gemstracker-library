@@ -7,6 +7,7 @@ namespace Gems;
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
+use Gems\Condition\ConditionLoader;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Layout\LayoutRenderer;
 use Gems\Legacy\LegacyFactory;
@@ -55,15 +56,18 @@ class LegacyConfigProvider
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
                 TrackEvents::class => LegacyFactory::class,
+                Agenda::class => LegacyFactory::class,
 
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],
             'aliases' => [
                 'LegacyAccesslog' => AccesslogRepository::class,
                 'LegacyAcl' => Acl::class,
+                'LegacyAgenda' => Agenda::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
+                'LegacyConditions' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyTrackEvents' => TrackEvents::class,

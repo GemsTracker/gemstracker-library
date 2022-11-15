@@ -11,6 +11,11 @@
 
 namespace Gems\Actions;
 
+use Gems\Condition\ConditionLoader;
+use Gems\Event\Application\ModelCreateEvent;
+use MUtil\Model;
+use Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  *
  *
@@ -27,22 +32,27 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gcon_name' => SORT_ASC),
-        );
+        'extraSort'   => ['gcon_name' => SORT_ASC],
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('conditions');
+    public $cacheTags = ['conditions'];
 
     /**
      * @var \Gems\Condition\ConditionInterface
      */
     protected $condition;
+
+    /**
+     * @var ConditionLoader
+     */
+    public $conditionLoader;
 
     /**
      * The parameters used for the delete action.
@@ -54,9 +64,9 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = array(
+    protected $deleteParameters = [
         'conditionId' => '_getIdParam'
-    );
+    ];
     
     /**
      * The snippets used for the delete action.
@@ -66,7 +76,7 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected $deleteSnippets = 'ConditionDeleteSnippet';
 
     /**
-     * @var \Gems\Event\EventDispatcher
+     * @var EventDispatcherInterface
      */
     public $event;
 
@@ -82,49 +92,21 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = array(
+    protected $showParameters = [
         'condition' => 'getCondition',
-        );
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array(
+    protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippetGeneric',
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         'ConditionAndOrTableSnippet',
-        );
-
-    /**
-     * This script disables the onchange that is fired just before the click on the submit button fires.
-     * The onchange submits the form, changes the csrf token and then the submit button fires with the old
-     * csrf that is invalid. This could prevent a needed (fake)submit to change values, but for now it
-     * does not seem like a problem.
-     */
-    protected function addScript()
-    {
-        $view = $this->view;
-        \MUtil\JQuery::enableView($view);
-
-        $jquery = $view->jQuery();
-        $jquery->enable();  //Just to make sure
-
-        $handler = \ZendX_JQuery_View_Helper_JQuery::getJQueryHandler();
-
-        $script = "$('input[type=\"submit\"]').mousedown(function(e) {
-     e.preventDefault(); // prevents blur() to be called when clicking submit
-});";
-        $fields = array(
-            'jQuery'  => $handler,
-        );
-
-        $js = str_replace(array_keys($fields), $fields, $script);
-
-        $jquery->addOnLoad($js);
-    }
+    ];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -139,7 +121,7 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getConditionModel();
+        $model = $this->conditionLoader->getConditionModel();
 
         if ($detailed) {
             if (('edit' == $action) || ('create' == $action)) {
@@ -151,7 +133,7 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
             $model->applyBrowseSettings();
         }
 
-        $event = new \Gems\Event\Application\ModelCreateEvent($model, $detailed, $action);
+        $event = new ModelCreateEvent($model, $detailed, $action);
         $this->event->dispatch($event, $event->name);
 
         return $model;
@@ -163,10 +145,10 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function getCondition()
     {
-        $id = $this->getParam(\MUtil\Model::REQUEST_ID);
+        $id = $this->request->getAttribute(Model::REQUEST_ID);
 
         if ($id && (!$this->condition)) {
-            $this->condition = $this->loader->getConditions()->loadCondition($id);
+            $this->condition = $this->conditionLoader->loadCondition($id);
         }
 
         return $this->condition;
@@ -196,13 +178,11 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function createAction()
     {
         parent::createAction();
-        $this->addScript();
     }
     
     public function editAction()
     {
         parent::editAction();
-        $this->addScript();
     }
     
     /**

@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems;
+namespace Gems\Condition;
 
 use Gems\Condition\Comparator\Between;
 use Gems\Condition\Comparator\ComparatorInterface;
@@ -19,18 +19,14 @@ use Gems\Condition\Comparator\EqualMore;
 use Gems\Condition\Comparator\Equals;
 use Gems\Condition\Comparator\In;
 use Gems\Condition\Comparator\NotEquals;
-use Gems\Condition\ConditionInterface;
-use Gems\Condition\ConditionLoadException;
 use Gems\Condition\Round\AgeCondition;
 use Gems\Condition\Round\AndCondition;
 use Gems\Condition\Round\GenderCondition;
 use Gems\Condition\Round\LastAnswerCondition;
 use Gems\Condition\Round\OrCondition;
 use Gems\Condition\Round\TrackFieldCondition;
-use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\Track\LocationCondition;
 use Gems\Condition\Track\OrganizationCondition;
-use Gems\Condition\TrackConditionInterface;
 use Gems\Exception\Coding;
 use Gems\Model\ConditionModel;
 use MUtil\Translate\TranslateableTrait;
@@ -240,7 +236,7 @@ class ConditionLoader
             $this->_conditionTypes = [
                 self::ROUND_CONDITION => $this->_('Round'),
                 self::TRACK_CONDITION => $this->_('Track'),
-            ];
+                ];
 
             asort($this->_conditionTypes);
         }

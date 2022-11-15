@@ -12,7 +12,7 @@
 namespace Gems\Condition\Round;
 
 use Gems\Condition\RoundConditionInterface;
-use Gems\Conditions;
+use Gems\Condition\ConditionLoader;
 
 /**
  *
@@ -24,17 +24,17 @@ use Gems\Conditions;
  */
 class OrCondition extends AndCondition
 {
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Combine 2 or more conditions using the OR operator. All conditions must be valid and at least one must be true.");
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Multiple conditions OR');
     }
 
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $conditions = $this->getConditions();
         $text = [];
@@ -46,7 +46,7 @@ class OrCondition extends AndCondition
         return join($this->_(' OR '), $text);
     }
 
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $conditions = $this->getConditions();
         $valid = false;

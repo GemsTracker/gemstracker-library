@@ -11,6 +11,8 @@
 
 namespace Gems\Condition;
 
+use Gems\Exception\Coding;
+
 /**
  *
  *
@@ -19,7 +21,7 @@ namespace Gems\Condition;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class ConditionLoadException extends \Gems\Exception\Coding
+class ConditionLoadException extends Coding
 {
 
 }

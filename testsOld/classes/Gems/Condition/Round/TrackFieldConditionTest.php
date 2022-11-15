@@ -10,7 +10,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Gems\Conditions
+     * @var \Gems\ConditionLoader
      */
     public $conditions;
 
@@ -24,7 +24,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->conditions = new \Gems\Conditions([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
+        $this->conditions = new \Gems\ConditionLoader([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
 
         $this->condition = $this->conditions->loadRoundCondition('\\Gems\\Condition\\Round\\TrackFieldCondition');
     }
@@ -80,7 +80,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
     {
         $config = [
             'gcon_condition_text1' => 'field1',
-            'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_EQUALS,
+            'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_EQUALS,
             'gcon_condition_text3' => 5,
             'gcon_condition_text4' => '',
         ];
@@ -115,7 +115,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
     {
         $config = [
             'gcon_condition_text1' => 'field2',
-            'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_EQUALS,
+            'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_EQUALS,
             'gcon_condition_text3' => 5,
             'gcon_condition_text4' => '',
         ];
@@ -164,7 +164,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
             'equals_true'  => [
                 [
                     'gcon_condition_text1' => 'field1',
-                    'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_EQUALS,
+                    'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_EQUALS,
                     'gcon_condition_text3' => '5',
                     'gcon_condition_text4' => '',
                 ],
@@ -174,7 +174,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
             'equals_false' => [
                 [
                     'gcon_condition_text1' => 'field1',
-                    'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_EQUALS,
+                    'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_EQUALS,
                     'gcon_condition_text3' => '5',
                     'gcon_condition_text4' => '',
                 ],
@@ -184,7 +184,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
             'in_true'      => [
                 [
                     'gcon_condition_text1' => 'field1',
-                    'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_IN,
+                    'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_IN,
                     'gcon_condition_text3' => '5|6|7',
                     'gcon_condition_text4' => '',
                 ],
@@ -194,7 +194,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
             'in_false'     => [
                 [
                     'gcon_condition_text1' => 'field1',
-                    'gcon_condition_text2' => \Gems\Conditions::COMPARATOR_IN,
+                    'gcon_condition_text2' => \Gems\ConditionLoader::COMPARATOR_IN,
                     'gcon_condition_text3' => '7|8',
                     'gcon_condition_text4' => '',
                 ],

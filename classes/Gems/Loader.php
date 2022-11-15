@@ -155,11 +155,11 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @return \Gems\Conditions
+     * @return \Gems\Condition\ConditionLoader
      */
     public function getConditions()
     {
-        return $this->_getClass('conditions');
+        return $this->_getClass('Condition\\ConditionLoader');
     }
 
     /**

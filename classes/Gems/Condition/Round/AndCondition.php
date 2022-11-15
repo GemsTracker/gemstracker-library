@@ -12,6 +12,7 @@
 namespace Gems\Condition\Round;
 
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Tracker\Token;
 
 /**
  *
@@ -24,19 +25,13 @@ use Gems\Condition\RoundConditionAbstract;
 class AndCondition extends RoundConditionAbstract
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
      * Load the conditions
      *
      * @return \Gems\Condition\RoundConditionInterface[]
      */
-    protected function getConditions()
+    protected function getConditions(): array
     {
-        $conditionLoader = $this->loader->getConditions();
+        $conditionLoader = $this->conditions;
         $conditions = [];
         for ($number = 1; $number <= 4; $number++) {
             $element = 'gcon_condition_text' . $number;
@@ -49,14 +44,14 @@ class AndCondition extends RoundConditionAbstract
         return $conditions;
     }
 
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Combine 2 or more conditions using the AND operator. All conditions must be valid and true.");
     }
 
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
-        $conditions = $this->loader->getConditions()->getConditionsFor(\Gems\Conditions::ROUND_CONDITION);
+        $conditions = $this->conditions->getConditionsFor(\Gems\ConditionLoader::ROUND_CONDITION);
         $messages   = [
             'gcon_id' => $this->_('The condition can not reference itself.'),
             $this->_('Conditions may be chosen only once.')
@@ -73,12 +68,12 @@ class AndCondition extends RoundConditionAbstract
         return $result;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Multiple conditions AND');
     }
 
-    public function getNotValidReason($conditionId, $context)
+    public function getNotValidReason(int $conditionId, array $context): string
     {
         $conditions = $this->getConditions();
         $text = [];
@@ -92,7 +87,7 @@ class AndCondition extends RoundConditionAbstract
         return join("\n", $text);
     }
 
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $conditions = $this->getConditions();
         $text = [];
@@ -104,7 +99,7 @@ class AndCondition extends RoundConditionAbstract
         return join($this->_(' AND '), $text);
     }
 
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $conditions = $this->getConditions();
         $valid = true;
@@ -119,11 +114,11 @@ class AndCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param type $conditionId
-     * @param type $context
-     * @return boolean
+     * @param int $conditionId
+     * @param int $context
+     * @return bool
      */
-    public function isValid($conditionId, $context)
+    public function isValid(int $conditionId, array $context): bool
     {
         $conditions = $this->getConditions();
         $valid = true;
