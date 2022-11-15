@@ -1061,8 +1061,8 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
                         ->andConsents(array())
                         ->forWhere($cond);
             }
-
-            foreach ($this->db->fetchCol($tokenSelect->getSelect()) as $token) {
+            $tokens = $this->db->fetchCol($tokenSelect->getSelect());
+            foreach ($tokens as $token) {
                 $batch->addTask('Tracker\\RefreshTokenAttributes', $token);
             }
         }
