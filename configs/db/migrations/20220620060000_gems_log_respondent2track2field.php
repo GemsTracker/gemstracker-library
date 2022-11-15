@@ -27,6 +27,7 @@ class GemsLogRespondent2Track2Field extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'glrtf_id',
             ])
+            ->addForeignKey('glrtf_id_respondent_track', 'gems__respondent2track', 'gr2t_id_respondent_track')
             ->addColumn('glrtf_id_sub', 'string', [
                 'null' => true,
                 'limit' => 8,

@@ -127,15 +127,17 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
             $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-        ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
-
-        $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in the source.'));
-        $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Refreshes the attributes for a token as stored in the source.'
+            ),
+            $this->_(
+                'Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'
+            ),
+        ]);
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -148,15 +150,17 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-        ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
-
-        $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in on of the sources.'));
-        $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Refreshes the attributes for a token as stored in one of the sources.'
+            ),
+            $this->_(
+                'Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'
+            ),
+        ]);
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -173,16 +177,19 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
             $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-        ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-            'itemDescription', $this->_('This task checks all tokens using this source for answers .')
-        );
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'
+            ),
+            $this->_(
+                'Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'
+            ),
+            $this->_('This task checks all tokens using this source for answers .'),
+        ]);
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -195,16 +202,18 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $title = $this->_('Checking all surveys for all sources for answers.');
 
-        $params = [
-            'batch' => $batch,
-            'requestInfo' => $this->getRequestInfo(),
-            'title' => $title,
-        ];
-        $this->addSnippets([ContinuousBatchRunnerSnippet::class], $params);
-
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-            'itemDescription', $this->_('This task checks all tokens in all sources for answers.')
-        );
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_(
+                'Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'
+            ),
+            $this->_(
+                'Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'
+            ),
+            $this->_('This task checks all tokens in all sources for answers.'),
+        ]);
+        return $batchRunner->getResponse($this->request);
     }
 
     /**

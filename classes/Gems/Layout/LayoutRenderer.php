@@ -5,9 +5,11 @@ declare(strict_types = 1);
 namespace Gems\Layout;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Mezzio\Csrf\CsrfMiddleware;
+use Gems\User\User;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,35 +21,61 @@ class LayoutRenderer
         FlashMessageMiddleware::FLASH_ATTRIBUTE,
         LocaleMiddleware::LOCALE_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
+        CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
         CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 
     public function __construct(protected TemplateRendererInterface $template, private readonly array $config)
     {}
 
-    protected function getDefaultParams(ServerRequestInterface $request)
+    protected function getAvailableOrganizations(ServerRequestInterface $request): ?array
+    {
+        /**
+         * @var $user User
+         */
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        //if ($user->hasPrivilege('pr.organization-switch')) {
+        if ($user instanceof User /*&& $user->hasPrivilege('pr.organization-switch')*/) {
+            return $user->getAllowedOrganizations();
+        }
+        return null;
+    }
+
+    protected function getDefaultParams(ServerRequestInterface $request): array
     {
         $params = [];
 
         foreach($this->requestAttributes as $requestAttributeName) {
-            $params[$requestAttributeName] = $request->getAttribute($requestAttributeName);
+            $attributeValue = $request->getAttribute($requestAttributeName);
+            if ($attributeValue !== null) {
+                $params[$requestAttributeName] = $request->getAttribute($requestAttributeName);
+            }
         }
 
         return $params;
     }
 
-    public function render(LayoutSettings $layoutSettings, $request, $params = []): string
+    public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
     {
         $defaultParams = $this->getDefaultParams($request);
         if (!$layoutSettings->showMenu()) {
             $defaultParams[MenuMiddleware::class] = null;
         }
-        $params['resources'] = $layoutSettings->getResources();
+        $params['available_organizations'] = $this->getAvailableOrganizations($request);
+
+        $params['resources'] = [
+            'general' => 'resource/js/general.js'
+        ];
 
         if ($request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE)) {
-            array_unshift($params['resources'], 'resource/js/authenticated.js');
+            $params['resources']['authenticated'] = 'resource/js/authenticated.js';
         }
-        array_unshift($params['resources'], 'resource/js/general.js');
+
+        if (isset($this->config['style']) && is_string($this->config['style'])) {
+            $params['resources']['style'] = "resource/css/{$this->config['style']}";
+        }
+
+        $params['resources'] = array_merge($params['resources'], $layoutSettings->getResources());
 
         $params += $defaultParams;
 
@@ -59,7 +87,7 @@ class LayoutRenderer
         return $this->template->render($layoutSettings->getTemplate(), $params);
     }
 
-    public function renderTemplate(string $templateName, ServerRequestInterface $request, $params = []): string
+    public function renderTemplate(string $templateName, ServerRequestInterface $request, array $params = []): string
     {
         $settings = new LayoutSettings();
         $settings->setTemplate($templateName);

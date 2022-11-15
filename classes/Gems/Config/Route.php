@@ -18,8 +18,10 @@ use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
+use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -50,6 +52,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [
@@ -199,6 +202,14 @@ class Route
                     LocaleMiddleware::class,
                     HandlerCsrfMiddleware::class,
                     ChangePasswordHandler::class,
+                ],
+            ],
+            [
+                'name' => 'organization.switch-ui',
+                'path' => '/organization/switch-ui',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeOrganizationHandler::class,
                 ],
             ],
         ];
@@ -680,6 +691,7 @@ class Route
                     'attributes-all',
                     'ping',
                     'synchronize',
+                    'check',
                     'attributes',
                 ],
                 parameterRoutes: [
@@ -687,6 +699,7 @@ class Route
                     'ping',
                     'synchronize',
                     'attributes',
+                    'check',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),

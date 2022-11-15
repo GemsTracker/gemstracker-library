@@ -27,12 +27,14 @@ class GemsRespondent2Track extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gr2t_id_respondent_track',
             ])
+            ->addForeignKey('gr2t_id_user', 'gems__respondents', 'grs_id_user')
             ->addColumn('gr2t_id_track', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gr2t_id_user',
             ])
+            ->addForeignKey('gr2t_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gr2t_track_info', 'string', [
                 'null' => true,
                 'limit' => 250,
@@ -60,12 +62,14 @@ class GemsRespondent2Track extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gr2t_end_date_manual',
             ])
+            ->addForeignKey('gr2t_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gr2t_mailable', 'integer', [
                 'null' => false,
                 'default' => '100',
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'gr2t_id_organization',
             ])
+            ->addForeignKey('gr2t_mailable', 'gems__mail_codes', 'gmc_id')
             ->addColumn('gr2t_active', 'boolean', [
                 'null' => false,
                 'default' => '1',

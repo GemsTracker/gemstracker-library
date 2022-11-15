@@ -37,8 +37,8 @@ class LoginHandler implements RequestHandlerInterface
     private array $organizations;
 
     public function __construct(
-        private readonly TranslatorInterface $translator,
         private readonly LayoutRenderer $layoutRenderer,
+        private readonly TranslatorInterface $translator,
         private readonly SiteUtil $siteUtil,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,

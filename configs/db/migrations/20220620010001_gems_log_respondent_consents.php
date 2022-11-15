@@ -33,6 +33,7 @@ class GemsLogRespondentConsents extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'glrc_id_user',
             ])
+            ->addForeignKey('glrc_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('glrc_consent_field', 'string', [
                 'null' => false,
                 'default' => 'gr2o_consent',

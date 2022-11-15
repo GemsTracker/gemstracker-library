@@ -21,6 +21,7 @@ class GemsAgendaStaff extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'identity' => 'enable',
             ])
+            ->addForeignKey('gas_id_staff', 'gems__staff', 'gsf_id_user')
             ->addColumn('gas_name', 'string', [
                 'null' => true,
                 'limit' => 250,
@@ -41,6 +42,7 @@ class GemsAgendaStaff extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gas_function',
             ])
+            ->addForeignKey('gas_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gas_id_user', 'integer', [
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,

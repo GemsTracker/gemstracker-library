@@ -31,8 +31,10 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
             ->addColumn('gul_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
+                'signed' => false,
                 'after' => 'gul_login',
             ])
+            ->addForeignKey('gul_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gul_user_class', 'string', [
                 'null' => false,
                 'default' => 'NoLogin',

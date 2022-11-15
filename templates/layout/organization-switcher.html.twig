@@ -1,0 +1,13 @@
+{% if available_organizations is defined and available_organizations %}
+    <div class="organization-switcher">
+        <div id="organizations">
+            <form method="get" action="{{ path('organization.switch-ui') }}" class="selected-autosubmit">
+                <select class="form-select autosubmit" name="org">
+                    {% for organizationId, organizationName in available_organizations  %}
+                        <option {% if current_organization is defined and current_organization == organizationId %} selected="selected" {% endif %}value="{{ organizationId }}">{{ organizationName }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+{% endif %}

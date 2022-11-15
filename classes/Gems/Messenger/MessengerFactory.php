@@ -5,7 +5,6 @@ namespace Gems\Messenger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\AddBusNameStampMiddleware;
@@ -40,7 +39,6 @@ class MessengerFactory implements FactoryInterface
 
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
 
-
         $sendMessageLocator = $this->getSendMessageLocator($config['messenger']['buses'][$this->busName], $container);
         $sendMessageMiddleware = new SendMessageMiddleware($sendMessageLocator, $eventDispatcher);
 
@@ -49,7 +47,7 @@ class MessengerFactory implements FactoryInterface
             $allowNoHandlers = $config['messenger']['buses'][$this->busName]['allowNoHandlers'];
         }
 
-        $handleMessageLocator = $this->getHandleMessageLocator($config['messenger']['buses'][$this->busName]);
+        $handleMessageLocator = $this->getHandleMessageLocator($config['messenger']['buses'][$this->busName], $container);
         $handleMessageMiddleware = new HandleMessageMiddleware($handleMessageLocator, $allowNoHandlers);
 
         if ($container->has('messengerLogger')) {
@@ -71,12 +69,16 @@ class MessengerFactory implements FactoryInterface
         return new MessageBus($middleware);
     }
 
-    protected function getHandleMessageLocator(array $config): HandlersLocator
+    protected function getHandleMessageLocator(array $config, ContainerInterface $container): Psr11HandlersLocator
     {
         if (!isset($config['handlers'])) {
             throw new \Exception(sprintf('No handlers found for bus %s', $this->busName));
         }
-        return new HandlersLocator($config['handlers']);
+        $handlers = [];
+        foreach($config['handlers'] as $type=>$handler) {
+            $handlers[$type] = (array)$handler;
+        }
+        return new Psr11HandlersLocator($handlers, $container);
     }
 
     protected function getSendMessageLocator(array $config, ContainerInterface $container): SendersLocator
@@ -84,6 +86,10 @@ class MessengerFactory implements FactoryInterface
         if (!isset($config['routes'])) {
             throw new \Exception(sprintf('No routes found for bus %s', $this->busName));
         }
-        return new SendersLocator($config['routes'], $container);
+        $routes = [];
+        foreach($config['routes'] as $type=>$route) {
+            $routes[$type] = (array)$route;
+        }
+        return new SendersLocator($routes, $container);
     }
 }

@@ -17,9 +17,10 @@ class GemsSurveyQuestions extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gsq_id_survey', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
             ])
+            ->addForeignKey('gsq_id_survey', 'gems__surveys', 'gsu_id_survey')
             ->addColumn('gsq_name', 'string', [
                 'null' => false,
                 'limit' => 100,

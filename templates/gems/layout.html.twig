@@ -3,10 +3,10 @@
     <meta charset="utf-8">
     <title>GemsTracker 2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/style/carefacts.css">
-    <link rel="stylesheet" href="/style/custom.css">
     <base href="{{ path('home') }}" />
-    {% block header %}{% endblock %}
+    {{ include('@gems/vite.html.twig') }}
+    {% block header %}
+    {% endblock %}
 </head>
 <body
         {% if current_identity is defined %}
@@ -19,12 +19,14 @@
         <div class="logo"></div>
         <div class="tools">
             {% if locale is defined %}{{ include('@layout/languages.html.twig') }}{% endif %}
+            {{ include('@layout/auth-info.html.twig') }}
+            {{ include('@layout/organization-switcher.html.twig') }}
         </div>
     </header>
 
     <div class="content">
         <div id="main-container" class="include-menu">
-            <div id="main" class="container-fluid">
+            <div id="main">
                 {% if flash is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
 
                 {% block content %}{% endblock %}
@@ -42,17 +44,6 @@
         </footer>
     </div>
 </div>
-
-<div id="authIdleCheckerWarning" class="hidden">
-    <div class="alert alert-warning clearfix">
-        <p>{{ trans('You have been inactive for a while. You will be logged out shortly.') }}</p>
-
-        <div class="pull-right">
-            <button class="btn btn-primary" id="authIdleCheckerWarningAlive">{{ trans('Stay logged in') }}</button>
-            <button class="btn btn-secondary" id="authIdleCheckerWarningIgnore">{{ trans('Ignore') }}</button>
-        </div>
-    </div>
-</div>
-
+{{ include('@layout/auth-idle-checker.html.twig') }}
 </body>
 </html>
