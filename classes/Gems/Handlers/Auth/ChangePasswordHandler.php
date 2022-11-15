@@ -77,6 +77,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             return new RedirectResponse($request->getUri());
         }
 
+        // TODO: generalize forms
         $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
             $this->flash->flashValidationErrors('new_password', $newPasswordValidator->getMessages());
