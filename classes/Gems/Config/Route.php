@@ -642,6 +642,7 @@ class Route
                     'attributes-all',
                     'ping',
                     'synchronize',
+                    'check',
                     'attributes',
                 ],
                 parameterRoutes: [
