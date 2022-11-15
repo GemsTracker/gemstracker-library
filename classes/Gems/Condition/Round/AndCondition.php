@@ -11,8 +11,10 @@
 
 namespace Gems\Condition\Round;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\RoundConditionAbstract;
 use Gems\Tracker\Token;
+use MUtil\Validate\NotEqualTo;
 
 /**
  *
@@ -51,17 +53,17 @@ class AndCondition extends RoundConditionAbstract
 
     public function getModelFields(array $context, bool $new): array
     {
-        $conditions = $this->conditions->getConditionsFor(\Gems\ConditionLoader::ROUND_CONDITION);
+        $conditions = $this->conditions->getConditionsFor(ConditionLoader::ROUND_CONDITION);
         $messages   = [
             'gcon_id' => $this->_('The condition can not reference itself.'),
             $this->_('Conditions may be chosen only once.')
         ];        
                 
         $result = [
-            'gcon_condition_text1' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id'], $messages)],
-            'gcon_condition_text2' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1'], $messages)],
-            'gcon_condition_text3' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2'], $messages)],
-            'gcon_condition_text4' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3'], $messages)]
+            'gcon_condition_text1' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id'], $messages)],
+            'gcon_condition_text2' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1'], $messages)],
+            'gcon_condition_text3' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2'], $messages)],
+            'gcon_condition_text4' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3'], $messages)]
 
         ];
 
