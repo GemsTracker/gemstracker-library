@@ -27,6 +27,7 @@ use Gems\Factory\DoctrineOrmFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Translate\TranslationFactory;
+use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
 use Laminas\Db\Adapter\Adapter;
@@ -193,7 +194,7 @@ class ConfigProvider
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
-                FlashMessageMiddleware::class => FlashMessageMiddleware::class,
+                FlashMessageMiddleware::class => fn () => new FlashMessageMiddleware(DecoratedFlashMessages::class),
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
 
                 // Translation
@@ -524,6 +525,7 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                Csrf::class,
                 StringLoaderExtension::class,
             ]
         ];

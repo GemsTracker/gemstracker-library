@@ -151,8 +151,8 @@ class CommunicationRepository
         if ($templateId) {
             return (int)$templateId;
 
-        } elseif ($this->config['email']['createAccountTemplate']) {
-            return (int)$this->getTemplateIdFromCode($this->config['email']['createAccountTemplate']);
+        } elseif ($this->config['email']['resetPasswordTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['resetPasswordTemplate']);
         }
 
         return null;

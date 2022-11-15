@@ -9,6 +9,7 @@ use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\User\User;
+use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,6 +22,7 @@ class LayoutRenderer
         LocaleMiddleware::LOCALE_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
+        CsrfMiddleware::GUARD_ATTRIBUTE,
     ];
 
     public function __construct(protected TemplateRendererInterface $template, private readonly array $config)

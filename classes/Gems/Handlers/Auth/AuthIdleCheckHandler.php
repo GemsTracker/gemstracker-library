@@ -6,10 +6,10 @@ namespace Gems\Handlers\Auth;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\DecoratedFlashMessagesInterface;
 use Gems\Site\SiteUtil;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -33,10 +33,12 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
+        /** @var DecoratedFlashMessagesInterface $flash */
+        $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $flash?->prolongFlash();
+
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid($request->getMethod() === 'POST')) {
-            /** @var FlashMessagesInterface $flash */
-            $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-            $flash?->flash('login_errors', [
+            $flash?->flashErrors([
                 $this->translator->trans('You have been automatically logged out from the application'),
             ]);
 
