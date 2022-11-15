@@ -40,8 +40,8 @@ class GenderCondition extends RoundConditionAbstract
     protected function getComparators(): array
     {
         $comparators = [
-            \Gems\ConditionLoader::COMPARATOR_EQUALS   => $this->_('Equals'),
-            \Gems\ConditionLoader::COMPARATOR_NOT      => $this->_('Does not equal'),
+            ConditionLoader::COMPARATOR_EQUALS   => $this->_('Equals'),
+            ConditionLoader::COMPARATOR_NOT      => $this->_('Does not equal'),
         ];
         natsort($comparators);
 
@@ -97,7 +97,7 @@ class GenderCondition extends RoundConditionAbstract
         return $reason;
     }
 
-    public function getRoundDisplay(int $trackId, int $roundId): bool
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $subjects = [
             'r' => $this->_('Respondent'),
