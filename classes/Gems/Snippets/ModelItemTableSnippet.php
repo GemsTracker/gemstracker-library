@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets;
 
-use \Zalt\Model\Data\DataReaderInterface;
+use \Zalt\Snippets\DataReaderGenericModelTrait;
 
 /**
  * Displays each fields of a single item in a model in a row in a Html table
@@ -29,21 +29,7 @@ use \Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelItemTableSnippetGeneric extends  ModelItemTableSnippetAbstract
+class ModelItemTableSnippet extends  ModelItemTableSnippetAbstract
 {
-    /**
-     *
-     * @var \DataReaderInterface
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return \Zalt\Model\Data\DataReaderInterface
-     */
-    protected function createModel(): DataReaderInterface
-    {
-        return $this->model;
-    }
+    use DataReaderGenericModelTrait;
 }

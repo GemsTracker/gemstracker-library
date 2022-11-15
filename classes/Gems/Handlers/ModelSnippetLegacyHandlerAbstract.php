@@ -12,6 +12,10 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use Gems\Loader;
+use Gems\MenuNew\Menu;
+use Gems\MenuNew\MenuItem;
+use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\RouteLinkItem;
 use Gems\Project\ProjectSettings;
 use Gems\Util;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -167,6 +171,20 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     protected $createEditSnippets = 'ModelFormSnippetGeneric';
 
     /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = [
+        'abortUrl' => 'getAbortUrl',
+        ];
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
@@ -248,7 +266,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     public function __construct(
         protected Loader $loader,
+        protected Menu $menu,
         protected ProjectSettings $project,
+        protected RouteHelper $routeHelper,
         protected Util $util, 
         SnippetResponderInterface $responder,
         SnippetLoader $snippetLoader,
@@ -465,6 +485,20 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
     }
 
+    public function getAbortUrl()
+    {
+        $route = $this->requestInfo->getRouteName();
+        $currentMenu = $this->menu->find($route);
+        if ($currentMenu instanceof RouteLinkItem) {
+            $parent = $currentMenu->getParent();
+            if ($parent instanceof RouteLinkItem) {
+                $this->routeHelper->g $parent->name; 
+            }
+        }
+        
+        return '';
+    }
+    
     public function getControllerName()
     {
         return $this->requestInfo->getCurrentController();

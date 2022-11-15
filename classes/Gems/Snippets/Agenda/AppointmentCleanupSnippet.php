@@ -20,7 +20,7 @@ namespace Gems\Snippets\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-mrt-2015 11:11:12
  */
-class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
+class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
 {
     /**
      * The action to go to when the user clicks 'No'.

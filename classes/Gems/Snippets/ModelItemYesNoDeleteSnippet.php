@@ -9,7 +9,7 @@
 
 namespace Gems\Snippets;
 
-use \Zalt\Model\Data\FullDataInterface;
+use \Zalt\Snippets\FullDataGenericModelTrait;
 
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
@@ -26,19 +26,5 @@ use \Zalt\Model\Data\FullDataInterface;
  */
 class ModelItemYesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
 {
-    /**
-     *
-     * @var \Zalt\Model\Data\FullDataInterface
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return \Zalt\Model\Data\FullDataInterface
-     */
-    protected function createModel(): FullDataInterface
-    {
-        return $this->model;
-    }
+    use FullDataGenericModelTrait;
 }

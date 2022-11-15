@@ -350,7 +350,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     protected $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         //'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',

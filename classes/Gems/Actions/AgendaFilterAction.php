@@ -92,7 +92,7 @@ class AgendaFilterAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Agenda\\EpisodeTableSnippet',
         'Agenda\\CalendarTableSnippet',
         'Agenda\\FilterSqlSnippet',

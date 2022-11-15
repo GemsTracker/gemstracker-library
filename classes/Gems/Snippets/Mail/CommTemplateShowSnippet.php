@@ -19,7 +19,7 @@ namespace Gems\Snippets\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class CommTemplateShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
+class CommTemplateShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
 {
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants

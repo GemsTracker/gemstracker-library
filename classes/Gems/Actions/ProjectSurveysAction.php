@@ -84,7 +84,7 @@ class ProjectSurveysAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Survey\\SurveyQuestionsSnippet'
     ];
 

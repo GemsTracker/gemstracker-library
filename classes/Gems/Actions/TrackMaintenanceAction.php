@@ -164,7 +164,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Tracker\\TrackVisualDefinitionTitleSnippet',
         'Tracker\\TrackVisualDefinitionSnippet',
         'Tracker\\Fields\\FieldsTitleSnippet',

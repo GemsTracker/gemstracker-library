@@ -21,7 +21,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
+class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
 {
     /**
      * @return \Zend_Db_Adapter_Abstract

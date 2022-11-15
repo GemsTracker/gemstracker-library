@@ -158,7 +158,9 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
         $footer[] = $this->getQuestion();
         $footer[] = ' ';
         $footer->actionLink([$startUrl, $this->confirmParameter => 1], $this->_('Yes'));
-        $footer[] = ' ';
-        $footer->actionLink([str_replace('/' . $this->requestInfo->getCurrentAction() . '/', $this->abortAction, $startUrl)], $this->_('No'));
+        if ($this->abortUrl) {
+            $footer[] = ' ';
+            $footer->actionLink([$this->abortUrl], $this->_('No'));
+        }
     }
 }

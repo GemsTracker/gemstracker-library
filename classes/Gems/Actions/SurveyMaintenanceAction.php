@@ -124,7 +124,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Survey\\SurveyQuestionsSnippet'
     ];
 
