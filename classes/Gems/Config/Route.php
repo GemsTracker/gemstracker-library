@@ -650,6 +650,7 @@ class Route
                     'ping',
                     'synchronize',
                     'attributes',
+                    'check',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),

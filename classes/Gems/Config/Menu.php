@@ -903,13 +903,13 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.source.attributes',
-                                    'label' => $this->translator->trans('Check attributes'),
+                                    'name' => 'track-builder.source.check',
+                                    'label' => $this->translator->trans('Check answers'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.source.check',
-                                    'label' => $this->translator->trans('Check answers'),
+                                    'name' => 'track-builder.source.attributes',
+                                    'label' => $this->translator->trans('Check attributes'),
                                     'type' => 'route-link-item',
                                 ],
                             ],
