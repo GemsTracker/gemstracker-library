@@ -237,7 +237,7 @@ class ConditionLoader
             $this->_conditionTypes = [
                 self::ROUND_CONDITION => $this->_('Round'),
                 self::TRACK_CONDITION => $this->_('Track'),
-                ];
+            ];
 
             asort($this->_conditionTypes);
         }
@@ -274,7 +274,10 @@ class ConditionLoader
         $comparators = $this->getComparators();
         if (isset($comparators[$name])) {
             array_unshift($options, $this->translate);
-            $this->overloader->create($this->comparators[$name], $options);
+            /**
+             * @var ComparatorInterface
+             */
+            return $this->overloader->create($this->comparators[$name], ...$options);
         }
         return null;
     }

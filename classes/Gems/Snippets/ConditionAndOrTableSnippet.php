@@ -11,7 +11,10 @@
 
 namespace Gems\Snippets;
 
-use Gems\Tracker\Model\RoundModel;
+use Gems\Condition\ConditionLoader;
+use Gems\Model\ConditionModel;
+use MUtil\Model;
+use MUtil\Model\ModelAbstract;
 
 /**
  *
@@ -21,7 +24,7 @@ use Gems\Tracker\Model\RoundModel;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -32,12 +35,12 @@ class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstrac
      */
     protected $_fixedSort = [
         'gcon_type'   => SORT_ASC,
-        'gcon_name' => SORT_ASC,        
-        ];
+        'gcon_name' => SORT_ASC,
+    ];
 
     /**
      *
-     * @var \Gems\Model_ConditionModel
+     * @var ConditionModel
      */
     protected $_model;
 
@@ -49,11 +52,9 @@ class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstrac
     protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
     /**
-     * Required
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
+    protected $conditionLoader;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -61,12 +62,6 @@ class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstrac
      * @var array (int/controller => action)
      */
     public $menuActionController = 'condition';
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
 
     /**
      * Called after the check that all required registry values
@@ -86,12 +81,12 @@ class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstrac
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return ModelAbstract
      */
     protected function createModel()
     {
         if (! $this->_model instanceof ConditionModel) {
-            $this->_model = $this->loader->getModels()->getConditionModel();
+            $this->_model = $this->conditionLoader->getConditionModel();
             $this->_model->applyBrowseSettings(true);
         }
 
@@ -101,14 +96,14 @@ class ConditionAndOrTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstrac
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    protected function processFilterAndSort(ModelAbstract $model)
     {
-        $conditionId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+        $attributes = $this->requestInfo->getRequestMatchedParams();
 
-        if ($conditionId) {
-            $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $conditionId),
+        if (isset($attributes[Model::REQUEST_ID])) {
+            $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $attributes[Model::REQUEST_ID]),
                 "gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition'"]);
         }
 

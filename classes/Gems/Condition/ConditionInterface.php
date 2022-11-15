@@ -26,7 +26,7 @@ interface ConditionInterface
      *
      * @param array $data
      */
-    public function exchangeArray(array $data): array;
+    public function exchangeArray(array $data): void;
 
     /**
      * Get the condition id for this condition

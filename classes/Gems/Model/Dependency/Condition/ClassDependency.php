@@ -11,7 +11,9 @@
 
 namespace Gems\Model\Dependency\Condition;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionLoadException;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -21,7 +23,7 @@ use Gems\Condition\ConditionLoadException;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
+class ClassDependency extends DependencyAbstract
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -30,7 +32,7 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array();
+    protected $_defaultEffects = [];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -40,14 +42,14 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array(
+    protected $_dependentOn = [
         'gcon_type', 
         'gcon_class', 
         'gcon_condition_text1',
         'gcon_condition_text2',
         'gcon_condition_text3',
         'gcon_condition_text4',
-        );
+    ];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -66,16 +68,9 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
         ];
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $util;
+    protected $conditionLoader;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -99,11 +94,9 @@ class ClassDependency extends \MUtil\Model\Dependency\DependencyAbstract
      */
     public function getChanges(array $context, $new)
     {
-        $conditions = $this->loader->getConditions();
-
         if (isset($context['gcon_type'],$context['gcon_class']) && !empty($context['gcon_class'])) {
             try {
-                $condition = $conditions->loadConditionForType($context['gcon_type'],$context['gcon_class']);
+                $condition = $this->conditionLoader->loadConditionForType($context['gcon_type'],$context['gcon_class']);
                 $changes = [
                         'condition_help' => ['value' => \MUtil\Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
                     ] + $condition->getModelFields($context, $new);

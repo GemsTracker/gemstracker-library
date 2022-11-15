@@ -11,7 +11,9 @@
 
 namespace Gems\Model\Dependency\Condition;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Util\Translated;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -21,7 +23,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
+class TypeDependency extends DependencyAbstract
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -30,7 +32,7 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array('multiOptions');
+    protected $_defaultEffects = ['multiOptions'];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -40,7 +42,7 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gcon_type');
+    protected $_dependentOn = ['gcon_type'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -55,10 +57,9 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
         ];
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
+    protected $conditionLoader;
 
     /**
      * @var Translated
@@ -85,13 +86,12 @@ class TypeDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new)
+    public function getChanges(array $context, $new): array
     {
-        $conditions = $this->loader->getConditions();
         $options    = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($context['gcon_type'])) {
-            $options = $conditions->listConditionsForType($context['gcon_type']);
+            $options = $this->conditionLoader->listConditionsForType($context['gcon_type']);
             reset($options);
             $default = key($options);            
         }

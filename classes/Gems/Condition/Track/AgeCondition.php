@@ -15,6 +15,8 @@ use Gems\Condition\Comparator\ComparatorInterface;
 use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
+use Gems\Tracker\RespondentTrack;
+use DateTimeImmutable;
 
 /**
  *
@@ -106,7 +108,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function isValid($value, $context)
+    public function isValid(int $value, array $context): bool
     {
         // Always usable in a track
         return true;
@@ -115,7 +117,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
     /**
      * @inheritDoc
      */
-    public function getTrackDisplay($trackId)
+    public function getTrackDisplay(int $trackId): string
     {
         switch ($this->_data['gcon_condition_text1']) {
             case 'NOW':
@@ -140,11 +142,11 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
      *
      * This is the actual implementation of the condition
      *
-     * @param \Gems\Tracker\RespondentTrack $respTrack
+     * @param RespondentTrack $respTrack
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
     {
         $minAge  = $this->_data['gcon_condition_text2'];
         $ageUnit = $this->_data['gcon_condition_text3'];
@@ -157,7 +159,7 @@ class AgeCondition extends ConditionAbstract implements TrackConditionInterface
         }
         switch ($this->_data['gcon_condition_text1']) {
             case 'NOW':
-                $validFrom = new \DateTimeImmutable();
+                $validFrom = new DateTimeImmutable();
                 break;
             case 'TS':
             default:

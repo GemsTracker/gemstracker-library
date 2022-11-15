@@ -35,7 +35,7 @@ abstract class ConditionAbstract implements ConditionInterface
     /**
      * @param array $data
      */
-    public function exchangeArray(array $data): array
+    public function exchangeArray(array $data): void
     {
         $this->_data = $data;
     }

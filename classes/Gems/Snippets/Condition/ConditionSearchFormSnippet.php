@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Condition;
 
+use Gems\Condition\ConditionLoader;
+use Gems\Snippets\AutosearchFormSnippet;
+
 /**
  *
  * @package    Gem
@@ -18,14 +21,8 @@ namespace Gems\Snippets\Condition;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class ConditionSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class ConditionSearchFormSnippet extends AutosearchFormSnippet
 {
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -37,8 +34,6 @@ class ConditionSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
-        $conditons = $this->loader->getConditions();
-
         $elements = parent::getAutoSearchElements($data);
 
         $elements['gcon_type']   = $this->_createSelectElement('gcon_type',  $this->model, $this->_('(all types)'));
