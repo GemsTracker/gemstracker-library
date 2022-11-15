@@ -11,17 +11,33 @@
 
 namespace Gems;
 
+use Gems\Condition\Comparator\Between;
+use Gems\Condition\Comparator\ComparatorInterface;
+use Gems\Condition\Comparator\Contains;
+use Gems\Condition\Comparator\EqualLess;
+use Gems\Condition\Comparator\EqualMore;
+use Gems\Condition\Comparator\Equals;
+use Gems\Condition\Comparator\In;
+use Gems\Condition\Comparator\NotEquals;
 use Gems\Condition\ConditionInterface;
 use Gems\Condition\ConditionLoadException;
+use Gems\Condition\Round\AgeCondition;
+use Gems\Condition\Round\AndCondition;
+use Gems\Condition\Round\GenderCondition;
+use Gems\Condition\Round\LastAnswerCondition;
+use Gems\Condition\Round\OrCondition;
+use Gems\Condition\Round\TrackFieldCondition;
 use Gems\Condition\RoundConditionInterface;
-use Gems\Event\Application\TranslatableNamedArrayEvent;
-use Gems\Event\EventDispatcher;
+use Gems\Condition\Track\LocationCondition;
+use Gems\Condition\Track\OrganizationCondition;
+use Gems\Condition\TrackConditionInterface;
 use Gems\Exception\Coding;
-use Gems\Loader;
-use Gems\Loader\TargetLoaderAbstract;
-use Gems\Util;
+use Gems\Model\ConditionModel;
 use MUtil\Translate\TranslateableTrait;
-use MUtil\Registry\TargetInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
+use Zalt\Loader\Exception\LoadException;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * Per project overruleable condition processing engine
@@ -32,7 +48,7 @@ use MUtil\Registry\TargetInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class Conditions extends \Gems\Loader\TargetLoaderAbstract
+class ConditionLoader
 {
     use TranslateableTrait;
 
@@ -48,6 +64,16 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
     const ROUND_CONDITION  = 'Round';
     const TRACK_CONDITION  = 'Track';
 
+    protected array $comparators = [
+        self::COMPARATOR_BETWEEN => Between::class,
+        self::COMPARATOR_CONTAINS => Contains::class,
+        self::COMPARATOR_EQUALS => Equals::class,
+        self::COMPARATOR_EQUALLESS => EqualLess::class,
+        self::COMPARATOR_EQUALMORE => EqualMore::class,
+        self::COMPARATOR_IN => In::class,
+        self::COMPARATOR_NOT => NotEquals::class,
+    ];
+
     /**
      * Each condition type must implement a condition class or interface derived
      * from ConditionInterface specified in this array.
@@ -56,46 +82,44 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var array containing eventType => eventClass for all condition classes
      */
-    protected $_conditionClasses = array(
-        self::COMPARATOR           => 'Gems\\Condition\\Comparator\\ComparatorInterface',
-        self::ROUND_CONDITION      => 'Gems\\Condition\\RoundConditionInterface',
-        self::TRACK_CONDITION      => 'Gems\\Condition\\TrackConditionInterface',
-    );
+    protected $_conditionClasses = [
+        self::COMPARATOR           => ComparatorInterface::class,
+        self::ROUND_CONDITION      => RoundConditionInterface::class,
+        self::TRACK_CONDITION      => TrackConditionInterface::class,
+    ];
+
+    protected ProjectOverloader $conditionLoader;
+
+    protected $conditions = [
+        self::ROUND_CONDITION => [
+            AgeCondition::class,
+            AndCondition::class,
+            GenderCondition::class,
+            LastAnswerCondition::class,
+            OrCondition::class,
+            TrackFieldCondition::class,
+        ],
+        self::TRACK_CONDITION => [
+            \Gems\Condition\Track\AgeCondition::class,
+            LocationCondition::class,
+            OrganizationCondition::class,
+        ],
+    ];
 
     /**
      *
      * @var array containing conditionType => label for all condition classes
      */
-    protected $_conditionTypes;
+    protected $_conditionTypes = [];
 
-    /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
-     */
-    protected $cascade = 'Condition';
-
-    /**
-     * @var EventDispatcher
-     */
-    protected $event;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Util\Translated
-     */
-    protected $translatedUtil;
-
-    public function __construct($container, array $dirs) {
-        parent::__construct($container, $dirs);
-
-        $this->addRegistryContainer(array('conditions' => $this));
+    public function __construct(
+        protected ProjectOverloader $overloader,
+        TranslatorInterface $translator,
+        protected Util\Translated $translatedUtil
+    ) {
+        $this->conditionLoader = clone $this->overloader;
+        $this->conditionLoader->setDependencyResolver(new ConstructorDependencyResolver());
+        $this->translate = $translator;
     }
 
     /**
@@ -107,87 +131,86 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
      * @param string $conditionType The type (i.e. lookup directory) to find the associated class for
      * @return string Class/interface name associated with the type
      */
-    protected function _getConditionClass($conditionType)
+    protected function _getConditionClass(string $conditionType): string
     {
         if (isset($this->_conditionClasses[$conditionType])) {
             return $this->_conditionClasses[$conditionType];
         } else {
-            throw new Gems\Exception\Coding("No condition class exists for condition type '$conditionType'.");
+            throw new Coding("No condition class exists for condition type '$conditionType'.");
         }
-    }
-
-    /**
-     *
-     * @param string $conditionType An event subdirectory (may contain multiple levels split by '/'
-     * @return array An array of type prefix => classname
-     */
-    protected function _getConditionDirs($conditionType)
-    {
-        $eventClass = str_replace('/', '_', $conditionType);
-
-        foreach ($this->_dirs as $name => $dir) {
-            $prefix = $name . '_'. $eventClass . '_';
-            $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . $conditionType;
-        }
-
-        return $paths;
     }
 
     /**
      * Returns a list of selectable conditions with an empty element as the first option.
      *
      * @param string $conditionType The type (i.e. lookup directory with an associated class) of the conditions to list
-     * @return ConditionInterface or more specific a $conditionClass type object
+     * @return ConditionInterface[] or more specific a $conditionClass type object
      */
-    protected function _listConditions($conditionType)
+    protected function _listConditions(string $conditionType): array
     {
-        $classType = $this->_getConditionClass($conditionType);
-        $paths     = $this->_getConditionDirs($conditionType);
+        $conditions = $this->getConditionClasses($conditionType);
 
-        return $this->translatedUtil->getEmptyDropdownArray() + $this->listClasses($classType, $paths);
+        $conditionList = [];
+        if ($conditions) {
+            foreach($conditions as $conditionClassName) {
+                $condition = $this->getCondition($conditionClassName, $conditionType);
+                $conditionList[$conditionClassName] = $condition->getName();
+            }
+        }
+
+        return $this->translatedUtil->getEmptyDropdownArray() + $conditionList;
     }
 
-    /**
-     * Loads and initiates a condition class and returns the class (without triggering the condition itself).
-     *
-     * @param string $conditionName The class name of the individual event to load
-     * @param string $conditionType The type (i.e. lookup directory with an associated class) of the event
-     * @return ConditionInterface or more specific a $eventClass type object
-     */
-    protected function _loadCondition($conditionName, $conditionType)
+    public function getComparators()
     {
+        return $this->comparators;
+    }
+
+    public function getCondition(string $conditionClassName, string $conditionType): ConditionInterface
+    {
+        try {
+            /**
+             * @var $condition ConditionInterface
+             */
+            $condition = $this->conditionLoader->create($conditionClassName);
+        } catch (LoadException) {
+            throw new Coding("The condition '$conditionClassName' of type '$conditionType' can not be found");
+        }
+
         $conditionClass = $this->_getConditionClass($conditionType);
 
-        if (! class_exists($conditionName, true)) {
-            throw new Gems\Exception\Coding("The condition '$conditionName' of type '$conditionType' can not be found");
-        }
-
-        $condition = new $conditionName();
-
         if (! $condition instanceof $conditionClass) {
-            throw new ConditionLoadException("The condition '$conditionName' of type '$conditionType' is not an instance of '$conditionClass'.");
-        }
-
-        if ($condition instanceof \MUtil\Registry\TargetInterface) {
-            $this->applySource($condition);
+            throw new ConditionLoadException("The condition '$conditionClassName' of type '$conditionType' is not an instance of '$conditionClass'.");
         }
 
         return $condition;
     }
 
-    public function afterRegistry()
+    public function getConditionClasses(string $conditionType): ?array
     {
-        parent::afterRegistry();
+        if (isset($this->conditions[$conditionType])) {
+            return $this->conditions[$conditionType];
+        }
+        return null;
+    }
+
+    public function getConditionModel(): ConditionModel
+    {
+        /**
+         * @var $model ConditionModel
+         */
+        $model = $this->overloader->create('Model\\ConditionModel');
+        return $model;
     }
 
     /**
      * @param string $conditionType A condition constant
      * @param bool $activeOnly
-     * @return array condId => Name
+     * @return string[] condId => Name
      */
-    public function getConditionsFor($conditionType, $activeOnly = true)
+    public function getConditionsFor(string $conditionType, bool $activeOnly = true): array
     {
-        $model = $this->loader->getModels()->getConditionModel();
+        $model = $this->getConditionModel();
 
         $filter['gcon_type'] = $conditionType;
         if ($activeOnly) {
@@ -208,13 +231,16 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
         return $output;
     }
 
-    public function getConditionTypes()
+    /**
+     * @return string[]
+     */
+    public function getConditionTypes(): array
     {
         if (! $this->_conditionTypes) {
             $this->_conditionTypes = [
                 self::ROUND_CONDITION => $this->_('Round'),
                 self::TRACK_CONDITION => $this->_('Track'),
-                ];
+            ];
 
             asort($this->_conditionTypes);
         }
@@ -223,9 +249,9 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @return array eventname => string
+     * @return string[] eventname => string
      */
-    public function listConditionsForType($conditionType)
+    public function listConditionsForType(string $conditionType): array
     {
         return $this->_listConditions($conditionType);
     }
@@ -234,7 +260,7 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array eventname => string
      */
-    public function listRoundConditions()
+    public function listRoundConditions(): array
     {
         return $this->_listConditions(self::ROUND_CONDITION);
     }
@@ -242,33 +268,38 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Load a comparator
      *
-     * @param type $name
-     * @param type $options
-     * @return \Gems\Condition\Comparator\ComparatorInterface
+     * @param string $name
+     * @param array $options
+     * @return ComparatorInterface|null
      */
-    public function loadComparator($name, $options = array())
+    public function loadComparator(string $name, array $options = []): ?ComparatorInterface
     {
-        return $this->_loadClass('Comparator\\' . $name, true, [$options]);
+        $comparators = $this->getComparators();
+        if (isset($comparators[$name])) {
+            array_unshift($options, $this->translate);
+            $this->overloader->create($this->comparators[$name], $options);
+        }
+        return null;
     }
 
     /**
      *
      * @param string $conditionName
-     * @return ConditionInterface
+     * @return ConditionInterface|null
      */
-    public function loadConditionForType($conditionType, $conditionName)
+    public function loadConditionForType(string $conditionType, string $conditionName): ?ConditionInterface
     {
-        return $this->_loadCondition($conditionName, $conditionType);
+        return $this->getCondition($conditionName, $conditionType);
     }
 
     /**
      *
-     * @param type $conditionId
+     * @param string $conditionId
      * @return ConditionInterface
      */
-    public function loadCondition($conditionId)
+    public function loadCondition(string $conditionId): ConditionInterface
     {
-        $model = $this->loader->getModels()->getConditionModel();
+        $model = $this->getConditionModel();
 
         $conditionData = $model->loadFirst(['gcon_id' => $conditionId]);
 
@@ -279,7 +310,7 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
             return $condition;
         }
 
-        throw new Gems\Exception\Coding('Unable to load requested condition');
+        throw new Coding('Unable to load requested condition');
     }
 
     /**
@@ -287,9 +318,12 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
      * @param string $conditionName
      * @return RoundConditionInterface
      */
-    public function loadRoundCondition($conditionName)
+    public function loadRoundCondition(string $conditionName): RoundConditionInterface
     {
-        return $this->_loadCondition($conditionName, self::ROUND_CONDITION);
+        /**
+         * @var RoundConditionInterface
+         */
+        return $this->getCondition($conditionName, self::ROUND_CONDITION);
     }
 
     /**
@@ -297,8 +331,11 @@ class Conditions extends \Gems\Loader\TargetLoaderAbstract
      * @param string $conditionName
      * @return TrackConditionInterface
      */
-    public function loadTrackCondition($conditionName)
+    public function loadTrackCondition(string $conditionName): TrackConditionInterface
     {
-        return $this->_loadCondition($conditionName, self::TRACK_CONDITION);
+        /**
+         * @var TrackConditionInterface
+         */
+        return $this->getCondition($conditionName, self::TRACK_CONDITION);
     }
 }
