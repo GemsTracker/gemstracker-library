@@ -65,7 +65,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $loader;
     
     public $menuActionController = array('track');
-    public $menuShowActions = array('answer');
+    public $menuShowRoutes = array('answer');
 
     /**
      *

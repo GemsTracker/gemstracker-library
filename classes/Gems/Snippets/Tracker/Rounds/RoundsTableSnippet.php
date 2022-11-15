@@ -55,7 +55,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['track-builder.track-maintenance.track-rounds.edit'];
+    public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -65,7 +65,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track-builder.track-maintenance.track-rounds.show'];
+    public array $menuShowRoutes = ['track-builder.track-maintenance.track-rounds.show'];
 
     /**
      *

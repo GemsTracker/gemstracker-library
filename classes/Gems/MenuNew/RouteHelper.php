@@ -5,6 +5,8 @@ namespace Gems\MenuNew;
 use Gems\Html;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
+use Zalt\Late\Late;
+use Zalt\Late\LateCall;
 
 class RouteHelper
 {
@@ -46,6 +48,29 @@ class RouteHelper
         }
 
         return $links;
+    }
+
+    public function getLateRouteUrl(string $name, array $paramLateMappings = []): ?LateCall
+    {
+        $route = $this->getRoute($name);
+
+        if (null === $route) {
+            return null;
+        }
+        $routeParams = [];
+        if (isset($route['params'])) {
+            foreach ($route['params'] as $paramName) {
+                if (isset($paramLateMappings[$paramName])) {
+                    $lateName = $paramLateMappings[$paramName];
+                    // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$paramName -> $lateName\n", FILE_APPEND);
+                } else {
+                    $lateName = $paramName;
+                }
+                $routeParams[$paramName] = Late::get($lateName); 
+            }
+        }
+
+        return Late::method($this->urlHelper, 'generate', $name, $routeParams);
     }
 
     public function getRoute(string $name): ?array

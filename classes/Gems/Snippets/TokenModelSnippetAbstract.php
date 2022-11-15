@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  * Extra code for displaying token models.
  *
@@ -91,9 +93,9 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if ($this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model = $this->model;

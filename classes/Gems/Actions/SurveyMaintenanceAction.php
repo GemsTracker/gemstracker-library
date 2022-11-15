@@ -43,7 +43,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
         'extraSort' => [
             'gsu_survey_name' => SORT_ASC,
         ],
-        'menuEditActions' => ['edit', 'pdf'],
+        'menuEditRoutes' => ['edit', 'pdf'],
     ];
 
     /**

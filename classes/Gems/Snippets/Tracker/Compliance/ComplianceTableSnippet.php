@@ -30,7 +30,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = [];
+    public array $menuEditRoutes = [];
 
     /**
      * Menu actions to show in Show box.
@@ -40,7 +40,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track' => 'show-track'];
+    public array $menuShowRoutes = ['track' => 'show-track'];
 
     /**
      *

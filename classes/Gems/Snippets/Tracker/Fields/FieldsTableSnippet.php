@@ -49,7 +49,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['track-builder.track-maintenance.track-fields.edit'];
+    public array $menuEditRoutes = ['track-builder.track-maintenance.track-fields.edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -59,7 +59,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track-builder.track-maintenance.track-fields.show'];
+    public array $menuShowRoutes = ['track-builder.track-maintenance.track-fields.show'];
 
     /**
      *

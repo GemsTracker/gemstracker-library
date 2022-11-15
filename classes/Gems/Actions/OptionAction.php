@@ -86,8 +86,8 @@ class OptionAction extends \Gems\Controller\ModelSnippetActionAbstract
         'contentTitle'    => 'getShowLogOverviewTitle',
         'explanationText' => 'getShowLogOverviewExplanation',
         'extraFilter'     => 'getShowLogOverviewFilter',
-        'menuEditActions' => false,
-        'menuShowActions' => array('show-log'),
+        'menuEditRoutes' => false,
+        'menuShowRoutes' => array('show-log'),
         );
 
     /**

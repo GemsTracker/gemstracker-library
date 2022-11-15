@@ -38,7 +38,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['edit-track'];
+    public array $menuEditRoutes = ['edit-track'];
 
     /**
      * Menu actions to show in Show box.
@@ -48,7 +48,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['show-track'];
+    public array $menuShowRoutes = ['show-track'];
 
     /**
      * Are we working in a multi tracks environment?

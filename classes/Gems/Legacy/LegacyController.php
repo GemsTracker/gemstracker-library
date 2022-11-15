@@ -149,6 +149,9 @@ class LegacyController implements RequestHandlerInterface
                 if ($this->container->has($legacyName)) {
                     $object->$name = $this->container->get($legacyName);
                 }
+                if ($this->container->has($name)) {
+                    $object->$name = $this->container->get($name);
+                }
             }
         }
     }

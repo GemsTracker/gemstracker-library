@@ -12,10 +12,7 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use Gems\Loader;
-use Gems\MenuNew\Menu;
-use Gems\MenuNew\MenuItem;
 use Gems\MenuNew\RouteHelper;
-use Gems\MenuNew\RouteLinkItem;
 use Gems\Project\ProjectSettings;
 use Gems\Util;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -181,7 +178,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array Mixed key => value array for snippet initialization
      */
     protected $deleteParameters = [
-        'abortUrl' => 'getAbortUrl',
+        'abortUrl' => 'getShowUrl',
+        'afterDeleteUrl' => 'getIndexUrl'
         ];
 
     /**
@@ -266,7 +264,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     public function __construct(
         protected Loader $loader,
-        protected Menu $menu,
         protected ProjectSettings $project,
         protected RouteHelper $routeHelper,
         protected Util $util, 
@@ -459,46 +456,21 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     }
 
 
-    /**
-     * Finds the first item with one of the actions specified as parameter and using the current controller
-     *
-     * @param string $action
-     * @param string $action2
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function firstAllowedMenuItem($action, $action2 = null)
-    {
-        $actions = \MUtil\Ra::args(func_get_args());
-        $controller = $this->_getParam('controller');
-
-        foreach ($actions as $action) {
-            $menuItem = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
-
-            if ($menuItem) {
-                return $menuItem;
-            }
-        }
-    }
-
     public function getCsrfGuard(): ?CsrfGuardInterface
     {
         return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
     }
 
-    public function getAbortUrl()
+    public function getActionUrl(string $action): ?string
     {
-        $route = $this->requestInfo->getRouteName();
-        $currentMenu = $this->menu->find($route);
-        if ($currentMenu instanceof RouteLinkItem) {
-            $parent = $currentMenu->getParent();
-            if ($parent instanceof RouteLinkItem) {
-                $this->routeHelper->g $parent->name; 
-            }
+        $parentRoute = $this->routeHelper->getRouteParent($this->requestInfo->getRouteName(), $action);
+        // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . $this->requestInfo->getRouteName() . " -> " . $parentRoute['name'] . "\n", FILE_APPEND);        
+        if (null === $parentRoute) {
+            return null;
         }
-        
-        return '';
+        return $this->routeHelper->getRouteUrl($parentRoute['name'], $this->requestInfo->getParams());
     }
-    
+
     public function getControllerName()
     {
         return $this->requestInfo->getCurrentController();
@@ -646,6 +618,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return ucfirst((string) $this->getTopic(100));
     }
 
+    public function getIndexUrl()
+    {
+        return $this->getActionUrl('index');
+    }
+
     /**
      * Return the current request ID, if any.
      *
@@ -713,6 +690,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function getShowTitle()
     {
         return sprintf($this->_('Showing %s'), $this->getTopic(1));
+    }
+
+    public function getShowUrl()
+    {
+        return $this->getActionUrl('show');
     }
 
     /**

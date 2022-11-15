@@ -79,31 +79,18 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     public static $keyboardUsed = false;
 
     /**
-     * The default controller for menu actions, if null the current controller is used.
+     * Menu routes or routeparts to show in Edit box.
      *
-     * @var array (int/controller => action)
+     * @var array (int/label => route or routepart)
      */
-    public $menuActionController = null;
+    public array $menuEditRoutes = ['edit'];
 
     /**
-     * Menu actions to show in Edit box.
+     * Menu routes or routeparts to show in Show box.
      *
-     * If controller is numeric $menuActionController is used, otherwise
-     * the key specifies the controller.
-     *
-     * @var array (int/controller => action)
+     * @var array (int/label => route or routepart)
      */
-    public array $menuEditActions = ['edit'];
-
-    /**
-     * Menu actions to show in Show box.
-     *
-     * If controller is numeric $menuActionController is used, otherwise
-     * the key specifies the controller.
-     *
-     * @var array (int/controller => action)
-     */
-    public array $menuShowActions = ['show'];
+    public array $menuShowRoutes = ['show'];
 
     /**
      * Option to manually diasable the menu
@@ -132,8 +119,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
                                 TranslatorInterface $translate)
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
-
-        $this->menuActionController = $this->requestInfo->getCurrentController();
     }
     
     /**
@@ -156,13 +141,12 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
         if ($this->showMenu) {
             $showMenuItems = $this->getShowUrls($bridge);
-            foreach ($showMenuItems as $keyOrLabel => $menuItem) {
+            foreach ($showMenuItems as $keyOrLabel => $lateUrl) {
                 $showLabel = $keyOrLabel;
                 if (is_int($showLabel)) {
                     $showLabel = $this->_('Show');
                 }
-
-                $bridge->addItemLink(Html::actionLink($menuItem, $showLabel));
+                $bridge->addItemLink(Html::actionLink([$lateUrl], $showLabel));
             }
         }
 
@@ -179,7 +163,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
                 if (is_int($editLabel)) {
                     $editLabel = $this->_('Edit');
                 }
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $editLabel));
+                $bridge->addItemLink(Html::actionLink([$lateUrl], $editLabel));
             }
         }
     }
@@ -231,40 +215,20 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     {
         $output = [];
 
-        foreach ((array) $actions as $keyOrLabel=>$action) {
-
+        foreach ((array) $actions as $keyOrLabel => $routeNameOrPart) {
+            if (str_contains($routeNameOrPart, '.')) {
+                $routeName = $routeNameOrPart;
+            } else {
+                $currentRoute = $this->requestInfo->getRouteName();
+                $routeName = substr($currentRoute, 0, strrpos($currentRoute, '.') + 1) . $routeNameOrPart;
+            }
             try {
-                $route = $this->routeHelper->getRoute($action);
+                $route = $this->routeHelper->getRoute($routeName);
             } catch (RouteNotFoundException $e) {
-                $currentRouteName = $this->requestInfo->getRouteName();
-                $routeParts = explode('.', $currentRouteName);
-                $routeParts[count($routeParts)-1] = $action;
-                $routeName = join('.', $routeParts);
-                try {
-                    $route = $this->routeHelper->getRoute($routeName);
-                } catch (RouteNotFoundException $e) {
-                    continue;
-                }
-
+                continue;
             }
 
-            $params = [];
-            if (isset($route['params'])) {
-                $currentParams = $this->requestInfo->getRequestMatchedParams();
-                foreach($route['params'] as $paramName) {
-                    if (isset($currentParams[$paramName])) {
-                        $params[$paramName] = $currentParams[$paramName];
-                        continue;
-                    }
-                    if ($bridge instanceof BridgeInterface) {
-                        $params[$paramName] = $bridge->getLate($paramName);
-                    }
-                }
-            }
-
-            $output[$keyOrLabel] = new LateCall(function(string $routeName, array $params = []) {
-                return $this->routeHelper->getRouteUrl($routeName, Late::riseRa($params, Late::getStack()));
-            }, [$route['name'], $params]);
+            $output[$keyOrLabel] = $this->routeHelper->getLateRouteUrl($routeName, $bridge->getModel()->getMetaModel()->getKeys());
         }
 
         return $output;
@@ -277,8 +241,8 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      */
     protected function getEditUrls(TableBridge $bridge): array
     {
-        if ($this->menuEditActions) {
-            return $this->findUrls($this->menuEditActions, $bridge);
+        if ($this->menuEditRoutes) {
+            return $this->findUrls($this->menuEditRoutes, $bridge);
         }
         return [];
     }
@@ -318,8 +282,8 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      */
     protected function getShowUrls(TableBridge $bridge): array
     {
-        if ($this->menuShowActions) {
-            return $this->findUrls($this->menuShowActions, $bridge);
+        if ($this->menuShowRoutes) {
+            return $this->findUrls($this->menuShowRoutes, $bridge);
         }
         return [];
     }
