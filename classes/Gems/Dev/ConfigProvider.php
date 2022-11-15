@@ -13,7 +13,8 @@ class ConfigProvider
                 'sites' => $this->getSitesSettings(),
                 'mail' => [
                     'dsn' => 'smtp://mailhog:1025',
-                ]
+                ],
+                'password' => null,
             ];
         }
 
