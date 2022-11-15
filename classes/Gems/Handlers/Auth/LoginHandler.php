@@ -70,7 +70,7 @@ class LoginHandler implements RequestHandlerInterface
             'errors' => $this->flash->getFlash('login_errors'),
         ];
 
-        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::login', $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::login', $request, $data));
     }
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface
