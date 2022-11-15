@@ -16,6 +16,7 @@ use Gems\Condition\RoundConditionAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -29,10 +30,11 @@ class GenderCondition extends RoundConditionAbstract
 {
     public function __construct(protected ConditionLoader $conditions,
         protected Tracker $tracker,
+        TranslatorInterface $translator,
         protected Translated $translatedUtil
     )
     {
-        parent::__construct($conditions);
+        parent::__construct($conditions, $translator);
     }
 
     protected function getComparators(): array

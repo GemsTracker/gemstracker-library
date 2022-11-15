@@ -15,6 +15,7 @@ use Gems\Condition\RoundConditionAbstract;
 use Gems\Condition\ConditionLoader;
 use Gems\Tracker;
 use Gems\Tracker\Token;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -26,9 +27,9 @@ use Gems\Tracker\Token;
  */
 class TrackFieldCondition extends RoundConditionAbstract
 {
-    public function __construct(protected ConditionLoader $conditions, protected Tracker $tracker)
+    public function __construct(protected ConditionLoader $conditions, TranslatorInterface $translator, protected Tracker $tracker)
     {
-        parent::__construct($conditions);
+        parent::__construct($conditions, $translator);
     }
 
     protected function getComparators()

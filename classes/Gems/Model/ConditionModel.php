@@ -30,10 +30,9 @@ class ConditionModel extends \Gems\Model\JoinModel
     protected $db;
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
+    protected $conditionLoader;
 
     /**
      *
@@ -58,11 +57,9 @@ class ConditionModel extends \Gems\Model\JoinModel
      */
     public function applyBrowseSettings($addCount = true)
     {
-        $conditions = $this->loader->getConditions();
-
         $yesNo = $this->translatedUtil->getYesNo();
 
-        $types = $conditions->getConditionTypes();
+        $types = $this->conditionLoader->getConditionTypes();
         reset($types);
         $default = key($types);
         $this->set('gcon_type', 'label', $this->_('Type'),
@@ -74,7 +71,7 @@ class ConditionModel extends \Gems\Model\JoinModel
         $conditionsClasses = [];
         if ($addCount) { // Are we in a browse mode
             foreach ($types as $type => $val) {
-                $conditionsClasses += $conditions->listConditionsForType($type);
+                $conditionsClasses += $this->conditionLoader->listConditionsForType($type);
             }
         }
         $this->set('gcon_class', 'label', $this->_('Condition'),

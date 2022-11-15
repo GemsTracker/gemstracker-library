@@ -18,6 +18,7 @@ use Gems\Repository\OrganizationRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Gems\Tracker\RespondentTrack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -29,11 +30,12 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
 {
     public function __construct(
         ConditionLoader $conditions,
+        TranslatorInterface $translator,
         protected Translated $translatedUtil,
         protected OrganizationRepository $organizationRepository,
         protected UserLoader $userLoader
     ) {
-        parent::__construct($conditions);
+        parent::__construct($conditions, $translator);
     }
 
     /**

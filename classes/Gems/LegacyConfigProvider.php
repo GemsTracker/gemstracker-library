@@ -67,7 +67,7 @@ class LegacyConfigProvider
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
-                'LegacyConditions' => ConditionLoader::class,
+                'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyTrackEvents' => TrackEvents::class,

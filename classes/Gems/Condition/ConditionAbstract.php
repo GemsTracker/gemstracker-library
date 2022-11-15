@@ -12,6 +12,7 @@
 namespace Gems\Condition;
 
 use Gems\Condition\Comparator\ComparatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
 
 /**
@@ -26,8 +27,10 @@ abstract class ConditionAbstract implements ConditionInterface
 
     protected $_data;
 
-    public function __construct(protected ConditionLoader $conditions)
-    {}
+    public function __construct(protected ConditionLoader $conditions, TranslatorInterface $translator)
+    {
+        $this->translate = $translator;
+    }
 
     /**
      * @param array $data

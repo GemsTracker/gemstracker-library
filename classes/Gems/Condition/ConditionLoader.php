@@ -29,6 +29,7 @@ use Gems\Condition\Track\LocationCondition;
 use Gems\Condition\Track\OrganizationCondition;
 use Gems\Exception\Coding;
 use Gems\Model\ConditionModel;
+use Gems\Util\Translated;
 use MUtil\Translate\TranslateableTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
@@ -111,7 +112,7 @@ class ConditionLoader
     public function __construct(
         protected ProjectOverloader $overloader,
         TranslatorInterface $translator,
-        protected Util\Translated $translatedUtil
+        protected Translated $translatedUtil
     ) {
         $this->conditionLoader = clone $this->overloader;
         $this->conditionLoader->setDependencyResolver(new ConstructorDependencyResolver());

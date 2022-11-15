@@ -11,12 +11,14 @@
 
 namespace Gems\Condition\Track;
 
+use Gems\Agenda;
 use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -28,12 +30,13 @@ use Gems\Util\Translated;
 class LocationCondition extends ConditionAbstract implements TrackConditionInterface
 {
     public function __construct(protected ConditionLoader $conditions,
+        TranslatorInterface $translator,
         protected Tracker $tracker,
         protected Translated $translatedUtil,
         protected Agenda $agenda,
     )
     {
-        parent::__construct($conditions);
+        parent::__construct($conditions, $translator);
     }
 
     /**
