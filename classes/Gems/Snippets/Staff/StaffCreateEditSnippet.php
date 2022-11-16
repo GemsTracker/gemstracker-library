@@ -141,9 +141,9 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
             $this->resetRoute = true;
             $this->afterSaveRouteKeys = true;
         } else {
-            $user = $this->loader->getUser($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
+            $user = $this->loader->getUserLoader()->getUserOrNull($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
 
-            if (! $user->canSetPassword()) {
+            if (!$user || ! $user->canSetPassword()) {
                 $this->routeAction = 'show';
                 $this->resetRoute = true;
                 $this->afterSaveRouteKeys = true;
