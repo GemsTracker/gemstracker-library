@@ -532,7 +532,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
             }
             // Check: can the user log in as this organization, if not load non-existing user
             if (! $user->isAllowedOrganization($currentOrganization)) {
-                $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);
+                throw new AuthenticationException('disallowed organization');
             }
 
             $user->setCurrentOrganization($currentOrganization);
@@ -541,16 +541,30 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         return $user;
     }
 
+    public function getUserOrNull(string $loginName, int $organizationId): ?User
+    {
+        try {
+            $user = $this->getUser($loginName, $organizationId);
+            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
+                throw new \Exception('Caught no-login user');
+            }
+
+            return $user;
+        } catch (AuthenticationException) {
+            return null;
+        }
+    }
+
     /**
      * Get the user having the reset key specified
      *
      * @param string $resetKey
-     * @return \Gems\User\User But ! ->isActive when the user does not exist
+     * @return \Gems\User\User|null
      */
     public function getUserByResetKey($resetKey)
     {
         if ((null == $resetKey) || (0 == strlen(trim($resetKey)))) {
-            return $this->loadUser(self::USER_NOLOGIN, null, null);
+            return null;
         }
 
         $select = $this->db->select();
@@ -563,7 +577,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
             return $this->loadUser($row[0], $row[1], $row[2]);
         }
 
-        return $this->loadUser(self::USER_NOLOGIN, null, null);
+        return null;
     }
 
     /**
@@ -578,10 +592,25 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
 
         // \MUtil\EchoOut\EchoOut::track($data);
         if (false == $data) {
-            $data = array('gsf_login' => null, 'gsf_id_organization' => null);
+            throw new AuthenticationException('No staff found');
+            // $data = array('gsf_login' => null, 'gsf_id_organization' => null);
         }
 
         return $this->getUser($data['gsf_login'], $data['gsf_id_organization']);
+    }
+
+    public function getUserOrNullByStaffId(int $staffId): ?User
+    {
+        try {
+            $user = $this->getUserByStaffId($staffId);
+            if ($user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
+                throw new \Exception('Caught no-login user');
+            }
+
+            return $user;
+        } catch (AuthenticationException) {
+            return null;
+        }
     }
 
     /**
@@ -600,12 +629,12 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
 
 
         if (null == $login_name) {
-            return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
+            throw new AuthenticationException('empty login name');
         }
 
         if (!$this->allowLoginOnWithoutOrganization) {
             if ((null == $organization) || (! intval($organization))) {
-                return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
+                throw new AuthenticationException('invalid organization');
             }
         }
 

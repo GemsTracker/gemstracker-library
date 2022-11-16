@@ -36,10 +36,6 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
     {
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
         $user = $this->userLoader->getUserByResetKey($request->getAttribute('key'));
-        if ($user && $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
-            // TODO: Remove NOLOGIN
-            $user = null;
-        }
 
         if (!$user || !$user->hasValidResetKey()) {
             if ($user && $user->getLoginName()) {

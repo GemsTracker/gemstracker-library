@@ -81,13 +81,10 @@ class AuthenticationService
         $identity = $this->getIdentity();
 
         if ($identity === null) {
-            return null; //new NotLoggedInUser();
+            return null;
         }
 
-        return $this->userLoader->getUser(
-            $identity->getLoginName(),
-            $identity->getOrganizationId(),
-        );
+        return $this->userLoader->getUserOrNull($identity->getLoginName(), $identity->getOrganizationId());
     }
 
     public function logout(): void

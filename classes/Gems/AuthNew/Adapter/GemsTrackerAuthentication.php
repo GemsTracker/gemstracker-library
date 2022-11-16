@@ -26,10 +26,7 @@ class GemsTrackerAuthentication implements AuthenticationAdapterInterface
         string $username,
         string $password,
     ): self {
-        $user = $userLoader->getUser(
-            $username,
-            $organizationId,
-        );
+        $user = $userLoader->getUserOrNull($username, $organizationId);
 
         return new self($db, $user, $password);
     }

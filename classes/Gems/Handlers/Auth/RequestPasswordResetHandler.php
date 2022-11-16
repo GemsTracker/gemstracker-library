@@ -90,11 +90,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             return $this->redirectBack($request, [$this->blockMessage($blockMinutes)]);
         }
 
-        $user = $this->userLoader->getUser($input['username'], (int)$input['organization']);
-        if ($user && $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) {
-            // TODO: Remove NOLOGIN
-            $user = null;
-        }
+        $user = $this->userLoader->getUserOrNull($input['username'], (int)$input['organization']);
 
         if (
             $user !== null
