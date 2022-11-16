@@ -11,6 +11,8 @@
 
 namespace Gems\Model\Dependency\Condition;
 
+use Gems\Condition\ConditionLoader;
+
 /**
  *
  * @package    Gems
@@ -54,16 +56,9 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
         ];
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $util;
+    protected $conditionLoader;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -87,11 +82,9 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      */
     public function getChanges(array $context, $new)
     {
-        $conditions = $this->loader->getConditions();
-
         if (isset($context['gro_condition']) && !empty($context['gro_condition'])) {
             try {
-                $condition = $conditions->loadCondition($context['gro_condition']);
+                $condition = $this->conditionLoader->loadCondition($context['gro_condition']);
                 $callback  = [$condition, 'isValid'];
                 $validator = new \Zend_Validate_Callback($callback);
                 $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    

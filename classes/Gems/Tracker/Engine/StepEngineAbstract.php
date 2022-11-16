@@ -210,7 +210,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
                 }
                 $model->del('ggp_name');
             } else {
-                $model->set('ggp_name', 'label', $this->translateAdapter->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
+                $model->set('ggp_name', 'label', $this->_('Assigned to'), 'elementClass', 'Exhibitor', 'order', 25);
                 $model->set('gro_id_relationfield', 'elementClass', 'hidden');
 
                 $itemData['ggp_name'] = $this->db->fetchOne('select ggp_name from gems__groups join gems__surveys on ggp_id_group = gsu_id_primary_group and gsu_id_survey = ?', $itemData['gro_id_survey']);
@@ -300,7 +300,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
         }
 
         $changed   = 0;
-        $condition = $this->loader->getConditions()->loadCondition($round['gro_condition']);
+        $condition = $this->conditionLoader->loadCondition($round['gro_condition']);
         $newStatus = $condition->isRoundValid($token);
         $oldStatus = $token->getReceptionCode()->isSuccess();
 
