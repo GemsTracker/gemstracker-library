@@ -26,11 +26,8 @@ class HelperAdapter extends TagAwareAdapter
 
     /**
      * Cleans up everything to a save cacheId
-     *
-     * @param string $cacheId
-     * @return string
      */
-    public static function cleanupForCacheId($cacheId)
+    public static function cleanupForCacheId(string $cacheId): string
     {
         return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
     }

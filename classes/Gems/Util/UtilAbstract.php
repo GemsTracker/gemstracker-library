@@ -218,7 +218,7 @@ class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
      */
     protected function _getSelectPairsProcessedCached($cacheId, $sql, $function, $binds = array(), $tags = array(), $sort = null)
     {
-        $cacheId = get_class($this) . '_' . $cacheId;
+        $cacheId = HelperAdapter::cleanupForCacheId(get_class($this) . '_' . $cacheId);
 
         $result = false; //$this->cache->load($cacheId);
 
