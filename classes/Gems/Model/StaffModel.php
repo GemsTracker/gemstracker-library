@@ -236,7 +236,7 @@ class StaffModel extends \Gems\Model\JoinModel
                 'required', true);
 
             if ($editing) {
-                $ucfirst = new \Zend_Filter_Callback('ucfirst');
+                $ucfirst = new \Zend_Filter_Callback(fn ($s) => ucfirst($s ?? ''));
                 $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_job_title',    'filters[ucfirst]', $ucfirst);

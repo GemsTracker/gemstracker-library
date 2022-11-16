@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Staff;
 
+use MUtil\Model\Bridge\TableBridge;
+
 /**
  *
  *
@@ -95,21 +97,19 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @return \Gems\Menu\SubMenuItem
      */
-    protected function getEditUrls()
+    protected function getEditUrls(TableBridge $bridge): array
     {
-        $resets = $this->findUrls($this->menuActionController, 'reset');
+        $resets = $this->findUrls('reset', $bridge);
         foreach ($resets as $resetPw) {
             if ($resetPw instanceof \Gems\Menu\SubMenuItem) {
                 $resetPw->set('label', $this->_('password'));
             }
         }
         return array_merge(
-                parent::getEditUrls(),
-                $resets,
-                $this->findUrls($this->menuActionController, 'mail')
-                );
+            parent::getEditUrls($bridge),
+            $resets,
+            $this->findUrls('mail', $bridge)
+        );
     }
 }
