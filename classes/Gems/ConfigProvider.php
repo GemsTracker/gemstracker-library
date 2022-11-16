@@ -29,6 +29,15 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
+use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
+use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
+use Gems\Tracker\TrackEvent\TrackBeforeFieldUpdateEventInterface;
+use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
+use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Translate\TranslationFactory;
 use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
@@ -123,6 +132,15 @@ class ConfigProvider
                     RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
                     TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
                     ExtensionInterface::class => ['config' => 'twig.extensions'],
+                    RespondentChangedEventInterface::class => ['config' => 'tracker.trackEvents.Respondent/Change'],
+                    TrackCalculationEventInterface::class => ['config' => 'tracker.trackEvents.Track/Calculate'],
+                    TrackCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Track/Completed'],
+                    TrackBeforeFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/BeforeFieldUpdate'],
+                    TrackFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/FieldUpdate'],
+                    RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
+                    SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
+                    SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
+                    SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
