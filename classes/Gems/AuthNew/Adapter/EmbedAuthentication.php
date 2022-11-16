@@ -28,7 +28,7 @@ class EmbedAuthentication implements AuthenticationAdapterInterface
 
     public function authenticate(): AuthenticationResult
     {
-        $systemUser = $this->userLoader->getUser($this->systemUserLoginName, $this->organizationId);
+        $systemUser = $this->userLoader->getUserOrNull($this->systemUserLoginName, $this->organizationId);
         if ($systemUser === null || !$systemUser->isActive()) {
             return $this->makeFailResult(AuthenticationResult::FAILURE, ['Nonexistent or inactive']);
         }

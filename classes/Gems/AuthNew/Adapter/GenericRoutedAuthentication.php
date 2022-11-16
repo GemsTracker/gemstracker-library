@@ -22,12 +22,9 @@ class GenericRoutedAuthentication implements AuthenticationAdapterInterface
 
     public function authenticate(): AuthenticationResult
     {
-        $user = $this->userLoader->getUser(
-            $this->username,
-            $this->organizationId,
-        );
+        $user = $this->userLoader->getUserOrNull($this->username, $this->organizationId);
 
-        if ($user === null || $user->getUserDefinitionClass() === UserLoader::USER_NOLOGIN) { // TODO: Remove NOLOGIN
+        if ($user === null) {
             return new GenericFailedAuthenticationResult(AuthenticationResult::FAILURE);
         }
 
