@@ -62,16 +62,6 @@ class ConditionLoader
     const ROUND_CONDITION  = 'Round';
     const TRACK_CONDITION  = 'Track';
 
-    protected array $comparators = [
-        self::COMPARATOR_BETWEEN => Between::class,
-        self::COMPARATOR_CONTAINS => Contains::class,
-        self::COMPARATOR_EQUALS => Equals::class,
-        self::COMPARATOR_EQUALLESS => EqualLess::class,
-        self::COMPARATOR_EQUALMORE => EqualMore::class,
-        self::COMPARATOR_IN => In::class,
-        self::COMPARATOR_NOT => NotEquals::class,
-    ];
-
     /**
      * Each condition type must implement a condition class or interface derived
      * from ConditionInterface specified in this array.
@@ -88,21 +78,7 @@ class ConditionLoader
 
     protected ProjectOverloader $conditionLoader;
 
-    protected $conditions = [
-        self::ROUND_CONDITION => [
-            AgeCondition::class,
-            AndCondition::class,
-            GenderCondition::class,
-            LastAnswerCondition::class,
-            OrCondition::class,
-            TrackFieldCondition::class,
-        ],
-        self::TRACK_CONDITION => [
-            \Gems\Condition\Track\AgeCondition::class,
-            LocationCondition::class,
-            OrganizationCondition::class,
-        ],
-    ];
+    protected array $config = [];
 
     /**
      *
@@ -114,11 +90,15 @@ class ConditionLoader
         protected ProjectOverloader $overloader,
         TranslatorInterface $translator,
         protected Translated $translatedUtil,
-        protected HelperAdapter $cache
+        protected HelperAdapter $cache,
+        array $config,
     ) {
         $this->conditionLoader = clone $this->overloader;
         $this->conditionLoader->setDependencyResolver(new ConstructorDependencyResolver());
         $this->translate = $translator;
+        if (isset($config['tracker'], $config['tracker']['conditions'])) {
+            $this->config = $config['tracker']['conditions'];
+        }
     }
 
     /**
@@ -167,9 +147,12 @@ class ConditionLoader
         return $this->translatedUtil->getEmptyDropdownArray() + $conditionList;
     }
 
-    public function getComparators()
+    public function getComparators(): ?array
     {
-        return $this->comparators;
+        if (isset($this->config['comparators'])) {
+            return $this->config['comparators'];
+        }
+        return null;
     }
 
     public function getCondition(string $conditionClassName, string $conditionType): ConditionInterface
@@ -194,8 +177,8 @@ class ConditionLoader
 
     public function getConditionClasses(string $conditionType): ?array
     {
-        if (isset($this->conditions[$conditionType])) {
-            return $this->conditions[$conditionType];
+        if (isset($this->config[strtolower($conditionType)])) {
+            return $this->config[strtolower($conditionType)];
         }
         return null;
     }
@@ -281,7 +264,14 @@ class ConditionLoader
     public function loadComparator(string $name, array $options = []): ?ComparatorInterface
     {
         $comparators = $this->getComparators();
-        if (isset($comparators[$name])) {
+
+        $comparatorClass = null;
+        foreach($comparators as $comparator) {
+            if (str_ends_with($comparator, "\\$name")) {
+                $comparatorClass = $comparator;
+            }
+        }
+        if ($comparatorClass !== null) {
             array_unshift($options, $this->translate);
             /**
              * @var ComparatorInterface

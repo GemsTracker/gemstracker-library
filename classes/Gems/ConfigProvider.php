@@ -13,6 +13,7 @@ use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
 use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
+use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
@@ -120,6 +121,7 @@ class ConfigProvider
             'settings' => [
                 'implements' => [
                     RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
+                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
                     ExtensionInterface::class => ['config' => 'twig.extensions'],
                 ],
                 'extends' => [
