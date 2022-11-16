@@ -7,7 +7,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Completed;
+namespace Gems\Tracker\TrackEvent\Survey\Completed;
+
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TranslatableEventAbstract;
 
 /**
  * Displays the variables and their values to help create a new calculation
@@ -22,17 +26,16 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-class CopyCodesToTrackFields extends \Gems\Event\EventCalculations implements \Gems\Event\SurveyCompletedEventInterface
+class CopyCodesToTrackFields extends TranslatableEventAbstract implements SurveyCompletedEventInterface
 {
-
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_("Copy answers to track fields with the same trackfield code");
+        return $this->translator->_("Copy answers to track fields with the same trackfield code");
     }
 
     /**
@@ -40,10 +43,10 @@ class CopyCodesToTrackFields extends \Gems\Event\EventCalculations implements \G
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems\Tracker\Token $token)
+    public function processTokenData(Token $token): array
     {
         if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
@@ -63,6 +66,6 @@ class CopyCodesToTrackFields extends \Gems\Event\EventCalculations implements \G
             }
         }
 
-        return false;
+        return [];
     }
 }

@@ -9,7 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use MUtil\Model\Bridge\TableBridge;
+use MUtil\Model\ModelAbstract;
 
 /**
  * Put the highest value first
@@ -20,20 +24,20 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class ByValue extends \Gems\Event\SurveyAnswerFilterAbstract
+class ByValue extends SurveyAnswerFilterAbstract
 {
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
+     * @see AnswerModelSnippetGeneric
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param TableBridge $bridge
      * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
     {
         $currentNames = array_combine($currentNames, $currentNames);
         $newOrder     = array();
@@ -57,8 +61,8 @@ class ByValue extends \Gems\Event\SurveyAnswerFilterAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Show the highest answer first.');
+        return $this->translator->_('Show the highest answer first.');
     }
 }

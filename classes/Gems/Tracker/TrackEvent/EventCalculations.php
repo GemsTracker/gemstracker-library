@@ -9,9 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
-
-use Zalt\Loader\Translate\TranslateableAbstract;
+namespace Gems\Tracker\TrackEvent;
 
 /**
  * Helper class containing calculation functions for use in event classes.
@@ -23,7 +21,7 @@ use Zalt\Loader\Translate\TranslateableAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EventCalculations extends TranslateableAbstract
+class EventCalculations
 {
     use EventCalculationsTrait;
 }

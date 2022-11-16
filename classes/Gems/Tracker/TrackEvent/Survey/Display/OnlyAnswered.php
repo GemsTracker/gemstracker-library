@@ -9,7 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use MUtil\Model\Bridge\TableBridge;
+use MUtil\Model\ModelAbstract;
 
 /**
  * Display only those questions that have an answer
@@ -20,7 +24,7 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class OnlyAnswered extends \Gems\Event\SurveyAnswerFilterAbstract
+class OnlyAnswered extends SurveyAnswerFilterAbstract
 {
 
     /**
@@ -32,7 +36,7 @@ class OnlyAnswered extends \Gems\Event\SurveyAnswerFilterAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return boolean
      */
-    public function array_filter($inputArray, $model)
+    public function array_filter(array $inputArray, ModelAbstract $model): array
     {
         $outputArray = array();
         foreach ($inputArray as $key => $value) {
@@ -63,7 +67,7 @@ class OnlyAnswered extends \Gems\Event\SurveyAnswerFilterAbstract
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
     {
         $rows = $bridge->getRows();
         if (! $rows) {
@@ -93,8 +97,8 @@ class OnlyAnswered extends \Gems\Event\SurveyAnswerFilterAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Display only the questions with an answer.');
+        return $this->translator->_('Display only the questions with an answer.');
     }
 }

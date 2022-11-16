@@ -8,7 +8,10 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\Token;
 
 /**
  * After a round has changed/completed run this code.
@@ -22,17 +25,17 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface RoundChangedEventInterface extends \Gems\Event\EventInterface
+interface RoundChangedEventInterface extends EventInterface
 {
     /**
      * Process the token and return true when data has changed.
      *
      * The event has to handle the actual storage of the changes.
      *
-     * @param \Gems\Tracker\Token $token
-     * @param \Gems\Tracker\RespondentTrack $respondentTrack
+     * @param Token $token
+     * @param RespondentTrack $respondentTrack
      * @param int $userId The current user
      * @return int The number of tokens changed by this event
      */
-    public function processChangedRound(\Gems\Tracker\Token $token, \Gems\Tracker\RespondentTrack $respondentTrack, $userId);
+    public function processChangedRound(Token $token, RespondentTrack $respondentTrack, $userId);
 }

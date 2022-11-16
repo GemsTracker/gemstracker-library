@@ -9,7 +9,13 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Completed;
+namespace Gems\Tracker\TrackEvent\Survey\Completed;
+
+use Gems\Db\ResultFetcher;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use Gems\Util;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -20,29 +26,19 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Apr 6, 2016 11:21:11 AM
  */
-class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
-    implements \Gems\Event\SurveyCompletedEventInterface
+class SetInformedConsent implements SurveyCompletedEventInterface
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(protected Translator $translator, protected ResultFetcher $resultFetcher, protected Util $util)
+    {}
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_("Use the 'informedconsent' answer to set the informed consent.");
+        return $this->translator->_("Use the 'informedconsent' answer to set the informed consent.");
     }
 
     /**
@@ -50,13 +46,13 @@ class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems\Tracker\Token $token)
+    public function processTokenData(Token $token): array
     {
         if (! $token->getReceptionCode()->isSuccess()) {
-            return;
+            return [];
         }
         $answers = $token->getRawAnswers();
 
@@ -69,10 +65,10 @@ class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
             } else {
                 if ($answers['informedconsent']) {
                     // Uses start of consent description as answer (LS has only 5 chars for an answer option)
-                    $consentCode = $this->db->fetchOne(
+                    $consentCode = $this->resultFetcher->fetchOne(
                             "SELECT gco_description FROM gems__consents WHERE gco_description LIKE ? ORDER BY gco_order",
-                            $answers['informedconsent'] . '%'
-                            );
+                            [$answers['informedconsent'] . '%']
+                    );
                 } else {
                     $consentCode = false;
                 }
@@ -80,15 +76,15 @@ class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
                 if (! $consentCode) {
                     if ($answers['informedconsent']) {
                         // Code not found, use first positive consent
-                        $consentCode = $this->db->fetchOne(
+                        $consentCode = $this->resultFetcher->fetchOne(
                                 "SELECT gco_description FROM gems__consents WHERE gco_code != ? ORDER BY gco_order",
-                                $this->util->getConsentRejected()
+                                [$this->util->getConsentRejected()]
                                 );
                     } else {
                         // Code not found, use first negative consent
-                        $consentCode = $this->db->fetchOne(
+                        $consentCode = $this->resultFetcher->fetchOne(
                                 "SELECT gco_description FROM gems__consents WHERE gco_code = ? ORDER BY gco_order",
-                                $this->util->getConsentRejected()
+                                [$this->util->getConsentRejected()]
                                 );
                     }
                 }
@@ -115,6 +111,6 @@ class SetInformedConsent extends \MUtil\Translate\TranslateableAbstract
             }
         }
 
-        return false;
+        return [];
     }
 }

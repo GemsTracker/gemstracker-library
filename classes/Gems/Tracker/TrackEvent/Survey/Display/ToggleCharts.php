@@ -8,7 +8,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\Token;
 
 /**
  * Display survey answers with a toggle for full or compact view and add a barchart
@@ -20,15 +22,15 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class ToggleCharts extends \Gems\Event\Survey\Display\CompactFullToggle
+class ToggleCharts extends CompactFullToggle
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems\Tracker\Token $token The token to get the snippets for
+     * @param Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
+    public function getAnswerDisplaySnippets(Token $token): array
     {
         $snippets = parent::getAnswerDisplaySnippets($token);
 
@@ -42,8 +44,8 @@ class ToggleCharts extends \Gems\Event\Survey\Display\CompactFullToggle
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return sprintf($this->_('%s with chart'), parent::getEventName());
+        return sprintf($this->translator->_('%s with chart'), parent::getEventName());
     }
 }

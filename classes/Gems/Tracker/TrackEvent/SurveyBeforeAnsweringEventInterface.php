@@ -8,7 +8,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\Token;
 
 /**
  * Event interface triggered before a survey is answered by the user.
@@ -21,15 +23,15 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface SurveyBeforeAnsweringEventInterface extends \Gems\Event\EventInterface
+interface SurveyBeforeAnsweringEventInterface extends EventInterface
 {
     /**
      * Process the data and return the answers that should be filled in beforehand.
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(\Gems\Tracker\Token $token);
+    public function processTokenInsertion(Token $token): array;
 }

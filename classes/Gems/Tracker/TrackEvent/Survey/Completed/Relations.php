@@ -9,7 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Completed;
+namespace Gems\Tracker\TrackEvent\Survey\Completed;
+
+use Gems\Model\RespondentRelationModel;
+use Gems\Tracker\Respondent;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use MUtil\Model;
+use MUtil\Translate\Translator;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -20,15 +28,15 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\Event\SurveyCompletedEventInterface
+class Relations implements SurveyCompletedEventInterface
 {
 
     /**
      * Map grr_field to lookup code, keep lookup lowercase
      *
-     * @var Array
+     * @var array
      */
-    protected $fieldmap = [
+    protected array $fieldmap = [
         'grr_first_name' => 'firstname',
         'grr_last_name'  => 'lastname',
         'grr_birthdate'  => 'birthdate',
@@ -39,24 +47,29 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
 
     /**
      *
-     * @var \Gems\Loader
+     * @var RespondentRelationModel
      */
-    public $loader;
+    protected RespondentRelationModel $relationModel;
 
-    /**
-     *
-     * @var \Gems\Model\RespondentRelationModel
-     */
-    protected $relationModel;
+    public function __construct(protected Translator $translator, protected ProjectOverloader $overLoader)
+    {}
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return sprintf($this->_("Import and assign relations, prefix fields with relationfield code, followed by %s"), join(', ', $this->fieldmap));
+        return sprintf($this->translator->_("Import and assign relations, prefix fields with relationfield code, followed by %s"), join(', ', $this->fieldmap));
+    }
+
+    protected function getRespondentRelationModel(): RespondentRelationModel
+    {
+        /**
+         * @var RespondentRelationModel
+         */
+        return $this->overLoader->create('Model\\RespondentRelationModel');
     }
 
     /**
@@ -64,17 +77,17 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems\Tracker\Token $token)
+    public function processTokenData(Token $token): array
     {
         $respondentTrack = $token->getRespondentTrack();
 
         $relationFields = $respondentTrack->getTrackEngine()->getFieldsOfType('relation');
 
         if (!empty($relationFields)) {
-            $this->relationModel = $this->loader->getModels()->getRespondentRelationModel();
+            $this->relationModel = $this->getRespondentRelationModel();
 
             // Get lowercase question codes
             $tokenAnswers = array_change_key_case($token->getRawAnswers(), CASE_LOWER);
@@ -94,7 +107,7 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
             }
         }
 
-        return;
+        return [];
     }
 
     /**
@@ -102,9 +115,9 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
      *
      * @param string $fieldCode
      * @param array $answers
-     * @return [] Array of relation fields
+     * @return array Array of relation fields
      */
-    protected function findRelation($fieldCode, $answers)
+    protected function findRelation(string $fieldCode, array $answers): array
     {
         $relation       = [];
         $lowerFieldCode = strtolower($fieldCode);
@@ -130,10 +143,10 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
      * Perform checks on the relation, does it already exist and need updating
      *
      * @param array $relation
-     * @param \Gems\Tracker\Respondent $respondent
+     * @param Respondent $respondent
      * @return int The relation ID
      */
-    protected function handleRelation($relation, \Gems\Tracker\Respondent $respondent)
+    protected function handleRelation(array $relation, Respondent $respondent): int
     {
 
         $relationFilter = [
@@ -151,7 +164,7 @@ class Relations extends \MUtil\Translate\TranslateableAbstract implements \Gems\
                     'Y-m-d H:i:s',
                     'Y-m-d'
                 ];
-                $relation['grr_birthdate'] = \MUtil\Model::getDateTimeInterface($relation['grr_birthdate'], $dateformats);
+                $relation['grr_birthdate'] = Model::getDateTimeInterface($relation['grr_birthdate'], $dateformats);
             }
 
             $relation = ['grr_id_respondent' => $respondent->getId()] + $relation + $this->relationModel->loadNew();

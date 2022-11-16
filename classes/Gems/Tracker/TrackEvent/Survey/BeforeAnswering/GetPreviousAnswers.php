@@ -9,7 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\BeforeAnswering;
+namespace Gems\Tracker\TrackEvent\Survey\BeforeAnswering;
+
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
+use Gems\Tracker\TrackEvent\TranslatableEventAbstract;
 
 /**
  * This events look for a previous copy of the same
@@ -21,24 +25,16 @@ namespace Gems\Event\Survey\BeforeAnswering;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class GetPreviousAnswers extends \MUtil\Registry\TargetAbstract
-    implements \Gems\Event\SurveyBeforeAnsweringEventInterface
+class GetPreviousAnswers extends TranslatableEventAbstract implements SurveyBeforeAnsweringEventInterface
 {
-    /**
-     * Set as this is a \MUtil\Registry\TargetInterface
-     *
-     * @var \Zend_Translate $translate
-     */
-    protected $translate;
-
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->translate->_('Lookup answers in previous instance of survey in track.');
+        return $this->translator->_('Lookup answers in previous instance of survey in track.');
     }
 
     /**
@@ -46,10 +42,10 @@ class GetPreviousAnswers extends \MUtil\Registry\TargetAbstract
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(\Gems\Tracker\Token $token)
+    public function processTokenInsertion(Token $token): array
     {
         if ($token->getReceptionCode()->isSuccess() && (! $token->isCompleted())) {
             // Preparation for a more general object class

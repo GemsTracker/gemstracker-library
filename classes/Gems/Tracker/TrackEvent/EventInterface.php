@@ -8,7 +8,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
 
 /**
  * To be able to display lists of possible event classes in a list and to mark events as such,
@@ -27,5 +27,5 @@ interface EventInterface
      *
      * @return string Name
      */
-    public function getEventName();
+    public function getEventName(): string;
 }

@@ -8,12 +8,13 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\BeforeAnswering;
+namespace Gems\Tracker\TrackEvent\Survey\BeforeAnswering;
 
-use Gems\Event\BeforeAnsweringAbstract;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\BeforeAnsweringAbstract;
 
 /**
- * This events look for a previous copy of a survey with the same code and copies
+ * This event looks for a previous copy of a survey with the same code and copies
  * the answers for all fields starting with a prefix
  *
  * @package    Gems
@@ -29,18 +30,18 @@ class FillTrackFieldAnswers extends BeforeAnsweringAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Copy track fields with the same trackfield code to answers');
+        return $this->translator->_('Copy track fields with the same trackfield code to answers');
     }
 
     /**
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      */
-    protected function processOutput(\Gems\Tracker\Token $token)
+    protected function processOutput(Token $token): void
     {
         $this->log("Setting track fields");
 

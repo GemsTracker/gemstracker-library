@@ -9,9 +9,10 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\BeforeAnswering;
+namespace Gems\Tracker\TrackEvent\Survey\BeforeAnswering;
 
-use Gems\Event\BeforeAnsweringAbstract;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\BeforeAnsweringAbstract;
 
 /**
  *
@@ -25,9 +26,9 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
     /**
      * @inheritDoc
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Copy gtAgeYears, gtAgeMonths, gtGender and gtRespondentNr.');
+        return $this->translator->_('Copy gtAgeYears, gtAgeMonths, gtGender and gtRespondentNr.');
     }
 
     /**
@@ -36,7 +37,7 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
      *
      * @param \Gems\Tracker\Token $token
      */
-    protected function processOutput(\Gems\Tracker\Token $token)
+    protected function processOutput(Token $token): void
     {
         $this->log("Filling gt respondent fields");
 
@@ -46,9 +47,8 @@ class FillBirthDayGender extends BeforeAnsweringAbstract
         $birthDay   = $respondent->getBirthday();
         if ($birthDay instanceof \DateTimeInterface) {
             $now  = new \DateTimeImmutable();
-            $then = $birthDay->getDateTime();
 
-            $interval = $then->diff($now);
+            $interval = $birthDay->diff($now);
             $this->addCheckedValue('gtAgeYears', $interval->y);
             $this->addCheckedValue('gtAgeMonths', ($interval->y * 12) + $interval->m);
         } else {

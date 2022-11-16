@@ -9,7 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
+use Gems\Tracker\TrackEvent\TranslatableEventAbstract;
 
 /**
  * Put the highest value first
@@ -20,8 +24,7 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class AllSingleTrack extends \MUtil\Translate\TranslateableAbstract
-    implements \Gems\Event\SurveyDisplayEventInterface
+class AllSingleTrack extends TranslatableEventAbstract implements SurveyDisplayEventInterface
 {
     /**
      * Set a fixed model sort.
@@ -30,21 +33,22 @@ class AllSingleTrack extends \MUtil\Translate\TranslateableAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array(
+    protected $_fixedSort = [
         'grc_success' => SORT_DESC,
         'gto_valid_from' => SORT_ASC,
         'gto_completion_time' => SORT_ASC,
-        'gto_round_order' => SORT_ASC);
+        'gto_round_order' => SORT_ASC
+    ];
 
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems\Tracker\Token $token The token to get the snippets for
+     * @param Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
+    public function getAnswerDisplaySnippets(Token $token): array
     {
-        return 'Tracker\\Answers\\SingleTrackAnswersModelSnippet';
+        return ['Tracker\\Answers\\SingleTrackAnswersModelSnippet'];
     }
 
     /**
@@ -52,8 +56,8 @@ class AllSingleTrack extends \MUtil\Translate\TranslateableAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Show all tokens for this survey in this track type');
+        return $this->translator->_('Show all tokens for this survey in this track type');
     }
 }

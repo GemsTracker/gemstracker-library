@@ -9,9 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Respondent\Change;
+namespace Gems\Tracker\TrackEvent\Respondent\Change;
 
-use Gems\Event\RespondentChangedEventInterface;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Tracker;
+use Gems\Tracker\Respondent;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -21,43 +27,31 @@ use Gems\Event\RespondentChangedEventInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 12-Mar-2019 15:29:10
  */
-class CreateDefaultTracks extends \MUtil\Translate\TranslateableAbstract
-    implements RespondentChangedEventInterface
+class CreateDefaultTracks implements RespondentChangedEventInterface
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected int $currentUserId;
 
     /**
      * The code to check on
      *
      * @var String
      */
-    protected $trackCode = 'default';
+    protected string $trackCode = 'default';
+
+    public function __construct(protected Tracker $tracker, protected ResultFetcher $resultFetcher, protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    {
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
         return sprintf(
-                $this->_('Add all tracks with containing the trackcode "%s".'),
+                $this->translator->_('Add all tracks with containing the trackcode "%s".'),
                 $this->trackCode
                 );
     }
@@ -71,14 +65,12 @@ class CreateDefaultTracks extends \MUtil\Translate\TranslateableAbstract
      * @param int $userId The current user
      * @return boolean True when something changed
      */
-    public function processChangedRespondent(\Gems\Tracker\Respondent $respondent)
+    public function processChangedRespondent(Respondent $respondent): bool
     {
         $changes    = 0;
-        $tracker    = $this->loader->getTracker();
-        $respTracks = $tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
-        $userId     = $this->currentUser->getUserId();
+        $respTracks = $this->tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
 
-        $tracksData = $this->db->fetchAll("SELECT * FROM gems__tracks
+        $tracksData = $this->resultFetcher->fetchAll("SELECT * FROM gems__tracks
             WHERE gtr_active = 1 AND
                 CONCAT(' ', gtr_code, ' ') LIKE '% " . $this->trackCode . " %' AND
                 gtr_organizations LIKE '%|" . $respondent->getOrganizationId() . "|%'
@@ -89,13 +81,13 @@ class CreateDefaultTracks extends \MUtil\Translate\TranslateableAbstract
         $changes = false;
 
         foreach ($tracksData as $trackData) {
-            $trackEngine = $tracker->getTrackEngine($trackData);
+            $trackEngine = $this->tracker->getTrackEngine($trackData);
             if ($trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 // \MUtil\EchoOut\EchoOut::track($trackEngine->getTrackCode(), count($respTracks));
 
                 $create = true;
                 foreach($respTracks as $respondentTrack) {
-                    if (($respondentTrack instanceof \Gems\Tracker\RespondentTrack) &&
+                    if (($respondentTrack instanceof RespondentTrack) &&
                             ($respondentTrack->getTrackId() == $trackEngine->getTrackId())) {
                         $create = false;
                         break;
@@ -105,11 +97,11 @@ class CreateDefaultTracks extends \MUtil\Translate\TranslateableAbstract
                 // \MUtil\EchoOut\EchoOut::track($create);
                 if ($create) {
                     $changes = true;
-                    $tracker->createRespondentTrack(
+                    $this->tracker->createRespondentTrack(
                             $respondent->getId(),
                             $respondent->getOrganizationId(),
                             $trackEngine->getTrackId(),
-                            $userId
+                            $this->currentUserId,
                             );
                 }
             }

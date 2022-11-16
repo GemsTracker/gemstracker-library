@@ -9,7 +9,13 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Track\FieldUpdate;
+namespace Gems\Tracker\TrackEvent\Track\FieldUpdate;
+
+use Gems\Agenda;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
+use Gems\Util\ReceptionCode;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -20,23 +26,20 @@ namespace Gems\Event\Track\FieldUpdate;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 19-okt-2014 18:32:02
  */
-class HideWhenNoAppointment extends \MUtil\Translate\TranslateableAbstract
-    implements \Gems\Event\TrackFieldUpdateEventInterface
+class HideWhenNoAppointment implements TrackFieldUpdateEventInterface
 {
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+
+    public function __construct(protected Translator $translator, protected Agenda $agenda)
+    {}
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Skip rounds without a valid appointment, hiding them for the user.');
+        return $this->translator->_('Skip rounds without a valid appointment, hiding them for the user.');
     }
 
     /**
@@ -44,13 +47,12 @@ class HideWhenNoAppointment extends \MUtil\Translate\TranslateableAbstract
      *
      * Storing the changed $values is handled by the calling function.
      *
-     * @param \Gems\Tracker\RespondentTrack $respTrack \Gems respondent track object
+     * @param RespondentTrack $respTrack \Gems respondent track object
      * @param int   $userId The current userId
      * @return void
      */
-    public function processFieldUpdate(\Gems\Tracker\RespondentTrack $respTrack, $userId)
+    public function processFieldUpdate(RespondentTrack $respTrack, $userId): void
     {
-        $agenda = $this->loader->getAgenda();
         $change = false;
         $token  = $respTrack->getFirstToken();
 
@@ -68,19 +70,19 @@ class HideWhenNoAppointment extends \MUtil\Translate\TranslateableAbstract
             // Not a round without appointment id
             if ($appId !== false) {
                 if ($appId) {
-                    $appointment = $agenda->getAppointment($appId);
+                    $appointment = $this->agenda->getAppointment($appId);
                 } else {
                     $appointment = null;
                 }
 
                 if ($appointment && $appointment->isActive()) {
-                    $newCode = \Gems\Escort::RECEPTION_OK;
+                    $newCode = ReceptionCode::RECEPTION_OK;
                     $newText = null;
                 } else {
                     $newCode = 'skip';
-                    $newText = $this->_('Skipped until appointment is set');
+                    $newText = $this->translator->_('Skipped until appointment is set');
                 }
-                $oldCode = \Gems\Escort::RECEPTION_OK === $newCode ? 'skip' : \Gems\Escort::RECEPTION_OK;
+                $oldCode = ReceptionCode::RECEPTION_OK === $newCode ? 'skip' : ReceptionCode::RECEPTION_OK;
                 $curCode = $token->getReceptionCode()->getCode();
                 // \MUtil\EchoOut\EchoOut::track($token->getTokenId(), $curCode, $oldCode, $newCode);
                 if (($oldCode === $curCode) && ($curCode !== $newCode)) {

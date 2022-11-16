@@ -6,7 +6,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\RespondentTrack;
 
 /**
  * Track calculation event interface
@@ -19,14 +21,14 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-interface TrackCalculationEventInterface extends \Gems\Event\EventInterface
+interface TrackCalculationEventInterface extends EventInterface
 {
     /**
      * Process the data and do what must be done
      *
-     * @param \Gems\Tracker\RespondentTrack $respTrack \Gems respondent track object
+     * @param RespondentTrack $respTrack \Gems respondent track object
      * @param int   $userId The current userId
      * @return int The number of changed tokens
      */
-    public function processTrackCalculation(\Gems\Tracker\RespondentTrack $respTrack, $userId);
+    public function processTrackCalculation(RespondentTrack $respTrack, int $userId): int;
 }

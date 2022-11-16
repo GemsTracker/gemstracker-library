@@ -8,7 +8,12 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use MUtil\Model\Bridge\TableBridge;
+use MUtil\Model\ModelAbstract;
 
 /**
  * Display only those questions that have an answer
@@ -19,10 +24,11 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
+class CompactFullToggle extends SurveyAnswerFilterAbstract
 {
-     public $IncludeLength = 5;
-     public $IncludeStarts = array('score');
+     public int $includeLength = 5;
+
+     public array $includeStarts = ['score'];
 
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
@@ -35,7 +41,7 @@ class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
     {
 
         $repeater = $model->loadRepeatable();
@@ -55,8 +61,8 @@ class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
 
         } else {
             foreach ($model->getItemNames() as $name) {
-                $start = substr(strtolower($name),0,$this->IncludeLength);
-                if (in_array($start, $this->IncludeStarts)) {
+                $start = substr(strtolower($name),0,$this->includeLength);
+                if (in_array($start, $this->includeStarts)) {
                     $keys[$name] = $name;
                 }
             }
@@ -82,10 +88,10 @@ class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems\Tracker\Token $token The token to get the snippets for
+     * @param Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
+    public function getAnswerDisplaySnippets(Token $token): array
     {
         $snippets = parent::getAnswerDisplaySnippets($token);
 
@@ -99,8 +105,8 @@ class CompactFullToggle extends \Gems\Event\SurveyAnswerFilterAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Display only the questions whose code starts with `score`.');
+        return $this->translator->_('Display only the questions whose code starts with `score`.');
     }
 }

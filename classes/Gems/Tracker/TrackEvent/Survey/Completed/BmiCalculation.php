@@ -9,10 +9,14 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Completed;
+namespace Gems\Tracker\TrackEvent\Survey\Completed;
+
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TranslatableEventAbstract;
 
 /**
- * Calculates someones BMI from LENGTH and WEIGHT.
+ * Calculates someone's BMI from LENGTH and WEIGHT.
  *
  * @package    Gems
  * @subpackage Events
@@ -20,17 +24,16 @@ namespace Gems\Event\Survey\Completed;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class BmiCalculation extends \MUtil\Translate\TranslateableAbstract
-        implements \Gems\Event\SurveyCompletedEventInterface
+class BmiCalculation extends TranslatableEventAbstract implements SurveyCompletedEventInterface
 {
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_("Bmi Calculation");
+        return $this->translator->_("Bmi Calculation");
     }
 
     /**
@@ -38,10 +41,10 @@ class BmiCalculation extends \MUtil\Translate\TranslateableAbstract
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param \Gems\Tracker\Token $token \Gems token object
+     * @param Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(\Gems\Tracker\Token $token)
+    public function processTokenData(Token $token): array
     {
         $tokenAnswers = $token->getRawAnswers();
 
@@ -54,6 +57,6 @@ class BmiCalculation extends \MUtil\Translate\TranslateableAbstract
             }
         }
 
-        return false;
+        return [];
     }
 }

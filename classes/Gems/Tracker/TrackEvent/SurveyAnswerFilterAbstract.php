@@ -9,7 +9,12 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\Snippets\AnswerNameFilterInterface;
+use Gems\Tracker\Token;
+use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
 
 /**
  * Abstract class for defining filters on answer displays
@@ -20,30 +25,27 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-abstract class SurveyAnswerFilterAbstract extends \MUtil\Translate\TranslateableAbstract
-    implements \Gems\Event\SurveyDisplayEventInterface, \Gems\Tracker\Snippets\AnswerNameFilterInterface
+abstract class SurveyAnswerFilterAbstract
+    implements SurveyDisplayEventInterface, AnswerNameFilterInterface
 {
     /**
      *
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
     protected $token;
+
+    public function __construct(protected Translator $translator)
+    {}
 
     // public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames);
 
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems\Tracker\Token $token The token to get the snippets for
+     * @param Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token)
+    public function getAnswerDisplaySnippets(Token $token): array
     {
         $this->token = $token;
 
@@ -59,13 +61,12 @@ abstract class SurveyAnswerFilterAbstract extends \MUtil\Translate\Translateable
     /**
      * Returns only the headers
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function getHeaders(\MUtil\Model\ModelAbstract $model, array $currentNames)
+    protected function getHeaders(ModelAbstract $model, array $currentNames): array
     {
-        $lastParent = null;
         $results    = array();
         foreach ($currentNames as $name) {
             if ($model->is($name, 'type', \MUtil\Model::TYPE_NOVALUE)) {
@@ -92,11 +93,11 @@ abstract class SurveyAnswerFilterAbstract extends \MUtil\Translate\Translateable
      * to their sub-questions position. (NOTE: As in LimeSurvey their are no question
      * headers with values we leave it at this for the moment.)
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function restoreHeaderPositions(\MUtil\Model\ModelAbstract $model, array $currentNames)
+    protected function restoreHeaderPositions(ModelAbstract $model, array $currentNames): array
     {
         $lastParent = null;
         $results    = array();

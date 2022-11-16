@@ -10,7 +10,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\Respondent;
 
 /**
  *
@@ -21,7 +23,7 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Sep 6, 2016 3:33:50 PM
  */
-interface RespondentChangedEventInterface extends \Gems\Event\EventInterface
+interface RespondentChangedEventInterface extends EventInterface
 {
     /**
      * Process the respondent and return true when data has changed.
@@ -29,8 +31,7 @@ interface RespondentChangedEventInterface extends \Gems\Event\EventInterface
      * The event has to handle the actual storage of the changes.
      *
      * @param \Gems\Tracker\Respondent $respondent
-     * @param int $userId The current user
      * @return boolean True when something changed
      */
-    public function processChangedRespondent(\Gems\Tracker\Respondent $respondent);
+    public function processChangedRespondent(Respondent $respondent): bool;
 }

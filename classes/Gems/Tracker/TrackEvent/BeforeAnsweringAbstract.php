@@ -9,9 +9,12 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
 
+use Gems\Locale\Locale;
 use Gems\Tracker\Mock\TokenReadonly;
+use Gems\Tracker\Token;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -20,11 +23,10 @@ use Gems\Tracker\Mock\TokenReadonly;
  * @license    New BSD License
  * @since      Class available since version 1.9.2
  */
-abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbstract 
-    implements \Gems\Event\SurveyBeforeAnsweringEventInterface
+abstract class BeforeAnsweringAbstract implements SurveyBeforeAnsweringEventInterface
 {
     /**
-     * @var FIELDNAME in ucase => fieldname
+     * @var array FIELDNAME in ucase => fieldname
      */
     private $_answerKeyMap;
 
@@ -41,19 +43,17 @@ abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbs
     /**
      * For new values
      *
-     * @var fieldname => value
+     * @var array fieldname => value
      */
     private $_output;
 
     /**
-     * @var \Gems_Locale
-     */
-    protected $locale;
-
-    /**
-     * @var bool When true the answer fields are mapped case sensitive (default is not)
+     * @var bool When true the answer fields are mapped case-sensitive (default is not)
      */
     protected $mapKeysCaseSensitive = false;
+
+    public function __construct(protected Translator $translator, protected Locale $locale)
+    {}
 
     /**
      * Add a whole array in one go
@@ -298,9 +298,9 @@ abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbs
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      */
-    abstract protected function processOutput(\Gems\Tracker\Token $token);
+    abstract protected function processOutput(Token $token): void;
 
     /**
      * Process the data and return the answers that should be filled in beforehand.
@@ -310,7 +310,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil\Translate\TranslateableAbs
      * @param \Gems\Tracker\Token $token \Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(\Gems\Tracker\Token $token)
+    public function processTokenInsertion(\Gems\Tracker\Token $token): array
     {
         // Do nothing when completed or deleted
         if ($token->isCompleted() || (! $token->getReceptionCode()->isSuccess())) {

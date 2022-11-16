@@ -10,9 +10,14 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Respondent\Change;
+namespace Gems\Tracker\TrackEvent\Respondent\Change;
 
-use Gems\Event\RespondentChangedEventInterface;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Tracker;
+use Gems\Tracker\Respondent;
+use Gems\Tracker\RespondentTrack;
+use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -23,29 +28,23 @@ use Gems\Event\RespondentChangedEventInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Sep 6, 2016 3:32:54 PM
  */
-class RecalculateTracks extends \MUtil\Translate\TranslateableAbstract
-    implements RespondentChangedEventInterface
+class RecalculateTracks implements RespondentChangedEventInterface
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
+    public int $currentUserId;
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    public function __construct(protected Tracker $tracker, protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    {
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Recalculate all respondent tracks');
+        return $this->translator->_('Recalculate all respondent tracks');
     }
 
     /**
@@ -53,23 +52,20 @@ class RecalculateTracks extends \MUtil\Translate\TranslateableAbstract
      *
      * The event has to handle the actual storage of the changes.
      *
-     * @param \Gems\Tracker\Respondent $respondent
+     * @param Respondent $respondent
      * @param int $userId The current user
      * @return boolean True when something changed
      */
-    public function processChangedRespondent(\Gems\Tracker\Respondent $respondent)
+    public function processChangedRespondent(Respondent $respondent): bool
     {
         $changes    = 0;
-        $tracker    = $this->loader->getTracker();
-        $respTracks = $tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
-        $userId     = $this->currentUser->getUserId();
+        $respTracks = $this->tracker->getRespondentTracks($respondent->getId(), $respondent->getOrganizationId());
 
         foreach($respTracks as $respondentTrack) {
-            if ($respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
-                $changes += $respondentTrack->checkTrackTokens($userId);
+            if ($respondentTrack instanceof RespondentTrack) {
+                $changes += $respondentTrack->checkTrackTokens($this->currentUserId);
             }
         }
-        // \MUtil\EchoOut\EchoOut::track('Hi there! ' . $changes);
 
         return (boolean) $changes;
     }

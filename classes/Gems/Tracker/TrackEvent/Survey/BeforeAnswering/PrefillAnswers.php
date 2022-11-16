@@ -8,7 +8,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\BeforeAnswering;
+namespace Gems\Tracker\TrackEvent\Survey\BeforeAnswering;
+
+use Gems\Tracker\Token;
 
 /**
  * This events look for a previous copy of a survey with the same code and copies
@@ -25,35 +27,31 @@ class PrefillAnswers extends FillBirthDayGender
     /**
      * @var string[] 
      */
-    protected $prefixes     = [
+    protected array $prefixes     = [
         'TF' => 'getTrackFields',
         'CP' => 'getCopyFields',
         'RD' => 'getRespondentFields'
     ];
-    protected $prefixLength = 2;
 
-    /**
-     * @var \Gems\Tracker\Token
-     */
-    protected $token;
+    protected int $prefixLength = 2;
 
     /**
      * A pretty name for use in dropdown selection boxes.
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate)');
+        return $this->translator->_('Fill survey question when code starts with: TF for trackfield, CP for survey or RD for Respondent (only age/sex/birthdate)');
     }
 
     /**
      * Perform the adding of values, usually the first set value is kept, later set values only overwrite if
      * you overwrite the $keepAnswer parameter of the output addCheckedValue function.
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      */
-    protected function processOutput(\Gems\Tracker\Token $token)
+    protected function processOutput(Token $token): void
     {
         // TF TrackField part
         $this->log("Setting TF track fields");

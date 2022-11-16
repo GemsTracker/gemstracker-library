@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
 
 trait EventCalculationsTrait
 {
@@ -13,7 +13,7 @@ trait EventCalculationsTrait
      * @param array $tokenAnswers The answers to compare to
      * @return boolean True when the value changed.
      */
-    public static function addWhenChanged($name, $value, array &$results, array $tokenAnswers)
+    public static function addWhenChanged(string $name, mixed $value, array &$results, array $tokenAnswers): bool
     {
         if ($value != $tokenAnswers[$name]) {
             $results[$name] = $value;
@@ -30,9 +30,9 @@ trait EventCalculationsTrait
      * @param string $fieldNames
      * @return array
      */
-    private static function _arrayFindName(array $tokenAnswers, $fieldNames)
+    private static function _arrayFindName(array $tokenAnswers, string $fieldNames): array
     {
-        $results = array();
+        $results = [];
 
         foreach ($tokenAnswers as $fieldName => $value) {
             if (strpos($fieldName, $fieldNames) !== false) {
@@ -50,9 +50,9 @@ trait EventCalculationsTrait
      *
      * @param array $tokenAnswers Array containing the answers
      * @param mixed $fieldNames An array of those names that should be used or a string that should occur in all names that have to be selected.
-     * @return float
+     * @return ?float
      */
-    public static function averageInt(array $tokenAnswers, $fieldNames)
+    public static function averageInt(array $tokenAnswers, array|string $fieldNames): ?float
     {
         if (is_string($fieldNames)) {
             $fieldNames = self::_arrayFindName($tokenAnswers, $fieldNames);
@@ -76,9 +76,9 @@ trait EventCalculationsTrait
      * @param array $tokenAnswers
      * @return array Those values that were changed.
      */
-    public static function checkFloatChanged(array $values, array $tokenAnswers)
+    public static function checkFloatChanged(array $values, array $tokenAnswers): array
     {
-        $results = array();
+        $results = [];
 
         foreach($values as $name => $result) {
             if (! ((null === $result) && (null === $tokenAnswers[$name]))) {
@@ -100,9 +100,9 @@ trait EventCalculationsTrait
      * @param array $tokenAnswers
      * @return array Those values that were changed.
      */
-    public static function checkIntegerChanged(array $values, array $tokenAnswers)
+    public static function checkIntegerChanged(array $values, array $tokenAnswers): array
     {
-        $results = array();
+        $results = [];
 
         foreach($values as $name => $result) {
             $result = intval($result);
@@ -125,7 +125,7 @@ trait EventCalculationsTrait
      * @param int $max
      * @return int
      */
-    public static function reverseCode($code, $min, $max)
+    public static function reverseCode(int $code, int $min, int $max): int
     {
         return $max - ($code - $min);
     }
@@ -139,7 +139,7 @@ trait EventCalculationsTrait
      * @param int $decimals
      * @return string
      */
-    public static function roundFixed($value, $decimals = 2)
+    public static function roundFixed(int|float $value, int $decimals = 2): string
     {
         $value = round($value, $decimals);
 
@@ -148,7 +148,7 @@ trait EventCalculationsTrait
         if ($pos === false) {
             $value .= '.' . str_repeat('0', $decimals);
         } else {
-            $extra = $decimals - strlen($value) + $pos + 1;
+            $extra = $decimals - strlen((string)$value) + $pos + 1;
             if ($extra > 0) {
                 $value .= str_repeat('0', $extra);
             }
@@ -163,7 +163,7 @@ trait EventCalculationsTrait
      * @param mixed $fieldNames An array of those names that should be used or a string that should occur in all names that have to be selected.
      * @return int
      */
-    public static function sumInt(array $tokenAnswers, $fieldNames)
+    public static function sumInt(array $tokenAnswers, string|array $fieldNames): int
     {
         if (is_string($fieldNames)) {
             $fieldNames = self::_arrayFindName($tokenAnswers, $fieldNames);

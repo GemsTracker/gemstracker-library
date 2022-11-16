@@ -9,7 +9,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event;
+namespace Gems\Tracker\TrackEvent;
+
+use Gems\Tracker\Token;
 
 /**
  * Survey display event interface.
@@ -22,13 +24,13 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-interface SurveyDisplayEventInterface extends \Gems\Event\EventInterface
+interface SurveyDisplayEventInterface extends EventInterface
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param \Gems\Tracker\Token $token The token to get the snippets for
+     * @param Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(\Gems\Tracker\Token $token);
+    public function getAnswerDisplaySnippets(Token $token): array;
 }

@@ -9,7 +9,11 @@
  * @license    New BSD License
  */
 
-namespace Gems\Event\Survey\Display;
+namespace Gems\Tracker\TrackEvent\Survey\Display;
+
+use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
+use MUtil\Model\Bridge\TableBridge;
+use MUtil\Model\ModelAbstract;
 
 /**
  * Display those questions that are answered with 'yes' op top
@@ -24,20 +28,20 @@ namespace Gems\Event\Survey\Display;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class YesOnTop extends \Gems\Event\SurveyAnswerFilterAbstract
+class YesOnTop extends SurveyAnswerFilterAbstract
 {
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
+     * @see AnswerModelSnippetGeneric
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
     {
         if (! $this->token->isCompleted()) {
             return $currentNames;
@@ -72,8 +76,8 @@ class YesOnTop extends \Gems\Event\SurveyAnswerFilterAbstract
      *
      * @return string Name
      */
-    public function getEventName()
+    public function getEventName(): string
     {
-        return $this->_('Yes answers on top.');
+        return $this->translator->_('Yes answers on top.');
     }
 }
