@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Psr\Http\Message\ServerRequestInterface;
+
 /**
  * Standard controller for database creation and maintenance.
  *
@@ -48,12 +50,7 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public $db;
 
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    public $request;
+    protected ServerRequestInterface $request;
 
     /**
      * Tradition way of setting default sort (still in use)

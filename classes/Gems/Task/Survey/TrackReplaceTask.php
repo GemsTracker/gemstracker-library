@@ -47,8 +47,8 @@ class TrackReplaceTask extends \MUtil\Task\TaskAbstract
                 
         $this->getBatch()->addMessage(
                 sprintf($this->plural(
-                            '%d track round has been updated to use '%s\' instead of \'%s\'',
-                            '%d track rounds have been updated to use '%s\' instead of \'%s\'',
+                            '%d track round has been updated to use \'%s\' instead of \'%s\'',
+                            '%d track rounds have been updated to use \'%s\' instead of \'%s\'',
                             $count),
                         $count,
                         $this->targetSurveyName,

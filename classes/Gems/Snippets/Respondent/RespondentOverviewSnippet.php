@@ -33,7 +33,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
-    public $showMenu = false;
+    public bool $showMenu = false;
     
     public $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
 
@@ -65,7 +65,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $loader;
     
     public $menuActionController = array('track');
-    public $menuShowActions = array('answer');
+    public array $menuShowActions = array('answer');
 
     /**
      *

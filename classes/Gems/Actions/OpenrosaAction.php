@@ -257,7 +257,7 @@ class OpenrosaAction extends \Gems\Controller\ModelSnippetActionAbstract
         }
     }
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 

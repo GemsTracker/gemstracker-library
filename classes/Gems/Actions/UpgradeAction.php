@@ -132,7 +132,7 @@ class UpgradeAction extends \Gems\Controller\Action
         $this->executeAction();
     }
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 

@@ -11,6 +11,8 @@
 
 namespace Gems\Event;
 
+use Zalt\Loader\Translate\TranslateableAbstract;
+
 /**
  * Helper class containing calculation functions for use in event classes.
  *
@@ -21,7 +23,7 @@ namespace Gems\Event;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EventCalculations extends \MUtil\Translate\TranslateableAbstract
+class EventCalculations extends TranslateableAbstract
 {
-    use Gems\Event\EventCalculationsTrait;
+    use EventCalculationsTrait;
 }

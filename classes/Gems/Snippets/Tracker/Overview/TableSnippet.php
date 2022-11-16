@@ -29,5 +29,5 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public $menuShowActions = array('track-maintenance' => 'show');
+    public array $menuShowActions = array('track-maintenance' => 'show');
 }

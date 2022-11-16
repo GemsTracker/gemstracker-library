@@ -56,7 +56,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuEditActions = array('track' => 'edit-track');
+    public array $menuEditActions = ['track' => 'edit-track'];
 
     /**
      * Menu actions to show in Show box.
@@ -66,7 +66,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuShowActions = array('track' => 'show-track');
+    public array $menuShowActions = ['track' => 'show-track'];
 
     /**
      * @var Translated

@@ -55,7 +55,7 @@ class FormattedData extends \IteratorIterator
         return $this;
     }
 
-    public function current() {
+    public function current(): mixed {
         //Here we get the actual record to transform!
         $row = parent::current();
         if ($this->formatted) {
@@ -136,7 +136,7 @@ class FormattedData extends \IteratorIterator
                 case 'dateFormat':
                     if (array_key_exists('formatFunction', $options)) {
                         // if there is a formatFunction skip the date formatting
-                        continue;
+                        continue 2;
                     }
 
                     $dateFormat = $value;

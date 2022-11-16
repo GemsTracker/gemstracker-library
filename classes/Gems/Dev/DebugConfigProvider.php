@@ -5,7 +5,7 @@ namespace Gems\Dev;
 use Gems\Factory\DebugBarMiddlewareFactory;
 use Middlewares\Debugbar as DebugbarMiddleware;
 
-class ConfigProvider
+class DebugConfigProvider
 {
     public function __invoke(): array
     {

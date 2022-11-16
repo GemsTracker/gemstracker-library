@@ -88,7 +88,7 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
      *
      * @var boolean
      */
-    protected $showMenu = false;
+    protected bool $showMenu = false;
 
     /**
      * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
@@ -180,9 +180,9 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
         } else {
             $select = $this->db->select();
             $select->from('gems__respondents')
-                    ->joinInner('gems__respondent2org', 'grs_id_user = gr2o_id_user', array())
-                    ->where('gr2o_patient_nr = ?', $this->patientId)
-                    ->where('gr2o_id_organization = ?', $this->organizationId);
+                ->joinInner('gems__respondent2org', 'grs_id_user = gr2o_id_user', array())
+                ->where('gr2o_patient_nr = ?', $this->patientId)
+                ->where('gr2o_id_organization = ?', $this->organizationId);
 
             $data = $this->db->fetchRow($select);
 

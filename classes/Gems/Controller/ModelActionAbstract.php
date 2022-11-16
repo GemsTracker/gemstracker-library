@@ -159,7 +159,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
      * @param string $separator
      * @return string
      */
-    public function getTitle($separator = null)
+    public function getTitle(string $separator = null): string
     {
         if ($title_set = parent::getTitle($separator)) {
             return $title_set;
@@ -198,7 +198,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
      * @param boolean $reset Throws away any existing html output when true
      * @return void
      */
-    public function initHtml($reset = false)
+    public function initHtml(bool $reset = false): void
     {
         if (! $this->html) {
             \Gems\Html::init();
@@ -210,7 +210,7 @@ abstract class ModelActionAbstract extends \MUtil\Controller\ModelActionAbstract
     /**
      * Stub for overruling default snippet loader initiation.
      */
-    protected function loadSnippetLoader()
+    protected function loadSnippetLoader(): void
     {
         // Create the snippet with this controller as the parameter source
         $this->snippetLoader = $this->loader->getSnippetLoader($this);
