@@ -165,7 +165,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippetGeneric';
+    // protected $createEditSnippets = 'ModelFormSnippetGeneric';
 
     /**
      * The parameters used for the delete action.
