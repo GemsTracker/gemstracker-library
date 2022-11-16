@@ -22,9 +22,9 @@ class AutoConfigurator
         $this->autoconfigConfig['autoconfig']['checksum'] = $this->getFilesHash();
     }
 
-    public function autoConfigure(bool $recreate = false): array
+    public function autoConfigure(bool $recreate = false, bool $assumeFresh = false): array
     {
-        if (!$recreate && $this->isFresh()) {
+        if (!$recreate && ($assumeFresh || $this->isFresh())) {
             return $this->config;
         }
 
