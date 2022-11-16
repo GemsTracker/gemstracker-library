@@ -158,7 +158,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         if ($this->showMenu) {
             $editMenuItems = $this->getEditUrls($bridge);
 
-            foreach ($editMenuItems as $keyOrLabel => $menuItem) {
+            foreach ($editMenuItems as $keyOrLabel => $lateUrl) {
                 $editLabel = $keyOrLabel;
                 if (is_int($editLabel)) {
                     $editLabel = $this->_('Edit');
@@ -228,6 +228,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
                 continue;
             }
 
+            // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$keyOrLabel -> $routeNameOrPart <> $routeName\n", FILE_APPEND);
             $output[$keyOrLabel] = $this->routeHelper->getLateRouteUrl($routeName, $bridge->getModel()->getMetaModel()->getKeys());
         }
 

@@ -17,6 +17,8 @@ use Gems\Project\ProjectSettings;
 use Gems\Util;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Html\Sequence;
 use Zalt\SnippetsLoader\SnippetLoader;
@@ -148,6 +150,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     // protected $autofilterSnippets = 'ModelTableSnippet';
 
+    /**
+     * @var int User id from request
+     */
+    protected $currentUserId = 1;
+    
     /**
      * The parameters used for the create and edit actions.
      *
@@ -740,6 +747,13 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function getTopicCallable()
     {
         return array($this, 'getTopic');
+    }
+
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->currentUserId = $request->getAttribute('userId', $this->currentUserId);
+        
+        return parent::handle($request); 
     }
 
     /**

@@ -66,11 +66,12 @@ class RouteHelper
                 } else {
                     $lateName = $paramName;
                 }
-                $routeParams[$paramName] = Late::get($lateName); 
+                $routeParams[$paramName] = $lateName; 
             }
         }
+        // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
 
-        return Late::method($this->urlHelper, 'generate', $name, $routeParams);
+        return Late::method($this->urlHelper, 'generate', $name, Late::getRa($routeParams));
     }
 
     public function getRoute(string $name): ?array
