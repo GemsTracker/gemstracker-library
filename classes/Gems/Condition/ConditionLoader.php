@@ -276,7 +276,7 @@ class ConditionLoader
             /**
              * @var ComparatorInterface
              */
-            return $this->overloader->create($this->comparators[$name], ...$options);
+            return $this->overloader->create($comparatorClass, ...$options);
         }
         return null;
     }
