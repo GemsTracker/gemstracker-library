@@ -55,7 +55,6 @@ class LegacyConfigProvider
                 \Zend_Db_Adapter_Abstract::class => LegacyZendDatabaseFactory::class,
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
-                TrackEvents::class => LegacyFactory::class,
                 Agenda::class => LegacyFactory::class,
 
                 'LegacyCurrentUser' => LegacyFactory::class,

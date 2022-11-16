@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Exception\Coding;
 use Gems\Tracker\TrackEvent\EventInterface;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
@@ -47,7 +48,7 @@ class TrackEvents
     const SURVEY_COMPLETION_EVENT       = 'Survey/Completed';
     const SURVEY_DISPLAY_EVENT          = 'Survey/Display';
 
-    public function __construct(protected Translated $translatedUtil, array $config, ProjectOverloader $projectOverloader)
+    public function __construct(protected Translated $translatedUtil, protected HelperAdapter $cache, array $config, ProjectOverloader $projectOverloader)
     {
         if (isset($config['tracker'], $config['tracker']['trackEvents'])) {
             $this->config = $config['tracker']['trackEvents'];
@@ -64,11 +65,24 @@ class TrackEvents
      */
     protected function _listEvents(string $eventType): array
     {
-        if (isset($config[$eventType])) {
-            return $this->translatedUtil->getEmptyDropdownArray() + $config[$eventType];
+        $key = HelperAdapter::cleanupForCacheId(static::class . 'listEvents_' . $eventType);
+        if ($this->cache->hasItem($key)) {
+            return $this->translatedUtil->getEmptyDropdownArray() + $this->cache->getCacheItem($key);
         }
-        
-        return $this->translatedUtil->getEmptyDropdownArray();
+
+        $trackEvents = $this->getTrackEventClasses($eventType);
+
+        $eventList = [];
+        if ($trackEvents) {
+            foreach($trackEvents as $eventClassName) {
+                $trackEvent = $this->_loadEvent($eventClassName, $eventType);
+                $eventList[$eventClassName] = $trackEvent->getEventName() . " ({$eventClassName})";
+            }
+        }
+
+        $this->cache->setCacheItem($key, $eventList);
+
+        return $this->translatedUtil->getEmptyDropdownArray() + $eventList;
     }
 
     /**
@@ -80,7 +94,7 @@ class TrackEvents
      */
     protected function _loadEvent(string $eventName, string $eventType): EventInterface
     {
-        if (isset($config[$eventType]) && in_array($eventName, $config[$eventType])) {
+        if (isset($this->config[$eventType]) && in_array($eventName, $this->config[$eventType])) {
             /**
              * @var EventInterface
              */
@@ -88,6 +102,19 @@ class TrackEvents
         }
 
         throw new Coding("The event '$eventName' of type '$eventType' could not be loaded.");
+    }
+
+    /**
+     * @param string $eventType
+     * @return string[]
+     */
+    protected function getTrackEventClasses(string $eventType): array
+    {
+        if (isset($this->config[$eventType])) {
+            return $this->config[$eventType];
+        }
+
+        return [];
     }
 
     /**
