@@ -11,6 +11,8 @@ use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
+use Gems\Condition\Comparator\ComparatorAbstract;
+use Gems\Condition\RoundConditionInterface;
 use Gems\Config\App;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
@@ -50,12 +52,14 @@ use MUtil\Model;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
 
@@ -80,6 +84,7 @@ class ConfigProvider
 
         return [
             'app'           => $appSettings(),
+            'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
             'contact'       => $this->getContactSettings(),
             'console'       => $this->getConsoleSettings(),
@@ -106,6 +111,24 @@ class ConfigProvider
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
+        ];
+    }
+
+    public function getAutoConfigSettings(): array
+    {
+        return [
+            'settings' => [
+                'implements' => [
+                    RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
+                    ExtensionInterface::class => ['config' => 'twig.extensions'],
+                ],
+                'extends' => [
+                    ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
+                ],
+                'attribute' => [
+                    AsCommand::class => ['config' => 'console.commands'],
+                ]
+            ],
         ];
     }
 
