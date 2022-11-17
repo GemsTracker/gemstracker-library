@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Model;
 
 use Gems\Tracker\Engine\FieldsDefinition;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -82,7 +83,7 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param \MUtil\Model\ModelAbstract $model The parent model
      * @return array Of field name => set() values
      */
-    public function getFieldInfo(\MUtil\Model\ModelAbstract $model)
+    public function getFieldInfo(MetaModelInterface $model)
     {
         // Many definitions use load transformers
         $model->setMeta(\MUtil\Model\ModelAbstract::LOAD_TRANSFORMER, true);
@@ -110,7 +111,7 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false)
     {
         if ($isPostData) {
             return $data;
@@ -146,7 +147,7 @@ class AddTrackFieldsTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
+    public function transformRowAfterSave(MetaModelInterface $model, array $row)
     {
         if (isset($row[$this->respTrackIdField]) && $row[$this->respTrackIdField]) {
             if (! $this->tracker) {

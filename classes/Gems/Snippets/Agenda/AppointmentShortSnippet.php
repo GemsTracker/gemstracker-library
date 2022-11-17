@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  * @package    Gems
@@ -36,7 +39,7 @@ class AppointmentShortSnippet extends \Gems\Snippets\Agenda\AppointmentShowSnipp
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 
@@ -62,7 +65,7 @@ class AppointmentShortSnippet extends \Gems\Snippets\Agenda\AppointmentShowSnipp
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         // Do nothing
     }

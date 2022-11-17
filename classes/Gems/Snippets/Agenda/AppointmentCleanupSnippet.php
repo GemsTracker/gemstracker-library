@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  *
@@ -180,7 +183,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $fparams = array('class' => 'centerAlign');
         $row     = $bridge->getRow();

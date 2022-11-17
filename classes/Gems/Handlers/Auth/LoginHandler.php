@@ -8,8 +8,13 @@ use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
+use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
+use Gems\DecoratedFlashMessagesInterface;
+use Gems\Layout\LayoutRenderer;
 use Gems\Site\SiteUtil;
+use Gems\User\PasswordChecker;
+use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -19,10 +24,8 @@ use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -30,11 +33,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginHandler implements RequestHandlerInterface
 {
-    private FlashMessagesInterface $flash;
+    private DecoratedFlashMessagesInterface $flash;
     private array $organizations;
 
     public function __construct(
-        private readonly TemplateRendererInterface $template,
+        private readonly LayoutRenderer $layoutRenderer,
         private readonly TranslatorInterface $translator,
         private readonly SiteUtil $siteUtil,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
@@ -43,6 +46,7 @@ class LoginHandler implements RequestHandlerInterface
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly PasswordChecker $passwordChecker,
     ) {
     }
 
@@ -66,10 +70,9 @@ class LoginHandler implements RequestHandlerInterface
             ],
             'organizations' => $this->organizations,
             'input' => $this->flash->getFlash('login_input'),
-            'errors' => $this->flash->getFlash('login_errors'),
         ];
 
-        return new HtmlResponse($this->template->render('gems::login', $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::login', $request, $data));
     }
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface
@@ -127,6 +130,15 @@ class LoginHandler implements RequestHandlerInterface
             return $this->redirectBack($request, $messages);
         }
 
+        /** @var User $user */
+        $user = $result->user;
+        if (
+            $user->isPasswordResetRequired()
+            || $this->passwordChecker->reportPasswordWeakness($user, $input['password'])
+        ) {
+            LoginStatusTracker::make($session, $user)->setPasswordResetActive();
+        }
+
         return AuthenticationMiddleware::redirectToIntended($authenticationService, $session, $this->urlHelper);
     }
 
@@ -148,7 +160,7 @@ class LoginHandler implements RequestHandlerInterface
             'username' => $input['username'] ?? null,
         ]);
 
-        $this->flash->flash('login_errors', $errors);
+        $this->flash->flashErrors($errors);
 
         // TODO: Log
         /*// Also log the error to the log table  when the project has logging enabled

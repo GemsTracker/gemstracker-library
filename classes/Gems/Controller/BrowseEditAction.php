@@ -11,6 +11,9 @@
 
 namespace Gems\Controller;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * BrowseEdit controller
  *
@@ -75,7 +78,7 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
 
     public $sortKey;
 
-    public $summarizedActions = array('index', 'autofilter');
+    public array $summarizedActions = ['index', 'autofilter'];
 
     public $tableSnippets;
 
@@ -193,11 +196,11 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model): void
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -379,7 +382,8 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
      * @param array $options
      * @return \Gems\Form
      */
-    public function createForm($options = null) {
+    protected function createForm($options = []): \Zend_Form
+    {
         if ($this->useTabbedForms) {
             $form = new \Gems\TabForm($options);
         } else {
@@ -599,7 +603,7 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
      * @param array $baseUrl
      * @return \MUtil\Html\TableElement
      */
-    public function getBrowseTable(array $baseUrl = array(), $sort = null, $model = null)
+    public function getBrowseTable(array $baseUrl = null, $sort = null, $model = null)
     {
         $table = parent::getBrowseTable($baseUrl, $sort, $model);
 
@@ -731,7 +735,7 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
      * @param mixed $sort A valid sort for \MUtil\Model\ModelAbstract->load()
      * @return \MUtil\Html\TableElement
      */
-    public function getShowTable($columns = 1, $filter = null, $sort = null)
+    public function getShowTable(int $columns = 1, $filter = null, $sort = null): \MUtil\Html\TableElement
     {
         $table = parent::getShowTable($columns, $filter, $sort);
 

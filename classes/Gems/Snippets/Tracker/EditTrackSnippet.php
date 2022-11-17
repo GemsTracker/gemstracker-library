@@ -66,7 +66,7 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         if ($this->trackEngine) {
             // concatenate user input (gtf_field fields)
@@ -106,6 +106,6 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
 
 
         // Communicate with the user
-        $this->afterSave($changed);
+        return $changed;
     }
 }

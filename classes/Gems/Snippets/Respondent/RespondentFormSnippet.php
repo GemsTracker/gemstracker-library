@@ -20,7 +20,7 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippet
 {
     /**
      *
@@ -46,7 +46,7 @@ class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -131,5 +131,6 @@ class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
                 }
             }
         }
+        return $this->formData;
     }
 }

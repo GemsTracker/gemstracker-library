@@ -7,12 +7,14 @@ namespace Gems;
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
+use Gems\Condition\ConditionLoader;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Layout\LayoutRenderer;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
+use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
@@ -53,16 +55,18 @@ class LegacyConfigProvider
                 \Zend_Db_Adapter_Abstract::class => LegacyZendDatabaseFactory::class,
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
-                TrackEvents::class => LegacyFactory::class,
+                Agenda::class => LegacyFactory::class,
 
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],
             'aliases' => [
                 'LegacyAccesslog' => AccesslogRepository::class,
                 'LegacyAcl' => Acl::class,
+                'LegacyAgenda' => Agenda::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
+                'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyTrackEvents' => TrackEvents::class,
@@ -70,6 +74,7 @@ class LegacyConfigProvider
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
+                'LegacyOrganizationRepository' => OrganizationRepository::class,
                 'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 'LegacyUtil' => \Gems\Util::class,

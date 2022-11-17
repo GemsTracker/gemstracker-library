@@ -11,6 +11,9 @@ use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
+use Gems\Condition\Comparator\ComparatorAbstract;
+use Gems\Condition\RoundConditionInterface;
+use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
@@ -24,10 +27,21 @@ use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
+use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
+use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
+use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
+use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
+use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
+use Gems\Tracker\TrackEvent\TrackBeforeFieldUpdateEventInterface;
+use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
+use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Translate\TranslationFactory;
+use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
 use Laminas\Db\Adapter\Adapter;
@@ -50,12 +64,15 @@ use MUtil\Model;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Extension\ExtensionInterface;
+use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\MezzioLaminasSnippetResponderFactory;
 use Zalt\SnippetsLoader\SnippetLoader;
@@ -85,6 +102,7 @@ class ConfigProvider
 
         return [
             'app'           => $appSettings(),
+            'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
             'contact'       => $this->getContactSettings(),
             'console'       => $this->getConsoleSettings(),
@@ -105,11 +123,40 @@ class ConfigProvider
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
             'sites'         => $this->getSitesSettings(),
+            'style'         => 'gems.scss',
             'templates'     => $this->getTemplates(),
             'twig'          => $this->getTwigSettings(),
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
+        ];
+    }
+
+    public function getAutoConfigSettings(): array
+    {
+        return [
+            'settings' => [
+                'implements' => [
+                    RoundConditionInterface::class => ['config' => 'tracker.conditions.round'],
+                    TrackConditionInterface::class => ['config' => 'tracker.conditions.track'],
+                    ExtensionInterface::class => ['config' => 'twig.extensions'],
+                    RespondentChangedEventInterface::class => ['config' => 'tracker.trackEvents.Respondent/Change'],
+                    TrackCalculationEventInterface::class => ['config' => 'tracker.trackEvents.Track/Calculate'],
+                    TrackCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Track/Completed'],
+                    TrackBeforeFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/BeforeFieldUpdate'],
+                    TrackFieldUpdateEventInterface::class => ['config' => 'tracker.trackEvents.Track/FieldUpdate'],
+                    RoundChangedEventInterface::class => ['config' => 'tracker.trackEvents.Round/Changed'],
+                    SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
+                    SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
+                    SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
+                ],
+                'extends' => [
+                    ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
+                ],
+                'attribute' => [
+                    AsCommand::class => ['config' => 'console.commands'],
+                ]
+            ],
         ];
     }
 
@@ -198,7 +245,7 @@ class ConfigProvider
                 SessionMiddleware::class => SessionMiddlewareFactory::class,
                 CacheSessionPersistence::class => CacheSessionPersistenceFactory::class,
                 PhpSessionPersistence::class => PhpSessionPersistenceFactory::class,
-                FlashMessageMiddleware::class => FlashMessageMiddleware::class,
+                FlashMessageMiddleware::class => fn () => new FlashMessageMiddleware(DecoratedFlashMessages::class),
                 CsrfMiddleware::class => CsrfMiddlewareFactory::class,
 
                 // Translation
@@ -206,9 +253,10 @@ class ConfigProvider
 
                 // Messenger
                 MessageBusInterface::class => MessengerFactory::class,
-                // message.bus.other => [MessengerFactory::class, 'message.bus.other'],
+                // messenger.bus.other => [MessengerFactory::class, 'message.bus.other'],
 
-                // message.transport.name => TransportFactory::class,
+                'messenger.transport.default' => TransportFactory::class,
+                // messenger.transport.name => TransportFactory::class,
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
@@ -226,6 +274,9 @@ class ConfigProvider
 
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
+
+                // Messenger
+                'messenger.bus.default' => MessageBusInterface::class,
 
                 // Session
                 //SessionPersistenceInterface::class => CacheSessionPersistence::class,
@@ -530,6 +581,8 @@ class ConfigProvider
             'extensions' => [
                 Trans::class,
                 Vite::class,
+                Csrf::class,
+                StringLoaderExtension::class,
             ]
         ];
     }

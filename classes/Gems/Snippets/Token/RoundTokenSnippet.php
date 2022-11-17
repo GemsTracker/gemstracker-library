@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -62,7 +64,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // \MUtil\Model::$verbose = true;
         //
@@ -113,7 +115,7 @@ class RoundTokenSnippet extends RespondentTokenSnippet
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 

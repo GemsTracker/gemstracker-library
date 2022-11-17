@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Adds \Gems specific display details and helper functions plus fule buttons:
  *
@@ -92,7 +95,7 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -203,7 +206,7 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }

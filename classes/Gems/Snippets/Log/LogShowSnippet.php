@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Log;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  *
@@ -52,7 +55,7 @@ class LogShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof LogModel) {
             $this->model = $this->loader->getModels()->createLogModel();
@@ -86,7 +89,7 @@ class LogShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $row = $bridge->getRow();
 

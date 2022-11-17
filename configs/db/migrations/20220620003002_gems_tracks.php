@@ -17,7 +17,7 @@ class GemsTracks extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gtr_id_track', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'identity' => 'enable',
             ])

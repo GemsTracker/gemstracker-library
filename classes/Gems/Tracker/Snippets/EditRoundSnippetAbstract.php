@@ -14,6 +14,7 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Tracker;
 use Gems\User\User;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  * Short description for class
@@ -28,7 +29,7 @@ use Gems\User\User;
  */
 class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
 {
-    protected $onlyUsedElements = true;
+    protected bool $onlyUsedElements = true;
 
     /**
      * @var User
@@ -79,7 +80,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         return $this->trackEngine->getRoundModel(true, $this->createData ? 'create' : 'edit');
     }
@@ -119,7 +120,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->trackEngine && (! $this->trackId)) {
             $this->trackId = $this->trackEngine->getTrackId();
@@ -153,7 +154,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -169,6 +170,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
             // Currently required
             $this->formData['gro_survey_name'] = '';
         }
+        return $this->formData;
     }
 
     /**
@@ -178,7 +180,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         // Check the survey name again, is sometimes removed
         $surveys = $this->util->getTrackData()->getAllSurveys(false);
@@ -189,7 +191,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
             $this->formData['gro_survey_name'] = '';
         }
 
-        parent::saveData();
+        $output = parent::saveData();
 
         if ($this->createData && (! $this->roundId)) {
             $this->roundId = $this->formData['gro_id_round'];
@@ -208,5 +210,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
         }
 
         $this->trackEngine->updateRoundCount($this->currentUser->getUserId());
+        
+        return $output;
     }
 }

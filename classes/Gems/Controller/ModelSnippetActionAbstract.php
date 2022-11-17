@@ -144,7 +144,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'ModelTableSnippetGeneric';
+    protected $autofilterSnippets = 'ModelTableSnippet';
 
     /**
      * The parameters used for the create and edit actions.
@@ -163,7 +163,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippetGeneric';
+    protected $createEditSnippets = 'ModelFormSnippet';
 
     /**
      * The parameters used for the delete action.
@@ -254,7 +254,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelDetailTableSnippetGeneric');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelDetailTableSnippet');
 
     /**
      * Array of the actions that use a summarized version of the model.

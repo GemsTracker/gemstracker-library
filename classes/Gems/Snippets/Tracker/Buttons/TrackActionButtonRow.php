@@ -29,7 +29,7 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(\Gems\Menu\MenuList $menuList)
+    protected function addButtons(array $menuList): array
     {
         $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))

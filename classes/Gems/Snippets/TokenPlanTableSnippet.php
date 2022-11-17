@@ -8,6 +8,9 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  * Displays a table for TokenModel
  *
@@ -17,7 +20,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
   */
-class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     public $filter = array();
 
@@ -38,7 +41,7 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    public function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
         $model->set('gto_round_description', 'label', $this->_('Round / Details'));
@@ -96,24 +99,24 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
     public function getActionLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
         // Get the other token buttons
-        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true))) {
-            $buttons = $menuItems->toActionLink($this->request, $bridge);
-            $buttons->appendAttrib('class', 'rightFloat');
-        } else {
-            $buttons = null;
-        }
+//        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true))) {
+//            $buttons = $menuItems->toActionLink($this->request, $bridge);
+//            $buttons->appendAttrib('class', 'rightFloat');
+//        } else {
+//            $buttons = null;
+//        }
         // Add the ask button
-        if ($menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
-            $askLink = $menuItem->toActionLink($this->request, $bridge);
-            $askLink->appendAttrib('class', 'rightFloat');
-
-            if ($buttons) {
-                // Show previous link if show, otherwise show ask link
-                $buttons = array($buttons, $askLink);
-            } else {
-                $buttons = $askLink;
-            }
-        }
+//        if ($menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
+//            $askLink = $menuItem->toActionLink($this->request, $bridge);
+//            $askLink->appendAttrib('class', 'rightFloat');
+//
+//            if ($buttons) {
+//                // Show previous link if show, otherwise show ask link
+//                $buttons = array($buttons, $askLink);
+//            } else {
+//                $buttons = $askLink;
+//            }
+//        }
 
         return $buttons;
     }

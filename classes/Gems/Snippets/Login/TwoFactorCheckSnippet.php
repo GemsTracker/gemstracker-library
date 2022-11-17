@@ -306,8 +306,9 @@ class TwoFactorCheckSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $this->_result = true;
+        return 0;
     }
 }

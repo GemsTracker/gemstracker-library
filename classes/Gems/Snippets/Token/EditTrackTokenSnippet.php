@@ -15,6 +15,9 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Date\Period;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -35,7 +38,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $model->set('reset_mail', [
             'label'        => $this->_('Reset sent mail'),
@@ -57,7 +60,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
      *
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList()
+    protected function getMenuList(): array
     {
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
@@ -73,7 +76,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
     /**
      * Initialize the _items variable to hold all items from the model
      */
-    protected function initItems()
+    protected function initItems(MetaModelInterface $metaModel)
     {
         if (is_null($this->_items)) {
             $this->_items = array_merge(
@@ -101,7 +104,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
                         'gto_changed',
                         'assigned_by',
                         ),
-                    $this->getModel()->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
+                    $metaModel->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
@@ -116,7 +119,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
      *
      * @see afterSave()
      */
-    public function saveData()
+    public function saveData(): int
     {
         $model = $this->getModel();
 
@@ -162,5 +165,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
                     $changed
                     ), $changed));
         }
+        
+        return $changed;
     }
 }

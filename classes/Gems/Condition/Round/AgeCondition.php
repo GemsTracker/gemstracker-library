@@ -11,8 +11,10 @@
 
 namespace Gems\Condition\Round;
 
-use Gems\Conditions;
+use Gems\Condition\Comparator\ComparatorInterface;
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Tracker\Token;
 
 /**
  *
@@ -28,17 +30,17 @@ class AgeCondition extends RoundConditionAbstract
      *
      * @return \Gems\Condition\Comparator\ComparatorInterface
      */
-    protected function getActiveComparator()
+    protected function getActiveComparator(): ComparatorInterface
     {
         $minAge = $this->_data['gcon_condition_text1'];
         $maxAge = $this->_data['gcon_condition_text3'];
 
         if (trim($minAge) == '') {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_EQUALLESS, [$maxAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_EQUALLESS, [$maxAge]);
         } elseif (trim($maxAge) == '') {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_EQUALMORE, [$minAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_EQUALMORE, [$minAge]);
         } else {
-            $comparator = $this->getComparator(Conditions::COMPARATOR_BETWEEN, [$minAge, $maxAge]);
+            $comparator = $this->getComparator(ConditionLoader::COMPARATOR_BETWEEN, [$minAge, $maxAge]);
         }
 
         return $comparator;
@@ -47,7 +49,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Track will be valid when respondent is:\n - At least minimum age\n - But no older than maximum age");
     }
@@ -55,7 +57,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
         $ageUnits = [
             'Y' => $this->_('Years'),
@@ -80,7 +82,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Respondent age');
     }
@@ -88,7 +90,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getNotValidReason($conditionId, $context)
+    public function getNotValidReason(int $conditionId, array $context): string
     {
         // Always available
         return '';
@@ -97,7 +99,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $comparator = $this->getActiveComparator();
         $unitHelp   = '';
@@ -111,7 +113,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $minAge  = $this->_data['gcon_condition_text1'];
         $maxAge  = $this->_data['gcon_condition_text3'];
@@ -135,7 +137,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function isValid($conditionId, $context)
+    public function isValid(int $conditionId, array $context): bool
     {
         // Always available
         return true;

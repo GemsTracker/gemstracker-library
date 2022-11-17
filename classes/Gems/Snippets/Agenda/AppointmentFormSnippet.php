@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  * @package    Gems
@@ -75,7 +77,7 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();

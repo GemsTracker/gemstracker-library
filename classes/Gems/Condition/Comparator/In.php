@@ -27,7 +27,7 @@ class In extends ComparatorAbstract
      * @param string $subject
      * @return string
      */
-    public function getDescription($subject)
+    public function getDescription(string $subject): string
     {
         return sprintf(
                 $this->_('%s in the list %s'),
@@ -41,12 +41,16 @@ class In extends ComparatorAbstract
      *
      * @return int Less than 5
      */
-    public function getNumParams()
+    public function getNumParams(): int
     {
         return 1;
     }
-    
-    public function getParamDescriptions() {
+
+    /**
+     * @return string[]
+     */
+    public function getParamDescriptions(): array
+    {
         return [
             $this->_('Separate multiple values with a vertical bar (|)')
         ];
@@ -55,12 +59,12 @@ class In extends ComparatorAbstract
     /**
      * IS the comparison valid?
      *
-     * Settings should already be in place by the construtor.
+     * Settings should already be in place by the constructor.
      *
      * @param mixed $value The id of the condition
      * @return bool
      */
-    public function isValid($value)
+    public function isValid(mixed $value): bool
     {
         $validOptions = explode('|', $this->_options[0]);
         return in_array($value, $validOptions);

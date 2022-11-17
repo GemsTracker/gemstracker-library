@@ -30,7 +30,7 @@ class YesNoAppointmentDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteS
      *
      * @var string
      */
-    protected $deleteAction = 'show';
+    protected string $deleteAction = 'show';
 
     /**
      * Set what to do when the form is 'finished'.

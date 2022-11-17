@@ -11,6 +11,7 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Tracker\Engine\FieldsDefinition;
 
 /**
@@ -25,10 +26,9 @@ use Gems\Tracker\Engine\FieldsDefinition;
 class CreateTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
+    protected $conditionLoader;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -48,8 +48,7 @@ class CreateTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
             return;
         }
 
-        $conditions  = $this->loader->getConditions();
-        $model       = $this->loader->getModels()->getConditionModel()->applyEditSettings(true);
+        $model       = $this->conditionLoader->getConditionModel()->applyEditSettings(true);
         
         if (preg_match('/.*(AndCondition|OrCondition)$/', $conditionData['gcon_class']) == 1) {                    
             // We have a nested condition

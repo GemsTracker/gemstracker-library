@@ -52,7 +52,7 @@ class UpgradeAction extends \Gems\Controller\Action
      * @see $useRawOutput
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     /**
      * Show a compatibility report
@@ -132,7 +132,7 @@ class UpgradeAction extends \Gems\Controller\Action
         $this->executeAction();
     }
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 

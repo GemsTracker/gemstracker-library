@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Model;
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -97,7 +98,7 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = new \MUtil\Model\TableModel('gems__tracks');
 

@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\Engine;
 
-use Gems\Conditions;
+use Gems\Condition\ConditionLoader;
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Tracker\Round;
@@ -64,6 +64,11 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      * @var int
      */
     protected $_trackId;
+
+    /**
+     * @var ConditionLoader
+     */
+    protected $conditionLoader;
 
     /**
      *
@@ -944,7 +949,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         $model->set('gro_condition',
                 'label', $this->_('Condition'),
                 'elementClass', 'Select',
-                'multiOptions', $this->loader->getConditions()->getConditionsFor(Conditions::ROUND_CONDITION)
+                'multiOptions', $this->conditionLoader->getConditionsFor(ConditionLoader::ROUND_CONDITION)
                 );
 
         $model->set('condition_display', 'label', $this->_('Condition help'), 'elementClass', 'Hidden', 'no_text_search', true, 'noSort', true);

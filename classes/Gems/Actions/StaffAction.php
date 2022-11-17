@@ -318,7 +318,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $staffId = $this->_getIdParam();
         if ($staffId) {
-            $user   = $this->loader->getUserLoader()->getUserByStaffId($staffId);
+            $user = $this->loader->getUserLoader()->getUserOrNullByStaffId($staffId) ?? false;
         } else {
             $user = false;
         }

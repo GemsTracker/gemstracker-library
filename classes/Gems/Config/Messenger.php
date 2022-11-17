@@ -16,11 +16,14 @@ class Messenger
                     'routes' => [],
                     'handlers' => [],
                 ],
+                'event.bus' => [
+                    'allows_zero_handlers' => true,
+                ]
             ],
             'transports' => [
-                'test' => [
-                    'dsn' => 'in-memory://',
-                    'serialize' => false,
+                'messenger.transport.default' => [
+                    'dsn' => 'sync://',
+                    'messengerBus' => 'messenger.bus.default',
                 ],
                 /* 'messenger.transport.doctrine' => [
                     'dsn' => 'doctrine://default',
@@ -28,7 +31,11 @@ class Messenger
                 ],
                 'messenger.transport.redis' => [
                     'dsn' => 'redis://localhost:6379/messages',
-                ], */
+                ],
+                'messenger.transport.test' => [
+                    'dsn' => 'in-memory://',
+                ],
+                 */
             ],
         ];
     }

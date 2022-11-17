@@ -13,6 +13,8 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Util\Translated;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -23,7 +25,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 Jan 4, 2016 11:20:07 AM
  */
-class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstract
+class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstract
 {
     /**
      *
@@ -113,7 +115,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      * @param \MUtil\Model\ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model, $step)
+    protected function addStepElementsFor(FormBridgeInterface $bridge, DataReaderInterface $model, $step)
     {
         $this->displayHeader($bridge, sprintf(
                 $this->_('%s track export. Step %d of %d.'),
@@ -143,7 +145,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepExportCodes(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addStepExportCodes(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
         $this->displayHeader($bridge, $this->_('Set the survey export codes'), 'h3');
 
@@ -167,11 +169,11 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepExportSettings(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addStepExportSettings(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
         $this->displayHeader($bridge, $this->_('Select what to export'), 'h3');
 
-        $this->addItems($bridge, 'orgs', 'fields', 'rounds');
+        $this->addItems($bridge, ['orgs', 'fields', 'rounds']);
     }
 
     /**
@@ -180,7 +182,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addStepGenerateExportFile(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addStepGenerateExportFile(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
         // Things go really wrong (at the session level) if we run this code
         // while the finish button was pressed
@@ -198,7 +200,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
         $batch->autoStart = true;
 
         // \MUtil\Registry\Source::$verbose = true;
-        if ($batch->run($this->request)) {
+        if ($batch->run($this->requestInfo)) {
             exit;
         }
 
@@ -224,7 +226,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
             $data['localfile']    = '...' . substr($localFilename, -30);
             $data['downloadname'] = $downloadName;
             ksort($data);
-            $this->accesslog->logChange($this->request, null, array_filter($data));
+            $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
 
             if ($this->nextDisabled) {
                 $element->pInfo($this->_('Export errors occurred.'));
@@ -332,7 +334,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->exportModel instanceof \MUtil\Model\ModelAbstract) {
             $yesNo = $this->translatedUtil->getYesNo();
@@ -432,8 +434,8 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      */
     protected function downloadExportFile()
     {
-        $this->view->layout()->disableLayout();
-        \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
+        // $this->view->layout()->disableLayout();
+        // \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
 
         $batch          = $this->getExportBatch(false);
         $downloadName  = $batch->getSessionVariable('downloadname');
@@ -536,15 +538,15 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         $model = $this->getModel();
 
-        if ($this->request->isPost()) {
-            $this->formData = $model->loadPostData($this->request->getPost() + $this->formData, true);
+        if ($this->requestInfo->isPost()) {
+            $this->formData = $model->loadPostData($this->requestInfo->getRequestPostParams() + $this->formData, true);
 
-        } elseif ('download' == $this->request->getParam($this->stepFieldName)) {
-            $this->formData = $this->request->getParams();
+        } elseif ('download' == $this->requestInfo->getParam($this->stepFieldName)) {
+            $this->formData = $this->requestInfo->getParams();
             $this->downloadExportFile();
 
         } else {
@@ -554,6 +556,7 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
             }
         }
         // \MUtil\EchoOut\EchoOut::track($this->formData);
+        return $this->formData;
     }
 
     /**
@@ -570,12 +573,12 @@ class ExportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
         }
 
        // Default is just go to the index
-        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array(
-                $this->request->getControllerKey() => $this->request->getControllerName(),
-                $this->request->getActionKey()     => $this->routeAction,
-                \MUtil\Model::REQUEST_ID           => $this->request->getParam(\MUtil\Model::REQUEST_ID),
-                );
+        if ($this->routeAction && ($this->requestInfo->getCurrentAction() !== $this->routeAction)) {
+//            $this->afterSaveRouteUrl = array(
+//                $this->request->getControllerKey() => $this->request->getControllerName(),
+//                $this->request->getActionKey()     => $this->routeAction,
+//                \MUtil\Model::REQUEST_ID           => $this->request->getParam(\MUtil\Model::REQUEST_ID),
+//                );
         }
 
         return $this;

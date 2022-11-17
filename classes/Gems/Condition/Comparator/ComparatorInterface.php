@@ -11,6 +11,8 @@
 
 namespace Gems\Condition\Comparator;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  *
  * @package    Gems
@@ -24,7 +26,7 @@ interface ComparatorInterface
     /**
      * @param array $options
      */
-    public function __construct($options = array());
+    public function __construct(TranslatorInterface $translator, array $options = []);
 
     /**
      * Return a readable description, using the given subject and configured options
@@ -32,36 +34,36 @@ interface ComparatorInterface
      * @param string $subject
      * @return string
      */
-    public function getDescription($subject);
+    public function getDescription(string $subject): string;
 
     /**
      * The number of parameters this comparator expects
      *
      * @return int Less than 5
      */
-    public function getNumParams();
+    public function getNumParams(): int;
     
     /**
      * Get the descriptions for the parameters
      * 
      * @return []
      */
-    public function getParamDescriptions();
+    public function getParamDescriptions(): array;
     
     /**
      * Get the labels for the parameters
      * 
      * @return []
      */
-    public function getParamLabels();
+    public function getParamLabels(): array;
 
     /**
      * Is the comparison valid?
      *
-     * Settings should already be in place by the construtor.
+     * Settings should already be in place by the constructor.
      *
      * @param mixed $value The id of the condition
      * @return bool
      */
-    public function isValid($value);
+    public function isValid(mixed $value): bool;
 }

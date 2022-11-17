@@ -90,7 +90,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $this->addMessage($this->_('You have been subscribed succesfully.'));
 

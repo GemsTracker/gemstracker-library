@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Staff;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -60,7 +63,7 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if (! $this->columns) {
             $br = \MUtil\Html::create('br');
@@ -81,7 +84,7 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if ($this->model instanceof \Gems\Model\StaffModel) {
             $model = $this->model;
@@ -95,21 +98,19 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @return \Gems\Menu\SubMenuItem
      */
-    protected function getEditUrls()
+    protected function getEditUrls(TableBridge $bridge): array
     {
-        $resets = $this->findUrls($this->menuActionController, 'reset');
+        $resets = $this->findUrls('reset', $bridge);
         foreach ($resets as $resetPw) {
             if ($resetPw instanceof \Gems\Menu\SubMenuItem) {
                 $resetPw->set('label', $this->_('password'));
             }
         }
         return array_merge(
-                parent::getEditUrls(),
-                $resets,
-                $this->findUrls($this->menuActionController, 'mail')
-                );
+            parent::getEditUrls($bridge),
+            $resets,
+            $this->findUrls('mail', $bridge)
+        );
     }
 }

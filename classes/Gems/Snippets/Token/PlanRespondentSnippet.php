@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Token;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -48,7 +51,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $tData = $this->util->getTokenData();
 

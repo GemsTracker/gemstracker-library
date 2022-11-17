@@ -24,7 +24,9 @@ class GemsRespondentRelations extends Phinx\Migration\AbstractMigration
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
                 'after' => 'grr_id',
+                'signed' => false,
             ])
+            ->addForeignKey('grr_id_respondent', 'gems__respondents', 'grs_id_user')
             ->addColumn('grr_type', 'string', [
                 'null' => true,
                 'limit' => 64,
@@ -36,7 +38,9 @@ class GemsRespondentRelations extends Phinx\Migration\AbstractMigration
                 'null' => true,
                 'limit' => MysqlAdapter::INT_BIG,
                 'after' => 'grr_type',
+                'signed' => false,
             ])
+            ->addForeignKey('grr_id_staff', 'gems__staff', 'gsf_id_user')
             ->addColumn('grr_email', 'string', [
                 'null' => true,
                 'limit' => 100,

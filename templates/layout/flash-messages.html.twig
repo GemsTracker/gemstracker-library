@@ -1,9 +1,8 @@
 <div class="errors">
-
-{% for messageInfo in flash.getFlash('action-messages') %}
-    <div class="alert alert-{{ messageInfo[1] }}">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        {{ messageInfo[0] }}
-    </div>
-{% endfor %}
+    {% for messageInfo in flash.getFlash('action-messages') %}
+        <div class="alert alert-{{ messageInfo[1] }} alert-dismissible">
+            <div>{{ messageInfo[0] }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
 </div>

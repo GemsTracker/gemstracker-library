@@ -416,7 +416,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array or \Traversable Nested
      */
-    public function processAfterLoad($data, $new = false, $isPostData = false)
+    public function processAfterLoad($data, $new = false, $isPostData = false): mixed
     {
         $data = parent::processAfterLoad($data, $new, $isPostData);
 
@@ -449,7 +449,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
      * otherwise the tables set to save at model level will be saved.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         //First perform a save
         $savedValues = parent::save($newValues, $filter, $saveTables);

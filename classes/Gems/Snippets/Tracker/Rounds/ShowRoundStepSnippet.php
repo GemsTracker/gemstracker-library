@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  * @package    Gems
@@ -46,10 +49,11 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
      */
     protected $trackUsage = false;
 
-    private function _addIf(array $names, \MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    private function _addIf(array $names, DetailTableBridge $bridge, DataReaderInterface $model)
     {
+        $metaModel = $model->getMetaModel();
         foreach ($names as $name) {
-            if ($model->has($name, 'label')) {
+            if ($metaModel->has($name, 'label')) {
                 $bridge->addItem($name);
             }
         }
@@ -65,7 +69,7 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $this->_roundData = $bridge->getRow();
 
@@ -114,12 +118,9 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
 
     /**
      * Function that allows for overruling the repeater loading.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return \MUtil\Lazy\RepeatableInterface
      */
-    public function getRepeater(\MUtil\Model\ModelAbstract $model)
+    public function getRepeater(DataReaderInterface $model)
     {
-        return new \MUtil\Lazy\Repeatable(array($this->_roundData));
+        return new \Zalt\Late\Repeatable(array($this->_roundData));
     }
 }

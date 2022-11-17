@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Track;
 
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -56,7 +57,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuEditRoutes = array('track' => 'edit-track');
+    public array $menuEditRoutes = array('track' => 'edit-track');
 
     /**
      * Menu actions to show in Show box.
@@ -66,7 +67,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public $menuShowRoutes = array('track' => 'show-track');
+    public array $menuShowRoutes = array('track' => 'show-track');
 
     /**
      * @var Translated
@@ -78,7 +79,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 

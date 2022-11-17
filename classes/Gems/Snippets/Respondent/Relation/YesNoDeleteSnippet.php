@@ -11,6 +11,12 @@
 
 namespace Gems\Snippets\Respondent\Relation;
 
+use Gems\Html;
+use Zalt\Html\HtmlElement;
+use Zalt\Html\HtmlInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  * Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.
  *
@@ -22,7 +28,7 @@ namespace Gems\Snippets\Respondent\Relation;
  */
 class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
 {
-    public function render(\Zend_View_Abstract $view)
+    public function render()
     {
         // \MUtil\EchoOut\EchoOut::r(sprintf('Rendering snippet %s.', get_class($this)));
         //
@@ -36,16 +42,16 @@ class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
             $this->redirectRoute();
 
         } else {
-            $html = $this->getHtmlOutput($view);
+            $html = $this->getHtmlOutput();
 
             if ($html) {
-                if ($html instanceof \MUtil\Html\HtmlInterface) {
-                    if ($html instanceof \MUtil\Html\HtmlElement) {
+                if ($html instanceof HtmlInterface) {
+                    if ($html instanceof HtmlElement) {
                         $this->applyHtmlAttributes($html);
                     }
-                    return $html->render($view);
+                    return $html->render();
                 } else {
-                    return \MUtil\Html::renderAny($view, $html);
+                    return Html::renderAny($html);
                 }
             }
         }
@@ -57,7 +63,7 @@ class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $footer = $bridge->tfrow();
 

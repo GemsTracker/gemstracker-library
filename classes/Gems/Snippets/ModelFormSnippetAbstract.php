@@ -11,7 +11,16 @@
 
 namespace Gems\Snippets;
 
+use Gems\Html;
 use Gems\MenuNew\RouteHelper;
+use Gems\Project\ProjectSettings;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\FormBridgeAbstract;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Adds \Gems specific display details and helper functions:
@@ -32,13 +41,13 @@ use Gems\MenuNew\RouteHelper;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippetAbstract
+abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFormSnippetAbstract
 {
     /**
      *
      * @var \Gems\AccessLog
      */
-    protected $accesslog;
+    // protected $accesslog;
 
     /**
      * Shortfix to add class attribute
@@ -62,13 +71,6 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     protected $topicCallable;
 
     /**
-     * Required
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
      *
      * @var boolean
      */
@@ -79,12 +81,6 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
      * @var boolean
      */
     protected $menuShowSiblings = false;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
 
     /**
      * The name of the action to forward to after form completion
@@ -109,39 +105,60 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     protected ?string $cancelRoute = null;
 
     /**
+     * @param \Zalt\SnippetsLoader\SnippetOptions                $snippetOptions
+     * @param \Zalt\Base\RequestInfo                             $requestInfo
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translate
+     * @param \Zalt\Message\MessengerInterface                   $messenger
+     * @param \Gems\Project\ProjectSettings                      $project
+     * /
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        ProjectSettings $project)
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate, $messenger);
+        
+        // $this->useCsrf = $project->useCsrfCheck();
+    }
+    
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\FullDataInterface $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
+        $metaModel = $model->getMetaModel();
+
         if (! $bridge->getForm() instanceof \Gems\TabForm) {
-            parent::addFormElements($bridge, $model);
+            parent::addBridgeElements($bridge, $model);
             return;
         }
 
         //Get all elements in the model if not already done
-        $this->initItems();
+        $this->initItems($metaModel);
 
         // Add 'tooltip' to the allowed displayoptions
-        $displayOptions = $bridge->getAllowedOptions(\MUtil\Model\Bridge\FormBridge::DISPLAY_OPTIONS);
+        $displayOptions = $bridge->getAllowedOptions(FormBridgeAbstract::DISPLAY_OPTIONS);
         if (!array_search('tooltip', $displayOptions)) {
             $displayOptions[] = 'tooltip';
-            $bridge->setAllowedOptions(\MUtil\Model\Bridge\FormBridge::DISPLAY_OPTIONS, $displayOptions);
+            $bridge->setAllowedOptions(FormBridgeAbstract::DISPLAY_OPTIONS, $displayOptions);
         }
 
         $tab    = 0;
         $group  = 0;
         $oldTab = null;
-        // \MUtil\EchoOut\EchoOut::track($model->getItemsOrdered());
-        foreach ($model->getItemsOrdered() as $name) {
+        // \MUtil\EchoOut\EchoOut::track($metaModel->getItemsOrdered());
+        foreach ($metaModel->getItemsOrdered() as $name) {
             // Get all options at once
-            $modelOptions = $model->get($name);
-            $tabName      = $model->get($name, 'tab');
+            $modelOptions = $metaModel->get($name);
+            $tabName      = $metaModel->get($name, 'tab');
             if ($tabName && ($tabName !== $oldTab)) {
                 if (isset($modelOptions['elementClass']) && ('tab' == strtolower($modelOptions['elementClass']))) {
                     $bridge->addTab('tab' . $tab, $modelOptions + array('value' => $tabName));
@@ -152,15 +169,15 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
                 $tab++;
             }
 
-            if ($model->has($name, 'label') || $model->has($name, 'elementClass')) {
+            if ($metaModel->has($name, 'label') || $metaModel->has($name, 'elementClass')) {
                 $bridge->add($name);
 
-                if ($theName = $model->get($name, 'startGroup')) {
+                if ($theName = $metaModel->get($name, 'startGroup')) {
                     //We start a new group here!
                     $groupElements   = array();
                     $groupElements[] = $name;
                     $groupName       = $theName;
-                } elseif ($theName = $model->get($name, 'endGroup')) {
+                } elseif ($theName = $metaModel->get($name, 'endGroup')) {
                     //Ok, last element define the group
                     $groupElements[] = $name;
                     $bridge->addDisplayGroup('grp_' . $groupElements[0], $groupElements,
@@ -189,27 +206,12 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
      * As the save button is not part of the model - but of the interface - it
      * does deserve it's own function.
      */
-    protected function addSaveButton()
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
     {
         if ($this->_form instanceof \Gems\TabForm) {
             $this->_form->resetContext();
         }
-        parent::addSaveButton();
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if ($this->project instanceof \Gems\Project\ProjectSettings) {
-            $this->useCsrf = $this->project->useCsrfCheck();
-        }
+        parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
     }
 
     /**
@@ -218,7 +220,7 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
      * When not rerouted, the form will be populated afterwards
      *
      * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     */
+     * /
     protected function afterSave($changed)
     {
         parent::afterSave($changed);
@@ -232,8 +234,6 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
-     *
-     * @return \Zend_Form
      */
     public function beforeDisplay()
     {
@@ -259,7 +259,7 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
                 }
             }
         } elseif($links = $this->getMenuList()) {
-            $linkContainer = \MUtil\Html::create()->div(array('class' => 'element-container-labelless'));
+            $linkContainer = Html::div(['class' => 'element-container-labelless']);
             $linkContainer[] = $links;
 
             $element = $this->_form->createElement('html', 'formLinks');
@@ -274,17 +274,6 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->menu && parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
@@ -293,21 +282,26 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     protected function createForm($options = null)
     {
         if ($this->useTabbedForm) {
-            return new \Gems\TabForm($options);
-        }
-        if (!isset($options['class'])) {
-            $options['class'] = 'form-horizontal';
-        }
+            $this->_form = new \Gems\TabForm($options);
+        } else {
+            if (! isset($options['class'])) {
+                $options['class'] = 'form-horizontal';
+            }
 
-        if (!isset($options['role'])) {
-            $options['role'] = 'form';
+            if (! isset($options['role'])) {
+                $options['role'] = 'form';
+            }
+            $this->_form = new \Gems\Form($options);
         }
-        return new \Gems\Form($options);
+        return $this->_form;
     }
 
+    /**
+     * @return null|string
+     * /
     public function getCancelRoute()
     {
-        $routeResult = $this->requestInfo->getCurrentRouteResult();
+        // $routeResult = $this->requestInfo->getRouteName();
         $routeName = $this->cancelRoute;
         if (!$routeName) {
             $currentRouteName = $routeResult->getMatchedRouteName();
@@ -326,20 +320,18 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return mixed Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $htmlDiv = \MUtil\Html::div();
+        $htmlDiv = Html::div();
 
         $title = $this->getTitle();
         if ($title) {
             $htmlDiv->h3($title, array('class' => 'title'));
         }
 
-        $form = parent::getHtmlOutput($view);
-
+        $form = parent::getHtmlOutput();
         $htmlDiv[] = $form;
 
         return $htmlDiv;
@@ -353,11 +345,11 @@ abstract class ModelFormSnippetAbstract extends \MUtil\Snippets\ModelFormSnippet
     protected function getMenuList(): array
     {
         $urls = [];
-        $urls[$this->_('Cancel')] = $this->getCancelRoute();
+        // $urls[$this->_('Cancel')] = $this->getCancelRoute();
 
         $links = [];
         foreach($urls as $label => $url) {
-            $links[] = \MUtil\Html::create()->actionLink($url, $label);
+            $links[] = Html::actionLink($url, $label);
         }
 
         /*if ($this->menuShowSiblings) {

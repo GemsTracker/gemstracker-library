@@ -23,7 +23,7 @@ use PHPUnit_Extensions_Database_DataSet_IDataSet;
 class LocationTest extends \Gems\Test\DbTestAbstract
 {
     /**
-     * @var \Gems\Conditions
+     * @var \Gems\ConditionLoader
      */
     public $conditions;
 
@@ -60,7 +60,7 @@ class LocationTest extends \Gems\Test\DbTestAbstract
 
         $this->bootstrap->bootstrap('event');
 
-        $this->conditions = new \Gems\Conditions([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
+        $this->conditions = new \Gems\ConditionLoader([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
 
         $this->condition  = $this->conditions->loadTrackCondition('\\Gems\\Condition\\Track\\LocationCondition');
 

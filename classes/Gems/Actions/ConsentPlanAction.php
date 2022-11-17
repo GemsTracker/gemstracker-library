@@ -79,7 +79,7 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = [
-        'ModelTableSnippetGeneric',
+        'ModelTableSnippet',
         'Generic\\CurrentSiblingsButtonRowSnippet'
         ];
 

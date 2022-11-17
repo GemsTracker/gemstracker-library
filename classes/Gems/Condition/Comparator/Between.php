@@ -21,7 +21,8 @@ namespace Gems\Condition\Comparator;
  */
 class Between extends ComparatorAbstract {
 
-    public function getDescription($subject) {
+    public function getDescription(string $subject): string
+    {
         return sprintf(
                 $this->_('%s <= %s <= %s'),
                 $this->_options[0],
@@ -30,12 +31,13 @@ class Between extends ComparatorAbstract {
                 );
     }
     
-    public function getNumParams()
+    public function getNumParams(): int
     {
         return 2;
     }
 
-    public function isValid($value) {
+    public function isValid(mixed $value): bool
+    {
         return $this->_options[0] <= $value && $value <= $this->_options[1];
     }
 

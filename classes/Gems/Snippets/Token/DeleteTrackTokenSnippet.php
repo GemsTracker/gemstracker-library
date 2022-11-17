@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  * Snippet for editing reception code of token.
@@ -105,7 +106,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         $model = $this->token->getModel();
 
@@ -120,7 +121,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList()
+    protected function getMenuList(): array
     {
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());

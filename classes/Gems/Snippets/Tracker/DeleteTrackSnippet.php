@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -97,7 +98,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
             $tracker     = $this->loader->getTracker();
@@ -121,7 +122,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList()
+    protected function getMenuList(): array
     {
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());

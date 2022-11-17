@@ -69,7 +69,7 @@ class PrivilegesAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->privileges = $this->getPrivileges();

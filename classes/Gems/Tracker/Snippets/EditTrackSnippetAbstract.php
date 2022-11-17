@@ -13,6 +13,7 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Model;
 use Gems\Util\Translated;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  * Adds basic track editing snippet parameter processing and checking.
@@ -134,7 +135,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         $tracker = $this->loader->getTracker();
         $model   = $tracker->getRespondentTrackModel();
@@ -185,7 +186,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->respondent instanceof \Gems\Tracker\Respondent) {
             if (! $this->patientId) {
@@ -259,7 +260,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         $model = $this->getModel();
 
@@ -287,6 +288,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
                     'elementClass', 'Exhibitor'
                     );
         }
+        return $this->formData;
     }
 
     /**

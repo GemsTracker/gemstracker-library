@@ -14,6 +14,7 @@ namespace Gems\Snippets\Survey;
 use Gems\Snippets\ModelImportSnippet;
 use Gems\Util\Translated;
 use MUtil\Model;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -106,7 +107,7 @@ class AnswerImportSnippet extends ModelImportSnippet
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->importModel instanceof \MUtil\Model\ModelAbstract) {
             $surveyId = null;
@@ -263,7 +264,7 @@ class AnswerImportSnippet extends ModelImportSnippet
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -297,5 +298,6 @@ class AnswerImportSnippet extends ModelImportSnippet
             $source->offsetSet('gsu_active', $this->_survey->isActive() ? 1 : 0);
         }
         // \MUtil\EchoOut\EchoOut::track($this->formData);
+        return $this->formData;
     }
 }

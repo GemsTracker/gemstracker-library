@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  * Adds the ability to add a variable value to a select form element based on another form elements value
  *
@@ -36,14 +39,14 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ModelFormVariableFieldSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class ModelFormVariableFieldSnippet extends \Gems\Snippets\ModelFormSnippet
 {
 
     protected $ajaxEvents;
     protected $db;
     protected $util;
 
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
         parent::addFormElements($bridge, $model);
 

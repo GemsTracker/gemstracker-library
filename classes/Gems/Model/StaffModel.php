@@ -236,7 +236,7 @@ class StaffModel extends \Gems\Model\JoinModel
                 'required', true);
 
             if ($editing) {
-                $ucfirst = new \Zend_Filter_Callback('ucfirst');
+                $ucfirst = new \Zend_Filter_Callback(fn ($s) => ucfirst($s ?? ''));
                 $this->set('gsf_first_name',   'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_last_name',    'filters[ucfirst]', $ucfirst);
                 $this->set('gsf_job_title',    'filters[ucfirst]', $ucfirst);
@@ -533,7 +533,7 @@ class StaffModel extends \Gems\Model\JoinModel
      * otherwise the tables set to save at model level will be saved.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         //First perform a save
         $savedValues = parent::save($newValues, $filter, $saveTables);

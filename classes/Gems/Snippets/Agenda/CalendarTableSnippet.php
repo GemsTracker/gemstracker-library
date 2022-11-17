@@ -16,6 +16,8 @@ use Gems\Html;
 use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use MUtil\Lazy\Call;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -47,11 +49,6 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $model;
 
     /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -61,7 +58,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $bridge->gr2o_id_organization;
 
@@ -161,7 +158,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();

@@ -192,7 +192,7 @@ class PasswordResetSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules
         if ($this->_form->getMessages()) {

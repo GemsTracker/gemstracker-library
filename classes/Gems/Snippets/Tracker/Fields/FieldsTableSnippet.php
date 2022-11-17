@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Zalt\Model\Data\DataReaderInterface;
 
 
 /**
@@ -90,7 +91,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof FieldMaintenanceModel) {
             $this->model = $this->trackEngine->getFieldsMaintenanceModel(false, 'index');

@@ -23,10 +23,11 @@ class GemsTrackAppointments extends Phinx\Migration\AbstractMigration
             ])
             ->addColumn('gtap_id_track', 'integer', [
                 'null' => false,
-                'limit' => MysqlAdapter::INT_REGULAR,
+                'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
                 'after' => 'gtap_id_app_field',
             ])
+            ->addForeignKey('gtap_id_track', 'gems__tracks', 'gtr_id_track')
             ->addColumn('gtap_id_order', 'integer', [
                 'null' => false,
                 'default' => '10',
@@ -84,6 +85,7 @@ class GemsTrackAppointments extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'gtap_readonly',
             ])
+            ->addForeignKey('gtap_filter_id', 'gems__appointment_filters', 'gaf_id')
             ->addColumn('gtap_after_next', 'boolean', [
                 'null' => false,
                 'default' => '1',

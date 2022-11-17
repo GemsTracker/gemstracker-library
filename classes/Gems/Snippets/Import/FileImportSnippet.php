@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Import;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  *
@@ -33,7 +35,7 @@ class FileImportSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }

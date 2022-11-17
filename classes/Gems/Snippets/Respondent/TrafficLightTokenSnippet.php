@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Respondent;
 
 use MUtil\Model;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Show the track in a different way, ordered by round and group showing
@@ -489,7 +490,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel()
+    public function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 

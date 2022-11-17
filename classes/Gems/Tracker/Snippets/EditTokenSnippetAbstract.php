@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  * Adds basic token editing snippet parameter processing and checking.
  *
@@ -73,7 +75,7 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         $model = $this->token->getModel();
 
@@ -96,7 +98,7 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
 
         if ($this->tokenId) {
@@ -134,7 +136,7 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->tokenId) {
             if ($this->token) {

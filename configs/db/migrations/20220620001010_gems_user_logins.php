@@ -31,8 +31,10 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
             ->addColumn('gul_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
+                'signed' => false,
                 'after' => 'gul_login',
             ])
+            ->addForeignKey('gul_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gul_user_class', 'string', [
                 'null' => false,
                 'default' => 'NoLogin',
@@ -52,7 +54,14 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
                 'limit' => 32,
                 'collation' => 'utf8mb4_unicode_ci',
                 'encoding' => 'utf8mb4',
-                'after' => 'gul_can_login',
+                'after' => 'gul_user_class',
+            ])
+            ->addColumn('gul_session_key', 'string', [
+                'null' => true,
+                'limit' => 32,
+                'collation' => 'utf8mb4_unicode_ci',
+                'encoding' => 'utf8mb4',
+                'after' => 'gul_session_key',
             ])
             ->addColumn('gul_two_factor_key', 'string', [
                 'null' => true,

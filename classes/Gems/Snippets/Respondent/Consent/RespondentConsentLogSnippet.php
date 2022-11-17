@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Respondent\Consent;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  * @package    Gems
@@ -69,7 +71,7 @@ class RespondentConsentLogSnippet extends \MUtil\Snippets\ModelTableSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $respModel = $this->model;
 

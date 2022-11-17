@@ -125,7 +125,8 @@ class LimeSurvey2m00MultiSource extends LSSingleSource {
      * 
      * @return string
      */
-    protected function _getReturnURI() {
+    protected function _getReturnURI(\Gems\User\Organization $organization = null)
+    {
         return substr($this->util->getCurrentURI(), 0, -strlen($this->_getSite())) . '{TOKEN:ATTRIBUTE_5}/ask/return/' . \MUtil\Model::REQUEST_ID . '/{substr(TOKEN,strlen(TOKEN:ATTRIBUTE_5))}';
     }
 

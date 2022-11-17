@@ -8,14 +8,14 @@
 
 namespace Gems\Snippets\Staff;
 
-use Gems\Snippets\ModelFormSnippetGeneric as ModelFormSnippetGeneric;
+use Gems\Snippets\ModelFormSnippet;
 
 /**
  * Description of StaffCreateEditSnippet
  *
  * @author 175780
  */
-class StaffCreateEditSnippet extends ModelFormSnippetGeneric
+class StaffCreateEditSnippet extends ModelFormSnippet
 {
     /**
      * When true this is the staff form
@@ -104,14 +104,14 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         if ($this->switch && $this->isStaff) {
             $this->formData['gsf_logout_on_survey'] = 0;
             $this->formData['gsf_is_embedded'] = 0;
         }
 
-        parent::saveData();
+        $output = parent::saveData();
 
         if (! $this->isStaff) {
             if (isset($this->formData['gul_two_factor_key'], $this->formData['gsf_id_user']) &&
@@ -125,6 +125,7 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
                 }
             }
         }
+        return $output;
     }
 
     /**
@@ -141,9 +142,9 @@ class StaffCreateEditSnippet extends ModelFormSnippetGeneric
             $this->resetRoute = true;
             $this->afterSaveRouteKeys = true;
         } else {
-            $user = $this->loader->getUser($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
+            $user = $this->loader->getUserLoader()->getUserOrNull($this->formData['gsf_login'], $this->formData['gsf_id_organization']);
 
-            if (! $user->canSetPassword()) {
+            if (!$user || ! $user->canSetPassword()) {
                 $this->routeAction = 'show';
                 $this->resetRoute = true;
                 $this->afterSaveRouteKeys = true;

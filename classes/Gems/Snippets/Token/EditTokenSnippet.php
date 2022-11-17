@@ -4,7 +4,7 @@
 namespace Gems\Snippets\Token;
 
 
-class EditTokenSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class EditTokenSnippet extends \Gems\Snippets\ModelFormSnippet
 {
     /**
      * Set what to do when the form is 'finished'.

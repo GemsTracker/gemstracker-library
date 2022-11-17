@@ -11,6 +11,8 @@
 
 namespace Gems\User;
 
+use Gems\Exception\AuthenticationException;
+
 /**
  *
  *
@@ -43,7 +45,8 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
      */
     public static function getNoLoginDataFor($loginName, $organization)
     {
-        return array(
+        throw new AuthenticationException('no login data');
+        /*return array(
             'user_id'             => 0,
             'user_login'          => $loginName,
             'user_name'           => $loginName,
@@ -51,7 +54,7 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
             'user_active'         => false,
             'user_role'           => 'nologin',
             'user_embedded'       => false,
-            );
+            );*/
     }
 
     /**

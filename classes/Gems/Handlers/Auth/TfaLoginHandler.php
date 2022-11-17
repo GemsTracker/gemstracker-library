@@ -10,6 +10,8 @@ use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\SendDecorator\SendsOtpCodeInterface;
 use Gems\AuthTfa\TfaService;
+use Gems\DecoratedFlashMessagesInterface;
+use Gems\Layout\LayoutRenderer;
 use Gems\User\User;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -17,10 +19,8 @@ use Laminas\Validator\Digits;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -28,14 +28,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TfaLoginHandler implements RequestHandlerInterface
 {
-    private FlashMessagesInterface $flash;
+    private DecoratedFlashMessagesInterface $flash;
     private AuthenticationService $authenticationService;
     private TfaService $tfaService;
     private User $user;
 
     public function __construct(
-        private readonly TemplateRendererInterface $template,
         private readonly TranslatorInterface $translator,
+        private readonly LayoutRenderer $layoutRenderer,
         private readonly AuthenticationServiceBuilder $authenticationServiceBuilder,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly UrlHelper $urlHelper,
@@ -63,9 +63,9 @@ class TfaLoginHandler implements RequestHandlerInterface
                         $otpMethod->sendCode();
                         $session->set('tfa_login_last_send', time());
 
-                        $this->flash->flash('tfa_login_info_messages', [$otpMethod->getSentFeedbackMessage()]);
+                        $this->flash->flashInfo($otpMethod->getSentFeedbackMessage());
                     } catch (\Gems\Exception $e) {
-                        $this->flash->flash('tfa_login_errors', [$e->getMessage()]);
+                        $this->flash->flashError($e->getMessage());
                     }
 
                     return new RedirectResponse($request->getUri());
@@ -75,9 +75,6 @@ class TfaLoginHandler implements RequestHandlerInterface
             return $this->handlePost($request);
         }
 
-        $messages = $this->flash->getFlash('tfa_login_info_messages') ?: [];
-        $errors = $this->flash->getFlash('tfa_login_errors') ?: [];
-
         $otpMethod = $this->tfaService->getOtpMethod();
         if ($otpMethod instanceof SendsOtpCodeInterface) {
             $lastSend = $session->get('tfa_login_last_send');
@@ -85,9 +82,9 @@ class TfaLoginHandler implements RequestHandlerInterface
                 try {
                     $otpMethod->sendCode();
                     $session->set('tfa_login_last_send', time());
-                    $messages[] = $otpMethod->getSentFeedbackMessage();
+                    $this->flash->appendInfo($otpMethod->getSentFeedbackMessage());
                 } catch (\Gems\Exception $e) {
-                    $errors[] = $e->getMessage();
+                    $this->flash->appendError($e->getMessage());
                 }
             }
         }
@@ -101,12 +98,10 @@ class TfaLoginHandler implements RequestHandlerInterface
             ],
             'code_min_length' => $otpMethod->getMinLength(),
             'code_max_length' => $otpMethod->getMaxLength(),
-            'errors' => $errors,
-            'info_messages' => $messages,
             'sendable' => $otpMethod instanceof SendsOtpCodeInterface,
         ];
 
-        return new HtmlResponse($this->template->render('gems::tfa/login', $data));
+        return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::tfa/login', $request, $data));
     }
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface
@@ -143,7 +138,7 @@ class TfaLoginHandler implements RequestHandlerInterface
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse
     {
-        $this->flash->flash('tfa_login_errors', [$error]);
+        $this->flash->flashError($error);
 
         return new RedirectResponse($request->getUri());
     }

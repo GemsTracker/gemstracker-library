@@ -11,7 +11,10 @@
 
 namespace Gems\Condition\Round;
 
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Tracker\Token;
+use MUtil\Validate\NotEqualTo;
 
 /**
  *
@@ -24,19 +27,13 @@ use Gems\Condition\RoundConditionAbstract;
 class AndCondition extends RoundConditionAbstract
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
      * Load the conditions
      *
      * @return \Gems\Condition\RoundConditionInterface[]
      */
-    protected function getConditions()
+    protected function getConditions(): array
     {
-        $conditionLoader = $this->loader->getConditions();
+        $conditionLoader = $this->conditions;
         $conditions = [];
         for ($number = 1; $number <= 4; $number++) {
             $element = 'gcon_condition_text' . $number;
@@ -49,36 +46,36 @@ class AndCondition extends RoundConditionAbstract
         return $conditions;
     }
 
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Combine 2 or more conditions using the AND operator. All conditions must be valid and true.");
     }
 
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
-        $conditions = $this->loader->getConditions()->getConditionsFor(\Gems\Conditions::ROUND_CONDITION);
+        $conditions = $this->conditions->getConditionsFor(ConditionLoader::ROUND_CONDITION);
         $messages   = [
             'gcon_id' => $this->_('The condition can not reference itself.'),
             $this->_('Conditions may be chosen only once.')
         ];        
                 
         $result = [
-            'gcon_condition_text1' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id'], $messages)],
-            'gcon_condition_text2' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1'], $messages)],
-            'gcon_condition_text3' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2'], $messages)],
-            'gcon_condition_text4' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new \MUtil_Validate_NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3'], $messages)]
+            'gcon_condition_text1' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id'], $messages)],
+            'gcon_condition_text2' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1'], $messages)],
+            'gcon_condition_text3' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2'], $messages)],
+            'gcon_condition_text4' => ['label' => $this->_('Condition'), 'elementClass' => 'select', 'multiOptions' => $conditions, 'validator'    => new NotEqualTo(['gcon_id', 'gcon_condition_text1', 'gcon_condition_text2', 'gcon_condition_text3'], $messages)]
 
         ];
 
         return $result;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Multiple conditions AND');
     }
 
-    public function getNotValidReason($conditionId, $context)
+    public function getNotValidReason(int $conditionId, array $context): string
     {
         $conditions = $this->getConditions();
         $text = [];
@@ -92,7 +89,7 @@ class AndCondition extends RoundConditionAbstract
         return join("\n", $text);
     }
 
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $conditions = $this->getConditions();
         $text = [];
@@ -104,7 +101,7 @@ class AndCondition extends RoundConditionAbstract
         return join($this->_(' AND '), $text);
     }
 
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $conditions = $this->getConditions();
         $valid = true;
@@ -119,11 +116,11 @@ class AndCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param type $conditionId
-     * @param type $context
-     * @return boolean
+     * @param int $conditionId
+     * @param int $context
+     * @return bool
      */
-    public function isValid($conditionId, $context)
+    public function isValid(int $conditionId, array $context): bool
     {
         $conditions = $this->getConditions();
         $valid = true;

@@ -72,7 +72,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = ['ModelFormSnippetGeneric', 'Survey\\SurveyQuestionsSnippet'];
+    protected $createEditSnippets = ['ModelFormSnippet', 'Survey\\SurveyQuestionsSnippet'];
 
     /**
      *

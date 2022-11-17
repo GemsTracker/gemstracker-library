@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Track;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  *
@@ -52,7 +56,7 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
             $this->model = $this->loader->getTracker()->getTrackModel();
@@ -71,7 +75,7 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         if ($model instanceof \Gems\Tracker\Model\TrackModel) {
             $this->useCount = $model->getStartCount($this->trackId);

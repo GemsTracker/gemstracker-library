@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Html;
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  * Generic extension for displaying tokens
  *
@@ -20,7 +23,7 @@ namespace Gems\Tracker\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class ShowTokenSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippetAbstract
+abstract class ShowTokenSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
     /**
      * @var \Gems\Util\BasePath
@@ -104,7 +107,7 @@ abstract class ShowTokenSnippetAbstract extends \MUtil\Snippets\ModelVerticalTab
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = $this->token->getModel();
 
@@ -124,26 +127,23 @@ abstract class ShowTokenSnippetAbstract extends \MUtil\Snippets\ModelVerticalTab
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
         if ($this->tokenId) {
             if ($this->token->exists) {
-                $htmlDiv   = \MUtil\Html::div();
+                $htmlDiv   = Html::div();
 
                 $htmlDiv->h3($this->getTitle());
 
                 $basePath = $this->basepath->getBasePath();
-                $view->headScript()->appendFile($basePath . '/gems/js/gems.copyToClipboard.js');
+                // $view->headScript()->appendFile($basePath . '/gems/js/gems.copyToClipboard.js');
                 // Always add the script, it will only be used if the answer button class
                 // is set to inline-answers (in the menu or elsewhere)
-                $view->headScript()->appendFile($basePath . '/gems/js/gems.respondentAnswersModal.js');
+                // $view->headScript()->appendFile($basePath . '/gems/js/gems.respondentAnswersModal.js');
 
 
-                $table = parent::getHtmlOutput($view);
+                $table = parent::getHtmlOutput();
                 $this->applyHtmlAttributes($table);
                 $htmlDiv[] = $table;
 
@@ -175,7 +175,7 @@ abstract class ShowTokenSnippetAbstract extends \MUtil\Snippets\ModelVerticalTab
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->tokenId) {
             if ($this->token) {

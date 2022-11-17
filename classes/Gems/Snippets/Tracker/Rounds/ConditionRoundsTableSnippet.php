@@ -14,6 +14,7 @@ namespace Gems\Snippets\Tracker\Rounds;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -93,7 +94,7 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->_model instanceof RoundModel) {
             $this->_model = new RoundModel();

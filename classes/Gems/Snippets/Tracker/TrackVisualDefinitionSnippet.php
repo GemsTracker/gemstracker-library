@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Exception\Coding;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Provides a visual overview of the track definition
@@ -83,7 +84,7 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (!$this->_model instanceof \MUtil\Model\SelectModel) {
             $trackId = $this->trackId;

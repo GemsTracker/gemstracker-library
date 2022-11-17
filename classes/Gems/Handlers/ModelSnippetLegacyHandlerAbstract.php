@@ -14,6 +14,7 @@ namespace Gems\Handlers;
 use Gems\Loader;
 use Gems\MenuNew\RouteHelper;
 use Gems\Project\ProjectSettings;
+use Gems\Snippets\ModelFormSnippet;
 use Gems\Util;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -172,7 +173,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var mixed String or array of snippets name
      */
-    // protected $createEditSnippets = 'ModelFormSnippetGeneric';
+    protected $createEditSnippets = [
+        ModelFormSnippet::class,
+        ];
 
     /**
      * The parameters used for the delete action.
@@ -253,7 +256,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet', 
-        'ModelDetailTableSnippetGeneric',
+        'ModelDetailTableSnippet',
         ];
 
     /**

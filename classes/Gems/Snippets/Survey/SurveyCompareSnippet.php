@@ -848,7 +848,8 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData() {
+    protected function loadFormData(): array
+    {
         if ($this->requestInfo->isPost()) {
             $this->formData = $this->requestInfo->getRequestPostParams() + $this->formData;
         } else {
@@ -878,6 +879,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
                 $this->formData['target'] = $this->_session->target;
             }
         }
+        return $this->formData;
     }
 
     protected function setAfterSaveRoute()

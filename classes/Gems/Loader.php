@@ -155,15 +155,6 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @return \Gems\Conditions
-     */
-    public function getConditions()
-    {
-        return $this->_getClass('conditions');
-    }
-
-    /**
-     *
      * @return \Gems\User\User
      */
     public function getCurrentUser()

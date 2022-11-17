@@ -248,9 +248,9 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         return [];
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $table = parent::getHtmlOutput($view);
+        $table = parent::getHtmlOutput();
         $table->getOnEmpty()->class = 'centerAlign';
 
         if (($this->containingId || $this->keyboard) && (! self::$keyboardUsed)) {

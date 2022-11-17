@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Tracker\Summary;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Tracker\Summary;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -32,7 +35,7 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
         $this->applyTextMarker();

@@ -11,7 +11,7 @@ namespace Gems\Condition\Track;
 class AgeConditionTest extends \PHPUnit_Framework_TestCase {
     
     /**
-     * @var \Gems\Conditions
+     * @var \Gems\ConditionLoader
      */
     public $conditions;
     
@@ -24,7 +24,7 @@ class AgeConditionTest extends \PHPUnit_Framework_TestCase {
     public function setUp() {
         parent::setUp();
         
-        $this->conditions = new \Gems\Conditions([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
+        $this->conditions = new \Gems\ConditionLoader([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
         
         $this->condition = $this->conditions->loadTrackCondition('\\Gems\\Condition\\Track\\AgeCondition');
     }

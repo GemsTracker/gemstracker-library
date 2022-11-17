@@ -27,7 +27,7 @@ class Contains extends ComparatorAbstract
      * @param string $subject
      * @return string
      */
-    public function getDescription($subject)
+    public function getDescription(string $subject): string
     {
         return sprintf(
                 $this->_('%s contains %s'),
@@ -41,7 +41,7 @@ class Contains extends ComparatorAbstract
      *
      * @return int Less than 5
      */
-    public function getNumParams()
+    public function getNumParams(): int
     {
         return 1;
     }
@@ -54,10 +54,10 @@ class Contains extends ComparatorAbstract
      * @param mixed $value The id of the condition
      * @return bool
      */
-    public function isValid($value)
+    public function isValid(mixed $value): bool
     {
         foreach ((array) $value as $val) {
-            if (\MUtil\StringUtil\StringUtil::contains($val, $this->_options[0])) {
+            if (str_contains($val, $this->_options[0])) {
                 return true;
             }
         }

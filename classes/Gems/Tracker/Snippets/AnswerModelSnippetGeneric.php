@@ -12,6 +12,8 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Event\Application\AnswerFilterEvent;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  * Displays answers to a survey.
@@ -146,7 +148,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $br = \MUtil\Html::create('br');
         if ($this->showSelected) {
@@ -324,7 +326,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = $this->token->getSurveyAnswerModel($this->locale->getLanguage());
 
@@ -341,13 +343,10 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
-        $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.copyToClipboard.js');
+        // $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.copyToClipboard.js');
         
         $htmlDiv = \MUtil\Html::create()->div(array('class' => 'answer-container'));
 
@@ -389,7 +388,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->tokenId) {
             if (isset($this->token)) {

@@ -9,15 +9,21 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
+use Gems\Handlers\Auth\ChangePasswordHandler;
+use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
+use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
+use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
+use Gems\Middleware\CurrentOrganizationMiddleware;
+use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
@@ -48,6 +54,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [
@@ -75,6 +82,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     NotAuthenticatedMiddleware::class,
                     LoginHandler::class,
                 ],
@@ -88,6 +97,8 @@ class Route
                     LocaleMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
                     AuthenticationWithoutTfaMiddleware::class,
                     TfaLoginHandler::class,
                 ],
@@ -151,6 +162,36 @@ class Route
                     InfoHandler::class,
                 ],
             ],
+            [
+                'name' => 'auth.password-reset.request',
+                'path' => '/password-reset',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
+                    RequestPasswordResetHandler::class,
+                    ],
+            ],
+            [
+                'name' => 'auth.password-reset.change',
+                'path' => '/index/resetpassword/key/{key:[a-zA-Z0-9]+}',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    NotAuthenticatedMiddleware::class,
+                    ResetPasswordChangeHandler::class,
+                ],
+            ],
         ];
     }
 
@@ -165,6 +206,25 @@ class Route
                     SecurityHeadersMiddleware::class,
                     LocaleMiddleware::class,
                     LogoutHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.change-password',
+                'path' => '/change-password',
+                'allowed_methods' => ['GET', 'POST'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    ChangePasswordHandler::class,
+                ],
+            ],
+            [
+                'name' => 'organization.switch-ui',
+                'path' => '/organization/switch-ui',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeOrganizationHandler::class,
                 ],
             ],
         ];
@@ -646,6 +706,7 @@ class Route
                     'attributes-all',
                     'ping',
                     'synchronize',
+                    'check',
                     'attributes',
                 ],
                 parameterRoutes: [
@@ -653,6 +714,7 @@ class Route
                     'ping',
                     'synchronize',
                     'attributes',
+                    'check',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),

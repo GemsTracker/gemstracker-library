@@ -158,7 +158,7 @@ class AskAction extends \Gems\Controller\Action
      * @see $useRawOutput
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     /**
      * Leave on top, so we won't miss this

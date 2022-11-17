@@ -81,7 +81,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      * @see $useRawOutput
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     /**
      * @var Util
@@ -366,7 +366,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         //Clone the object, we don't want to modify the original
         $project = clone $this->project;
 
-        //Now remove some keys want want to keep for ourselves
+        //Now remove some keys want to keep for ourselves
         if ($project->offsetExists('admin')) {
             $project->offsetUnset('admin');
         }
@@ -388,6 +388,6 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public function sessionAction()
     {
         $this->html->h2($this->_('Session content'));
-        $this->_showTable($this->_('Session'), $this->session);
+        $this->_showTable($this->_('Session'), $_SESSION);
     }
 }

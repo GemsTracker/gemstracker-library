@@ -61,7 +61,7 @@ class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         //\MUtil\EchoOut\EchoOut::track($this->_fileElement->getFileName());
         if ($this->_fileElement->isValid(null) && $this->_fileElement->getFileName()) {

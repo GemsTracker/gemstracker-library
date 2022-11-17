@@ -27,6 +27,11 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
     use TranslateableTrait;
 
     /**
+     * Default reception code value
+     */
+    const RECEPTION_OK = 'OK';
+
+    /**
      * Variable to add tags to the cache for cleanup.
      *
      * @var array

@@ -18,7 +18,7 @@ namespace Gems\Export\ModelSource;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class DefaultExportModelSource extends \Gems\Export_ModelSource_ExportModelsourceAbstract
+class DefaultExportModelSource extends ExportModelsourceAbstract
 {
 	/**
      * Get the model to export

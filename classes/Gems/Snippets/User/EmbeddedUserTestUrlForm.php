@@ -258,11 +258,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
         $this->formData['example_url'] = $this->buildExampleEmbedUrl();
+        
+        return $this->formData;
     }
 }
 

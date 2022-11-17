@@ -11,6 +11,9 @@
 
 namespace Gems\Condition\Comparator;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslateableTrait;
+
 /**
  *
  * @package    Gems
@@ -19,18 +22,24 @@ namespace Gems\Condition\Comparator;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-abstract class ComparatorAbstract extends \MUtil\Translate\TranslateableAbstract implements ComparatorInterface {
-    
-    public function __construct($options = array()) {
+abstract class ComparatorAbstract implements ComparatorInterface
+{
+    use TranslateableTrait;
+
+    protected array $_options;
+
+    public function __construct(TranslatorInterface $translator, array $options = []) {
         $this->_options = $options;
+        $this->translate = $translator;
+
     }
     
     /**
      * Get the descriptions for the parameters
      * 
-     * @return []
+     * @return ?string[]
      */
-    public function getParamDescriptions() {
+    public function getParamDescriptions(): array {
         return [
             null,
             null
@@ -42,7 +51,7 @@ abstract class ComparatorAbstract extends \MUtil\Translate\TranslateableAbstract
      * 
      * @return []
      */
-    public function getParamLabels() {
+    public function getParamLabels(): array {
         return [
             $this->_('First parameter'),
             $this->_('Second parameter')

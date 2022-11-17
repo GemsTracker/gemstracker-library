@@ -24,8 +24,10 @@ class GemsUserLoginAttempts extends Phinx\Migration\AbstractMigration
             ->addColumn('gula_id_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,
+                'signed' => false,
                 'after' => 'gula_login',
             ])
+            ->addForeignKey('gula_id_organization', 'gems__organizations', 'gor_id_organization')
             ->addColumn('gula_failed_logins', 'integer', [
                 'null' => false,
                 'default' => '0',

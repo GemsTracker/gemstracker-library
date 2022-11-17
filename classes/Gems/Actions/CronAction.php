@@ -47,7 +47,7 @@ class CronAction extends \Gems\Controller\Action
      *
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     /**
      *

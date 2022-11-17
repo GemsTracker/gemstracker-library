@@ -11,6 +11,9 @@
 
 namespace Gems\User\Validate;
 
+use Gems\User\PasswordChecker;
+use Gems\User\User;
+
 /**
  *
  *
@@ -31,17 +34,12 @@ class NewPasswordValidator implements \Zend_Validate_Interface
 
     /**
      *
-     * @var \Gems\User\User
-     */
-    private $_user;
-
-    /**
-     *
      * @param \Gems\User\User $user The user to check
      */
-    public function __construct(\Gems\User\User $user)
-    {
-        $this->_user = $user;
+    public function __construct(
+        private readonly User $user,
+        private readonly PasswordChecker $passwordChecker,
+    ) {
     }
 
     /**
@@ -58,7 +56,7 @@ class NewPasswordValidator implements \Zend_Validate_Interface
      */
     public function isValid($value, $context = array())
     {
-        $this->_report = $this->_user->reportPasswordWeakness($value, true);
+        $this->_report = $this->passwordChecker->reportPasswordWeakness($this->user, $value, true);
 
         foreach ($this->_report as &$report) {
             $report = ucfirst($report) . '.';

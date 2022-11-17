@@ -26,14 +26,14 @@ interface ConditionInterface
      *
      * @param array $data
      */
-    public function exchangeArray(array $data);
+    public function exchangeArray(array $data): void;
 
     /**
      * Get the condition id for this condition
      *
      * @return int
      */
-    public function getConditionId();
+    public function getConditionId(): int;
 
     /**
      * Return a help text for this filter.
@@ -42,7 +42,7 @@ interface ConditionInterface
      * 
      * @return string
      */
-    public function getHelp();
+    public function getHelp(): string;
     
     /**
      * Get the settings for the gcon_condition_textN fields 
@@ -51,14 +51,14 @@ interface ConditionInterface
      * @param boolean $new
      * @return array textN => array(modelFieldName => fieldValue)
      */
-    public function getModelFields($context, $new);    
+    public function getModelFields(array $context, bool $new): array;
     
     /**
      * Get the name to use in dropdowns for this condition
      * 
      * @return string
      */
-    public function getName();
+    public function getName(): string;
     
     /**
      * Short text explaining why this condition is not valid
@@ -70,7 +70,7 @@ interface ConditionInterface
      * 
      * @return string
      */
-    public function getNotValidReason($value, $context);
+    public function getNotValidReason(int $value, array $context): string;
     
     /**
      * Can this condition be applied to this track/round
@@ -83,5 +83,5 @@ interface ConditionInterface
      * 
      * @return bool
      */
-    public function isValid($value, $context);
+    public function isValid(int $value, array $context): bool;
 }

@@ -11,6 +11,8 @@
 
 namespace Gems\Task\Tracker\Import;
 
+use Gems\Condition\ConditionLoader;
+
 /**
  *
  *
@@ -23,10 +25,9 @@ namespace Gems\Task\Tracker\Import;
 class CheckTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
 {
     /**
-     *
-     * @var \Gems\Loader
+     * @var ConditionLoader
      */
-    protected $loader;
+    protected $conditionLoader;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -37,7 +38,6 @@ class CheckTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
     public function execute($lineNr = null, $conditionData = null)
     {
         $batch      = $this->getBatch();
-        $conditions = $this->loader->getConditions();
         $import     = $batch->getVariable('import');
 
         if (isset($conditionData['gcon_id']) && $conditionData['gcon_id']) {
@@ -51,7 +51,7 @@ class CheckTrackRoundConditionImportTask extends \MUtil\Task\TaskAbstract
         }
         if (isset($conditionData['gcon_class']) && $conditionData['gcon_class']) {
             try {
-                $conditions->loadRoundCondition($conditionData['gcon_class']);
+                $this->conditionLoader->loadRoundCondition($conditionData['gcon_class']);
             } catch (\Gems\Exception\Coding $ex) {
                 $batch->addToCounter('import_errors');
                 $batch->addMessage(sprintf(

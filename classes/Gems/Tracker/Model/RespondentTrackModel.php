@@ -306,7 +306,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * @param array $filter Allowed key values: gr2o_patient_nr, gr2o_id_organization and gtr_id_track
      * @return array Nested when $count is not null, otherwise just a simple array
      */
-    public function loadNew($count = null, array $filter = null)
+    public function loadNew($count = null, array $filter = null): array
     {
         $values = array();
 
@@ -371,7 +371,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null)
+    public function save(array $newValues, array $filter = null): array
     {
         $keys = $this->getKeys();
 

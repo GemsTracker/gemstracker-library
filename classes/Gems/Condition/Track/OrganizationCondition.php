@@ -13,7 +13,12 @@ namespace Gems\Condition\Track;
 
 use Gems\Condition\ConditionAbstract;
 use Gems\Condition\TrackConditionInterface;
+use Gems\Condition\ConditionLoader;
+use Gems\Repository\OrganizationRepository;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
+use Gems\Tracker\RespondentTrack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -23,25 +28,20 @@ use Gems\Util\Translated;
  */
 class OrganizationCondition extends ConditionAbstract implements TrackConditionInterface
 {
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        ConditionLoader $conditions,
+        TranslatorInterface $translator,
+        protected Translated $translatedUtil,
+        protected OrganizationRepository $organizationRepository,
+        protected UserLoader $userLoader
+    ) {
+        parent::__construct($conditions, $translator);
+    }
 
     /**
      * @inheritDoc
      */
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Track condition will be valid when respondent is in one of the organizations");
     }
@@ -49,10 +49,10 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
     /**
      * @inheritDoc
      */
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
-        $orgs   = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+        $orgs   = $this->organizationRepository->getOrganizationsWithRespondents();
         $output = [];
 
         for ($i = 1; $i < 5; $i++) {
@@ -69,7 +69,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
     /**
      * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Respondent organization');
     }
@@ -77,7 +77,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
     /**
      * @inheritDoc
      */
-    public function getNotValidReason($value, $context)
+    public function getNotValidReason(int $value, array $context): string
     {
         // Never triggered
         return '';
@@ -86,7 +86,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
     /**
      * @inheritDoc
      */
-    public function isValid($value, $context)
+    public function isValid(int $value, array $context): bool
     {
         // Always usable in a track
         return true;
@@ -95,7 +95,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
     /**
      * @inheritDoc
      */
-    public function getTrackDisplay($trackId)
+    public function getTrackDisplay(int $trackId): string
     {
         $orgs = [];
 
@@ -103,7 +103,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
             $field = 'gcon_condition_text' . $i;
 
             if (isset($this->_data[$field])) {
-                $org = $this->loader->getOrganization($this->_data[$field]);
+                $org = $this->userLoader->getOrganization($this->_data[$field]);
 
                 if ($org && $org->exists()) {
                     $orgs[] = $org->getName();
@@ -130,7 +130,7 @@ class OrganizationCondition extends ConditionAbstract implements TrackConditionI
      * @param array $fieldData Optional field data to use instead of data currently stored at object
      * @return bool
      */
-    public function isTrackValid(\Gems\Tracker\RespondentTrack $respTrack, array $fieldData = null)
+    public function isTrackValid(RespondentTrack $respTrack, array $fieldData = null): bool
     {
         $orgId = $respTrack->getOrganizationId();
 

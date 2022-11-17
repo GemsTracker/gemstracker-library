@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Organization;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     /**
      * Set a fixed model sort.
@@ -41,7 +44,7 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $bridge->tr()->class = $bridge->row_class;
 

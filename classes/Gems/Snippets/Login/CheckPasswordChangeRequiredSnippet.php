@@ -188,12 +188,14 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
-        parent::saveData();
+        $output = parent::saveData();
 
         $this->user->setPasswordResetRequired(false);
         $this->loginStatusTracker->setPasswordResetActive(false);
+        
+        return $output;
     }
 
     /**

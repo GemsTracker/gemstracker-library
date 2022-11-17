@@ -4,11 +4,12 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\DecoratedFlashMessagesInterface;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -44,12 +45,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
+        $user = $authenticationService->getLoggedInUser();
 
-        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid()) {
+        if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid(true, $user)) {
             return $this->redirectWithIntended(null, $request, $this->router->generateUri('auth.login'));
         }
-
-        $user = $authenticationService->getLoggedInUser();
 
         if (static::CHECK_TFA) {
             $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
@@ -69,13 +69,31 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $tfaService->logout();
             }
 
-            /** @var FlashMessagesInterface $flash */
+            /** @var DecoratedFlashMessagesInterface $flash */
             $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-            $flash?->flash('login_errors', [
+            $flash?->flashErrors([
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
 
             return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.login'));
+        }
+
+        if (LoginStatusTracker::make($session, $user)->isPasswordResetActive()) {
+            /** @var RouteResult $routeResult */
+            $routeResult = $request->getAttribute(RouteResult::class);
+            if (!in_array($routeResult->getMatchedRouteName(), [
+                'auth.change-password',
+                'tfa.login',
+                'auth.logout',
+            ])) {
+                /** @var DecoratedFlashMessagesInterface $flash */
+                $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+                $flash?->flashErrors([
+                    $this->translator->trans('Your password must be changed.'),
+                ]);
+
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.change-password'));
+            }
         }
 
         return $handler->handle($request);

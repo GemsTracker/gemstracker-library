@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Mail\Log;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  * @package    Gems
@@ -19,7 +22,7 @@ namespace Gems\Snippets\Mail\Log;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     /**
      *
@@ -43,7 +46,7 @@ class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);

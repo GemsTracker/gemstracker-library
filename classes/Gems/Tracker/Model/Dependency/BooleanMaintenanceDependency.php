@@ -55,12 +55,12 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new)
+    public function getChanges(array $context, bool $new = false): array
     {
         $multi = $this->translatedUtil->getYesNo();
         if (isset($context['gtf_field_values'])) {
             $values = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
-            if (count($multi)) {
+            if (count($multi) === count(BooleanField::$keyValues)) {
                 $multi = $values;
             }
         }

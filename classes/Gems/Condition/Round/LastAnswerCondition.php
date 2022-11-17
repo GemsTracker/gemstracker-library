@@ -12,6 +12,10 @@
 namespace Gems\Condition\Round;
 
 use Gems\Condition\RoundConditionAbstract;
+use Gems\Condition\ConditionLoader;
+use Gems\Tracker;
+use Gems\Tracker\Token;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -23,47 +27,33 @@ use Gems\Condition\RoundConditionAbstract;
  */
 class LastAnswerCondition extends RoundConditionAbstract
 {
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
-     * @var \Gems\Tracker
-     */
-    public $tracker;
-
-    public function afterRegistry()
+    public function __construct(protected ConditionLoader $conditions, TranslatorInterface $translator, protected Tracker $tracker)
     {
-        parent::afterRegistry();
-        if ($this->loader && !$this->tracker) {
-            $this->tracker = $this->loader->getTracker();
-        }
+        parent::__construct($conditions, $translator);
     }
 
     protected function getComparators()
     {
         $compators = [
-            \Gems\Conditions::COMPARATOR_EQUALS    => $this->_('Equals'),
-            \Gems\Conditions::COMPARATOR_NOT       => $this->_('Does not equal'),
-            \Gems\Conditions::COMPARATOR_EQUALLESS => $this->_('Equal or less'),
-            \Gems\Conditions::COMPARATOR_EQUALMORE => $this->_('Equal or more'),
-            \Gems\Conditions::COMPARATOR_BETWEEN   => $this->_('Between'),
-            \Gems\Conditions::COMPARATOR_CONTAINS  => $this->_('Contains'),
-            \Gems\Conditions::COMPARATOR_IN        => $this->_('In (..|..)'),
+            ConditionLoader::COMPARATOR_EQUALS    => $this->_('Equals'),
+            ConditionLoader::COMPARATOR_NOT       => $this->_('Does not equal'),
+            ConditionLoader::COMPARATOR_EQUALLESS => $this->_('Equal or less'),
+            ConditionLoader::COMPARATOR_EQUALMORE => $this->_('Equal or more'),
+            ConditionLoader::COMPARATOR_BETWEEN   => $this->_('Between'),
+            ConditionLoader::COMPARATOR_CONTAINS  => $this->_('Contains'),
+            ConditionLoader::COMPARATOR_IN        => $this->_('In (..|..)'),
         ];
         natsort($compators);
 
         return $compators;
     }
 
-    public function getHelp()
+    public function getHelp(): string
     {
         return $this->_("Look back from the current survey and find the first answered question");
     }
     
-    public function getLastAnswer($questionCode, $token)
+    public function getLastAnswer(string $questionCode, Token $token): string
     {
         $questionCodeUc = strtoupper($questionCode);
         $answer = 'N/A';    // Default if we find no answer
@@ -88,7 +78,7 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $answer;
     }
 
-    public function getModelFields($context, $new)
+    public function getModelFields(array $context, bool $new): array
     {
         $comparators = $this->getComparators();
 
@@ -120,17 +110,17 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $result;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->_('Previous answer');
     }
 
-    public function getNotValidReason($conditionId, $context)
+    public function getNotValidReason(int $conditionId, array $context): string
     {
         return sprintf($this->_('There is no question with `%s` in this track.'), $this->_data['gcon_condition_text1']);
     }
 
-    public function getRoundDisplay($trackId, $roundId)
+    public function getRoundDisplay(int $trackId, int $roundId): string
     {
         $field      = $this->_data['gcon_condition_text1'];
         $comparator = $this->_data['gcon_condition_text2'];
@@ -148,7 +138,7 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $comparatorDescription;
     }
 
-    public function isRoundValid(\Gems\Tracker\Token $token)
+    public function isRoundValid(Token $token): bool
     {
         $questionCode = $this->_data['gcon_condition_text1'];
         $comparator   = $this->_data['gcon_condition_text2'];
@@ -164,16 +154,15 @@ class LastAnswerCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param type $conditionId
-     * @param type $context
+     * @param int $conditionId
+     * @param array $context
      * @return boolean
      */
-    public function isValid($conditionId, $context)
+    public function isValid(int $conditionId, array $context): bool
     {
         // For now always valid, checking all surveys and possible questions could slow things down
         $result = true;
 
         return $result;
     }
-
 }

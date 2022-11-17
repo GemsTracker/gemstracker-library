@@ -14,6 +14,7 @@ namespace Gems;
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSelect;
 use Gems\Agenda\EpisodeOfCare;
+use Gems\Cache\HelperAdapter;
 use MUtil\Model;
 
 /**
@@ -678,7 +679,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getFilterList()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__);
 
         $output = $this->cache->getCacheItem($cacheId);
         if ($output) {
@@ -853,7 +854,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
         // Make sure no invalid data gets through
         $orgId = intval($orgId);
 
-        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $orgId;
+        $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__ . '_' . $orgId);
 
         if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;

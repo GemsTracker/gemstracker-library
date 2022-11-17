@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Token;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Snippet for showing the all tokens for a single respondent.
  *
@@ -32,7 +35,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $br    = \MUtil\Html::create('br');
         $tData = $this->util->getTokenData();

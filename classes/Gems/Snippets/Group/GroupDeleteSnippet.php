@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Group;
 
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  *
@@ -39,7 +41,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         return $this->model;
     }

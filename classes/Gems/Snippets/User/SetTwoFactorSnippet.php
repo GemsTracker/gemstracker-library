@@ -248,12 +248,14 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
         return parent::hasHtmlOutput();
     }
 
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
         $this->loadAuthenticator();
         $this->loadFormKey();
+
+        return $this->formData;
     }
 
     /**
@@ -316,7 +318,7 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $newKey = $this->formData['twoFactorKey'];
 

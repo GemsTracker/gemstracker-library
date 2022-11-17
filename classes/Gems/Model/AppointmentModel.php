@@ -339,7 +339,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null)
+    public function save(array $newValues, array $filter = null): array
     {
         // When appointment id is not set, then check for existing instances of
         // this appointment using the source information
