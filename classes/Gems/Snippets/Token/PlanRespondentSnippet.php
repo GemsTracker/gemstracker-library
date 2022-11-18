@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -83,7 +84,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
             $bridge->addSortable('grs_birthday');
             $bridge->addMultiSort('grs_city', array($respondentButton));
 
-            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
             // Row with track info
             $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
@@ -106,7 +107,7 @@ class PlanRespondentSnippet extends PlanTokenSnippet
 
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
-        $model->set('gto_round_description', 'tableDisplay', 'smallData');
+        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description')->colspan = 2;
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));

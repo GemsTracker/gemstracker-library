@@ -30,12 +30,6 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;

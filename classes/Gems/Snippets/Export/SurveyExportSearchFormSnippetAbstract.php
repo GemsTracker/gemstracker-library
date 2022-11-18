@@ -39,12 +39,6 @@ abstract class SurveyExportSearchFormSnippetAbstract extends \Gems\Snippets\Auto
     protected $exportModelSource;
 
 	/**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-	/**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.

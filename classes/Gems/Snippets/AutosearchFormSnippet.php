@@ -14,9 +14,14 @@ namespace Gems\Snippets;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\JQuery\Form\Element\DatePicker;
+use Gems\Loader;
 use Gems\MenuNew\RouteHelper;
+use Gems\Util;
 use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Display a search form that selects on typed text only
@@ -33,12 +38,6 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      * Field name for period filters
      */
     const PERIOD_DATE_USED = 'dateused';
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      *
@@ -106,12 +105,21 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      * @var string
      */
     protected $searchLabel;
+    
+    protected Util $util;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Loader $loader
+        )
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        
+        $this->util = $loader->getUtil();
+    }
 
     /**
      * Generate two date selectors and - depending on the number of $dates passed -

@@ -11,7 +11,15 @@
 
 namespace Gems\Snippets;
 
+use Gems\Cache\HelperAdapter;
+use Gems\Loader;
+use Gems\Locale\Locale;
+use Gems\MenuNew\RouteHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Extra code for displaying token models.
@@ -40,12 +48,6 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $currentUser;
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * A model, not necessarily the token model
      *
      * @var \MUtil\Model\ModelAbstract
@@ -58,17 +60,31 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $util;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        protected RouteHelper $routeHelper,
+        TranslatorInterface $translate,
+        protected Loader $loader,
+    )
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $routeHelper, $translate);
+
+        $this->util = $loader->getUtil();
+    }
+
     /**
      *
      * @param \MUtil\Model\Bridge\TableBridge $bridge
      */
-    protected function addActionLinks(\MUtil\Model\Bridge\TableBridge $bridge)
+    protected function addActionLinks(TableBridge $bridge)
     {
         $tData = $this->util->getTokenData();
-        
+
+        $actionLinks = [];
         // Action links
-        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge);
-        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
+//        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge);
+//        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
 
         // Remove nulls
         $actionLinks = array_filter($actionLinks);
@@ -81,9 +97,9 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @param \MUtil\Model\Bridge\TableBridge $bridge
      */
-    protected function addTokenLinks(\MUtil\Model\Bridge\TableBridge $bridge)
+    protected function addTokenLinks(TableBridge $bridge)
     {
-        $link = $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
+        $link = null; // $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
 
         if ($link) {
             $bridge->addItemLink($link);

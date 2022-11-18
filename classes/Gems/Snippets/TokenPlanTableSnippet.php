@@ -8,6 +8,7 @@
 
 namespace Gems\Snippets;
 
+use Gems\Html;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\Model\Data\DataReaderInterface;
 
@@ -85,8 +86,8 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
         if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
             $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
         } else {
-            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
-            $model->set('gto_round_description', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+            $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
             $bridge->addMultiSort(
                 'gtr_track_name', 'gr2t_track_info',
                 $bridge->gtr_track_name->if($HTML->raw(' &raquo; ')),

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -113,8 +114,8 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
         if ($this->multiTracks) {
-            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
-            $model->set('gto_round_description', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+            $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
             $bridge->addMultiSort(
                 'gtr_track_name', 'gr2t_track_info',
                 array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),

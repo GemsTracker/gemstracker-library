@@ -25,12 +25,6 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
 class RespondentMailLogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
      * Creates the form itself
      *
      * @param array $options

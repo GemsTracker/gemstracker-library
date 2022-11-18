@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -92,17 +93,17 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->gr2o_id_organization;
         $bridge->gr2t_id_respondent_track;
 
-        $HTML = \MUtil\Html::create();
+        $HTML = Html::create();
 
-        $model->set('gto_round_description', 'tableDisplay', 'smallData');
-        $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
-        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
+        $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
+                \MUtil\Lazy::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
 
-        $bridge->td($this->util->getTokenData()->getTokenStatusLinkForBridge($bridge, false));
+        // $bridge->td($this->util->getTokenData()->getTokenStatusLinkForBridge($bridge, false));
 
-        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
+        if (false && $menuItem = $this->findMenuItem('track', 'show-track')) {
             $href = $menuItem->toHRefAttribute($this->request, $bridge);
             $track1 = $HTML->if($bridge->gtr_track_name, $HTML->a($href, $bridge->gtr_track_name));
         } else {
@@ -116,13 +117,13 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
-        $project = \Gems\Escort::getInstance()->project;
+        // $project = \Gems\Escort::getInstance()->project;
 
         // If we are allowed to see the result of the survey, show them
-        if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
-                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
+//        if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
+//                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
-        }
+//        }
 
         $bridge->useRowHref = false;
 
@@ -143,7 +144,7 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        return $this->respondent && $this->request && parent::hasHtmlOutput();
+        return $this->respondent && parent::hasHtmlOutput();
     }
 
     /**

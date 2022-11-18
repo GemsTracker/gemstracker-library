@@ -14,6 +14,7 @@ namespace Gems\Model;
 
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
+use Zalt\Html\AElement;
 
 /**
  * Contains the staffModel
@@ -253,7 +254,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'separator', ' '
         );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
-            'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'),
+            'itemDisplay', [AElement::class, 'ifmail'],
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );

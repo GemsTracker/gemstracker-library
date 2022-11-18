@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -31,7 +32,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
+class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -157,9 +158,9 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      *
      * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(\MUtil\Html\TableElement $table, \Zend_Paginator $paginator)
+    protected function addPaginator(TableElement $table, \Zend_Paginator $paginator)
     {
-        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
+        // $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
     }
 
     /**

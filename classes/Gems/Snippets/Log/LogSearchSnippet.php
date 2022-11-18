@@ -25,12 +25,6 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
 class LogSearchSnippet extends AutosearchInRespondentSnippet
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.

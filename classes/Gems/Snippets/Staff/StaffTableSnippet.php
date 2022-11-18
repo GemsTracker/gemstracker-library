@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Staff;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -66,7 +67,7 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if (! $this->columns) {
-            $br = \MUtil\Html::create('br');
+            $br = Html::create('br');
             
             $this->columns = array(
                 10 => array('gsf_login', $br, 'gsf_id_primary_group'),

@@ -5,8 +5,6 @@
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  */
 
 namespace Gems\Snippets\Token;
@@ -14,20 +12,11 @@ namespace Gems\Snippets\Token;
 /**
  * Respondent token filter tabs
  *
- * Abstract class for quickly creating a tabbed bar, or rather a div that contains a number
- * of links, adding specific classes for display.
- *
- * A snippet is a piece of html output that is reused on multiple places in the code.
- *
- * Variables are intialized using the {@see \MUtil\Registry\TargetInterface} mechanism.
- *
  * @package    Gems
  * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TokenTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
+class TokenTabsSnippet extends \Zalt\Snippets\TabSnippetAbstract
 {
     /**
      * Default href parameter values

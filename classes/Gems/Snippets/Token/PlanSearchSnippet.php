@@ -44,12 +44,6 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     protected $periodSelector = true;
 
     /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-    
-    /**
      * Add filler select to the elements array
      * 
      * @param array $elements

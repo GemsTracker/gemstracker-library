@@ -49,7 +49,7 @@ class OrganizationSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         $respondentList['noPatient'] = $this->_('Organizations that have no respondents');
 
         $elements['pats'] = $this->_createSelectElement('respondentstatus', $respondentList);
-        $elements['orgs'] = $this->_createSelectElement('accessible_by', $this->currentUser->getAllowedOrganizations(), $this->_('(accessible by any organization)'));
+        // $elements['orgs'] = $this->_createSelectElement('accessible_by', $this->currentUser->getAllowedOrganizations(), $this->_('(accessible by any organization)'));
 
         return $elements;
     }

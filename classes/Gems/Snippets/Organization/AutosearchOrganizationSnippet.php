@@ -24,12 +24,6 @@ class AutosearchOrganizationSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var string The field that contains an organization id
      */
     protected $organizationField;
@@ -39,12 +33,6 @@ class AutosearchOrganizationSnippet extends \Gems\Snippets\AutosearchFormSnippet
      * @var boolean When true show only respondent organizations
      */
     protected $respondentOrganizations = false;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
 
     /**
      * Returns a text element for autosearch. Can be overruled.
