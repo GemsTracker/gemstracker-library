@@ -188,12 +188,6 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     protected $deleteSnippets = 'ModelItemYesNoDeleteSnippet';
 
     /**
-     *
-     * @var \Gems\Escort
-     */
-    public $escort;
-
-    /**
      * The snippets used for the export action
      *
      * @var mixed String or array of snippets name

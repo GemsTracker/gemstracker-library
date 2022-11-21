@@ -30,13 +30,13 @@ class LegacyController implements RequestHandlerInterface
     protected ContainerInterface $container;
 
     public function __construct(
-        protected ProjectOverloader $loader, 
-        private LayoutRenderer $layoutRenderer, 
-        protected \Zend_View $view, 
+        protected ProjectOverloader $loader,
+        private LayoutRenderer $layoutRenderer,
+        protected \Zend_View $view,
         private UrlHelper $urlHelper)
     {
         $this->container = $loader->getContainer();
-        
+
         \Zalt\Html\Html::getRenderer()->setView($this->view);
     }
 
@@ -148,6 +148,7 @@ class LegacyController implements RequestHandlerInterface
                 $legacyName = 'Legacy' . ucFirst($name);
                 if ($this->container->has($legacyName)) {
                     $object->$name = $this->container->get($legacyName);
+                    continue;
                 }
                 if ($this->container->has($name)) {
                     $object->$name = $this->container->get($name);
