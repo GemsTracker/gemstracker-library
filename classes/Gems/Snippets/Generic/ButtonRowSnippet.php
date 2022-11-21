@@ -14,6 +14,7 @@ namespace Gems\Snippets\Generic;
 use Gems\Html;
 use Gems\MenuNew\RouteHelper;
 use MUtil\Request\RequestInfo;
+use Zalt\Html\Routes\UrlRoutes;
 
 /**
  * Displays the parent menu item (if existing) plus any current
@@ -25,7 +26,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.7.2
  */
-class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
+class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      * Add the children of the current menu item
@@ -49,60 +50,37 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
     protected bool $addCurrentSiblings = false;
 
     /**
-     * @var RequestInfo
-     */
-    protected $requestInfo;
-
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
-     * @param array $menuList
      * @return array
      */
-    protected function addButtons(array $menuList): array
+    protected function getButtons(): array
     {
-        $currentRoute = $this->requestInfo->getCurrentRouteResult();
-        $currentRouteName = $currentRoute->getMatchedRouteName();
-        $currentRouteParams = $currentRoute->getMatchedParams();
+        $output = [];
+        
         if ($this->addCurrentParent) {
-            $parent = $this->routeHelper->getRouteParent($currentRouteName);
-            $params = $this->routeHelper->getRouteParamsFromKnownParams($parent, $currentRouteParams);
-            $menuList[] = [
-                'label' => $this->_('Cancel'),
-                'url' => $this->routeHelper->getRouteUrl($parent['name'], $params),
-            ];
+            $parentUrl = UrlRoutes::getCurrentParentUrl();
+            if ($parentUrl) {
+                $output[$this->_('Cancel')] = $parentUrl;                
+            }
         }
         if ($this->addCurrentSiblings) {
-            // $menuList->addCurrentSiblings($this->anyParameterSiblings);
+            // $menuList += UrlRoutes::getCurrentChildRoutes();
         }
         if ($this->addCurrentChildren) {
-            // $menuList->addCurrentChildren();
+            $output += UrlRoutes::getCurrentChildRoutes();
         }
         // \MUtil\EchoOut\EchoOut::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
-        return $menuList;
+        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($output, true) . "\n", FILE_APPEND);
+        return $output;
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
-        $menuList = [];
-
-        $menuList = $this->addButtons($menuList);
+        $menuList = $this->getButtons();
 
         if (count($menuList)) {
-            $container = \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
-            foreach($menuList as $buttonInfo) {
-                $container->append(\Gems\Html::actionLink($buttonInfo['url'], $buttonInfo['label']));
+            $container = Html::div(array('class' => 'buttons', 'renderClosingTag' => true));
+            foreach($menuList as $label => $route) {
+                $container->append(Html::actionLink($route, $label));
             }
 
             return $container;

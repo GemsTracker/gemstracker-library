@@ -23,6 +23,11 @@ abstract class MenuItem extends MenuNode
         $this->parent = $parent;
         $this->menu = $parent->getMenu();
     }
+    
+    public function getParent(): ?MenuNode
+    {
+        return $this->parent;
+    }
 
     public function isActive(): bool
     {

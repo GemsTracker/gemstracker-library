@@ -14,6 +14,9 @@ namespace Gems\Handlers;
 use Gems\Loader;
 use Gems\MenuNew\RouteHelper;
 use Gems\Project\ProjectSettings;
+use Gems\Snippets\Generic\ButtonRowSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Util;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -227,6 +230,21 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     protected $exportParameters = [];
 
     /**
+     * The parameters used for the index action minus those in autofilter.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $indexParameters = [
+        'addCurrentChildren' => true,
+        'addCurrentParent' => true,
+        ];
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -241,6 +259,15 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var mixed String or array of snippets name
      */
+    protected $indexStopSnippets = [
+        ButtonRowSnippet::class,
+        ];
+    
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
     // protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
 
     /**
@@ -250,13 +277,29 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public $messenger;
 
     /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = [
+        'addCurrentChildren' => true,
+        'addCurrentParent' => true,
+    ];
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
     protected $showSnippets = [
-        'Generic\\ContentTitleSnippet', 
-        'ModelDetailTableSnippet',
+        ContentTitleSnippet::class, 
+        ModelDetailTableSnippet::class,
+        ButtonRowSnippet::class,
         ];
 
     /**

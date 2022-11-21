@@ -17,6 +17,11 @@ abstract class MenuNode
         $this->children[] = $menuItem;
         $menuItem->register();
     }
+    
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
 
     public function renderNode(): string
     {

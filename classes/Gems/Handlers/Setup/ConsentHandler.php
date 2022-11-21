@@ -75,7 +75,7 @@ class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 $model->setKeys(['origKey']);
             }
         }
-
+    
         \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);
 
         return $model;
