@@ -20,7 +20,7 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 11-mei-2015 15:26:36
  */
-class FieldEditSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class FieldEditSnippet extends \Gems\Snippets\ModelFormSnippet
 {
     /**
      * Set what to do when the form is 'finished'.

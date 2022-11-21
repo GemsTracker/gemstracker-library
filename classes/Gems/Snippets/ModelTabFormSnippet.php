@@ -21,7 +21,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ModelTabFormSnippetGeneric extends \Gems\Snippets\ModelFormSnippetGeneric
+class ModelTabFormSnippet extends \Gems\Snippets\ModelFormSnippet
 {
     /**
      * When true a tabbed form is used.

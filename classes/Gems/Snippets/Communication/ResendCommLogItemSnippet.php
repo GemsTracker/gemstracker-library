@@ -51,7 +51,7 @@ class ResendCommLogItemSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return [
             $this->request->getControllerKey() => $this->request->getControllerName(),
@@ -72,7 +72,7 @@ class ResendCommLogItemSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $logId   = $this->request->getParam(\MUtil\Model::REQUEST_ID);
         if (! $logId) {

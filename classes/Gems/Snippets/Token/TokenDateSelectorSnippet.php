@@ -72,7 +72,7 @@ class TokenDateSelectorSnippet extends \MUtil\Snippets\SnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         if ($this->sortParamAsc) {
             $this->dateSelector->getModel()->setSortParamAsc($this->sortParamAsc);
@@ -108,7 +108,7 @@ class TokenDateSelectorSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return (boolean) $this->dateSelector;
     }

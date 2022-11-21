@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -65,7 +68,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $loader;
     
     public $menuActionController = array('track');
-    public array $menuShowActions = array('answer');
+    public array $menuShowRoutes = array('answer');
 
     /**
      *
@@ -90,28 +93,28 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     public function afterRegistry() 
     {
-        parent::afterRegistry();
+        // parent::afterRegistry();
         if (!($this->tracker instanceof \Gems\Tracker)) {
             $this->tracker = $this->loader->getTracker();
         }
         $this->onEmpty = $this->_('No summary available');
     }
     
-    public function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model) 
+    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model) 
     {
         parent::addBrowseTableColumns($bridge, $model);
         
-        $showMenuItems = $this->getShowUrls();
+        $showMenuItems = $this->getShowUrls($bridge);
 
-        foreach ($showMenuItems as $menuItem) {
-            $link = $menuItem->toActionLinkLower($this->request, $bridge);
-            // $link->target = 'inline';
-            $link->appendAttrib('class', 'inline-answers');
-            $bridge->addItemLink($link);
-        }
+//        foreach ($showMenuItems as $menuItem) {
+//            $link = $menuItem->toActionLinkLower($this->request, $bridge);
+//            // $link->target = 'inline';
+//            $link->appendAttrib('class', 'inline-answers');
+//            $bridge->addItemLink($link);
+//        }
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view) 
+    public function getHtmlOutput(\Zend_View_Abstract $view = null) 
     {
         // Make sure we can use jQuery
 
@@ -122,7 +125,7 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $this->columns[] = array('gto_id_token');
         
         $html = parent::getHtmlOutput($view);
-        if($roundDescription = $this->request->getParam('gto_round_description')) {
+        if($roundDescription = $this->requestInfo->getParam('gto_round_description')) {
             $html->caption($roundDescription);
         }
         
@@ -134,7 +137,8 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel() {
+    protected function createModel(): DataReaderInterface
+    {
         if (!$this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
             $model = $this->loader->getTracker()->getTokenModel();
             $model->set('gto_id_token', 'label', $this->_('Summary'), 'formatFunction', array($this, 'getData'));
@@ -193,12 +197,12 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
     {
         // 
-        $roundDecription  = $this->request->getParam('gto_round_description');
+        $roundDecription  = $this->requestInfo->getParam('gto_round_description');
         if (!is_null($roundDecription)) {
             $roundDecription = html_entity_decode(urldecode($roundDecription));
-            $this->request->setParam('gto_round_description', $roundDecription);
+            // $this->request->setParam('gto_round_description', $roundDecription);
         }
-        parent::processFilterAndSort($model);
+        // parent::processFilterAndSort($model);
     }
 
 }

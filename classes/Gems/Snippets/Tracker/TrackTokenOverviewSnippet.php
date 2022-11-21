@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Model;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  * Snippet for showing the all tokens for a single track for a single patient
@@ -76,7 +78,7 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $tData = $this->util->getTokenData();
 
@@ -124,7 +126,7 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $table = parent::getHtmlOutput($view);
 
@@ -163,7 +165,7 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->respondentTrackId) {
             $this->respondentTrackId = $this->getRespondentTrackId();

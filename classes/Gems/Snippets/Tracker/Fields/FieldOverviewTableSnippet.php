@@ -3,6 +3,8 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use MUtil\Lazy\Call;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -22,9 +24,9 @@ use MUtil\Lazy\Call;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $params = [
             'id1' => $bridge->getLazy('gr2o_patient_nr'),

@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Respondent\Relation;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Ask Yes/No conformation for deletion and deletes respondent relation when confirmed.
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Respondent\Relation;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric {
+class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -31,7 +34,7 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric {
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);

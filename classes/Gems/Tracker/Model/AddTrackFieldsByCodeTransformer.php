@@ -2,6 +2,8 @@
 
 namespace Gems\Tracker\Model;
 
+use Zalt\Model\MetaModelInterface;
+
 class AddTrackFieldsByCodeTransformer extends \MUtil\Model\ModelTransformerAbstract
 {
 
@@ -47,7 +49,7 @@ class AddTrackFieldsByCodeTransformer extends \MUtil\Model\ModelTransformerAbstr
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false)
     {
         foreach($data as $tokenId=>$row) {
             if (isset($row[$this->respTrackIdField])) {

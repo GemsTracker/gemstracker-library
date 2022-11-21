@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Model;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  *
@@ -66,7 +68,7 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(\MUtil\Model\ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(MetaModelInterface $model, array $data, $new = false, $isPostData = false)
     {
         // get tokens
 
@@ -103,7 +105,7 @@ class AddAnswersTransformer extends \MUtil\Model\ModelTransformerAbstract
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
+    public function transformRowAfterSave(MetaModelInterface $model, array $row)
     {
         $token = $this->source->getToken($row['gto_id_token']);
         $answers = $row;

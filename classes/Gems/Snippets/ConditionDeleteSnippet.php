@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  *
@@ -52,7 +55,7 @@ class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetA
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\ConditionModel) {
             $this->model = $this->loader->getModels()->getConditionModel();
@@ -71,7 +74,7 @@ class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetA
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         if ($model instanceof \Gems\Model\ConditionModel) {
             $this->useCount = $model->getUsedCount($this->conditionId);

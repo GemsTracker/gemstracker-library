@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\ReceptionCode;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  *
@@ -122,11 +124,11 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
     /**
      * Initialize the _items variable to hold all items from the model
      */
-    protected function initItems()
+    protected function initItems(MetaModelInterface $metaModel)
     {
         if (is_null($this->_items)) {
             // Set the element classes
-            $model = $this->getModel();
+            $model = $metaModel;
             $keys  = $model->getKeys();
 
             foreach ($model->getItemNames() as $item) {
@@ -226,7 +228,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $this->beforeSave();
 
@@ -235,9 +237,9 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
                 $this->loader->getCurrentUser()->getUserId()
                 );
 
-        $this->afterSave($changed);
-
         $this->accesslog->logChange($this->request, null, $this->formData);
+        
+        return $changed;
     }
 
     /**

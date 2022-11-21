@@ -60,7 +60,7 @@ class ExportModel extends \MUtil\Model\ModelAbstract
         return false;
     }
 
-    public function hasNew()
+    public function hasNew(): bool 
     {
         return false;
     }

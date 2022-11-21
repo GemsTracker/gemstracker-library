@@ -19,7 +19,7 @@ namespace Gems\Snippets\Respondent\Relation;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class ModelFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric {
+class ModelFormSnippet extends \Gems\Snippets\ModelFormSnippet {
 
     protected function setAfterSaveRoute() {
         $this->afterSaveRouteUrl = array(

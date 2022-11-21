@@ -26,11 +26,6 @@ use Gems\Util\Translated;
 class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * @var TrackEvents
      */
     protected $trackEvents;

@@ -20,7 +20,7 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FieldDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetGeneric
+class FieldDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
 {
     /**
      * Set what to do when the form is 'finished'.

@@ -282,7 +282,7 @@ class BarChartSnippet extends \MUtil\Snippets\SnippetAbstract {
      * @param \Zend_View_Abstract $view
      * @return type
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view = null) {
         //$view->headLink()->prependStylesheet($view->serverUrl() . \Gems\Escort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');
 
         $htmlDiv   = \MUtil\Html::create()->div(' ', array('class'=>'barchartcontainer'));

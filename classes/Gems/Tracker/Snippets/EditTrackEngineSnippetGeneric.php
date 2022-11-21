@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  * Basic snippet for editing track engines instances
  *
@@ -74,7 +77,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
@@ -163,7 +166,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         $model = $this->loader->getTracker()->getTrackModel();
         $model->applyFormatting(true, true);
@@ -222,7 +225,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->trackEngine && (! $this->trackId)) {
             $this->trackId = $this->trackEngine->getTrackId();
@@ -252,7 +255,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -260,6 +263,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
         if (isset($this->formData['gtr_organizations']) && (! is_array($this->formData['gtr_organizations']))) {
             $this->formData['gtr_organizations'] = explode('|', trim($this->formData['gtr_organizations'], '|'));
         }
+        return $this->formData;
     }
 
     /**
@@ -269,7 +273,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         // feature request #200
         if (isset($this->formData['gtr_organizations']) && is_array($this->formData['gtr_organizations'])) {
@@ -281,7 +285,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
             $this->formData['gtr_survey_rounds'] = 0;
         }
 
-        parent::saveData();
+        $output = parent::saveData();
 
         // Check for creation
         if ($this->createData) {
@@ -295,5 +299,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
             // Track conversion
             $this->trackEngine->convertTo($this->formData['gtr_track_class']);
         }
+        
+        return $output;
     }
 }

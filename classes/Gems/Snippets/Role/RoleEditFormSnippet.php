@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Role;
 
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  *
@@ -37,7 +40,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @var boolean True
      */
-    protected $disableValidatorTranslation = true;
+    protected bool $disableValidatorTranslation = true;
 
     /**
      *
@@ -66,7 +69,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $bridge->addHidden('grl_id_role');
         $bridge->addText('grl_name');
@@ -188,7 +191,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         return $this->model;
     }
@@ -225,7 +228,7 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         // \MUtil\EchoOut\EchoOut::track(file_get_contents('php://input'));
         parent::loadFormData();
@@ -244,5 +247,6 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 unset($this->formData['grl_privileges'][$key]);
             }
         }
+        return $this->formData;
     }
  }

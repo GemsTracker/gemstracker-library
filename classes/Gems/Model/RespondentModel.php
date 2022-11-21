@@ -1046,7 +1046,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         // If the respondent id is not set, check using the
         // patient number and then the ssn

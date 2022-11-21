@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Respondent\Consent;
 
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  * @package    Gems
@@ -58,7 +60,7 @@ class RespondentConsentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstra
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (in_array('name', $this->exhibit)) {
             \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));

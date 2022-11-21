@@ -103,7 +103,7 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         'ConditionAndOrTableSnippet',
     ];

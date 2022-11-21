@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Tracker\Model\RoundModel;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -55,7 +57,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['track-builder.track-maintenance.track-rounds.edit'];
+    public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -65,7 +67,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track-builder.track-maintenance.track-rounds.show'];
+    public array $menuShowRoutes = ['track-builder.track-maintenance.track-rounds.show'];
 
     /**
      *
@@ -90,7 +92,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // Make sure these fields are loaded
         $model->get('gro_valid_after_field');
@@ -192,7 +194,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');

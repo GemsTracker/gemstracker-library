@@ -16,6 +16,7 @@ use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
+use Gems\Handlers\InfoHandler;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
@@ -33,6 +34,7 @@ use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddleware;
 
 class Route
 {
@@ -148,6 +150,19 @@ class Route
                 ],
             ],
             [
+                'name' => 'info.show',
+                'path' => '/info',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    LocaleMiddleware::class,
+                    MenuMiddleware::class,
+                    InfoHandler::class,
+                ],
+            ],
+            [
                 'name' => 'auth.password-reset.request',
                 'path' => '/password-reset',
                 'allowed_methods' => ['GET', 'POST'],
@@ -160,7 +175,7 @@ class Route
                     HandlerCsrfMiddleware::class,
                     NotAuthenticatedMiddleware::class,
                     RequestPasswordResetHandler::class,
-                ],
+                    ],
             ],
             [
                 'name' => 'auth.password-reset.change',
@@ -573,8 +588,8 @@ class Route
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.codes.consent',
-                controllerClass: \Gems\Actions\ConsentAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
+                controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],

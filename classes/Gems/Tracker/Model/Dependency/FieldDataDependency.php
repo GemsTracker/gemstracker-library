@@ -69,7 +69,7 @@ class FieldDataDependency extends DependencyAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new)
+    public function getChanges(array $context, bool $new = false): array
     {
         $output = array();
 

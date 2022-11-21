@@ -77,7 +77,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $output = parent::getHtmlOutput($view);
         if ($this->result) {
@@ -145,7 +145,7 @@ class RunSqlFormSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $resultSet = 0;
         if($this->request->isPost()) {
@@ -159,6 +159,8 @@ class RunSqlFormSnippet extends FormSnippetAbstract
             $model = $this->getModel();
             $this->result = $model->runScript($data, true);
         }
+        
+        return 0;
     }
 
     /**

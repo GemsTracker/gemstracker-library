@@ -13,6 +13,8 @@ namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Model\EpisodeOfCareModel;
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  * @package    Gems
@@ -87,7 +89,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof EpisodeOfCareModel) {
             $this->model = $this->loader->getModels()->createEpisodeOfCareModel();
@@ -118,7 +120,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             return parent::hasHtmlOutput();

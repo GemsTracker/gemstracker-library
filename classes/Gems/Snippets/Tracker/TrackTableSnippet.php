@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Tracker\Respondent;
 use Gems\Util;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -47,7 +48,7 @@ class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }

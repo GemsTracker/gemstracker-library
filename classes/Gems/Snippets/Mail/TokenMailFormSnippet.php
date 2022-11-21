@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Mail;
 
 use Gems\Util\Translated;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -38,7 +40,7 @@ class TokenMailFormSnippet extends \Gems\Snippets\Mail\MailFormSnippet
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addFormElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $bridge->addHtml('to', 'label', $this->_('To'));
 

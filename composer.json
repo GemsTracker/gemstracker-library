@@ -42,7 +42,7 @@
         "classes/"
     ],
     "minimum-stability": "dev",
-    "prefer-stable": true,
+    "prefer-stable": false,
     "require": {
         "php": ">=8.1.0",
         "ext-gd": "*",
@@ -75,7 +75,7 @@
         "league/html-to-markdown": "^5.1",
         "magnafacta/mutil": "2.x-dev",
         "magnafacta/zalt-html": "dev-main",
-        "magnafacta/zalt-loader": "dev-psr-11",
+        "magnafacta/zalt-model": "2.x-dev",
         "mezzio/mezzio-csrf": "^1.5",
         "mezzio/mezzio-fastroute": "^3.5.0",
         "mezzio/mezzio-flash": "^1.3",

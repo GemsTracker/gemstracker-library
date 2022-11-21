@@ -636,7 +636,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
      * @param boolean $loadDependencies When true the row dependencies are loaded
      * @return array An array or false
      */
-    public function loadFirst($filter = true, $sort = true, $loadDependencies = true)
+    public function loadFirst($filter = true, $sort = true, $loadDependencies = true): array
     {
         // Needed as the default order otherwise triggers the type dependency
         $oldDep = $this->_addLoadDependency;

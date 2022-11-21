@@ -13,9 +13,9 @@ namespace Gems\Snippets\Mail;
 
 use Gems\Loader;
 use Gems\Tracker;
-use MUtil\Model\Bridge\FormBridgeInterface;
-use MUtil\Model\ModelAbstract;
 use Symfony\Component\Mime\Address;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -67,7 +67,7 @@ class TokenBulkMailFormSnippet extends MailFormSnippet
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(FormBridgeInterface $bridge, ModelAbstract $model)
+    protected function addFormElements(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
         $bridge->addElement($this->createToElement());
         $bridge->addElement($this->mailElements->createMethodElement());
@@ -169,7 +169,7 @@ class TokenBulkMailFormSnippet extends MailFormSnippet
         return implode(' ', $data);
     }
 
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
         //if (!isset($this->formData['to']) || !is_array($this->formData['to'])) {
@@ -184,6 +184,7 @@ class TokenBulkMailFormSnippet extends MailFormSnippet
 
             $this->formData['multi_method'] = 'O';
         }
+        return $this->formData;
     }
 
     protected function sendMail()

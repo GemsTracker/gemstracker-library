@@ -11,8 +11,11 @@
 
 namespace Gems\Controller;
 
+use Gems\MenuNew\RouteHelper;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
+use Mezzio\Helper\UrlHelper;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class contains \Gems specific adaptations to parent class.
@@ -141,7 +144,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'ModelTableSnippetGeneric';
+    protected $autofilterSnippets = 'ModelTableSnippet';
 
     /**
      * The parameters used for the create and edit actions.
@@ -160,14 +163,29 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippetGeneric';
+    protected $createEditSnippets = 'ModelFormSnippet';
+
+    /**
+     * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = [
+        'abortUrl' => 'getShowUrl',
+        'afterDeleteUrl' => 'getIndexUrl'
+    ];
 
     /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippetGeneric';
+    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippet';
 
     /**
      *
@@ -227,11 +245,16 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     public $messenger;
 
     /**
+     * @var RouteHelper
+     */
+    public $routeHelper;
+
+    /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
+    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelDetailTableSnippet');
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -432,31 +455,19 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         }
     }
 
-
-    /**
-     * Finds the first item with one of the actions specified as parameter and using the current controller
-     *
-     * @param string $action
-     * @param string $action2
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function firstAllowedMenuItem($action, $action2 = null)
-    {
-        $actions = \MUtil\Ra::args(func_get_args());
-        $controller = $this->_getParam('controller');
-
-        foreach ($actions as $action) {
-            $menuItem = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
-
-            if ($menuItem) {
-                return $menuItem;
-            }
-        }
-    }
-
     public function getCsrfGuard(): ?CsrfGuardInterface
     {
         return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
+    }
+
+    public function getActionUrl(string $action): ?string
+    {
+        $parentRoute = $this->routeHelper->getRouteParent($this->requestInfo->getRouteName(), $action);
+        // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . $this->requestInfo->getRouteName() . " -> " . $parentRoute['name'] . "\n", FILE_APPEND);        
+        if (null === $parentRoute) {
+            return null;
+        }
+        return $this->routeHelper->getRouteUrl($parentRoute['name'], $this->requestInfo->getParams());
     }
 
     public function getControllerName()
@@ -606,6 +617,11 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         return ucfirst((string) $this->getTopic(100));
     }
 
+    public function getIndexUrl()
+    {
+        return $this->getActionUrl('index');
+    }
+
     /**
      * Return the current request ID, if any.
      *
@@ -673,6 +689,11 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     public function getShowTitle()
     {
         return sprintf($this->_('Showing %s'), $this->getTopic(1));
+    }
+
+    public function getShowUrl()
+    {
+        return $this->getActionUrl('show');
     }
 
     /**

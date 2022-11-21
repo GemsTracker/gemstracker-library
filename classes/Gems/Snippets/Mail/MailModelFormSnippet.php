@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Mail;
 
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  *
@@ -87,7 +90,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $this->mailElements->setForm($bridge->getForm());
         $this->initItems();
@@ -175,7 +178,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if ($this->model instanceof \Gems\Model\CommtemplateModel) 
         {
@@ -261,7 +264,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Load extra data not from the model into the form
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
         $this->loadMailer();
@@ -299,6 +302,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 $this->_currentLanguage = $this->project->getLocaleDefault();
             }
         }
+        return $this->formData;
     }
 
     /**

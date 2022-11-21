@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Tracker\Compliance;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Tracker\Compliance;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     /**
      * Menu actions to show in Edit box.
@@ -30,7 +33,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = [];
+    public array $menuEditRoutes = [];
 
     /**
      * Menu actions to show in Show box.
@@ -40,7 +43,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track' => 'show-track'];
+    public array $menuShowRoutes = ['track' => 'show-track'];
 
     /**
      *
@@ -58,7 +61,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $this->applyTextMarker();
 

@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets;
 
+use Gems\Html;
+use Zalt\Html\AElement;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  * Prepares displays of respondent information
  *
@@ -92,11 +96,6 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     protected $repeater;
 
     /**
-     * @var \MUtil\Request\RequestInfo
-     */
-    protected $requestInfo;
-
-    /**
      * Optional
      *
      * @var \Gems\Tracker\Respondent
@@ -134,7 +133,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addButtons(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
+    protected function addButtons(DetailTableBridge $bridge)
     {
         if ($this->showButtons) {
             if ($this->buttons) {
@@ -150,7 +149,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addOnClick(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
+    protected function addOnClick(DetailTableBridge $bridge)
     {
         if ($this->onclick) {
             $bridge->tbody()->onclick = array('location.href=\'', $this->onclick, '\';');
@@ -163,7 +162,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    abstract protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge);
+    abstract protected function addTableCells(DetailTableBridge $bridge);
 
     /**
      * Called after the check that all required registry values
@@ -222,7 +221,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
                 }
             }
             if ($urlString) {
-                $this->addMessage(\MUtil\Html::create()->a($urlString, $msg));
+                $this->addMessage(Html::create()->a($urlString, $msg));
             } else {
                 $this->addMessage($msg);
             }
@@ -245,28 +244,20 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
             $orgId = $params[\MUtil\Model::REQUEST_ID2];
         }
 
-        $currentOrganization = $this->currentUser->getCurrentOrganization();
-
-        if ($orgId == $currentOrganization->getId()) {
-            if ($onlyNotCurrent) {
-                return;
-            } else {
-                return $this->_('Respondent information');
-            }
-        } else {
-            return sprintf($this->_('%s respondent information'), $currentOrganization->getName());
-        }
+//        $currentOrganization =  $this->currentUser->getCurrentOrganization();
+//
+//        if ($orgId == $currentOrganization->getId()) {
+//            if ($onlyNotCurrent) {
+//                return;
+//            } else {
+//                return $this->_('Respondent information');
+//            }
+//        } else {
+//            return sprintf($this->_('%s respondent information'), $currentOrganization->getName());
+//        }
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
         $bridge = $this->model->getBridgeFor('itemTable', array('class' => 'displayer table table-condensed'));
         $bridge->setRepeater($this->repeater);
@@ -288,7 +279,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 
-        $container = \MUtil\Html::create()->div(array('class' => 'table-container'));
+        $container = Html::create()->div(array('class' => 'table-container'));
         $container[] = $bridge->getTable();
         return $container;
     }
@@ -298,7 +289,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
+    protected function getMenuList(DetailTableBridge $bridge)
     {
         /*$menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
         $menuList->addParameterSources($bridge);
@@ -329,10 +320,10 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->model) {
-            $this->model->setIfExists('gr2o_email', 'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'));
+            $this->model->setIfExists('gr2o_email', 'itemDisplay', [AElement::class, 'ifmail']);
             $this->model->setIfExists('gr2o_comments', 'rowspan', 2);
 
             if ($this->showConsentWarning && $this->model->has('gr2o_consent')) {

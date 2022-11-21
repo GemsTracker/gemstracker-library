@@ -116,7 +116,7 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
             'showMenu' => false,
         ];
 
-        $this->addSnippet('ModelTableSnippetGeneric', $params);
+        $this->addSnippet('ModelTableSnippet', $params);
     }
 
     /**

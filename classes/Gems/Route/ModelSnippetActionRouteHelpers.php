@@ -3,6 +3,7 @@
 namespace Gems\Route;
 
 use Gems\Dev\Middleware\TestCurrentUserMiddleware;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -11,6 +12,7 @@ use Gems\Middleware\SecurityHeadersMiddleware;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Session\SessionMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddleware;
 
 trait ModelSnippetActionRouteHelpers
 {
@@ -40,6 +42,7 @@ trait ModelSnippetActionRouteHelpers
     ];
 
     protected array $modelSnippetCustomMiddleware = [
+        SnippetMiddleware::class,
         LegacyCurrentUserMiddleware::class,
         LegacyController::class,
     ];
@@ -130,6 +133,29 @@ trait ModelSnippetActionRouteHelpers
         }
 
         return $routes;
+    }
+
+    public function createSnippetRoutes(string $baseName,
+                                       string $controllerClass,
+                                       ?string $basePath = null,
+                                       ?string $basePrivilege = null,
+                                       ?array $pages = null,
+                                       ?array $customMiddleware = null,
+                                       ?array $parameters = null,
+                                       ?array $parameterRoutes = null,
+                                       ?array $postRoutes = null,
+                                       ?array $parentParameters = null): array
+    {
+        return $this->createBrowseRoutes(
+            $baseName, 
+            $controllerClass, 
+            $basePath, $basePrivilege,
+            $pages, 
+            $customMiddleware ?: [$controllerClass], 
+            $parameters, 
+            $parameterRoutes, 
+            $postRoutes, 
+            $parentParameters);
     }
 
     public function getDefaultMiddleware(string|array $additionalMiddleware): array

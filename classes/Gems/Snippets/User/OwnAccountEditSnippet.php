@@ -12,6 +12,7 @@
 namespace Gems\Snippets\User;
 
 use Gems\Cache\HelperAdapter;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -99,7 +100,7 @@ class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->loader->getModels()->getStaffModel(false);
@@ -124,7 +125,7 @@ class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->currentUser->getUserId() == \Gems\User\UserLoader::SYSTEM_USER_ID) {
             $this->addMessage($this->getNotAllowedMessage());

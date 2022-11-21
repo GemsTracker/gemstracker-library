@@ -241,7 +241,7 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->selectedUser instanceof \Gems\User\User) {
             $this->_embedderData = $this->selectedUser->getEmbedderData();
@@ -258,11 +258,13 @@ class EmbeddedUserTestUrlForm extends FormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
         $this->formData['example_url'] = $this->buildExampleEmbedUrl();
+        
+        return $this->formData;
     }
 }
 

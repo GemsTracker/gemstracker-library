@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  *
@@ -41,7 +43,7 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
         $model->addColumn(new \Zend_Db_Expr(1), 'track_can_be_created');
@@ -60,7 +62,7 @@ class SingleSurveyAvailableTracksSnippet extends AvailableTracksSnippet
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return ($this->respondent instanceof \Gems\Tracker\Respondent) &&
                 $this->respondent->exists &&

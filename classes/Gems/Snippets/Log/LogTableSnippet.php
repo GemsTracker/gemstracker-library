@@ -12,6 +12,8 @@
 namespace Gems\Snippets\Log;
 
 use Gems\Model\LogModel;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -55,7 +57,7 @@ class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if (! $this->columns) {
             $br   = \MUtil\Html::create('br');
@@ -74,7 +76,7 @@ class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof LogModel) {
             $this->model = $this->loader->getModels()->createLogModel();

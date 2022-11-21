@@ -78,7 +78,7 @@ class ProjectTracksAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Tracker\\TrackSurveyOverviewSnippet',
     ];
 

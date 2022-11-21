@@ -32,7 +32,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('menuShowActions' => array('track' => 'show-track'));
+    protected $autofilterParameters = array('menuShowRoutes' => array('track' => 'show-track'));
 
     /**
      * The snippets used for the autofilter action.

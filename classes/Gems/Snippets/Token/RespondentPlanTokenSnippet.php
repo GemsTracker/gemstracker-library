@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Snippet for showing the all tokens for a single respondent.
  *
@@ -32,7 +36,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $br    = \MUtil\Html::create('br');
         $tData = $this->util->getTokenData();
@@ -73,7 +77,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_id_token');
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
-        $model->set('gto_round_description', 'tableDisplay', 'smallData');
+        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort('gsu_survey_name', 'gto_round_description');
         $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
@@ -85,7 +89,7 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
         if ($this->multiTracks) {
-            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
             $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
         } else {
             $bridge->addSortable('gr2t_track_info');

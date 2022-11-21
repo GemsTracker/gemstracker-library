@@ -86,7 +86,7 @@ class TypeDependency extends DependencyAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new): array
+    public function getChanges(array $context, bool $new = false): array
     {
         $options    = $this->translatedUtil->getEmptyDropdownArray();
 

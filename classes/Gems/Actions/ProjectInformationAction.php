@@ -81,7 +81,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      * @see $useRawOutput
      * @var boolean $useHtmlView
      */
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     /**
      * @var Util

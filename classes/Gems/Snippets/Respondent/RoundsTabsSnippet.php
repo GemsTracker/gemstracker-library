@@ -152,7 +152,7 @@ class RoundsTabsSnippet extends \MUtil\Snippets\TabSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $sql = "SELECT COALESCE(gto_round_description, '') AS label,
                         SUM(

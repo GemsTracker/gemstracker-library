@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-mrt-2015 11:11:12
  */
-class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGeneric
+class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippet
 {
     /**
      * The action to go to when the user clicks 'No'.
@@ -96,7 +99,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGene
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return $this->afterSaveRouteUrl;
     }
@@ -125,7 +128,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGene
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->request->getParam($this->confirmParameter)) {
             $this->performAction();
@@ -180,7 +183,7 @@ class AppointmentCleanupSnippet extends \Gems\Snippets\ModelItemTableSnippetGene
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $fparams = array('class' => 'centerAlign');
         $row     = $bridge->getRow();

@@ -2,9 +2,9 @@
 
 namespace Gems\Snippets\Communication;
 
-class MessengersEditSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class MessengersEditSnippet extends \Gems\Snippets\ModelFormSnippet
 {
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $htmlDiv = parent::getHtmlOutput($view);
 

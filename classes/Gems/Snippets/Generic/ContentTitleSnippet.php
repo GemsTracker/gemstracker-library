@@ -20,7 +20,7 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ContentTitleSnippet extends \MUtil\Snippets\SnippetAbstract
+class ContentTitleSnippet extends \Zalt\Snippets\SnippetAbstract
 {
     /**
      * The title to display
@@ -41,13 +41,12 @@ class ContentTitleSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return mixed Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
         if ($this->contentTitle) {
-            return \MUtil\Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
+            return \Zalt\Html\Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
         }
     }
 
@@ -62,7 +61,7 @@ class ContentTitleSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return $this->contentTitle && $this->tagName;
     }

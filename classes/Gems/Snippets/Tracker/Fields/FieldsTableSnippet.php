@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Zalt\Model\Data\DataReaderInterface;
 
 
 /**
@@ -49,7 +50,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['track-builder.track-maintenance.track-fields.edit'];
+    public array $menuEditRoutes = ['track-builder.track-maintenance.track-fields.edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -59,7 +60,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['track-builder.track-maintenance.track-fields.show'];
+    public array $menuShowRoutes = ['track-builder.track-maintenance.track-fields.show'];
 
     /**
      *
@@ -90,7 +91,7 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof FieldMaintenanceModel) {
             $this->model = $this->trackEngine->getFieldsMaintenanceModel(false, 'index');

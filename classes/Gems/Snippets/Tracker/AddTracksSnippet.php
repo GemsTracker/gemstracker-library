@@ -12,10 +12,15 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Html;
+use Gems\Loader;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
 use Gems\Model;
-use MUtil\Request\RequestInfo;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Late\RepeatableByKeyValue;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Displays a toolbox of drop down UL's to assign tracks / surveys to a patient.
@@ -30,14 +35,8 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
+class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     *
-     * @var HelperAdapter
-     */
-    protected $cache;
-
     /**
      * @var array
      */
@@ -45,35 +44,9 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
-     * @var Locale
-     */
-    public $locale;
-
-    /**
-     *
      * @var \Gems\Menu
      */
     protected $menu;
-
-    /**
-     * @var RequestInfo
-     */
-    protected $requestInfo;
-
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
 
     /**
      * When using bootstrap and more than this number of items the dropdowns will
@@ -110,6 +83,22 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
      * @var mixed When string, string is used for display, when false, nothing is displayed
      */
     public $showTitle = true;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected HelperAdapter $cache, 
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Loader $loader,
+        protected Locale $locale,
+        protected RouteHelper $routeHelper 
+    )
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        
+        $this->initTexts();
+    }
 
     protected function _getTracks($trackType, $pageRef, $trackTypeDescription)
     {
@@ -191,9 +180,9 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
         }
 
         if ($trackType != 'tracks') {
-            $div = \MUtil\Html::create()->div(['class' => 'btn-group']);
+            $div = Html::create()->div(['class' => 'btn-group']);
         } else {
-            $div = \MUtil\Html::create()->div(['class' => 'toolbox btn-group']);
+            $div = Html::create()->div(['class' => 'toolbox btn-group']);
         }
 
         if ($tracks) {
@@ -208,7 +197,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             ]);
             $dropdownButton->span(['class' => 'caret', 'renderClosingTag' => true]);
 
-            $data   = new \MUtil\Lazy\RepeatableByKeyValue($tracks);
+            $data = new RepeatableByKeyValue($tracks);
 
             if ($trackType == 'tracks') {
                 $params[Model::TRACK_ID] = $data->key;
@@ -265,30 +254,6 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if ($this->showForRespondents && is_bool($this->showForRespondents)) {
-            $this->showForRespondents = $this->_('Respondents');
-        }
-        if ($this->showForStaff && is_bool($this->showForStaff)) {
-            $this->showForStaff = $this->_('Staff');
-        }
-        if ($this->showForTracks && is_bool($this->showForTracks)) {
-            $this->showForTracks = $this->_('Tracks');
-        }
-        if ($this->showTitle && is_bool($this->showTitle)) {
-            $this->showTitle = $this->_('Add');
-        }
-    }
-
-    /**
      * Allow manual assignment of surveys/tracks to a patient
      *
      * If project uses the \Gems\Project\Tracks\MultiTracksInterface, show a track drowpdown
@@ -298,7 +263,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
         $pageRef = null;
         $queryParams = $this->requestInfo->getRequestQueryParams();
@@ -308,7 +273,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 
         $output  = false;
 
-        $addToLists = \MUtil\Html::create()->div(['class' => 'tooldock']);
+        $addToLists = Html::create()->div(['class' => 'tooldock']);
         if ($this->showTitle) {
             $addToLists->strong($this->showTitle);
         }
@@ -320,7 +285,7 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
             }
         }
         if ($this->showForRespondents || $this->showForStaff) {
-            $div = \MUtil\Html::create()->div(['class' => 'toolbox btn-group']);
+            $div = Html::create()->div(['class' => 'toolbox btn-group']);
             $div->button($this->_('Surveys for'), ['class' => 'toolanchor btn', 'type' => 'button']);
 
             if ($this->showForRespondents) {
@@ -342,6 +307,28 @@ class AddTracksSnippet extends \MUtil\Snippets\SnippetAbstract
 
         if ($output) {
             return $addToLists;
+        }
+    }
+    
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function initTexts()
+    {
+        if ($this->showForRespondents && is_bool($this->showForRespondents)) {
+            $this->showForRespondents = $this->_('Respondents');
+        }
+        if ($this->showForStaff && is_bool($this->showForStaff)) {
+            $this->showForStaff = $this->_('Staff');
+        }
+        if ($this->showForTracks && is_bool($this->showForTracks)) {
+            $this->showForTracks = $this->_('Tracks');
+        }
+        if ($this->showTitle && is_bool($this->showTitle)) {
+            $this->showTitle = $this->_('Add');
         }
     }
 }

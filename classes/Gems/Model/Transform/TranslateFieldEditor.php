@@ -8,6 +8,7 @@ use Gems\Cache\HelperAdapter;
 use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Registry\TargetTrait;
 use MUtil\Translate\TranslateableTrait;
+use Zalt\Model\MetaModelInterface;
 
 class TranslateFieldEditor extends \MUtil\Model\Transform\NestedTransformer implements \MUtil\Registry\TargetInterface
 {
@@ -48,7 +49,7 @@ class TranslateFieldEditor extends \MUtil\Model\Transform\NestedTransformer impl
      */
     protected $util;
 
-    public function getFieldInfo(\MUtil\Model\ModelAbstract $model)
+    public function getFieldInfo(MetaModelInterface $model)
     {
         $items = $model->getColNames('translate');
 
@@ -240,7 +241,7 @@ class TranslateFieldEditor extends \MUtil\Model\Transform\NestedTransformer impl
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(\MUtil\Model\ModelAbstract $model, array $row)
+    public function transformRowAfterSave(MetaModelInterface $model, array $row)
     {
         $result = parent::transformRowAfterSave($model, $row);
         if ($this->_changed) {

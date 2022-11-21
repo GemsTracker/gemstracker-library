@@ -11,6 +11,9 @@
 
 namespace Gems\Controller;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * BrowseEdit controller
  *
@@ -193,11 +196,11 @@ abstract class BrowseEditAction extends \Gems\Controller\ModelActionAbstract
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model): void
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model): void
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);

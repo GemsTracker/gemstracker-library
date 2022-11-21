@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Group;
 
+use Zalt\Model\Data\FullDataInterface;
+
 /**
  *
  * @package    Gems
@@ -19,7 +21,7 @@ namespace Gems\Snippets\Group;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 17:41:20
  */
-class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
+class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippet
 {
     /**
      *
@@ -38,7 +40,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         // Replace two checkboxes with on radio button control
         $this->model->set('ggp_staff_members', 'elementClass', 'Hidden');
@@ -70,7 +72,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $this->loadFormData();
 
@@ -86,7 +88,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         if (! $this->formData) {
             parent::loadFormData();
@@ -110,13 +112,15 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetGeneric
                     $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
                     $this->afterSaveRouteUrl = array($this->request->getActionKey() => 'show');
                     $this->resetRoute        = false;
-                    return;
+                    return $this->formData;
                 }
             }
             $model->set('ggp_role', 'multiOptions', $roles);
 
             $this->menu->getParameterSource()->offsetSet('ggp_role', $this->formData['ggp_role']);
         }
+        
+        return $this->formData;
     }
 
     /**

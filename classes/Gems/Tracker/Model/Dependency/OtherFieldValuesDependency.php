@@ -8,6 +8,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Field\FieldAbstract;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Model\MetaModelInterface;
 
 class OtherFieldValuesDependency extends DependencyAbstract
 {
@@ -74,12 +75,10 @@ class OtherFieldValuesDependency extends DependencyAbstract
 
     /**
      * Use this function for a default application of this dependency to the model
-     *
-     * @param \MUtil\Model\ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
      */
-    public function applyToModel(\MUtil\Model\ModelAbstract $model)
+    public function applyToModel(MetaModelInterface $metaModel)
     {
-        $model->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
+        $metaModel->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
     }
 
     /**
@@ -127,7 +126,7 @@ class OtherFieldValuesDependency extends DependencyAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new)
+    public function getChanges(array $context, bool $new = false): array
     {
         $options = $this->getOptions($context['gtf_id_track']);
 

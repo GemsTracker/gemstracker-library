@@ -84,7 +84,7 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
         }
 
         $allowedOrgs  = $this->currentUser->getRespondentOrganizations();
-        $existingOrgs = $this->db->fetchPairs($sql, $this->respondent->getId());
+        $existingOrgs = []; // $this->db->fetchPairs($sql, $this->respondent->getId());
         $tabs         = [];
         
         foreach ($allowedOrgs as $orgId => $name) {

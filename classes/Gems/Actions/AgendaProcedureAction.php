@@ -67,7 +67,7 @@ class AgendaProcedureAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Agenda\\CalendarTableSnippet',
     ];
 

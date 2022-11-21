@@ -14,9 +14,14 @@ namespace Gems\Snippets;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\JQuery\Form\Element\DatePicker;
+use Gems\Loader;
 use Gems\MenuNew\RouteHelper;
+use Gems\Util;
 use MUtil\Model;
-use MUtil\Request\RequestInfo;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Display a search form that selects on typed text only
@@ -27,18 +32,12 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
+class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      * Field name for period filters
      */
     const PERIOD_DATE_USED = 'dateused';
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      *
@@ -87,11 +86,6 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     protected $orgIsMultiCheckbox = true;
 
-    /**
-     * @var RequestInfo
-     */
-    protected $requestInfo;
-
     protected $routeHelper;
 
     /**
@@ -111,12 +105,21 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      * @var string
      */
     protected $searchLabel;
+    
+    protected Util $util;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Loader $loader
+        )
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        
+        $this->util = $loader->getUtil();
+    }
 
     /**
      * Generate two date selectors and - depending on the number of $dates passed -
@@ -468,12 +471,11 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     protected function getAutoSearchReset()
     {
-        $routeResult = $this->requestInfo->getCurrentRouteResult();
-        $routeName = $routeResult->getMatchedRouteName();
-        $params = $routeResult->getMatchedParams();
-        $url = $this->routeHelper->getRouteUrl($routeName, $params);
+        $routeName = $this->requestInfo->getRouteName();
+        $params = $this->requestInfo->getRequestMatchedParams();
+        $url = [$this->requestInfo->getBasePath(), \MUtil\Model::AUTOSEARCH_RESET => 1];
 
-        $link = \MUtil\Html::create()->actionLink($url, $this->_('Reset search'));
+        $link = Html::create()->actionLink($url, $this->_('Reset search'));
 
         $element = new \MUtil\Form\Element\Html('reset');
         $element->setValue($link);
@@ -511,7 +513,7 @@ class AutosearchFormSnippet extends \MUtil\Snippets\SnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         return $this->getAutoSearchForm();
     }

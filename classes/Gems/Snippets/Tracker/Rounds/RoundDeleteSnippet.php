@@ -12,6 +12,9 @@
 namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Tracker\Model\RoundModel;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
 
 /**
  *
@@ -61,7 +64,7 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
@@ -101,7 +104,7 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         if ($model instanceof RoundModel) {
             $refCount = $model->getRefCount($this->roundId);

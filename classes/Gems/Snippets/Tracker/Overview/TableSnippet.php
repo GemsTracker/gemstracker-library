@@ -19,7 +19,7 @@ namespace Gems\Snippets\Tracker\Overview;
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
+class TableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
     /**
      * Menu actions to show in Show box.
@@ -29,5 +29,5 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippetGeneric
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = array('track-maintenance' => 'show');
+    public array $menuShowRoutes = array('track-maintenance' => 'show');
 }

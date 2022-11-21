@@ -14,7 +14,14 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
 use Gems\MenuNew\RouteHelper;
-use MUtil\Html\Raw;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\HtmlElement;
+use Zalt\Html\Raw;
+use Zalt\Message\MessageTrait;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Short description for class
@@ -27,32 +34,16 @@ use MUtil\Html\Raw;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippetAbstract
+class ShowRoundSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
+    use MessageTrait;
+
     /**
      * Shortfix to add class attribute
      *
      * @var string
      */
     protected $class = 'displayer';
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    public $menu;
-
-    /**
-     * @var RouteHelper
-     */
-    public $routeHelper;
 
     /**
      *
@@ -93,15 +84,18 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      */
     protected $util;
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected RouteHelper $routeHelper, 
+        protected \Gems\Loader $loader)
     {
-        return $this->loader && parent::checkRegistryRequestsAnswers();
+        // We're setting trait variables so no constructor promotion
+        $this->messenger = $messenger;
+
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
     }
 
     /**
@@ -109,7 +103,7 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->trackEngine->getRoundModel(true, 'show');
     }
@@ -118,21 +112,20 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
         if ($this->roundId) {
-            $htmlDiv   = \MUtil\Html::div();
+            $htmlDiv   = Html::div();
 
             if ($this->showTitle) {
                 $htmlDiv->h3(sprintf($this->_('%s round'), $this->trackEngine->getName()));
             }
 
-            $table = parent::getHtmlOutput($view);
-            $this->applyHtmlAttributes($table);
+            $table = parent::getHtmlOutput();
+            if ($table instanceof HtmlElement) {
+                $this->applyHtmlAttributes($table);
+            }
 
             // Make sure deactivated rounds are show as deleted
             foreach ($table->tbody() as $tr) {
@@ -157,12 +150,11 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
         } else {
             $this->addMessage($this->_('No round specified.'));
         }
+        return null;
     }
 
     /**
      * overrule to add your own buttons.
-     *
-     * @return \Gems\Menu\MenuList
      */
     protected function getMenuList()
     {
@@ -238,7 +230,7 @@ class ShowRoundSnippetAbstract extends \MUtil\Snippets\ModelVerticalTableSnippet
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if ($this->trackEngine && (! $this->trackId)) {
             $this->trackId = $this->trackEngine->getTrackId();

@@ -32,7 +32,7 @@ class EditRoundStepSnippet extends \Gems\Tracker\Snippets\EditRoundSnippetAbstra
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -48,5 +48,6 @@ class EditRoundStepSnippet extends \Gems\Tracker\Snippets\EditRoundSnippetAbstra
                 }
             }
         }
+        return $this->formData;
     }
 }

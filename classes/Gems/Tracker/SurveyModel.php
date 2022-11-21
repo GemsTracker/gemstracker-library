@@ -107,7 +107,7 @@ class SurveyModel extends \Gems\Model\JoinModel
      *
      * @return boolean
      */
-    public function hasNew()
+    public function hasNew(): bool
     {
         return false;
     }

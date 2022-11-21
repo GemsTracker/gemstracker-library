@@ -83,7 +83,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippetGeneric', 'Agenda\\AppointmentsTableSnippet'];
+    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippet', 'Agenda\\AppointmentsTableSnippet'];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.

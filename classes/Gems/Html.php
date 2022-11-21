@@ -11,6 +11,10 @@
 
 namespace Gems;
 
+use Zalt\Html\AElement;
+use Zalt\Html\ImgElement;
+use Zalt\Late\Late;
+
 /**
  * \Gems specific Html elements and settings
  *
@@ -20,34 +24,25 @@ namespace Gems;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Html
+class Html extends \Zalt\Html\Html
 {
-    public static function actionDisabled($arg_array = null)
+    public static function actionDisabled(...$args)
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('span', $args);
-
+        $element = parent::createArray('span', $args);
         $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
         return $element;
     }
 
-    public static function actionLink($arg_array = null)
+    public static function actionLink(...$args): AElement
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('a', $args);
-
+        $element = parent::createArray('a', $args);
         $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
     }
 
-    public static function buttonDiv($arg_array = null)
+    public static function buttonDiv(...$args)
     {
-        $args = func_get_args();
-
-        $element = \MUtil\Html::createArray('div', $args);
-
+        $element = parent::createArray('div', $args);
         $element->appendAttrib('class', 'buttons'); // Keeps existing classes
         return $element;
     }
@@ -55,7 +50,8 @@ class Html
     public static function init(\MUtil\Html\Creator $creator = null)
     {
         if (null === $creator) {
-            $creator = \MUtil\Html::getCreator();
+            $mutilCreator = \MUtil\Html::getCreator();
+            $zaltCreator = parent::getCreator();
         }
 
         // \MUtil\Html::$verbose = true;
@@ -65,17 +61,21 @@ class Html
         $escort = \Gems\Escort::getInstance();
         if (isset($escort->project->imagedir)) {
             \MUtil\Html\ImgElement::addImageDir($escort->project->imagedir);
+            ImgElement::addImageDir($escort->project->imagedir);
         }
 
-        // \Gems specific element functions
-        $creator->addElementFunction(
+        $addFunctions = [
             'actionDisabled', array(__CLASS__, 'actionDisabled'),
             'actionLink',     array(__CLASS__, 'actionLink'),
             'buttonDiv',      array(__CLASS__, 'buttonDiv'),
             'pagePanel',      array(__CLASS__, 'pagePanel'),
             'pInfo',          array(__CLASS__, 'pInfo'),
-            'smallData',      array(__CLASS__, 'smallData'));
-
+            'smallData',      array(__CLASS__, 'smallData'),
+            ]; 
+        
+        // \Gems specific element functions
+        $mutilCreator->addElementFunction(...$addFunctions);
+        $zaltCreator->addElementFunction(...$addFunctions);
 
         // \Gems\Util::callProjectClass('Html', 'init', $creator);
         // Allow in-project overruling
@@ -160,7 +160,7 @@ class Html
     {
         $args = func_get_args();
 
-        $element = \MUtil\Html::createArray('p', $args);
+        $element = parent::createArray('p', $args);
 
         $element->appendAttrib('class', 'info'); // Keeps existing classes
         return $element;
@@ -169,9 +169,7 @@ class Html
     public static function smallData($value, $args_array = null)
     {
         $args = func_get_args();
-
-        $element = \MUtil\Lazy::iff($value, \MUtil\Html::createArray('small', array(' [', $args, ']')));
-
+        $element = Late::iff($value, parent::createArray('small', array(' [', $args, ']')));
         return $element;
     }
 }

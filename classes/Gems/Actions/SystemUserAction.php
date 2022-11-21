@@ -90,7 +90,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'User\\EmbeddedUserTestUrlForm',
         ];
 

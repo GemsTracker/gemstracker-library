@@ -80,7 +80,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)
      */
-    public function getChanges(array $context, $new)
+    public function getChanges(array $context, bool $new = false): array
     {
         if (isset($context['gro_condition']) && !empty($context['gro_condition'])) {
             try {

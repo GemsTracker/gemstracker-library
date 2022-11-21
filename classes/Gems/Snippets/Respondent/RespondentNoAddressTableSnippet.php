@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  * @package    Gems
@@ -34,7 +37,7 @@ class RespondentNoAddressTableSnippet extends RespondentTableSnippet
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseColumn3(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $model)
     {
         if ($model->hasAlias('gems__respondent2track')) {
             parent::addBrowseColumn3($bridge, $model);

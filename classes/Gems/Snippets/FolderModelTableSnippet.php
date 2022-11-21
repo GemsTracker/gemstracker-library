@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets;
 
+use Zalt\Html\TableElement;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Adds \Gems specific display details and helper functions plus fule buttons:
  *
@@ -28,7 +32,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
+class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -92,7 +96,7 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -154,9 +158,9 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      *
      * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(\MUtil\Html\TableElement $table, \Zend_Paginator $paginator)
+    protected function addPaginator(TableElement $table, \Zend_Paginator $paginator)
     {
-        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
+        // $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
     }
 
     /**
@@ -203,7 +207,7 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }
@@ -255,7 +259,7 @@ class FolderModelTableSnippet extends \MUtil\Snippets\ModelTableSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';

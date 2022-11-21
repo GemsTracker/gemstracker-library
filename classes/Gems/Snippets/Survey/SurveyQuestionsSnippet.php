@@ -172,7 +172,7 @@ class SurveyQuestionsSnippet extends \MUtil\Snippets\TableSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $div = \MUtil\Html::create('div');
 
@@ -206,7 +206,7 @@ class SurveyQuestionsSnippet extends \MUtil\Snippets\TableSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         // Apply translations
         if (! $this->showAnswersTranslated) {

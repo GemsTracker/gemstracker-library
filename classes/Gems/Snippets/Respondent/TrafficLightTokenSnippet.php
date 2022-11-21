@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Respondent;
 
 use MUtil\Model;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Show the track in a different way, ordered by round and group showing
@@ -489,7 +490,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel()
+    public function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 
@@ -573,7 +574,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $this->_initView($view);
 
@@ -817,7 +818,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         return $this->respondent && $this->request;
     }

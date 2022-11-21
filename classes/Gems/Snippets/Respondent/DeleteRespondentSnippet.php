@@ -14,6 +14,7 @@ namespace Gems\Snippets\Respondent;
 use Gems\Model\RespondentModel;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker\Respondent;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -90,7 +91,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if ($this->model instanceof RespondentModel) {
             $model = $this->model;
@@ -128,7 +129,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         if (! $this->requestInfo->isPost()) {
             if ($this->respondent instanceof Respondent) {
@@ -150,6 +151,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
         if (! array_key_exists('restore_tracks', $this->formData)) {
             $this->formData['restore_tracks'] = 1;
         }
+        return $this->formData;
     }
 
     /**

@@ -505,7 +505,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view = null) {
         $form = parent::getHtmlOutput($view);
 
         $html = \MUtil\Html::create()->div(['id' => 'survey-compare']);
@@ -848,7 +848,8 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData() {
+    protected function loadFormData(): array
+    {
         if ($this->requestInfo->isPost()) {
             $this->formData = $this->requestInfo->getRequestPostParams() + $this->formData;
         } else {
@@ -878,6 +879,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
                 $this->formData['target'] = $this->_session->target;
             }
         }
+        return $this->formData;
     }
 
     protected function setAfterSaveRoute()

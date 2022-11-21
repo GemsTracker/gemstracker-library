@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Model;
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -88,8 +89,8 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         // should be reset for this snippet
         $this->browse          = false;
         $this->extraFilter     = ["gtr_organizations LIKE '%|$orgId|%'"];
-        $this->menuEditActions = [$this->_('View') => 'view'];
-        $this->menuShowActions = [$this->_('Create') => 'create'];
+        $this->menuEditRoutes = [$this->_('View') => 'view'];
+        $this->menuShowRoutes = [$this->_('Create') => 'create'];
     }
 
     /**
@@ -97,7 +98,7 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = new \MUtil\Model\TableModel('gems__tracks');
 

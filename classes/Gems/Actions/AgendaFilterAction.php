@@ -47,7 +47,7 @@ class AgendaFilterAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = [
-        'ModelFormSnippetGeneric',
+        'ModelFormSnippet',
         'Agenda\\ApplyFiltersInformation',
         ];
 
@@ -92,7 +92,7 @@ class AgendaFilterAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $showSnippets = array(
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Agenda\\EpisodeTableSnippet',
         'Agenda\\CalendarTableSnippet',
         'Agenda\\FilterSqlSnippet',

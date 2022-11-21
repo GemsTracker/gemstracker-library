@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  *
@@ -201,7 +204,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         $model = $this->tracker->getTokenModel();
 
@@ -315,7 +318,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * @param int $changed
      * @return string
      */
-    public function getChangedMessage($changed)
+    public function getChangedMessage($changed): string
     {
         return sprintf($this->plural('%d survey inserted', '%d surveys inserted', $changed), $changed);
     }
@@ -420,7 +423,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * 
      * @return boolean
      */
-    public function hasHtmlOutput() {
+    public function hasHtmlOutput(): bool {
         $this->initTracks();
         $canDo = count($this->tracksList) > 0;
         if ($canDo === false) { 
@@ -441,12 +444,12 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Initialize the _items variable to hold all items from the model
      */
-    protected function initItems()
+    protected function initItems(MetaModelInterface $metaModel)
     {
         if (is_null($this->_items)) {
             $this->_items = array_merge(
                     $this->formItems,
-                    $this->getModel()->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
+                    $metaModel->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
@@ -502,10 +505,10 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
-        if ($this->createData && (! $this->request->isPost())) {
-            $surveyId = $this->request->getParam(\Gems\Model::SURVEY_ID);
+        if ($this->createData && (! $this->requestInfo->isPost())) {
+            $surveyId = $this->requestInfo->getParam(\Gems\Model::SURVEY_ID);
             if ($surveyId) {
                 if ($this->insertMultipleSurveys) {
                     $surveyIds = [$surveyId];
@@ -526,7 +529,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 'gto_id_respondent'      => $this->respondent->getId(),
                 'respondent_name'        => $this->respondent->getName(),
                 'gto_id_survey'          => $surveyIds,
-                'gto_id_track'           => $this->request->getParam(\Gems\Model::TRACK_ID),
+                'gto_id_track'           => $this->requestInfo->getParam(\Gems\Model::TRACK_ID),
                 'gto_valid_from_manual'  => 1,
                 'gto_valid_from'         => new \DateTimeImmutable(),
                 'gto_valid_until_manual' => 0,
@@ -544,6 +547,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         $this->loadRoundSettings();
 
         // \MUtil\EchoOut\EchoOut::track($this->formData);
+        return $this->formData;
     }
 
     /**
@@ -660,7 +664,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $model = $this->getModel();
 
@@ -706,7 +710,7 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
 
         // Communicate with the user
-        $this->afterSave($changed);
+        return $changed;
     }
 
     /**
@@ -717,24 +721,24 @@ class InsertSurveySnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     protected function setAfterSaveRoute()
     {
         // Default is just go to the index
-        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            if (1 == count($this->tokens)) {
-                $token = reset($this->tokens);
-                $this->afterSaveRouteUrl = [
-                    $this->request->getControllerKey() => 'track',
-                    $this->request->getActionKey()     => $this->routeAction,
-                    \MUtil\Model::REQUEST_ID           => $token->getTokenId(),
-                    ];
-            } else {
-                // For multiple surveys
-                $this->afterSaveRouteUrl = [
-                    $this->request->getControllerKey() => 'respondent',
-                    $this->request->getActionKey()     => 'show',
-                    \MUtil\Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
-                    \MUtil\Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
-                ];
-            }
-        }
+//        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
+//            if (1 == count($this->tokens)) {
+//                $token = reset($this->tokens);
+//                $this->afterSaveRouteUrl = [
+//                    $this->request->getControllerKey() => 'track',
+//                    $this->request->getActionKey()     => $this->routeAction,
+//                    \MUtil\Model::REQUEST_ID           => $token->getTokenId(),
+//                    ];
+//            } else {
+//                // For multiple surveys
+//                $this->afterSaveRouteUrl = [
+//                    $this->request->getControllerKey() => 'respondent',
+//                    $this->request->getActionKey()     => 'show',
+//                    \MUtil\Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
+//                    \MUtil\Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
+//                ];
+//            }
+//        }
 
         return $this;
     }

@@ -20,7 +20,7 @@ namespace Gems\Actions;
  */
 class RespondentExportAction extends \Gems\Controller\Action
 {
-    public $useHtmlView = true;
+    public bool $useHtmlView = true;
 
     public function indexAction()
     {

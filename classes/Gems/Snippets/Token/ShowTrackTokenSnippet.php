@@ -15,6 +15,8 @@ use Gems\Html;
 use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use MUtil\Lazy\Call;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
 
 /**
  * Display snippet for standard track tokens
@@ -329,7 +331,7 @@ class ShowTrackTokenSnippet extends \Gems\Tracker\Snippets\ShowTokenSnippetAbstr
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         // \MUtil\Model::$verbose = true;
 

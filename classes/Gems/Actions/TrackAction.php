@@ -68,8 +68,8 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     protected $autofilterParameters = [
         'extraFilter'     => 'getRespondentFilter',
         'extraSort'       => ['gr2t_start_date' => SORT_DESC],
-        'menuEditActions' => ['edit-track'],
-        'menuShowActions' => ['show-track'],
+        'menuEditRoutes' => ['edit-track'],
+        'menuShowRoutes' => ['show-track'],
         'respondent'      => 'getRespondent',
     ];
 
@@ -350,7 +350,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     protected $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         //'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',

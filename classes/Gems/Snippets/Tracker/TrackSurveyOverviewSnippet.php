@@ -72,7 +72,7 @@ class TrackSurveyOverviewSnippet extends \Gems\Snippets\MenuSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
         if ($this->trackName) {
@@ -130,7 +130,7 @@ class TrackSurveyOverviewSnippet extends \Gems\Snippets\MenuSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->trackId) {
             if (isset($this->trackData['gtr_id_track'])) {

@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  * @package    Gems
@@ -34,7 +37,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseColumn1(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn1(TableBridge $bridge, DataReaderInterface $model)
     {
         $bridge->addSortable('gr2o_patient_nr');
     }
@@ -52,7 +55,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseColumn2(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $model)
     {
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
         $bridge->addSortable('gr2o_opened');
@@ -71,7 +74,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseColumn3(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $model)
     {
 
         if (isset($this->searchFilter['grc_success']) && (! $this->searchFilter['grc_success'])) {
@@ -96,7 +99,7 @@ class MinimalTableSnippet extends RespondentTableSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseColumn4(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $model)
     {
         if ($model->hasAlias('gems__respondent2track')) {
             $br = \MUtil\Html::create('br');

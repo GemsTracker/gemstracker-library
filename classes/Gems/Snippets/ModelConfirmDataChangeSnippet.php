@@ -11,7 +11,10 @@
 
 namespace Gems\Snippets;
 
-use MUtil\Snippets\ModelConfirmDataChangeSnippetAbstract;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\Snippets\ModelConfirmDataChangeSnippetAbstract;
 
 /**
  *
@@ -67,7 +70,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -104,7 +107,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         return $this->model;
     }
@@ -117,7 +120,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $table = parent::getHtmlOutput($view);
         $title = $this->getTitle();
@@ -172,7 +175,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(\MUtil\Model\Bridge\VerticalTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $footer = $bridge->tfrow();
 

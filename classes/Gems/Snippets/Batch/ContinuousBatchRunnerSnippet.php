@@ -19,7 +19,7 @@ class ContinuousBatchRunnerSnippet extends SnippetAbstract
      */
     protected $requestInfo;
 
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $result = $this->batch->runContinuous();
 

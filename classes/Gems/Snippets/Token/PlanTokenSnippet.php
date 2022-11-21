@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Snippet for showing the tokens for the applied filter over multiple respondents.
  *
@@ -59,7 +63,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $br    = \MUtil\Html::create('br');
 
@@ -110,8 +114,8 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
         if ($this->multiTracks) {
-            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
-            $model->set('gto_round_description', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+            $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
             $bridge->addMultiSort(
                 'gtr_track_name', 'gr2t_track_info',
                 array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),

@@ -11,8 +11,9 @@
 
 namespace Gems\Snippets;
 
-use MUtil\Model\Bridge\VerticalTableBridge;
-use MUtil\Model\ModelAbstract;
+use Zalt\Html\Html;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
 
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
@@ -25,13 +26,13 @@ use MUtil\Model\ModelAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\ModelYesNoDeleteSnippetAbstract
+abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelYesNoDeleteSnippetAbstract
 {
     /**
      *
      * @var \Gems\AccessLog
      */
-    protected $accesslog;
+    // protected $accesslog;
 
     /**
      * Shortfix to add class attribute
@@ -60,11 +61,11 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\DetailTableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addShowTableRows(VerticalTableBridge $bridge, ModelAbstract $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -96,19 +97,11 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
         return null; //$this->findMenuItem($this->request->getControllerName(), 'edit');
     }
 
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput()
     {
-        if ($table = parent::getHtmlOutput($view)) {
+        if ($table = parent::getHtmlOutput()) {
             if ($title = $this->getTitle()) {
-                $htmlDiv = \MUtil\Html::div();
+                $htmlDiv = Html::div();
 
                 $htmlDiv->h3($title);
 
@@ -139,11 +132,11 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      */
     protected function performAction()
     {
-        $data = $this->getModel()->loadFirst();
+        // $data = $this->getModel()->loadFirst();
 
         parent::performAction();
 
-        $this->accesslog->logChange($this->request, $this->getTitle(), $data);
+        // $this->accesslog->logChange($this->request, $this->getTitle(), $data);
     }
 
     /**
@@ -152,18 +145,22 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \MUtil\Snippets\Model
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\DetailTableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function setShowTableFooter(VerticalTableBridge $bridge, ModelAbstract $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $footer = $bridge->tfrow();
 
+        $startUrl = $this->requestInfo->getBasePath();
+
         $footer[] = $this->getQuestion();
         $footer[] = ' ';
-        $footer->actionLink([$this->confirmParameter => 1], $this->_('Yes'));
-        $footer[] = ' ';
-        $footer->actionLink(['action' => $this->abortAction], $this->_('No'));
+        $footer->actionLink([$startUrl, $this->confirmParameter => 1], $this->_('Yes'));
+        if ($this->abortUrl) {
+            $footer[] = ' ';
+            $footer->actionLink([$this->abortUrl], $this->_('No'));
+        }
     }
 }

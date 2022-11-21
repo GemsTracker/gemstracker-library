@@ -16,6 +16,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Util\Translated;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -148,7 +149,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @return \MUtil\Model\SelectModel
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom)");
 

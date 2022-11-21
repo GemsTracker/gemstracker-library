@@ -50,7 +50,7 @@ class SetAsCurrentUserSnippet extends \MUtil\Snippets\SnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         $user = $this->loginStatusTracker->getUser();
         if ($user) {

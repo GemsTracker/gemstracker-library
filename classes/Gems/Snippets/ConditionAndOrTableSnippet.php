@@ -15,6 +15,7 @@ use Gems\Condition\ConditionLoader;
 use Gems\Model\ConditionModel;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -83,7 +84,7 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
      *
      * @return ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->_model instanceof ConditionModel) {
             $this->_model = $this->conditionLoader->getConditionModel();

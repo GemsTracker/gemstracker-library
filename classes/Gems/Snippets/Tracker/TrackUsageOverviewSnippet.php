@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Model;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  *
@@ -38,7 +39,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditActions = ['edit-track'];
+    public array $menuEditRoutes = ['edit-track'];
 
     /**
      * Menu actions to show in Show box.
@@ -48,7 +49,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowActions = ['show-track'];
+    public array $menuShowRoutes = ['show-track'];
 
     /**
      * Are we working in a multi tracks environment?
@@ -127,7 +128,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = $this->tracker->getRespondentTrackModel();
 
@@ -147,7 +148,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (! $this->multiTracks) {
             return false;

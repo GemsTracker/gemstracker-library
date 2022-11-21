@@ -988,7 +988,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         $model = $this->getModel();
 
@@ -1020,6 +1020,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
         }
 
         // \MUtil\EchoOut\EchoOut::track($this->formData);
+        return $this->formData;
     }
 
     /**

@@ -11,7 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
 use Gems\Util\Translated;
+use Zalt\Late\Late;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
 
 /**
  * Displays a respondent's details with assigned surveys and tracks in extra columns.
@@ -42,11 +45,11 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
+    protected function addTableCells(DetailTableBridge $bridge)
     {
         $bridge->setColumnCount(1);
 
-        $HTML = \MUtil\Html::create();
+        $HTML = Html::create();
 
         $bridge->tdh($this->getCaption(), array('colspan' => 2));
 
@@ -68,7 +71,7 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
 
         // Column for tracks
         $tracksModel = $this->model->getRespondentTracksModel();
-        $tracksData  = \MUtil\Lazy::repeat(
+        $tracksData  = Late::repeat(
             $tracksModel->load(
                 array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization),
                 array('gr2t_created' => SORT_DESC)));
@@ -84,12 +87,12 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
         $tracksTarget[] = ' ';
         $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
         $tracksTarget[] = ' ';
-        $tracksTarget[] = \MUtil\Lazy::call($this->translatedUtil->formatDate, $tracksData->gr2t_created);
+        $tracksTarget[] = Late::call($this->translatedUtil->formatDate, $tracksData->gr2t_created);
         $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
 
         // OTHER ROWS
         $bridge->addItem(
-            $HTML->spaced($bridge->itemIf('grs_last_name', array($bridge->grs_last_name, ',')), $bridge->grs_first_name, $bridge->grs_surname_prefix),
+            $HTML->spaced(Late::iif($bridge->grs_last_name, [$bridge->grs_last_name, ',']), $bridge->grs_first_name, $bridge->grs_surname_prefix),
             $this->_('Respondent'));
         $bridge->addItem('grs_gender');
         $bridge->addItem('grs_birthday');

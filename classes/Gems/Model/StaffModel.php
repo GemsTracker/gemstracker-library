@@ -14,6 +14,7 @@ namespace Gems\Model;
 
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
+use Zalt\Html\AElement;
 
 /**
  * Contains the staffModel
@@ -253,7 +254,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'separator', ' '
         );
         $this->set('gsf_email',                'label', $this->_('E-Mail'),
-            'itemDisplay', array('\\MUtil\\Html\\AElement', 'ifmail'),
+            'itemDisplay', [AElement::class, 'ifmail'],
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
@@ -533,7 +534,7 @@ class StaffModel extends \Gems\Model\JoinModel
      * otherwise the tables set to save at model level will be saved.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    public function save(array $newValues, array $filter = null, array $saveTables = null): array
     {
         //First perform a save
         $savedValues = parent::save($newValues, $filter, $saveTables);

@@ -327,7 +327,7 @@ class TrackModel extends \MUtil\Model\TableModel
         return (boolean) ! $this->db->fetchOne($sql, $trackId);
     }
 
-    public function save(array $newValues, array $filter = null)
+    public function save(array $newValues, array $filter = null): array
     {
         // Allow to add default fields to any new track
         if ($defaultFields = $this->getDefaultFields()) {

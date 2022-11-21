@@ -14,6 +14,8 @@ namespace Gems\Snippets\Respondent;
 use Gems\AccessLog\AccesslogRepository;
 use MUtil\Model;
 use MUtil\Validate\IsNot;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\FullDataInterface;
 
 /**
  *
@@ -96,7 +98,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $this->saveLabel = $this->_('Change organization');
 
@@ -213,7 +215,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): FullDataInterface
     {
         if ($this->model instanceof \Gems\Model\RespondentModel) {
             $model = $this->model;
@@ -259,7 +261,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -270,6 +272,8 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
         if (isset($params[Model::REQUEST_ID2])) {
             $this->formData['orig_org_id'] = $params[Model::REQUEST_ID2];
         }
+        
+        return $this->formData;
     }
 
     /**
@@ -279,7 +283,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      *
      * @see afterSave()
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $this->beforeSave();
 
@@ -320,7 +324,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
         }
 
         // Message the save
-        $this->afterSave($this->_changed);
+        return $this->_changed;
     }
 
     /**

@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  *
  * @package    Gems
@@ -22,7 +26,7 @@ namespace Gems\Snippets\Respondent;
 abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
 {
     /**
-     * @var \MUtil\Model\Bridge\TableBridge $bridge
+     * @var \Zalt\Snippets\ModelBridge\TableBridge $bridge
      */
     protected $bridge;
 
@@ -60,11 +64,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn1(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn1(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 
     /**
@@ -76,11 +80,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn2(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 
     /**
@@ -92,11 +96,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn3(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 
     /**
@@ -108,11 +112,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn4(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 
     /**
@@ -124,11 +128,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseColumn5(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseColumn5(TableBridge $bridge, DataReaderInterface $dataModel)
     { }
 
     /**
@@ -137,18 +141,20 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumnsColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $this->bridge = $bridge;
 
         if ($this->useColumns && $this->columns) {
-            parent::addBrowseTableColumns($bridge, $model);
+            parent::addBrowseTableColumns($bridge, $dataModel);
             return;
         }
+
+        $model = $dataModel->getMetaModel();
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
@@ -157,18 +163,18 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
             $showMenuItems = $this->getShowUrls($bridge);
 
             foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
+                $bridge->addItemLink(Html::actionLink($menuItem, $this->_('Show')));
             }
         }
 
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        $this->addBrowseColumn1($bridge, $model);
-        $this->addBrowseColumn2($bridge, $model);
-        $this->addBrowseColumn3($bridge, $model);
-        $this->addBrowseColumn4($bridge, $model);
-        $this->addBrowseColumn5($bridge, $model);
+        $this->addBrowseColumn1($bridge, $dataModel);
+        $this->addBrowseColumn2($bridge, $dataModel);
+        $this->addBrowseColumn3($bridge, $dataModel);
+        $this->addBrowseColumn4($bridge, $dataModel);
+        $this->addBrowseColumn5($bridge, $dataModel);
 
         if ($this->showMenu) {
             $editMenuItems = $this->getEditUrls($bridge);
@@ -180,23 +186,11 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
     }
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
-     */
-    protected function addPatientNumberColumns()
-    {
-
-    }
-
-    /**
      * Creates the model
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\RespondentModel) {
             $this->model = $this->loader->getModels()->createRespondentModel();

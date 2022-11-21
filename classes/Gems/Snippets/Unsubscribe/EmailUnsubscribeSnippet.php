@@ -129,7 +129,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
      *
      * @return int The number of "row level" items changed
      */
-    protected function saveData()
+    protected function saveData(): int
     {
         $this->addMessage($this->unsubscribedMessage ?:
                 $this->_('If your E-email address is known, you have been unsubscribed.'));

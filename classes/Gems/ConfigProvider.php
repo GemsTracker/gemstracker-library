@@ -29,6 +29,8 @@ use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\SnippetsLoader\GemsSnippetResponder;
+use Gems\SnippetsLoader\GemsSnippetResponderFactory;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
 use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
@@ -72,6 +74,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\MezzioLaminasSnippetResponderFactory;
+use Zalt\SnippetsLoader\SnippetLoader;
+use Zalt\SnippetsLoader\SnippetLoaderFactory;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zalt\SnippetsLoader\SnippetMiddleware;
+use Zalt\SnippetsLoader\SnippetMiddlewareFactory;
 
 class ConfigProvider
 {
@@ -253,6 +261,9 @@ class ConfigProvider
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
+                SnippetLoader::class => SnippetLoaderFactory::class,
+                SnippetMiddleware::class => SnippetMiddlewareFactory::class,
+                GemsSnippetResponder::class => GemsSnippetResponderFactory::class, 
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
@@ -276,6 +287,8 @@ class ConfigProvider
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
+                SnippetResponderInterface::class => GemsSnippetResponder::class,
+                \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
             ]
         ];
     }
@@ -534,11 +547,11 @@ class ConfigProvider
     protected function getSession(): array
     {
         return [
-            'max_away_time' => 5 * 60,
+            'max_away_time' => 30 * 60,
             'max_total_time' => 10 * 60 * 60,
-            'max_idle_time' => 20 * 60,
+            'max_idle_time' => 60 * 60,
             'auth_poll_interval' => 60,
-            'idle_warning_before_logout' => 2 * 60,
+            'idle_warning_before_logout' => 28 * 60,
         ];
     }
 

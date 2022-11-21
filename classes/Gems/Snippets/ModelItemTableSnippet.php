@@ -11,10 +11,13 @@
 
 namespace Gems\Snippets;
 
+use \Zalt\Snippets\DataReaderGenericModelTrait;
+
 /**
- * Ask Yes/No conformation for deletion and deletes item when confirmed.
+ * Displays each fields of a single item in a model in a row in a Html table
+ * the model set through the $model snippet parameter.
  *
- * Can be used for other uses than delete by overriding performAction().
+ * If you want to use this class "as is" use the 'Generic_ModelItemTableSnippet' snippet.
  *
  * This class is not in the standard snippet loading directories and does not follow
  * their naming conventions, but exists only to make it simple to extend this class
@@ -26,21 +29,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class ModelItemYesNoDeleteSnippetGeneric extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
+class ModelItemTableSnippet extends  ModelItemTableSnippetAbstract
 {
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
-    }
+    use DataReaderGenericModelTrait;
 }

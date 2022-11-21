@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Html;
+use Zalt\Late\Late;
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  *
  * @package    Gems
@@ -34,9 +38,9 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
      * @return void
      */
-    protected function addTableCells(\MUtil\Model\Bridge\VerticalTableBridge $bridge)
+    protected function addTableCells(DetailTableBridge $bridge)
     {
-        $HTML = \MUtil\Html::create();
+        $HTML = Html::create();
 
         // $bridge->caption($this->getCaption());
 
@@ -51,7 +55,7 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
         if (! $this->currentUser->areAllFieldsMaskedWhole('grs_last_name', 'grs_first_name', 'grs_gender', 'grs_surname_prefix')) {
             $bridge->addItem(
                 $HTML->spaced(
-                        $bridge->itemIf('grs_last_name', array($bridge->grs_last_name, ',')),
+                        Late::iif($bridge->grs_last_name, [$bridge->grs_last_name, ',']),
                         $bridge->grs_gender,
                         $bridge->grs_first_name,
                         $bridge->grs_surname_prefix

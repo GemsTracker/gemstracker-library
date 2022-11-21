@@ -22,7 +22,7 @@ namespace Gems\Actions;
  */
 class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
 {
-    protected $createEditSnippets = 'ModelTabFormSnippetGeneric';
+    protected $createEditSnippets = 'ModelTabFormSnippet';
 
     /**
      *

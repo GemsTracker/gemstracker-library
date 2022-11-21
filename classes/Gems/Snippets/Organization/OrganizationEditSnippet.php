@@ -20,7 +20,7 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippetGeneric
+class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippet
 {
     /**
      *
@@ -54,7 +54,7 @@ class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippetGeneric
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         parent::loadFormData();
 
@@ -85,5 +85,6 @@ class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippetGeneric
         if (! isset($this->formData['gor_respondent_show'])) {
             $this->formData['gor_respondent_show'] = '';
         }
+        return $this->formData;
     }
 }

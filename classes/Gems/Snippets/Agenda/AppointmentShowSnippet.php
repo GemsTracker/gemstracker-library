@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  *
@@ -48,7 +50,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstrac
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();

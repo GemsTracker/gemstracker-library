@@ -12,6 +12,9 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Class description of ShowTrackUsageSnippet
  *
@@ -33,7 +36,7 @@ class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstrac
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
@@ -71,7 +74,7 @@ class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstrac
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 

@@ -23,12 +23,6 @@ namespace Gems\Snippets\Staff;
 class StaffSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.

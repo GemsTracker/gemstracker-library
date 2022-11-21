@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker\Answers;
 
+use Zalt\Model\Data\DataReaderInterface;
+
 /**
  *
  * @package    Gems
@@ -34,7 +36,7 @@ class TrackAllAnswersModelSnippet extends \Gems\Tracker\Snippets\AnswerModelSnip
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel()
+    protected function createModel(): DataReaderInterface
     {
         $model = parent::createModel();
 

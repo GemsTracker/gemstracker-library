@@ -20,7 +20,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class MenuSnippetAbstract extends \MUtil\Snippets\SnippetAbstract
+abstract class MenuSnippetAbstract extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      *

@@ -43,7 +43,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
         'extraSort' => [
             'gsu_survey_name' => SORT_ASC,
         ],
-        'menuEditActions' => ['edit', 'pdf'],
+        'menuEditRoutes' => ['edit', 'pdf'],
     ];
 
     /**
@@ -72,7 +72,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = ['ModelFormSnippetGeneric', 'Survey\\SurveyQuestionsSnippet'];
+    protected $createEditSnippets = ['ModelFormSnippet', 'Survey\\SurveyQuestionsSnippet'];
 
     /**
      *
@@ -124,7 +124,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      */
     protected $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippetGeneric',
+        'ModelItemTableSnippet',
         'Survey\\SurveyQuestionsSnippet'
     ];
 

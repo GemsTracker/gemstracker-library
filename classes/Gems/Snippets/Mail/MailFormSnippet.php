@@ -11,6 +11,15 @@
 
 namespace Gems\Snippets\Mail;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessageTrait;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\FormBridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,8 +29,10 @@ namespace Gems\Snippets\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
+class MailFormSnippet extends \Zalt\Snippets\ModelSnippetAbstract
 {
+    use MessageTrait;
+
     protected $afterSendRouteUrl;
 
     /**
@@ -61,12 +72,6 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      * @var string
      */
     protected $labelClass = 'label';
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
     /**
      *
@@ -118,12 +123,20 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
     protected $view;
 
 
-    public function afterRegistry()
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected \Gems\Loader $loader)
     {
+        // We're setting trait variables so no constructor promotion
+        $this->messenger = $messenger;
+
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        
         $this->mailElements = $this->loader->getMailLoader()->getMailElements();
         $this->mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $this->identifier);
-
-        parent::afterRegistry();
     }
 
     /**
@@ -135,7 +148,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
      * @param \MUtil\Model\ModelAbstract $model
      */
-    protected function addFormElements(\MUtil\Model\Bridge\FormBridgeInterface $bridge, \MUtil\Model\ModelAbstract $model)
+    protected function addFormElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
         $bridge->addHtml('to', 'label', $this->_('To'));
         $bridge->addHtml('prefered_language', 'label', $this->_('Preferred Language'));
@@ -187,7 +200,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
     /**
      * Get the comm Model
      */
-    public function createModel()
+    public function createModel(): FullDataInterface
     {
         return $this->loader->getModels()->getCommTemplateModel();
     }
@@ -287,7 +300,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
 
         // If there is data, populate
@@ -299,7 +312,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
             $this->addMessage($this->_('On this test system all mail will be delivered to the from address.'));
         }
 
-        $this->beforeDisplay();
+        // $this->beforeDisplay();
 
         $htmlDiv = \MUtil\Html::div();
 
@@ -315,7 +328,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function getModel()
+    protected function getModel(): DataReaderInterface
     {
         if (! $this->model) {
             $this->model = $this->createModel();
@@ -336,7 +349,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute()
+    public function getRedirectRoute(): ?string
     {
         return $this->afterSendRouteUrl;
     }
@@ -365,7 +378,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * @return boolean
      */
-    public function hasHtmlOutput()
+    public function hasHtmlOutput(): bool
     {
         if (parent::hasHtmlOutput()) {
             if ($this->mailer->getDataLoaded()) {
@@ -375,6 +388,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
                 return true;
             }
         }
+        return false;
     }
 
     /**
@@ -396,7 +410,7 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
      *
      * Or from whatever other source you specify here.
      */
-    protected function loadFormData()
+    protected function loadFormData(): array
     {
         $presetTargetData = $this->mailer->getPresetTargetData();
         if ($this->request->isPost()) {
@@ -442,6 +456,8 @@ class MailFormSnippet extends \MUtil\Snippets\ModelSnippetAbstract
         $this->formData['preview_text'] = $textView;
 
         $this->formData = array_merge($this->formData, $presetTargetData);
+
+        return $this->formData;
     }
 
     protected function processForm()
