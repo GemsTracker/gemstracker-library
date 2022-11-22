@@ -13,11 +13,19 @@ namespace Gems\Actions;
 
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Batch\BatchRunnerLoader;
-use Gems\Layout\LayoutRenderer;
+use Gems\Db\ResultFetcher;
+use Gems\Encryption\ValueEncryptor;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\MenuNew\RouteHelper;
-use Gems\Snippets\Batch\ContinuousBatchRunnerSnippet;
-use Gems\Tracker\TrackerInterface;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Tracker;
+use Gems\Util\Translated;
 use Mezzio\Session\SessionInterface;
+use MUtil\Legacy\RequestHelper;
+use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Controller for Source maintenance
@@ -28,48 +36,16 @@ use Mezzio\Session\SessionInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
+class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 {
-    /**
-     *
-     * @var AccesslogRepository
-     */
-    public $accesslog;
-
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort'   => ['gso_source_name' => SORT_ASC],
     ];
-
-    /**
-     * @var BatchRunnerLoader
-     */
-    public $batchRunnerLoader;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     * @var LayoutRenderer
-     */
-    public $layoutRenderer;
-
-    /**
-     * @var RouteHelper
-     */
-    public $routeHelper;
 
     /**
      * Array of the actions that use a summarized version of the model.
@@ -82,22 +58,22 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
+    public array $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
 
-    /**
-     * @var TrackerInterface
-     */
-    public $tracker;
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        Translator $translate,
+        protected Tracker $tracker,
+        protected BatchRunnerLoader $batchRunnerLoader,
+        protected ResultFetcher $resultFetcher,
+        protected Translated $translatedUtil,
+        protected AccesslogRepository $accesslog,
+        protected ValueEncryptor $valueEncryptor,
 
-    /**
-     * @var \Gems\Util\Translated
-     */
-    public $translatedUtil;
-
-    /**
-     * @var \Gems\Encryption\ValueEncryptor
-     */
-    public $valueEncryptor;
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      * Displays a textual explanation what synchronization does on the page.
@@ -125,7 +101,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
-            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
@@ -172,10 +148,10 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUser->getUserId(), $where);
+        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUserId, $where);
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
-            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
 
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
@@ -198,7 +174,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public function checkAllAction()
     {
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->recalculateTokens($session, 'surveyCheckAll', $this->currentUser->getUserId());
+        $batch = $this->tracker->recalculateTokens($session, 'surveyCheckAll', $this->currentUserId);
 
         $title = $this->_('Checking all surveys for all sources for answers.');
 
@@ -225,9 +201,9 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
         $tracker = $this->tracker;
         $model   = new \MUtil\Model\TableModel('gems__sources');
@@ -252,6 +228,9 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
             'default', key($sourceClasses),
             'multiOptions', $sourceClasses
         );
+
+
+
         $model->set('gso_ls_adapter',  'label', $this->_('Database Server'),
             'default', substr(get_class($this->db), strlen('Zend_Db_Adapter_')),
             'description', $this->_('The database server used by the source.'),
@@ -327,9 +306,9 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Survey Sources');
     }
@@ -364,9 +343,9 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('source', 'sources', $count);
     }
@@ -378,22 +357,29 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $source = $this->getSourceById();
 
+        /**
+         * @var $messenger StatusMessengerInterface
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+
         try {
-            if ($source->checkSourceActive($this->currentUser->getUserId())) {
+            if ($source->checkSourceActive($this->currentUserId)) {
                 $message = $this->_('This installation is active.');
                 $status  = 'success';
+                $messenger->addSuccess($message);
             } else {
                 $message = $this->_('Inactive installation.');
                 $status  = 'warning';
+                $messenger->addWarning($message);
             }
             $this->accesslog->logChange($this->request, $message, $status);
-            $this->addMessage($message, $status);
         } catch (\Exception $e) {
-            $this->addMessage($this->_('Installation error!'), 'danger');
-            $this->addMessage($e->getMessage(), 'danger');
+            $messenger->addDanger($this->_('Installation error!'));
+            $messenger->addDanger($e->getMessage());
         }
 
-        $currentRoute = $this->requestHelper->getRouteResult();
+        $requestHelper = new RequestHelper($this->request);
+        $currentRoute = $requestHelper->getRouteResult();
         $showRoute = $this->routeHelper->getRouteSibling($currentRoute->getMatchedRouteName(), 'show');
         $params = $currentRoute->getMatchedParams();
         $this->redirectUrl = $this->routeHelper->getRouteUrl($showRoute['name'], $params);
@@ -411,7 +397,7 @@ class SourceAction extends \Gems\Controller\ModelSnippetActionAbstract
         $batch = $this->tracker->synchronizeSources($session, $sourceId);
 
         $title = sprintf($this->_('Synchronize the %s source.'),
-            $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+            $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
