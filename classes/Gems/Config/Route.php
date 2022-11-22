@@ -715,8 +715,8 @@ class Route
                 ],
             ],
 
-            ...$this->createBrowseRoutes(baseName: 'track-builder.source',
-                controllerClass: \Gems\Actions\SourceAction::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.source',
+                controllerClass: \Gems\Handlers\TrackBuilder\SourceHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'synchronize-all',
