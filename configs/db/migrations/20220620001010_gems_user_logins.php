@@ -56,13 +56,6 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
                 'encoding' => 'utf8mb4',
                 'after' => 'gul_user_class',
             ])
-            ->addColumn('gul_session_key', 'string', [
-                'null' => true,
-                'limit' => 32,
-                'collation' => 'utf8mb4_unicode_ci',
-                'encoding' => 'utf8mb4',
-                'after' => 'gul_session_key',
-            ])
             ->addColumn('gul_two_factor_key', 'string', [
                 'null' => true,
                 'limit' => 100,
