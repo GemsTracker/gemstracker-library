@@ -856,6 +856,42 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.communication',
+                    'label' => $this->translator->trans('Communication'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.communication.template.index',
+                            'label' => $this->translator->trans('Templates'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.communication.template.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.communication.template.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.communication.template.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.communication.template.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
@@ -1006,7 +1042,7 @@ class Menu
                                 ],
                                 [
                                     'name' => 'track-builder.survey-maintenance.check',
-                                    'label' => $this->translator->trans('Check all is answered'),
+                                    'label' => $this->translator->trans('Check is answered'),
                                     'type' => 'route-link-item',
                                 ],
                                 [
@@ -1016,6 +1052,11 @@ class Menu
                                 ],
                                 [
                                     'name' => 'track-builder.survey-maintenance.export-codebook',
+                                    'label' => $this->translator->trans('Export codebook'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'track-builder.survey-maintenance.update-survey',
                                     'label' => $this->translator->trans('Update to new survey'),
                                     'type' => 'route-link-item',
                                 ],

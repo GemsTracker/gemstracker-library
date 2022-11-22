@@ -3,11 +3,8 @@
 namespace Gems\Config;
 
 use Gems\Actions\CalendarAction;
-use Gems\Actions\ProjectInformationAction;
-use Gems\Actions\TrackBuilderAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
-use Gems\Dev\Middleware\TestCurrentUserMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\ChangePasswordHandler;
 use Gems\Handlers\Auth\ResetPasswordChangeHandler;
@@ -23,6 +20,7 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\CurrentOrganizationMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
@@ -32,9 +30,8 @@ use Gems\Model;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
-use Mezzio\Flash\FlashMessageMiddleware;
+
 use Mezzio\Session\SessionMiddleware;
-use Zalt\SnippetsLoader\SnippetMiddleware;
 
 class Route
 {
@@ -582,6 +579,8 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
+
+
             ...$this->createBrowseRoutes(baseName: 'setup.codes.reception',
                 controllerClass: \Gems\Actions\ReceptionAction::class,
                 parameters: [
@@ -590,6 +589,25 @@ class Route
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
+                parameters: [
+                    'id' => '[a-zA-Z0-9-_]+',
+                ],
+            ),
+
+            [
+                'name' => 'setup.communication',
+                'path' => '/setup/communication',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
+            ],
+
+            ...$this->createBrowseRoutes(baseName: 'setup.communication.template',
+                controllerClass: \Gems\Actions\CommTemplateAction::class,
+            ),
+            ...$this->createBrowseRoutes(baseName: 'setup.communication.job',
+                controllerClass: \Gems\Actions\CommJobAction::class,
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
@@ -717,7 +735,10 @@ class Route
                     'check',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),
+            //...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),
+
+            ...$this->createSnippetRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),
+
             ...$this->createBrowseRoutes(baseName: 'track-builder.condition', controllerClass: \Gems\Actions\ConditionAction::class),
             ...$this->createBrowseRoutes(baseName: 'track-builder.survey-maintenance',
                 controllerClass: \Gems\Actions\SurveyMaintenanceAction::class,
