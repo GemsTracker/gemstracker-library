@@ -11,7 +11,14 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Project\ProjectSettings;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use Gems\Util\ConsentUtil;
+use MUtil\Model\ModelAbstract;
+use MUtil\Model\TableModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -19,23 +26,33 @@ use Gems\Project\ProjectSettings;
  * @subpackage Handlers\Setup
  * @since      Class available since version 1.9.2
  */
-class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
+class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = ['consent', 'consents'];
+    public array $cacheTags = ['consent', 'consents'];
 
     /**
      * The snippets used for the autofilter action.
      *
-     * @var mixed String or array of snippets name
+     * @var array snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort' => ['gco_order' => SORT_ASC,],
     ];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+        protected ConsentUtil $consentUtil,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -48,9 +65,9 @@ class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = new \MUtil\Model\TableModel('gems__consents');
+        $model = new TableModel('gems__consents');
         // $model->copyKeys(); // The user can edit the keys.
         $model->addColumn('gco_description', 'origKey');
 
@@ -60,20 +77,18 @@ class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                     'description', $this->_('Determines order of presentation in interface.'),
                     'validator', 'Digits');
         $model->set('gco_code',        'label', $this->_('Consent code'),
-                    'multiOptions', $this->util->getConsentTypes(),
+                    'multiOptions', $this->consentUtil->getConsentTypes(),
                     'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
         if ($detailed) {
             $model->set('gco_description', 'validator', $model->createUniqueValidator('gco_description'));
             $model->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
         }
 
-        if ($this->project->translateDatabaseFields()) {
-            if ('create' == $action || 'edit' == $action) {
-                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
-            } else {
-                $this->loader->getModels()->addDatabaseTranslations($model);
-                $model->setKeys(['origKey']);
-            }
+        if ('create' == $action || 'edit' == $action) {
+            $this->modelLoader->addDatabaseTranslationEditFields($model);
+        } else {
+            $this->modelLoader->addDatabaseTranslations($model);
+            $model->setKeys(['origKey']);
         }
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);
@@ -86,7 +101,7 @@ class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Respondent informed consent codes');
     }
@@ -97,7 +112,7 @@ class ConsentHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('respondent consent', 'respondent consents', $count);
     }
