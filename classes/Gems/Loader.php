@@ -11,6 +11,8 @@
 
 namespace Gems;
 
+use Zalt\Loader\ProjectOverloader;
+
 /**
  *
  * @package    Gems
@@ -133,6 +135,18 @@ class Loader extends \Gems\Loader\LoaderAbstract
     public function createMenu(\Gems\Escort $escort)
     {
         return $this->_getClass('menu', 'Menu', func_get_args());
+    }
+
+    protected function containerLoad(string $classname): ?object
+    {
+        if ($this->_loader instanceof ProjectOverloader) {
+            $container = $this->_loader->getContainer();
+            $resolvedClassName = $this->_loader->find($classname);
+            if ($container->has($resolvedClassName)) {
+                return $container->get($resolvedClassName);
+            }
+        }
+        return null;
     }
 
     /**
@@ -292,11 +306,15 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @return \Gems\Model
+     * @return Model
+     * @deprecated use Dependency injection!
      */
-    public function getModels()
+    public function getModels(): Model
     {
-        return $this->_getClass('models', 'model');
+        /**
+         * @var Model
+         */
+        return $this->containerLoad(Model::class);
     }
 
     /**

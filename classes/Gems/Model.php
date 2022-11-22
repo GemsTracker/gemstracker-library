@@ -11,7 +11,40 @@
 
 namespace Gems;
 
+use DateTimeImmutable;
+use Gems\Model\AppointmentModel;
+use Gems\Model\CommLogModel;
+use Gems\Model\CommMessengersModel;
+use Gems\Model\CommtemplateModel;
+use Gems\Model\ConditionModel;
+use Gems\Model\EpisodeOfCareModel;
+use Gems\Model\ExportDbaModel;
+use Gems\Model\JoinModel;
+use Gems\Model\LogModel;
+use Gems\Model\OrganizationModel;
+use Gems\Model\RespondentModel;
+use Gems\Model\RespondentRelationModel;
+use Gems\Model\SiteModel;
+use Gems\Model\StaffLogModel;
+use Gems\Model\StaffModel;
+use Gems\Model\SurveyCodeBookModel;
+use Gems\Model\SurveyMaintenanceModel;
+use Gems\Project\ProjectSettings;
 use Gems\Util\Translated;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Driver\ResultInterface;
+use Laminas\Db\Sql\Sql;
+use MUtil\Db\Expr\CurrentTimestamp;
+use MUtil\Model\DatabaseModelAbstract;
+use MUtil\Model\FolderModel;
+use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
+use OpenRosa\Model\OpenRosaFormModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Transformer\ModelTransformerInterface;
+use Zend_Db_Expr;
+use Zend_Db_Adapter_Abstract;
 
 /**
  * Central storage / access point for working with gems models.
@@ -22,7 +55,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Model extends \Gems\Loader\TargetLoaderAbstract
+class Model
 {
     const ID_TYPE = 'id_type';
 
@@ -71,63 +104,44 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Model';
+    protected string $cascade = 'Model';
 
     /**
      * @var int Current user ID
      */
-    protected static $currentUserId;
+    protected static int $currentUserId;
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     * Field name in respondent model containing the login id.
-     *
-     * @var string
-     */
-    public $respondentLoginIdField  = 'gr2o_patient_nr';
-
-    /**
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    protected ProjectOverloader $overloader;
 
     /**
      * The length of a user id.
      *
      * @var int
      */
-    protected $userIdLen = 8;
+    protected int $userIdLen = 8;
+
+    public function __construct(
+        protected Adapter $db,
+        protected ProjectSettings $project,
+        protected Translator $translate,
+        protected Translated $translatedUtil,
+        ProjectOverloader $overloader
+    ) {
+        $this->overloader = $overloader->createSubFolderOverloader($this->cascade);
+    }
 
     /**
      * Add database translations to a model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      */
-    public function addDatabaseTranslations(\MUtil\Model\ModelAbstract $model)
+    public function addDatabaseTranslations(ModelAbstract $model): void
     {
         if ($this->project->translateDatabaseFields()) {
-            $transformer = $this->_loadClass('Transform\\TranslateDatabaseFields', true);
+            /**
+             * @var $transformer ModelTransformerInterface
+             */
+            $transformer = $this->overloader->create('Transform\\TranslateDatabaseFields');
             $model->addTransformer($transformer);
         }
     }
@@ -135,12 +149,15 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Add database translation edit to model
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      */
-    public function addDatabaseTranslationEditFields(\MUtil\Model\ModelAbstract $model)
+    public function addDatabaseTranslationEditFields(ModelAbstract $model): void
     {
         if ($this->project->translateDatabaseFields()) {
-            $transformer = $this->_loadClass('Transform\\TranslateFieldEditor', true);
+            /**
+             * @var $transformer ModelTransformerInterface
+             */
+            $transformer = $this->overloader->create('Transform\\TranslateFieldEditor');
             $model->addTransformer($transformer);
         }
     }
@@ -148,24 +165,24 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Link the model to the user_logins table.
      *
-     * @param \Gems\Model\JoinModel $model
+     * @param JoinModel $model
      * @param string $loginField Field that links to login name field.
      * @param string $organizationField Field that links to the organization field.
      */
-    protected function addUserLogin(\Gems\Model\JoinModel $model, $loginField, $organizationField)
+    protected function addUserLogin(JoinModel $model, string $loginField, string $organizationField): void
     {
         $model->addTable(
                 'gems__user_logins',
                 array($loginField => 'gul_login', $organizationField => 'gul_id_organization'),
                 'gul',
-                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_INSERT |
-                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                \MUtil\Model\DatabaseModelAbstract::SAVE_MODE_DELETE
+                DatabaseModelAbstract::SAVE_MODE_INSERT |
+                DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                DatabaseModelAbstract::SAVE_MODE_DELETE
                 );
 
         if ($model->has('gul_enable_2factor') && $model->has('gul_two_factor_key')) {
             $model->addColumn(
-                    new \Zend_Db_Expr("CASE
+                    new Zend_Db_Expr("CASE
                         WHEN gul_enable_2factor IS NULL THEN -1
                         WHEN gul_enable_2factor = 1 AND gul_two_factor_key IS NULL THEN 1
                         WHEN gul_enable_2factor = 1 AND gul_two_factor_key IS NOT NULL THEN 2
@@ -176,36 +193,29 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     }
 
     /**
-     * Link the model to the user_passwords table.
+     * Load project specific application model or general \Gems model otherwise
      *
-     * @param \Gems\Model\JoinModel $model
-     * @deprecated since version 1.5.4
+     * @return AppointmentModel
      */
-    public static function addUserPassword(\Gems\Model\JoinModel $model)
+    public function createAppointmentModel(): AppointmentModel
     {
-        if (! $model->hasAlias('gems__user_passwords')) {
-            $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
-        }
+        /**
+         * @var AppointmentModel
+         */
+        return $this->overloader->create('AppointmentModel');
     }
 
     /**
      * Load project specific application model or general \Gems model otherwise
      *
-     * @return \Gems\Model\AppointmentModel
+     * @return EpisodeOfCareModel
      */
-    public function createAppointmentModel()
+    public function createEpisodeOfCareModel(): EpisodeOfCareModel
     {
-        return $this->_loadClass('AppointmentModel', true);
-    }
-
-    /**
-     * Load project specific application model or general \Gems model otherwise
-     *
-     * @return \Gems\Model\AppointmentModel
-     */
-    public function createEpisodeOfCareModel()
-    {
-        return $this->_loadClass('EpisodeOfCareModel', true);
+        /**
+         * @var EpisodeOfCareModel
+         */
+        return $this->overloader->create('EpisodeOfCareModel');
     }
 
     /**
@@ -215,17 +225,18 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
+     * @param string|null $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @return int
      */
-    public function createGemsUserId($value, $isNew = false, $name = null, array $context = array())
+    public function createGemsUserId(mixed $value, bool $isNew = false, ?string $name = null, array $context = []): int
     {
         if ($value) {
             return $value;
         }
 
-        $creationTime = new \MUtil\Db\Expr\CurrentTimestamp();
+        $now = new DateTimeImmutable();
+        $sql = new Sql($this->db);
 
         do {
             $out = mt_rand(1, 9);
@@ -235,11 +246,13 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
             // Make it a number
             $out = intval($out);
 
-            try {
-                if (0 === $this->db->insert('gems__user_ids', array('gui_id_user' => $out, 'gui_created' => $creationTime))) {
-                    $out = null;
-                }
-            } catch (\Zend_Db_Exception $e) {
+            $values = [
+                'gui_id_user' => $out,
+                'gui_created' => $now->format('Y-m-d H:i:s'),
+            ];
+            $insert = $sql->insert('gems__user_ids')->values($values);
+            $result = $sql->prepareStatementForSqlObject($insert)->execute();
+            if ((!$result instanceof ResultInterface) || 0 === $result->getAffectedRows()) {
                 $out = null;
             }
         } while (null === $out);
@@ -250,21 +263,27 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Load project specific model or general \Gems model otherwise
      *
-     * @return \Gems\Model\LogModel
+     * @return LogModel
      */
-    public function createLogModel()
+    public function createLogModel(): LogModel
     {
-        return $this->_loadClass('LogModel', true);
+        /**
+         * @var LogModel
+         */
+        return $this->overloader->create('LogModel');
     }
 
     /**
      * Load project specific model or general \Gems model otherwise
      *
-     * @return \Gems\Model\RespondentModel
+     * @return RespondentModel
      */
-    public function createRespondentModel()
+    public function createRespondentModel(): RespondentModel
     {
-        $model = $this->_loadClass('RespondentModel', true);
+        /**
+         * @var $model RespondentModel
+         */
+        $model = $this->overloader->create('RespondentModel');
 
         $this->setAsGemsUserId($model, 'grs_id_user');
 
@@ -275,11 +294,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * Load the comm log model
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @return \Gems\Model\CommLogModel
+     * @return CommLogModel
      */
-    public function getCommLogModel($detailed)
+    public function getCommLogModel(bool $detailed): CommLogModel
     {
-        $model = $this->_loadClass('CommLogModel', true);
+        /**
+         * @var $model CommLogModel
+         */
+        $model = $this->overloader->create('CommLogModel');
         $model->applySetting($detailed);
 
         return $model;
@@ -289,11 +311,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * Load the Comm Methods model
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @return \Gems\Model\CommMessengersModel
+     * @return CommMessengersModel
      */
-    public function getCommMessengersModel($detailed)
+    public function getCommMessengersModel(bool $detailed): CommMessengersModel
     {
-        $model = $this->_loadClass('CommMessengersModel', true);
+        /**
+         * @var $model CommMessengersModel
+         */
+        $model = $this->overloader->create('CommMessengersModel');
         $model->applySetting($detailed);
 
         return $model;
@@ -302,11 +327,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Load the commtemplate model
      *
-     * @return \Gems\Model\CommtemplateModel
+     * @return CommtemplateModel
      */
-    public function getCommtemplateModel()
+    public function getCommtemplateModel(): CommtemplateModel
     {
-        $model = $this->_loadClass('CommtemplateModel', true);
+        /**
+         * @var $model CommtemplateModel
+         */
+        $model = $this->overloader->create('CommtemplateModel');
 
         return $model;
     }
@@ -314,12 +342,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Load the condition model
      *
-     * @param array|mixed $styles
-     * @return \Gems\Model\ConditionModel
+     * @return ConditionModel
      */
-    public function getConditionModel()
+    public function getConditionModel(): ConditionModel
     {
-        $model = $this->_loadClass('ConditionModel', true);
+        /**
+         * @var $model ConditionModel
+         */
+        $model = $this->overloader->create('ConditionModel');
 
         return $model;
     }
@@ -327,11 +357,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Load the export Dba Model
      *
-     * @return \Gems\Model\ExportDbaModel
+     * @return ExportDbaModel
      */
-    public function getExportDbaModel(\Zend_Db_Adapter_Abstract $db, array $directories)
+    public function getExportDbaModel(Zend_Db_Adapter_Abstract $db, array $directories): ExportDbaModel
     {
-        $model = $this->_loadClass('ExportDbaModel', true, [$db, $directories]);
+        /**
+         * @var $model ExportDbaModel
+         */
+        $model = $this->overloader->create('ExportDbaModel', [$db, $directories]);
 
         return $model;
     }
@@ -344,9 +377,9 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * @param boolean $followSymlinks When true symlinks are folloed
      * @return \MUtil\Model\FolderModel
      */
-    public function getFileModel($dir, $detailed = true, $extensionsOrMask = null, $recursive = false, $followSymlinks = false)
+    public function getFileModel(string $dir, bool $detailed = true, mixed $extensionsOrMask = null, bool $recursive = false, bool $followSymlinks = false): FolderModel
     {
-        $model = new \MUtil\Model\FolderModel($dir, $extensionsOrMask, $recursive, $followSymlinks);
+        $model = new FolderModel($dir, $extensionsOrMask, $recursive, $followSymlinks);
 
         if ($recursive) {
             $model->set('relpath',  'label', $this->translate->_('File (local)'),
@@ -382,11 +415,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      *
      * It is special since it can show how many responses each table has
      *
-     * @return \OpenRosa\Model\OpenRosaFormModel
+     * @return OpenRosaFormModel
      */
-    public function getOpenRosaFormModel()
+    public function getOpenRosaFormModel(): OpenRosaFormModel
     {
-        $model = $this->_loadClass('OpenRosaFormModel', true);
+        /**
+         * @var $model OpenRosaFormModel
+         */
+        $model = $this->overloader->create('OpenRosaFormModel');
 
         return $model;
     }
@@ -395,11 +431,14 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * Load the organization model
      *
      * @param array|mixed $styles
-     * @return \Gems\Model\OrganizationModel
+     * @return OrganizationModel
      */
-    public function getOrganizationModel($styles = array())
+    public function getOrganizationModel(array $styles = []): OrganizationModel
     {
-        $model = $this->_loadClass('OrganizationModel', true, array($styles));
+        /**
+         * @var $model OrganizationModel
+         */
+        $model = $this->overloader->create('OrganizationModel', [$styles]);
 
         return $model;
     }
@@ -408,9 +447,9 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * Load project specific respondent model or general \Gems model otherwise
      *
      * @param boolean $detail When true more information needed for individual item display is added to the model.
-     * @return \Gems\Model\RespondentModel
+     * @return RespondentModel
      */
-    public function getRespondentModel($detailed)
+    public function getRespondentModel(bool $detailed): RespondentModel
     {
         static $isDetailed;
         static $model;
@@ -434,21 +473,27 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Get the respondent relation model
      *
-     * @return \Gems\Model\RespondentRelationModel
+     * @return RespondentRelationModel
      */
-    public function getRespondentRelationModel()
+    public function getRespondentRelationModel(): RespondentRelationModel
     {
-        return $this->_loadClass('RespondentRelationModel', true);
+        /**
+         * @var RespondentRelationModel
+         */
+        return $this->overloader->create('RespondentRelationModel');
     }
 
     /**
      * Load the organization model
      *
-     * @return \Gems\Model\SiteModel
+     * @return SiteModel
      */
-    public function getSiteModel()
+    public function getSiteModel(): SiteModel
     {
-        return $this->_loadClass('SiteModel', true);
+        /**
+         * @var SiteModel
+         */
+        return $this->overloader->create('SiteModel');
     }
 
     /**
@@ -457,9 +502,12 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * @param boolean $addLogin Add the login tables to the model
      * @return \Gems\Model\StaffModel
      */
-    public function getStaffModel($addLogin = true)
+    public function getStaffModel(bool $addLogin = true): StaffModel
     {
-        $model = $this->_loadClass('StaffModel', true);
+        /**
+         * @var $model StaffModel
+         */
+        $model = $this->overloader->create('StaffModel');
 
         if ($addLogin) {
             $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
@@ -475,9 +523,12 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
      * @param $detailed
      * @return \Gems\Model\StaffLogModel
      */
-    public function getStaffLogModel($detailed)
+    public function getStaffLogModel(bool $detailed): StaffLogModel
     {
-        $model = $this->_loadClass('StaffLogModel', true);
+        /**
+         * @var $model StaffLogModel
+         */
+        $model = $this->overloader->create('StaffLogModel', true);
         if ($detailed) {
             $model->applyDetailSettings();
         } else {
@@ -490,31 +541,37 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Get the respondent relation model
      *
-     * @return \Gems\Model\SurveyMaintenanceModel
+     * @return SurveyMaintenanceModel
      */
-    public function getSurveyMaintenanceModel()
+    public function getSurveyMaintenanceModel(): SurveyMaintenanceModel
     {
-        return $this->_loadClass('SurveyMaintenanceModel', true);
+        /**
+         * @var SurveyMaintenanceModel
+         */
+        return $this->overloader->create('SurveyMaintenanceModel', true);
     }
 
     /**
      * Get the survey codebook Model
      *
-     * @param $surveyId
-     * @return \Gems\Model\SurveyCodeBookModel
+     * @param int $surveyId
+     * @return SurveyCodeBookModel
      */
-    public function getSurveyCodeBookModel($surveyId)
+    public function getSurveyCodeBookModel(int $surveyId): SurveyCodeBookModel
     {
-        return $this->_loadClass('SurveyCodeBookModel', true, [$surveyId]);
+        /**
+         * @var SurveyCodeBookModel
+         */
+        return $this->overloader->create('SurveyCodeBookModel', true, [$surveyId]);
     }
 
     /**
      * Set a field in this model as a gems unique user id
      *
-     * @param \MUtil\Model\DatabaseModelAbstract $model
+     * @param DatabaseModelAbstract $model
      * @param string $idField Field that uses global id.
      */
-    public function setAsGemsUserId(\MUtil\Model\DatabaseModelAbstract $model, $idField)
+    public function setAsGemsUserId(DatabaseModelAbstract $model, string $idField): void
     {
         // Make sure field is added to save when not there
         $model->setAutoSave($idField);
@@ -526,11 +583,11 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Function that automatically fills changed, changed_by, created and created_by fields with a certain prefix.
      *
-     * @param \MUtil\Model\DatabaseModelAbstract $model
+     * @param DatabaseModelAbstract $model
      * @param string $prefix Three letter code
-     * @param int $userid \Gems user id
+     * @param int|null $userid \Gems user id
      */
-    public static function setChangeFieldsByPrefix(\MUtil\Model\DatabaseModelAbstract $model, $prefix, $userid = null)
+    public static function setChangeFieldsByPrefix(DatabaseModelAbstract $model, string $prefix, int $userid = null): void
     {
         $changed_field    = $prefix . '_changed';
         $changed_by_field = $prefix . '_changed_by';
@@ -541,30 +598,15 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
             $model->set($field, 'elementClass', 'none');
         }
 
-        $model->setOnSave($changed_field, new \MUtil\Db\Expr\CurrentTimestamp());
+        $model->setOnSave($changed_field, new CurrentTimestamp());
         $model->setSaveOnChange($changed_field);
-        $model->setOnSave($created_field, new \MUtil\Db\Expr\CurrentTimestamp());
+        $model->setOnSave($created_field, new CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
         if (! $userid && self::$currentUserId) {
             $userid = self::$currentUserId;
         }
 
-        if (! $userid) {
-            $escort = \Gems\Escort::getInstance();
-
-            if ($escort) {
-                $currentUser = $escort->currentUser;
-
-                if ($currentUser instanceof \Gems\User\User) {   // During some unit tests this will be null
-                    $userid = $currentUser->getUserId();
-                }
-
-                if (!$userid) {
-                    $userid = 1;
-                }
-            }
-        }
         if ($userid) {
             $model->setOnSave($changed_by_field, $userid);
             $model->setSaveOnChange($changed_by_field);
@@ -576,9 +618,9 @@ class Model extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Set the current User ID
      *
-     * @param $userId
+     * @param int $userId
      */
-    public static function setCurrentUserId($userId)
+    public static function setCurrentUserId(int $userId): void
     {
         self::$currentUserId = $userId;
     }
