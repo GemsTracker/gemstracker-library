@@ -21,4 +21,5 @@ use Zalt\Model\Data\DataReaderInterface;
  */
 abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
+    protected $class = 'displayer table';
 }

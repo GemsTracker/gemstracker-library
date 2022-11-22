@@ -2,16 +2,8 @@
 
 namespace Gems\Route;
 
-use Gems\Dev\Middleware\TestCurrentUserMiddleware;
-use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
-use Gems\Middleware\LocaleMiddleware;
-use Gems\Middleware\MenuMiddleware;
-use Gems\Middleware\SecurityHeadersMiddleware;
-use Mezzio\Csrf\CsrfMiddleware;
-use Mezzio\Flash\FlashMessageMiddleware;
-use Mezzio\Session\SessionMiddleware;
 use Zalt\SnippetsLoader\SnippetMiddleware;
 
 trait ModelSnippetActionRouteHelpers
@@ -151,7 +143,10 @@ trait ModelSnippetActionRouteHelpers
             $controllerClass, 
             $basePath, $basePrivilege,
             $pages, 
-            $customMiddleware ?: [$controllerClass], 
+            $customMiddleware ?: [
+                LegacyCurrentUserMiddleware::class,
+                $controllerClass,
+            ],
             $parameters, 
             $parameterRoutes, 
             $postRoutes, 

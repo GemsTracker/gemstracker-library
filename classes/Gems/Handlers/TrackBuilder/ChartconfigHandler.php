@@ -104,7 +104,9 @@ class ChartConfigHandler extends ModelSnippetLegacyHandlerAbstract
   }
 ]';
             $model->set('gcc_config', [
-                'label' => $this->_('Config'), 'elementClass', 'textArea', 'default', $default
+                'label' => $this->_('Config'),
+                'elementClass' => 'textArea',
+                'default' => $default,
             ]);
             if ($action == 'show') {
                 $model->set('gcc_config', [
