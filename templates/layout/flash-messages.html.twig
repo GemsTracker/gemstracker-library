@@ -1,9 +1,10 @@
 <div class="errors">
-    {% for messageInfo in statusMessenger.getMessages() %}
-        {% for messageType, message in messageInfo %}
+    {% for messageType, messages in statusMessenger.getMessages() %}
+        {% for message in messages %}
         <div class="alert alert-{{ messageType }} alert-dismissible">
             <div>{{ message }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+            {% endfor %}
     {% endfor %}
 </div>
