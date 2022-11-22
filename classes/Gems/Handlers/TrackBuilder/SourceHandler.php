@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
 use Gems\AccessLog\AccesslogRepository;
 use Gems\Batch\BatchRunnerLoader;
@@ -95,10 +95,10 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $sourceId = $this->getSourceId();
 
-        $where    = $this->db->quoteInto('gsu_id_source = ?', $sourceId);
+        $where    = 'gsu_id_source = ?';
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where);
+        $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where, $sourceId);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -145,10 +145,10 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     public function checkAction()
     {
         $sourceId = $this->getSourceId();
-        $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
+        $where    = 'gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)';
 
         $session = $this->request->getAttribute(SessionInterface::class);
-        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUserId, $where);
+        $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUserId, $where, $sourceId);
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -229,12 +229,12 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
             'multiOptions', $sourceClasses
         );
 
-
+        $sourceDatabaseClasses = $tracker->getSourceDatabaseClasses();
 
         $model->set('gso_ls_adapter',  'label', $this->_('Database Server'),
-            'default', substr(get_class($this->db), strlen('Zend_Db_Adapter_')),
+            'default', reset($sourceDatabaseClasses),
             'description', $this->_('The database server used by the source.'),
-            'multiOptions', $tracker->getSourceDatabaseClasses()
+            'multiOptions', $sourceDatabaseClasses
         );
         $model->set('gso_ls_table_prefix', 'label', $this->_('Table prefix'),
             'default', 'ls__',
@@ -366,16 +366,16 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
             if ($source->checkSourceActive($this->currentUserId)) {
                 $message = $this->_('This installation is active.');
                 $status  = 'success';
-                $messenger->addSuccess($message);
+                $messenger->addSuccess($message, true);
             } else {
                 $message = $this->_('Inactive installation.');
                 $status  = 'warning';
-                $messenger->addWarning($message);
+                $messenger->addWarning($message, true);
             }
             $this->accesslog->logChange($this->request, $message, $status);
         } catch (\Exception $e) {
             $messenger->addDanger($this->_('Installation error!'));
-            $messenger->addDanger($e->getMessage());
+            $messenger->addDanger($e->getMessage(), true);
         }
 
         $requestHelper = new RequestHelper($this->request);
