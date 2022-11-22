@@ -34,7 +34,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Import';
+    protected ?string $cascade = 'Import';
 
     // protected $importMatches = array();
 

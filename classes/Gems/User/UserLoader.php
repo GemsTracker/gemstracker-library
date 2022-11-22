@@ -85,7 +85,7 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'User';
+    protected ?string $cascade = 'User';
 
     /**
      * @var array

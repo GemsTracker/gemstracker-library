@@ -11,6 +11,9 @@
 
 namespace Gems;
 
+use Gems\Loader\LoaderAbstract;
+use Gems\Tracker\TrackEvents;
+use Gems\User\User;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -21,13 +24,13 @@ use Zalt\Loader\ProjectOverloader;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Loader extends \Gems\Loader\LoaderAbstract
+class Loader extends LoaderAbstract
 {
     /**
      *
      * @var array of arrays of \Gems\Tracker\Respondent
      */
-    private $_respondents = array();
+    private array $_respondents = [];
 
     /**
      *
@@ -37,7 +40,7 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @var \Gems\TrackEvents
+     * @var TrackEvents
      */
     protected $events;
 
@@ -127,29 +130,6 @@ class Loader extends \Gems\Loader\LoaderAbstract
     protected $versions;
 
     /**
-     * Load project specific menu or general \Gems menu otherwise
-     *
-     * @param \Gems\Escort $escort
-     * @return \Gems\Menu
-     */
-    public function createMenu(\Gems\Escort $escort)
-    {
-        return $this->_getClass('menu', 'Menu', func_get_args());
-    }
-
-    protected function containerLoad(string $classname): ?object
-    {
-        if ($this->_loader instanceof ProjectOverloader) {
-            $container = $this->_loader->getContainer();
-            $resolvedClassName = $this->_loader->find($classname);
-            if ($container->has($resolvedClassName)) {
-                return $container->get($resolvedClassName);
-            }
-        }
-        return null;
-    }
-
-    /**
      *
      * @return \Gems\Agenda
      */
@@ -171,7 +151,7 @@ class Loader extends \Gems\Loader\LoaderAbstract
      *
      * @return \Gems\User\User
      */
-    public function getCurrentUser()
+    public function getCurrentUser(): User
     {
         $loader = $this->getUserLoader();
 
@@ -207,11 +187,14 @@ class Loader extends \Gems\Loader\LoaderAbstract
 
     /**
      *
-     * @return \Gems\TrackEvents
+     * @return TrackEvents
      */
-    public function getEvents()
+    public function getEvents(): TrackEvents
     {
-        return $this->_getClass('events');
+        /**
+         * @var TrackEvents
+         */
+        return $this->containerLoad('Tracker\\TrackEvents');
     }
 
     /**

@@ -26,7 +26,7 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Export';
+    protected ?string $cascade = 'Export';
 
     /**
      * Is set to the calling controller to allow rendering the view

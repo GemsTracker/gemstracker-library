@@ -56,7 +56,7 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'User\\Mask';
+    protected ?string $cascade = 'User\\Mask';
 
     /**
      * Array containing default data

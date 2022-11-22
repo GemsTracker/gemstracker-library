@@ -16,7 +16,7 @@ class CommunicationLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Communication';
+    protected ?string $cascade = 'Communication';
 
     /**
      * @var SmsClientInterface

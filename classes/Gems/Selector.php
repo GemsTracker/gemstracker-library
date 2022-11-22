@@ -28,7 +28,7 @@ class Selector extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Selector';
+    protected ?string $cascade = 'Selector';
 
     /**
      * Load project specific model or general \Gems model otherwise

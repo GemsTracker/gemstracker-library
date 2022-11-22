@@ -48,7 +48,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Snippets';
+    protected ?string $cascade = 'Snippets';
 
     /**
      * Sets the source of variables and the first directory for snippets
@@ -76,9 +76,9 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param array $arguments Class initialization arguments.
      * @return mixed A class instance or a \MUtil\Lazy\StaticCall object
      */
-    protected function _loadClass($name, $create = false, array $arguments = array())
+    protected function _loadClass(string $name, bool $create = false, array $arguments = []): object
     {
-        $className = $this->_loader->find($name);
+        $className = $this->_overLoader->find($name);
 
         // \MUtil\EchoOut\EchoOut::track($className);
 
@@ -93,7 +93,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
             }
 
             $arguments[] = $this->_dirs;
-            $arguments[] = $this->_loader;
+            $arguments[] = $this->_overLoader;
 
         } elseif (is_subclass_of($className, \MUtil\Registry\TargetInterface::class)) {
             $create = true;
@@ -106,7 +106,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
         }
 
         // $mergedArguments = array_values(array_merge(['className' => $className], $arguments));
-        $obj = call_user_func_array([$this->_loader, 'create'], ['className' => $className]);
+        $obj = call_user_func_array([$this->_overLoader, 'create'], ['className' => $className]);
 
         return $obj;
     }
@@ -119,7 +119,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param boolean $prepend
      * @return \MUtil\Snippets\SnippetLoaderInterface
      */
-    public function addPrefixPath($prefix, $path, $prepend = true)
+    public function addPrefixPath(string $prefix, string|array $path, bool $prepend = true): self
     {
         if ($prepend) {
             $this->_dirs = array($prefix => $path) + $this->_dirs;
@@ -127,7 +127,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
             $this->_dirs[$prefix] = $path;
         }
 
-        $this->_loader->addOverloaders([$prefix]);
+        $this->_overLoader->addOverloaders([$prefix]);
 
         return $this;
     }
@@ -178,7 +178,7 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function removePrefixPath($prefix, $path = null)
     {
-        $this->_loader->removePrefixPath($prefix, $path);
+        $this->_overLoader->removePrefixPath($prefix, $path);
 
         return $this;
     }

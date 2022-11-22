@@ -37,7 +37,7 @@ class MailLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Mail';
+    protected ?string $cascade = 'Mail';
 
     /**
      * @var null|Psr\Log\LoggerInterface

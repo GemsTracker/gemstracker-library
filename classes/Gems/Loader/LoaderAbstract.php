@@ -11,6 +11,13 @@
 
 namespace Gems\Loader;
 
+use Gems\Exception\Coding;
+use MUtil\EchoOut\EchoOut;
+use MUtil\Registry\Source;
+use MUtil\Registry\TargetInterface;
+use Zalt\Late\StaticCall;
+use Zalt\Loader\ProjectOverloader;
+
 /**
  * LoaderAbstract is used for classes that chain from \Gems\Loader and that thus allow
  * projects to overrule the original implementation.
@@ -33,100 +40,61 @@ namespace Gems\Loader;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class LoaderAbstract extends \MUtil\Registry\Source
+class LoaderAbstract extends Source
 {
-    /**
-     * The prefix/path location to look for classes.
-     *
-     * The standard value is
-     * - <Project_name> => application/classes
-     * - \Gems => library/Gems/classes
-     *
-     * But an alternative could be:
-     * - Demopulse => application/classes
-     * - Pulse => application/classes
-     * - \Gems => library/Gems/classes
-     *
-     * @var array Of prefix => path strings for class lookup
-     */
-    protected $_dirs = array();
-
-    /**
-     *
-     * @var \MUtil\Loader\PluginLoader
-     */
-    protected $_loader;
-
     /**
      * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = null;
+    protected ?string $cascade = null;
+
+    /**
+     * @var array
+     * @deprecated
+     */
+    protected array $_dirs = [];
+
+    protected ProjectOverloader $_overLoader;
 
     /**
      *
      * @param mixed $container A container acting as source for \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
-    public function __construct($container, array $dirs)
+    public function __construct(ProjectOverloader $_overLoader)
     {
-        parent::__construct($container);
+        parent::__construct($_overLoader);
+
+        $this->_overLoader = $_overLoader;
 
         if ($this->cascade) {
-            $this->_dirs = $this->_cascadedDirs($dirs, $this->cascade, true);
-        } else {
-            $this->_dirs = $dirs;
+            $this->_overLoader = $this->_overLoader->createSubFolderOverloader($this->cascade);
         }
+        $this->_overLoader->setSource($this);
 
-        $this->_loader = $container;
-        if ($this->cascade) {
-            $this->_loader = $this->_loader->createSubFolderOverloader($this->cascade);
-        }
-        $this->_loader->setSource($this);
-
-        if (\MUtil\Registry\Source::$verbose) {
-            \MUtil\EchoOut\EchoOut::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
-        }
     }
 
-    public function __get($name)
+    public function __get(string $name): callable
     {
         if (method_exists($this, $name)) {
             // Return a callable
             return array($this, $name);
         }
 
-        throw new \Gems\Exception\Coding("Unknown property '$name' requested.");
+        throw new Coding("Unknown property '$name' requested.");
     }
 
-    /**
-     * Add a subdirectory / sub name to a list of class load paths
-     *
-     * @param array $dirs prefix => path
-     * @param string $cascade The sub directories to cascade to
-     * @param boolean $fullClassnameFallback Allows full class name specification instead of just plugin name part
-     * @return array prefix => path
-     */
-    protected function _cascadedDirs(array $dirs, $cascade, $fullClassnameFallback = true)
+    protected function containerLoad(string $classname): ?object
     {
-        // Allow the use of the full class name instead of just the plugin part of the
-        // name during load.
-        if ($fullClassnameFallback) {
-            $newdirs = array('' =>'');
-        } else {
-            $newdirs = array();
-        }
-
-        $cascadePath = '/' . strtr($cascade, '_\\', '//');
-        $cascadeCls  = '_' . strtr($cascade, '/\\', '__');
-        foreach ($dirs as $prefix => $path) {
-            // Do not cascade a full classname fallback
-            if ($prefix) {
-                $newdirs[$prefix . $cascadeCls] = $path . $cascadePath;
+        if ($this->_overLoader instanceof ProjectOverloader) {
+            $container = $this->_overLoader->getContainer();
+            $resolvedClassName = $this->_overLoader->find($classname);
+            if ($container->has($resolvedClassName)) {
+                return $container->get($resolvedClassName);
             }
         }
-        return $newdirs;
+        return null;
     }
 
     /**
@@ -137,7 +105,7 @@ class LoaderAbstract extends \MUtil\Registry\Source
      * @param array $arguments Class initialization arguments.
      * @return mixed Instance of $className
      */
-    protected function _getClass($name, $className = null, array $arguments = array())
+    protected function _getClass(string $name, ?string $className = null, array $arguments = []): object
     {
         if (! isset($this->$name)) {
             if (null === $className) {
@@ -161,9 +129,9 @@ class LoaderAbstract extends \MUtil\Registry\Source
      * @param array $arguments Class initialization arguments.
      * @return mixed A class instance or a \MUtil\Lazy\StaticCall object
      */
-    protected function _loadClass($name, $create = false, array $arguments = array())
+    protected function _loadClass(string $name, bool $create = false, array $arguments = []): object
     {
-        $className = $this->_loader->find($name);
+        $className = $this->_overLoader->find($name);
 
         // \MUtil\EchoOut\EchoOut::track($className);
 
@@ -177,19 +145,16 @@ class LoaderAbstract extends \MUtil\Registry\Source
                 $arguments[] = null;
             }
 
-            $arguments[] = $this->_dirs;
-            $arguments[] = $this->_loader;
-
-        } elseif (is_subclass_of($className, '\\MUtil\\Registry\\TargetInterface')) {
+        } elseif (is_subclass_of($className, TargetInterface::class)) {
             $create = true;
         }
 
         if (! $create) {
-            return new \MUtil\Lazy\StaticCall($className);
+            return new StaticCall($className);
         }
 
         $mergedArguments = array_values(array_merge(['className' => $className], $arguments));
-        $obj = call_user_func_array([$this->_loader, 'create'], $mergedArguments);
+        $obj = $this->_overLoader->create(...$mergedArguments);
 
         return $obj;
     }
@@ -202,7 +167,7 @@ class LoaderAbstract extends \MUtil\Registry\Source
      * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
      * @return \Gems\Loader\LoaderAbstract (continuation pattern)
      */
-    public function addPrefixPath($prefix, $path, $prepend = true)
+    public function addPrefixPath(string $prefix, string|array $path, bool $prepend = true): self
     {
         if ($this->cascade) {
             $newPrefix = $prefix . '_' . $this->cascade;
@@ -218,10 +183,10 @@ class LoaderAbstract extends \MUtil\Registry\Source
             $this->_dirs[$newPrefix] = $newPath;
         }
 
-        $this->_loader->addOverloaders([$newPrefix]);
+        $this->_overLoader->addOverloaders([$newPrefix]);
 
-        if (\MUtil\Registry\Source::$verbose) {
-            \MUtil\EchoOut\EchoOut::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
+        if (Source::$verbose) {
+            EchoOut::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
         }
 
         return $this;

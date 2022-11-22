@@ -37,7 +37,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
-    protected $cascade = 'Util';
+    protected ?string $cascade = 'Util';
 
     /**
      *
