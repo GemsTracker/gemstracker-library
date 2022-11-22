@@ -36,7 +36,7 @@ class ResultFetcher
         return $this->fetchAllAssociative($select, $params);
     }
 
-    public function fetchOne(Select|string $select, ?array $params = null): array
+    public function fetchOne(Select|string $select, ?array $params = null): string|int
     {
         $result = $this->query($select, $params);
         $row = $result->current();
@@ -60,6 +60,11 @@ class ResultFetcher
         return $result->toArray();
     }
 
+    public function getAdapter(): Adapter
+    {
+        return $this->db;
+    }
+
     public function query(Select|string $select, ?array $params = null)
     {
         $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
@@ -68,6 +73,10 @@ class ResultFetcher
             $result = $statement->execute($params);
             $resultSet->initialize($result);
             return $resultSet;
+        }
+
+        if ($params === null) {
+            $params = Adapter::QUERY_MODE_EXECUTE;
         }
 
         return $this->db->query($select, $params, $resultSet);
