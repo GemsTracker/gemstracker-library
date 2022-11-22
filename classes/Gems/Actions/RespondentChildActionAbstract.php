@@ -130,6 +130,6 @@ abstract class RespondentChildActionAbstract extends \Gems\Controller\ModelSnipp
      */
     protected function isMultiTracks()
     {
-        return ! $this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface;
+        return true;
     }
 }
