@@ -9,25 +9,25 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
+
+use Gems\Auth\Acl\AclRepository;
+use Gems\MenuNew\Menu;
+use Gems\MenuNew\RouteHelper;
+use Gems\Middleware\MenuMiddleware;
+use Gems\Roles;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
- * @author Michiel Rook
  * @package    Gems
- * @subpackage Default
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.3
+ * @subpackage Handlers\Setup
+ * @since      Class available since version 1.9.2
  */
-class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
+class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
-    /**
-     *
-     * @var \MUtil\Acl
-     */
-    public $acl;
-
     /**
      * The parameters used for the autofilter action.
      *
@@ -38,7 +38,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = array(
         'extraSort'   => array(
             'grl_name' => SORT_ASC,
             ),
@@ -49,7 +49,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = array('gems_acl', 'roles', 'group', 'groups');
+    public array $cacheTags = array('gems_acl', 'roles', 'group', 'groups');
 
     /**
      * The parameters used for the create and edit actions.
@@ -61,7 +61,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array(
+    protected array $createEditParameters = array(
         'usedPrivileges' => 'getUsedPrivileges',
     );
 
@@ -70,13 +70,23 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Role\\RoleEditFormSnippet';
+    protected array $createEditSnippets = ['Role\\RoleEditFormSnippet'];
 
     /**
      *
      * @var array
      */
     protected $usedPrivileges;
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        private readonly Roles $roles,
+        private readonly AclRepository $aclRepository,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      * Helper function to show a table
@@ -105,7 +115,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel($detailed, $action): ModelAbstract
     {
         $model = new \MUtil\Model\TableModel('gems__roles');
 
@@ -119,7 +129,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
-        $model->setOnLoad('grl_parents', array(\Gems\Roles::getInstance(), 'translateToRoleNames'));
+        $model->setOnLoad('grl_parents', array($this->roles, 'translateToRoleNames'));
 
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
         $tpr = new \MUtil\Model\Type\ConcatenatedRow(',', '<br/>');
@@ -128,7 +138,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
         if ($detailed) {
             $model->set('grl_name',
                     'validators[unique]', $model->createUniqueValidator('grl_name'),
-                    'validators[nomaster]', new \MUtil_Validate_IsNot(
+                    'validators[nomaster]', new \MUtil\Validate\IsNot(
                             'master',
                             $this->_('The name "master" is reserved')
                             )
@@ -162,7 +172,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      * Action for showing a edit item page with extra title
      */
-    public function editAction()
+    public function editAction(): void
     {
         $model   = $this->getModel();
         $data    = $model->loadFirst();
@@ -277,7 +287,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Administrative roles');
     }
@@ -294,7 +304,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
             return array();
         }
 
-        $rolePrivileges = $this->acl->getRolePrivileges();
+        $rolePrivileges = $this->aclRepository->getRolePrivileges();
         $inherited      = array();
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
@@ -315,7 +325,7 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('role', 'roles', $count);
     }
@@ -328,14 +338,28 @@ class RoleAction extends \Gems\Controller\ModelSnippetActionAbstract
     protected function getUsedPrivileges()
     {
         if (! $this->usedPrivileges) {
-            $privileges = $this->menu->getUsedPrivileges();
+            /** @var Menu $menu */
+            $menu = $this->request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
+            $routeLabelsByPrivilege = $menu->getRouteLabelsByPrivilege();
+            $privileges = $this->routeHelper->getAllRoutePrivileges();
 
-            asort($privileges);
+            $privilegeNames = [];
+            foreach ($routeLabelsByPrivilege as $privilege => $labels) {
+                $privilegeNames[$privilege] = implode("<br/>&nbsp; + ", $labels);
+            }
+
+            foreach ($privileges as $privilege) {
+                if (!isset($privilegeNames[$privilege])) {
+                    $privilegeNames[$privilege] = $privilege;
+                }
+            }
+
+            asort($privilegeNames);
             //don't allow to edit the pr.nologin and pr.islogin privilege
-            unset($privileges['pr.nologin']);
-            unset($privileges['pr.islogin']);
+            unset($privilegeNames['pr.nologin']);
+            unset($privilegeNames['pr.islogin']);
 
-            $this->usedPrivileges = $privileges;
+            $this->usedPrivileges = $privilegeNames;
         }
 
         return $this->usedPrivileges;

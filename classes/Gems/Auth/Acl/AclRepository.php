@@ -41,4 +41,9 @@ class AclRepository
             }
         }
     }
+
+    public function getRolePrivileges(): array
+    {
+        return $this->roleAdapter->getRoles();
+    }
 }

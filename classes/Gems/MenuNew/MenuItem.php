@@ -19,6 +19,8 @@ abstract class MenuItem extends MenuNode
         $this->menu = $parent->getMenu();
     }
 
+    abstract public function getLabel(): string;
+
     protected function getMenu(): Menu
     {
         return $this->menu;

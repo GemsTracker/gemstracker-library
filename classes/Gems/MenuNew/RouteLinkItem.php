@@ -22,6 +22,11 @@ class RouteLinkItem extends MenuItem
         return $this->getMenu()->routeHelper->hasAccessToRoute($this->name);
     }
 
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
     public function open(array $params): bool
     {
         $route = $this->getMenu()->routeHelper->getRoute($this->name);

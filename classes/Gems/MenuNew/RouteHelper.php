@@ -100,6 +100,22 @@ class RouteHelper
         return null;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAllRoutePrivileges(): array
+    {
+        $privileges = [];
+
+        foreach ($this->routes as $route) {
+            if (isset($route['options']['privilege'])) {
+                $privileges[$route['options']['privilege']] = true;
+            }
+        }
+
+        return array_keys($privileges);
+    }
+
     public function getRoute(string $name): ?array
     {
         if (!$this->hasAccessToRoute($name)) {

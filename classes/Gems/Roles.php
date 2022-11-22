@@ -10,6 +10,7 @@
 
 namespace Gems;
 
+use Gems\Cache\HelperAdapter;
 use Gems\Log\LogHelper;
 
 /**
@@ -30,12 +31,6 @@ use Gems\Log\LogHelper;
  */
 class Roles
 {
-    /**
-     *
-     * @var \Gems\Cache\HelperAdapter
-     */
-    protected $_cache = null;
-
     /**
      * The id used in the cache
      *
@@ -81,20 +76,14 @@ class Roles
         }
     }
 
-    /**
-     *
-     * @param mixed $cache HelperAdapter
-     */
-    public function __construct($cache = null, $logger = null)
+    public function __construct(protected readonly HelperAdapter $_cache, $logger = null)
     {
         self::$_instanceOfSelf = $this;
 
-        $this->setCache($cache);
-
         if ($logger instanceof \Psr\Log\LoggerInterface) {
             $this->setLogger($logger);
-        } elseif (($cache instanceof \Gems\Escort) && ($cache->logger instanceof \Psr\Log\LoggerInterface)) {
-            $this->setLogger($cache->logger);
+        } elseif (($_cache instanceof \Gems\Escort) && ($_cache->logger instanceof \Psr\Log\LoggerInterface)) {
+            $this->setLogger($_cache->logger);
         }
 
         $this->load();
@@ -314,15 +303,6 @@ class Roles
          * Only add the nologin role, as the others should come from the database when it is initialized
          */
         $this->_acl->addRole(new \Zend_Acl_Role('nologin'));
-    }
-
-    /**
-     *
-     * @param mixed $cache
-     */
-    public function setCache(\Gems\Cache\HelperAdapter $cache)
-    {
-        $this->_cache = $cache;
     }
 
     /**
