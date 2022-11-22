@@ -11,7 +11,9 @@
 
 namespace Gems;
 
+use MUtil\Html\Creator;
 use Zalt\Html\AElement;
+use Zalt\Html\ElementInterface;
 use Zalt\Html\ImgElement;
 use Zalt\Late\Late;
 
@@ -26,7 +28,7 @@ use Zalt\Late\Late;
  */
 class Html extends \Zalt\Html\Html
 {
-    public static function actionDisabled(...$args)
+    public static function actionDisabled(...$args): ElementInterface
     {
         $element = parent::createArray('span', $args);
         $element->appendAttrib('class', 'actionlink btn disabled'); // Keeps existing classes
@@ -40,14 +42,14 @@ class Html extends \Zalt\Html\Html
         return $element;
     }
 
-    public static function buttonDiv(...$args)
+    public static function buttonDiv(...$args): ElementInterface
     {
         $element = parent::createArray('div', $args);
         $element->appendAttrib('class', 'buttons'); // Keeps existing classes
         return $element;
     }
 
-    public static function init(\MUtil\Html\Creator $creator = null)
+    public static function init(\MUtil\Html\Creator $creator = null): ?Creator
     {
         if (null === $creator) {
             $mutilCreator = \MUtil\Html::getCreator();
@@ -58,32 +60,19 @@ class Html extends \Zalt\Html\Html
 
         // Set the image directories
         \MUtil\Html\ImgElement::addImageDir('gems-responsive/images/icons');
-        $escort = \Gems\Escort::getInstance();
-        if (isset($escort->project->imagedir)) {
-            \MUtil\Html\ImgElement::addImageDir($escort->project->imagedir);
-            ImgElement::addImageDir($escort->project->imagedir);
-        }
 
         $addFunctions = [
-            'actionDisabled', array(__CLASS__, 'actionDisabled'),
-            'actionLink',     array(__CLASS__, 'actionLink'),
-            'buttonDiv',      array(__CLASS__, 'buttonDiv'),
-            'pagePanel',      array(__CLASS__, 'pagePanel'),
-            'pInfo',          array(__CLASS__, 'pInfo'),
-            'smallData',      array(__CLASS__, 'smallData'),
+            'actionDisabled', [__CLASS__, 'actionDisabled'],
+            'actionLink',     [__CLASS__, 'actionLink'],
+            'buttonDiv',      [__CLASS__, 'buttonDiv'],
+            'pagePanel',      [__CLASS__, 'pagePanel'],
+            'pInfo',          [__CLASS__, 'pInfo'],
+            'smallData',      [__CLASS__, 'smallData'],
             ]; 
         
         // \Gems specific element functions
         $mutilCreator->addElementFunction(...$addFunctions);
         $zaltCreator->addElementFunction(...$addFunctions);
-
-        // \Gems\Util::callProjectClass('Html', 'init', $creator);
-        // Allow in-project overruling
-        /* $projectFile = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/Html.php';
-        if (file_exists($projectFile)) {
-            include_once($projectFile);
-            call_user_func(array(GEMS_PROJECT_NAME_UC . '_Html', 'init'), $creator);
-        } // */
 
         return $creator;
     }
