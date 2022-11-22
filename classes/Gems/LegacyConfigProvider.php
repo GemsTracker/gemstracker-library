@@ -16,6 +16,7 @@ use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
 use Gems\Repository\OrganizationRepository;
 use Gems\Tracker\TrackEvents;
+use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
@@ -66,8 +67,10 @@ class LegacyConfigProvider
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
                 'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
+                'LegacyCommunicationRepository' => CommunicationRepository::class,
                 'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
+                'LegacyConsentUtil' => ConsentUtil::class,
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyTrackEvents' => TrackEvents::class,
                 'LegacyLoader' => \Gems\Loader::class,
@@ -83,7 +86,6 @@ class LegacyConfigProvider
                 'LegacyTranslatedUtil' => \Gems\Util\Translated::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
-                'LegacyCommunicationRepository' => CommunicationRepository::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,
                 'LegacyDb2' => Adapter::class,
                 'LegacyLayoutRenderer' => LayoutRenderer::class,
