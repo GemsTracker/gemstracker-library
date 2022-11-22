@@ -7,8 +7,8 @@ namespace Gems\Handlers\Auth;
 use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\PasswordResetThrottleBuilder;
 use Gems\Communication\CommunicationRepository;
-use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -17,16 +17,16 @@ use Laminas\Validator\Digits;
 use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class RequestPasswordResetHandler implements RequestHandlerInterface
 {
-    private DecoratedFlashMessagesInterface $flash;
+    private StatusMessengerInterface $statusMessenger;
     private array $organizations;
 
     public function __construct(
@@ -43,7 +43,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
         $this->organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
@@ -116,7 +116,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
             $this->accesslogRepository->logChange($request);
         }
 
-        $this->flash->flashInfo($this->translator->trans(
+        $this->statusMessenger->addInfo($this->translator->trans(
             'If the entered username or e-mail is valid, we have sent you an e-mail with a reset link. Click on the link in the e-mail.'
         ));
 
@@ -140,7 +140,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
 
     private function redirectBack(ServerRequestInterface $request, array $errors): RedirectResponse
     {
-        $this->flash->flashErrors($errors);
+        $this->statusMessenger->addErrors($errors);
 
         return new RedirectResponse($request->getUri());
     }

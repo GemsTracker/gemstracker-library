@@ -10,8 +10,8 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthNew\LoginThrottleBuilder;
-use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Site\SiteUtil;
 use Gems\User\PasswordChecker;
 use Gems\User\User;
@@ -23,17 +23,19 @@ use Laminas\Validator\Digits;
 use Laminas\Validator\InArray;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
-use Mezzio\Flash\FlashMessageMiddleware;
+use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class LoginHandler implements RequestHandlerInterface
 {
-    private DecoratedFlashMessagesInterface $flash;
+    private FlashMessagesInterface $flash;
+    private StatusMessengerInterface $statusMessenger;
     private array $organizations;
 
     public function __construct(
@@ -53,6 +55,7 @@ class LoginHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         $siteUrl = $this->siteUtil->getSiteByFullUrl((string)$request->getUri());
         $this->organizations = $siteUrl ? $this->siteUtil->getNamedOrganizationsFromSiteUrl($siteUrl) : [];
@@ -160,7 +163,7 @@ class LoginHandler implements RequestHandlerInterface
             'username' => $input['username'] ?? null,
         ]);
 
-        $this->flash->flashErrors($errors);
+        $this->statusMessenger->addErrors($errors);
 
         // TODO: Log
         /*// Also log the error to the log table  when the project has logging enabled

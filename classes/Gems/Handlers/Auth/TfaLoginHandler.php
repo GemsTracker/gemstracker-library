@@ -10,25 +10,25 @@ use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\SendDecorator\SendsOtpCodeInterface;
 use Gems\AuthTfa\TfaService;
-use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\User;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Digits;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\ValidatorChain;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class TfaLoginHandler implements RequestHandlerInterface
 {
-    private DecoratedFlashMessagesInterface $flash;
+    private StatusMessengerInterface $statusMessenger;
     private AuthenticationService $authenticationService;
     private TfaService $tfaService;
     private User $user;
@@ -44,7 +44,7 @@ class TfaLoginHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         /** @var SessionInterface $session */
         $session = $request->getAttribute(SessionInterface::class);
         $this->authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
@@ -63,9 +63,9 @@ class TfaLoginHandler implements RequestHandlerInterface
                         $otpMethod->sendCode();
                         $session->set('tfa_login_last_send', time());
 
-                        $this->flash->flashInfo($otpMethod->getSentFeedbackMessage());
+                        $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage());
                     } catch (\Gems\Exception $e) {
-                        $this->flash->flashError($e->getMessage());
+                        $this->statusMessenger->addError($e->getMessage());
                     }
 
                     return new RedirectResponse($request->getUri());
@@ -82,9 +82,9 @@ class TfaLoginHandler implements RequestHandlerInterface
                 try {
                     $otpMethod->sendCode();
                     $session->set('tfa_login_last_send', time());
-                    $this->flash->appendInfo($otpMethod->getSentFeedbackMessage());
+                    $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage(), true);
                 } catch (\Gems\Exception $e) {
-                    $this->flash->appendError($e->getMessage());
+                    $this->statusMessenger->addError($e->getMessage(), true);
                 }
             }
         }
@@ -138,7 +138,7 @@ class TfaLoginHandler implements RequestHandlerInterface
 
     private function redirectBack(ServerRequestInterface $request, string $error): RedirectResponse
     {
-        $this->flash->flashError($error);
+        $this->statusMessenger->addError($error);
 
         return new RedirectResponse($request->getUri());
     }

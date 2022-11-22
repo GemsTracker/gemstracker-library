@@ -4,10 +4,9 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
-use Gems\DecoratedFlashMessagesInterface;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\RouteResult;
 use Mezzio\Router\RouterInterface;
@@ -17,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
@@ -69,9 +69,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $tfaService->logout();
             }
 
-            /** @var DecoratedFlashMessagesInterface $flash */
-            $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-            $flash?->flashErrors([
+            /** @var StatusMessengerInterface $flash */
+            $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $flash?->addErrors([
                 $this->translator->trans('You are not allowed to login from this location.'),
             ]);
 
@@ -86,9 +86,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 'tfa.login',
                 'auth.logout',
             ])) {
-                /** @var DecoratedFlashMessagesInterface $flash */
-                $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-                $flash?->flashErrors([
+                /** @var StatusMessengerInterface $flash */
+                $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+                $flash?->addErrors([
                     $this->translator->trans('Your password must be changed.'),
                 ]);
 

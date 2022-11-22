@@ -52,7 +52,7 @@ use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
 use Mezzio\Csrf\FlashCsrfGuardFactory;
-use Mezzio\Flash\FlashMessageMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;

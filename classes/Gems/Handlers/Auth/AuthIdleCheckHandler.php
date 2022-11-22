@@ -6,16 +6,16 @@ namespace Gems\Handlers\Auth;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;
-use Gems\DecoratedFlashMessagesInterface;
 use Gems\Site\SiteUtil;
+use Gems\Middleware\FlashMessageMiddleware;
 use Laminas\Diactoros\Response\JsonResponse;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class AuthIdleCheckHandler implements RequestHandlerInterface
 {
@@ -33,12 +33,12 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
         $session = $request->getAttribute(SessionInterface::class);
         $authenticationService = $this->authenticationServiceBuilder->buildAuthenticationService($session);
 
-        /** @var DecoratedFlashMessagesInterface $flash */
-        $flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-        $flash?->prolongFlash();
+        /** @var StatusMessengerInterface $flash */
+        $statusMessenger = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $statusMessenger?->prolong();
 
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid($request->getMethod() === 'POST')) {
-            $flash?->flashErrors([
+            $statusMessenger?->addErrors([
                 $this->translator->trans('You have been automatically logged out from the application'),
             ]);
 

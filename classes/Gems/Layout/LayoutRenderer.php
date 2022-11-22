@@ -6,11 +6,11 @@ namespace Gems\Layout;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\User\User;
 use Mezzio\Csrf\CsrfMiddleware;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -18,7 +18,7 @@ class LayoutRenderer
 {
     protected array $requestAttributes = [
         MenuMiddleware::MENU_ATTRIBUTE,
-        FlashMessageMiddleware::FLASH_ATTRIBUTE,
+        'statusMessenger' => FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE,
         LocaleMiddleware::LOCALE_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
@@ -45,10 +45,13 @@ class LayoutRenderer
     {
         $params = [];
 
-        foreach($this->requestAttributes as $requestAttributeName) {
+        foreach($this->requestAttributes as $variableName=>$requestAttributeName) {
             $attributeValue = $request->getAttribute($requestAttributeName);
             if ($attributeValue !== null) {
-                $params[$requestAttributeName] = $request->getAttribute($requestAttributeName);
+                if (is_int($variableName)) {
+                    $variableName = $requestAttributeName;
+                }
+                $params[$variableName] = $request->getAttribute($requestAttributeName);
             }
         }
 

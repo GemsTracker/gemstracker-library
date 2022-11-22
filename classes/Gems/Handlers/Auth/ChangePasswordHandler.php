@@ -8,24 +8,27 @@ use Gems\AccessLog\AccesslogRepository;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\LoginStatusTracker;
-use Gems\DecoratedFlashMessagesInterface;
 use Gems\Layout\LayoutRenderer;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Session\ValidationMessenger;
 use Gems\User\PasswordChecker;
 use Gems\User\User;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Flash\FlashMessageMiddleware;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
 
 class ChangePasswordHandler implements RequestHandlerInterface
 {
-    private DecoratedFlashMessagesInterface $flash;
+    private ValidationMessenger $validationMessenger;
+
+    private StatusMessengerInterface $statusMessenger;
 
     public function __construct(
         private readonly Adapter $db,
@@ -39,8 +42,8 @@ class ChangePasswordHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $session = $request->getAttribute(SessionInterface::class);
-        $this->flash = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $this->validationMessenger = new ValidationMessenger($request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE));
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         /** @var User $user */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
 
@@ -49,7 +52,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             || !$user->canResetPassword()
             || !$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)
         ) {
-            $this->flash->appendError($this->translator->trans('You cannot reset your password.'));
+            $this->statusMessenger->addError($this->translator->trans('You cannot reset your password.'), true);
             if ($request->getMethod() === 'POST') {
                 return new RedirectResponse($request->getUri());
             }
@@ -59,6 +62,7 @@ class ChangePasswordHandler implements RequestHandlerInterface
             $data = [
                 'ask_old' => true,
                 'rules' => $this->passwordChecker->reportPasswordWeakness($user, null, true),
+                'validationMessenger' => $this->validationMessenger,
             ];
 
             return new HtmlResponse($this->layoutRenderer->renderTemplate('gems::change-password', $request, $data));
@@ -73,14 +77,14 @@ class ChangePasswordHandler implements RequestHandlerInterface
         )->authenticate();
 
         if (!$authResult->isValid()) {
-            $this->flash->flashValidationErrors('old_password', [$this->translator->trans('Wrong password.')]);
+            $this->validationMessenger->addValidationErrors('old_password', [$this->translator->trans('Wrong password.')]);
             return new RedirectResponse($request->getUri());
         }
 
         // TODO: generalize forms
         $newPasswordValidator = new \Gems\User\Validate\NewPasswordValidator($user, $this->passwordChecker);
         if (!$newPasswordValidator->isValid($input['new_password'] ?? null)) {
-            $this->flash->flashValidationErrors('new_password', $newPasswordValidator->getMessages());
+            $this->validationMessenger->addValidationErrors('new_password', $newPasswordValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
 
@@ -90,14 +94,15 @@ class ChangePasswordHandler implements RequestHandlerInterface
             \MUtil\Validate\IsConfirmed::NOT_SAME
         );
         if (!$repeatConfirmValidator->isValid($input['repeat_password'] ?? null, $input)) {
-            $this->flash->flashValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());
+            $this->validationMessenger->addValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());
             return new RedirectResponse($request->getUri());
         }
 
         $user->setPassword($input['new_password']);
+        $session = $request->getAttribute(SessionInterface::class);
         LoginStatusTracker::make($session, $user)->setPasswordResetActive(false);
 
-        $this->flash->flashSuccess($this->translator->trans('New password is active.'));
+        $this->statusMessenger->addSuccess($this->translator->trans('New password is active.'));
 
         return new RedirectResponse($request->getUri());
     }
