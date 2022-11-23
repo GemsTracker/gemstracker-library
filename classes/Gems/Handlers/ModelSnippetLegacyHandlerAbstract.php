@@ -12,7 +12,13 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\Generic\ButtonRowSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
+use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use MUtil\Model\ModelAbstract;
@@ -153,6 +159,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected array $createEditSnippets = [
         ModelFormSnippet::class,
+        CurrentButtonRowSnippet::class,
         ];
 
     /**
@@ -176,7 +183,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = [
-        'ModelItemYesNoDeleteSnippet',
+        ModelItemYesNoDeleteSnippet::class
         ];
 
     /**
@@ -211,9 +218,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * The snippets used for the index action, after those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array String or array of snippets name
      */
-    // protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
+    protected array $indexStopSnippets = [
+        CurrentSiblingsButtonRowSnippet::class,
+        ];
 
     /**
      * The snippets used for the show action
@@ -221,8 +230,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $showSnippets = [
-        'Generic\\ContentTitleSnippet', 
-        'ModelDetailTableSnippet',
+        ContentTitleSnippet::class, 
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
         ];
 
     /**

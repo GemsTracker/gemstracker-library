@@ -28,7 +28,7 @@ class CurrentButtonRowSnippet extends ButtonRowSnippet
      *
      * @var boolean
      */
-    protected bool $addCurrentChildren = false;
+    protected bool $addCurrentChildren = true;
 
     /**
      * Add the parent of the current menu item
@@ -42,5 +42,5 @@ class CurrentButtonRowSnippet extends ButtonRowSnippet
      *
      * @var boolean
      */
-    protected bool $addCurrentSiblings = true;
+    protected bool $addCurrentSiblings = false;
 }

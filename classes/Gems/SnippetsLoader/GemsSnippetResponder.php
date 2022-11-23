@@ -13,9 +13,12 @@ namespace Gems\SnippetsLoader;
 
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\SnippetsLoader\MezzioLaminasSnippetResponder;
 use Zalt\SnippetsLoader\SnippetLoader;
 
@@ -56,4 +59,18 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         return $output;
     }
 
+    public function processRequest(ServerRequestInterface $request): RequestInfo
+    {
+        $requestInfo = parent::processRequest($request);
+
+        $menu = $request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
+
+        if ($menu) {
+            $menuHelper = new MenuSnippetHelper($menu, $requestInfo);
+            
+            $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $menuHelper);
+        }        
+        
+        return $requestInfo;
+    }
 }

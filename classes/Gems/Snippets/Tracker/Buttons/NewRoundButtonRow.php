@@ -24,8 +24,6 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  */
 class NewRoundButtonRow extends CurrentButtonRowSnippet
 {
-
-
     protected $trackId;
 
     /**
@@ -33,8 +31,9 @@ class NewRoundButtonRow extends CurrentButtonRowSnippet
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(array $menuList): array
+    protected function addButtons(): array
     {
+        $menuList = [];
         $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-rounds.create');
 
         $matchedParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();

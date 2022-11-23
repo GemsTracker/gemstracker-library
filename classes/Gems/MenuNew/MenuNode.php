@@ -18,6 +18,14 @@ abstract class MenuNode
         $menuItem->register();
     }
 
+    /**
+     * @return \Gems\MenuNew\MenuItem[]
+     */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
     public function renderNode(): string
     {
         $renderedItem = $this->renderContent();

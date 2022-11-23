@@ -25,17 +25,38 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 class TrackActionButtonRow extends CurrentButtonRowSnippet
 {
     /**
-     * Set the menu items (allows for overruling in subclasses)
+     * Add the children of the current menu item
      *
-     * @param \Gems\Menu\MenuList $menuList
+     * @var boolean
      */
-    protected function addButtons(array $menuList): array
+    protected bool $addCurrentChildren = true;
+
+    /**
+     * Add the parent of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentParent = false;
+
+    /**
+     * Add the siblings of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentSiblings = true;
+
+    /**
+     * Set the menu items (allows for overruling in subclasses)
+     */
+    protected function addButtons(): array
     {
-        $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addCurrentSiblings()
-                ->addCurrentChildren()
-                ->setLabel('respondent', 'edit', $this->_('Edit respondent'))
-                ->setLabel('track', 'edit-track', $this->_('Edit track'));
+        $this->extraRoutesLabelled = [
+            'respondent.show'              => $this->_('Show respondent'),
+            'respondent.edit'              => $this->_('Edit respondent'),
+            'respondent.tracks.index'      => $this->_('Show tracks'),
+            'respondent.tracks.edit-track' => $this->_('Edit track'),
+        ];
+
+        return parent::addButtons();
     }
 }

@@ -25,18 +25,39 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 class TokenActionButtonRow extends CurrentButtonRowSnippet
 {
     /**
-     * Set the menu items (allows for overruling in subclasses)
+     * Add the children of the current menu item
      *
-     * @param \Gems\Menu\MenuList $menuList
+     * @var boolean
      */
-    protected function addButtons(array $menuList): array
+    protected bool $addCurrentChildren = true;
+
+    /**
+     * Add the parent of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentParent = false;
+
+    /**
+     * Add the siblings of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentSiblings = true;
+    
+    /**
+     * Set the menu items (allows for overruling in subclasses)
+     */
+    protected function addButtons(): array
     {
-        $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'))
-                ->addByController('track', 'show', $this->_('Show token'))
-                ->addCurrentSiblings()
-                ->addCurrentChildren();
+        $this->extraRoutesLabelled = [
+            'respondent.show'              => $this->_('Show respondent'),
+            'respondent.tracks.index'      => $this->_('Show tracks'),
+            'respondent.tracks.show-track' => $this->_('Show track'),
+            'respondent.tracks.show'       => $this->_('Show token'),
+            ];
+
+        return parent::addButtons();
     }
 }
 

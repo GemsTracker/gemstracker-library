@@ -12,8 +12,8 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
-use Gems\Project\ProjectSettings;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -48,6 +48,8 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
      * @var \Gems\AccessLog
      */
     // protected $accesslog;
+
+    protected ?string $cancelRoute = null;
 
     /**
      * Shortfix to add class attribute
@@ -90,33 +92,25 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
     protected $routeAction = 'show';
 
     /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
-    /**
      * When true a tabbed form is used.
      *
      * @var boolean
      */
     protected $useTabbedForm = false;
 
-
-    protected ?string $cancelRoute = null;
-
     /**
      * @param \Zalt\SnippetsLoader\SnippetOptions                $snippetOptions
      * @param \Zalt\Base\RequestInfo                             $requestInfo
      * @param \Symfony\Contracts\Translation\TranslatorInterface $translate
      * @param \Zalt\Message\MessengerInterface                   $messenger
-     * @param \Gems\Project\ProjectSettings                      $project
-     * /
+     * @param \Gems\MenuNew\MenuSnippetHelper                    $menuHelper
+     */
     public function __construct(
         SnippetOptions $snippetOptions,
         protected RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        ProjectSettings $project)
+        protected MenuSnippetHelper $menuHelper)
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate, $messenger);
         
@@ -298,21 +292,10 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
 
     /**
      * @return null|string
-     * /
+     */
     public function getCancelRoute()
     {
-        // $routeResult = $this->requestInfo->getRouteName();
-        $routeName = $this->cancelRoute;
-        if (!$routeName) {
-            $currentRouteName = $routeResult->getMatchedRouteName();
-            $routeParts = explode('.', $currentRouteName);
-            $routeParts[count($routeParts)-1] = 'index';
-            $routeName = join('.', $routeParts);
-        }
-
-        $params = $routeResult->getMatchedParams();
-
-        return $this->routeHelper->getRouteUrl($routeName, $params);
+        return $this->menuHelper->getCurrentParentUrl();;
     }
 
     /**
@@ -396,21 +379,10 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
 
     /**
      * If menu item does not exist or is not allowed, redirect to index
-     *
-     * @return \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function setAfterSaveRoute()
     {
+        $this->afterSaveRouteUrl = $this->menuHelper->getCurrentParentUrl();
         parent::setAfterSaveRoute();
-
-        if (is_array($this->afterSaveRouteUrl)) {
-            // Make sure controller is set
-            if (!array_key_exists('controller', $this->afterSaveRouteUrl)) {
-                $this->afterSaveRouteUrl['controller'] = $this->requestInfo->getCurrentController();
-            }
-        }
-        // \MUtil\EchoOut\EchoOut::track($this->routeAction, $this->resetRoute);
-
-        return $this;
     }
 }
