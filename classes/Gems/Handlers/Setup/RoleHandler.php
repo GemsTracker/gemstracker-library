@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\MenuMiddleware;
@@ -304,13 +305,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             return array();
         }
 
-        $rolePrivileges = $this->aclRepository->getRolePrivileges();
+        $rolePrivileges = $this->aclRepository->getResolvedRoles();
         $inherited      = array();
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
-                $inherited = $inherited + array_flip($rolePrivileges[$parent][\Zend_Acl::TYPE_ALLOW]);
-                $inherited = $inherited +
-                        array_flip($rolePrivileges[$parent][\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]);
+                $inherited = $inherited + array_flip($rolePrivileges[$parent][RoleAdapterInterface::ROLE_RESOLVED_PRIVILEGES]);
             }
         }
         // Sneaks in:
@@ -372,12 +371,12 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     {
         $roles = array();
 
-        foreach ($this->acl->getRolePrivileges() as $role => $privileges) {
-            $roles[$role][$this->_('Role')]    = $role;
-            $roles[$role][$this->_('Parents')] = $privileges[\MUtil\Acl::PARENTS]   ? implode(', ', $privileges[\MUtil\Acl::PARENTS])   : null;
-            $roles[$role][$this->_('Allowed')] = $privileges[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[\Zend_Acl::TYPE_ALLOW]) : null;
+        foreach ($this->aclRepository->getResolvedRoles() as $roleName => $roleConfig) {
+            $roles[$roleName][$this->_('Role')]    = $roleName;
+            $roles[$roleName][$this->_('Parents')] = $roleConfig[RoleAdapterInterface::ROLE_PARENTS]   ? implode(', ', $roleConfig[RoleAdapterInterface::ROLE_PARENTS])   : null;
+            $roles[$roleName][$this->_('Allowed')] = $roleConfig[RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES] ? implode(', ', $roleConfig[RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES]) : null;
             //$roles[$role][$this->_('Denied')]  = $privileges[\Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[\Zend_Acl::TYPE_DENY])  : null;
-            $roles[$role][$this->_('Inherited')] = $privileges[\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]) : null;
+            $roles[$roleName][$this->_('Inherited')] = $roleConfig[RoleAdapterInterface::ROLE_INHERITED_PRIVILEGES] ? implode(', ', $roleConfig[RoleAdapterInterface::ROLE_INHERITED_PRIVILEGES]) : null;
             //$roles[$role][$this->_('Parent denied')]  = $privileges[\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_DENY])  : null;
         }
         ksort($roles);

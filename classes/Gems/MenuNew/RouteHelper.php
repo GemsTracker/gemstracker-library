@@ -105,9 +105,17 @@ class RouteHelper
      */
     public function getAllRoutePrivileges(): array
     {
+        return self::getAllRoutePrivilegesFromConfig($this->routes);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getAllRoutePrivilegesFromConfig(array $configRoutes): array
+    {
         $privileges = [];
 
-        foreach ($this->routes as $route) {
+        foreach ($configRoutes as $route) {
             if (isset($route['options']['privilege'])) {
                 $privileges[$route['options']['privilege']] = true;
             }

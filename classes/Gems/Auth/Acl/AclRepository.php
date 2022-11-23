@@ -2,6 +2,7 @@
 
 namespace Gems\Auth\Acl;
 
+use Gems\MenuNew\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
@@ -25,25 +26,69 @@ class AclRepository
         return $this->acl;
     }
 
-    private function loadAcl(): void
+    public static function inheritanceSortedRoles(array $rolesConfig): \Generator
     {
-        $this->acl = new Acl();
+        $visitedRoleNames = [];
+        $resolve = function (string $roleName) use ($rolesConfig, &$visitedRoleNames, &$resolve) {
+            $roleConfig = $rolesConfig[$roleName];
 
-        foreach ($this->config['permissions'] as $permission) {
-            $this->acl->addResource(new GenericResource($permission));
-        }
+            $unvisitedRoleNames = array_diff($roleConfig[RoleAdapterInterface::ROLE_PARENTS], $visitedRoleNames);
 
-        foreach ($this->roleAdapter->getRoles() as $role => $permissions) {
-            $this->acl->addRole(new GenericRole($role));
+            foreach ($unvisitedRoleNames as $unvisitedRoleName) {
+                yield from $resolve($unvisitedRoleName);
+            }
 
-            foreach ($permissions as $permission) {
-                $this->acl->allow($role, $permission);
+            $visitedRoleNames[] = $roleName;
+            yield $roleName => $roleConfig;
+        };
+
+        foreach ($rolesConfig as $roleName => $roleConfig) {
+            if (!in_array($roleName, $visitedRoleNames)) {
+                yield from $resolve($roleName);
             }
         }
     }
 
-    public function getRolePrivileges(): array
+    private function loadAcl(): void
     {
-        return $this->roleAdapter->getRoles();
+        $this->acl = new Acl();
+
+        foreach ($this->getDefinedPrivileges() as $privilege) {
+            $this->acl->addResource(new GenericResource($privilege));
+        }
+
+        foreach (self::inheritanceSortedRoles($this->roleAdapter->getRolesConfig()) as $roleName => $roleConfig) {
+            if ($roleName !== $roleConfig[RoleAdapterInterface::ROLE_NAME]) {
+                throw new \Exception('Role name mismatch');
+            }
+
+            $this->registerRole($roleConfig);
+        }
+    }
+
+    private function registerRole(array $roleConfig): void
+    {
+        $role = new GenericRole($roleConfig[RoleAdapterInterface::ROLE_NAME]);
+
+        $this->acl->addRole($role, $roleConfig[RoleAdapterInterface::ROLE_PARENTS]);
+
+        foreach ($roleConfig[RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES] as $privilege) {
+            if ($this->acl->hasResource($privilege)) {
+                $this->acl->allow($role, $privilege);
+            }
+        }
+    }
+
+    public function getResolvedRoles(): array
+    {
+        return $this->roleAdapter->getResolvedRoles();
+    }
+
+    public function getDefinedPrivileges(): array
+    {
+        return array_values(array_unique(array_merge(
+            $this->config['permissions'],
+            RouteHelper::getAllRoutePrivilegesFromConfig($this->config['routes']),
+        )));
     }
 }

@@ -671,8 +671,11 @@ class ConfigProvider
     public function getRoles(): array
     {
         return [
-            'staff' => [],
-            'super' => [],
+            'definition_date' => '2022-11-23 00:00:00',
+            'roles' => [
+                'staff' => ['name' => 'staff', 'description' => 'staff', 'parents' => [], 'privileges' => []],
+                'super' => ['name' => 'super', 'description' => 'super', 'parents' => [], 'privileges' => []],
+            ]
         ];
     }
 }
