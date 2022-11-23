@@ -16,10 +16,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\MenuNew\RouteNotFoundException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\AElement;
-use Zalt\Late\Late;
-use Zalt\Late\LateCall;
-use Zalt\Model\Bridge\BridgeAbstract;
+use Zalt\Html\Marker;
 use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -32,7 +29,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * - Display class: 'browser'
  *
  * Extra helpers are:
- * - Keyboard access: $this->keyboard & getHtmlOutput()
  * - Menu helpers:    $this->menu, findMenuItem()
  * - Sort parameters: $sortParamAsc & $sortParamDesc
  *
@@ -63,20 +59,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      * @var array
      */
     protected $defaultSearchData = [];
-
-    /**
-     * Use keyboard to select row
-     *
-     * @var boolean
-     */
-    public bool $keyboard = false;
-
-    /**
-     * Make sure the keyboard id is used only once
-     *
-     * @var boolean
-     */
-    public static $keyboardUsed = false;
 
     /**
      * Menu routes or routeparts to show in Edit box.
@@ -195,7 +177,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
         if (isset($filter[$textKey])) {
             $searchText = $filter[$textKey];
-            $marker = new \MUtil\Html\Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            $marker = new Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label') && (! $model->is($name, 'no_text_search', true))) {
                     $model->set($name, 'markCallback', [$marker, 'mark']);
@@ -253,24 +235,10 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         $table = parent::getHtmlOutput();
         $table->getOnEmpty()->class = 'centerAlign';
 
-        if (($this->containingId || $this->keyboard) && (! self::$keyboardUsed)) {
-            // Assign keyboard tracking only once
-            self::$keyboardUsed = true;
-
+        if ($this->containingId) {
             $this->applyHtmlAttributes($table);
 
-            // If we are already in a containing div it is simple
-            if ($this->containingId) {
-                return $table;
-                // return [$table, new \Gems\JQuery\TableRowKeySelector($this->containingId)];
-            }
-
-            // Create a new containing div
-            $div = Html::create()->div(['id' => 'keys_target', 'class' => 'table-container'], $table);
-
-            return $div;
-            // return [$div, new \Gems\JQuery\TableRowKeySelector($div)];
-
+            return $table;
         } else {
             return $table;
         }

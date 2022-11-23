@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use Gems\MenuNew\RouteHelper;
-use Gems\Snippets\Generic\ButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
+use Gems\Snippets\ModelTableSnippet;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use MUtil\Model\ModelAbstract;
@@ -44,7 +44,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_autofilterExtraParameters = [
         'browse'        => true,
         'containingId'  => 'autofilter_target',
-        'keyboard'      => true,
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
@@ -151,6 +150,15 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var int User id from request
      */
     protected int $currentUserId = 1;
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var array snippets name
+     */
+    protected array $autofilterSnippets = [
+        ModelTableSnippet::class,
+        ];
 
     /**
      * The snippets used for the create and edit actions.
