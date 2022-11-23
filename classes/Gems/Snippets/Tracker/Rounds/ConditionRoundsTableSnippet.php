@@ -11,10 +11,19 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Condition\ConditionInterface;
 use Gems\Condition\RoundConditionInterface;
+use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Gems\Util\Translated;
+use MUtil\Model;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -24,8 +33,10 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 27-Nov-2018 11:57:15
  */
-class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
 {
+    public $browse = true;
+
     /**
      * Set a fixed model sort.
      *
@@ -36,7 +47,7 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
     protected $_fixedSort = [
         'gtr_track_name' => SORT_ASC,
         'gro_id_order'   => SORT_ASC,
-        ];
+    ];
 
     /**
      *
@@ -49,44 +60,31 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = BridgeAbstract::MODE_ROWS;
 
     /**
-     * @var \Gems\Condition\ConditionInterface
+     * @var ConditionInterface
      */
-    protected $condition;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected ?ConditionInterface $condition = null;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
      *
      * @var array (int/controller => action)
      */
-    public $menuActionController = 'track-rounds';
+    public array $menuActionController = ['track-rounds'];
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        RouteHelper $routeHelper,
+        Translator $translate,
+        protected Translated $translatedUtil
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
+        $this->caption = $this->translate->_('Rounds with this condition');
+        $this->onEmpty = $this->translate->_('No rounds using this condition found');
 
-        $this->browse  = true;
-        $this->caption = $this->_('Rounds with this condition');
-        $this->onEmpty = $this->_('No rounds using this condition found');
     }
 
     /**
@@ -118,7 +116,7 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
         // Now add the joins so we can sort on the real name
         //
 
-        // $this->model->set('gsu_survey_name', $this->model->get('gro_id_survey'));
+        // $this->_model->set('gsu_survey_name', $this->_model->get('gro_id_survey'));
 
         return $this->_model;
     }
@@ -146,25 +144,27 @@ class ConditionRoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstra
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param MetaModelInterface $model
      */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $model): array
     {
+        $filter = parent::getFilter($model);
+
         $conditionId = null;
         if ($this->condition) {
             $conditionId = $this->condition->getConditionId();
         } else {
             $queryParams = $this->requestInfo->getRequestQueryParams();
-            if (isset($queryParams[\MUtil\Model::REQUEST_ID])) {
-                $conditionId = $queryParams[\MUtil\Model::REQUEST_ID];
+            if (isset($queryParams[Model::REQUEST_ID])) {
+                $conditionId = $queryParams[Model::REQUEST_ID];
             }
         }
 
         //\MUtil\Model::$verbose = true;
         if ($conditionId) {
-            $model->addFilter(['gro_condition' => $conditionId]);
+            $filter['gro_condition'] = $conditionId;
         }
 
-        $this->processSortOnly($model);
+        return $filter;
     }
 }

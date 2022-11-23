@@ -9,12 +9,19 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
+use Gems\Condition\ConditionInterface;
 use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
+use Gems\Exception\Coding;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
 use MUtil\Model;
+use MUtil\Model\ModelAbstract;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -25,14 +32,14 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
+class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['gcon_name' => SORT_ASC],
     ];
@@ -42,17 +49,12 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = ['conditions'];
+    public array $cacheTags = ['conditions'];
 
     /**
-     * @var \Gems\Condition\ConditionInterface
+     * @var ConditionInterface|null
      */
-    protected $condition;
-
-    /**
-     * @var ConditionLoader
-     */
-    public $conditionLoader;
+    protected ?ConditionInterface $condition = null;
 
     /**
      * The parameters used for the delete action.
@@ -64,7 +66,7 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = [
+    protected array $deleteParameters = [
         'conditionId' => '_getIdParam'
     ];
     
@@ -73,26 +75,24 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'ConditionDeleteSnippet';
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    public $event;
+    protected array $deleteSnippets = ['ConditionDeleteSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Condition\\ConditionSearchFormSnippet'];
+    protected array $indexStartSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'Condition\\ConditionSearchFormSnippet'
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'condition' => 'getCondition',
     ];
 
@@ -101,12 +101,23 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
+        'ModelDetailTableSnippet',
         'Tracker\\Rounds\\ConditionRoundsTableSnippet',
         'ConditionAndOrTableSnippet',
     ];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected ConditionLoader $conditionLoader,
+        protected EventDispatcherInterface $event,
+
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -117,9 +128,9 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
         $model = $this->conditionLoader->getConditionModel();
 
@@ -140,10 +151,10 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
     }
 
     /**
-     * @return \Gems\Condition\ConditionInterface
-     * @throws \Gems\Exception\Coding
+     * @return ConditionInterface
+     * @throws Coding
      */
-    public function getCondition()
+    public function getCondition(): ConditionInterface
     {
         $id = $this->request->getAttribute(Model::REQUEST_ID);
 
@@ -157,9 +168,9 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Conditions');
     }
@@ -168,27 +179,17 @@ class ConditionAction extends \Gems\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('condition', 'conditions', $count);
-    }
-    
-    public function createAction()
-    {
-        parent::createAction();
-    }
-    
-    public function editAction()
-    {
-        parent::editAction();
     }
     
     /**
      * Action for showing an item page with title
      */
-    public function showAction()
+    public function showAction(): void
     {
         $model = $this->getModel();
         if ($model->hasMeta('ConditionShowSnippets')) {

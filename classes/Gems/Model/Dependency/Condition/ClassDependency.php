@@ -14,6 +14,7 @@ namespace Gems\Model\Dependency\Condition;
 use Gems\Condition\ConditionLoader;
 use Gems\Condition\ConditionLoadException;
 use MUtil\Model\Dependency\DependencyAbstract;
+use Zalt\Html\Html;
 
 /**
  *
@@ -98,7 +99,7 @@ class ClassDependency extends DependencyAbstract
             try {
                 $condition = $this->conditionLoader->loadConditionForType($context['gcon_type'],$context['gcon_class']);
                 $changes = [
-                        'condition_help' => ['value' => \MUtil\Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
+                        'condition_help' => ['value' => Html::raw('<pre>' . $condition->getHelp() . '</pre>')],
                     ] + $condition->getModelFields($context, $new);
             } catch (ConditionLoadException $cle) {
                 $changes = [

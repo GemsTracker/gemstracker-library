@@ -12,6 +12,8 @@
 namespace Gems\Model\Dependency\Condition;
 
 use Gems\Condition\ConditionLoader;
+use Laminas\Validator\Callback;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -21,7 +23,7 @@ use Gems\Condition\ConditionLoader;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
+class RoundDependency extends DependencyAbstract
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -30,7 +32,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array
      */
-    protected $_defaultEffects = array();
+    protected $_defaultEffects = [];
 
     /**
      * Array of name => name of items dependency depends on.
@@ -40,7 +42,7 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gro_condition', 'gro_id_track', 'gro_id_round');
+    protected $_dependentOn = ['gro_condition', 'gro_id_track', 'gro_id_round'];
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -86,13 +88,13 @@ class RoundDependency extends \MUtil\Model\Dependency\DependencyAbstract
             try {
                 $condition = $this->conditionLoader->loadCondition($context['gro_condition']);
                 $callback  = [$condition, 'isValid'];
-                $validator = new \Zend_Validate_Callback($callback);
+                $validator = new Callback($callback);
                 $validator->setMessage($condition->getNotValidReason($context['gro_condition'], $context), $validator::INVALID_VALUE);                    
 
                 return [                
                     'condition_display' => [
                         'elementClass' => 'Exhibitor',
-                        'value' => $condition->getRoundDisplay($context['gro_id_track'], $context['gro_id_round'])
+                        'value' => $condition->getRoundDisplay((int)$context['gro_id_track'], (int)$context['gro_id_round'])
                     ],
                     'gro_condition' => [
                         'validator' => $validator

@@ -12,10 +12,16 @@
 namespace Gems\Snippets;
 
 use Gems\Condition\ConditionLoader;
+use Gems\MenuNew\RouteHelper;
 use Gems\Model\ConditionModel;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Bridge\BridgeAbstract;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -50,12 +56,7 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
-
-    /**
-     * @var ConditionLoader
-     */
-    protected $conditionLoader;
+    protected $bridgeMode = BridgeAbstract::MODE_ROWS;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -64,19 +65,16 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
      */
     public $menuActionController = 'condition';
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->browse  = true;
-        $this->caption = $this->_('Conditions with this condition');
-        $this->onEmpty = $this->_('No conditions using this condition found');
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        RouteHelper $routeHelper,
+        Translator $translate,
+        protected ConditionLoader $conditionLoader
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
+        $this->caption = $translate->_('Conditions with this condition');
+        $this->onEmpty = $translate->_('No conditions using this condition found');
     }
 
     /**
@@ -97,17 +95,18 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param ModelAbstract $model
+     * @param MetaModelInterface $model
      */
-    protected function processFilterAndSort(ModelAbstract $model)
+    public function getFilter(MetaModelInterface $model): array
     {
+        $filters = parent::getFilter($model);
         $attributes = $this->requestInfo->getRequestMatchedParams();
 
         if (isset($attributes[Model::REQUEST_ID])) {
-            $model->addFilter([sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $attributes[Model::REQUEST_ID]),
-                "gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition'"]);
+            $filters[] = sprintf('gcon_condition_text1 = %1$s OR gcon_condition_text2 = %1$s OR gcon_condition_text3 = %1$s OR gcon_condition_text4 = %1$s', $attributes[Model::REQUEST_ID]);
+            $filters[] = "gcon_class LIKE '%AndCondition' OR gcon_class LIKE '%OrCondition'";
         }
 
-        $this->processSortOnly($model);
+        return $filters;
     }
 }

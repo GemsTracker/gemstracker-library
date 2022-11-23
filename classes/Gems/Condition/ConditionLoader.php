@@ -272,11 +272,10 @@ class ConditionLoader
             }
         }
         if ($comparatorClass !== null) {
-            array_unshift($options, $this->translate);
             /**
              * @var ComparatorInterface
              */
-            return $this->overloader->create($comparatorClass, ...$options);
+            return $this->overloader->create($comparatorClass, $this->translate, $options);
         }
         return null;
     }
