@@ -1,9 +1,11 @@
 <?php
 
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
-class SurveyCodeBookExportAction extends \Gems\Controller\ModelSnippetActionAbstract
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+
+class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
 {
 
     protected $surveyId;
