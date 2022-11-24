@@ -8,7 +8,7 @@ class RouteLinkItem extends MenuItem
 
     public function __construct(
         public readonly string $name,
-        private readonly string $label,
+        public readonly string $label,
     ) {
     }
 

@@ -28,11 +28,10 @@ class NewFieldButtonRow extends CurrentButtonRowSnippet
 
     /**
      * Set the menu items (allows for overruling in subclasses)
-     *
-     * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(array $menuList): array
+    protected function addButtons(): array
     {
+        $menuList = [];
         $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-fields.create');
 
         $matchedParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();

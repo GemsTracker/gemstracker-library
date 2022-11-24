@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Buttons;
 
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Generic\ButtonRowSnippet;
 
 /**
  *
@@ -22,16 +22,38 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 8-mei-2015 13:46:43
  */
-class TrackIndexButtonRow extends CurrentButtonRowSnippet
+class TrackIndexButtonRow extends ButtonRowSnippet
 {
     /**
-     * Set the menu items (allows for overruling in subclasses)
+     * Add the children of the current menu item
      *
-     * @param \Gems\Menu\MenuList $menuList
+     * @var boolean
      */
-    protected function addButtons(array $menuList): array
+    protected bool $addCurrentChildren = true;
+
+    /**
+     * Add the parent of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentParent = false;
+
+    /**
+     * Add the siblings of the current menu item
+     *
+     * @var boolean
+     */
+    protected bool $addCurrentSiblings = false;
+    
+    /**
+     * Set the menu items (allows for overruling in subclasses)
+     */
+    protected function addButtons(): array
     {
-        $menuList->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addCurrentChildren();
+        $this->extraRoutesLabelled = [
+            'respondent.show' => $this->_('Show respondent'),
+        ];
+
+        return parent::addButtons();
     }
 }

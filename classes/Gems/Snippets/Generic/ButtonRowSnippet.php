@@ -12,8 +12,10 @@
 namespace Gems\Snippets\Generic;
 
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
-use MUtil\Request\RequestInfo;
+use Gems\MenuNew\MenuSnippetHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Displays the parent menu item (if existing) plus any current
@@ -25,7 +27,7 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.7.2
  */
-class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
+class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      * Add the children of the current menu item
@@ -49,39 +51,63 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
     protected bool $addCurrentSiblings = false;
 
     /**
-     * @var RequestInfo
+     * @var array An array of routes
      */
-    protected $requestInfo;
+    protected array $extraRoutes = [];
 
     /**
-     * @var RouteHelper
+     * @var array An array of route => label
      */
-    protected $routeHelper;
+    protected array $extraRoutesLabelled = [];
+    
+    /**
+     * @var string|null 
+     */
+    protected ?string $parentLabel = null;  
+
+    public function __construct(
+        SnippetOptions              $snippetOptions,
+        protected RequestInfo       $requestInfo,
+        TranslatorInterface         $translate,
+        protected MenuSnippetHelper $menuHelper)
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+    }
 
     /**
      * @param array $menuList
      * @return array
      */
-    protected function addButtons(array $menuList): array
+    protected function addButtons() : array
     {
-        $currentRoute = $this->requestInfo->getCurrentRouteResult();
-        $currentRouteName = $currentRoute->getMatchedRouteName();
-        $currentRouteParams = $currentRoute->getMatchedParams();
+        $menuList = [];
         if ($this->addCurrentParent) {
-            $parent = $this->routeHelper->getRouteParent($currentRouteName);
-            $params = $this->routeHelper->getRouteParamsFromKnownParams($parent, $currentRouteParams);
-            $menuList[] = [
-                'label' => $this->_('Cancel'),
-                'url' => $this->routeHelper->getRouteUrl($parent['name'], $params),
+            // $menuList += $this->menuHelper->getCurrentParentUrls();
+            $menuList['parent'] = 
+                [
+                'label' => $this->getParentLabel(),
+                'url'   => $this->menuHelper->getCurrentParentUrl(),
             ];
         }
         if ($this->addCurrentSiblings) {
-            // $menuList->addCurrentSiblings($this->anyParameterSiblings);
+            $menuList += $this->menuHelper->getCurrentSiblingUrls();
         }
         if ($this->addCurrentChildren) {
-            // $menuList->addCurrentChildren();
+            $menuList += $this->menuHelper->getCurrentChildUrls();
         }
-        // \MUtil\EchoOut\EchoOut::track($this->addCurrentParent, $this->addCurrentSiblings, $this->addCurrentChildren, count($menuList));
+        if ($this->extraRoutes) {
+            $menuList += $this->menuHelper->getRouteUrls($this->extraRoutes, $this->requestInfo->getParams());
+        }
+        if ($this->extraRoutesLabelled) {
+            $params =$this->requestInfo->getParams();
+            foreach ($this->extraRoutesLabelled as $route => $label) {
+                $url = $this->menuHelper->getRouteUrl($route, $params);
+                if ($url) {
+                    $menuList[$route] = ['label' => $label, 'url' => $url];
+                }
+            }
+        }
+        // file_put_contents('data/logs/echo.txt', get_class($this) . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($menuList, true) . "\n", FILE_APPEND);
         return $menuList;
     }
 
@@ -89,24 +115,26 @@ class ButtonRowSnippet extends \MUtil\Snippets\SnippetAbstract
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $menuList = [];
-
-        $menuList = $this->addButtons($menuList);
+        $menuList = $this->addButtons();
 
         if (count($menuList)) {
-            $container = \MUtil\Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+            $container = Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true));
             foreach($menuList as $buttonInfo) {
-                $container->append(\Gems\Html::actionLink($buttonInfo['url'], $buttonInfo['label']));
+                if (isset($buttonInfo['url'], $buttonInfo['label'])) {
+                    $container->append(Html::actionLink($buttonInfo['url'], $buttonInfo['label']));
+                }
             }
 
             return $container;
         }
         return null;
+    }
+    
+    public function getParentLabel(): string
+    {
+        return $this->parentLabel ?: $this->_('Cancel');
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Gems\Actions;
 
+use Gems\Html;
 use Gems\Util\Translated;
 
 /**
@@ -90,7 +91,7 @@ class ReceptionAction extends \Gems\Controller\ModelSnippetActionAbstract
         if ($detailed) {
             $model->set('desc1', 'elementClass', 'Html',
                     'label', ' ',
-                    'value', \MUtil\Html::create('h4', $this->_('Can be assigned to'))
+                    'value', Html::create('h4', $this->_('Can be assigned to'))
                     );
         }
         $model->set('grc_for_respondents',   'label', $this->_('Respondents'),
@@ -107,7 +108,7 @@ class ReceptionAction extends \Gems\Controller\ModelSnippetActionAbstract
         if ($detailed) {
             $model->set('desc2', 'elementClass', 'Html',
                     'label', ' ',
-                     'value', \MUtil\Html::create('h4', $this->_('Additional actions'))
+                     'value', Html::create('h4', $this->_('Additional actions'))
                     );
         }
         $model->set('grc_redo_survey',       'label', $this->_('Redo survey'),

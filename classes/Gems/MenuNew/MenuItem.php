@@ -13,17 +13,22 @@ abstract class MenuItem extends MenuNode
 
     abstract protected function hasPermission(): bool;
 
-    protected function getMenu(): Menu
-    {
-        return $this->menu;
-    }
-
     protected function attachParent(MenuNode $parent): void
     {
         $this->parent = $parent;
         $this->menu = $parent->getMenu();
     }
 
+    protected function getMenu(): Menu
+    {
+        return $this->menu;
+    }
+
+    public function getParent(): ?MenuNode
+    {
+        return $this->parent;
+    }
+    
     public function isActive(): bool
     {
         return $this->active;
