@@ -229,7 +229,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array String or array of snippets name
      */
     protected array $indexStopSnippets = [
-        CurrentSiblingsButtonRowSnippet::class,
+        CurrentButtonRowSnippet::class,
         ];
 
     /**

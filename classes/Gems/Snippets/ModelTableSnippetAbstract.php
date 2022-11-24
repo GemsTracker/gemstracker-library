@@ -12,8 +12,7 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
-use Gems\MenuNew\RouteNotFoundException;
+use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Marker;
@@ -97,7 +96,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
     public function __construct(SnippetOptions $snippetOptions,
                                 protected RequestInfo $requestInfo,
-                                protected RouteHelper $routeHelper,
+                                protected MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate)
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
@@ -115,20 +114,20 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $model = $dataModel->getMetaModel();
+        $metaModel = $dataModel->getMetaModel();
+        $keys      = $metaModel->getKeys();
         
-        if ($model->has('row_class')) {
+        if ($metaModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowUrls($bridge);
-            foreach ($showMenuItems as $keyOrLabel => $lateUrl) {
-                $showLabel = $keyOrLabel;
-                if (is_int($showLabel)) {
-                    $showLabel = $this->_('Show');
+            $showMenuItems = $this->menuHelper->getLateRelatedUrls($this->menuShowRoutes, $keys);
+            foreach ($showMenuItems as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
                 }
-                $bridge->addItemLink(Html::actionLink([$lateUrl], $showLabel));
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
 
@@ -138,14 +137,12 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         parent::addBrowseTableColumns($bridge, $dataModel);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditUrls($bridge);
-
-            foreach ($editMenuItems as $keyOrLabel => $lateUrl) {
-                $editLabel = $keyOrLabel;
-                if (is_int($editLabel)) {
-                    $editLabel = $this->_('Edit');
+            $editMenuItems = $this->menuHelper->getLateRelatedUrls($this->menuEditRoutes, $keys);
+            foreach ($editMenuItems as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Edit');
                 }
-                $bridge->addItemLink(Html::actionLink([$lateUrl], $editLabel));
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
     }

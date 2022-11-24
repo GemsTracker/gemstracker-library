@@ -4,7 +4,7 @@ namespace Gems\Route;
 
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
-use Zalt\SnippetsLoader\SnippetMiddleware;
+use Gems\SnippetsLoader\SnippetMiddleware;
 
 trait ModelSnippetActionRouteHelpers
 {

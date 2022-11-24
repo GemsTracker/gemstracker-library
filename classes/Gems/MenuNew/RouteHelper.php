@@ -50,6 +50,8 @@ class RouteHelper
         return $links;
     }
 
+    
+    
     public function getLateRouteUrl(string $name, array $paramLateMappings = []): ?LateCall
     {
         $route = $this->getRoute($name);
@@ -72,6 +74,30 @@ class RouteHelper
         // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
 
         return Late::method($this->urlHelper, 'generate', $name, Late::getRa($routeParams));
+    }
+
+    /**
+     * @param string $current  The route to compare to
+     * @param string $relative Routes related to current, e.g. a different action in the same route.
+     * @return string|null
+     */
+    public function getRelatedRoute(string $current, string $relative): ?string
+    {
+        if (isset($this->routes[$relative])) {
+            return $relative;
+        }
+        if (str_contains($relative, '.')) {
+            $cParts = explode('.', $current);
+            $rParts = explode('.', $relative);
+
+            $output = implode('.', array_splice($cParts, 0, -count($rParts), $rParts));
+        } else {
+            $output = substr($current, 0, strrpos($current, '.') + 1) . $relative;
+        }
+        if (isset($this->routes[$output])) {
+            return $output;
+        }
+        return null;
     }
 
     public function getRoute(string $name): ?array
@@ -133,6 +159,18 @@ class RouteHelper
         return $route === null ? null : $this->urlHelper->generate($name, $routeParams);
     }
 
+    public function getRouteUrlOnMatch(string $name, array $routeParams = []): ?string
+    {
+        $route = $this->getRoute($name);
+
+        if (null !== $route) {
+            if (! isset($route['params']) || $this->hasMatchingParameters($route['params'], array_keys($routeParams))) {
+                return $this->urlHelper->generate($name, $routeParams);
+            }
+        }
+        return null;
+    }
+
     public function hasAccessToRoute(string $name): bool
     {
         if (!isset($this->routes[$name])) {
@@ -144,6 +182,11 @@ class RouteHelper
         return empty($route['options']['permission']) || $this->hasPermission($route['options']['permission']);
     }
 
+    protected function hasMatchingParameters($requiredParams, $availableParamKeys): bool
+    {
+        return ! array_diff($requiredParams, $availableParamKeys);
+    }    
+    
     public function hasPermission(string $resource): bool
     {
         return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource);

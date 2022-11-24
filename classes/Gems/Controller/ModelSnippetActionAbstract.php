@@ -12,10 +12,13 @@
 namespace Gems\Controller;
 
 use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Snippets\ModelFormSnippet;
+use Gems\Snippets\ModelTableSnippet;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
-use Mezzio\Helper\UrlHelper;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class contains \Gems specific adaptations to parent class.
@@ -144,7 +147,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'ModelTableSnippet';
+    protected $autofilterSnippets = [ModelTableSnippet::class];
 
     /**
      * The parameters used for the create and edit actions.
@@ -163,7 +166,10 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippet';
+    protected $createEditSnippets = [
+        ModelFormSnippet::class,
+        CurrentButtonRowSnippet::class,
+        ];
 
     /**
      * The parameters used for the delete action.
@@ -230,7 +236,9 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = 'Generic\\CurrentSiblingsButtonRowSnippet';
+    protected $indexStopSnippets = [
+        CurrentButtonRowSnippet::class,
+    ];
 
     /**
      *
@@ -248,7 +256,12 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic\\ContentTitleSnippet', 'ModelDetailTableSnippet');
+    protected $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
+        ];
+    
 
     /**
      * Array of the actions that use a summarized version of the model.

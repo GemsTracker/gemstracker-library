@@ -107,7 +107,7 @@ class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
                 }
             }
         }
-        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($menuList, true) . "\n", FILE_APPEND);
+        // file_put_contents('data/logs/echo.txt', get_class($this) . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($menuList, true) . "\n", FILE_APPEND);
         return $menuList;
     }
 

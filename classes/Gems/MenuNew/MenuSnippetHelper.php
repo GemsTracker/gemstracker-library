@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Gems\MenuNew;
 
 use Zalt\Base\RequestInfo;
+use Zalt\Late\Late;
+use Zalt\Late\LateCall;
 
 /**
  *
@@ -112,6 +114,63 @@ class MenuSnippetHelper
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
 
+    /**
+     * @param array $names Related names
+     * @param array $paramLateMappings
+     * @return array[] routename => [label, Late::url]
+     */
+    public function getLateRelatedUrls(array $names, array $paramLateMappings = []): array
+    {
+        $output = [];
+        foreach ($this->getRelatedRoutes($names) as $name) {
+            $url = $this->getLateRouteUrl($name, $paramLateMappings);
+            if ($url) {
+                $output[$name] = $url;
+            }
+        }
+        return $output;
+    }
+
+    /**
+     * @param string $route
+     * @param array  $paramLateMappings
+     * @return array[] [label, Late::url]
+     */
+    public function getLateRouteUrl(string $route, array $paramLateMappings = []): ?array
+    {
+        try {
+            $menuItem = $this->menu->find($route);
+        } catch (MenuItemNotFoundException $minfe) {
+            return null;
+        }
+
+        if ($this->routeHelper->hasAccessToRoute($route)) {
+            $url = $this->routeHelper->getLateRouteUrl($route, $paramLateMappings);
+            return [
+                'label' => $menuItem->label,
+                'url'   => $url,
+            ];
+        }
+        return null;
+    }
+
+    /**
+     * @param array $names
+     * @param array $paramLateMappings
+     * @return array[] routename => [label, Late::url]
+     */
+    public function getLateRouteUrls(array $names, array $paramLateMappings = []): array
+    {
+        $output = [];
+        foreach ($names as $name) {
+            $url = $this->getLateRouteUrl($name, $paramLateMappings);
+            if ($url) {
+                $output[$name] = $url;
+            }
+        }
+        return $output;
+    }
+    
     public function getParentRoute(string $route): ?string
     {
         try {
@@ -151,11 +210,28 @@ class MenuSnippetHelper
         return $output;
     }
 
+    /**
+     * @param array $routes Routes related to current, e.g. a different action in the same route.
+     * @return array route => route
+     */
+    public function getRelatedRoutes(array $routes): array
+    {
+        $current = $this->requestInfo->getRouteName();
+        $output  = [];
+        foreach ($routes as $routePart) {
+            $route = $this->routeHelper->getRelatedRoute($current, $routePart);
+            if ($route) {
+                $output[$route] = $route;
+            }
+        }
+        return $output;
+    }
+
     public function getRouteUrl(?string $route, array $params): ?string
     {
         if ($route) {
             try {
-                return $this->routeHelper->getRouteUrl($route, $params);
+                return $this->routeHelper->getRouteUrlOnMatch($route, $params);
             } catch (MenuItemNotFoundException $minfe) { }
         }            
         return null;
@@ -178,7 +254,7 @@ class MenuSnippetHelper
             }
 
             if ($this->routeHelper->hasAccessToRoute($route)) {
-                $url = $this->routeHelper->getRouteUrl($menuItem->name, $params);
+                $url = $this->routeHelper->getRouteUrlOnMatch($menuItem->name, $params);
                 $output[$route] = [
                     'label' => $menuItem->label,
                     'url'   => $url, 
