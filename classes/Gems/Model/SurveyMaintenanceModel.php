@@ -11,8 +11,22 @@
 
 namespace Gems\Model;
 
+use Gems\Db\ResultFetcher;
+use Gems\Model;
+use Gems\Pdf;
+use Gems\Repository\AccessRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\SurveyRepository;
+use Gems\Tracker;
 use Gems\Tracker\TrackEvents;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
+use MUtil\Model\Type\ConcatenatedRow;
 use MUtil\Validate\RequireOtherField;
+use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
+use Zalt\Html\Raw;
+use Zalt\Html\Sequence;
 
 /**
  *
@@ -22,8 +36,13 @@ use MUtil\Validate\RequireOtherField;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class SurveyMaintenanceModel extends \Gems\Model\JoinModel
+class SurveyMaintenanceModel extends JoinModel
 {
+
+    /**
+     * @var AccessRepository
+     */
+    protected $accessRepository;
 
     /**
      * @var array
@@ -42,16 +61,34 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
     public $db;
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var Model
      */
-    public $loader;
+    protected $modelLoader;
 
     /**
-     *
-     * @var \Gems\Project\ProjectSettings
+     * @var OrganizationRepository
      */
-    public $project;
+    protected $organizationRepository;
+
+    /**
+     * @var Pdf
+     */
+    protected $pdf;
+
+    /**
+     * @var ResultFetcher
+     */
+    protected $resultFetcher;
+
+    /**
+     * @var SurveyRepository
+     */
+    protected $surveyRepository;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
 
     /**
      * @var \Gems\Util\Translated
@@ -62,12 +99,6 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * @var TrackEvents
      */
     protected $trackEvents;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    public $util;
 
     /**
      *
@@ -89,7 +120,6 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      */
     public function applyBrowseSettings($addCount = true, $editing = false)
     {
-        $dbLookup   = $this->util->getDbLookup();
         $survey     = null;
         $yesNo      = $this->translatedUtil->getYesNo();
 
@@ -156,7 +186,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                 );
         $this->set('gsu_id_primary_group', 'label', $this->_('Group'),
                 'description', $this->_('If empty, survey will never show up!'),
-                'multiOptions', $dbLookup->getGroups()
+                'multiOptions', $this->accessRepository->getGroups()
                 );
         $this->set('gsu_answers_by_group', 'label', $this->_('Show answers by groups'),
                    'description', $this->_('Answers can be seen only by groups selected.'),
@@ -169,7 +199,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                    'multiOptions', $yesNo
         );
 
-        $mailCodes = $dbLookup->getSurveyMailCodes();
+        $mailCodes = $this->surveyRepository->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
             $this->set('gsu_mail_code', 'label', $this->_('Mail code'),
                        'description', $this->_('When mails are sent for this survey'),
@@ -203,8 +233,8 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                 'description', $this->_('A unique code indentifying this survey during track import'),
                 'size', 20);
 
-        if ($this->project->translateDatabaseFields() && ! $editing) {
-            $this->loader->getModels()->addDatabaseTranslations($this);
+        if (!$editing) {
+            $this->modelLoader->addDatabaseTranslations($this);
         }
 
         return $this;
@@ -220,7 +250,6 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
     public function applyDetailSettings($surveyId = null, $editing = false)
     {
         $this->applyBrowseSettings(false, $editing);
-        $dbLookup   = $this->util->getDbLookup();
 
         $this->resetOrder();
 
@@ -245,12 +274,12 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
 
         $this->set('gsu_survey_languages', 'itemDisplay', [$this, 'formatLanguages']);
 
-        $ct = new \MUtil\Model\Type\ConcatenatedRow('|', $this->_(', '));
+        $ct = new ConcatenatedRow('|', $this->_(', '));
 
         $this->set('gsu_answer_groups', 'label', $this->_('Answer groups'),
                    'description', $this->_('The groups that may see the answers or none.'),
                    'elementClass', 'MultiCheckbox',
-                   'multiOptions', $dbLookup->getActiveStaffGroups(),
+                   'multiOptions', $this->accessRepository->getActiveStaffGroups(),
                    'required', false
         );
         $ct->apply($this, 'gsu_answer_groups');
@@ -273,7 +302,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         $this->set('gsu_insert_organizations', 'label', $this->_('Insert organizations'),
                 'description', $this->_('The organizations where the survey may be inserted.'),
                 'elementClass', 'MultiCheckbox',
-                'multiOptions', $dbLookup->getOrganizationsWithRespondents(),
+                'multiOptions', $this->organizationRepository->getOrganizationsWithRespondents(),
                 'required', true
                 );
         $ct->apply($this, 'gsu_insert_organizations');
@@ -309,7 +338,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
 
         $survey = null;
         if ($surveyId) {
-            $survey = $this->loader->getTracker()->getSurvey($surveyId);
+            $survey = $this->tracker->getSurvey($surveyId);
         }
 
         if ($survey instanceof \Gems\Tracker\Survey) {
@@ -377,7 +406,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
 
         $this->set('gsu_survey_pdf', 'label', 'Pdf',
                         'accept', 'application/pdf',
-                        'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),
+                        'destination', $this->pdf->getUploadDir('survey_pdfs'),
                         'elementClass', 'File',
                         'extension', 'pdf',
                         'filename', $surveyId,
@@ -385,9 +414,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                         'validators[pdf]', new \MUtil\Validate\Pdf()
                         );
 
-        if ($this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
-        }
+        $this->modelLoader->addDatabaseTranslationEditFields($this);
 
         return $this;
     }
@@ -420,14 +447,14 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
         $fields['min'] = 'MIN(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
         $fields['max'] = 'MAX(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
 
-        $select = $this->loader->getTracker()->getTokenSelect($fields);
+        $select = $this->tracker->getTokenSelect($fields);
         $select->forSurveyId($surveyId)
                 ->onlyCompleted();
 
         $row = $select->fetchRow();
         if ($row) {
-            $seq = new \MUtil\Html\Sequence();
-            $seq->setGlue(\MUtil\Html::create('br'));
+            $seq = new Sequence();
+            $seq->setGlue(Html::create('br'));
 
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
@@ -460,7 +487,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
                                     WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
                                 ) as t2
                             WHERE t1.row_number = floor(total_rows / 2) + 1";
-                $med = $this->db->fetchOne($sql, [$surveyId, $surveyId]);
+                $med = $this->resultFetcher->fetchOne($sql, [$surveyId, $surveyId]);
                 if ($med) {
                     $seq->sprintf($this->_('Median value: %s.'), $this->translatedUtil->formatTimeUnknown($med));
                 }
@@ -530,16 +557,16 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
             return 0;
         }
 
-        $select = new \Zend_Db_Select($this->db);
-        $select->from('gems__tracks', ['gtr_track_name']);
-        $select->joinLeft('gems__rounds', 'gro_id_track = gtr_id_track', ['useCnt' => 'COUNT(*)'])
-                ->where('gro_id_survey = ?', $surveyId)
-                ->group('gtr_track_name');
-        $usage = $this->db->fetchPairs($select);
+        $select = $this->resultFetcher->getSelect('gems__tracks');
+        $select->columns(['gtr_track_name'])
+            ->join('gems__rounds', 'gro_id_track = gtr_id_track', ['useCnt' => new Expression('COUNT(*)')], Select::JOIN_LEFT)
+            ->where(['gro_id_survey' => $surveyId])
+            ->group('gtr_track_name');
+        $usage = $this->resultFetcher->fetchPairs($select);
 
         if ($usage) {
-            $seq = new \MUtil\Html\Sequence();
-            $seq->setGlue(\MUtil\Html::create('br'));
+            $seq = new Sequence();
+            $seq->setGlue(Html::create('br'));
             foreach ($usage as $track => $count) {
                 $seq[] = sprintf($this->plural(
                         '%d time in %s track.',
@@ -558,11 +585,11 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
      * Strip all the tags, but keep the escaped characters
      *
      * @param string $value
-     * @return \MUtil\Html\Raw
+     * @return Raw
      */
     public static function formatDescription($value)
     {
-        return \MUtil\Html::raw(strip_tags((string)$value));
+        return Html::raw(strip_tags((string)$value));
     }
 
     /**
@@ -588,8 +615,8 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
             $split[$key] = $localized ? $localized : $locale;
         }
 
-        $seq = new \MUtil\Html\Sequence();
-        $seq->setGlue(\MUtil\Html::create('br'));
+        $seq = new Sequence();
+        $seq->setGlue(Html::create('br'));
 
         $seq->append(sprintf($this->_('Base: %s'), $split[0]));
         if (isset($split[1])) {
@@ -608,7 +635,7 @@ class SurveyMaintenanceModel extends \Gems\Model\JoinModel
     public static function formatWarnings($value)
     {
         if (is_null($value)) {
-            $value = new \MUtil\Html\HtmlElement('em', '(none)');
+            $value = new HtmlElement('em', '(none)');
         }
 
         return $value;

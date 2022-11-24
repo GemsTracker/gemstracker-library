@@ -5,6 +5,7 @@ namespace Gems\Site;
 use Gems\Cache\HelperAdapter;
 use Gems\Model\SiteModel;
 use Gems\Model\Transform\TranslateDatabaseFields;
+use Gems\Repository\OrganizationRepository;
 use Gems\Util\OrganizationUtil;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
@@ -39,9 +40,9 @@ class SiteUtil
 
     protected array $sites;
 
-    protected OrganizationUtil $organizatonUtil;
+    protected OrganizationRepository $organizatonRepository;
 
-    public function __construct(Adapter $db, HelperAdapter $cache, OrganizationUtil $organizatonUtil, array $config)
+    public function __construct(Adapter $db, HelperAdapter $cache, OrganizationRepository $organizationRepository, array $config)
     {
         $this->db = $db;
         $this->cache = $cache;
@@ -49,7 +50,7 @@ class SiteUtil
             $this->config = $config['sites'];
         }
         $this->sites = $this->getSites();
-        $this->organizatonUtil = $organizatonUtil;
+        $this->organizatonRepository = $organizationRepository;
     }
 
     public function getCurrentSite(ServerRequestInterface $request): ?SiteUrl
@@ -106,7 +107,7 @@ class SiteUtil
     public function getNamedOrganizationsFromSiteUrl(SiteUrl $siteUrl): array
     {
         $siteOrganizations = $siteUrl->getOrganizations();
-        $namedSites = $this->organizatonUtil->getOrganizationsForLogin();
+        $namedSites = $this->organizatonRepository->getOrganizationsForLogin();
         if (count($siteOrganizations) === 0) {
             return $namedSites;
         }

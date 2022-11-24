@@ -11,6 +11,13 @@
 
 namespace Gems;
 
+use Gems\Db\ResultFetcher;
+use Gems\Exception\Coding;
+use Gems\Project\ProjectSettings;
+use MUtil\Error;
+use MUtil\Translate\Translator;
+use Zend_Pdf;
+
 /**
  * \Gems standaard Pdf utility functions
  *
@@ -20,90 +27,62 @@ namespace Gems;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Pdf extends \Gems\Registry\TargetAbstract
+class Pdf
 {
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
     /**
      *
      * @var string
      */
-    protected $_pdfExportCommand = "";
+    protected string $_pdfExportCommand = '';
 
     /**
      * Pdf font for token
      *
      * @var string
      */
-    protected $pageFont = \Zend_Pdf_Font::FONT_COURIER;
+    protected string $pageFont = \Zend_Pdf_Font::FONT_COURIER;
 
     /**
      * Font size for token
      *
      * @var int
      */
-    protected $pageFontSize  = 12;
+    protected int $pageFontSize  = 12;
 
     /**
      * Horizontal position of token
      *
      * @var int
      */
-    protected $pageX         = 10;
+    protected int $pageX = 10;
 
     /**
      * Is the horizontal position in pixel from left or right of page
      *
      * @var boolean
      */
-    protected $pageXfromLeft = true;
+    protected bool $pageXfromLeft = true;
 
     /**
      * Vertical position of token
      *
      * @var int
      */
-    protected $pageY         = 20;
+    protected int $pageY = 20;
 
     /**
      * Is the vertical position in pixel from top or bottom of page
      *
      * @var boolean
      */
-    protected $pageYfromTop  = true;
+    protected bool $pageYfromTop  = true;
 
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        protected ProjectSettings $project,
+        protected ResultFetcher $resultFetcher,
+        protected Translator $translate
+    )
     {
-        parent::afterRegistry();
-
-        // Load the pdf class from the project settings if available
         if (isset($this->project->export) && isset($this->project->export['pdfExportCommand'])) {
             $this->_pdfExportCommand = $this->project->export['pdfExportCommand'];
         }
@@ -116,7 +95,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param string $tokenId
      * @param int $surveyId
      */
-    protected function addTokenToDocument(\Zend_Pdf $pdf, $tokenId, $surveyId)
+    protected function addTokenToDocument(\Zend_Pdf $pdf, string $tokenId): void
     {
         $token = strtoupper($tokenId);
 
@@ -127,7 +106,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
                     // Assume UTF-16
                     mb_convert_encoding($orgValue, mb_internal_encoding(), 'UTF-16');
                 }
-                $value = rtrim($orgValue) . ' ' . $token;
+                $value = rtrim($orgValue) . ' Pdf.php' . $token;
             } else {
                 $value = $token;
             }
@@ -153,7 +132,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param \Zend_Pdf_Page $page
      * @param string $tokenId
      */
-    protected function addTokenToPage(\Zend_Pdf_Page $page, $tokenId)
+    protected function addTokenToPage(\Zend_Pdf_Page $page, string $tokenId): void
     {
         // Set $this->pageFont to false to prevent drawing of tokens on page.
         if ($this->pageFont) {
@@ -186,7 +165,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param boolean $download
      * @param boolean $exit Should the application stop running after output
      */
-    protected function echoPdf(\Zend_Pdf $pdf, $filename, $download = false, $exit = true)
+    protected function echoPdf(\Zend_Pdf $pdf, string $filename, bool $download = false, bool $exit = true): void
     {
         $content = $pdf->render();
 
@@ -205,7 +184,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param string $filename The filename as reported to the downloader
      * @param boolean $download Download to file or when false: show in browser
      */
-    public function echoPdfContent($content, $filename, $download = false)
+    public function echoPdfContent(string $content, string $filename, bool $download = false): void
     {
         // \MUtil\EchoOut\EchoOut::track($filename);
         if ($download) {
@@ -227,9 +206,9 @@ class Pdf extends \Gems\Registry\TargetAbstract
     /**
      * Reads the survey pdf and outputs the result (without token id's etc..
      *
-     * @param string $tokenId
+     * @param int $surveyId
      */
-    public function echoPdfBySurveyId($surveyId)
+    public function echoPdfBySurveyId(int $surveyId): void
     {
         $pdf = $this->getSurveyPdf($surveyId);
 
@@ -242,9 +221,9 @@ class Pdf extends \Gems\Registry\TargetAbstract
      *
      * @param string $tokenId
      */
-    public function echoPdfByTokenId($tokenId)
+    public function echoPdfByTokenId(string $tokenId): void
     {
-        $surveyId = $this->db->fetchOne('SELECT gto_id_survey FROM gems__tokens WHERE gto_id_token = ?', $tokenId);
+        $surveyId = $this->resultFetcher->fetchOne('SELECT gto_id_survey FROM gems__tokens WHERE gto_id_token = ?', [$tokenId]);
 
         $pdf  = $this->getSurveyPdf($surveyId);
 
@@ -262,9 +241,9 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param integer $surveyId
      * @return \Zend_Pdf
      */
-    protected function getSurveyPdf($surveyId)
+    protected function getSurveyPdf(int $surveyId): Zend_Pdf
     {
-        $row = $this->db->fetchRow('SELECT gsu_survey_pdf, gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?', $surveyId);
+        $row = $this->resultFetcher->fetchRow('SELECT gsu_survey_pdf, gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?', [$surveyId]);
 
         $filename   = $row['gsu_survey_pdf'];
         $surveyname = $row['gsu_survey_name'];
@@ -273,7 +252,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
             $filename = $surveyId . '.pdf';
         }
 
-        $filepath = $this->getSurveysDir() . '/' . $filename;
+        $filepath = $this->getSurveysDir() . 'Pdf.php/' . $filename;
 
         if (! file_exists($filepath)) {
             // \MUtil\EchoOut\EchoOut::r($filepath);
@@ -294,7 +273,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      *
      * @return string
      */
-    public function getSurveysDir()
+    public function getSurveysDir(): string
     {
         return $this->getUploadDir('survey_pdfs');
     }
@@ -307,7 +286,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @param string $subdir Optional sub-directory, when starting with / or x:\ only $subdir is used. Function creates subdirectory if it does not exist.
      * @return string
      */
-    public function getUploadDir($subdir = null)
+    public function getUploadDir(string $subdir = null): string
     {
         $dir = GEMS_ROOT_DIR . '/var/uploads';
 
@@ -330,14 +309,14 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * Helper function for error handling
      *
      * @param string $msg
-     * @throws \Gems\Exception\Coding
+     * @throws Coding
      */
-    protected function throwLastError($msg)
+    protected function throwLastError(string $msg): void
     {
-        if ($last = \MUtil\Error::getLastPhpErrorMessage()) {
+        if ($last = Error::getLastPhpErrorMessage()) {
             $msg .= sprintf($this->translate->_(' The error message is: %s'), $last);
         }
-        throw new \Gems\Exception\Coding($msg);
+        throw new Coding($msg);
     }
 
     /**
@@ -347,12 +326,12 @@ class Pdf extends \Gems\Registry\TargetAbstract
      * @return string The converted PDF file
      * @throws \Exception
      */
-    public function convertFromHtml($content)
+    public function convertFromHtml(string $content): string
     {
         \MUtil\File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
 
-        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
-        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(Pdf . phptime()) . '.html';
+        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(Pdf . phptime()) . '.pdf';
 
         if (\MUtil\File::isOnWindows()) {
             // Running on Windows, remove drive letter as that will not work with some
@@ -396,7 +375,7 @@ class Pdf extends \Gems\Registry\TargetAbstract
      *
      * @return boolean
      */
-    public function hasPdfExport()
+    public function hasPdfExport(): bool
     {
         return !empty($this->_pdfExportCommand);
     }

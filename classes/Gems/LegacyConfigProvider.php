@@ -8,13 +8,19 @@ use Gems\AccessLog\AccesslogRepository;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
 use Gems\Condition\ConditionLoader;
+use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Layout\LayoutRenderer;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
+use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\SourceRepository;
+use Gems\Repository\SurveyRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Tracker\TrackEvents;
 use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
@@ -62,6 +68,7 @@ class LegacyConfigProvider
             ],
             'aliases' => [
                 'LegacyAccesslog' => AccesslogRepository::class,
+                'LegacyAccessRepository' => AccessRepository::class,
                 'LegacyAcl' => Acl::class,
                 'LegacyAgenda' => Agenda::class,
                 'LegacyBasepath' => \Gems\Util\BasePath::class,
@@ -72,18 +79,25 @@ class LegacyConfigProvider
                 'LegacyConfig' => 'config',
                 'LegacyConsentUtil' => ConsentUtil::class,
                 'LegacyEvent' => EventDispatcher::class,
-                'LegacyTrackEvents' => TrackEvents::class,
                 'LegacyLoader' => \Gems\Loader::class,
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
+                'LegacyModelLoader' => Model::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyOrganizationRepository' => OrganizationRepository::class,
                 'LegacyRouteHelper' => RouteHelper::class,
+                'LegacyResultFetcher' => ResultFetcher::class,
+                'LegacyPdf' => Pdf::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
-                'LegacyUtil' => \Gems\Util::class,
+                'LegacySourceRepository' => SourceRepository::class,
+                'LegacySurveyRepository' => SurveyRepository::class,
+                'LegacyTokenRepository' => TokenRepository::class,
+                'LegacyTrackDataRepository' => TrackDataRepository::class,
+                'LegacyTrackEvents' => TrackEvents::class,
                 'LegacyTracker' => \Gems\Tracker::class,
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyTranslatedUtil' => \Gems\Util\Translated::class,
+                'LegacyUtil' => \Gems\Util::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,
                 'LegacyDb' => \Zend_Db_Adapter_Abstract::class,

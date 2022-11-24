@@ -9,7 +9,23 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
+
+use Gems\Batch\BatchRunnerLoader;
+use Gems\Db\ResultFetcher;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Locale\Locale;
+use Gems\MenuNew\RouteHelper;
+use Gems\Pdf;
+use Gems\Repository\SurveyRepository;
+use Gems\Tracker;
+use Mezzio\Session\SessionInterface;
+use MUtil\Model\ModelAbstract;
+use MUtil\Translate\Translator;
+use Psr\Http\Message\ResponseInterface;
+use Zalt\Html\Html;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Generic controller class for showing and editing respondents
@@ -20,14 +36,8 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
+class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\AccessLog
-     */
-    public $accesslog;
-
     /**
      * The parameters used for the autofilter action.
      *
@@ -38,7 +48,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'   => 'getBrowseColumns',
         'extraSort' => [
             'gsu_survey_name' => SORT_ASC,
@@ -51,7 +61,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array
      */
-    public $cacheTags = ['surveys', 'tracks'];
+    public array $cacheTags = ['surveys', 'tracks'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -63,7 +73,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'surveyId'        => 'getSurveyId',
     ];
 
@@ -72,38 +82,20 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = ['ModelFormSnippet', 'Survey\\SurveyQuestionsSnippet'];
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected array $createEditSnippets = [
+        'ModelFormSnippet',
+        'Survey\\SurveyQuestionsSnippet'
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet'];
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    public $project;
+    protected array $indexStartSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'Survey\\SurveyMaintenanceSearchSnippet'
+    ];
 
     /**
      * The parameters used for the show action
@@ -115,25 +107,42 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = ['surveyId' => 'getSurveyId'];
+    protected array $showParameters = [
+        'surveyId' => 'getSurveyId'
+    ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
+        'ModelDetailTableSnippet',
         'Survey\\SurveyQuestionsSnippet'
     ];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        Translator $translate,
+        protected Tracker $tracker,
+        protected BatchRunnerLoader $batchRunnerLoader,
+        protected ResultFetcher $resultFetcher,
+        protected ProjectOverloader $overLoader,
+        protected Pdf $pdfEditor,
+        protected SurveyRepository $surveyRepository,
+        protected Locale $locale,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      * Import answers to a survey
      */
     public function answerImportAction()
     {
-        $controller   = 'answers';
+        /*$controller   = 'answers';
         $importLoader = $this->loader->getImportLoader();
 
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
@@ -143,7 +152,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
         $params['tempDirectory']           = $importLoader->getTempDirectory();
         $params['importTranslators']       = $importLoader->getTranslators($controller);
 
-        $this->addSnippets('Survey\\AnswerImportSnippet', $params);
+        $this->addSnippets('Survey\\AnswerImportSnippet', $params);*/
     }
 
     /**
@@ -157,37 +166,48 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
     /**
      * Check the tokens for a single survey
      */
-    public function checkAction()
+    public function checkAction(): ?ResponseInterface
     {
-        $surveyId = $this->getSurveyId();
-        $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
+        $session = $this->request->getAttribute(SessionInterface::class);
 
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->currentUser->getUserId(), $where);
+        $surveyId = $this->getSurveyId();
+        $where    = 'gto_id_survey = ?';
+
+        $batch = $this->tracker->recalculateTokens($session, 'surveyCheck' . $surveyId, $this->currentUserId, $where, $surveyId);
         $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
 
         $title = sprintf($this->_('Checking for the %s survey for answers .'),
-                $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+                $this->resultFetcher->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", [$surveyId]));
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks all tokens using this survey for answers.')
-                );
+
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_('This task checks all tokens using this survey for answers.')
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
      * Check the tokens for all surveys
      */
-    public function checkAllAction()
+    public function checkAllAction(): ?ResponseInterface
     {
-        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->currentUser->getUserId());
+        $session = $this->request->getAttribute(SessionInterface::class);
+
+        $batch = $this->tracker->recalculateTokens($session,'surveyCheckAll', $this->currentUserId);
         $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
 
         $title = $this->_('Checking for all surveys for answers .');
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-                'itemDescription', $this->_('This task checks all tokens for all surveys for answers.')
-                );
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_('This task checks all tokens for all surveys for answers.')
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -199,11 +219,14 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = $this->loader->getModels()->getSurveyMaintenanceModel();
+        /**
+         * @var $model ModelAbstract
+         */
+        $model = $this->overLoader->create('Model\\SurveyMaintenanceModel');
 
         if ($detailed) {
             $surveyId = $this->_getIdParam();
@@ -226,19 +249,19 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @return array or false
      */
-    public function getBrowseColumns()
+    public function getBrowseColumns(): array|bool
     {
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
 
         $output[10] = ['gsu_survey_name', $br, 'gsu_survey_description', $br, 'gsu_survey_languages'];
-        $output[20] = ['gsu_surveyor_active', \MUtil\Html::raw($this->_(' [')), 'gso_source_name',
-            \MUtil\Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings'];
+        $output[20] = ['gsu_surveyor_active', Html::raw($this->_(' [')), 'gso_source_name',
+            Html::raw($this->_(']')), $br, 'gsu_status_show', $br, 'gsu_survey_warnings'];
 
-        $mailCodes = $this->util->getDbLookup()->getSurveyMailCodes();
+        $mailCodes = $this->surveyRepository->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
-            $output[30] = ['gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_mail_code', \MUtil\Html::raw(', '), 'gsu_insertable', $br, 'gsu_id_primary_group'];
+            $output[30] = ['gsu_active', Html::raw(' '), 'track_count', $br, 'gsu_mail_code', Html::raw(', '), 'gsu_insertable', $br, 'gsu_id_primary_group'];
         } else {
-            $output[30] = ['gsu_active', \MUtil\Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group'];
+            $output[30] = ['gsu_active', Html::raw(' '), 'track_count', $br, 'gsu_insertable', $br, 'gsu_id_primary_group'];
         }
         $output[40] = ['gsu_surveyor_id', $br, 'gsu_code', $br, 'gsu_export_code'];
 
@@ -248,9 +271,9 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Surveys');
     }
@@ -261,7 +284,7 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -338,8 +361,10 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
         }
         
         if (array_key_exists('survey_languages', $filter)) {
-            $lang = trim($this->db->quote($filter['survey_languages']), "'");
-            $filter[] = "(gsu_survey_languages IS NOT NULL AND gsu_survey_languages LIKE '%$lang%')";
+            $lang = $filter['survey_languages'];
+            if (in_array($lang, $this->locale->getAvailableLanguages())) {
+                $filter[] = "(gsu_survey_languages IS NOT NULL AND gsu_survey_languages LIKE '%$lang%')";
+            }
             
             unset($filter['survey_languages']);
         }
@@ -384,20 +409,18 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
      *
      * @return int
      */
-    public function getSurveyId()
+    public function getSurveyId(): int
     {
-        $id = $this->_getIdParam();
-
-        return $id;
+        return (int)$this->_getIdParam();
     }
 
    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('survey', 'surveys', $count);
     }
@@ -405,13 +428,11 @@ class SurveyMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstrac
     /**
      * Open pdf linked to survey
      */
-    public function pdfAction()
+    public function pdfAction(): void
     {
-        // Make sure nothing else is output
-        $this->initRawOutput();
-
         // Output the PDF
-        $this->loader->getPdf()->echoPdfBySurveyId($this->_getParam(\MUtil\Model::REQUEST_ID));
+        $this->pdfEditor->echoPdfBySurveyId($this->getSurveyId());
+
     }
 
 }

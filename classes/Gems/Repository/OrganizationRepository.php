@@ -3,27 +3,84 @@
 namespace Gems\Repository;
 
 use Gems\Cache\HelperAdapter;
-use Gems\Db\ResultFetcher;
+use Gems\Db\CachedResultFetcher;
+use Gems\Util\UtilDbHelper;
+use Laminas\Db\Sql\Predicate\Predicate;
 
 class OrganizationRepository
 {
-    public function __construct(protected ResultFetcher $resultFetcher, protected HelperAdapter $cache)
+    /**
+     * The org ID for no organization
+     */
+    const SYSTEM_NO_ORG  = -1;
+
+    /**
+     * @return string[] default array for when no organizations have been created
+     */
+    public static function getNotOrganizationArray()
+    {
+        return [static::SYSTEM_NO_ORG => 'create db first'];
+    }
+
+    public function __construct(protected CachedResultFetcher $cachedResultFetcher, protected UtilDbHelper $utilDbHelper)
     {}
 
     /**
-     * Return all organizations this arganization is allowed acces to
+     * Get all active organizations
+     *
+     * @return array List of the active organizations
+     */
+    public function getOrganizations(): array
+    {
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            ['organizations'],
+            ['gor_active' => 1],
+            'natsort'
+        );
+    }
+
+    /**
+     * Get all organizations that share a given code
+     *
+     * On empty this will return all organizations
+     *
+     * @param string $code
+     * @return array key = gor_id_organization, value = gor_name
+     */
+    public function getOrganizationsByCode(string $code = null): array
+    {
+        if (is_null($code)) {
+            return $this->getOrganizations();
+        }
+
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            ['organizations'],
+            [
+                'gor_active' => 1,
+                'gor_has_respondents' => 1,
+                'gor_code' => $code,
+            ],
+            'natsort'
+        );
+    }
+
+    /**
+     * Return all organizations this organization is allowed access to
      *
      * @param int $orgId
      * @return array
      */
-    public function getAllowedOrganizationsFor(int $orgId)
+    public function getAllowedOrganizationsFor(int $orgId): ?array
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'allowedOrganizationsFor_' . $orgId);
-        if ($this->cache->hasItem($key)) {
-            return $this->cache->getCacheItem($key);
-        }
+        $key = static::class . 'allowedOrganizationsFor_' . $orgId;
 
-        $select = $this->resultFetcher->getSelect();
+        $select = $this->cachedResultFetcher->getSelect();
         $select->from('gems__organizations')
             ->columns(['gor_id_organization', 'gor_name'])
             ->where
@@ -34,31 +91,32 @@ class OrganizationRepository
                 ->unnest()
                 ->equalTo('gor_active', 1);
 
-        $result = $this->resultFetcher->fetchPairs($select);
-        $this->cache->setCacheItem($key, $result);
+        $result = $this->cachedResultFetcher->fetchPairs($key, $select);
         return $result;
     }
 
     /**
-     * Get all active organizations
+     * Returns a list of the organizations where users can login.
      *
      * @return array List of the active organizations
      */
-    public function getOrganizations()
+    public function getOrganizationsForLogin(): array
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'activeOrganizations');
-        if ($this->cache->hasItem($key)) {
-            return $this->cache->getCacheItem($key);
+        $result = $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            ['organizations'],
+            [
+                'gor_active' => 1,
+                'gor_has_login' => 1,
+            ],
+            'natsort'
+        );
+        if ($result) {
+            return $result;
         }
-
-        $select = $this->resultFetcher->getSelect();
-        $select->from('gems__organizations')
-            ->columns(['gor_id_organization', 'gor_name'])
-            ->where(['gor_active' => 1]);
-
-        $result = $this->resultFetcher->fetchPairs($select);
-        $this->cache->setCacheItem($key, $result);
-        return $result;
+        return static::getNotOrganizationArray();
     }
 
     /**
@@ -66,27 +124,20 @@ class OrganizationRepository
      *
      * @return array List of the active organizations
      */
-    public function getOrganizationsWithRespondents(): ?array
+    public function getOrganizationsWithRespondents()
     {
-        $key = HelperAdapter::cleanupForCacheId(static::class . 'organizationsWithRespondents');
-        if ($this->cache->hasItem($key)) {
-            return $this->cache->getCacheItem($key);
-        }
-
-        $select = $this->resultFetcher->getSelect();
-        $select->from('gems__organizations')
-            ->columns(['gor_id_organization', 'gor_name'])
-            ->where
-                ->nest()
-                    ->equalTo('gor_has_respondents', 1)
-                    ->or
-                    ->equalTo('gor_add_respondents', 1)
-                ->unnest()
-                ->equalTo('gor_active', 1);
-
-        $result = $this->resultFetcher->fetchPairs($select);
-        $this->cache->setCacheItem($key, $result);
-        return $result;
+        $canAddRespondentsPredicate = new Predicate();
+        $canAddRespondentsPredicate->equalTo('gor_has_respondents', 1)->or->equalTo('gor_add_respondents', 1);
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__organizations',
+            'gor_id_organization',
+            'gor_name',
+            ['organizations'],
+            [
+                'gor_active' => 1,
+                $canAddRespondentsPredicate,
+            ],
+            'natsort'
+        );
     }
-
 }

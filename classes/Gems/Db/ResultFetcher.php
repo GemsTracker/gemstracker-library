@@ -31,30 +31,49 @@ class ResultFetcher
         return array_column($resultArray, $valueKey, $keyKey);
     }
 
-    public function fetchAll(Select|string $select, ?array $params = null): array
+    public function fetchAll(Select|string $select, ?array $params = null): ?array
     {
         return $this->fetchAllAssociative($select, $params);
     }
 
-    public function fetchOne(Select|string $select, ?array $params = null): string|int
+    public function fetchCol(Select|string $select, ?array $params = null): ?array
+    {
+        $resultArray = $this->fetchAllAssociative($select, $params);
+        if (count($resultArray) === 0) {
+            return null;
+        }
+        $firstRow = reset($resultArray);
+        $valueKey = key($firstRow);
+
+        return array_column($resultArray, $valueKey);
+    }
+
+    public function fetchOne(Select|string $select, ?array $params = null): string|int|null
     {
         $result = $this->query($select, $params);
         $row = $result->current();
-        return reset($row);
+        if (is_array($row)) {
+            return reset($row);
+        }
+        return null;
     }
 
-    public function fetchRow(Select|string $select, ?array $params = null): array
+    public function fetchRow(Select|string $select, ?array $params = null): ?array
     {
         return $this->fetchAssociative($select, $params);
     }
 
-    public function fetchAssociative(Select|string $select, ?array $params = null): array
+    public function fetchAssociative(Select|string $select, ?array $params = null): ?array
     {
         $result = $this->query($select, $params);
-        return $result->current();
+        $row = $result->current();
+        if (is_array($row)) {
+            return $result->current();
+        }
+        return null;
     }
 
-    public function fetchAllAssociative(Select|string $select, ?array $params = null): array
+    public function fetchAllAssociative(Select|string $select, ?array $params = null): ?array
     {
         $result = $this->query($select, $params);
         return $result->toArray();
@@ -82,7 +101,7 @@ class ResultFetcher
         return $this->db->query($select, $params, $resultSet);
     }
 
-    public function getSelect(null|string|TableIdentifier $table = null)
+    public function getSelect(null|string|TableIdentifier $table = null): Select
     {
         return $this->sql->select($table);
     }

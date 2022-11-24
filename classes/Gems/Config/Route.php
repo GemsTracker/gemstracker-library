@@ -740,8 +740,8 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Handlers\TrackBuilder\ChartconfigHandler::class),
 
             ...$this->createSnippetRoutes(baseName: 'track-builder.condition', controllerClass: \Gems\Handlers\TrackBuilder\ConditionHandler::class),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.survey-maintenance',
-                controllerClass: \Gems\Actions\SurveyMaintenanceAction::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.survey-maintenance',
+                controllerClass: \Gems\Handlers\TrackBuilder\SurveyMaintenanceHandler::class,
                 pages: [
                     'index',
                     'autofilter',
