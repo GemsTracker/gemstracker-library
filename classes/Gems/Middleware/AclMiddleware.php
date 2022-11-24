@@ -30,9 +30,9 @@ class AclMiddleware implements MiddlewareInterface
         $userRole = $request->getAttribute('userRole');
 
         if (
-            !empty($options['permission']) && (
+            !empty($options['privilege']) && (
                 $userRole === null
-                || !$this->acl->isAllowed($userRole, $options['permission'])
+                || !$this->acl->isAllowed($userRole, $options['privilege'])
             )
         ) {
             return new HtmlResponse($this->template->render('error::404'), 404);

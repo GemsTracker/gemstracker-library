@@ -98,9 +98,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     protected function _showTable($caption, $data, $nested = false)
     {
-        $table = \MUtil\Html\TableElement::createArray($data, $caption, $nested);
+        $table = \Zalt\Html\TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
-        $div = \MUtil\Html::create()->div(array('class' => 'table-container'));
+        $div = \Zalt\Html\Html::create()->div(array('class' => 'table-container'));
         $div[] = $table;
         $this->html[] = $div;
     }
@@ -195,7 +195,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function formatLongLine(array $privileges)
     {
-        $output     = \MUtil\Html::create('div');
+        $output     = \Zalt\Html\Html::create('div');
 
         if (count($privileges)) {
             $privileges = array_combine($privileges, $privileges);
@@ -221,7 +221,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Output of not allowed for viewing rols
      *
      * @param array $parent
-     * @return \MUtil\Html\ListElement
+     * @return \Zalt\Html\ListElement
      */
     public function formatInherited(array $parents)
     {
@@ -233,7 +233,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Output of not allowed for viewing rols
      *
      * @param strong $data parents tab privileges
-     * @return \MUtil\Html\ListElement
+     * @return \Zalt\Html\ListElement
      */
     public function formatNotAllowed($data)
     {
@@ -260,12 +260,12 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Output for viewing rols
      *
      * @param array $privileges
-     * @return \MUtil\Html\ListElement
+     * @return \Zalt\Html\HtmlElement
      */
     public function formatPrivileges(array $privileges)
     {
         if (count($privileges)) {
-            $output     = \MUtil\Html\ListElement::ul();
+            $output     = \Zalt\Html\ListElement::ul();
             $privileges = array_combine($privileges, $privileges);
 
             $output->class = 'allowed';
@@ -280,7 +280,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             }
         }
 
-        return \MUtil\Html::create('em', $this->_('No privileges found.'));
+        return \Zalt\Html\Html::create('em', $this->_('No privileges found.'));
     }
 
     /**
@@ -341,6 +341,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $menu = $this->request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
             $routeLabelsByPrivilege = $menu->getRouteLabelsByPrivilege();
             $privileges = $this->routeHelper->getAllRoutePrivileges();
+            $supplementaryPrivileges = $this->aclRepository->getSupplementaryPrivileges();
 
             $privilegeNames = [];
             foreach ($routeLabelsByPrivilege as $privilege => $labels) {
@@ -350,6 +351,12 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             foreach ($privileges as $privilege) {
                 if (!isset($privilegeNames[$privilege])) {
                     $privilegeNames[$privilege] = $privilege;
+                }
+            }
+
+            foreach ($supplementaryPrivileges as $privilege => $label) {
+                if (!isset($privilegeNames[$privilege])) {
+                    $privilegeNames[$privilege] = $label->trans($this->translate);
                 }
             }
 

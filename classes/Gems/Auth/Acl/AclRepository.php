@@ -3,6 +3,7 @@
 namespace Gems\Auth\Acl;
 
 use Gems\MenuNew\RouteHelper;
+use Gems\UntranslatedString;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
@@ -87,8 +88,16 @@ class AclRepository
     public function getDefinedPrivileges(): array
     {
         return array_values(array_unique(array_merge(
-            $this->config['permissions'],
+            array_keys($this->getSupplementaryPrivileges()),
             RouteHelper::getAllRoutePrivilegesFromConfig($this->config['routes']),
         )));
+    }
+
+    /**
+     * @return UntranslatedString[]
+     */
+    public function getSupplementaryPrivileges(): array
+    {
+        return $this->config['supplementary_privileges'];
     }
 }

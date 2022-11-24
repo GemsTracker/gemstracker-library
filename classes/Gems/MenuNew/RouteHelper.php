@@ -203,15 +203,15 @@ class RouteHelper
 
         $route = $this->routes[$name];
 
-        return empty($route['options']['permission']) || $this->hasPermission($route['options']['permission']);
+        return empty($route['options']['privilege']) || $this->hasPrivilege($route['options']['privilege']);
     }
 
     protected function hasMatchingParameters($requiredParams, $availableParamKeys): bool
     {
         return ! array_diff($requiredParams, $availableParamKeys);
-    }    
-    
-    public function hasPermission(string $resource): bool
+    }
+
+    public function hasPrivilege(string $resource): bool
     {
         return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource);
     }

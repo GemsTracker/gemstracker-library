@@ -17,7 +17,7 @@ class RouteLinkItem extends MenuItem
         $this->getMenu()->registerItem($this->name, $this);
     }
 
-    protected function hasPermission(): bool
+    protected function hasAccess(): bool
     {
         return $this->getMenu()->routeHelper->hasAccessToRoute($this->name);
     }
