@@ -11,16 +11,15 @@
 
 namespace Gems\Snippets;
 
-use DateTimeImmutable;
-use DateTimeInterface;
+use Gems\Db\ResultFetcher;
+use Gems\Form;
 use Gems\JQuery\Form\Element\DatePicker;
-use Gems\Loader;
-use Gems\MenuNew\RouteHelper;
-use Gems\Util;
 use MUtil\Model;
+use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
+use Zalt\Snippets\TranslatableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -32,7 +31,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
+class AutosearchFormSnippet extends TranslatableSnippetAbstract
 {
     /**
      * Field name for period filters
@@ -86,8 +85,6 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      */
     protected $orgIsMultiCheckbox = true;
 
-    protected $routeHelper;
-
     /**
      *
      * @var array The input data for the model
@@ -105,20 +102,15 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      * @var string
      */
     protected $searchLabel;
-    
-    protected Util $util;
 
     public function __construct(
         SnippetOptions $snippetOptions,
         protected RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        protected \Zend_Db_Adapter_Abstract $db,
-        protected Loader $loader
+        protected ResultFetcher $resultFetcher,
         )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
-        
-        $this->util = $loader->getUtil();
     }
 
     /**
@@ -269,10 +261,10 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof \MUtil\Model\ModelAbstract) {
+        if ($options instanceof ModelAbstract) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options)) {
-            $options = $this->db->fetchPairs($options);
+            $options = $this->resultFetcher->fetchPairs($options);
             natsort($options);
         }
         if ($options || null !== $empty)
@@ -343,11 +335,11 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      * Creates the form itself
      *
      * @param array $options
-     * @return \Gems\Form
+     * @return Form
      */
     protected function createForm($options = null)
     {
-        $form = new \Gems\Form($options);
+        $form = new Form($options);
 
         return $form;
     }
@@ -372,7 +364,7 @@ class AutosearchFormSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
     /**
      * Creates an autosearch form for indexAction.
      *
-     * @return \Gems\Form|null
+     * @return Form|null
      */
     protected function getAutoSearchForm()
     {

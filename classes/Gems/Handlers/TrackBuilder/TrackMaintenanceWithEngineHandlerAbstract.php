@@ -9,7 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
+
+use Gems\Exception;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -20,7 +28,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 18:46:19
  */
-abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller\ModelSnippetActionAbstract
+abstract class TrackMaintenanceWithEngineHandlerAbstract extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * Model level parameters used for all actions, overruled by any values set in any other
@@ -34,36 +42,40 @@ abstract class TrackMaintenanceWithEngineActionAbstract extends \Gems\Controller
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $defaultParameters = [
+    protected array $defaultParameters = [
         'trackEngine' => 'getTrackEngine',
         'trackId'     => 'getTrackId',
     ];
 
     /**
      *
-     * @var \Gems\Tracker\Engine\TrackEngineInterface
+     * @var TrackEngineInterface
      */
-    protected $trackEngine;
+    protected ?TrackEngineInterface $trackEngine = null;
 
-    /**
-     * @var \Gems\Tracker
-     */
-    public $tracker;
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
 
     /**
      *
-     * @return \Gems\Tracker\Engine\TrackEngineInterface
-     * @throws \Gems\Exception
+     * @return TrackEngineInterface
+     * @throws Exception
      */
-    protected function getTrackEngine()
+    protected function getTrackEngine(): TrackEngineInterface
     {
-        if ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
+        if ($this->trackEngine instanceof TrackEngineInterface) {
             return $this->trackEngine;
         }
         $trackId = $this->getTrackId();
 
         if (! $trackId) {
-            throw new \Gems\Exception($this->_('Missing track identifier.'));
+            throw new Exception($this->_('Missing track identifier.'));
         }
 
         $this->trackEngine = $this->tracker->getTrackEngine($trackId);

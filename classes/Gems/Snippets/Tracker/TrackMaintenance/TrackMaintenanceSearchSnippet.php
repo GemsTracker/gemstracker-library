@@ -11,6 +11,13 @@
 
 namespace Gems\Snippets\Tracker\TrackMaintenance;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -22,6 +29,19 @@ namespace Gems\Snippets\Tracker\TrackMaintenance;
  */
 class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
 {
+    protected User $currentUser;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -51,8 +71,7 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             $elementA->setLabel($this->model->get('gtr_active', 'label'));
             $elements[] = $elementA;
 
-            $user     = $this->loader->getCurrentUser();
-            $optionsO = $user->getRespondentOrganizations();
+            $optionsO = $this->currentUser->getRespondentOrganizations();
             $elementO = $this->_createSelectElement('org', $optionsO, $this->_('(all organizations)'));
             $elements[] = $elementO;
         }

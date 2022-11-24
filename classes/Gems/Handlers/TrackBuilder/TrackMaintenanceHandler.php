@@ -9,10 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\Model\TrackModel;
 use Mezzio\Session\SessionMiddleware;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,7 +27,7 @@ use Mezzio\Session\SessionMiddleware;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAbstract
+class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 {
     /**
      *
@@ -40,23 +45,18 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort'   => ['gtr_track_name' => SORT_ASC],
         'trackEngine' => null,
         'trackId'     => null,
     ];
 
     /**
-     * @var BatchRunnerLoader
-     */
-    public $batchRunnerLoader;
-
-    /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = ['track', 'tracks'];
+    public array $cacheTags = ['track', 'tracks'];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -69,7 +69,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = [
+    protected array $createParameters = [
         'trackEngine' => null,
     ];
 
@@ -78,20 +78,13 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * @var \Gems\User\User
      */
     public $currentUser;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
     
     /**
      * The default search data to use.
-     *
-     * @var array()
      */
-    protected $defaultSearchData = ['active' => 1];
+    protected array $defaultSearchData = ['active' => 1];
     
-    protected $deleteParameters = [
+    protected array $deleteParameters = [
         'trackId' => '_getIdParam'
     ];
 
@@ -100,7 +93,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Track\\TrackDeleteSnippet';
+    protected array $deleteSnippets = ['Track\\TrackDeleteSnippet'];
 
     /**
      * The parameters used for the export action
@@ -112,14 +105,14 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $exportParameters = [];
+    protected array $exportParameters = [];
 
     /**
      * The snippets used for the export action
      *
      * @var mixed String or array of snippets name
      */
-    protected $exportSnippets = 'Tracker\\Export\\ExportTrackSnippetGeneric';
+    protected array $exportSnippets = ['Tracker\\Export\\ExportTrackSnippetGeneric'];
 
     /**
      * The parameters used for the import action
@@ -131,7 +124,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $importParameters = [
+    protected array $importParameters = [
         'trackEngine' => null,
         'trackId'     => null,
     ];
@@ -141,19 +134,19 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $importSnippets = 'Tracker\\Import\\ImportTrackSnippetGeneric';
+    protected array $importSnippets = ['Tracker\\Import\\ImportTrackSnippetGeneric'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = [
+    protected array $indexStartSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackMaintenance\\TrackMaintenanceSearchSnippet'
     ];
 
-    protected $showParameters = [
+    protected array $showParameters = [
         'trackId' => '_getIdParam'
     ];
 
@@ -162,9 +155,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
+        'ModelDetailTableSnippet',
         'Tracker\\TrackVisualDefinitionTitleSnippet',
         'Tracker\\TrackVisualDefinitionSnippet',
         'Tracker\\Fields\\FieldsTitleSnippet',
@@ -186,7 +179,22 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = ['index', 'autofilter', 'check-all', 'recalc-all-fields'];
+    public array $summarizedActions = [
+        'index',
+        'autofilter',
+        'check-all',
+        'recalc-all-fields'
+    ];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        protected BatchRunnerLoader $batchRunnerLoader,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate, $tracker);
+    }
 
     /**
      * The request ID value
@@ -215,10 +223,26 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->currentUser->getUserId());
-        $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'), $this->accesslog);
+        $batch = $this->tracker->checkTrackRounds(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+            'allTrackCheckRounds',
+            $this->currentUserId,
+        );
 
-        $this->addSnippet('Track\\CheckRoundsInformation');
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($this->_('Checking round assignments for all tracks.'));
+
+        $batchRunner->setJobInfo([
+            $this->_('Updates existing token description and order to the current round description and order.'),
+            $this->_('Updates the survey of unanswered tokens when the round survey was changed.'),
+            $this->_('Removes unanswered tokens when the round is no longer active.'),
+            $this->_('Creates new tokens for new rounds.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -228,13 +252,14 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
     {
         $id    = $this->_getIdParam();
         $track = $this->getTrackEngine();
-        $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
-        $batch = $this->loader->getTracker()->checkTrackRounds(
+        $where = 'gr2t_id_track = ?';
+        $batch = $this->tracker->checkTrackRounds(
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
                 'trackCheckRounds' . $id,
-                $this->currentUser->getUserId(),
-                $where
-                );
+                $this->currentUserId,
+                $where,
+                $id
+            );
 
         $title = sprintf($this->_("Checking round assignments for track %d '%s'."), $id, $track->getTrackName());
 
@@ -247,9 +272,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
     /**
      * Action for showing a create new item page
      */
-    public function createAction()
+    public function createAction(): void
     {
-        $this->createEditSnippets = $this->loader->getTracker()->getTrackEngineEditSnippets();
+        $this->createEditSnippets = $this->tracker->getTrackEngineEditSnippets();
 
         parent::createAction();
     }
@@ -263,9 +288,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \Gems\Model_TrackModel
+     * @return TrackModel
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): TrackModel
     {
         $model = $this->tracker->getTrackModel();
         $model->applyFormatting($detailed);
@@ -277,7 +302,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
     /**
      * Edit a single item
      */
-    public function editAction()
+    public function editAction(): void
     {
         $this->createEditSnippets = $this->tracker->getTrackEngineEditSnippets();
 
@@ -287,7 +312,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
     /**
      * Generic model based export action
      */
-    public function exportAction()
+    public function exportAction(): void
     {
         if ($this->exportSnippets) {
             $params = $this->_processParameters($this->exportParameters);
@@ -302,7 +327,7 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
         
@@ -345,9 +370,9 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('track', 'tracks', $count);
     }
@@ -357,12 +382,24 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
      */
     public function recalcAllFieldsAction()
     {
-        $batch = $this->loader->getTracker()->recalcTrackFields(
-                'trackRecalcAllFields'
-                );
-        $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'), $this->accesslog);
+        $batch = $this->tracker->recalcTrackFields(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+            'trackRecalcAllFields'
+        );
 
-        $this->addSnippet('Track\\RecalcFieldsInformation');
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($this->_('Recalculating fields for all tracks.'));
+        $batchRunner->setJobInfo([
+            $this->_('Track field recalculation'),
+            $this->_('Recalculates the values the fields should have.'),
+            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
+            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -372,35 +409,48 @@ class TrackMaintenanceAction extends \Gems\Actions\TrackMaintenanceWithEngineAct
     {
         $id    = $this->_getIdParam();
         $track = $this->getTrackEngine();
-        $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
-        $batch = $this->loader->getTracker()->recalcTrackFields(
-                'trackRecalcFields' . $id,
-                $where
-                );
+        $where = 'gr2t_id_track = ?';
+        $batch = $this->tracker->recalcTrackFields(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+            'trackRecalcAllFields',
+            $where,
+            $id
+        );
 
-        $title = sprintf($this->_("Recalculating fields for track %d '%s'."), $id, $track->getTrackName(), $this->accesslog);
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        $title = sprintf($this->_("Recalculating fields for track %d '%s'."), $id, $track->getTrackName());
 
-        $this->addSnippet('Track\\RecalcFieldsInformation');
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($title);
+        $batchRunner->setJobInfo([
+            $this->_('Track field recalculation'),
+            $this->_('Recalculates the values the fields should have.'),
+            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
+            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
      *  Pass the h3 tag to all snippets except the first one
      */    
-    public function showAction()
+    public function showAction(): void
     {
         $showSnippets = $this->showSnippets;
         $first = array_shift($showSnippets);
         $next  = $showSnippets;
         
-        $this->showSnippets = $first;
+        $this->showSnippets = [$first];
         parent::showAction();
         
         $this->showParameters['tagName'] = 'h3';
         
         $this->showSnippets = $next;
         parent::showAction();
-        
-        $this->showSnippets = array_unshift($next, $first);
+
+        array_unshift($this->showSnippets, $first);
     }
 }

@@ -12,6 +12,7 @@
 
 namespace Gems\Model;
 
+use Gems\Locale\Locale;
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -26,7 +27,7 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
 {
 
     use TranslateableTrait;
-    
+
     /**
      *
      * @var \Gems\User\User
@@ -45,13 +46,12 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
     protected $loader;
 
     /**
-     *
-     * @var \Zend_Locale
+     * @var Locale
      */
     protected $locale;
 
     /**
-     * @var int 
+     * @var int
      */
     protected $surveyId;
 
@@ -89,7 +89,6 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
         // We only know the name now!
         parent::__construct($name, [], $data);
 
-        $this->initTranslateable();
         $this->resetOrder();
 
         $this->set('id', 'label', $this->_('Survey ID'));
@@ -122,12 +121,12 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
     public function getData($surveyId)
     {
         $survey              = $this->tracker->getSurvey($surveyId);
-        $questionInformation = $survey->getQuestionInformation($this->locale);
+        $questionInformation = $survey->getQuestionInformation($this->locale->getLanguage());
         if (empty($questionInformation)) {
             // Inactive / deleted survey?
             return [];
         }
-        
+
         $data = [];
         foreach ($questionInformation as $questionTitle => $information) {
             $answers     = $information['answers'];
@@ -139,11 +138,11 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
                     $answerCodes = '';
                 }
             }
-            
+
             if (array_key_exists('equation', $information)) {
                 // If there is an equation, we don't have answers
                 $answers     = $information['equation'];
-                $answerCodes = $this->_('Equation');                
+                $answerCodes = $this->_('Equation');
             }
 
             $data[$questionTitle] = [

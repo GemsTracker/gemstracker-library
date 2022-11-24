@@ -760,42 +760,24 @@ class Route
                     'export-codebook',
                 ],
             ),
-            [
-                'name' => 'track-builder.survey-maintenance.update-survey',
-                'path' => '/track-builder/survey-maintenance/update-survey',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LegacyCurrentUserMiddleware::class,
-                    MenuMiddleware::class,
-                    LegacyController::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.survey-maintenance.update-survey',
+                controllerClass: \Gems\Handlers\TrackBuilder\UpdateSurveyHandler::class,
+                pages: [
+                    'run',
                 ],
-                'options' => [
-                    'controller' => \Gems\Actions\UpdateSurveyAction::class,
-                    'action' => 'run',
+            ),
+            ...$this->createSnippetRoutes(baseName: 'track-builder.survey-maintenance.export-codebook',
+                controllerClass: \Gems\Handlers\TrackBuilder\SurveyCodeBookExportHandler::class,
+                pages: [
+                    'export',
                 ],
-            ],
-            [
-                'name' => 'track-builder.survey-maintenance.export-codebook',
-                'path' => '/track-builder/survey-maintenance/export-codebook/{id:\d+}',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LegacyCurrentUserMiddleware::class,
-                    MenuMiddleware::class,
-                    LegacyController::class,
+                parameterRoutes: [
+                    'export',
                 ],
-                'options' => [
-                    'controller' => \Gems\Actions\SurveyCodeBookExportAction::class,
-                    'action' => 'export',
-                ],
-                'params' => [
-                    'id',
-                ],
-            ],
+            ),
 
-            ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance',
-                controllerClass: \Gems\Actions\TrackMaintenanceAction::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance',
+                controllerClass: \Gems\Handlers\TrackBuilder\TrackMaintenanceHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'import',
@@ -816,15 +798,15 @@ class Route
                     'recalc-fields',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-fields',
-                controllerClass: \Gems\Actions\TrackFieldsAction::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-fields',
+                controllerClass: \Gems\Handlers\TrackBuilder\TrackFieldsHandler::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-fields',
                 parentParameters: [
                     'trackId',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'track-builder.track-maintenance.track-rounds',
-                controllerClass: \Gems\Actions\TrackRoundsAction::class,
+            ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-rounds',
+                controllerClass:\Gems\Handlers\TrackBuilder\TrackRoundsHandler::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-rounds',
                 parameters: [
                     \Gems\Model::ROUND_ID => '\d+',

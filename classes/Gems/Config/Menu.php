@@ -1056,7 +1056,7 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.survey-maintenance.update-survey',
+                                    'name' => 'track-builder.survey-maintenance.update-survey.run',
                                     'label' => $this->translator->trans('Update to new survey'),
                                     'type' => 'route-link-item',
                                 ],
@@ -1073,7 +1073,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
-                            'name' => 'track-builder.survey-maintenance.update-survey',
+                            'name' => 'track-builder.survey-maintenance.update-survey.run',
                             'label' => $this->translator->trans('Update to new survey'),
                             'type' => 'route-link-item',
                         ],

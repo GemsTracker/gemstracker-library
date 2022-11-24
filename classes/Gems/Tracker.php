@@ -185,7 +185,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null): TaskRunnerBatch
+    public function checkTrackRounds(SessionInterface $session, string $batchId, ?int $userId = null, ?string $cond = null, ?string $param = null): TaskRunnerBatch
     {
         $userId = $this->_checkUserId($userId);
 
@@ -200,7 +200,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
             $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
 
             if ($cond) {
-                $respTrackSelect->where($cond);
+                $respTrackSelect->where($cond, $param);
             }
             $respTrackSelect->where('gr2t_active = 1');
             $respTrackSelect->where('grc_success = 1');
@@ -1003,7 +1003,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param string $cond Optional where statement for selecting tracks
      * @return \Gems\Task\TaskRunnerBatch A batch to process the changes
      */
-    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null): TaskRunnerBatch
+    public function recalcTrackFields(SessionInterface $session, string $batchId, ?string $cond = null, ?string $param = null): TaskRunnerBatch
     {
         $respTrackSelect = $this->db->select();
         $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
@@ -1011,7 +1011,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
 
         if ($cond) {
-            $respTrackSelect->where($cond);
+            $respTrackSelect->where($cond, $param);
         }
         $respTrackSelect->where('gr2t_active = 1');
         $respTrackSelect->where('grc_success = 1');

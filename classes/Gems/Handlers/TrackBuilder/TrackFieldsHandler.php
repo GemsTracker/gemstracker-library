@@ -9,9 +9,17 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\RouteHelper;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Tracker\Model\TrackModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -21,7 +29,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAbstract
+class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -33,23 +41,23 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraSort' => array('gtf_id_order' => SORT_ASC),
-        );
+    protected array $autofilterParameters = [
+        'extraSort' => ['gtf_id_order' => SORT_ASC],
+    ];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Fields\\FieldsTableSnippet';
+    protected array $autofilterSnippets = ['Tracker\\Fields\\FieldsTableSnippet'];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('track', 'tracks');
+    public array $cacheTags = ['track', 'tracks'];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -62,16 +70,16 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = array(
+    protected array $createParameters = [
         'formTitle' => 'getCreateTitle',
-    );
+    ];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = [
+    protected array $createEditSnippets = [
         'Tracker\\Fields\\FieldEditSnippet',
         'Agenda\\ApplyFiltersInformation',
         ];
@@ -81,25 +89,36 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Tracker\\Fields\\FieldDeleteSnippet';
+    protected array $deleteSnippets = ['Tracker\\Fields\\FieldDeleteSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Tracker\\Fields\\FieldsTitleSnippet', 'Tracker\\Fields\\FieldsAutosearchForm');
+    protected array $indexStartSnippets = ['Tracker\\Fields\\FieldsTitleSnippet', 'Tracker\\Fields\\FieldsAutosearchForm'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\Fields\\FieldShowSnippet',
         'Agenda\\ApplyFiltersInformation'
         ];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        protected ResultFetcher $resultFetcher,
+        protected TrackDataRepository $trackDataRepository,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate, $tracker);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -110,9 +129,9 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \Gems\Model_TrackModel
+     * @return TrackModel
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): FieldMaintenanceModel
     {
         $engine = $this->getTrackEngine();
         $model  = $engine->getFieldsMaintenanceModel($detailed, $action);
@@ -125,22 +144,22 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @return $string
      */
-    public function getDeleteQuestion()
+    public function getDeleteQuestion(): string
     {
-        $field = $this->_getParam('fid');
-        if (FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
-            $used  = $this->db->fetchOne(
+        $field = $this->request->getAttribute('fid');
+        if (FieldMaintenanceModel::APPOINTMENTS_NAME === $this->request->getAttribute('sub')) {
+            $used  = $this->resultFetcher->fetchOne(
                     "SELECT COUNT(*)
                         FROM gems__respondent2track2appointment
                         WHERE gr2t2a_id_app_field = ? AND gr2t2a_id_appointment IS NOT NULL",
-                    $field
+                    [$field]
                     );
         } else {
-            $used  = $this->db->fetchOne(
+            $used  = $this->resultFetcher->fetchOne(
                     "SELECT COUNT(*)
                         FROM gems__respondent2track2field
                         WHERE gr2t2f_id_field = ? AND gr2t2f_value IS NOT NULL",
-                    $field
+                    [$field]
                     );
         }
 
@@ -148,7 +167,9 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
             return $this->_('Do you want to delete this field?');
         }
 
-        $this->addMessage(sprintf($this->plural(
+        $messenger = $this->request->getAttribute(StatusMessengerInterface::class);
+
+        $messenger->addMessage(sprintf($this->plural(
                 'This field will be deleted from %s assigned track.',
                 'This field will be deleted from %s assigned tracks.',
                 $used), $used));
@@ -164,31 +185,31 @@ class TrackFieldsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @return $string
      */
-    public function getCreateTitle()
+    public function getCreateTitle(): string
     {
         return sprintf(
                 $this->_('New field for %s track...') ,
-                $this->util->getTrackData()->getTrackTitle($this->_getIdParam())
+                $this->trackDataRepository->getTrackTitle($this->_getIdParam())
                 );
     }
 
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
-        return sprintf($this->_('Fields %s'), $this->util->getTrackData()->getTrackTitle($this->_getIdParam()));
+        return sprintf($this->_('Fields %s'), $this->trackDataRepository->getTrackTitle($this->_getIdParam()));
     }
 
     /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('field', 'fields', $count);
     }

@@ -11,8 +11,18 @@
 
 namespace Gems\Snippets\Survey;
 
+use Gems\Db\ResultFetcher;
+use Gems\Repository\AccessRepository;
+use Gems\Repository\SourceRepository;
+use Gems\Repository\SurveyRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,18 +33,23 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 20-feb-2015 13:22:48
  */
-class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
 {
-    /**
-     * @var TrackEvents
-     */
-    protected $trackEvents;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        Translator $translate,
+        ResultFetcher $resultFetcher,
+        protected Translated $translatedUtil,
+        protected TrackEvents $trackEvents,
+        protected SurveyRepository $surveyRepository,
+        protected TrackDataRepository $trackDataRepository,
+        protected SourceRepository $sourceRepository,
+        protected AccessRepository $accessRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+    }
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-    
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -48,16 +63,16 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $groups     = $this->util->getDbLookup()->getGroups();
+        $groups     = $this->accessRepository->getGroups();
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $groups, $this->_('(all groups)'));
 
         // If more than one source, allow to filter on it
-        $sources = $this->util->getDbLookup()->getSources();
+        $sources = $this->sourceRepository->getSources();
         if (count($sources) > 1) {
             $elements[] = $this->_createSelectElement('gsu_id_source', $sources, $this->_('(all sources)'));    
         }
         
-        $languages = $this->util->getTrackData()->getSurveyLanguages();
+        $languages = $this->trackDataRepository->getSurveyLanguages();
         $elements[] = $this->_createSelectElement('survey_languages', $languages, $this->_('(all languages)'));
 
         $states     = array(
@@ -73,7 +88,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
         );
         $elements[] = $this->_createSelectElement('status', $states, $this->_('(every state)'));
         
-        $elements[] = \MUtil\Html::create('br');
+        $elements[] = Html::create('br');
 
         $warnings     = array(
             'withwarning'              => $this->_('(with warnings)'),
@@ -85,7 +100,7 @@ class SurveyMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippe
         );
         $elements[] = $this->_createSelectElement('survey_warnings', $warnings, $this->_('(every warning state)'));
         
-        $mailCodes = $this->util->getDbLookup()->getSurveyMailCodes();
+        $mailCodes = $this->surveyRepository->getSurveyMailCodes();
         if (count($mailCodes) > 1) {
             $elements[] = $this->_createSelectElement('gsu_mail_code', $mailCodes, $this->_('(all mail codes)'));
         }

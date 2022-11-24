@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
+use Gems\MenuNew\RouteHelper;
+use MUtil\Model\SelectModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+use Zend_Db_Adapter_Abstract;
 
 /**
  * Provides a visual overview of the track definition
@@ -49,8 +57,6 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     
     protected $class = 'browser table visualtrack';
     
-    protected $db;
-    
     protected bool $showMenu = false;
     
     /**
@@ -62,21 +68,17 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     
     public $trackUsage = false;
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-        
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        RouteHelper $routeHelper,
+        TranslatorInterface $translate,
+        protected Zend_Db_Adapter_Abstract $db,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
         if (empty($this->trackId)) {
             throw new Coding('Provide a trackId to this snippet!');
         }
-
-        $model = $this->getModel();
     }
 
     /**
@@ -87,10 +89,8 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     protected function createModel(): DataReaderInterface
     {
         if (!$this->_model instanceof \MUtil\Model\SelectModel) {
-            $trackId = $this->trackId;
 
-            $db     = $this->db;
-            $select = $db->select()->distinct()->from('gems__rounds', ['gro_round_description', 'gro_round_description'])->where('gro_id_track = ?', $trackId);
+            $select = $this->db->select()->distinct()->from('gems__rounds', ['gro_round_description', 'gro_round_description'])->where('gro_id_track = ?', $this->trackId);
             $rounds = $this->db->fetchPairs($select);
 
             $fields = [
@@ -98,7 +98,10 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
                 'round_order' => new \Zend_Db_Expr('min(gro_id_order)')
             ];
             foreach ($rounds as $round) {
-                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $db->quote($round) . ' then "X" else NULL end)');
+                if ($round === null) {
+                    continue;
+                }
+                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $this->db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $db->quote($round) . ' then "X" else NULL end)');
             }
             $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
@@ -107,11 +110,11 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
                     ->joinLeft('gems__track_fields', 'gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
                     ->joinLeft('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
                     ->where('gro_active = 1')   //Only active rounds
-                    ->where('gro_id_track = ?', $trackId)
+                    ->where('gro_id_track = ?', $this->trackId)
                     ->group(['gro_id_survey', 'filler'])
                     ->columns($fields);
 
-            $model = new \MUtil\Model\SelectModel($sql, 'track-plan');
+            $model = new SelectModel($sql, 'track-plan');
             //$model->setKeys(array('gsu_survey_name'));
             $model->resetOrder();
             $model->set('filler', 'label', $this->_('Filler'));
@@ -137,11 +140,11 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
             case 'X':
                 // yes
 
-                return \MUtil\Html::create()->i(['class' => 'fa fa-check', 'style' => 'color: green;', 'title' => $this->_('Yes')]);
+                return Html::create()->i(['class' => 'fa fa-check', 'style' => 'color: green;', 'title' => $this->_('Yes')]);
                 break;
             case 'C':
                 // Condition
-                return \MUtil\Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
+                return Html::create()->i(['class' => 'fa fa-question-circle', 'style' => 'color: orange;', 'title' => $this->_('Condition')]);
                 break;
             default:
                 return null;

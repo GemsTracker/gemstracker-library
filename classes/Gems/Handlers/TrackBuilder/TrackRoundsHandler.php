@@ -9,10 +9,16 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
 
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\RouteHelper;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
 use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,14 +28,14 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAbstract
+class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Rounds\\RoundsTableSnippet';
+    protected array $autofilterSnippets = ['Tracker\\Rounds\\RoundsTableSnippet'];
 
     /**
      *
@@ -42,7 +48,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array
      */
-    public $cacheTags = ['track', 'tracks'];
+    public array $cacheTags = ['track', 'tracks'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -54,15 +60,9 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'roundId'     => 'getRoundId',
     ];
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
 
     /**
      * The parameters used for the delete action.
@@ -74,7 +74,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = [
+    protected array $deleteParameters = [
         'roundId'     => 'getRoundId',
     ];
 
@@ -83,14 +83,14 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Tracker\\Rounds\\RoundDeleteSnippet';
+    protected array $deleteSnippets = ['Tracker\\Rounds\\RoundDeleteSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Tracker\\Rounds\\RoundsTitleSnippet', 'AutosearchWithIdSnippet'];
+    protected array $indexStartSnippets = ['Tracker\\Rounds\\RoundsTitleSnippet', 'AutosearchWithIdSnippet'];
 
     /**
      * The parameters used for the show action
@@ -102,12 +102,23 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'roundId'     => 'getRoundId',
         'surveyId'    => 'getSurveyId',
     ];
 
-    public function autofilterAction($resetMvc = true)
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        protected ResultFetcher $resultFetcher,
+        protected TrackDataRepository $trackDataRepository,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate, $tracker);
+    }
+
+    public function autofilterAction(bool $resetMvc = true): void
     {
         parent::autofilterAction($resetMvc);
 
@@ -122,7 +133,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
     /**
      * Create a new round
      */
-    public function createAction()
+    public function createAction(): void
     {
         $this->createEditPrepare();
         parent::createAction();
@@ -154,7 +165,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      * @param string $action The current action.
      * @return TrackModel
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): TrackModel
     {
         $trackEngine = $this->getTrackEngine();
         $trackId     = $trackEngine->getTrackId();
@@ -166,9 +177,9 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
         if ($detailed) {
             if ($action == 'create') {
                 // Set the default round order
-                $newOrder = $this->db->fetchOne(
+                $newOrder = $this->resultFetcher->fetchOne(
                     "SELECT MAX(gro_id_order) FROM gems__rounds WHERE gro_id_track = ?",
-                    $trackId
+                    [$trackId]
                 );
 
                 if ($newOrder) {
@@ -185,7 +196,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
     /**
      * Action for showing a edit item page
      */
-    public function editAction()
+    public function editAction(): void
     {
         $this->createEditPrepare();
         parent::editAction();
@@ -196,10 +207,10 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
-        return $this->_('Rounds') . ' ' .
-            $this->util->getTrackData()->getTrackTitle($this->_getIdParam());
+        return $this->_('Rounds') . ' TrackRoundsHandler.php' .
+            $this->trackDataRepository->getTrackTitle((int)$this->_getIdParam());
     }
 
     /**
@@ -207,9 +218,13 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      *
      * @return int
      */
-    protected function getRoundId()
+    protected function getRoundId(): ?int
     {
-        return $this->request->getAttribute(\Gems\Model::ROUND_ID);
+        $id = $this->request->getAttribute(\Gems\Model::ROUND_ID);
+        if ($id) {
+            return (int)$id;
+        }
+        return null;
     }
 
     /**
@@ -222,7 +237,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
         $roundId = $this->request->getAttribute(Model::REQUEST_ID);
         if ($roundId) {
 
-            $surveyId = $this->db->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_id_round = ?', $roundId);
+            $surveyId = $this->resultFetcher->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_id_round = ?', $roundId);
             if ($surveyId !== null || $surveyId !== false) {
                 return (int)$surveyId;
             }
@@ -236,7 +251,7 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('round', 'rounds', $count);
     }
@@ -244,15 +259,15 @@ class TrackRoundsAction extends \Gems\Actions\TrackMaintenanceWithEngineActionAb
     /**
      * Action for showing an item page
      */
-    public function showAction()
+    public function showAction(): void
     {
         $this->showSnippets = $this->getTrackEngine()->getRoundShowSnippetNames();
 
-        return parent::showAction();
+        parent::showAction();
     }
 
     public function sortAction()
     {
-        $this->_helper->getHelper('SortableTable')->ajaxAction('gems__rounds','gro_id_round', 'gro_id_order');
+        //$this->_helper->getHelper('SortableTable')->ajaxAction('gems__rounds','gro_id_round', 'gro_id_order');
     }
 }
