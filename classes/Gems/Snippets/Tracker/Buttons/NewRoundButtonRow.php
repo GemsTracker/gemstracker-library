@@ -33,6 +33,11 @@ class NewRoundButtonRow extends CurrentButtonRowSnippet
      */
     protected function addButtons(): array
     {
+        $this->extraRoutesLabelled = [
+            'track-builder.track-maintenance.track-rounds.create' => $this->_('New field'),
+        ];
+
+        return parent::addButtons();
         $menuList = [];
         $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-rounds.create');
 

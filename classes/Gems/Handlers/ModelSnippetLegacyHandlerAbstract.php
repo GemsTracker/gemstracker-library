@@ -47,10 +47,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
-        'menuActionController'  => 'getControllerName',
-        'requestQueryParams'    => 'getRequestQueryParams',
-        'requestPost'           => 'getRequestParsedBody',
-        'isPost'                => 'getRequestIsPost'
     ];
 
     /**
@@ -191,7 +187,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = [
-        ModelItemYesNoDeleteSnippet::class
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        ModelItemYesNoDeleteSnippet::class,
+        CurrentButtonRowSnippet::class,
         ];
 
     /**

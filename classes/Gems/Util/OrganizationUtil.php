@@ -2,7 +2,9 @@
 
 namespace Gems\Util;
 
-class OrganizationUtil extends CachedUtilAbstract
+use Gems\Db\CachedResultFetcher;
+
+class OrganizationUtil extends CachedResultFetcher
 {
     /**
      * The org ID for no organization

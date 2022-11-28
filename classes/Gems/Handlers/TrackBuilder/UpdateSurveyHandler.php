@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\TrackBuilder;
 
-use Gems\Handlers\SnippetLegacyHandlerAbstract;
+use MUtil\Handler\SnippetLegacyHandlerAbstract;
 
 /**
  * Compare two surveys and copy the answers of one to the other with adjustments

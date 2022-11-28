@@ -612,8 +612,8 @@ class Route
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.codes.mail-code',
-                controllerClass: \Gems\Actions\MailCodeAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
+                controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
             ),
 
             [

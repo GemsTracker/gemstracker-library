@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Html;
 use Gems\Tracker\Model\RoundModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -109,27 +110,19 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         // We want to markt the row for inactive surveys so it visually stands out
         $model->get('gsu_active');
-        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
-            $bridge->gsu_active,
-            '',
-            'inactive'
-        ));
+//        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
+//            $bridge->gsu_active,
+//            '',
+//            'inactive'
+//        ));
 
         // Add link to survey-edit
-        $menuItems = $this->findUrls('edit', $bridge);
-        if ($menuItems) {
-            $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
-                $href = $menuItem->toHRefAttribute(['id' => $bridge->getLazy('gro_id_survey')]);
-
-                if ($href) {
-                    $aElem = new \MUtil\Html\AElement($href);
-                    $aElem->setOnEmpty('');
-
-                    $model->set('gro_id_survey', 'itemDisplay', $aElem);
-                }
-            }
-        }
+//        foreach ($this->getEditUrls($bridge, $model->getKeys()) as $linkParts) {
+//            if (! isset($linkParts['label'])) {
+//                $linkParts['label'] = $this->_('Edit');
+//            }
+//            $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
+//        }
 
         parent::addBrowseTableColumns($bridge, $model);
     }
@@ -139,15 +132,15 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * have been set correctly has run.
      *
      * @return void
-     */
+     * /
     public function afterRegistry()
     {
         parent::afterRegistry();
 
         $model = $this->getModel();
 
-        $br = \MUtil\Html::create('br');
-        $sp = \MUtil\Html::raw(' ');
+        $br = Html::create('br');
+        $sp = Html::raw(' ');
 
         if (!is_array($this->columns)) {
             $this->columns = [];
@@ -201,11 +194,38 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->model->applyParameters(['gro_id_track' => $this->trackEngine->getTrackId()]);
         }
 
-        // Now add the joins so we can sort on the real name
-        // $this->model->addTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
+        $br = Html::create('br');
+        $sp = Html::raw(' ');
 
-        // $this->model->set('gsu_survey_name', $this->model->get('gro_id_survey'));
+        if (!is_array($this->columns)) {
+            $this->columns = [];
+        }
+
+        $this->columns[10] = ['gro_id_order'];
+        $this->columns[20] = ['gro_id_survey'];
+        $this->columns[30] = ['gro_round_description'];
+        $this->columns[40] = ['gro_icon_file'];
+        $this->columns[45] = ['ggp_name'];
+        $fromHeader = [
+            '', // No content
+            [$this->_('Valid from'), $br]  // Force break in the header
+        ];
+        $untilHeader = ['', [$this->_('Valid until'), $br]];
+        $this->columns[50] = [$fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id'];
+        $this->columns[60] = [$untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id'];
+        $this->columns[70] = ['gro_active'];
+        if ($label = $this->model->get('gro_changed_event', 'label')) {
+            $this->columns[80] = ['gro_changed_event'];
+        }
+        if ($label = $this->model->get('gro_changed_event', 'label')) {
+            $this->columns[90] = ['gro_display_event'];
+        }
+        $this->columns[100] = ['gro_code'];
+        $this->columns[110] = ['condition_display'];
+        // Organizations can possibly be replaced with a condition
+        $this->columns[120] = ['organizations'];
 
         return $this->model;
     }
+
 }

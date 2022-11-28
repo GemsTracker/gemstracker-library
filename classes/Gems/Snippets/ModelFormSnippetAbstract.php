@@ -16,6 +16,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Late\Late;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeAbstract;
 use Zalt\Model\Bridge\FormBridgeInterface;
@@ -49,8 +50,6 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
      */
     // protected $accesslog;
 
-    protected ?string $cancelRoute = null;
-
     /**
      * Shortfix to add class attribute
      *
@@ -83,13 +82,6 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
      * @var boolean
      */
     protected $menuShowSiblings = false;
-
-    /**
-     * The name of the action to forward to after form completion
-     *
-     * @var string
-     */
-    protected $routeAction = 'show';
 
     /**
      * When true a tabbed form is used.
@@ -202,6 +194,10 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
      */
     protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
     {
+        if ("OK" == $this->saveLabel) {
+            $this->saveLabel = $this->_('Save');
+        }
+        
         if ($this->_form instanceof \Gems\TabForm) {
             $this->_form->resetContext();
         }
@@ -382,7 +378,21 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
      */
     protected function setAfterSaveRoute()
     {
-        $this->afterSaveRouteUrl = $this->menuHelper->getCurrentParentUrl();
+        if (! $this->afterSaveRouteUrl) {
+            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
+            $keys   = $this->getModel()->getMetaModel()->getKeys();
+            $params = [];
+            foreach ($keys as $key => $field) { 
+                if (isset($this->formData[$field])) {
+                    $params[$key] = $this->formData[$field];
+                } else {
+                    $params[$key] = null;
+                }
+            }
+            
+            $saveRoute = $this->menuHelper->getCurrentParentRoute();
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($saveRoute, $params);
+        }
         parent::setAfterSaveRoute();
     }
 }

@@ -29,7 +29,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
  *
  * Extra helpers are:
  * - Menu helpers:    $this->menu, findMenuItem()
- * - Sort parameters: $sortParamAsc & $sortParamDesc
  *
  * @package    Gems
  * @subpackage Snippets
@@ -80,20 +79,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      */
     protected bool $showMenu = true;
 
-    /**
-     * The $request param that stores the ascending sort
-     *
-     * @var string
-     */
-    protected $sortParamAsc = 'asrt';
-
-    /**
-     * The $request param that stores the descending sort
-     *
-     * @var string
-     */
-    protected $sortParamDesc = 'dsrt';
-
     public function __construct(SnippetOptions $snippetOptions,
                                 protected RequestInfo $requestInfo,
                                 protected MenuSnippetHelper $menuHelper,
@@ -122,8 +107,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->menuHelper->getLateRelatedUrls($this->menuShowRoutes, $keys);
-            foreach ($showMenuItems as $linkParts) {
+            foreach ($this->getShowUrls($bridge, $keys) as $linkParts) {
                 if (! isset($linkParts['label'])) {
                     $linkParts['label'] = $this->_('Show');
                 }
@@ -137,8 +121,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         parent::addBrowseTableColumns($bridge, $dataModel);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->menuHelper->getLateRelatedUrls($this->menuEditRoutes, $keys);
-            foreach ($editMenuItems as $linkParts) {
+            foreach ($this->getEditUrls($bridge, $keys) as $linkParts) {
                 if (! isset($linkParts['label'])) {
                     $linkParts['label'] = $this->_('Edit');
                 }
@@ -184,47 +167,13 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     }
 
     /**
-     * Finds a specific active menu item
-     *
-     * @param string $defaultController
-     * @param string|array $actions
-     * @return array of \Gems\Menu\SubMenuItem
-     */
-    protected function findUrls(array|string $actions = ['index'], BridgeInterface $bridge = null)
-    {
-        $output = [];
-
-        foreach ((array) $actions as $keyOrLabel => $routeNameOrPart) {
-            if (str_contains($routeNameOrPart, '.')) {
-                $routeName = $routeNameOrPart;
-            } else {
-                $currentRoute = $this->requestInfo->getRouteName();
-                $routeName = substr($currentRoute, 0, strrpos($currentRoute, '.') + 1) . $routeNameOrPart;
-            }
-            try {
-                $route = $this->routeHelper->getRoute($routeName);
-            } catch (RouteNotFoundException $e) {
-                continue;
-            }
-
-            // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$keyOrLabel -> $routeNameOrPart <> $routeName\n", FILE_APPEND);
-            $output[$keyOrLabel] = $this->routeHelper->getLateRouteUrl($routeName, $bridge->getModel()->getMetaModel()->getKeys());
-        }
-
-        return $output;
-    }
-
-    /**
      * Returns an edit menu item, if access is allowed by privileges
      *
      * @return string[]
      */
-    protected function getEditUrls(TableBridge $bridge): array
+    protected function getEditUrls(TableBridge $bridge, array $keys): array
     {
-        if ($this->menuEditRoutes) {
-            return $this->findUrls($this->menuEditRoutes, $bridge);
-        }
-        return [];
+        return $this->menuHelper->getLateRelatedUrls($this->menuEditRoutes, $keys);
     }
 
     public function getHtmlOutput()
@@ -234,8 +183,11 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
         if ($this->containingId) {
             $this->applyHtmlAttributes($table);
-
-            return $table;
+            
+            $div = Html::div();
+            $div->append($table);
+            $div->id = $this->containingId;
+            return $div;
         } else {
             return $table;
         }
@@ -243,14 +195,9 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
 
     /**
      * Returns a show menu item, if access is allowed by privileges
-     *
-     * @return string[]
      */
-    protected function getShowUrls(TableBridge $bridge): array
+    protected function getShowUrls(TableBridge $bridge, array $keys): array
     {
-        if ($this->menuShowRoutes) {
-            return $this->findUrls($this->menuShowRoutes, $bridge);
-        }
-        return [];
+        return $this->menuHelper->getLateRelatedUrls($this->menuShowRoutes, $keys);
     }
 }

@@ -12,8 +12,13 @@
 namespace Gems\Snippets\Staff;
 
 use Gems\Html;
+use Gems\Loader;
+use Gems\MenuNew\MenuSnippetHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -36,23 +41,24 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $_fixedSort = array('name' => SORT_ASC);
 
     /**
-     *
-     * @var \Gems\Loader
+     * Menu routes or routeparts to show in Edit box.
      */
-    protected $loader;
-
-    /**
-     * The default controller for menu actions, if null the current controller is used.
-     *
-     * @var array (int/controller => action)
-     */
-    public $menuActionController = 'staff';
+    public array $menuEditRoutes = ['reset', 'edit'];
 
     /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(SnippetOptions $snippetOptions,
+                                protected RequestInfo $requestInfo,
+                                protected MenuSnippetHelper $menuHelper,
+                                protected Loader $loader,
+                                TranslatorInterface $translate)
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -95,23 +101,5 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         return $model;
-    }
-
-    /**
-     * Returns an edit menu item, if access is allowed by privileges
-     */
-    protected function getEditUrls(TableBridge $bridge): array
-    {
-        $resets = $this->findUrls('reset', $bridge);
-        foreach ($resets as $resetPw) {
-            if ($resetPw instanceof \Gems\Menu\SubMenuItem) {
-                $resetPw->set('label', $this->_('password'));
-            }
-        }
-        return array_merge(
-            parent::getEditUrls($bridge),
-            $resets,
-            $this->findUrls('mail', $bridge)
-        );
     }
 }

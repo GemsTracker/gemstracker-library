@@ -72,11 +72,11 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        MenuSnippetHelper $menuSnippetHelper,
+        MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected Zend_Db_Adapter_Abstract $db,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         if (empty($this->trackId)) {
             throw new Coding('Provide a trackId to this snippet!');
         }

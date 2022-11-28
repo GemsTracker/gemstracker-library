@@ -9,9 +9,17 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use Gems\Util\ConsentUtil;
 use Gems\Util\Translated;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -20,7 +28,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
+class MailCodeHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * @var array
@@ -32,26 +40,31 @@ class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = ['mailcodes'];
+    public array $cacheTags = ['mailcodes'];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort' => ['gmc_id' => SORT_ASC],
         ];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+        protected Translated $translatedUtil,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate);
+    }
     
     /**
      * @inheritDoc
      */
-    protected function createModel($detailed, $action)
+    protected function createModel($detailed, $action): ModelAbstract
     {
         $yesNo  = $this->translatedUtil->getYesNo();
         
@@ -99,9 +112,9 @@ class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {
             if ('create' == $action || 'edit' == $action) {
-                $this->loader->getModels()->addDatabaseTranslationEditFields($model);
+                $this->modelLoader->addDatabaseTranslationEditFields($model);
             } else {
-                $this->loader->getModels()->addDatabaseTranslations($model);
+                $this->modelLoader->addDatabaseTranslations($model);
             }
         }
         
@@ -124,7 +137,7 @@ class MailCodeAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('mail code', 'mail codes', $count);
     }
