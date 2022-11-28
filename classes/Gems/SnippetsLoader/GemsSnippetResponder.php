@@ -30,6 +30,8 @@ use Zalt\SnippetsLoader\SnippetLoader;
  */
 class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 {
+    protected MenuSnippetHelper $menuHelper;
+    
     public function __construct(
         protected SnippetLoader $snippetLoader,
         protected LayoutRenderer $layoutRenderer
@@ -44,7 +46,10 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             return $output;
         }
 
+        $cookies = array_reverse($this->menuHelper->getCurrentParentUrls(10));
+        $cookies[] = ['label' =>  $this->menuHelper->getCurrentLabel()];
         $data = [
+            'cookieTrail' => $cookies,
             'content' => $output->getBody(),
         ];
         $statusCode = 200;
@@ -66,9 +71,9 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         $menu = $request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
 
         if ($menu) {
-            $menuHelper = new MenuSnippetHelper($menu, $requestInfo);
+            $this->menuHelper = new MenuSnippetHelper($menu, $requestInfo);
             
-            $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $menuHelper);
+            $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $this->menuHelper);
         }        
         
         return $requestInfo;

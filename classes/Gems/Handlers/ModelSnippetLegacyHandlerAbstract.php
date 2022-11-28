@@ -14,7 +14,6 @@ namespace Gems\Handlers;
 use Gems\MenuNew\RouteHelper;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
@@ -187,10 +186,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var mixed String or array of snippets name
      */
     protected array $deleteSnippets = [
-        ContentTitleSnippet::class,
-        ModelDetailTableSnippet::class,
         ModelItemYesNoDeleteSnippet::class,
-        CurrentButtonRowSnippet::class,
         ];
 
     /**

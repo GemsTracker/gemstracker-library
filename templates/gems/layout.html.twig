@@ -27,6 +27,7 @@
     <div class="content">
         <div id="main-container" class="include-menu">
             <div id="main">
+                {% if cookieTrail is defined %}{{ include('@layout/cookie-trail.html.twig') }}{% endif %}
                 {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
 
                 {% block content %}{% endblock %}

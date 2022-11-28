@@ -68,7 +68,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
     public function createModel(bool $detailed, string $action): ModelAbstract
     {
         $model = new TableModel('gems__consents');
-        // $model->copyKeys(); // The user can edit the keys.
+        $model->copyKeys(); // The user can edit the keys.
         $model->addColumn('gco_description', 'origKey');
 
         $model->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
@@ -88,7 +88,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
             $this->modelLoader->addDatabaseTranslationEditFields($model);
         } else {
             $this->modelLoader->addDatabaseTranslations($model);
-            $model->setKeys(['origKey']);
+            // $model->setKeys(['origKey']);
         }
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);

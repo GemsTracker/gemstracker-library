@@ -1,0 +1,9 @@
+<div id="cookieTrail" class="cookieTrail">
+    {% for cookie in cookieTrail %}
+        {% if cookie.url is defined %}
+            <a href="{{ cookie.url }}" class="parent-crumb crumb">{{ cookie.label }}</a> /
+        {%  else %}
+            <span class="current-crumb crumb">{{ cookie.label }}</span>
+        {% endif %}
+    {% endfor %}
+</div>

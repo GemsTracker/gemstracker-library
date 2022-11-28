@@ -11,9 +11,13 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Ask Yes/No conformation for deletion and deletes item when confirmed.
@@ -48,22 +52,19 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
      */
     protected $displayTitle;
 
-    /**
-     * Required
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
+    public function __construct(SnippetOptions $snippetOptions,
+                                protected RequestInfo $requestInfo,
+                                protected MenuSnippetHelper $menuHelper,
+                                TranslatorInterface $translate)
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+    }
 
     /**
      * Adds rows from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
-     *
-     * @param \Zalt\Snippets\ModelBridge\DetailTableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
-     * @return void
      */
     protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
     {
@@ -99,6 +100,13 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
 
     public function getHtmlOutput()
     {
+        if (! $this->abortUrl) {
+            $this->abortUrl = $this->menuHelper->getCurrentParentRoute();
+        }
+        if (! $this->afterDeleteUrl) {
+            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'));
+        }
+        
         if ($table = parent::getHtmlOutput()) {
             if ($title = $this->getTitle()) {
                 $htmlDiv = Html::div();

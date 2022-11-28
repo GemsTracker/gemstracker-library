@@ -88,6 +88,24 @@ class MenuSnippetHelper
     }
 
     /**
+     * @return string label
+     */
+    public function getCurrentLabel(): string
+    {
+        $current = $this->requestInfo->getRouteName();
+        if ($current) {
+            try {
+                $menuItem = $this->menu->find($current);
+                if ($menuItem instanceof RouteLinkItem) {
+                    return $menuItem->label;
+                }
+            } catch (MenuItemNotFoundException $minfe) {
+            }
+        }
+        return '';
+    }
+    
+    /**
      * @param int $maxSteps
      * @return array[] routename => [label, url]
      */
@@ -97,6 +115,7 @@ class MenuSnippetHelper
         if (null===$current) {
             return [];
         }
+        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  "$current\n", FILE_APPEND);
         $routes = $this->getParentRoutes($current, $maxSteps);
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
@@ -198,8 +217,7 @@ class MenuSnippetHelper
                 $menuItem = $this->menu->find($current);
                 $parent   = $menuItem->getParent();
                 if ($parent instanceof RouteLinkItem) {
-                    $current          = $menuItem->name;
-                    $output[$current] = $current;
+                    $output[$parent->name] = $current = $parent->name;
                 } else {
                     break;
                 }
@@ -208,6 +226,15 @@ class MenuSnippetHelper
             }
         }
         return $output;
+    }
+
+    /**
+     * @param array $routePart Route part related to current, e.g. a different action in the same route.
+     * @return array route
+     */
+    public function getRelatedRoute(string $routePart): array
+    {
+        return $this->routeHelper->getRelatedRoute($this->requestInfo->getRouteName(), $routePart) ?: '';
     }
 
     /**
