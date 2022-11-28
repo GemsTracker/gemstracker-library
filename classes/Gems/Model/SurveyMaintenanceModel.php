@@ -12,6 +12,7 @@
 namespace Gems\Model;
 
 use Gems\Db\ResultFetcher;
+use Gems\Locale\Locale;
 use Gems\Model;
 use Gems\Pdf;
 use Gems\Repository\AccessRepository;
@@ -19,10 +20,13 @@ use Gems\Repository\OrganizationRepository;
 use Gems\Repository\SurveyRepository;
 use Gems\Tracker;
 use Gems\Tracker\TrackEvents;
+use Gems\Util\Localized;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use MUtil\Model\Type\ConcatenatedRow;
 use MUtil\Validate\RequireOtherField;
+use Symfony\Component\Intl\Languages;
+use Symfony\Component\Intl\Locales;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlElement;
 use Zalt\Html\Raw;
@@ -59,6 +63,11 @@ class SurveyMaintenanceModel extends JoinModel
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
+
+    /**
+     * @var Locale
+     */
+    public $locale;
 
     /**
      * @var Model
@@ -605,11 +614,11 @@ class SurveyMaintenanceModel extends JoinModel
 
         foreach ($split as $key => $locale) {
             $localized = '';
-            if (\Zend_Locale::isLocale($locale, false)) {
+            if (Locales::exists($locale)) {
                 if ($native) {
-                    $localized = \Zend_Locale::getTranslation($locale, 'Language', $locale);
+                    $localized = Languages::getName($locale, $locale);
                 } else {
-                    $localized = \Zend_Locale::getTranslation($locale, 'Language');
+                    $localized = Languages::getName($locale, $this->locale->getLanguage());
                 }
             }
             $split[$key] = $localized ? $localized : $locale;

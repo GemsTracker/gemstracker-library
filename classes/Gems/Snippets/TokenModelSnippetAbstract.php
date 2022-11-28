@@ -14,6 +14,7 @@ namespace Gems\Snippets;
 use Gems\Cache\HelperAdapter;
 use Gems\Loader;
 use Gems\Locale\Locale;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -63,12 +64,12 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         protected RequestInfo $requestInfo,
-        protected RouteHelper $routeHelper,
+        protected MenuSnippetHelper $menuSnippetHelper,
         TranslatorInterface $translate,
         protected Loader $loader,
     )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $routeHelper, $translate);
+        parent::__construct($snippetOptions, $this->requestInfo, $menuSnippetHelper, $translate);
 
         $this->util = $loader->getUtil();
     }

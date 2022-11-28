@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
 use MUtil\Model\SelectModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -71,11 +72,11 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        MenuSnippetHelper $menuSnippetHelper,
         TranslatorInterface $translate,
         protected Zend_Db_Adapter_Abstract $db,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
         if (empty($this->trackId)) {
             throw new Coding('Provide a trackId to this snippet!');
         }

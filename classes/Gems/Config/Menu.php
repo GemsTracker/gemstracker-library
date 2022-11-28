@@ -1051,7 +1051,7 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'track-builder.survey-maintenance.export-codebook',
+                                    'name' => 'track-builder.survey-maintenance.export-codebook.export',
                                     'label' => $this->translator->trans('Export codebook'),
                                     'type' => 'route-link-item',
                                 ],

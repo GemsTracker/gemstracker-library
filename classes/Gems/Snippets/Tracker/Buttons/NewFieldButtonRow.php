@@ -32,19 +32,14 @@ class NewFieldButtonRow extends CurrentButtonRowSnippet
     protected function addButtons(): array
     {
         $menuList = [];
-        $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-fields.create');
 
-        $matchedParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();
+        $matchedParams = $this->requestInfo->getRequestMatchedParams();
 
-        if ($this->trackId) {
-            $matchedParams['trackId'] = (int)$this->trackId;
-        }
-
-        $params = $this->routeHelper->getRouteParamsFromKnownParams($route, $matchedParams);
+        $route = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.track-fields.create', $matchedParams);
 
         $menuList[] = [
             'label' => $this->_('New field'),
-            'url' => $this->routeHelper->getRouteUrl($route['name'], $params),
+            'url' =>$route,
         ];
 
         return $menuList;

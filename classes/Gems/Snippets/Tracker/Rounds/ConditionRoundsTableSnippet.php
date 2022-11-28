@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Condition\ConditionInterface;
 use Gems\Condition\RoundConditionInterface;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
@@ -77,11 +78,12 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        MenuSnippetHelper $menuSnippetHelper,
         Translator $translate,
         protected Translated $translatedUtil
+
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
         $this->caption = $this->translate->_('Rounds with this condition');
         $this->onEmpty = $this->translate->_('No rounds using this condition found');
 

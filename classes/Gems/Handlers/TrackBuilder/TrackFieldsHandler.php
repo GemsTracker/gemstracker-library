@@ -189,7 +189,7 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     {
         return sprintf(
                 $this->_('New field for %s track...') ,
-                $this->trackDataRepository->getTrackTitle($this->_getIdParam())
+                $this->trackDataRepository->getTrackTitle($this->getTrackId())
                 );
     }
 
@@ -200,7 +200,7 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return sprintf($this->_('Fields %s'), $this->trackDataRepository->getTrackTitle($this->_getIdParam()));
+        return sprintf($this->_('Fields %s'), $this->trackDataRepository->getTrackTitle($this->getTrackId()));
     }
 
     /**

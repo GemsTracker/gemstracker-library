@@ -10,11 +10,12 @@
 
 namespace Gems\Util;
 
-use DateInterval;
 use DateTimeImmutable;
-use DateTimeInterface;
 use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
+use MUtil\Translate\Translator;
+use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
 
 /**
  * Provides translated strings for default options like gender and takes care of date/time formatting
@@ -56,7 +57,7 @@ class Translated
      */
     public static $emptyDropdownArray;
 
-    public function __construct(\MUtil\Translate\Translator $translator)
+    public function __construct(Translator $translator)
     {
         $this->translate = $translator;
 
@@ -177,7 +178,7 @@ class Translated
      * Get a readable version of date / time object with nearby days translated in text
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDate($dateValue)
     {
@@ -189,14 +190,14 @@ class Translated
      * or 'forever' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateForever($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('forever'), array('class' => 'disabled'));
         }
     }
 
@@ -205,14 +206,14 @@ class Translated
      * or 'n/a' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateNa($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
         }
     }
 
@@ -221,14 +222,14 @@ class Translated
      * or 'never' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateNever($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('never'), array('class' => 'disabled'));
         }
     }
 
@@ -250,14 +251,14 @@ class Translated
      * or 'forever' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateTimeForever($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('forever'), array('class' => 'disabled'));
         }
     }
 
@@ -266,14 +267,14 @@ class Translated
      * or 'n/a' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateTimeNa($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
         }
     }
 
@@ -282,14 +283,14 @@ class Translated
      * or 'never' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateTimeNever($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('never'), array('class' => 'disabled'));
         }
     }
 
@@ -298,14 +299,14 @@ class Translated
      * or 'unknown' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateTimeUnknown($dateValue)
     {
         if ($dateValue) {
             return $this->describeTimeFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
@@ -314,14 +315,14 @@ class Translated
      * or 'unknown' when null
      *
      * @param mixed $dateValue
-     * @return string|\MUtil\Html\HtmlElement
+     * @return string|HtmlElement
      */
     public function formatDateUnknown($dateValue)
     {
         if ($dateValue) {
             return $this->describeDateFromNow($dateValue);
         } else {
-            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
@@ -362,7 +363,7 @@ class Translated
     public function formatTimeUnknown($dateTimeValue)
     {
         if (null === $dateTimeValue) {
-            return \MUtil\Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         } else {
             return $this->formatTime($dateTimeValue);
         }
@@ -471,7 +472,7 @@ class Translated
         static $data;
 
         if (! $data) {
-            $data = array(1 => $this->_('Yes'), 0 => $this->_('No'));
+            $data = [1 => $this->_('Yes'), 0 => $this->_('No')];
         }
 
         return $data;
@@ -486,7 +487,7 @@ class Translated
     public function markEmpty($value)
     {
         if (empty($value)) {
-            $em = \MUtil\Html::create('em');
+            $em = Html::create('em');
             $em->raw($this->_('&laquo;empty&raquo;'));
 
             return $em;

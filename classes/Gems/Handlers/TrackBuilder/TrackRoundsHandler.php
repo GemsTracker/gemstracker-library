@@ -15,7 +15,7 @@ use Gems\Db\ResultFetcher;
 use Gems\MenuNew\RouteHelper;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
-use Gems\Tracker\Model\TrackModel;
+use Gems\Tracker\Model\RoundModel;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -36,12 +36,6 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $autofilterSnippets = ['Tracker\\Rounds\\RoundsTableSnippet'];
-
-    /**
-     *
-     * @var \Gems\Util\BasePath
-     */
-    public $basepath;
 
     /**
      * Variable to set tags for cache cleanup after changes
@@ -118,17 +112,17 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
         parent::__construct($routeHelper, $responder, $translate, $tracker);
     }
 
-    public function autofilterAction(bool $resetMvc = true): void
+    /*public function autofilterAction(bool $resetMvc = true): void
     {
         parent::autofilterAction($resetMvc);
 
         //If allowed, add the sort action
         /*if ($this->menu->findAllowedController($this->getRequest()->getControllerName(), 'sort')) {
-            $buttons = $this->_helper->SortableTable('sort', 'rid');
-            // First element is the wrapper
-            $this->html[0]->append($buttons);
-        }*/
-    }
+        //    $buttons = $this->_helper->SortableTable('sort', 'rid');
+        //    // First element is the wrapper
+        //    $this->html[0]->append($buttons);
+        //}
+    }*/
 
     /**
      * Create a new round
@@ -163,9 +157,9 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return TrackModel
+     * @return RoundModel
      */
-    public function createModel(bool $detailed, string $action): TrackModel
+    public function createModel(bool $detailed, string $action): RoundModel
     {
         $trackEngine = $this->getTrackEngine();
         $trackId     = $trackEngine->getTrackId();
@@ -194,7 +188,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     }
 
     /**
-     * Action for showing a edit item page
+     * Action for showing an edit item page
      */
     public function editAction(): void
     {
@@ -205,7 +199,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
     public function getIndexTitle(): string
     {
@@ -216,7 +210,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     /**
      * Get the current round id
      *
-     * @return int
+     * @return int|null
      */
     protected function getRoundId(): ?int
     {
@@ -249,7 +243,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
     public function getTopic(int $count = 1): string
     {

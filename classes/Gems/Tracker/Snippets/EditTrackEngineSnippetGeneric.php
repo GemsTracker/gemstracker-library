@@ -11,8 +11,18 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Project\ProjectSettings;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Tracker;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use MUtil\Bootstrap\Form\Element\ToggleCheckboxes;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Basic snippet for editing track engines instances
@@ -23,50 +33,39 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstract
+class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
 {
     /**
      *
      * @var string Field for storing the old track class
      */
-    protected $_oldClassName = 'old__gtr_track_class';
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    protected string $_oldClassName = 'old__gtr_track_class';
 
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var \Gems\Tracker\Engine\TrackEngineInterface
+     * @var TrackEngineInterface|null
      */
-    protected $trackEngine;
+    protected ?TrackEngineInterface $trackEngine = null;
 
     /**
      * Optional, required when creating or $engine should be set
      *
-     * @var int Track Id
+     * @var int TrackId
      */
-    protected $trackId;
+    protected ?int $trackId = null;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected Tracker $tracker,
+        protected ProjectSettings $project
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -74,8 +73,8 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FormBridgeInterface $bridge
+     * @param FullDataInterface $model
      */
     protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
@@ -111,8 +110,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
                 $classEdit = false;
             }
         } else {
-            $tracker = $this->loader->getTracker();
-            $options = $tracker->getTrackEngineList(true, true);
+            $options = $this->tracker->getTrackEngineList(true, true);
             $classEdit = true;
         }
         $model->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
@@ -144,31 +142,20 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
         }
         $bridge->add('gtr_organizations');
 
-        $element = new \MUtil\Bootstrap\Form\Element\ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
+        $element = new ToggleCheckboxes('toggleOrg', ['selector'=>'input[name^=gtr_organizations]']);
 
         $element->setLabel($this->_('Toggle'));
         $bridge->addElement($element);
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->db && $this->loader && parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
-        $model = $this->loader->getTracker()->getTrackModel();
+        $model = $this->tracker->getTrackModel();
         $model->applyFormatting(true, true);
 
         return $model;
@@ -176,7 +163,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
 
     /**
      *
-     * @return \Gems\Menu\MenuList
+     * @return array
      * /
     protected function getMenuList()
     {
@@ -194,9 +181,9 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      * Helper function to allow generalized statements about the items in the model to used specific item names.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('track', 'tracks', $count);
     }
@@ -205,7 +192,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      *
      * @return string The header title to display
      */
-    protected function getTitle()
+    protected function getTitle(): string
     {
         if ($this->createData) {
             return $this->_('Add new track');
@@ -219,7 +206,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
      * to generate the snippet.
      *
      * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
+     * here, but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
      * {@see \MUtil\Registry\TargetInterface}.
      *
@@ -238,7 +225,7 @@ class EditTrackEngineSnippetGeneric extends \Gems\Snippets\ModelFormSnippetAbstr
             // Try to get $this->trackEngine filled
             if (! $this->trackEngine) {
                 // Set the engine used
-                $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
+                $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
         } else {

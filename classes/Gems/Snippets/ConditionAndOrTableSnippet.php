@@ -12,6 +12,7 @@
 namespace Gems\Snippets;
 
 use Gems\Condition\ConditionLoader;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\MenuNew\RouteHelper;
 use Gems\Model\ConditionModel;
 use MUtil\Model;
@@ -68,11 +69,11 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        RouteHelper $routeHelper,
+        MenuSnippetHelper $menuSnippetHelper,
         Translator $translate,
         protected ConditionLoader $conditionLoader
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper, $translate);
         $this->caption = $translate->_('Conditions with this condition');
         $this->onEmpty = $translate->_('No conditions using this condition found');
     }

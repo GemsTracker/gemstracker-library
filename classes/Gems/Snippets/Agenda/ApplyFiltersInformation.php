@@ -12,7 +12,8 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
-use MUtil\Request\RequestInfo;
+use Zalt\Html\HtmlInterface;
+use Zalt\Snippets\TranslatableSnippetAbstract;
 
 /**
  *
@@ -22,23 +23,16 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 08-Jan-2020 12:30:07
  */
-class ApplyFiltersInformation extends \MUtil\Snippets\SnippetAbstract
+class ApplyFiltersInformation extends TranslatableSnippetAbstract
 {
-
-    /**
-     * @var RequestInfo
-     */
-    protected $requestInfo;
-
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput(): HtmlInterface
     {
         $seq = $this->getHtmlSequence();
         $seq->br();
@@ -80,7 +74,7 @@ class ApplyFiltersInformation extends \MUtil\Snippets\SnippetAbstract
      * to generate the snippet.
      *
      * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
+     * here, but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
      * {@see \MUtil\Registry\TargetInterface}.
      *
