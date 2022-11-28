@@ -11,6 +11,14 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\User;
+use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Snippets\TabSnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  * Displays tabs for multiple organizations.
  *
@@ -20,41 +28,19 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
+class MultiOrganizationTab extends TabSnippetAbstract
 {
-    protected $href = [];
+    protected User $currentUser;
 
-    /**
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var array id specific hrefs
-     */
-    protected $hrefs;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    protected $respondent;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Return the parameters that should be used for this tabId
@@ -74,13 +60,11 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
      */
     protected function getTabs()
     {
-        $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
-
         $this->defaultTab = $this->currentUser->getCurrentOrganizationId();
 
         $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
-            $this->currentTab = $queryParams[\MUtil\Model::REQUEST_ID2];
+        if (isset($queryParams[Model::REQUEST_ID2])) {
+            $this->currentTab = $queryParams[Model::REQUEST_ID2];
         }
 
         $allowedOrgs  = $this->currentUser->getRespondentOrganizations();
@@ -91,8 +75,8 @@ class MultiOrganizationTab extends \MUtil\Snippets\TabSnippetAbstract
             if (isset($existingOrgs[$orgId])) {
                 $tabs[$orgId] = $name;
                 $this->hrefs[$orgId] = [
-                    \MUtil\Model::REQUEST_ID1 => $existingOrgs[$orgId],
-                    \MUtil\Model::REQUEST_ID2 => $orgId,
+                    Model::REQUEST_ID1 => $existingOrgs[$orgId],
+                    Model::REQUEST_ID2 => $orgId,
                     'RouteReset' => true,
                 ];
             }

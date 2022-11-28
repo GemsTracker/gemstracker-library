@@ -12,6 +12,10 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Model\CommLogModel;
+use Gems\Tracker\Respondent;
+
 /**
  * Controller for looking at mail activity
  *
@@ -21,14 +25,8 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstract
+class RespondentMailLogHandler extends RespondentChildHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    private $_respondent;
-
     /**
      * The parameters used for the autofilter action.
      *
@@ -39,29 +37,29 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = [
         'browse'        => true,
         'containingId'  => 'autofilter_target',
         'keyboard'      => true,
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
-        'extraSort'     => array('grco_created' => SORT_DESC)
-        );
+        'extraSort'     => ['grco_created' => SORT_DESC]
+    ];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Mail\\Log\\MailLogBrowseSnippet';
+    protected array $autofilterSnippets = ['Mail\\Log\\MailLogBrowseSnippet'];
 
     /**
      * The default search data to use.
      *
      * @var array()
      */
-    protected $defaultSearchData = array(\Gems\Snippets\AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created');
+    protected array $defaultSearchData = [\Gems\Snippets\AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created'];
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -73,16 +71,16 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = array(
+    protected array $indexParameters = [
         'contentTitle' => 'getContentTitle',
-        );
+    ];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Mail\\Log\\RespondentMailLogSearchSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Mail\\Log\\RespondentMailLogSearchSnippet'];
 
 
     /**
@@ -90,7 +88,7 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = array('Generic\\CurrentButtonRowSnippet');
+    protected array $indexStopSnippets = ['Generic\\CurrentButtonRowSnippet'];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -103,7 +101,7 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): CommLogModel
     {
         $model = $this->loader->getModels()->getCommLogModel($detailed);
 
@@ -139,11 +137,11 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
     /**
      * Get the respondent object
      *
-     * @return \Gems\Tracker\Respondent
+     * @return Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
-        if (! $this->_respondent instanceof \Gems\Tracker\Respondent) {
+        if (! $this->_respondent instanceof Respondent) {
             if ($this->_getParam(\MUtil\Model::REQUEST_ID1) && $this->_getParam(\MUtil\Model::REQUEST_ID2)) {
                 $this->_respondent = parent::getRespondent();
 
@@ -177,9 +175,9 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('communication activity', 'communication activities', $count);
     }
@@ -190,7 +188,7 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -205,7 +203,7 @@ class RespondentMailLogAction extends \Gems\Actions\RespondentChildActionAbstrac
     /**
      * Resend a log item
      */
-    public function resendAction()
+    public function resendAction(): void
     {
         $this->addSnippets('Gems\\Snippets\\Communication\\ResendCommLogItemSnippet');
     }

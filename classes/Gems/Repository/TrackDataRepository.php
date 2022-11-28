@@ -11,6 +11,30 @@ class TrackDataRepository
     public function __construct(protected UtilDbHelper $utilDbHelper, protected ResultFetcher $resultFetcher)
     {}
 
+    public function getActiveTracksForOrgs(array $organizationIds)
+    {
+        $where = new Predicate();
+
+        $whereNest = $where->equalTo('gtr_active', 1)->and->nest();
+
+        foreach($organizationIds as $key=>$organizationId) {
+            $whereNest->like('gtr_organizations', "%|$organizationId|%");
+            if ($key !== array_key_first($organizationIds) && $key !== array_key_last($organizationIds)) {
+                $whereNest = $whereNest->or;
+            }
+        }
+        $where = $whereNest->unnest();
+
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__tracks',
+            'gtr_id_track',
+            'gtr_track_name',
+            ['tracks'],
+            [$where],
+            'asort'
+        );
+    }
+
     /**
      * Returns array (id => name) of all tracks, sorted alphabetically
      *

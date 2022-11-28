@@ -626,7 +626,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
 
         // Calculate valid from
         if ($detailed) {
-            $html = \MUtil\Html::create()->h4($this->_('Valid from calculation'));
+            $html = \Zalt\Html\Html::create()->h4($this->_('Valid from calculation'));
             $model->set('valid_after',
                     'default', $html,
                     'label', ' ',

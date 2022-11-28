@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Tracker\Model\RespondentTrackModel;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 
@@ -23,7 +25,7 @@ use Mezzio\Session\SessionMiddleware;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
+class TrackHandler extends RespondentChildHandlerAbstract
 {
     /**
      *
@@ -36,7 +38,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $answerExportParameters = [
+    protected array $answerExportParameters = [
         'formTitle' => 'getTokenTitle',
         'hideGroup' => true,
     ];
@@ -46,14 +48,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $answerExportSnippets = ['Export\\RespondentExportSnippet'];
+    protected array $answerExportSnippets = ['Export\\RespondentExportSnippet'];
 
     /**
      * The parameters used for the answers action.
      *
      * Currently filled from $defaultTokenParameters
      */
-    protected $answerParameters = [];
+    protected array $answerParameters = [];
 
     /**
      * The parameters used for the autofilter action.
@@ -65,7 +67,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraFilter'     => 'getRespondentFilter',
         'extraSort'       => ['gr2t_start_date' => SORT_DESC],
         'menuEditRoutes' => ['edit-track'],
@@ -78,7 +80,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = [
+    protected array $autofilterSnippets = [
         'Tracker\\TrackTableSnippet',
         //'Tracker\\Buttons\\TrackIndexButtonRow',
         'Tracker\\AvailableTracksSnippet',
@@ -94,14 +96,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $checkTokenParameters = [];
+    protected array $checkTokenParameters = [];
 
     /**
      * Snippets for the check token actions
      *
      * @var mixed String or array of snippets name
      */
-    protected $checkTokenSnippets = [
+    protected array $checkTokenSnippets = [
         'Token\\CheckTokenEvents',
         'Survey\\SurveyQuestionsSnippet'
     ];
@@ -111,7 +113,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $correctParameters = [
+    protected array $correctParameters = [
         'fixedReceptionCode' => 'redo',
         'formTitle'          => 'getCorrectTokenTitle',
     ];
@@ -127,7 +129,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = [
+    protected array $createParameters = [
         'createData'  => true,
         'formTitle'   => 'getCreateTrackTitle',
         'multiTracks' => 'isMultiTracks',
@@ -141,7 +143,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $createSnippets = [
+    protected array $createSnippets = [
         'Tracker\\TrackUsageOverviewSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\EditTrackSnippet',
@@ -164,7 +166,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $defaultTokenParameters = [
+    protected array $defaultTokenParameters = [
         'model'      => null,
         'respondent' => null,
         'token'      => 'getToken',
@@ -181,7 +183,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialisation
      */
-    protected $deleteParameters = [
+    protected array $deleteParameters = [
         'formTitle'     => null,
         'topicCallable' => 'getTokenTopicCallable',
     ];
@@ -191,7 +193,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteTrackParameters = [
+    protected array $deleteTrackParameters = [
         'formTitle'         => null,
         'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
@@ -206,7 +208,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteTrackSnippets = [
+    protected array $deleteTrackSnippets = [
         'Tracker\\DeleteTrackSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
@@ -217,7 +219,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $editParameters = [
+    protected array $editParameters = [
         'formTitle'     => null,
         'topicCallable' => 'getTokenTopicCallable',
     ];
@@ -228,7 +230,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $editTrackParameters = [
+    protected array $editTrackParameters = [
         'createData'        => false,
         'formTitle'         => 'getTrackTitle',
         'multiTracks'       => 'isMultiTracks',
@@ -243,7 +245,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $editTrackSnippets = [
+    protected array $editTrackSnippets = [
         'Tracker\\EditTrackSnippet',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
@@ -255,7 +257,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * Currently mostly filled from $defaultTokenParameters
      */
-    protected $emailParameters = [
+    protected array $emailParameters = [
         'formTitle'    => 'getEmailTokenTitle',
         'identifier'   => '_getIdParam',
         'mailTarget'   => 'token',
@@ -270,14 +272,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $emailSnippets = ['Mail\\TokenMailFormSnippet'];
+    protected array $emailSnippets = ['Mail\\TokenMailFormSnippet'];
 
     /**
      * The parameters used for the export track action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $exportTrackParameters = [
+    protected array $exportTrackParameters = [
         'formTitle'         => 'getTrackTitle',
         'respondentTrack'   => 'getRespondentTrack',
     ];
@@ -287,14 +289,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $exportTrackSnippets = ['Export\\RespondentExportSnippet'];
+    protected array $exportTrackSnippets = ['Export\\RespondentExportSnippet'];
 
     /**
      * The parameters used for the insert action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $insertParameters = [
+    protected array $insertParameters = [
         'createData' => true,
         'formTitle'  => 'getInsertInTrackTitle',
         'model'      => null,
@@ -305,14 +307,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $insertSnippets = ['Tracker\\InsertSurveySnippet'];
+    protected array $insertSnippets = ['Tracker\\InsertSurveySnippet'];
 
     /**
      * The parameters used for the questions action.
      *
      * Currently mostly filled from $defaultTokenParameters
      */
-    protected $questionsParameters = [
+    protected array $questionsParameters = [
         'surveyId' => 'getSurveyId',
     ];
 
@@ -321,7 +323,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $questionsSnippets = [
+    protected array $questionsSnippets = [
         'Survey\\SurveyQuestionsSnippet',
         'Tracker\\Buttons\\TokenActionButtonRow',
     ];
@@ -331,7 +333,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showTrackParameters = [
+    protected array $showTrackParameters = [
         'contentTitle'      => 'getTrackTitle',
         'extraFilter'       => 'getNoRespondentFilter',
         'multiTracks'       => 'isMultiTracks',
@@ -347,7 +349,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showTrackSnippets = [
+    protected array $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelItemTableSnippet',
@@ -368,14 +370,14 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = ['index', 'autofilter', 'create', 'view', 'view-survey'];
+    public array $summarizedActions = ['index', 'autofilter', 'create', 'view', 'view-survey'];
 
     /**
      * The actions that should result in the survey return being set.
      *
      * @var array
      */
-    protected $tokenReturnActions = [
+    protected array $tokenReturnActions = [
         'index',
         'show',
         'show-track',
@@ -392,7 +394,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $viewParameters = [
+    protected array $viewParameters = [
         'contentTitle' => 'getViewTrackTitle',
         'multiTracks'  => 'isMultiTracks',
         'trackEngine'  => 'getTrackEngine',
@@ -404,7 +406,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $viewSnippets = [
+    protected array $viewSnippets = [
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Generic\\ContentTitleSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
@@ -415,7 +417,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * The parameters used for the viewSurveys action.
      */
-    protected $viewSurveyParameters = [
+    protected array $viewSurveyParameters = [
         'surveyId' => 'getSurveyId',
     ];
 
@@ -424,7 +426,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $viewSurveySnippets = [
+    protected array $viewSurveySnippets = [
         'Survey\\SurveyQuestionsSnippet'
     ];
 
@@ -623,7 +625,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * Uses separate createSnippets instead of createEditSnipppets
      */
-    public function createAction()
+    public function createAction(): void
     {
         if (! $this->isMultiTracks()) {
             // Fix for double pressing of create button
@@ -658,7 +660,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): RespondentTrackModel
     {
         $apply = true;
         $model = $this->loader->getTracker()->getRespondentTrackModel();
@@ -690,7 +692,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Delete a single token
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
         $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
@@ -713,7 +715,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Edit single token
      */
-    public function editAction()
+    public function editAction(): void
     {
         $this->editParameters      = $this->editParameters + $this->defaultTokenParameters;
         $this->createEditSnippets  = $this->getToken()->getEditSnippetNames();
@@ -814,7 +816,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         $respondent = $this->getRespondent();
 
@@ -1049,7 +1051,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('track', 'tracks', $count);;
     }
@@ -1299,7 +1301,7 @@ class TrackAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Show a single token, mind you: it can be a SingleSurveyTrack
      */
-    public function showAction()
+    public function showAction(): void
     {
         $this->showParameters = $this->showParameters + $this->defaultTokenParameters;
         $this->showSnippets   = $this->getToken()->getShowSnippetNames();

@@ -12,7 +12,10 @@
 namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Html;
+use Gems\Snippets\ModelTableSnippetAbstract;
+use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Model\RoundModel;
+use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -25,7 +28,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:39:42
  */
-class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class RoundsTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -41,7 +44,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
+    protected $bridgeMode = BridgeAbstract::MODE_ROWS;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -58,7 +61,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
+    //public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
 
     /**
      * Menu actions to show in Show box.
@@ -89,8 +92,8 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $model
      * @return void
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
@@ -172,17 +175,6 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
-    }
-
-    /**
      * Creates the model
      *
      * @return \MUtil\Model\ModelAbstract
@@ -192,6 +184,7 @@ class RoundsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
             $this->model->applyParameters(['gro_id_track' => $this->trackEngine->getTrackId()]);
+            $this->model->setKeys(['rid' => 'gro_id_round']);
         }
 
         $br = Html::create('br');

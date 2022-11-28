@@ -123,7 +123,7 @@ trait GenderTranslation
     {
         $locale = $this->translate->getLocale();
 
-        $translator = new \MUtil\Translate\Translator($this->translate->getLocale());
+        $translator = new Translator($this->translate->getLocale());
 
         // Add other languages through Event (e.g. Modules)
         $event = new TranslatorEvent($translator, $locale);

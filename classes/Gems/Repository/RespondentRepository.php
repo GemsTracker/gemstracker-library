@@ -4,17 +4,42 @@
 namespace Gems\Repository;
 
 
+use Gems\Model;
+use Gems\Model\RespondentModel;
+use Gems\Tracker\Respondent;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Predicate\PredicateSet;
+use Laminas\Db\TableGateway\TableGateway;
 use Psr\Http\Message\ServerRequestInterface;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
+use Zalt\Loader\ProjectOverloader;
 
 class RespondentRepository
 {
-    public function __construct(protected Adapter $db)
+    protected array $respondents = [];
+
+    public function __construct(protected Adapter $db, protected Model $modelLoader, protected ProjectOverloader $overLoader)
     {
+    }
+
+    public function getRespondent(?string $patientId, int $organizationId, ?int $respondentId = null): Respondent
+    {
+        if ($patientId) {
+            if (isset($this->respondents[$organizationId][$patientId])) {
+                return $this->respondents[$organizationId][$patientId];
+            }
+        }
+        $newResp = $this->overLoader->create('Tracker\\Respondent', $patientId, $organizationId, $respondentId);
+        $patientId = $newResp->getPatientNumber();
+
+        if (! isset($this->respondents[$organizationId][$patientId])) {
+            $this->respondents[$organizationId][$patientId] = $newResp;
+        }
+
+        return $this->respondents[$organizationId][$patientId];
     }
 
     public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int
@@ -27,6 +52,11 @@ class RespondentRepository
         return null;
     }
 
+    public function getRespondentModel(bool $detailed = false): RespondentModel
+    {
+        return $this->modelLoader->getRespondentModel($detailed);
+    }
+
     public function getPatient(string $patientNr, ?int $organizationId=null): ?array
     {
         $sql = new Sql($this->db);
@@ -35,6 +65,26 @@ class RespondentRepository
             ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
             ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
             ->where(['gr2o_patient_nr' => $patientNr]);
+        if ($organizationId !== null) {
+            $select->where(['gr2o_id_organization' => $organizationId]);
+        }
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        if ($result->valid()) {
+            return $result->current();
+        }
+        return null;
+    }
+
+    public function getPatientByRespondentId(int $respondentId, int $organizationId): ?array
+    {
+        $sql = new Sql($this->db);
+        $select = $sql->select();
+        $select->from('gems__respondent2org')
+            ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
+            ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
+            ->where(['grs_id_user' => $respondentId]);
         if ($organizationId !== null) {
             $select->where(['gr2o_id_organization' => $organizationId]);
         }
@@ -145,5 +195,18 @@ class RespondentRepository
     public function getRespondentIdFromRequest(ServerRequestInterface $request)
     {
 
+    }
+
+    public function setOpened(string $patientNr, int $organizationId, int $currentUserId): void
+    {
+        $table = new TableGateway('gems__respondent2org', $this->db);
+        $table->update([
+            'gr2o_opened' => new Expression('NOW()'),
+            'gr2o_opened_by' => $currentUserId,
+        ],
+        [
+            'gr2o_patient_nr' => $patientNr,
+            'gr2o_id_organization' => $organizationId,
+        ]);
     }
 }

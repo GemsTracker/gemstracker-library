@@ -212,6 +212,10 @@ class MenuSnippetHelper
     {
         $output  = [];
         $current = $this->getParentRoute($route);
+        if ($current === null) {
+            return $output;
+        }
+
         while (count($output) < $maxSteps) {
             try {
                 $menuItem = $this->menu->find($current);

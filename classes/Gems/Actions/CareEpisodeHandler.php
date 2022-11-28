@@ -11,6 +11,10 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Model\EpisodeOfCareModel;
+use Gems\Tracker\Respondent;
+
 /**
  *
  * @package    Gems
@@ -19,20 +23,14 @@ namespace Gems\Actions;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.4 16-May-2018 17:33:39
  */
-class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
+class CareEpisodeHandler extends RespondentChildHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    private $_respondent;
-
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort'   => ['gec_admission_time' => SORT_DESC],
     ];
 
@@ -41,7 +39,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Agenda\\EpisodeTableSnippet';
+    protected array $autofilterSnippets = ['Agenda\\EpisodeTableSnippet'];
 
     /**
      *
@@ -59,7 +57,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = [
+    protected array $indexParameters = [
         'contentTitle' => 'getContentTitle',
     ];
 
@@ -73,7 +71,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'bridgeMode' => \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS,   // Prevent lazyness
         'respondent' => 'getRespondent',
         ];
@@ -83,7 +81,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippet', 'Agenda\\AppointmentsTableSnippet'];
+    protected array $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippet', 'Agenda\\AppointmentsTableSnippet'];
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -96,7 +94,7 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): EpisodeOfCareModel
     {
         $respondent = $this->getRespondent();
 
@@ -144,9 +142,9 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Episodes of care');
     }
@@ -154,9 +152,9 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Get the respondent object
      *
-     * @return \Gems\Tracker\Respondent
+     * @return Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
             $id = $this->request->getAttribute(\Gems\Model::EPISODE_ID);
@@ -183,9 +181,9 @@ class CareEpisodeAction extends \Gems\Actions\RespondentChildActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         $respondent = $this->getRespondent();
         $patientId  = $respondent->getPatientNumber();

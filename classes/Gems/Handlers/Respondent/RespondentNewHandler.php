@@ -9,10 +9,20 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use Gems\Model\RespondentModel;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -23,20 +33,14 @@ use Gems\Screens\ProcessModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
+class RespondentNewHandler extends RespondentChildHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\AccessLog
-     */
-    public $accesslog;
-
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['gr2o_opened' => SORT_DESC],
         'respondent'  => null,
@@ -47,7 +51,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Respondent\\RespondentTableSnippet';
+    protected array $autofilterSnippets = [
+        'Respondent\\RespondentTableSnippet',
+    ];
 
     /**
      * The parameters used for the change consent action.
@@ -59,7 +65,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $changeConsentParameters = [
+    protected array $changeConsentParameters = [
         'editMailable'     => true,
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
@@ -72,7 +78,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $changeConsentSnippets = [
+    protected array $changeConsentSnippets = [
         'Respondent\\Consent\\RespondentConsentFormSnippet',
         'Respondent\\Consent\\RespondentConsentLogSnippet',
         ];
@@ -87,7 +93,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $changeOrganizationParameters = [
+    protected array $changeOrganizationParameters = [
         'keepConsent' => false,
     ];
 
@@ -96,7 +102,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $changeOrganizationSnippets = 'Respondent\\ChangeRespondentOrganization';
+    protected array $changeOrganizationSnippets = [
+        'Respondent\\ChangeRespondentOrganization'
+    ];
 
     /**
      * The parameters used for the create and edit actions.
@@ -108,7 +116,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
         'resetRoute'       => true,
@@ -120,7 +128,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippet names
      */
-    protected $createEditSnippets = [
+    protected array $createEditSnippets = [
         'Respondent\\RespondentFormSnippet',
         'Respondent\\Consent\\RespondentConsentLogSnippet',
         ];
@@ -136,25 +144,16 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createParameters = ['respondent' => null];
+    protected array $createParameters = ['respondent' => null];
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected User $currentUser;
 
     /**
      * The default search data to use.
      *
      * @var array()
      */
-    protected $defaultSearchData = ['grc_success' => 1];
+    protected array $defaultSearchData = ['grc_success' => 1];
 
     /**
      * The parameters used for the delete action.
@@ -166,7 +165,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = [
+    protected array $deleteParameters = [
         'baseUrl'        => 'getItemUrlArray',
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
@@ -179,20 +178,20 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    public $deleteSnippets = ['Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet'];
+    public array $deleteSnippets = ['Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet'];
 
     /**
      *
      * @var boolean En/disable group screen switching
      */
-    protected $enableScreens = true;
+    protected bool $enableScreens = true;
 
     /**
      * The snippets used for the export action.
      *
      * @var mixed String or array of snippets name
      */
-    public $exportSnippets = ['Respondent\\RespondentDetailsSnippet'];
+    public array $exportSnippets = ['Respondent\\RespondentDetailsSnippet'];
 
     /**
      * Array of the actions that use the model in form version.
@@ -201,20 +200,14 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array $formActions Array of the actions that use the model with a form.
      */
-    public $formActions = ['create', 'delete', 'edit', 'import', 'simpleApi'];
+    public array $formActions = ['create', 'delete', 'edit', 'import', 'simpleApi'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet'];
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Respondent\\RespondentSearchSnippet'];
 
     /**
      * The parameters used for the overview action.
@@ -226,14 +219,14 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $overviewParameters = [];
+    protected array $overviewParameters = [];
 
     /**
      * The snippets used for the overview action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $overviewSnippets   = ['Respondent\\RespondentOverviewSnippet'];
+    protected array $overviewSnippets   = ['Respondent\\RespondentOverviewSnippet'];
 
     /**
      * The parameters used for the show action
@@ -245,7 +238,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'addCurrentParent' => true,
         'baseUrl'          => 'getItemUrlArray',
         'forOtherOrgs'     => 'getOtherOrgs',
@@ -259,7 +252,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Respondent\\MultiOrganizationTab',
         'Respondent\\RespondentDetailsSnippet',
@@ -269,27 +262,35 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     ];
 
     /**
-     *
-     * @var \MUtil\Registry\SourceInterface
-     */
-    public $source;
-
-    /**
      * The actions that should result in the survey return being set.
      *
      * @var array
      */
-    protected $tokenReturnActions = [
+    protected array $tokenReturnActions = [
         'index',
         'show',
     ];
 
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        RespondentRepository $respondentRepository,
+        CurrentUserRepository $currentUserRepository,
+        protected Model $modelLoader,
+        protected OrganizationRepository $organizationRepository,
+        protected TrackDataRepository $trackDataRepository,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate, $respondentRepository);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * The automatically filtered result
      *
-     * @param $resetMvc When true only the filtered resulsts
+     * @param $resetMvc bool When true only the filtered resulsts
      */
-    public function autofilterAction($resetMvc = true)
+    public function autofilterAction(bool $resetMvc = true): void
     {
         if ($resetMvc && $this->enableScreens) {
             $group = $this->currentUser->getGroup();
@@ -314,7 +315,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action to change a users
      */
-    public function changeConsentAction()
+    public function changeConsentAction(): void
     {
         if ($this->enableScreens) {
             $edit = false;
@@ -361,7 +362,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action to change a users
      */
-    public function changeOrganizationAction()
+    public function changeOrganizationAction(): void
     {
         if ($this->changeOrganizationSnippets) {
             $params = $this->_processParameters(
@@ -377,7 +378,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action for showing a create new item page
      */
-    public function createAction()
+    public function createAction(): void
     {
         if ($this->enableScreens) {
             $edit = false;
@@ -425,9 +426,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): RespondentModel
     {
-        $model = $this->loader->getModels()->createRespondentModel();
+        $model = $this->modelLoader->createRespondentModel();
 
         if (! $detailed) {
             $model->applyBrowseSettings();
@@ -452,9 +453,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     }
 
     /**
-     * Action for showing a delete item page
+     * Action for showing a delete-item page
      */
-    public function deleteAction()
+    public function deleteAction(): void
     {
         $this->deleteParameters['formTitle'] = $this->_('Delete or stop respondent');
 
@@ -464,7 +465,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action for showing a edit item page with extra title
      */
-    public function editAction()
+    public function editAction(): void
     {
         if ($this->enableScreens) {
             $edit = false;
@@ -519,7 +520,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
 
         $form->populate($params);
 
-        if ($this->requestHelper->isPost()) {
+        if ($this->requestInfo->isPost()) {
             $respondent = $this->getRespondent();
             $patients   = [
                 [
@@ -544,9 +545,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Helper function to get the title for the create action.
      *
-     * @return $string
+     * @return string
      */
-    public function getCreateTitle()
+    public function getCreateTitle(): string
     {
         return $this->_('New respondent...');
     }
@@ -571,9 +572,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Helper function to get the title for the edit action.
      *
-     * @return $string
+     * @return string
      */
-    public function getEditTitle()
+    public function getEditTitle(): string
     {
         $respondent = $this->getRespondent();
         if ($respondent->exists) {
@@ -594,7 +595,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Respondents');
     }
@@ -604,7 +605,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return array
      */
-    public function getItemUrlArray()
+    public function getItemUrlArray(): array
     {
         $queryParams = $this->request->getQueryParams();
         return [
@@ -621,7 +622,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      */
     public function getOtherOrgs()
     {
-        return $this->util->getOtherOrgsFor($this->getRespondent()->getOrganizationId());
+        return $this->organizationRepository->getAllowedOrganizationsFor($this->getRespondent()->getOrganizationId());
     }
 
     /**
@@ -630,7 +631,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return array
      */
-    public function getRespondentData()
+    public function getRespondentData(): array
     {
         return $this->getRespondent()->getArrayCopy();
     }
@@ -644,7 +645,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     public function getRespondentId()
     {
         // The actions do not set an respondent id
-        if (in_array($this->getRequest()->getActionName(), $this->summarizedActions)) {
+        if (in_array($this->requestInfo->getCurrentAction(), $this->summarizedActions)) {
             return null;
         }
 
@@ -662,17 +663,17 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array
      */
-    public function getSearchData($useRequest = true)
+    public function getSearchData(bool $useRequest = true): array
     {
         $data = parent::getSearchData($useRequest);
 
         if (isset($data[\MUtil\Model::REQUEST_ID2])) {
-            $orgs = intval($data[\MUtil\Model::REQUEST_ID2]);
+            $organizationIds = [intval($data[\MUtil\Model::REQUEST_ID2])];
         } else {
-            $orgs = $this->currentUser->getRespondentOrgFilter();
+            $organizationIds = $this->currentUser->getRespondentOrgFilter();
         }
 
-        $activeTracks = $this->util->getTrackData()->getActiveTracks($orgs);
+        $activeTracks = $this->trackDataRepository->getActiveTracksForOrgs($organizationIds);
 
         // Cache used by RespondentSearchSnippet and $this->getSearchFilter()
         $data['__active_tracks'] = $activeTracks;
@@ -687,7 +688,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData[\MUtil\Model::REQUEST_ID2])) {
             $currentOrganization = $this->currentUser->getCurrentOrganization();
@@ -710,7 +711,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -756,18 +757,18 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
-        return $this->plural('respondent', 'respondents', $count);;
+        return $this->plural('respondent', 'respondents', $count);
     }
 
     /**
      * Overrule default index for the case that the current
      * organization cannot have users.
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $group = $this->currentUser->getGroup();
         if ($group && $this->enableScreens) {
@@ -805,27 +806,10 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     }
 
     /**
-     * Initialize translate and html objects
      *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
+     * @return self
      */
-    public function init(): void
-    {
-        parent::init();
-
-        if (in_array($this->requestHelper->getActionName(), $this->tokenReturnActions)) {
-            // Tell the system where to return to after a survey has been taken
-            $this->currentUser->setSurveyReturn($this->request->getQueryParams());
-        }
-    }
-
-    /**
-     *
-     * @return \Gems\Actions\RespondentNewAction
-     */
-    protected function openedRespondent()
+    protected function openedRespondent(): self
     {
         $queryParams = $this->request->getQueryParams();
         $orgId = null;
@@ -838,13 +822,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
         }
 
         if ($patientNr && $orgId) {
-            $where['gr2o_patient_nr = ?']      = $patientNr;
-            $where['gr2o_id_organization = ?'] = $orgId;
-
-            $values['gr2o_opened']             = new \MUtil\Db\Expr\CurrentTimestamp();
-            $values['gr2o_opened_by']          = $this->currentUser->getUserId();
-
-            $this->db->update('gems__respondent2org', $values, $where);
+            $this->respondentRepository->setOpened($patientNr, $orgId, $this->currentUserId);
         }
 
         return $this;
@@ -857,10 +835,10 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
         if ($this->overviewSnippets) {
             $params = $this->_processParameters($this->overviewParameters);
 
-            $menuList          = $this->menu->getMenuList();
+            /*$menuList          = $this->menu->getMenuList();
             $menuList->addParameterSources($this->request, $this->menu->getParameterSource());
             $menuList->addCurrentParent($this->_('Cancel'));
-            $params['buttons'] = $menuList;
+            $params['buttons'] = $menuList;*/
             $this->addSnippets($this->overviewSnippets, $params);
         }
     }
@@ -868,7 +846,7 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action for showing an item page with title
      */
-    public function showAction()
+    public function showAction(): void
     {
         if ($this->enableScreens) {
             $show = false;
@@ -904,11 +882,9 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Action for a simple - usually command line - import
      */
-    public function simpleApiAction()
+    public function simpleApiAction(): void
     {
-        $this->disableLayout();
-
-        $data         = $this->getRequest()->getParams();
+        /*$data         = $this->getRequest()->getParams();
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
         $translator   = new \Gems\Model\Translator\RespondentTranslator($this->_('Direct import'));
@@ -970,13 +946,13 @@ class RespondentNewAction extends \Gems\Actions\RespondentChildActionAbstract
             }
 
             return;
-        }
+        }*/
     }
 
     /**
-     * Action for showing a delete item page
+     * Action for showing a delete-item page
      */
-    public function undeleteAction()
+    public function undeleteAction(): void
     {
         if ($this->deleteSnippets) {
             $params = $this->_processParameters($this->deleteParameters);

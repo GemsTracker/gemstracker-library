@@ -22,17 +22,17 @@ namespace Gems\Actions;
  */
 class CommJobAction extends \Gems\Controller\ModelSnippetActionAbstract
 {
-    protected $autofilterParameters = array(
-        'extraSort'    => array('gcj_id_order' => SORT_ASC),
+    protected $autofilterParameters = [
+        'extraSort'    => ['gcj_id_order' => SORT_ASC],
         'searchFields' => 'getSearchFields'
-        );
+    ];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormVariableFieldSnippet';
+    protected $createEditSnippets = ['ModelFormVariableFieldSnippet'];
 
     /**
      *
@@ -61,11 +61,11 @@ class CommJobAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet');
+    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
-    protected $monitorParameters = array(
+    protected $monitorParameters = [
         'monitorJob' => 'getMailMonitorJob'
-    );
+    ];
 
     protected $monitorSnippets = 'MonitorSnippet';
 
@@ -115,7 +115,7 @@ class CommJobAction extends \Gems\Controller\ModelSnippetActionAbstract
         $dbLookup   = $this->util->getDbLookup();
         $dbTracks   = $this->util->getTrackData();
         $commUtil   = $this->util->getCommJobsUtil();
-        $unselected = array('' => '');
+        $unselected = ['' => ''];
 
         $model = new \MUtil\Model\TableModel('gems__comm_jobs');
 

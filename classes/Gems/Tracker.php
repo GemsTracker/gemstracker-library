@@ -815,7 +815,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         foreach ($this->getTrackEngineClasses() as $className => $cls) {
             if ((! $userCreatableOnly) || $cls->isUserCreatable()) {
                 if ($extended) {
-                    $results[$className] = \MUtil\Html::raw(sprintf('<strong>%s</strong> %s', $cls->getName(), $cls->getDescription()));
+                    $results[$className] = \Zalt\Html\Html::raw(sprintf('<strong>%s</strong> %s', $cls->getName(), $cls->getDescription()));
 
                 } else {
                     $results[$className] = $cls->getName();

@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Model\AppointmentModel;
+use Gems\Tracker\Respondent;
 use MUtil\Model;
 
 /**
@@ -22,14 +25,8 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
+class AppointmentHandler extends RespondentChildHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\Tracker\Respondent
-     */
-    private $_respondent;
-
     /**
      * Appointment ID of current request (if any)
      *
@@ -37,14 +34,14 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var int
      */
-    protected $appointmentId;
+    protected ?int $appointmentId = null;
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort'   => ['gap_admission_time' => SORT_DESC],
     ];
 
@@ -53,14 +50,18 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Agenda\\AppointmentsTableSnippet';
+    protected array $autofilterSnippets = [
+        'Agenda\\AppointmentsTableSnippet'
+    ];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Agenda\\AppointmentFormSnippet';
+    protected array $createEditSnippets = [
+        'Agenda\\AppointmentFormSnippet',
+    ];
 
     /**
      * The parameters used for the show action
@@ -72,7 +73,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $checkParameters = [
+    protected array $checkParameters = [
         'contentTitle' => 'getCheckTitle',
     ];
 
@@ -81,31 +82,19 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $checkSnippets = [
+    protected array $checkSnippets = [
         'Generic\\ContentTitleSnippet',
         'Agenda\\AppointmentShortSnippet',
         'Agenda\\AppointmentCheckSnippet',
         'Agenda\\ApplyFiltersInformation',
-        ];
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    ];
 
     /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Agenda\\YesNoAppointmentDeleteSnippet';
+    protected array $deleteSnippets = ['Agenda\\YesNoAppointmentDeleteSnippet'];
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -117,7 +106,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = [
+    protected array $indexParameters = [
         'contentTitle' => 'getContentTitle',
         ];
 
@@ -128,7 +117,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var int
      */
-    protected $organizationId;
+    protected ?int $organizationId = null;
 
     /**
      * Respondent ID of current request
@@ -137,14 +126,14 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @var string
      */
-    protected $respondentId;
+    protected ?int $respondentId = null;
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Agenda\\AppointmentShowSnippet',
         'Track\\TracksForAppointment',
@@ -154,7 +143,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Perform checks on an Episode of care
      */
-    public function checkAction()
+    public function checkAction(): array
     {
         if ($this->checkSnippets) {
             $params = $this->_processParameters($this->checkParameters);
@@ -174,7 +163,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): AppointmentModel
     {
         // Load organizationId and respondentId
         $this->loadParams();
@@ -227,7 +216,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @return string
      */
-    public function getCheckTitle()
+    public function getCheckTitle(): string
     {
         return $this->_('Track field filter check for this appointment');
     }
@@ -235,9 +224,9 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Helper function to get the informed title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getContentTitle()
+    public function getContentTitle(): string
     {
         $patientId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
         if ($patientId) {
@@ -254,9 +243,9 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Appointments');
     }
@@ -264,9 +253,9 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
     /**
      * Get the respondent object
      *
-     * @return \Gems\Tracker\Respondent
+     * @return Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
             $id = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
@@ -293,9 +282,9 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('appointment', 'appointments', $count);
     }
@@ -305,7 +294,7 @@ class AppointmentAction extends \Gems\Actions\RespondentChildActionAbstract
      *
      * @throws \Gems\Exception
      */
-    protected function loadParams()
+    protected function loadParams(): void
     {
         $patientNr           = $this->request->getAttribute(Model::REQUEST_ID1);
         $this->appointmentId = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);

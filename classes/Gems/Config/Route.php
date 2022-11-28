@@ -379,8 +379,8 @@ class Route
     public function getRespondentRoutes(): array
     {
         return [
-            ...$this->createBrowseRoutes(baseName: 'respondent',
-                controllerClass: \Gems\Actions\RespondentNewAction::class,
+            ...$this->createSnippetRoutes(baseName: 'respondent',
+                controllerClass: \Gems\Handlers\Respondent\RespondentNewHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'change-consent',
@@ -399,7 +399,7 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.episodes-of-care',
-                controllerClass: \Gems\Actions\CareEpisodeAction::class,
+                controllerClass: \Gems\Actions\CareEpisodeHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
                 parentParameters: [
                     'id1',
@@ -410,7 +410,7 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.appointments',
-                controllerClass: \Gems\Actions\AppointmentAction::class,
+                controllerClass: \Gems\Actions\AppointmentHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/appointments',
                 parentParameters: [
                     'id1',
@@ -421,7 +421,7 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
-                controllerClass: \Gems\Actions\TrackAction::class,
+                controllerClass: \Gems\Actions\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'index',
@@ -441,7 +441,7 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
-                controllerClass: \Gems\Actions\TrackAction::class,
+                controllerClass: \Gems\Actions\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'show-track',
@@ -460,7 +460,7 @@ class Route
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'respondent.tracks',
-                controllerClass: \Gems\Actions\TrackAction::class,
+                controllerClass: \Gems\Actions\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
                     'answer',
