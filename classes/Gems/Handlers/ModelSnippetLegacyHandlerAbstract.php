@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Html;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
@@ -175,10 +175,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected array $deleteParameters = [
-        'abortUrl' => 'getShowUrl',
-        'afterDeleteUrl' => 'getIndexUrl'
-        ];
+    protected array $deleteParameters = [];
 
     /**
      * The snippets used for the delete action.
@@ -252,12 +249,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public array $summarizedActions = ['index', 'autofilter', 'export'];
 
     public function __construct(
-        protected RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate)
     {
         parent::__construct($responder, $translate);
-        \Gems\Html::init();
+        Html::init();
     }
     
     /**
@@ -332,16 +328,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function getCsrfGuard(): ?CsrfGuardInterface
     {
         return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
-    }
-
-    public function getActionUrl(string $action): ?string
-    {
-        $parentRoute = $this->routeHelper->getRouteParent($this->requestInfo->getRouteName(), $action);
-        // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . $this->requestInfo->getRouteName() . " -> " . $parentRoute['name'] . "\n", FILE_APPEND);        
-        if (null === $parentRoute) {
-            return null;
-        }
-        return $this->routeHelper->getRouteUrl($parentRoute['name'], $this->requestInfo->getParams());
     }
 
     public function getControllerName(): ?string
@@ -433,11 +419,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return ucfirst((string) $this->getTopic(100));
     }
 
-    public function getIndexUrl(): ?string
-    {
-        return $this->getActionUrl('index');
-    }
-
     /**
      * Return the current request ID, if any.
      *
@@ -505,11 +486,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     public function getShowTitle(): string
     {
         return sprintf($this->_('Showing %s'), $this->getTopic(1));
-    }
-
-    public function getShowUrl(): ?string
-    {
-        return $this->getActionUrl('show');
     }
 
     /**

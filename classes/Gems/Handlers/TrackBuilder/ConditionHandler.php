@@ -16,7 +16,6 @@ use Gems\Condition\ConditionLoader;
 use Gems\Event\Application\ModelCreateEvent;
 use Gems\Exception\Coding;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -109,14 +108,13 @@ class ConditionHandler extends ModelSnippetLegacyHandlerAbstract
     ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected ConditionLoader $conditionLoader,
         protected EventDispatcherInterface $event,
 
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**

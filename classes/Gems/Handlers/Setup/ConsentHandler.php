@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use Gems\Util\ConsentUtil;
 use MUtil\Model\ModelAbstract;
@@ -45,13 +44,12 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
     ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected Model $modelLoader,
         protected ConsentUtil $consentUtil,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**
