@@ -15,6 +15,8 @@ use Gems\Auth\Acl\AclRepository;
 use Gems\MenuNew\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Roles;
+use Gems\Screens\ScreenLoader;
+use Gems\User\Mask\MaskStore;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
@@ -90,7 +92,9 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly UserLoader $userLoader,
         private readonly AclRepository $aclRepository,
         private readonly AccessRepository $accessRepository,
-        protected Translated $translatedUtil,
+        private readonly Translated $translatedUtil,
+        private readonly ScreenLoader $screenLoader,
+        private readonly MaskStore $maskStore,
     ) {
         parent::__construct($routeHelper, $responder, $translate);
     }
@@ -235,28 +239,23 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 'value', $html
             );
 
-            $screenLoader = $this->loader->getScreenLoader();
             $model->set('ggp_respondent_browse', 'label', $this->_('Respondent browse screen'),
                 'default', 'Gems\\Screens\\Respondent\\Browse\\ProjectDefaultBrowse',
                 'elementClass', 'Radio',
-                'multiOptions', $screenLoader->listRespondentBrowseScreens()
+                'multiOptions', $this->screenLoader->listRespondentBrowseScreens()
             );
-            $screenLoader = $this->loader->getScreenLoader();
             $model->set('ggp_respondent_edit', 'label', $this->_('Respondent edit screen'),
                 'default', 'Gems\\Screens\\Respondent\\Edit\\ProjectDefaultEdit',
                 'elementClass', 'Radio',
-                'multiOptions', $screenLoader->listRespondentEditScreens()
+                'multiOptions', $this->screenLoader->listRespondentEditScreens()
             );
-            $screenLoader = $this->loader->getScreenLoader();
             $model->set('ggp_respondent_show', 'label', $this->_('Respondent show screen'),
                 'default', 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow',
                 'elementClass', 'Radio',
-                'multiOptions', $screenLoader->listRespondentShowScreens()
+                'multiOptions', $this->screenLoader->listRespondentShowScreens()
             );
 
-            $maskStore = $this->loader->getUserMaskStore();
-
-            $maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
+            $this->maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
         }
 
         if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {
