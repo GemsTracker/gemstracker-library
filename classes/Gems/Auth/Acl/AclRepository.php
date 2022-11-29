@@ -100,4 +100,22 @@ class AclRepository
     {
         return $this->config['supplementary_privileges'];
     }
+
+    /**
+     * Returns the roles in the acl
+     *
+     * @return array roleId => ucfirst(roleId)
+     */
+    public function getRoleValues(): array
+    {
+        $roles = [];
+
+        foreach ($this->getAcl()->getRoles() as $role) {
+            //Do not translate, only make first one uppercase
+            $roles[$role] = ucfirst($role);
+        }
+        asort($roles);
+
+        return $roles;
+    }
 }

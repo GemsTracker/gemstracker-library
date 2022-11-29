@@ -13,6 +13,7 @@ namespace Gems\Snippets\Role;
 
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\RoleAdapterInterface;
+use Gems\MenuNew\MenuSnippetHelper;
 use Laminas\Permissions\Acl\Acl;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -68,9 +69,10 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
         private readonly AclRepository $aclRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
         $this->acl = $this->aclRepository->getAcl();
     }
