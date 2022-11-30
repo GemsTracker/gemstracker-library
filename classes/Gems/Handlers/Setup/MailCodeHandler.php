@@ -52,13 +52,12 @@ class MailCodeHandler extends ModelSnippetLegacyHandlerAbstract
         ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected Model $modelLoader,
         protected Translated $translatedUtil,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
     
     /**

@@ -11,7 +11,6 @@
 
 namespace Gems\Controller;
 
-use Gems\MenuNew\RouteHelper;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
@@ -181,10 +180,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deleteParameters = [
-        'abortUrl' => 'getShowUrl',
-        'afterDeleteUrl' => 'getIndexUrl'
-    ];
+    protected $deleteParameters = [];
 
     /**
      * The snippets used for the delete action.
@@ -245,11 +241,6 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      * @var \Zend_Controller_Action_Helper_FlashMessenger
      */
     public $messenger;
-
-    /**
-     * @var RouteHelper
-     */
-    public $routeHelper;
 
     /**
      * The snippets used for the show action
@@ -467,16 +458,6 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         return $this->request->getAttribute(CsrfMiddleware::GUARD_ATTRIBUTE);
     }
 
-    public function getActionUrl(string $action): ?string
-    {
-        $parentRoute = $this->routeHelper->getRouteParent($this->requestInfo->getRouteName(), $action);
-        // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . $this->requestInfo->getRouteName() . " -> " . $parentRoute['name'] . "\n", FILE_APPEND);        
-        if (null === $parentRoute) {
-            return null;
-        }
-        return $this->routeHelper->getRouteUrl($parentRoute['name'], $this->requestInfo->getParams());
-    }
-
     public function getControllerName()
     {
         return $this->requestHelper->getControllerName();
@@ -624,11 +605,6 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
         return ucfirst((string) $this->getTopic(100));
     }
 
-    public function getIndexUrl()
-    {
-        return $this->getActionUrl('index');
-    }
-
     /**
      * Return the current request ID, if any.
      *
@@ -696,11 +672,6 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
     public function getShowTitle()
     {
         return sprintf($this->_('Showing %s'), $this->getTopic(1));
-    }
-
-    public function getShowUrl()
-    {
-        return $this->getActionUrl('show');
     }
 
     /**
