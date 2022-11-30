@@ -60,7 +60,7 @@ class BooleanMaintenanceDependency extends ValuesMaintenanceDependency
         $multi = $this->translatedUtil->getYesNo();
         if (isset($context['gtf_field_values'])) {
             $values = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
-            if (count($multi) === count(BooleanField::$keyValues)) {
+            if (count($values) === count(BooleanField::$keyValues)) {
                 $multi = $values;
             }
         }

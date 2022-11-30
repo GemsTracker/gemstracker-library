@@ -35,7 +35,7 @@ class AuthIdleCheckHandler implements RequestHandlerInterface
 
         /** @var StatusMessengerInterface $flash */
         $statusMessenger = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
-        $statusMessenger?->prolong();
+        $statusMessenger?->prolongFlash();
 
         if (!$authenticationService->isLoggedIn() || !$authenticationService->checkValid($request->getMethod() === 'POST')) {
             $statusMessenger?->addErrors([

@@ -12,9 +12,16 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Short description for class
@@ -27,7 +34,7 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
+class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
 {
     protected bool $onlyUsedElements = true;
 
@@ -40,7 +47,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      *
      * @var int \Gems round id
      */
-    protected $roundId;
+    protected ?int $roundId = null;
 
     /**
      * Optional, required when creating or $trackId should be set
@@ -50,21 +57,23 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     protected $trackEngine;
 
     /**
-     * @var Tracker
-     */
-    protected $tracker;
-
-    /**
      * Optional, required when creating or $engine should be set
      *
      * @var int Track Id
      */
     protected $trackId;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected Tracker $tracker,
+        protected TrackDataRepository $trackDataRepository
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     protected function beforeSave()
     {
@@ -78,7 +87,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
@@ -163,7 +172,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
         }
 
         // Check the survey name
-        $surveys = $this->util->getTrackData()->getAllSurveys(false);
+        $surveys = $this->trackDataRepository->getAllSurveys(false);
         if (isset($surveys[$this->formData['gro_id_survey']])) {
             $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
         } else {
@@ -183,7 +192,7 @@ class EditRoundSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     protected function saveData(): int
     {
         // Check the survey name again, is sometimes removed
-        $surveys = $this->util->getTrackData()->getAllSurveys(false);
+        $surveys = $this->trackDataRepository->getAllSurveys(false);
         if (isset($surveys[$this->formData['gro_id_survey']])) {
             $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
         } else {

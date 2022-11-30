@@ -14,6 +14,7 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
 use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\HtmlElement;
@@ -21,6 +22,7 @@ use Zalt\Html\Raw;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelDetailTableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -34,7 +36,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowRoundSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
+class ShowRoundSnippetAbstract extends ModelDetailTableSnippetAbstract
 {
     use MessageTrait;
 
@@ -90,7 +92,7 @@ class ShowRoundSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbs
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         protected RouteHelper $routeHelper, 
-        protected \Gems\Loader $loader)
+        protected Tracker $tracker)
     {
         // We're setting trait variables so no constructor promotion
         $this->messenger = $messenger;
@@ -158,9 +160,8 @@ class ShowRoundSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbs
      */
     protected function getMenuList()
     {
-        $currentRoute = $this->requestInfo->getCurrentRouteResult();
-        $currentRouteName = $currentRoute->getMatchedRouteName();
-        $routeParameters = $currentRoute->getMatchedParams();
+        $currentRouteName = $this->requestInfo->getRouteName();
+        $routeParameters = $this->requestInfo->getRequestMatchedParams();
         $routeParts = explode('.', $currentRouteName);
         array_pop($routeParts);
         $routePrefix = join('.', $routeParts);
@@ -240,7 +241,7 @@ class ShowRoundSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbs
             // Try to get $this->trackEngine filled
             if (! $this->trackEngine) {
                 // Set the engine used
-                $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
+                $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
         } else {

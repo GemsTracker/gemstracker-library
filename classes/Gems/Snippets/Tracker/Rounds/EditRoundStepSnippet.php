@@ -11,6 +11,17 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Locale\Locale;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
+use Gems\Tracker\Engine\StepEngineAbstract;
+use Gems\Tracker\Snippets\EditRoundSnippetAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -19,13 +30,21 @@ namespace Gems\Snippets\Tracker\Rounds;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditRoundStepSnippet extends \Gems\Tracker\Snippets\EditRoundSnippetAbstract
+class EditRoundStepSnippet extends EditRoundSnippetAbstract
 {
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        Tracker $tracker,
+        TrackDataRepository $trackDataRepository,
+        protected Locale $locale,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $tracker, $trackDataRepository);
+    }
 
     /**
      * Hook that loads the form data from $_POST or the model
@@ -36,7 +55,7 @@ class EditRoundStepSnippet extends \Gems\Tracker\Snippets\EditRoundSnippetAbstra
     {
         parent::loadFormData();
 
-        if ($this->trackEngine instanceof \Gems\Tracker\Engine\StepEngineAbstract) {
+        if ($this->trackEngine instanceof StepEngineAbstract) {
             if ($this->trackEngine->updateRoundModelToItem($this->getModel(), $this->formData, $this->locale->getLanguage())) {
 
                 if (isset($this->formData[$this->saveButtonId])) {

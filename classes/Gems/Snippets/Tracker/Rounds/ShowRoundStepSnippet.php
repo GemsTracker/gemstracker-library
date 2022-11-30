@@ -11,8 +11,19 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Locale\Locale;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\Engine\StepEngineAbstract;
+use Gems\Tracker\Snippets\ShowRoundSnippetAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Late\Repeatable;
+use Zalt\Message\MessengerInterface;
+use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,32 +33,38 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstract
+class ShowRoundStepSnippet extends ShowRoundSnippetAbstract
 {
     /**
      *
      * @var array
      */
-    private $_roundData;
+    private ?array $_roundData = null;
 
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
+    protected $bridgeMode = BridgeAbstract::MODE_SINGLE_ROW;
 
     /**
      *
      * @var boolean True when only tracked fields should be retrieved by the nodel
      */
     protected $trackUsage = false;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        RouteHelper $routeHelper,
+        Tracker $tracker,
+        protected Locale $locale,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $routeHelper, $tracker);
+    }
 
     private function _addIf(array $names, DetailTableBridge $bridge, DataReaderInterface $model)
     {
@@ -73,7 +90,7 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
     {
         $this->_roundData = $bridge->getRow();
 
-        if ($this->trackEngine instanceof \Gems\Tracker\Engine\StepEngineAbstract) {
+        if ($this->trackEngine instanceof StepEngineAbstract && $this->_roundData) {
             $this->trackEngine->updateRoundModelToItem($model, $this->_roundData, $this->locale->getLanguage());
         }
 
@@ -82,23 +99,24 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
         $bridge->addItem('gro_round_description');
         $bridge->addItem('gro_id_order');
         $bridge->addItem('gro_icon_file');
-        
+
         if ($model->has('ggp_name')) {
             $bridge->addItem('ggp_name');
         } elseif ($model->has('gro_id_relationfield')) {
             $bridge->addItem('gro_id_relationfield');
         }
 
-        $bridge->addItem($model->get('valid_after', 'value'));
+        $bridge->addItem('valid_after');
+
         $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $model);
         if ($model->has('gro_valid_after_length', 'label')) {
-            $bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $model->get('gro_valid_after_length', 'label'));
+            //$bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $model->get('gro_valid_after_length', 'label'));
         }
-        
-        $bridge->addItem($model->get('valid_for', 'value'));
+
+        //$bridge->addItem($model->get('valid_for', 'value'));
         $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $model);
         if ($model->has('gro_valid_for_length', 'label')) {
-            $bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
+            //$bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
         }
 
         $bridge->addItem('valid_cond');
@@ -111,16 +129,8 @@ class ShowRoundStepSnippet extends \Gems\Tracker\Snippets\ShowRoundSnippetAbstra
         }
         $bridge->addItem('gro_code');
         $bridge->addItem('org_specific_round');
-        if ($this->_roundData['org_specific_round']) {
+        if (isset($this->_roundData['org_specific_round'])) {
             $bridge->addItem('organizations');
         }
-    }
-
-    /**
-     * Function that allows for overruling the repeater loading.
-     */
-    public function getRepeater(DataReaderInterface $model)
-    {
-        return new \Zalt\Late\Repeatable(array($this->_roundData));
     }
 }

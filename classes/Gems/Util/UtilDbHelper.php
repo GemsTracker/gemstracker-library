@@ -123,7 +123,11 @@ class UtilDbHelper
     public function getTranslatedPairsCached(string $table, string $keyColumnName, string $valueColumnName, ?array $tags = [], ?array $where = null, ?callable $sort = null): array
     {
         $currentLanguage = $this->locale->getLanguage();
-        $cacheKey   = HelperAdapter::cleanupForCacheId("__trans $table $keyColumnName $valueColumnName" . http_build_query($where));
+        $rawCacheId = "__trans $table $keyColumnName $valueColumnName";
+        if ($where) {
+            $rawCacheId .= http_build_query($where);
+        }
+        $cacheKey   = HelperAdapter::cleanupForCacheId($rawCacheId);
         $cacheLangKey = HelperAdapter::cleanupForCacheId($cacheKey . '_' . $currentLanguage);
 
         if ($this->cache->hasItem($cacheLangKey)) {

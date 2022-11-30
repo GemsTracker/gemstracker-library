@@ -12,11 +12,15 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\RoundModel;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\MessageStatus;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -201,8 +205,8 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->_('Rounds') . ' TrackRoundsHandler.php' .
-            $this->trackDataRepository->getTrackTitle((int)$this->_getIdParam());
+        return $this->_('Rounds') . ' ' .
+            $this->trackDataRepository->getTrackTitle((int)$this->getTrackId());
     }
 
     /**

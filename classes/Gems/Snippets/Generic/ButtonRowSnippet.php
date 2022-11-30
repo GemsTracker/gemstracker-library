@@ -15,6 +15,7 @@ use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\Raw;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -123,8 +124,12 @@ class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
         if (count($menuList)) {
             $container = Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true));
             foreach($menuList as $buttonInfo) {
-                if (isset($buttonInfo['url'], $buttonInfo['label'])) {
-                    $container->append(Html::actionLink($buttonInfo['url'], $buttonInfo['label']));
+                if (isset($buttonInfo['label'])) {
+                    if (isset($buttonInfo['disabled']) && $buttonInfo['disabled'] === true) {
+                        $container->append(Html::actionDisabled(Raw::raw($buttonInfo['label'])));
+                    } elseif (isset($buttonInfo['url'])) {
+                        $container->append(Html::actionLink($buttonInfo['url'], Raw::raw($buttonInfo['label'])));
+                    }
                 }
             }
 

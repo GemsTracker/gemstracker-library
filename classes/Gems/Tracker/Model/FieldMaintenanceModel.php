@@ -265,7 +265,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 
         $this->set('htmlUse',
                 'elementClass', 'Exhibitor', 'nohidden', true,
-                'value', \MUtil\Html::create('h3', $this->_('Field use'))
+                'value', \Zalt\Html\Html::create('h3', $this->_('Field use'))
                 );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),
@@ -288,7 +288,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 
         $this->set('htmlCalc',
                 'elementClass', 'None', 'nohidden', true,
-                'value', \MUtil\Html::create('h3', $this->_('Field calculation'))
+                'value', \Zalt\Html\Html::create('h3', $this->_('Field calculation'))
                 );
 
         $this->set('gtf_calculate_using',

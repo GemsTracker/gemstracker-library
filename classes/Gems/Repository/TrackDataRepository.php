@@ -36,6 +36,23 @@ class TrackDataRepository
     }
 
     /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     * @param  boolean $active Only show active surveys Default: False
+     * @return array of survey ID and survey name pairs
+     */
+    public function getAllSurveys(bool $active = false): array
+    {
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__surveys',
+            'gsu_id_survey',
+            'gsu_survey_name',
+            ['surveys'],
+            $active ? ['gsu_active' => 1] : null,
+            'asort'
+        );
+    }
+
+    /**
      * Returns array (id => name) of all tracks, sorted alphabetically
      *
      * @return array

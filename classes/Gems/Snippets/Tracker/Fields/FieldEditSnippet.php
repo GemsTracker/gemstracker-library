@@ -22,21 +22,4 @@ namespace Gems\Snippets\Tracker\Fields;
  */
 class FieldEditSnippet extends \Gems\Snippets\ModelFormSnippet
 {
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
-     */
-    protected function setAfterSaveRoute()
-    {
-        parent::setAfterSaveRoute();
-
-        if ($this->afterSaveRouteUrl) {
-            $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID] = $this->formData['gtf_id_track'];
-            $this->afterSaveRouteUrl[\Gems\Model::FIELD_ID]    = $this->formData['gtf_id_field'];
-            $this->afterSaveRouteUrl['sub']                    = $this->formData['sub'];
-        }
-
-        return $this;
-    }
 }

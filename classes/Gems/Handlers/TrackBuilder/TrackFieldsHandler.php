@@ -13,6 +13,7 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
 use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Tracker\Fields\FieldsButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Model\TrackModel;
@@ -105,8 +106,9 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\Fields\\FieldShowSnippet',
+        FieldsButtonRowSnippet::class,
         'Agenda\\ApplyFiltersInformation'
-        ];
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,

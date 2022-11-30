@@ -798,6 +798,10 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-fields',
                 controllerClass: \Gems\Handlers\TrackBuilder\TrackFieldsHandler::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-fields',
+                parameters: [
+                    \Gems\Model::FIELD_ID => '\d+',
+                    'sub' => '[a-zA-Z]',
+                ],
                 parentParameters: [
                     'trackId',
                 ],

@@ -189,11 +189,6 @@ class Menu
                             'type' => 'route-link-item',
                             'children' => [
                                 [
-                                    'name' => 'respondent.tokens.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
                                     'name' => 'respondent.tokens.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',

@@ -13,14 +13,13 @@ namespace Gems\Snippets;
 
 use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
-use Gems\MenuNew\RouteHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Late\Late;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeAbstract;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\Zend\ZendModelFormSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -42,7 +41,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFormSnippetAbstract
+abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 {
     /**
      *
@@ -379,9 +378,8 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
     protected function setAfterSaveRoute()
     {
         if (! $this->afterSaveRouteUrl) {
-            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
             $keys   = $this->getModel()->getMetaModel()->getKeys();
-            $params = [];
+            $params = $this->requestInfo->getRequestMatchedParams();
             foreach ($keys as $key => $field) { 
                 if (isset($this->formData[$field])) {
                     $params[$key] = $this->formData[$field];
@@ -391,8 +389,11 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
             }
             
             $saveRoute = $this->menuHelper->getCurrentParentRoute();
-            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  "$saveRoute\n", FILE_APPEND);
             $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($saveRoute, $params);
+            $url = $this->menuHelper->getRouteUrl($saveRoute, $params);
+            if ($url) {
+                $this->afterSaveRouteUrl = $url;
+            }
         }
         parent::setAfterSaveRoute();
     }

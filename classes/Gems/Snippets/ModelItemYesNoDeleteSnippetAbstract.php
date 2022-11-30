@@ -104,7 +104,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
             $this->abortUrl = $this->menuHelper->getCurrentParentRoute();
         }
         if (! $this->afterDeleteUrl) {
-            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'));
+            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'), []);
         }
         
         if ($table = parent::getHtmlOutput()) {

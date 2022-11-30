@@ -11,8 +11,12 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Tracker;
 use Gems\Tracker\Field\FieldInterface;
-use MUtil\Request\RequestInfo;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -21,31 +25,24 @@ use MUtil\Request\RequestInfo;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
+class FieldShowSnippet extends ModelDetailTableSnippet
 {
-    /**
-     * @return \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        //$this->menuList = $this->getMenuList();
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
+    public function getHtmlOutput()
+    {
+        $container = parent::getHtmlOutput();
+
+        return $container;
+    }
 
     /**
      * overrule to add your own buttons.
@@ -81,7 +78,7 @@ class FieldShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
             $tid = $queryParams[\MUtil\Model::REQUEST_ID];
         }
 
-        $trackEngine = $this->loader->getTracker()->getTrackEngine($tid);
+        $trackEngine = $this->tracker->getTrackEngine($tid);
         $fieldDef    = $trackEngine->getFieldsDefinition();
         
         $prev = false;

@@ -11,6 +11,15 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\ModelFormSnippet;
+use Gems\User\UserLoader;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,26 +29,26 @@ namespace Gems\Snippets\Respondent;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippet
+class RespondentFormSnippet extends ModelFormSnippet
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
     /**
      * When true a tabbed form is used.
      *
      * @var boolean
      */
     protected $useTabbedForm = true;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected ResultFetcher $resultFetcher,
+        protected UserLoader $userLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     /**
      * Hook that loads the form data from $_POST or the model
@@ -53,28 +62,23 @@ class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippet
         if ($this->createData && ($this->requestInfo->isPost() && (! isset($this->formData[$this->saveButtonId])))) {
             if ((! $this->_saveButton) || (! $this->_saveButton->isChecked())) {
                 if (isset($this->formData['grs_ssn']) && $this->formData['grs_ssn'])  {
-                    $filter = array(
+                    $filter = [
                         'grs_ssn' => $this->formData['grs_ssn'],
                         'gr2o_id_organization' => true, // Make sure all organizations are checked in RespModel
-                        );
+                    ];
 
                     if ($this->formData['gr2o_id_organization']) {
-                        $orgId = $this->formData['gr2o_id_organization'];
+                        $orgId = (int)$this->formData['gr2o_id_organization'];
                     } else {
-                        $orgId = $this->model->get('gr2o_id_organization', 'default');
+                        $orgId = (int)$this->model->get('gr2o_id_organization', 'default');
                     }
-                    $order = array(
-                        $this->db->quoteInto(
-                                "CASE WHEN gr2o_id_organization = ? THEN 1 ELSE 2 END",
-                                $orgId
-                                ) => SORT_ASC
-                        );
+                    $order = ["CASE WHEN gr2o_id_organization = ? THEN 1 ELSE 2 END" => SORT_ASC];
 
                     $data = $this->model->loadFirst($filter, $order);
 
                     // Fallback for when just a respondent row was saved but no resp2org exists
                     if (! $data) {
-                        $data = $this->db->fetchRow(
+                        $data = $this->resultFetcher->fetchRow(
                                 "SELECT * FROM gems__respondents WHERE grs_ssn = ?",
                                 $this->formData['grs_ssn']
                                 );
@@ -110,7 +114,7 @@ class RespondentFormSnippet extends \Gems\Snippets\ModelFormSnippet
                             } // */
                         } else {
                             if ($data['gr2o_id_organization']) {
-                                $org = $this->loader->getOrganization($data['gr2o_id_organization']);
+                                $org = $this->userLoader->getOrganization($data['gr2o_id_organization']);
                                 $this->addMessage(sprintf(
                                         $this->_('Respondent data retrieved from %s.'),
                                         $org->getName()
