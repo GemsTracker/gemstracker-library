@@ -184,9 +184,9 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
         if (isset($this->formData['grl_parents']) && is_array($this->formData['grl_parents'])) {
             $this->formData['grl_parents'] = implode(
-                    ',',
-                    \Gems\Roles::getInstance()->translateToRoleIds($this->formData['grl_parents'])
-                    );
+                ',',
+                $this->aclRepository->convertNamesToKeys($this->formData['grl_parents'])
+            );
         }
 
         //Always add nologin privilege to 'nologin' role

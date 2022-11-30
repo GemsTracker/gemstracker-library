@@ -90,14 +90,24 @@ class AclRepository
         return $this->roleAdapter->getResolvedRoles();
     }
 
-    public function convertKeyToName(mixed $key): string
+    public function convertKeyToName(mixed $key, bool $loose = false): string
     {
-        return $this->roleAdapter->convertKeyToName($key);
+        return $this->roleAdapter->convertKeyToName($key, $loose);
     }
 
-    public function convertKeysToNames(array|string|null $keys): array
+    public function convertKeysToNames(array|string|null $keys, bool $loose = false): array
     {
-        return array_map($this->convertKeyToName(...), is_string($keys) ? explode(',', $keys) : ($keys ?? []));
+        return array_map(fn($key) => $this->convertKeyToName($key, $loose), is_string($keys) ? explode(',', $keys) : ($keys ?? []));
+    }
+
+    public function convertNameToKey(string $name): mixed
+    {
+        return $this->roleAdapter->convertNameToKey($name);
+    }
+
+    public function convertNamesToKeys(array|string|null $names): array
+    {
+        return array_map($this->convertNameToKey(...), is_string($names) ? explode(',', $names) : ($names ?? []));
     }
 
     public function getDefinedPrivileges(): array

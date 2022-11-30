@@ -55,14 +55,31 @@ class DbRoleAdapter implements RoleAdapterInterface
         return $this->fetchRoles();
     }
 
-    public function convertKeyToName(mixed $key): string
+    public function convertKeyToName(mixed $key, bool $loose = false): string
     {
         $this->fetchRoles();
 
         if (!isset($this->idMapping[$key])) {
+            if ($loose && in_array($key, $this->idMapping, true)) {
+                return $key;
+            }
+
             throw new \LogicException();
         }
 
         return $this->idMapping[$key];
+    }
+
+    public function convertNameToKey(string $name): int
+    {
+        $this->fetchRoles();
+
+        $key = array_search($name, $this->idMapping);
+
+        if ($key === false) {
+            throw new \LogicException();
+        }
+
+        return $key;
     }
 }

@@ -142,7 +142,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
-        $model->setOnLoad('grl_parents', [$this->aclRepository, 'convertKeysToNames']);
+        $model->setOnLoad('grl_parents', fn ($parents) => $this->aclRepository->convertKeysToNames($parents, true));
 
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
         $tpr = new \MUtil\Model\Type\ConcatenatedRow(',', '<br/>');
