@@ -11,9 +11,15 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Util\Translated;
+use MUtil\Model\TableModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -24,7 +30,7 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 1-mei-2015 16:05:45
  */
-class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class AvailableTracksSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model filter.
@@ -68,21 +74,15 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $respondent;
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected Translated $translatedUtil,
+        protected Model $modelLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
         $orgId = $this->respondent->getOrganizationId();
 
         // These values are set for the generic table snippet and
@@ -96,11 +96,11 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
-        $model = new \MUtil\Model\TableModel('gems__tracks');
+        $model = new TableModel('gems__tracks');
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'));
@@ -117,7 +117,7 @@ class AvailableTracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             Model::TRACK_ID => 'gtr_id_track'
         ]);
 
-        $this->loader->getModels()->addDatabaseTranslations($model);
+        $this->modelLoader->addDatabaseTranslations($model);
 
         return $model;
     }

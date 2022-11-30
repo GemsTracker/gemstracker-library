@@ -13,15 +13,10 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Loader;
-use Gems\MenuNew\RouteHelper;
 use Gems\Model\JoinModel;
-use Gems\Project\ProjectSettings;
-use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -36,13 +31,12 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 class ChartConfigHandler extends ModelSnippetLegacyHandlerAbstract
 {
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected Translated $translatedUtil,
         protected ResultFetcher $resultFetcher,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

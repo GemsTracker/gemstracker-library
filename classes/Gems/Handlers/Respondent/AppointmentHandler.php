@@ -9,12 +9,19 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
 
-use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Agenda;
+use Gems\Db\ResultFetcher;
+use Gems\Exception;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\AppointmentModel;
+use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
+use Gems\User\UserLoader;
 use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -140,6 +147,19 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         'Agenda\\AppointmentTokensSnippet',
     ];
 
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        RespondentRepository $respondentRepository,
+        CurrentUserRepository $currentUserRepository,
+        protected \Gems\Model $modelLoader,
+        protected ResultFetcher $resultFetcher,
+        protected Agenda $agenda,
+        protected UserLoader $userLoader,
+    ) {
+        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+    }
+
     /**
      * Perform checks on an Episode of care
      */
@@ -168,7 +188,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         // Load organizationId and respondentId
         $this->loadParams();
 
-        $model = $this->loader->getModels()->createAppointmentModel();
+        $model = $this->modelLoader->createAppointmentModel();
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
@@ -178,12 +198,12 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                     // Set default date to tomoorow.
                     $now  = new \DateTimeImmutable('tomorrow');
 
-                    $loid = $this->db->fetchOne(
+                    $loid = $this->resultFetcher->fetchOne(
                             "SELECT gap_id_location
                                 FROM gems__appointments
                                 WHERE gap_id_user = ? AND gap_id_organization = ?
                                 ORDER BY gap_admission_time DESC",
-                            array($this->respondentId, $this->organizationId)
+                            [$this->respondentId, $this->organizationId]
                             );
 
                     if ($loid !== false) {
@@ -234,7 +254,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
             $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
-            $respondent = $this->loader->getRespondent($patientId, $orgId);
+            $respondent = $this->respondentRepository->getRespondent($patientId, $orgId);
             return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
@@ -262,14 +282,14 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
             $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
             $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
             if ($id && ! ($patientNr || $orgId)) {
-                $appointment = $this->loader->getAgenda()->getAppointment($id);
+                $appointment = $this->agenda->getAppointment($id);
                 $this->_respondent = $appointment->getRespondent();
 
                 if (! $this->_respondent->exists) {
                     throw new \Gems\Exception($this->_('Unknown respondent.'));
                 }
 
-                $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+                //$this->_respondent->applyToMenuSource($this->menu->getParameterSource());
             } else {
                 $this->_respondent = parent::getRespondent();
             }
@@ -300,46 +320,40 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         $this->appointmentId = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
-            $select = $this->db->select();
-            $select->from('gems__appointments', array('gap_id_user', 'gap_id_organization'))
-                    ->joinInner(
-                            'gems__respondent2org',
-                            'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
-                            array('gr2o_patient_nr')
-                            )
-                    ->where('gap_id_appointment = ?', $this->appointmentId);
-            $data = $this->db->fetchRow($select);
+            $select = $this->resultFetcher->getSelect('gems__appointments');
+            $select->columns(['gap_id_user', 'gap_id_organization'])
+                ->join('gems__respondent2org',
+                    'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
+                ['gr2o_patient_nr'])
+                ->where(['gap_id_appointment' => $this->appointmentId]);
+            $data = $this->resultFetcher->fetchRow($select);
 
             if ($data) {
                 $this->organizationId = $data['gap_id_organization'];
                 $this->respondentId   = $data['gap_id_user'];
-                $patientNr            = $data['gr2o_patient_nr'];
             }
         } else {
             $this->organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
 
             if ($patientNr && $this->organizationId) {
-                $this->respondentId   = $this->util->getDbLookup()->getRespondentId(
-                        $patientNr,
-                        $this->organizationId
-                        );
+                $this->respondentId = $this->respondentRepository->getRespondentId($patientNr, $this->organizationId);
             }
         }
 
         if (! $this->respondentId) {
-            throw new \Gems\Exception($this->_('Requested agenda data not available!'));
+            throw new Exception($this->_('Requested agenda data not available!'));
         } else {
             $orgs = $this->currentUser->getAllowedOrganizations();
 
             if (! isset($orgs[$this->organizationId])) {
-                $org = $this->loader->getOrganization($this->organizationId);
+                $org = $this->userLoader->getOrganization($this->organizationId);
 
                 if ($org->exists()) {
                     throw new \Gems\Exception(
                             sprintf($this->_('You have no access to %s appointments!'), $org->getName())
                             );
                 } else {
-                    throw new \Gems\Exception($this->_('Organization does not exist.'));
+                    throw new Exception($this->_('Organization does not exist.'));
                 }
             }
         }

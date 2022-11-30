@@ -11,11 +11,28 @@
 
 namespace Gems\Snippets\Respondent;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Db\ResultFetcher;
+use Gems\Exception\RespondentAlreadyExists;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model\RespondentModel;
+use Gems\Repository\OrganizationRepository;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Tracker\Respondent;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use Laminas\Db\TableGateway\TableGateway;
+use MUtil\Db\Expr\CurrentTimestamp;
 use MUtil\Model;
+use MUtil\StringUtil\StringUtil;
 use MUtil\Validate\IsNot;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -25,45 +42,22 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.1 Oct 24, 2016 6:35:29 PM
  */
-class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstract
+class ChangeRespondentOrganization extends ModelFormSnippetAbstract
 {
-    /**
-     *
-     * @var AccesslogRepository
-     */
-    protected $accesslog;
-
     /**
      *
      * @var int Number of records changed
      */
-    protected $_changed = 0;
+    protected int $_changed = 0;
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
+    protected User $currentUser;
 
     /**
      * Only effective if copied
      *
      * @var boolean
      */
-    protected $keepConsent = false;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected bool $keepConsent = false;
 
     /**
      *
@@ -77,17 +71,21 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      */
     protected $respondent;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected ResultFetcher $resultFetcher,
+        protected OrganizationRepository $organizationRepository,
+        protected UserLoader $userLoader,
+        protected \Gems\Model $modelLoader,
+        protected CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        $this->currentUser = $this->currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -95,8 +93,8 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FormBridgeInterface $bridge
+     * @param FullDataInterface $model
      */
     protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
@@ -117,12 +115,12 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
 
         $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
 
-        $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+        $availableOrganizations = $this->organizationRepository->getOrganizationsWithRespondents();
         $shareOption            = $this->formData['change_method'] == 'share';
-        $disabled               = array();
-        $existingOrgs           = $this->db->fetchPairs($sql, $this->respondent->getId());
+        $disabled               = [];
+        $existingOrgs           = $this->resultFetcher->fetchPairs($sql, [$this->respondent->getId()]);
         foreach ($availableOrganizations as $orgId => &$orgName) {
-            $orglabel = \MUtil\Html::create('spaced');
+            $orglabel = Html::create('spaced');
             $orglabel->strong($orgName);
             if ($orgId == $this->formData['orig_org_id']) {
                 $disabled[] = $orgId;
@@ -140,7 +138,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
                 }
             }
 
-            $orgName = $orglabel->render($this->view);
+            $orgName = $orglabel->render();
         }
         
         $bridge->addRadio('gr2o_id_organization',
@@ -199,11 +197,9 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
             $this->addMessage(sprintf(
                     $message,
                     $params[Model::REQUEST_ID1],
-                    $this->loader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
+                    $this->userLoader->getOrganization($this->formData['gr2o_id_organization'])->getName(),
                     $this->formData['gr2o_patient_nr']
                     ));
-
-            $this->accesslog->logChange($this->request, null, $this->formData);
 
         } else {
             parent::afterSave($changed);
@@ -217,15 +213,15 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      */
     protected function createModel(): FullDataInterface
     {
-        if ($this->model instanceof \Gems\Model\RespondentModel) {
+        if ($this->model instanceof RespondentModel) {
             $model = $this->model;
 
         } else {
-            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+            if ($this->respondent instanceof Respondent) {
                 $model = $this->respondent->getRespondentModel();
 
             } else {
-                $model = $this->loader->getModels()->getRespondentModel(true);
+                $model = $this->modelLoader->getRespondentModel(true);
             }
             $model->applyDetailSettings();
         }
@@ -240,7 +236,7 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      */
     protected function getTitle()
     {
-        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+        if ($this->respondent instanceof Respondent) {
             if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf(
                         $this->_('Change organization of respondent nr %s'),
@@ -346,14 +342,14 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
         );
 
         $changed   = 0;
-        $currentTs = new \MUtil\Db\Expr\CurrentTimestamp();
+        $currentTs = new CurrentTimestamp();
         $userId    = $this->currentUser->getUserId();
 
         foreach ($tables as $tableName => $settings) {
             list($respIdField, $orgIdField, $change) = $settings;
 
             if ($change) {
-                $start = \MUtil\StringUtil\StringUtil::beforeChars($respIdField, '_');
+                $start = StringUtil::beforeChars($respIdField, '_');
 
                 $values = [
                     $orgIdField            => $toOrgId,
@@ -361,10 +357,12 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
                     $start . '_changed_by' => $userId,
                     ];
                 $where = [
-                    "$respIdField = ?" => $fromRespId,
-                    "$orgIdField = ?" => $fromOrgId,
-                    ];
-                $changed += $this->db->update($tableName, $values, $where);
+                    $respIdField => $fromRespId,
+                    $orgIdField => $fromOrgId,
+                ];
+
+                $table = new TableGateway($tableName, $this->resultFetcher->getAdapter());
+                $changed += $table->update($values, $where);
             }
         }
 
@@ -382,22 +380,22 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
      */
     protected function saveShare($fromOrgId, $fromPatientId, $toOrgId, $toPatientId)
     {
-        /** @var \Gems\Model\RespondentModel $model */
+        /** @var RespondentModel $model */
         $model = $this->getModel();
         try {
             $result = $model->copyToOrg($fromOrgId, $fromPatientId, $toOrgId, $toPatientId, $this->keepConsent);
-        } catch (\Gems\Exception\RespondentAlreadyExists $exc) {
+        } catch (RespondentAlreadyExists $exc) {
             $info = $exc->getInfo();
             switch ($info) {
-                case \Gems\Exception\RespondentAlreadyExists::OTHERPID:
+                case RespondentAlreadyExists::OTHERPID:
                     $result = -1;
                     break;
                 
-                case \Gems\Exception\RespondentAlreadyExists::OTHERUID:
+                case RespondentAlreadyExists::OTHERUID:
                     $result = -2;
                     break;
                 
-                case \Gems\Exception\RespondentAlreadyExists::SAME:
+                case RespondentAlreadyExists::SAME:
                 default:
                     // Do nothing, already exists
                     $result = 0;
@@ -426,18 +424,18 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
         $model = $this->getModel();
         try {
             $model->move($fromOrgId, $fromPatientId, $toOrgId, $toPatientId);    
-        } catch (\Gems\Exception\RespondentAlreadyExists $exc) {
+        } catch (RespondentAlreadyExists $exc) {
             $info = $exc->getInfo();
             switch ($info) {
-                case \Gems\Exception\RespondentAlreadyExists::OTHERPID:
+                case RespondentAlreadyExists::OTHERPID:
                     $result = -1;
                     break;
                 
-                case \Gems\Exception\RespondentAlreadyExists::OTHERUID:
+                case RespondentAlreadyExists::OTHERUID:
                     $result = -2;
                     break;
                 
-                case \Gems\Exception\RespondentAlreadyExists::SAME:
+                case RespondentAlreadyExists::SAME:
                 default:
                     // Do nothing, already exists
                     $result = 0;
@@ -454,9 +452,9 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
+     * @return self
      */
-    protected function setAfterSaveRoute()
+    protected function setAfterSaveRoute(): self
     {
         $this->routeAction = 'show';
 
@@ -466,10 +464,8 @@ class ChangeRespondentOrganization extends \Gems\Snippets\ModelFormSnippetAbstra
                 'action' => $this->routeAction,
             ];
 
-            if ($this->afterSaveRouteKeys) {
-                $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];
-                $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID2] = $this->formData['gr2o_id_organization'];
-            }
+            $this->afterSaveRouteUrl[Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];
+            $this->afterSaveRouteUrl[Model::REQUEST_ID2] = $this->formData['gr2o_id_organization'];
         }
 
         return $this;

@@ -11,9 +11,16 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Tracker\Respondent;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -45,7 +52,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Image for time display
      *
-     * @var \MUtil\Html\HtmlElement
+     * @var \Zalt\Html\HtmlElement
      * /
     private $_timeImg;
 
@@ -54,12 +61,6 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @var \Gems\User\User
      */
     protected $currentUser;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
 
     /**
      * The default controller for menu actions, if null the current controller is used.
@@ -80,6 +81,19 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $respondent;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected Model $modelLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+        $this->onEmpty = $this->_('No appointments found.');
+    }
+
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -96,7 +110,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->gr2o_id_organization;
 
         $appButton = null;
-        $showMenuItems = $this->getShowUrls($bridge);
+        $showMenuItems = $this->getShowUrls($bridge, $model->getKeys());
         if (count($showMenuItems)) {
             $appButton = \Gems\Html::actionLink('test', $this->_('Show appointment'));
         }
@@ -107,7 +121,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
-        $br      = \MUtil\Html::create('br');
+        $br      = \Zalt\Html\Html::create('br');
 
         $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -155,29 +169,16 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->onEmpty = $this->_('No appointments found.');
-    }
-
-    /**
      * Creates the model
      *
      * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->model instanceof \Gems\Model\AppointmentModel) {
+        if ($this->model instanceof Model\AppointmentModel) {
             $model = $this->model;
         } else {
-            $model = $this->loader->getModels()->createAppointmentModel();
+            $model = $this->modelLoader->createAppointmentModel();
             $model->applyBrowseSettings();
         }
 
@@ -191,7 +192,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
-        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+        if ($this->respondent instanceof Respondent) {
             $model->addFilter([
                 'gap_id_user' => $this->respondent->getId(),
                 'gap_id_organization' => $this->respondent->getOrganizationId(),
@@ -208,7 +209,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     public function formatDate($value)
     {
-        return \MUtil\Html::create(
+        return \Zalt\Html\Html::create(
             'span',
             // array('class' => 'date'),
             \MUtil\Model::reformatDate($value, 'Y-m-d', 'j M Y')
@@ -222,7 +223,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     public function formatTime($value)
     {
-        return \MUtil\Html::create(
+        return \Zalt\Html\Html::create(
             'span',
             ' ',
             // array('class' => 'time'),
@@ -230,18 +231,15 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             \MUtil\Model::reformatDate($value, $this->_dateStorageFormat, 'H:i')
         );
     }
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
-    {
-        parent::processFilterAndSort($model);
 
+    public function getFilter(MetaModelInterface $metaModel): array
+    {
+        $filter = parent::getFilter($metaModel);
         $queryParams = $this->requestInfo->getRequestQueryParams();
         if (isset($queryParams[Model::EPISODE_ID])) {
-            $model->addFilter(['gap_id_episode' => $queryParams[Model::EPISODE_ID]]);
+            $metaModel->addFilter(['gap_id_episode' => $queryParams[Model::EPISODE_ID]]);
         }
+
+        return $filter;
     }
 }

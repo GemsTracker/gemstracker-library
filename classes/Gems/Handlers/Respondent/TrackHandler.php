@@ -9,12 +9,16 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
 
-use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Controller for editing respondent tracks, including their tokens
@@ -27,12 +31,6 @@ use Mezzio\Session\SessionMiddleware;
  */
 class TrackHandler extends RespondentChildHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\AccessLog
-     */
-    public $accesslog;
-
     /**
      * The parameters used for the answer export action.
      *
@@ -430,6 +428,16 @@ class TrackHandler extends RespondentChildHandlerAbstract
         'Survey\\SurveyQuestionsSnippet'
     ];
 
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        RespondentRepository $respondentRepository,
+        CurrentUserRepository $currentUserRepository,
+        protected Tracker $tracker,
+    ) {
+        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+    }
+
     /**
      * Pops the answers to a survey in a separate window
      */
@@ -477,7 +485,9 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $where      = $this->db->quoteInto('gto_id_respondent = ?', $respondent->getId());
 
-        $batch = $this->loader->getTracker()->recalculateTokens(
+        $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+
+        $batch = $this->tracker->recalculateTokens($session,
             'answersCheckAllResp_' . $respondent->getId(),
             $this->currentUser->getUserId(),
             $where
@@ -663,7 +673,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     protected function createModel(bool $detailed, string $action): RespondentTrackModel
     {
         $apply = true;
-        $model = $this->loader->getTracker()->getRespondentTrackModel();
+        $model = $this->tracker->getRespondentTrackModel();
         if ($detailed) {
             $engine = $this->getTrackEngine();
 

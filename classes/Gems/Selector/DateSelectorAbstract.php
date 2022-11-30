@@ -15,8 +15,16 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Util\Localized;
 use Gems\Util\Translated;
+use MUtil\Model\Transform\RequiredRowsTransformer;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\HrefArrayAttribute;
+use Zalt\Late\Late;
+use Zalt\Late\RepeatableInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  *
@@ -26,18 +34,16 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstract
+abstract class DateSelectorAbstract
 {
     const DATE_FACTOR = 'df';
     const DATE_GROUP  = 'dg';
     const DATE_TYPE   = 'dt';
 
-    private $_actionKey;
-
     /**
      * @var array $_fields
      */
-    private $_fields;
+    private array $_fields = [];
 
     private $_model;
 
@@ -45,35 +51,35 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @var string
      */
-    protected $dataCellClass = 'centerAlign timeResult';
+    protected string $dataCellClass = 'centerAlign timeResult';
 
     /**
      * The name of the database table to use as the main table.
      *
      * @var string
      */
-    protected $dataTableName;
+    protected string $dataTableName;
 
     /**
      * The date the current period ends
      *
      * @var DateTimeInterface
      */
-    protected $dateCurrentEnd;
+    protected ?DateTimeInterface $dateCurrentEnd = null;
 
     /**
      * The date the current period starts
      *
      * @var DateTimeInterface
      */
-    protected $dateCurrentStart;
+    protected ?DateTimeInterface $dateCurrentStart = null;
 
     /**
      * The number of dateTypes in the future or (when negative) before now.
      *
      * @var integer
      */
-    protected $dateFactor;
+    protected ?int $dateFactor = null;
 
     /**
      * Stores the dateFactor's to use so that the current period will be roughly the same
@@ -83,52 +89,43 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @var array
      */
-    protected $dateFactorChanges;
+    protected array $dateFactorChanges = [];
 
     /**
      * The name of the field where the date is calculated from
      *
      * @var string
      */
-    protected $dateFrom;
+    protected string $dateFrom;
 
     /**
      * The group (row) of data selected.
      *
      * @var integer
      */
-    protected $dateGroup;
+    protected ?int $dateGroup = null;
 
     /**
      * The number of periods shown before and after the current period.
      *
      * @var integer
      */
-    protected $dateRange = 3;
+    protected int $dateRange = 3;
 
     /**
      * Character D W M Y for one of the date types.
      *
      * @var string
      */
-    protected $dateType = 'W';
+    protected string $dateType = 'W';
 
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        protected Translator $translator,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Translated $translatedUtil,
+        protected Localized $localized,
+    )
+    {}
 
     /**
      *
@@ -137,7 +134,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      */
     protected function addField($name)
     {
-        $field = new \Gems\Selector\SelectorField($name);
+        $field = new SelectorField($name);
 
         $this->_fields[$name] = $field;
 
@@ -272,18 +269,18 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         }
         if ($this->dateRange > 0) {
             $requiredRows[-$this->dateRange]['df_link']  = $this->dateFactor - ($this->dateRange * 2);
-            $requiredRows[-$this->dateRange]['df_label'] = $this->_('<<');
+            $requiredRows[-$this->dateRange]['df_label'] = $this->translator->_('<<');
             $requiredRows[ $this->dateRange]['df_link']  = $this->dateFactor + ($this->dateRange * 2);
-            $requiredRows[ $this->dateRange]['df_label'] = $this->_('>>');
+            $requiredRows[ $this->dateRange]['df_label'] = $this->translator->_('>>');
             if ($this->dateRange > 1) {
                 $i = intval($this->dateRange / 2);
                 $requiredRows[-$i]['df_link']  = $this->dateFactor - 1;
-                $requiredRows[-$i]['df_label'] = $this->_('<');
+                $requiredRows[-$i]['df_label'] = $this->translator->_('<');
                 $requiredRows[ $i]['df_link']  = $this->dateFactor + 1;
-                $requiredRows[ $i]['df_label'] = $this->_('>');
+                $requiredRows[ $i]['df_label'] = $this->translator->_('>');
             }
             $requiredRows[ 0]['df_link']  = $this->dateFactor ? '0' : null;
-            $requiredRows[ 0]['df_label'] = $this->_('Now!');
+            $requiredRows[ 0]['df_label'] = $this->translator->_('Now!');
         }
 
         if ($this->dateFactor) {
@@ -312,7 +309,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         // Display by column cannot use formatFunction as it is a simple repeater
         // $model->set('duration_avg', 'formatFunction', $this->util->getLocalized()->formatNumber);
 
-        $transformer = new \MUtil\Model\Transform\RequiredRowsTransformer();
+        $transformer = new RequiredRowsTransformer();
         $transformer->setDefaultRow($this->getDefaultRow());
         $transformer->setRequiredRows($requiredRows);
         $transformer->setKeyItemCount($keyCount);
@@ -324,20 +321,20 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
     protected function getDateDescriptions()
     {
         return array(
-            'D' => $this->_('Show by day'),
-            'W' => $this->_('Show by week'),
-            'M' => $this->_('Show by month'),
-            'Y' => $this->_('Show by year'),
+            'D' => $this->translator->_('Show by day'),
+            'W' => $this->translator->_('Show by week'),
+            'M' => $this->translator->_('Show by month'),
+            'Y' => $this->translator->_('Show by year'),
             );
     }
 
     protected function getDateLabels()
     {
         return array_map('strtolower', array(
-            'D' => $this->_('D'),
-            'W' => $this->_('W'),
-            'M' => $this->_('M'),
-            'Y' => $this->_('Y'),
+            'D' => $this->translator->_('D'),
+            'W' => $this->translator->_('W'),
+            'M' => $this->translator->_('M'),
+            'Y' => $this->translator->_('Y'),
             ));
     }
 
@@ -438,7 +435,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         $bridge   = $model->getBridgeFor('table', array('class' => 'timeTable table table-condensed table-bordered'));
         $repeater = $bridge->getRepeater();
 
-        $bridge->setBaseUrl(array($this->_actionKey => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
+        $bridge->setBaseUrl(array('action' => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
 
         $columnClass = \MUtil\Lazy::iff($repeater->range, null, 'selectedColumn');
 
@@ -470,27 +467,25 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
      * @param array $filter
      * @return array The filter minus the Selector fields
      */
-    public function processSelectorFilter(\Zend_Controller_Request_Abstract $request, array $filter)
+    public function processSelectorFilter(RequestInfo $requestInfo, array $filter)
     {
-        $this->_actionKey = $request->getActionKey();
-
         $defaults = $this->getDefaultSearchData();
 
-        $this->dateFactor = $this->processSelectorFilterName(self::DATE_FACTOR, $request, $filter, $defaults);
-        $this->dateGroup  = $this->processSelectorFilterName(self::DATE_GROUP, $request, $filter, $defaults);
-        $this->dateType   = $this->processSelectorFilterName(self::DATE_TYPE, $request, $filter, $defaults);
+        $this->dateFactor = $this->processSelectorFilterName(self::DATE_FACTOR, $requestInfo, $filter, $defaults);
+        $this->dateGroup  = $this->processSelectorFilterName(self::DATE_GROUP, $requestInfo, $filter, $defaults);
+        $this->dateType   = $this->processSelectorFilterName(self::DATE_TYPE, $requestInfo, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
 
         return $filter;
     }
 
-    protected function processSelectorFilterName($name, \Zend_Controller_Request_Abstract $request, array $filter, array $defaults = null)
+    protected function processSelectorFilterName($name, RequestInfo $requestInfo, array $filter, array $defaults = null)
     {
         if (isset($filter[$name])) {
             return $filter[$name];
         }
-        if ($val = $request->getParam($name)) {
+        if ($val = $requestInfo->getParam($name)) {
             return $val;
         }
         if (is_array($defaults)) {
@@ -512,10 +507,10 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         $model->setFilter($filter);
     }
 
-    protected function setTableBody(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
-        $onEmpty = $this->_('-');
+        $onEmpty = $this->translator->_('-');
 
         foreach ($this->getFields() as $name => $field) {
             $bridge->tr(array('class' => ($this->dateGroup == $name) ? 'selectedRow' : null));
@@ -536,7 +531,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         }
     }
 
-    protected function setTableFooter(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
+    protected function setTableFooter(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -558,12 +553,12 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
         $tf->setRepeatTags(true);
     }
 
-    protected function setTableHeader(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Lazy\RepeatableInterface $repeater, $columnClass)
+    protected function setTableHeader(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
         // Left cell with period types
-        $th = $bridge->th($this->_('Period'), ' ');
+        $th = $bridge->th($this->translator->_('Period'), ' ');
         $th->class = 'middleAlign';
         $thdiv = $th->span()->spaced(); // array('class' => 'rightFloat'));
         $contents = $this->getDateLabels();
@@ -571,7 +566,7 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
             if (isset($contents[$letter])) {
                 $content = $contents[$letter];
             } else {
-                $content = strtolower($this->_($letter));
+                $content = strtolower($this->translator->_($letter));
             }
             if ($letter == $this->dateType) {
                 $thdiv->span($content, array('class' => 'browselink btn btn-primary btn-xs disabled'));
@@ -590,13 +585,13 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
                 break;
 
             case 'W':
-                $header = array($repeater->period_1, \MUtil\Html::create()->br(),
-                    \MUtil\Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
+                $header = array($repeater->period_1, \Zalt\Html\Html::create()->br(),
+                    Late::call('sprintf', $this->translator->_('week %s'), $repeater->period_2));
                 break;
 
             case 'M':
-                $header = array($repeater->period_1, \MUtil\Html::create()->br(),
-                    $repeater->period_2->call($this->util->getLocalized()->getMonthName));
+                $header = array($repeater->period_1, \Zalt\Html\Html::create()->br(),
+                    $repeater->period_2->call([$this->localized, 'getMonthName']));
                 break;
 
             case 'Y':
@@ -616,6 +611,6 @@ abstract class DateSelectorAbstract extends \MUtil\Translate\TranslateableAbstra
 
         $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
         $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = null;
-        $th->onclick = array('location.href=\'', new \MUtil\Html\HrefArrayAttribute($baseurl), '\';');
+        $th->onclick = array('location.href=\'', new HrefArrayAttribute($baseurl), '\';');
     }
 }

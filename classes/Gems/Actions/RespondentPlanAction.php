@@ -11,6 +11,9 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\TokenSearchHandlerAbstract;
+use Gems\Tracker\Model\StandardTokenModel;
+
 /**
  *
  * @package    Gems
@@ -19,21 +22,21 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class RespondentPlanAction extends \Gems\Actions\TokenSearchActionAbstract
+class RespondentPlanAction extends TokenSearchHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Token\\PlanRespondentSnippet';
+    protected array $autofilterSnippets = ['Token\\PlanRespondentSnippet'];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = [
+    protected array $indexStopSnippets = [
         'Tracker\\TokenStatusLegenda',
         'Generic\\CurrentSiblingsButtonRowSnippet',
         ];
@@ -47,9 +50,9 @@ class RespondentPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return StandardTokenModel
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): StandardTokenModel
     {
         $model = parent::createModel($detailed, $action);
 
@@ -65,9 +68,9 @@ class RespondentPlanAction extends \Gems\Actions\TokenSearchActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Respondent planning');
     }

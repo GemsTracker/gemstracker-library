@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -38,32 +39,23 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        $br    = \MUtil\Html::create('br');
-        $tData = $this->util->getTokenData();
-
         // Add link to patient to overview
-        $menuItems = $this->findUrls('respondent', 'show');
-        if ($menuItems) {
-            $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
-                $href = $menuItem->toHRefAttribute($bridge);
+        $href = $this->menuHelper->getRelatedRoute('respondent.show');
 
-                if ($href) {
-                    $aElem = new \MUtil\Html\AElement($href);
-                    $aElem->setOnEmpty('');
+        if ($href) {
+            $aElem = new \Zalt\Html\AElement($href);
+            $aElem->setOnEmpty('');
 
-                    // Make sure org is known
-                    $model->get('gr2o_id_organization');
+            // Make sure org is known
+            $model->get('gr2o_id_organization');
 
-                    $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-                    $model->set('respondent_name', 'itemDisplay', $aElem);
-                }
-            }
+            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $model->set('respondent_name', 'itemDisplay', $aElem);
         }
 
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
-        $bridge->setDefaultRowClass(\MUtil\Html\TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
+        $bridge->setDefaultRowClass(TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr1 = $bridge->tr();
         $tr1->appendAttrib('class', $bridge->row_class);
         $tr1->appendAttrib('title', $bridge->gto_comment);

@@ -344,7 +344,7 @@ class TokenSelect
      * @param int $organizationId Optional
      * @return self
      */
-    public function forRespondent(int $respondentId, int $organizationId = null): self
+    public function forRespondent(?int $respondentId = null, ?int $organizationId = null): self
     {
         if (null !== $respondentId) {
             $this->sql_select->where('gto_id_respondent = ?', $respondentId);

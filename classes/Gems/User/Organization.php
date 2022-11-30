@@ -35,22 +35,22 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @var array
      */
-    protected $_cacheTags = array('organization', 'organizations');
+    protected $_cacheTags = ['organization', 'organizations'];
 
     /**
      * The default organization data for 'no organization'.
      *
      * @var array
      */
-    protected $_noOrganization = array(
+    protected $_noOrganization = [
         'gor_id_organization' => 1,
         'gor_name'            => 'NO ORGANIZATION',
         'gor_iso_lang'        => 'en',
         'gor_has_respondents' => 0,
         'gor_add_respondents' => 0,
         'gor_active'          => 0,
-        'can_access'          => array(),
-        );
+        'can_access'          => [],
+    ];
 
     /**
      *

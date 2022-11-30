@@ -12,13 +12,10 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use Gems\Model;
-use Gems\Util\ConsentUtil;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**

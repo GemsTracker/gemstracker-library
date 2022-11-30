@@ -11,6 +11,14 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\TokenSearchHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
+use Gems\Selector\TokenDateSelector;
+use Gems\Tracker;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 /**
  *
  * @package    Gems
@@ -19,7 +27,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
+class OverviewPlanAction extends TokenSearchHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -31,7 +39,7 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = array(
         'dateSelector' => 'getDateSelector',
         'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
@@ -42,20 +50,25 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = array('Token\\TokenDateSelectorSnippet', 'Token\\PlanTokenSnippet');
-
-    /**
-     *
-     * @var \Gems\Selector\DateSelectorAbstract
-     */
-    public $dateSelector;
+    protected array $autofilterSnippets = ['Token\\TokenDateSelectorSnippet', 'Token\\PlanTokenSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Token\\OverviewSearchSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\OverviewSearchSnippet'];
+
+    public function __construct(
+        RouteHelper $routeHelper,
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        \Zend_Db_Adapter_Abstract $db,
+        protected TokenDateSelector $dateSelector,
+    ) {
+        parent::__construct($routeHelper, $responder, $translate, $tracker, $db);
+    }
 
     /**
      *
@@ -63,19 +76,15 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      */
     public function getDateSelector()
     {
-        if (! $this->dateSelector) {
-            $this->dateSelector = $this->loader->getSelector()->getTokenDateSelector();
-        }
-
         return $this->dateSelector;
     }
 
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Planning overview');
     }
@@ -87,7 +96,7 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
             $this->defaultSearchData = $this->getDateSelector()->getDefaultSearchData();
@@ -102,7 +111,7 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -111,7 +120,7 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
         // 2 - we may have additional filter constraints for the Selector snippet
         //
         // So we need to
-        // a) set the selector to it's own filter values 
+        // a) set the selector to its own filter values
         // b) remove the selector filter from that filter to get the "real" filter
         // c) filter the counts of the selector using that "real" filter
         //   1) for this we create a sub select that can be used in both filters
@@ -124,7 +133,7 @@ class OverviewPlanAction extends \Gems\Actions\TokenSearchActionAbstract
 
         // a) set the selector to it's own filter values 
         // b) remove the selector filter from that filter to get the "real" filter
-        $realFilter = $selector->processSelectorFilter($this->getRequest(), $filter);
+        $realFilter = $selector->processSelectorFilter($this->requestInfo, $filter);
 
         // Remove non-columns
         foreach ($realFilter as $key => $value) {

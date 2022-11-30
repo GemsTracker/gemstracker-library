@@ -234,9 +234,9 @@ class MenuSnippetHelper
 
     /**
      * @param array $routePart Route part related to current, e.g. a different action in the same route.
-     * @return array route
+     * @return string
      */
-    public function getRelatedRoute(string $routePart): array
+    public function getRelatedRoute(string $routePart): string
     {
         return $this->routeHelper->getRelatedRoute($this->requestInfo->getRouteName(), $routePart) ?: '';
     }

@@ -13,7 +13,7 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Exception;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use MUtil\Model;
@@ -73,12 +73,13 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
     protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'AutosearchInRespondentSnippet'];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        protected RespondentRepository $respondentRepository
+        protected RespondentRepository $respondentRepository,
+        protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**

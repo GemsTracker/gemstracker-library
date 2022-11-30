@@ -11,6 +11,11 @@
 
 namespace Gems\Selector;
 
+use Gems\Repository\TokenRepository;
+use Gems\Util\Localized;
+use Gems\Util\Translated;
+use MUtil\Translate\Translator;
+
 /**
  *
  * @package    Gems
@@ -19,41 +24,45 @@ namespace Gems\Selector;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TokenDateSelector extends \Gems\Selector\DateSelectorAbstract
+class TokenDateSelector extends DateSelectorAbstract
 {
     /**
      * The name of the database table to use as the main table.
      *
      * @var string
      */
-    protected $dataTableName = 'gems__tokens';
+    protected string $dataTableName = 'gems__tokens';
 
     /**
      * The name of the field where the date is calculated from
      *
      * @var string
      */
-    protected $dateFrom = 'gto_valid_from';
-
-    /**
-     * The base filter to search with
-     *
-     * @var array
-     */
-    protected $searchFilter;
+    protected string $dateFrom = 'gto_valid_from';
 
     /**
      *
      * @var array Every tokenData status displayed in table
      */
-    protected $statiUsed = ['O', 'P', 'I', 'M', 'A'];
+    protected array $statiUsed = ['O', 'P', 'I', 'M', 'A'];
+
+    public function __construct(
+        Translator $translator,
+        \Zend_Db_Adapter_Abstract $db,
+        Translated $translatedUtil,
+        Localized $localized,
+        protected TokenRepository $tokenRepository,
+    ) {
+        parent::__construct($translator, $db, $translatedUtil, $localized);
+
+    }
 
     /**
      *
      * @param string $name
      * @return \Gems\Selector\SelectorField
      */
-    public function addSubField($name)
+    public function addSubField(string $name): SelectorField
     {
         $field = $this->addField($name);
         $field->setClass('smallTime');
@@ -67,18 +76,14 @@ class TokenDateSelector extends \Gems\Selector\DateSelectorAbstract
      */
     protected function loadFields()
     {
-        $forResp  = $this->_('for respondents');
-        $forStaff = $this->_('for staff');
-
         $this->addField('tokens')
-                ->setLabel($this->_('Activated surveys'))
+                ->setLabel($this->translator->_('Activated surveys'))
                 ->setToCount("gto_id_token");
 
-        $tUtil = $this->util->getTokenData();
         foreach ($this->statiUsed as $key) {
             $this->addField('stat_' . $key)
-                    ->setLabel([$tUtil->getStatusIcon($key), ' ', $tUtil->getStatusDescription($key)])
-                    ->setToSumWhen($tUtil->getStatusExpressionFor($key));
+                    ->setLabel([$this->tokenRepository->getStatusIcon($key), ' ', $this->tokenRepository->getStatusDescription($key)])
+                    ->setToSumWhen($this->tokenRepository->getStatusExpressionFor($key));
         }
     }
 

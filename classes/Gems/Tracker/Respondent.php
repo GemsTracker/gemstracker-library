@@ -14,8 +14,10 @@ namespace Gems\Tracker;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Loader;
 use Gems\Registry\TargetAbstract;
 use Gems\Translate\GenderTranslation;
+use Gems\User\User;
 use Gems\Util\Translated;
 
 use MUtil\Model;
@@ -64,9 +66,8 @@ class Respondent extends TargetAbstract
      */
     public $exists = false;
 
-	/**
-     *
-     * @var \Gems\Loader
+    /**
+     * @var Loader
      */
     protected $loader;
 
@@ -611,7 +612,7 @@ class Respondent extends TargetAbstract
             $this->exists = false;
         }
 
-        if ($this->currentUser instanceof \Gems\User\User) {
+        if ($this->currentUser instanceof User) {
             $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
         }
 	}

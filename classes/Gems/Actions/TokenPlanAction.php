@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\TokenSearchHandlerAbstract;
+
 /**
  *
  * @package    Gems
@@ -19,14 +21,14 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TokenPlanAction extends \Gems\Actions\TokenSearchActionAbstract
+class TokenPlanAction extends TokenSearchHandlerAbstract
 {
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Token planning');
     }

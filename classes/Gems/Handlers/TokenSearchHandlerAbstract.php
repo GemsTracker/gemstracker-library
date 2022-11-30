@@ -9,10 +9,19 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers;
 
+use DateTimeImmutable;
+use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Snippets\AutosearchFormSnippet;
+use Gems\Tracker;
+use Gems\Tracker\Model\StandardTokenModel;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zend_Db_Adapter_Abstract;
 
 /**
  *
@@ -23,7 +32,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 17:53:02
  */
-abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetActionAbstract
+abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -35,7 +44,7 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
     ];
@@ -45,49 +54,40 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Token\\PlanTokenSnippet';
+    protected array $autofilterSnippets = ['Token\\PlanTokenSnippet'];
 
     /**
      * En/disable the checking for answers on load.
      *
      * @var boolean
      */
-    protected $checkForAnswersOnLoad = true;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected bool $checkForAnswersOnLoad = true;
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet'];
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet'];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = [
+    protected array $indexStopSnippets = [
         'Tracker\\TokenStatusLegenda',
         'Generic\\CurrentSiblingsButtonRowSnippet',
     ];
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+        protected Zend_Db_Adapter_Abstract $db,
+    ) {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -98,20 +98,32 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return StandardTokenModel
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): StandardTokenModel
     {
         // \MUtil\Model::$verbose = true;
-        $model = $this->loader->getTracker()->getTokenModel();
+        $model = $this->tracker->getTokenModel();
         $model->setCreate(false);
 
-        $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
-        $model->set('gto_round_description', 'label', $this->_('Round / Details'));
-        $model->set('gto_valid_from',        'label', $this->_('Valid from'));
-        $model->set('gto_valid_until',       'label', $this->_('Valid until'));
-        $model->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
-        $model->set('respondent_name',       'label', $this->_('Name'));
+        $model->set('gr2o_patient_nr',       [
+            'label' => $this->_('Respondent'),
+        ]);
+        $model->set('gto_round_description', [
+            'label' => $this->_('Round / Details'),
+        ]);
+        $model->set('gto_valid_from',        [
+            'label' => $this->_('Valid from'),
+        ]);
+        $model->set('gto_valid_until',       [
+            'label' => $this->_('Valid until'),
+        ]);
+        $model->set('gto_mail_sent_date',    [
+            'label' => $this->_('Contact date'),
+        ]);
+        $model->set('respondent_name',       [
+            'label' => $this->_('Name'),
+        ]);
 
         return $model;
     }
@@ -136,30 +148,22 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
         );
 
         if ($tokensData = $model->load(true, $sort)) {
+
+            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+
             $params['mailTarget']           = 'token';
-            $params['menu']                 = $this->menu;
             $params['model']                = $model;
             $params['identifier']           = $this->_getIdParam();
-            $params['view']                 = $this->view;
             $params['routeAction']          = 'index';
             $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
-            $params['templateOnly']         = ! $this->currentUser->hasPrivilege('pr.token.mail.freetext');
+            $params['templateOnly']         = ! $currentUser->hasPrivilege('pr.token.mail.freetext');
             $params['multipleTokenData']    = $tokensData;
 
             $this->addSnippet('Mail\\TokenBulkMailFormSnippet', $params);
         } else {
-            $this->addMessage($this->_('No tokens found.'));
+            $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $statusMessenger->addMessage($this->_('No tokens found.'));
         }
-    }
-
-    /**
-     * Is multi tracks enabled in this project
-     *
-     * @return boolean
-     */
-    public function getMultiTracks()
-    {
-        return $this->escort instanceof \Gems\Project\Tracks\MultiTracksInterface;
     }
 
     /**
@@ -169,11 +173,11 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
             $format = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
-            $today    = (new \DateTimeImmutable('today'))->format($format);
+            $today    = (new DateTimeImmutable('today'))->format($format);
 
             $this->defaultSearchData = array(
                 'datefrom'    => $today,
@@ -192,19 +196,20 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
         unset($filter['AUTO_SEARCH_TEXT_BUTTON']);
 
-        $where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db, null, 'yyyy-MM-dd HH:mm:ss');
+        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db, null, 'Y-m-d H:i:s');
         if ($where) {
             $filter[] = $where;
         }
 
         if (! isset($filter['gto_id_organization'])) {
-            $filter['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
+            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+            $filter['gto_id_organization'] = $currentUser->getRespondentOrgFilter();
         }
         $filter['gsu_active']  = 1;
 
@@ -229,17 +234,15 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
                 case 'hasnomail':
-                    $filter[] = sprintf(
-                        "((gr2o_email IS NULL OR gr2o_email = '' OR gr2o_email NOT RLIKE '%1\$s') AND
+                    $filter[] =
+                        "((gr2o_email IS NULL OR gr2o_email = '') AND
                                 ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1) 
                              OR
-                             ((grr_email IS NULL OR grr_email = '' OR grr_email NOT RLIKE '%1\$s') AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
-                        str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
-                    );
+                             ((grr_email IS NULL OR grr_email = '') AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)";
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
-                    // Exclude not mailable, we don't want to ask them for email if we are not allowed to used it anyway
+                    // Exclude not mailable, we don't want to ask them for email if we are not allowed to use it anyway
                     $filter[] = 'gr2t_mailable > 0';
                     break;
 
@@ -256,14 +259,12 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
                     break;
 
                 case 'tomail':
-                    $filter[] = sprintf(
-                        "(gr2o_email IS NOT NULL AND gr2o_email != '' AND gr2o_email RLIKE '%1\$s' AND
+                    $filter[] =
+                        "(gr2o_email IS NOT NULL AND gr2o_email != '' AND
                                 ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
                               OR
-                              (grr_email IS NOT NULL AND grr_email != '' AND grr_email RLIKE '%1\$s' AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)",
-                        str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
-                    );
+                              (grr_email IS NOT NULL AND grr_email != '' AND
+                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)";
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
@@ -291,9 +292,9 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('token', 'tokens', $count);
     }
@@ -301,38 +302,20 @@ abstract class TokenSearchActionAbstract extends \Gems\Controller\ModelSnippetAc
     /**
      * Default overview action
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         if ($this->checkForAnswersOnLoad) {
             $session = $this->request->getAttribute(SessionInterface::class);
-            $this->loader->getTracker()->processCompletedTokens(
+            $currentUser = $this->request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+            $this->tracker->processCompletedTokens(
                 $session,
                 null,
-                $this->currentUser->getUserId(),
-                $this->currentUser->getCurrentOrganizationId(),
+                $currentUser->getUserId(),
+                $currentUser->getCurrentOrganizationId(),
                 true
             );
         }
 
         parent::indexAction();
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    protected function isMultiTracks()
-    {
-        return ! $this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface;
-    }
-
-    /**
-     * Make we return to this screen after completion
-     *
-     * @return void
-     */
-    public function setSurveyReturn()
-    {
-        $this->currentUser->setSurveyReturn($this->getRequest());
     }
 }

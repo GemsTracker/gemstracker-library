@@ -43,12 +43,10 @@ class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     protected $translationTable = 'gems__consents';
 
-
     /**
-     *
-     * @var \Gems\Util
+     * @var ConsentUtil
      */
-    protected $util;
+    protected $consentUtil;
     
     /**
      * Compatibility mode, for use with logical operators returns this->getCode()
@@ -67,7 +65,7 @@ class ConsentCode extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function canBeUsed()
     {
-        return $this->_get('gco_code') !== $this->util->getConsentRejected();
+        return $this->_get('gco_code') !== $this->consentUtil->getConsentRejected();
     }
 
     /**

@@ -16,7 +16,6 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
 use Gems\Util\Translated;
@@ -61,7 +60,6 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     public array $summarizedActions = ['index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all'];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         Translator $translate,
         protected Tracker $tracker,
@@ -72,7 +70,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         protected ValueEncryptor $valueEncryptor,
 
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**

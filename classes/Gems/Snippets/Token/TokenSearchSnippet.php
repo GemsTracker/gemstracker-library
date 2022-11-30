@@ -11,8 +11,6 @@
 
 namespace Gems\Snippets\Token;
 
-use Gems\Snippets\AutosearchInRespondentSnippet;
-
 /**
  *
  *
@@ -57,7 +55,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
             reset($allowedOrgs);
             $orgWhere = "gr2t_id_organization = " . intval(key($allowedOrgs));
         }
-        return $this->db->quoteInto(
+        return $this->resultFetcher->fetchPairs(
                 "SELECT DISTINCT gsf_id_user, CONCAT(
                             COALESCE(gems__staff.gsf_last_name, ''),
                             ', ',
@@ -68,7 +66,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
                     WHERE $orgWhere AND
                         gr2t_id_user = ?
                     ORDER BY 2",
-                $data['gto_id_respondent']
+                [$data['gto_id_respondent']]
                 );
     }
 
@@ -83,7 +81,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
         $orgWhere    = "(INSTR(gtr_organizations, '|" .
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
-        return $this->db->quoteInto("(SELECT DISTINCT ggp_id_group, ggp_name
+        return $this->resultFetcher->fetchPairs("(SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                         INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
@@ -105,7 +103,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
                         gto_id_respondent = ?
                 )
                     ORDER BY ggp_name",
-                $data['gto_id_respondent']
+                [$data['gto_id_respondent']]
                 );
     }
 
@@ -126,7 +124,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
          *  Select all unique round descriptions for active rounds in active tracks
          *  Add to this the unique round descriptions for all tokens in active tracks with round id 0 (inserted round)
          */
-        return $this->db->quoteInto("(SELECT DISTINCT gro_round_description, gro_round_description as gto_round_description
+        return $this->resultFetcher->fetchPairs("(SELECT DISTINCT gro_round_description, gro_round_description as gto_round_description
                     FROM gems__rounds
                     INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gro_active=1 AND
@@ -145,7 +143,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
                         gto_id_respondent = ?
                 )
                 ORDER BY gro_round_description",
-                $data['gto_id_respondent']
+                [$data['gto_id_respondent']]
                 );
     }
 
@@ -161,13 +159,13 @@ class TokenSearchSnippet extends PlanSearchSnippet
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
 
-        return $this->db->quoteInto(
+        return $this->resultFetcher->fetchPairs(
                 "SELECT gtr_id_track, gtr_track_name
                     FROM gems__tracks
                     WHERE $orgWhere AND
                         gtr_id_track IN (SELECT gr2t_id_track FROM gems__respondent2track WHERE gr2t_id_user = ?)
                     ORDER BY gtr_track_name",
-                $data['gto_id_respondent']
+                [$data['gto_id_respondent']]
                 );
     }
 
@@ -183,7 +181,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
                 implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
                 "|') > 0)";
 
-        return $this->db->quoteInto("(SELECT DISTINCT gsu_id_survey, gsu_survey_name
+        return $this->resultFetcher->fetchPairs("(SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gsu_active=1 AND
@@ -203,7 +201,7 @@ class TokenSearchSnippet extends PlanSearchSnippet
                         gto_id_respondent = ?
                 )
                 ORDER BY gsu_survey_name",
-                $data['gto_id_respondent']
+                [$data['gto_id_respondent']]
                 );
     }
 
@@ -237,9 +235,9 @@ class TokenSearchSnippet extends PlanSearchSnippet
         if (! $data['gto_id_respondent']) {
             return $userOrgs;
         }
-        $respOrgs = $this->db->fetchCol(
+        $respOrgs = $this->resultFetcher->fetchCol(
                 "SELECT gr2o_id_organization FROM gems__respondent2org WHERE gr2o_id_user = ?",
-                $data['gto_id_respondent']);
+                [$data['gto_id_respondent']]);
         $output = array();
         foreach ($respOrgs as $orgId) {
             if (isset($userOrgs[$orgId])) {

@@ -11,10 +11,11 @@
 
 namespace Gems\Snippets;
 
-use Gems\Cache\HelperAdapter;
-use Gems\Loader;
-use Gems\Locale\Locale;
+
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Tracker;
+use Gems\Tracker\Model\StandardTokenModel;
+use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
@@ -65,12 +66,10 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
         protected RequestInfo $requestInfo,
         protected MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        protected Loader $loader,
+        protected Tracker $tracker,
     )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $menuHelper, $translate);
-
-        $this->util = $loader->getUtil();
     }
 
     /**
@@ -79,8 +78,6 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function addActionLinks(TableBridge $bridge)
     {
-        $tData = $this->util->getTokenData();
-
         $actionLinks = [];
         // Action links
 //        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge);
@@ -113,10 +110,10 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->model instanceof \Gems\Tracker\Model\StandardTokenModel) {
+        if ($this->model instanceof StandardTokenModel) {
             $model = $this->model;
         } else {
-            $model = $this->loader->getTracker()->getTokenModel();
+            $model = $this->tracker->getTokenModel();
         }
         $model->addColumn(
             'CASE WHEN gto_completion_time IS NULL THEN gto_valid_from ELSE gto_completion_time END',
@@ -139,9 +136,9 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * calc_used_date has special sort, see bugs 108 and 127
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      */
-    protected function sortCalcDateCheck(\MUtil\Model\ModelAbstract $model)
+    protected function sortCalcDateCheck(ModelAbstract $model)
     {
         $sort = $model->getSort();
 

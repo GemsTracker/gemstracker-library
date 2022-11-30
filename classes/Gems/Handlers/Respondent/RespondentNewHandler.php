@@ -12,7 +12,6 @@
 namespace Gems\Handlers\Respondent;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use Gems\Model\RespondentModel;
 use Gems\Repository\OrganizationRepository;
@@ -272,7 +271,6 @@ class RespondentNewHandler extends RespondentChildHandlerAbstract
     ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
@@ -281,8 +279,7 @@ class RespondentNewHandler extends RespondentChildHandlerAbstract
         protected OrganizationRepository $organizationRepository,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($routeHelper, $responder, $translate, $respondentRepository);
-        $this->currentUser = $currentUserRepository->getCurrentUser();
+        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
     }
 
     /**

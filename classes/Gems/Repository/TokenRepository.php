@@ -2,13 +2,26 @@
 
 namespace Gems\Repository;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;
+use MUtil\Model;
 use MUtil\Translate\Translator;
+use Zalt\Html\AElement;
+use Zalt\Html\Html;
+use Zalt\Late\Late;
+use Zalt\Late\LateCall;
+use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
 
 class TokenRepository
 {
-    public function __construct(protected Translator $translator)
-    {}
+    protected User $currentUser;
+
+    public function __construct(protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    {
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Returns a status code => decription array
@@ -74,6 +87,23 @@ class TokenRepository
     }
 
     /**
+     * Returns the description to add to the answer
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getStatusDescription(string $value): string
+    {
+        $status = $this->getEveryStatus();
+
+        if (isset($status[$value])) {
+            return $status[$value];
+        }
+
+        return $status['D'];
+    }
+
+    /**
      * An expression for calculating the token status
      *
      * @return Expression
@@ -92,5 +122,439 @@ class TokenRepository
                 ELSE 'O'
             END
             ");
+    }
+
+    /**
+     * Returns the SQL Expression
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getStatusExpressionFor(string $value): string
+    {
+        switch ($value) {
+            case 'D':
+                return 'gto_id_token IS NULL OR grc_success = 0';
+            case 'A':
+                return 'grc_success = 1 AND gto_completion_time IS NOT NULL';
+            case 'U':
+                return 'grc_success = 1 AND gto_valid_from IS NULL';
+            case 'W':
+                return 'grc_success = 1 AND gto_valid_from > CURRENT_TIMESTAMP';
+            case 'I':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND gto_in_source = 1 AND gto_valid_until < CURRENT_TIMESTAMP';
+            case 'M':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND gto_in_source = 0 AND gto_valid_until < CURRENT_TIMESTAMP';
+            case 'P':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 1';
+            case 'O':
+                return 'grc_success = 1 AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gto_in_source = 0';
+        }
+        return '';
+    }
+
+    /**
+     * Returns the decription to add to the answer
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getStatusIcon(string $value): string
+    {
+        $status = $this->getStatusIcons();
+
+        if (isset($status[$value])) {
+            return $status[$value];
+        }
+
+        return $status['D'];
+    }
+
+    /**
+     * Returns the status icons in an array
+     *
+     * @return array
+     */
+    public function getStatusIcons(): array
+    {
+        static $status;
+
+        if (is_null($status)) {
+            $spanU = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanU->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanU->i(['class' => 'fa fa-question fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanW = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanW->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanW->i(['class' => 'fa fa-ellipsis-h fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanO = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanO->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanO->i(['class' => 'fa fa-play fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanA = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanA->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanA->i(['class' => 'fa fa-check fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanP = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanP->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanP->i(['class' => 'fa fa-pause fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanI = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanI->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanI->i(['class' => 'fa fa-stop fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanM = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanM->i(['class' => 'fa fa-circle fa-stack-2x', 'renderClosingTag' => true]);
+            $spanM->i(['class' => 'fa fa-lock fa-stack-1x fa-inverse', 'renderClosingTag' => true]);
+
+            $spanD = Html::create('span', ['class' => 'fa-stack', 'renderClosingTag' => true]);
+            $spanD->i(['class' => 'fa fa-times fa-stack-2x', 'renderClosingTag' => true]);
+
+            $status = [
+                'U' => $spanU,
+                'W' => $spanW,
+                'O' => $spanO,
+                'A' => $spanA,
+                'P' => $spanP,
+                'I' => $spanI,
+                'M' => $spanM,
+                'D' => $spanD,
+            ];
+
+            foreach ($status as $val => $stat) {
+                $stat->appendAttrib('class', $this->getStatusClass($val));
+            }
+        }
+
+        return $status;
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $keepCaps Keep the capital letters in the label
+     * @param boolean $showAnswers
+     * @return \MUtil\Html\AElement
+     */
+    public function getTokenAnswerLink(MenuSnippetHelper $helper, string $patientNr, int $organizationId, string $tokenId, string $tokenStatus, bool $keepCaps = true, bool $showAnswers = true): ?AElement
+    {
+        if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
+            $routeName = 'respondent.tracks.answer';
+            $label = $this->translator->_('Answers');
+
+            $link = \Gems\Html::actionLink($helper->getRouteUrl($routeName, [
+                'id' => $tokenId,
+                Model::REQUEST_ID1 => $patientNr,
+                Model::REQUEST_ID2 => $organizationId,
+            ]), $label);
+
+            if ($link) {
+                $link->title = sprintf($this->translator->_('See answers for token %s'), strtoupper($tokenId));
+
+                return $link;
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param TableBridgeAbstract $bridge
+     * @param boolean $keepCaps Keep the capital letters in the label
+     * @return LateCall
+     */
+    public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): LateCall
+    {
+        if (! $this->currentUser->hasPrivilege('pr.answer')) {
+            //return null;
+        }
+
+        return Late::method($this, 'getTokenAnswerLink',
+            $bridge->getLazy('gr2o_patient_nr'),
+            $bridge->getLazy('gto_id_organization'),
+            $bridge->getLazy('gto_id_token'),
+            $bridge->getLazy('token_status'),
+            $keepCaps,
+            $bridge->getLazy('show_answers')
+        );
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param TableBridgeAbstract $bridge
+     * @param boolean $forceButton Always show a button
+     * @param boolean $keepCaps Keep the capital letters in the label
+     * @return \MUtil\Lazy\Call
+     */
+    public function getTokenAskButtonForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $forceButton = false, bool $keepCaps = false): LateCall
+    {
+        if (! $this->currentUser->hasPrivilege('pr.ask')) {
+            //return null;
+        }
+
+        if ($forceButton) {
+            return Late::method($this, 'getTokenAskButton',
+                $bridge->getLate('gr2o_patient_nr'),
+                $bridge->getLate('gto_id_organization'),
+                $bridge->getLate('gto_id_token'),
+                $bridge->getLate('token_status'),
+                true,
+                $keepCaps
+            );
+        }
+
+        return Late::method($this, 'getTokenAskButton',
+            $bridge->getLate('gr2o_patient_nr'),
+            $bridge->getLate('gto_id_organization'),
+            $bridge->getLate('gto_id_token'),
+            $bridge->getLate('token_status'),
+            $bridge->getLate('ggp_staff_members'),
+            $keepCaps
+        );
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     *
+     * @param TableBridgeAbstract $bridge
+     * @param boolean $forceButton Always show a button
+     * @param boolean $keepCaps Keep the capital letters in the label
+     * @return \MUtil\Lazy\Call
+     */
+    public function getTokenAskLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, $forceButton = false, $keepCaps = false): array
+    {
+        $method = $this->getTokenAskButtonForBridge($bridge, $forceButton, $keepCaps);
+
+        if (! $method) {
+            $method = Late::method($this, 'getTokenCopyLink',
+                $bridge->getLate('gto_id_token'), $bridge->getLate('token_status')
+            );
+        }
+
+        return [
+            $method,
+            'class' => Late::method($this, 'getTokenCopyLinkClass',
+                $bridge->getLate('token_status'), $bridge->getLate('ggp_staff_members')
+            ),
+        ];
+    }
+
+    /**
+     * Generate a menu link for email screen
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $canMail
+     * @return \MUtil\Html\AElement
+     */
+    public function getTokenEmailLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, bool $canMail): ?AElement
+    {
+        if ($canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
+            $href = $helper->getRouteUrl('email',
+            [
+                'gto_id_token' => $tokenId,
+                'can_be_taken' => 1,
+                'can_email'    => 1,
+                \Gems\Model::ID_TYPE => 'token',
+            ]);
+
+            if ($href) {
+                $link = \Gems\Html::actionLink($href);
+            }
+
+            if ($link) {
+                $link->title = sprintf($this->translator->_('Send email for token %s'), strtoupper($tokenId));
+
+                return $link;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * De a lazy answer link for bridges
+     */
+    public function getTokenEmailLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
+    {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.email')) {
+            //return null;
+        }
+
+        return Late::method($this, 'getTokenEmailLink',
+            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'), $bridge->getLate('can_email')
+        );
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param boolean $plusLabel Show plus instead of label
+     * @return AElement
+     */
+    public function getTokenShowLink(MenuSnippetHelper $helper, $patientNr, $organizationId, $tokenId, $plusLabel): AElement
+    {
+        $routeName = 'respondent.tracks.show';
+        $label = $this->translator->_('Show');
+
+        if ($plusLabel) {
+            $label = $this->translator->_('+');
+        }
+
+        $link = \Gems\Html::actionLink($helper->getRouteUrl($routeName, [
+            Model::REQUEST_ID1 => $patientNr,
+            Model::REQUEST_ID2 => $organizationId,
+            Model::REQUEST_ID => $tokenId,
+        ]), $label);
+
+        if ($link) {
+            $link->title = sprintf($this->translator->_('Inspect token %s'), strtoupper($tokenId));
+        }
+
+        return $link;
+    }
+
+    /**
+     * De a lazy show link for bridges
+     *
+     * @param TableBridgeAbstract $bridge
+     * @param boolean $plusLabel Show plus instead of label
+     * @return AElement
+     */
+    public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): AElement
+    {
+        if (! $this->currentUser->hasPrivilege('respondent.track.show')) {
+            //return null;
+        }
+
+        $routeName = 'respondent.tracks.show';
+        $label = $this->translator->_('Show');
+
+        if ($plusLabel) {
+            $label = $this->translator->_('+');
+        }
+
+        $url = $helper->getLateRouteUrl($routeName, [
+            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
+            Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+        ]);
+
+
+        return \Gems\Html::actionLink($url, $label);
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param string $patientNr
+     * @param string $roundDescr
+     * @param string $surveyName
+     * @param string $result
+     * @return \MUtil\Html\AElement
+     */
+    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, string $patientNr, string $roundDescr, string $surveyName, string $result): ?AElement
+    {
+        if ($tokenId) {
+            $href = $helper->getRouteUrl('show', [
+                'gto_id_token' => $tokenId,
+                \Gems\Model::ID_TYPE => 'token',
+            ]);
+            if ($href) {
+                $link = \Zalt\Html\Html::create('a', $href);
+            }
+
+            // $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+        } else {
+            $link = \Zalt\Html\Html::create('span');
+        }
+
+        if ($link) {
+            $link->append($this->getStatusIcon($tokenStatus));
+            $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
+
+            return $link;
+        }
+        return null;
+    }
+
+    /**
+     * De a lazy status show link for bridges
+     */
+    public function getTokenStatusLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
+    {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.show')) {
+            return $this->getTokenStatusShowForBridge($bridge, $helper);
+        }
+
+        /*return Late::method($this, 'getTokenStatusLink',
+            $helper,
+            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'),
+            $bridge->getLate('gr2o_patient_nr'), $bridge->getLate('gto_round_description'),
+            $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
+        );*/
+
+        $url = $helper->getLateRouteUrl('respondent.tracks.show', [
+            'gto_id_token' => $bridge->getLate('gr2o_patient_nr'),
+            \Gems\Model::ID_TYPE => 'token',
+        ]);
+
+        $link = Late::iff($url,
+            \Zalt\Html\Html::create('a', $url),
+            \Zalt\Html\Html::create('span'));
+
+        $link->append($this->getStatusIcon($bridge->getLate('token_status')));
+        $link->title = Late::method($this, 'getTokenStatusTitle',
+            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'),
+            $bridge->getLate('gr2o_patient_nr'), $bridge->getLate('gto_round_description'),
+            $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
+        );
+
+        return $link;
+    }
+
+    /**
+     * De a lazy status show link for bridges
+     */
+    public function getTokenStatusShowForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
+    {
+        return Late::method($this, 'getStatusIcon', $bridge->getLate('token_status'));
+    }
+
+    /**
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param string $patientNr
+     * @param string $roundDescr
+     * @param string $surveyName
+     * @param string $result
+     * @return string
+     */
+    public function getTokenStatusTitle(string $tokenId, string $tokenStatus, string $patientNr, string $roundDescr, string $surveyName, string $result): string
+    {
+        $title = sprintf($this->translator->_('Token %s: %s'), strtoupper($tokenId), $this->getStatusDescription($tokenStatus));
+        if ($roundDescr) {
+            $title .= sprintf("\n" . $this->translator->_('Round') . ': %s', $roundDescr);
+        }
+        if ($surveyName) {
+            $title .= "\n" . $surveyName;
+        }
+        if (!empty($patientNr)) {
+            $title .= sprintf("\n" . $this->translator->_('%s: %s'), $this->translator->_('Respondent nr'), $patientNr);
+        }
+        if ((!empty($result)) && $this->currentUser->hasPrivilege('pr.respondent.result')) {
+            $title .= sprintf("\n" . $this->translator->_('%s: %s'), $this->translator->_('Result'), $result);
+        }
+
+        return $title;
     }
 }

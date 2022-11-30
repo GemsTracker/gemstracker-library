@@ -13,7 +13,6 @@ namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Exception;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -54,12 +53,11 @@ abstract class TrackMaintenanceWithEngineHandlerAbstract extends ModelSnippetLeg
     protected ?TrackEngineInterface $trackEngine = null;
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected Tracker $tracker,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**

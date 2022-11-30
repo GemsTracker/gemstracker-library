@@ -15,7 +15,6 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Locale\Locale;
-use Gems\MenuNew\RouteHelper;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
 use Gems\Tracker;
@@ -123,7 +122,6 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
     ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         Translator $translate,
         protected Tracker $tracker,
@@ -134,7 +132,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         protected SurveyRepository $surveyRepository,
         protected Locale $locale,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**

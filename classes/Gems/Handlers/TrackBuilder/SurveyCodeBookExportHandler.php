@@ -4,7 +4,6 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
 use Gems\Model\SurveyCodeBookModel;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -16,12 +15,11 @@ class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
     protected ?int $surveyId = null;
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected ProjectOverloader $overLoader
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     protected function createModel(bool $detailed, string $action): ModelAbstract

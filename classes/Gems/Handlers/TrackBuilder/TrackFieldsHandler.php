@@ -12,7 +12,6 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Db\ResultFetcher;
-use Gems\MenuNew\RouteHelper;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldMaintenanceModel;
@@ -110,14 +109,13 @@ class TrackFieldsHandler extends TrackMaintenanceWithEngineHandlerAbstract
         ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($routeHelper, $responder, $translate, $tracker);
+        parent::__construct($responder, $translate, $tracker);
     }
 
     /**

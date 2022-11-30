@@ -11,7 +11,14 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TokenRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -28,7 +35,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      *
      * @var \Gems\User\User
      */
-    protected $currentUser;
+    protected User $currentUser;
 
     /**
      *
@@ -42,6 +49,19 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      * @var boolean
      */
     protected $periodSelector = true;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected TokenRepository $tokenRepository,
+        CurrentUserRepository $currentUserRepository,
+
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Add filler select to the elements array
@@ -57,6 +77,8 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         } else {
             $trackId = -1;
         }
+
+        $params = [];
                        
         $sqlGroups = "SELECT CONCAT('g|', GROUP_CONCAT(DISTINCT ggp_id_group SEPARATOR '|')) as forgroupid, ggp_name as label
                         FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
@@ -66,7 +88,8 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                             gro_active=1 AND
                             gtr_active=1";
         if ($trackId > -1) {
-            $sqlGroups .= $this->db->quoteInto(" AND gtr_id_track = ?", $trackId);
+            $sqlGroups .= " AND gtr_id_track = ?";
+            $params[] = $trackId;
         }
         $sqlGroups .= " GROUP BY ggp_name";
         
@@ -74,7 +97,8 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                         FROM gems__track_fields
                         WHERE gtf_field_type = 'relation'";
         if ($trackId > -1) {
-            $sqlRelations .= $this->db->quoteInto(" AND gtf_id_track = ?", $trackId);
+            $sqlRelations .= " AND gtf_id_track = ?";
+            $params[] = $trackId;
         }
         $sqlRelations .= " GROUP BY gtf_field_name";
         
@@ -85,7 +109,9 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
                 ) AS tmpTable
                 ORDER BY label";
 
-        $elements[$elementId] = $this->_createSelectElement($elementId, $sql, $this->_('(all fillers)'));
+        $options = $this->resultFetcher->fetchPairs($sql, $params);
+
+        $elements[$elementId] = $this->_createSelectElement($elementId, $options, $this->_('(all fillers)'));
     }
 
     /**
@@ -411,7 +437,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getEveryStatus()
     {
-        return $this->util->getTokenData()->getEveryStatus();
+        return $this->tokenRepository->getEveryStatus();
     }
 
     /**

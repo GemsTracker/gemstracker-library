@@ -12,7 +12,6 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
-use Gems\MenuNew\RouteHelper;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
 use Mezzio\Session\SessionMiddleware;
@@ -187,13 +186,12 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     ];
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
     ) {
-        parent::__construct($routeHelper, $responder, $translate, $tracker);
+        parent::__construct($responder, $translate, $tracker);
     }
 
     /**
