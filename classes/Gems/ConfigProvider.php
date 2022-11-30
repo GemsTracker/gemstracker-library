@@ -19,6 +19,7 @@ use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
 use Gems\Config\Messenger;
+use Gems\Config\Role;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Factory\DoctrineDbalFactory;
@@ -101,6 +102,7 @@ class ConfigProvider
         $messengerSettings = new Messenger();
         $routeSettings = new Route();
         $surveySettings = new Survey();
+        $roleSettings = new Role();
 
         return [
             'temp_config' => [ // TODO: Temporary
@@ -123,7 +125,7 @@ class ConfigProvider
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
-            'roles'         => $this->getRoles(),
+            'roles'         => $roleSettings(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
@@ -681,22 +683,6 @@ class ConfigProvider
             'pr.systemuser.seepwd' => new UntranslatedString('Grant right to see password of system users (without editing right).'),
             'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
             'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.')
-        ];
-    }
-
-    /**
-     * Returns the roles defined by this project
-     *
-     * @return mixed[]
-     */
-    public function getRoles(): array
-    {
-        return [
-            'definition_date' => '2022-11-23 00:00:00',
-            'roles' => [
-                'staff' => ['name' => 'staff', 'description' => 'staff', 'parents' => [], 'privileges' => []],
-                'super' => ['name' => 'super', 'description' => 'super', 'parents' => [], 'privileges' => []],
-            ]
         ];
     }
 }

@@ -16,8 +16,8 @@ use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\MenuMiddleware;
-use Gems\Roles;
 use MUtil\Model\ModelAbstract;
+use MUtil\Model\NestedArrayModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -42,8 +42,8 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     protected array $autofilterParameters = array(
         'extraSort'   => array(
             'grl_name' => SORT_ASC,
-            ),
-        );
+        ),
+    );
 
     /**
      * Tags for cache cleanup after changes, passed to snippets
@@ -117,7 +117,20 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function createModel($detailed, $action): ModelAbstract
     {
-        $model = new \MUtil\Model\TableModel('gems__roles');
+        if ($this->aclRepository->hasRolesFromConfig()) {
+            $roles = array_values($this->aclRepository->getResolvedRoles());
+            foreach ($roles as $i => $role) {
+                $roles[$i]['id'] = $i + 1;
+
+                if ($detailed && 'show' === $action) {
+                    $roles[$i]['inherited'] = $role['grl_parents'];
+                    $roles[$i]['not_allowed'] = implode(',', $role['grl_parents'] ?? []) . "\t" . implode(',', $role['grl_privileges'] ?? []);
+                }
+            }
+            $model = new NestedArrayModel('gems__roles', $roles);
+        } else {
+            $model = new \MUtil\Model\TableModel('gems__roles');
+        }
 
         $model->set('grl_name', 'label', $this->_('Name'),
                 'size', 15,
@@ -147,7 +160,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $model->set('grl_privileges', 'formatFunction', array($this, 'formatPrivileges'));
 
             if ('show' === $action) {
-                $model->addColumn('grl_parents', 'inherited');
+                if (!$this->aclRepository->hasRolesFromConfig()) {
+                    $model->addColumn('grl_parents', 'inherited');
+                }
                 $tpa->apply($model, 'inherited');
                 $model->set('inherited',
                         'label', $this->_('Inherited privileges'),
@@ -155,7 +170,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 $model->setOnLoad('inherited', [$this->aclRepository, 'convertKeysToNames']);
 
                 // Concatenated field, we can not use onload so handle translation to role names in the formatFunction
-                $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
+                if (!$this->aclRepository->hasRolesFromConfig()) {
+                    $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
+                }
                 $model->set('not_allowed',
                         'label', $this->_('Not allowed'),
                         'formatFunction', array($this, 'formatNotAllowed'));
@@ -164,7 +181,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $model->set('grl_privileges', 'formatFunction', array($this, 'formatLongLine'));
         }
 
-        \Gems\Model::setChangeFieldsByPrefix($model, 'grl');
+        if (!$this->aclRepository->hasRolesFromConfig()) {
+            \Gems\Model::setChangeFieldsByPrefix($model, 'grl');
+        }
 
         return $model;
     }

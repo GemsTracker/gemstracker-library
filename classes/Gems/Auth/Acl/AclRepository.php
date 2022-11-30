@@ -27,6 +27,11 @@ class AclRepository
         return $this->acl;
     }
 
+    public function hasRolesFromConfig(): bool
+    {
+        return $this->roleAdapter instanceof ConfigRoleAdapter;
+    }
+
     public static function inheritanceSortedRoles(array $rolesConfig): \Generator
     {
         $visitedRoleNames = [];
