@@ -83,7 +83,6 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        private readonly Roles $roles,
         private readonly AclRepository $aclRepository,
     ) {
         parent::__construct($routeHelper, $responder, $translate);
@@ -130,7 +129,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
-        $model->setOnLoad('grl_parents', array($this->roles, 'translateToRoleNames'));
+        $model->setOnLoad('grl_parents', [$this->aclRepository, 'convertKeysToNames']);
 
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
         $tpr = new \MUtil\Model\Type\ConcatenatedRow(',', '<br/>');
@@ -153,7 +152,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 $model->set('inherited',
                         'label', $this->_('Inherited privileges'),
                         'formatFunction', array($this, 'formatInherited'));
-                $model->setOnLoad('inherited', array(\Gems\Roles::getInstance(), 'translateToRoleNames'));
+                $model->setOnLoad('inherited', [$this->aclRepository, 'convertKeysToNames']);
 
                 // Concatenated field, we can not use onload so handle translation to role names in the formatFunction
                 $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
@@ -245,7 +244,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         }
 
         // Concatenated field, we can not use onload so handle translation here
-        $parents = \Gems\Roles::getInstance()->translateToRoleNames($parents);
+        $parents = $this->aclRepository->convertKeysToNames($parents);
 
         $notAllowed = $this->getUsedPrivileges();
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);

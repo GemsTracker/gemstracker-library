@@ -15,4 +15,6 @@ interface RoleAdapterInterface
     public function getRolesConfig(): array;
 
     public function getResolvedRoles(): array;
+
+    public function convertKeyToName(mixed $key): string;
 }

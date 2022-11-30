@@ -14,4 +14,13 @@ class ConfigRoleAdapter implements RoleAdapterInterface
     {
         return $this->config['roles']['roles'] ?? [];
     }
+
+    public function convertKeyToName(mixed $key): string
+    {
+        if (!is_string($key)) {
+            throw new \LogicException();
+        }
+
+        return $key;
+    }
 }

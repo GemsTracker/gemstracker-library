@@ -85,6 +85,16 @@ class AclRepository
         return $this->roleAdapter->getResolvedRoles();
     }
 
+    public function convertKeyToName(mixed $key): string
+    {
+        return $this->roleAdapter->convertKeyToName($key);
+    }
+
+    public function convertKeysToNames(array|string|null $keys): array
+    {
+        return array_map($this->convertKeyToName(...), is_string($keys) ? explode(',', $keys) : ($keys ?? []));
+    }
+
     public function getDefinedPrivileges(): array
     {
         return array_values(array_unique(array_merge(

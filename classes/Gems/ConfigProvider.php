@@ -8,6 +8,7 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
+use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
@@ -102,6 +103,9 @@ class ConfigProvider
         $surveySettings = new Survey();
 
         return [
+            'temp_config' => [ // TODO: Temporary
+                'disable_privileges' => true,
+            ],
             'app'           => $appSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
@@ -285,7 +289,7 @@ class ConfigProvider
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
 
-                RoleAdapterInterface::class => ConfigRoleAdapter::class,
+                RoleAdapterInterface::class => DbRoleAdapter::class,
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
