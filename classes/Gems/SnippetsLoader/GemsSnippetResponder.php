@@ -46,10 +46,10 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             return $output;
         }
 
-        $cookies = array_reverse($this->menuHelper->getCurrentParentUrls(10));
-        $cookies[] = ['label' =>  $this->menuHelper->getCurrentLabel()];
+        $breadcrumbs = array_reverse($this->menuHelper->getCurrentParentUrls(10));
+        $breadcrumbs[] = ['label' =>  $this->menuHelper->getCurrentLabel()];
         $data = [
-            'cookieTrail' => $cookies,
+            'breadcrumbs' => $breadcrumbs,
             'content' => $output->getBody(),
         ];
         $statusCode = 200;

@@ -1,0 +1,9 @@
+<ol id="crumbs" class="breadcrumb">
+    {% for cookie in cookieTrail %}
+        {% if cookie.url is defined %}
+            <li class="breadcrumb-item"><a href="{{ cookie.url }}">{{ cookie.label }}</a></li>
+        {%  else %}
+            <li class="breadcrumb-item active"><span>{{ cookie.label }}</span></li>
+        {% endif %}
+    {% endfor %}
+</ol>
