@@ -23,7 +23,7 @@ class AppointmentFilterTest extends \Gems\Test\DbTestAbstract
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

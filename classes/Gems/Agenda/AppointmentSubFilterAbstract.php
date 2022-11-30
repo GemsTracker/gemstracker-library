@@ -36,7 +36,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
 
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 
@@ -54,7 +54,7 @@ abstract class AppointmentSubFilterAbstract extends BasicFilterAbstract
     protected function afterLoad()
     {
         if ($this->_data &&
-                $this->agenda instanceof \Gems\Agenda &&
+                $this->agenda instanceof \Gems\Agenda\Agenda &&
                 ! $this->_subFilters) {
 
             // Flexible determination of filters to load. Save for future expansion of number of fields

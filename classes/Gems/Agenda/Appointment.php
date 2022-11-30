@@ -14,12 +14,6 @@ namespace Gems\Agenda;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-use Gems\Agenda\AppointmentFilterInterface;
-use Gems\Agenda\EpisodeOfCare;
-use Gems\Agenda\FilterTracer;
-
-use MUtil\Model;
-
 /**
  *
  * @package    Gems
@@ -44,7 +38,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 
@@ -874,7 +868,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         }
 
         // Only check if we need to create when this appointment is active and today or later
-        if ($this->isActive() && ($this->getAdmissionTime() >= time())) {
+        if ($this->isActive() && ($this->getAdmissionTime()->getTimestamp() >= time())) {
             $tokenChanges += $this->checkCreateTracks($filters, $existingTracks, $tracker);
         } else {
             if ($this->filterTracer) {

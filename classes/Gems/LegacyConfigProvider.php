@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems;
 
 use Gems\AccessLog\AccesslogRepository;
+use Gems\Agenda\Agenda;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
 use Gems\Condition\ConditionLoader;
@@ -25,7 +26,6 @@ use Gems\Tracker\TrackEvents;
 use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Permissions\Acl\Acl;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -62,7 +62,6 @@ class LegacyConfigProvider
                 \Zend_Db_Adapter_Abstract::class => LegacyZendDatabaseFactory::class,
                 \Zend_Acl::class => LegacyFactory::class,
                 \Gems\Util\BasePath::class => LegacyFactory::class,
-                Agenda::class => LegacyFactory::class,
 
                 'LegacyCurrentUser' => LegacyFactory::class,
             ],

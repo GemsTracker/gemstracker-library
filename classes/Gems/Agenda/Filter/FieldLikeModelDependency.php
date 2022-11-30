@@ -27,7 +27,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

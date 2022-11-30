@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\TrackEvent\Track\FieldUpdate;
 
-use Gems\Agenda;
+use Gems\Agenda\Agenda;
 use Gems\Tracker\RespondentTrack;
 use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Util\ReceptionCode;

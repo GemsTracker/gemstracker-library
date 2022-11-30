@@ -115,7 +115,6 @@ class MenuSnippetHelper
         if (null===$current) {
             return [];
         }
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  "$current\n", FILE_APPEND);
         $routes = $this->getParentRoutes($current, $maxSteps);
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }

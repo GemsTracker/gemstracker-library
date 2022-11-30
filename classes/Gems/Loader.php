@@ -14,7 +14,6 @@ namespace Gems;
 use Gems\Loader\LoaderAbstract;
 use Gems\Tracker\TrackEvents;
 use Gems\User\User;
-use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -34,7 +33,7 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 
@@ -131,7 +130,7 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @return \Gems\Agenda
+     * @return \Gems\Agenda\Agenda
      */
     public function getAgenda()
     {

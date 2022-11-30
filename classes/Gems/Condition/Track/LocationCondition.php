@@ -11,9 +11,9 @@
 
 namespace Gems\Condition\Track;
 
-use Gems\Agenda;
-use Gems\Condition\ConditionLoader;
+use Gems\Agenda\Agenda;
 use Gems\Condition\ConditionAbstract;
+use Gems\Condition\ConditionLoader;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Tracker;
 use Gems\Tracker\RespondentTrack;

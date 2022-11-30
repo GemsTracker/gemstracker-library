@@ -379,7 +379,7 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
     protected function setAfterSaveRoute()
     {
         if (! $this->afterSaveRouteUrl) {
-            file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->formData, true) . "\n", FILE_APPEND);
             $keys   = $this->getModel()->getMetaModel()->getKeys();
             $params = [];
             foreach ($keys as $key => $field) { 
@@ -391,6 +391,7 @@ abstract class ModelFormSnippetAbstract extends \Zalt\Snippets\Zend\ZendModelFor
             }
             
             $saveRoute = $this->menuHelper->getCurrentParentRoute();
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  "$saveRoute\n", FILE_APPEND);
             $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($saveRoute, $params);
         }
         parent::setAfterSaveRoute();

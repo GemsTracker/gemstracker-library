@@ -11,15 +11,18 @@
 
 namespace Gems\Handlers\Respondent;
 
-use Gems\Agenda;
+use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\AppointmentModel;
+use Gems\Model;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Agenda\AppointmentShowSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker\Respondent;
 use Gems\User\UserLoader;
-use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -27,7 +30,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  *
  * @package    Gems
  * @subpackage Default
- * @subpackage AppointmentAction
+ * @subpackage AppointmentHandler
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
@@ -97,6 +100,12 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     ];
 
     /**
+     *
+     * @var \Gems\User\User
+     */
+    public $currentUser;
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
@@ -141,10 +150,11 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'Agenda\\AppointmentShowSnippet',
-        'Track\\TracksForAppointment',
-        'Agenda\\AppointmentTokensSnippet',
+        ContentTitleSnippet::class,
+        AppointmentShowSnippet::class,
+        CurrentButtonRowSnippet::class,
+        // 'Track\\TracksForAppointment',
+        // 'Agenda\\AppointmentTokensSnippet',
     ];
 
     public function __construct(
@@ -152,14 +162,14 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
-        protected \Gems\Model $modelLoader,
-        protected ResultFetcher $resultFetcher,
         protected Agenda $agenda,
+        protected Model $modelLoader,
+        protected ResultFetcher $resultFetcher,
         protected UserLoader $userLoader,
     ) {
         parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
     }
-
+    
     /**
      * Perform checks on an Episode of care
      */
@@ -170,6 +180,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
 
             $this->addSnippets($this->checkSnippets, $params);
         }
+        
+        return [];
     }
 
     /**
@@ -188,7 +200,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         // Load organizationId and respondentId
         $this->loadParams();
 
-        $model = $this->modelLoader->createAppointmentModel();
+        $model = $this->modelLoader->createAppointmentModel($this->agenda);
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
@@ -316,8 +328,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      */
     protected function loadParams(): void
     {
-        $patientNr           = $this->request->getAttribute(Model::REQUEST_ID1);
-        $this->appointmentId = $this->request->getAttribute(\Gems\Model::APPOINTMENT_ID);
+        $patientNr           = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+        $this->appointmentId = $this->request->getAttribute(Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
             $select = $this->resultFetcher->getSelect('gems__appointments');
@@ -333,7 +345,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
                 $this->respondentId   = $data['gap_id_user'];
             }
         } else {
-            $this->organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
+            $this->organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
 
             if ($patientNr && $this->organizationId) {
                 $this->respondentId = $this->respondentRepository->getRespondentId($patientNr, $this->organizationId);

@@ -12,6 +12,7 @@
 namespace Gems;
 
 use DateTimeImmutable;
+use Gems\Agenda\Agenda;
 use Gems\Model\AppointmentModel;
 use Gems\Model\CommLogModel;
 use Gems\Model\CommMessengersModel;
@@ -40,11 +41,10 @@ use MUtil\Model\FolderModel;
 use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use OpenRosa\Model\OpenRosaFormModel;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Transformer\ModelTransformerInterface;
-use Zend_Db_Expr;
 use Zend_Db_Adapter_Abstract;
+use Zend_Db_Expr;
 
 /**
  * Central storage / access point for working with gems models.
@@ -197,12 +197,12 @@ class Model
      *
      * @return AppointmentModel
      */
-    public function createAppointmentModel(): AppointmentModel
+    public function createAppointmentModel(Agenda $agenda): AppointmentModel
     {
         /**
          * @var AppointmentModel
          */
-        return $this->overloader->create('AppointmentModel');
+        return $this->overloader->create('AppointmentModel', $agenda);
     }
 
     /**

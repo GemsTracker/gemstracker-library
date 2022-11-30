@@ -26,7 +26,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

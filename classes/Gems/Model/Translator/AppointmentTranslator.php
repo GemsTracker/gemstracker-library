@@ -24,7 +24,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $_agenda;
 

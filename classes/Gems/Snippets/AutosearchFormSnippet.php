@@ -157,21 +157,28 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         }
         $elements[self::PERIOD_DATE_USED] = $element;
 
-        $type = 'date';
+        $type = \MUtil\Model::TYPE_DATE;
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
             list($dateFormat, $separator, $timeFormat) = DatePicker::splitTojQueryDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
-                    $type = 'datetime';
+                    $type = \MUtil\Model::TYPE_DATETIME;
                 } else {
-                    $type = 'time';
+                    $type = \MUtil\Model::TYPE_TIME;
                 }
             }
         }
         $options['label'] = $fromLabel;
-        \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
+        $typeInfo = Model::getTypeDefaults($type);
+        foreach (['dateFormat', 'description', 'size', 'storageFormat'] as $key) {
+            if (isset($typeInfo[$key]) && (! isset($options[$key]))) {
+                $options[$key] = $typeInfo[$key];
+            }
+        }
+    
+        // \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
 
         $elements['datefrom'] = new DatePicker('datefrom', $options);
 

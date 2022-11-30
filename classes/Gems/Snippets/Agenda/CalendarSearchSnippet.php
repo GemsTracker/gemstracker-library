@@ -11,6 +11,13 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -28,6 +35,20 @@ class CalendarSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
      */
     protected $currentUser;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        protected RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected ResultFetcher $resultFetcher,
+        protected Agenda $agenda,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $this->requestInfo, $translate, $this->resultFetcher);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+    
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -46,7 +67,7 @@ class CalendarSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             $elements[] = $this->_createSelectElement('gap_id_organization', $orgs, $this->_('(all organizations)'));
         }
 
-        $locations = $this->loader->getAgenda()->getLocations();
+        $locations = $this->agenda->getLocations();
         if (count($locations) > 1) {
             $elements[] = $this->_createSelectElement('gap_id_location', $locations, $this->_('(all locations)'));
         }

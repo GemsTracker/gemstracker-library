@@ -44,7 +44,7 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

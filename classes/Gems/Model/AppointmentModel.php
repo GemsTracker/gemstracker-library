@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use Gems\Agenda\Agenda;
+
 /**
  *
  *
@@ -55,12 +57,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \Gems\Menu
      */
     protected $menu;
@@ -78,7 +74,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
     /**
      * Self constructor
      */
-    public function __construct()
+    public function __construct(protected Agenda $agenda)
     {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('appointments', 'gems__appointments', 'gap');
@@ -160,17 +156,15 @@ class AppointmentModel extends \Gems\Model\JoinModel
      */
     public function afterRegistry()
     {
-        $agenda = $this->loader->getAgenda();
-
-        if ($agenda) {
+        if ($this->agenda) {
             $this->addColumn(
                 "CASE WHEN gap_status IN ('" .
-                implode("', '", $agenda->getStatusKeysInactive()) .
+                implode("', '", $this->agenda->getStatusKeysInactive()) .
                 "') THEN 'deleted' ELSE '' END",
                 'row_class'
             );
 
-            $codes = $agenda->getStatusCodesInactive();
+            $codes = $this->agenda->getStatusCodesInactive();
             if (isset($codes['CA'])) {
                 $cancelCode = 'CA';
             } elseif ($codes) {
@@ -195,11 +189,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->_addJoinTables();
         $this->resetOrder();
 
-        $agenda     = $this->loader->getAgenda();
-
         $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'));
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
-            'multiOptions', $agenda->getStatusCodes());
+            'multiOptions', $this->agenda->getStatusCodes());
 
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
@@ -214,7 +206,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->setIfExists('gor_name',              'label', $this->_('Organization'));
         $this->setIfExists('gap_subject',           'label', $this->_('Subject'));
 
-        $dels = $this->loader->getAgenda()->getStatusKeysInactiveDbQuoted();
+        $dels = $this->agenda->getStatusKeysInactiveDbQuoted();
         if ($dels) {
             $this->addColumn(
                 new \Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "),
@@ -237,7 +229,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
     {
         $this->resetOrder();
 
-        $agenda     = $this->loader->getAgenda();
         $dbLookup   = $this->util->getDbLookup();
         $empty      = $this->translatedUtil->getEmptyDropdownArray();
 
@@ -248,9 +239,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
             'dateFormat',  'd-m-Y H:i',
             'description', $this->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_code',            'label', $this->_('Type'),
-            'multiOptions', $agenda->getTypeCodes());
+            'multiOptions', $this->agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $this->_('Status'),
-            'multiOptions', $agenda->getStatusCodes());
+            'multiOptions', $this->agenda->getStatusCodes());
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
                 'formatFunction', [$this, 'showEpisode'],
@@ -258,9 +249,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
         }
 
         $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
-            'multiOptions', $empty + $agenda->getHealthcareStaff());
+            'multiOptions', $empty + $this->agenda->getHealthcareStaff());
         $this->setIfExists('gap_id_referred_by',  'label', $this->_('Referrer'),
-            'multiOptions', $empty + $agenda->getHealthcareStaff());
+            'multiOptions', $empty + $this->agenda->getHealthcareStaff());
         $this->setIfExists('gap_id_activity',     'label', $this->_('Activities'));
         $this->setIfExists('gap_id_procedure',    'label', $this->_('Procedures'));
         $this->setIfExists('gap_id_location',     'label', $this->_('Location'));
@@ -271,9 +262,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->setIfExists('gap_comment',         'label', $this->_('Comment'));
 
         if ($setMulti) {
-            $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $agenda->getActivities());
-            $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $agenda->getProcedures());
-            $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations());
+            $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities());
+            $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures());
+            $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations());
         }
 
         $this->refreshGroupSettings();
@@ -291,7 +282,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
     {
         $this->applyDetailSettings(false);
 
-        $agenda = $this->loader->getAgenda();
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gap_id_organization', 'default', $orgId ?: $this->currentOrganization->getId());
@@ -300,9 +290,9 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->setIfExists('gap_status',          'required', true);
         $this->setIfExists('gap_comment',         'elementClass', 'Textarea', 'rows', 5);
 
-        $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $agenda->getActivities($orgId));
-        $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $agenda->getProcedures($orgId));
-        $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations($orgId));
+        $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $this->agenda->getActivities($orgId));
+        $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures($orgId));
+        $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations($orgId));
 
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode', 'multiOptions', $empty);
@@ -366,7 +356,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         if ($this->getChanged() && ($this->getChanged() !== $oldChanged)) {
             if ($this->isAutoTrackUpdate()) {
-                $appointment = $this->loader->getAgenda()->getAppointment($returnValues);
+                $appointment = $this->agenda->getAppointment($returnValues);
 
                 $this->_changedTokenCount += $appointment->updateTracks();
             }
@@ -399,7 +389,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         if (! $episodeId) {
             return null;
         }
-        $episode = $this->loader->getAgenda()->getEpisodeOfCare($episodeId);
+        $episode = $this->agenda->getEpisodeOfCare($episodeId);
 
         if (! $episode->exists) {
             return $episodeId;

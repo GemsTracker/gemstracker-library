@@ -63,14 +63,14 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      *
      * @var array (int/label => route or routepart)
      */
-    public array $menuEditRoutes = ['edit'];
+    protected  array $menuEditRoutes = ['edit'];
 
     /**
      * Menu routes or routeparts to show in Show box.
      *
      * @var array (int/label => route or routepart)
      */
-    public array $menuShowRoutes = ['show'];
+    protected array $menuShowRoutes = ['show'];
 
     /**
      * Option to manually diasable the menu

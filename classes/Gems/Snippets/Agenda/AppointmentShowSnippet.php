@@ -11,7 +11,13 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
+use Gems\Html;
+use Gems\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,7 +28,7 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
+class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstract
 {
     /**
      *
@@ -30,6 +36,17 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstrac
      */
     protected $model;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        protected Model $modelLoader
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+    }
+    
     /**
      * Adds rows from the model to the bridge that creates the browse table.
      *
@@ -53,7 +70,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstrac
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->loader->getModels()->createAppointmentModel();
+            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
             $this->model->applyDetailSettings();
         }
         $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
@@ -67,7 +84,7 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstrac
         if (! $date instanceof \DateTimeInterface) {
             return $date;
         }
-        $div = \MUtil\Html::create('div');
+        $div = Html::create('div');
         $div->class = 'calendar';
         $div->span(ucfirst($date->format('l j F Y')))->class = 'date';
         // $div->strong($date->toString());

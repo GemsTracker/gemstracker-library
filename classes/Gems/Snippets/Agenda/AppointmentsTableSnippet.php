@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
@@ -109,26 +110,23 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
 
-        $appButton = null;
-        $showMenuItems = $this->getShowUrls($bridge, $model->getKeys());
-        if (count($showMenuItems)) {
-            $appButton = \Gems\Html::actionLink('test', $this->_('Show appointment'));
-        }
-        $editButton = null;
-        if (count($showMenuItems)) {
-            $appButton = \Gems\Html::actionLink('test', $this->_('Edit appointment'));
-        }
-
+        $keys = [Model::APPOINTMENT_ID => 'gap_id_appointment'];
+        
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
         $br      = \Zalt\Html\Html::create('br');
 
         $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
-
         $bridge->tr()->appendAttrib('class', $bridge->row_class);
-        if ($appButton) {
-            $bridge->addItemLink($appButton)->class = 'middleAlign';
+        
+        if ($this->showMenu) {
+            foreach ($this->getShowUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
+            }
         }
         if ($this->sortableLinks) {
             $bridge->addMultiSort([$bridge->date_only], $br, 'gap_admission_time')->class = 'date';
@@ -163,8 +161,13 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                 [$bridge->glo_name, $model->get('glo_name', 'label')]
             );
         }
-        if ($editButton) {
-            $bridge->addItemLink($editButton)->class = 'middleAlign rightAlign';
+        if ($this->showMenu) {
+            foreach ($this->getEditUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
+            }
         }
     }
 

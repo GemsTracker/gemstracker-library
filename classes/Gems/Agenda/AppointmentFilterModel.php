@@ -27,7 +27,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

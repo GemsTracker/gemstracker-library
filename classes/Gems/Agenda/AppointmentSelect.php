@@ -33,7 +33,7 @@ class AppointmentSelect extends \MUtil\Registry\TargetAbstract
 
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

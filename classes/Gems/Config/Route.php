@@ -2,27 +2,25 @@
 
 namespace Gems\Config;
 
-use Gems\Actions\CalendarAction;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\ChangePasswordHandler;
-use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\EmbedLoginHandler;
 use Gems\Handlers\Auth\LoginHandler;
 use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\RequestPasswordResetHandler;
+use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
-use Gems\Handlers\InfoHandler;
-use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
-use Gems\Legacy\LegacyController;
+use Gems\Handlers\InfoHandler;
+use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
-use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
@@ -30,7 +28,6 @@ use Gems\Model;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
 use Mezzio\Csrf\CsrfMiddleware;
-
 use Mezzio\Session\SessionMiddleware;
 
 class Route
@@ -253,11 +250,11 @@ class Route
     public function getCalendarRoutes(): array
     {
         return [
-            ...$this->createBrowseRoutes(baseName: 'calendar',
-                controllerClass: CalendarAction::class,
-                parameters: [
-                    Model::APPOINTMENT_ID =>  '\d+',
-                ],
+            ...$this->createSnippetRoutes(
+                baseName: 'calendar',
+                controllerClass: CalendarHandler::class,
+                // pages: ['index', 'autofilter'],
+                parameters: [Model::APPOINTMENT_ID =>  '\d+',],
             ),
         ];
     }
@@ -416,7 +413,7 @@ class Route
                     'id1',
                     'id2',
                 ],
-                parameters: [
+                parameters:                        [
                     \Gems\Model::APPOINTMENT_ID => '\d+',
                 ],
             ),

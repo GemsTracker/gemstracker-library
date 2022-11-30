@@ -11,13 +11,18 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
-use MUtil\Lazy\Call;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\TableElement;
+use Zalt\Late\LateCall;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -35,18 +40,22 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $calSearchFilter;
 
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
     /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(SnippetOptions $snippetOptions,
+                                RequestInfo $requestInfo,
+                                MenuSnippetHelper $menuHelper,
+                                TranslatorInterface $translate,
+                                protected Agenda $agenda,
+                                protected Model $modelLoader
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -61,36 +70,16 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $bridge->gr2o_id_organization;
+        
+        $respKeys = ['id1' => 'gr2o_patient_nr', 'id2' => 'gr2o_id_organization',];
+        $appointmentHref = $this->menuHelper->getLateRouteUrl('respondent.appointments.show', [Model::APPOINTMENT_ID => 'gap_id_appointment'] + $respKeys);
+        $appointmentButton = isset($appointmentHref['url']) ? Html::actionLink($appointmentHref['url'], $this->_('Show appointment')) : null;
+        
+        $respondentHref = $this->menuHelper->getLateRouteUrl('respondent.show', $respKeys);
+        $respondentButton = isset($respondentHref['url']) ? Html::actionLink($respondentHref['url'], $this->_('Show respondent')) : null;
 
-        $appointmentParams = [
-            Model::APPOINTMENT_ID => $bridge->getLazy('gap_id_appointment'),
-        ];
-
-        $appointmentHref = new Call(function(string $routeName, array $params = []) {
-            return $this->routeHelper->getRouteUrl($routeName, $params);
-        }, ['calendar.show', $appointmentParams]);
-
-        $appButton = null;
-        if ($appointmentHref) {
-            $appButton = Html::actionLink($appointmentHref, $this->_('Show appointment'));//$menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
-        }
-
-        $respondentParams = [
-            'id1' => $bridge->getLazy('gr2o_patient_nr'),
-            'id2' => $bridge->getLazy('gr2o_id_organization'),
-        ];
-
-        $respondentHref = new Call(function(string $routeName, array $params = []) {
-            return $this->routeHelper->getRouteUrl($routeName, $params);
-        }, ['respondent.show', $respondentParams]);
-
-        $respondentButton = null;
-        if ($respondentHref) {
-            $respondentButton = Html::actionLink($appointmentHref, $this->_('Show appointment'));//$menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
-        }
-
-        $br = \MUtil\Html::create('br');
-        $sp = \MUtil\Html::raw(' ');
+        $br = Html::create('br');
+        $sp = Html::raw(' ');
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -110,26 +99,23 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->addSortable('glo_name')->colspan = 2;
 
         $bridge->tr()->class = array('odd', $bridge->row_class);
-        $bridge->addColumn($appButton)->class = 'middleAlign';
+        $bridge->addColumn($appointmentButton)->class = 'middleAlign';
         $bridge->addMultiSort('gr2o_patient_nr', $sp, 'gap_subject', $br, 'name');
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));
         $bridge->addMultiSort(array($this->_('With')), array(' '), 'gas_name', $br, 'gaa_name', array(' '), 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
         $bridge->addColumn($respondentButton)->class = 'middleAlign rightAlign';
 
-        unset($table[\MUtil\Html\TableElement::THEAD]);
+        unset($table[TableElement::THEAD]);
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
+     * Creates the model
      *
-     * @return void
+     * @return \MUtil\Model\ModelAbstract
      */
-    public function afterRegistry()
+    protected function createModel(): DataReaderInterface
     {
-        parent::afterRegistry();
-
         if (null !== $this->calSearchFilter) {
             $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
             $this->caption    = $this->_('Example appointments');
@@ -150,18 +136,9 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                 $this->searchFilter = $this->calSearchFilter;
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter);
-    }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(): DataReaderInterface
-    {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->loader->getModels()->createAppointmentModel();
+            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
             $this->model->applyBrowseSettings();
         }
         $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');

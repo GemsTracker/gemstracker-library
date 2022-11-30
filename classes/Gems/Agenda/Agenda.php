@@ -9,16 +9,17 @@
  * @license    New BSD License
  */
 
-namespace Gems;
+namespace Gems\Agenda;
 
-use Gems\Agenda\AppointmentFilterInterface;
-use Gems\Agenda\AppointmentSelect;
-use Gems\Agenda\EpisodeOfCare;
 use Gems\Cache\HelperAdapter;
+use Gems\Episode;
 use MUtil\Model;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\TranslateableTrait;
+use Zalt\Loader\ProjectOverloader;
 
 /**
- *
  *
  * @package    Gems
  * @subpackage Agenda
@@ -26,8 +27,10 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Agenda extends \Gems\Loader\TargetLoaderAbstract
+class Agenda 
 {
+    use TranslateableTrait;
+    
     /**
      *
      * @var \Gems\Agenda\Appointment[]
@@ -55,72 +58,50 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @var \Gems\Cache\HelperAdapter
-     */
+     * / 
     protected $cache;
-
-    /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
-     */
-    protected ?string $cascade = 'Agenda';
 
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
-     */
+     * /
     protected $db;
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translateAdapter;
+     * @var ProjectOverloader
+     * /
+    protected $subLoader;
 
     /**
      * @var \Gems\Util
-     */
+     * /
     protected $util;
 
+    /**
+     * Sets the source of variables and the first directory for snippets
+     */
+    public function __construct(
+        protected ProjectOverloader $subloader, 
+        TranslatorInterface $translator,
+        protected AdapterInterface $cache,
+        protected \Zend_Db_Adapter_Abstract $db,
+        )
+    {
+        $this->translate = $translator;
+    }
+    
     /**
      *
      * @param type $container A container acting as source for \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
-     */
+     * /
     public function __construct($container, array $dirs)
     {
         parent::__construct($container, $dirs);
 
         // Make sure the tracker is known
         $this->addRegistryContainer(array('agenda' => $this));
-    }
-
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string              $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                     identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translateAdapter->_($text, $locale);
     }
 
     /**
@@ -150,7 +131,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      * This function is no needed if the classes are setup correctly
      *
      * @return void
-     */
+     * /
     public function afterRegistry()
     {
         parent::afterRegistry();
@@ -290,16 +271,12 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      * Dynamically load and create a [Gems|Project]_Agenda_ class
      *
      * @param string $className
-     * @param mixed $param1
-     * @param mixed $param2
+     * @param array $params
      * @return object
      */
-    public function createAgendaClass($className, $param1 = null, $param2 = null)
+    public function createAgendaClass($className, ...$params)
     {
-        $params = func_get_args();
-        array_shift($params);
-
-        return $this->_loadClass($className, true, $params);
+        return $this->subloader->create($className, ...$params);
     }
 
     /**
@@ -310,7 +287,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public function createAppointmentSelect($fields = '*')
     {
-        return $this->_loadClass('AppointmentSelect', true, array($fields));
+        return $this->subloadeer->create('AppointmentSelect', $fields);
     }
 
     /**
@@ -418,7 +395,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
-            $this->_appointments[$appointmentId] = $this->_loadClass('appointment', true, array($appointmentData));
+            $this->_appointments[$appointmentId] = $this->subloader->create('appointment', $appointmentData);
         } elseif (is_array($appointmentData)) {
             // Make sure the new values are set in the object
             $this->_appointments[$appointmentId]->refresh($appointmentData);
@@ -541,7 +518,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
         }
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
-        return $this->_loadClass('episodeOfCare', true, array($episodeData));
+        return $this->subloader->create('episodeOfCare', $episodeData);
     }
 
     /**
@@ -1434,7 +1411,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public function newFilterObject($className)
     {
-        return $this->_loadClass("Filter\\$className", true);
+        return $this->subloader->create("Filter\\$className");
     }
 
     /**
@@ -1443,27 +1420,7 @@ class Agenda extends \Gems\Loader\TargetLoaderAbstract
      */
     public function newFilterModel()
     {
-        return $this->_loadClass('AppointmentFilterModel', true);
-    }
-
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string using plural notations
-     * Returns the translated string
-     *
-     * @see \Zend_Locale
-     * @param  string              $singular Singular translation string
-     * @param  string              $plural   Plural translation string
-     * @param  integer             $number   Number for detecting the correct plural
-     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                       locale identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function plural($singular, $plural, $number, $locale = null)
-    {
-        $args = func_get_args();
-        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
+        return $this->subloader->create('AppointmentFilterModel');
     }
 
     /**

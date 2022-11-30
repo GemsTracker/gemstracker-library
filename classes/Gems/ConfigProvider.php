@@ -4,6 +4,8 @@ namespace Gems;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
+use Gems\Agenda\Agenda;
+use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
@@ -74,7 +76,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\SnippetsLoader\MezzioLaminasSnippetResponderFactory;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -223,6 +224,7 @@ class ConfigProvider
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
                 Acl::class => AclFactory::class,
+                Agenda::class => AgendaFactory::class,
 
                 // Logs
                 'LegacyLogger' => MonologFactory::class,

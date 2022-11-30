@@ -3,34 +3,37 @@
 /**
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage Handlers\Respondents
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2013 Erasmus MC
- * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
 
 use DateTimeImmutable;
-use MUtil\Model;
+use Gems\Agenda\Agenda;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\User\User;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+use function Gems\Actions\count;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Default
- * @copyright  Copyright (c) 2013 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.6.2
+ * @subpackage Handlers\Respondents
+ * @since      Class available since version 2.0
  */
-class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
+class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
-     */
-    protected $autofilterParameters = array(
+     
+    protected array $autofilterParameters = array(
         'dateFormat'        => 'getDateFormat',
         'extraSort'         => array(
             'gap_admission_time' => SORT_ASC,
@@ -44,18 +47,18 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Agenda\\CalendarTableSnippet';
+    protected array $autofilterSnippets = ['Agenda\\CalendarTableSnippet'];
 
     /**
      *
      * @var \Gems\User\User
      */
-    public $currentUser;
+    protected User $currentUser;
 
     /**
      *
      * @var \Zend_Db_Adapter_Abstract
-     */
+     * /
     public $db;
 
     /**
@@ -65,14 +68,27 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array $formActions Array of the actions that use the model with a form.
      */
-    public $formActions = array('create', 'delete', 'edit', 'import', 'simpleApi');
+    public array $formActions = array('create', 'delete', 'edit', 'import', 'simpleApi');
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\CalendarSearchSnippet');
+    protected array $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\CalendarSearchSnippet');
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface       $translator,
+        protected Agenda          $agenda,
+        CurrentUserRepository     $currentUserRepository,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected Model           $modelLoader,
+    ) {
+        parent::__construct($responder, $translator);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -85,9 +101,9 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = $this->loader->getModels()->createAppointmentModel();
+        $model = $this->modelLoader->createAppointmentModel($this->agenda);
         $model->applyBrowseSettings();
         return $model;
     }
@@ -116,7 +132,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
             $org = $this->currentUser->getCurrentOrganization();
@@ -136,7 +152,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter($useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -153,7 +169,7 @@ class CalendarAction extends \Gems\Controller\ModelSnippetActionAbstract
         return $filter;
     }
     
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Calendar');
     }

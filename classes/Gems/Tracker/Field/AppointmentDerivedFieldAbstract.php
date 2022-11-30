@@ -40,7 +40,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     
     /**
      *
-     * @var \Gems\Agenda 
+     * @var \Gems\Agenda\Agenda 
      */
     protected $agenda;
 
@@ -123,7 +123,7 @@ abstract class AppointmentDerivedFieldAbstract extends FieldAbstract
     /**
      * Retreive the agenda if not injected
      * 
-     * @return \Gems\Agenda
+     * @return \Gems\Agenda\Agenda
      */
     protected function getAgenda()
     {

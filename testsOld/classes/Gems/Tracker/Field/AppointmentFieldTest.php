@@ -11,8 +11,6 @@
 
 namespace Gems\Tracker\Field;
 
-use Gems\Agenda\AppointmentFilterInterface;
-
 /**
  *
  * @package    Gems
@@ -24,7 +22,7 @@ use Gems\Agenda\AppointmentFilterInterface;
 class AppointmentFieldTest extends \Gems\Test\DbTestAbstract
 {
     /**
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 

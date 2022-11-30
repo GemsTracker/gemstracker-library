@@ -29,7 +29,7 @@ class AppointmentCheckSnippet extends FormSnippetAbstract
 {
     /**
      *
-     * @var \Gems\Agenda
+     * @var \Gems\Agenda\Agenda
      */
     protected $agenda;
 
