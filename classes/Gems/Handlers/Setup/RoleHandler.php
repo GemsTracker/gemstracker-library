@@ -467,10 +467,15 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     {
         $privileges = [];
 
-        foreach ($this->acl->getPrivilegeRoles() as $privilege => $roles) {
-            $privileges[$privilege][$this->_('Privilege')] = $privilege;
-            $privileges[$privilege][$this->_('Allowed')]   = $roles[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[\Zend_Acl::TYPE_ALLOW]) : null;
-            $privileges[$privilege][$this->_('Denied')]    = $roles[\Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[\Zend_Acl::TYPE_DENY])  : null;
+        foreach ($this->aclRepository->getResolvedRoles() as $roleName => $roleConfig) {
+            foreach ($roleConfig[RoleAdapterInterface::ROLE_RESOLVED_PRIVILEGES] as $privilege) {
+                $privileges[$privilege][$this->_('Privilege')] = $privilege;
+                $privileges[$privilege][$this->_('Allowed')][] = $roleName;
+            }
+        }
+
+        foreach ($privileges as $privilege => $row) {
+            $privileges[$privilege][$this->_('Allowed')] = implode(', ', $row[$this->_('Allowed')]);
         }
 
         // Add unassigned rights to the array too
@@ -485,7 +490,6 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $privileges[$privilege] = [
                 $this->_('Privilege') => $privilege,
                 $this->_('Allowed')   => null,
-                $this->_('Denied')    => null
             ];
         }
         ksort($privileges);
