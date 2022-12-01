@@ -98,12 +98,12 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      */
     public function __construct(
         SnippetOptions $snippetOptions,
-        protected RequestInfo $requestInfo,
+        RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         protected MenuSnippetHelper $menuHelper)
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
         
         // $this->useCsrf = $project->useCsrfCheck();
     }

@@ -11,7 +11,14 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -52,6 +59,19 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected $util;
 
+    public function __construct(
+        SnippetOptions $snippetOptions, 
+        RequestInfo $requestInfo, 
+        TranslatorInterface $translate, 
+        MessengerInterface $messenger, 
+        MenuSnippetHelper $menuHelper,
+        protected Agenda $agenda,
+        protected Model $modelLoader,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
+
     /**
      * Hook that allows actions when data was saved
      *
@@ -80,7 +100,7 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Model\AppointmentModel) {
-            $this->model = $this->loader->getModels()->createAppointmentModel();
+            $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
             $this->model->applyDetailSettings();
         }
         $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));

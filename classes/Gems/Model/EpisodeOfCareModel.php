@@ -11,6 +11,7 @@
 
 namespace Gems\Model;
 
+use Gems\Agenda\Agenda;
 use Gems\Util\Translated;
 use MUtil\Model\Type\JsonData;
 
@@ -31,12 +32,6 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
     protected $currentUser;
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * @var Translated
      */
     protected $translatedUtil;
@@ -49,7 +44,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
     /**
      * Self constructor
      */
-    public function __construct()
+    public function __construct(protected Agenda $agenda)
     {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('episodesofcare', 'gems__episodes_of_care', 'gec');
@@ -106,10 +101,8 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
      */
     public function afterRegistry()
     {
-        $agenda = $this->loader->getAgenda();
-
-        if ($agenda) {
-            $codes = $agenda->getStatusCodesInactive();
+        if ($this->agenda) {
+            $codes = $this->agenda->getStatusCodesInactive();
 
             $this->addColumn(
                     "CASE WHEN gec_status IN ('" .
@@ -142,16 +135,12 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
         $this->_addJoinTables();
         $this->resetOrder();
 
-        $agenda = $this->loader->getAgenda();
-
         $this->setIfExists('gec_status',    'label', $this->_('Status'),
-                'multiOptions', $agenda->getEpisodeStatusCodes());
+                'multiOptions', $this->agenda->getEpisodeStatusCodes());
 
         $this->setIfExists('gec_startdate', 'label', $this->_('Start date'),
-                'dateFormat',  'dd-MM-yyyy',
                 'description', $this->_('dd-mm-yyyy'));
         $this->setIfExists('gec_enddate', 'label', $this->_('End date'),
-                'dateFormat',  'dd-MM-yyyy',
                 'description', $this->_('dd-mm-yyyy'));
 
         $this->setIfExists('gec_subject',   'label', $this->_('Subject'));
@@ -177,7 +166,6 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
     {
         $this->resetOrder();
 
-        $agenda   = $this->loader->getAgenda();
         $dbLookup = $this->util->getDbLookup();
         $empty    = $this->translatedUtil->getEmptyDropdownArray();
 
@@ -186,17 +174,15 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
                 'multiOptions', $empty + $dbLookup->getOrganizations());
 
         $this->setIfExists('gec_status',         'label', $this->_('Status'),
-                'multiOptions', $agenda->getEpisodeStatusCodes());
+                'multiOptions', $this->agenda->getEpisodeStatusCodes());
 
         $this->setIfExists('gec_startdate',      'label', $this->_('Start date'),
-                'dateFormat',  'dd-MM-yyyy',
                 'description', $this->_('dd-mm-yyyy'));
         $this->setIfExists('gec_enddate',        'label', $this->_('End date'),
-                'dateFormat',  'dd-MM-yyyy',
                 'description', $this->_('dd-mm-yyyy'));
 
         $this->setIfExists('gec_id_attended_by', 'label', $this->_('With'),
-                'multiOptions', $empty + $agenda->getHealthcareStaff());
+                'multiOptions', $empty + $this->agenda->getHealthcareStaff());
 
         $this->setIfExists('gec_subject',        'label', $this->_('Subject'));
         $this->setIfExists('gec_comment',        'label', $this->_('Comment'));
@@ -228,7 +214,6 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
     {
         $this->applyDetailSettings();
 
-        $agenda = $this->loader->getAgenda();
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
         $this->setIfExists('gec_id_user',         'default', $respId,

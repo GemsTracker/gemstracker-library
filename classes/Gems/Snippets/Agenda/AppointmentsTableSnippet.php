@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
@@ -88,6 +89,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected Agenda $agenda,
         protected Model $modelLoader,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
@@ -181,7 +183,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         if ($this->model instanceof Model\AppointmentModel) {
             $model = $this->model;
         } else {
-            $model = $this->modelLoader->createAppointmentModel();
+            $model = $this->modelLoader->createAppointmentModel($this->agenda);
             $model->applyBrowseSettings();
         }
 
@@ -238,9 +240,12 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public function getFilter(MetaModelInterface $metaModel): array
     {
         $filter = parent::getFilter($metaModel);
-        $queryParams = $this->requestInfo->getRequestQueryParams();
-        if (isset($queryParams[Model::EPISODE_ID])) {
-            $metaModel->addFilter(['gap_id_episode' => $queryParams[Model::EPISODE_ID]]);
+        
+        $episodeId = $this->requestInfo->getParam(Model::EPISODE_ID);
+        if ($episodeId) {
+            $this->caption = $this->_('Linked appointments');
+            $this->onEmpty = $this->_('No linked appointments found.');
+            $filter['gap_id_episode'] = $episodeId;
         }
 
         return $filter;

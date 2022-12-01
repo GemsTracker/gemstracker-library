@@ -9,11 +9,22 @@
  * @license    No free license, do not copy
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
 
-use Gems\Handlers\Respondent\RespondentChildHandlerAbstract;
+use Gems\Agenda\Agenda;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Model\EpisodeOfCareModel;
+use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Agenda\AppointmentsTableSnippet;
+use Gems\Snippets\Agenda\EpisodeTableSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Tracker\Respondent;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -39,13 +50,9 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Agenda\\EpisodeTableSnippet'];
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
+    protected array $autofilterSnippets = [
+        EpisodeTableSnippet::class,
+        ];
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -72,7 +79,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $showParameters = [
-        'bridgeMode' => \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS,   // Prevent lazyness
+        // 'bridgeMode' => BridgeInterface::MODE_ROWS,   // Prevent lazyness
         'respondent' => 'getRespondent',
         ];
 
@@ -81,7 +88,24 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $showSnippets = ['Generic\\ContentTitleSnippet', 'ModelItemTableSnippet', 'Agenda\\AppointmentsTableSnippet'];
+    protected array $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
+        AppointmentsTableSnippet::class,
+        ];
+
+    public function __construct(
+        SnippetResponderInterface $responder, 
+        TranslatorInterface $translate, 
+        RespondentRepository $respondentRepository, 
+        CurrentUserRepository $currentUserRepository,
+        protected Agenda $agenda,
+        protected Model $modelLoader,
+    )
+    {
+        parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -92,13 +116,12 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
      */
     protected function createModel(bool $detailed, string $action): EpisodeOfCareModel
     {
         $respondent = $this->getRespondent();
 
-        $model = $this->loader->getModels()->createEpisodeOfCareModel();
+        $model = $this->modelLoader->createEpisodeOfCareModel($this->agenda);
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
@@ -157,18 +180,18 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $id = $this->request->getAttribute(\Gems\Model::EPISODE_ID);
-            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
-            $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $id = $this->requestInfo->getParam(Model::EPISODE_ID);
+            $patientNr = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID1);
+            $orgId = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID2);
             if ($id && ! ($patientNr || $orgId)) {
-                $episode = $this->loader->getAgenda()->getEpisodeOfCare($id);
+                $episode = $this->agenda->getEpisodeOfCare($id);
                 $this->_respondent = $episode->getRespondent();
 
                 if (! $this->_respondent->exists) {
                     throw new \Gems\Exception($this->_('Unknown respondent.'));
                 }
 
-                $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
+                // $this->_respondent->applyToMenuSource($this->menu->getParameterSource());
             } else {
                 $this->_respondent = parent::getRespondent();
             }
@@ -188,7 +211,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $patientId  = $respondent->getPatientNumber();
         if ($patientId) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if (false && $this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 $for = sprintf($this->_('for respondent number %s'), $patientId);
             } else {
                 $for = sprintf($this->_('for respondent number %s'), $patientId);

@@ -11,8 +11,14 @@
 
 namespace Gems\Snippets\Track;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Tracker;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -41,38 +47,35 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected $bridgeMode = BridgeInterface::MODE_ROWS;
 
     /**
      * Menu actions to show in Edit box.
      *
      * If controller is numeric $menuActionController is used, otherwise
      * the key specifies the controller.
-     *
-     * @var array (int/controller => action)
      */
-    public array $menuEditRoutes = array('track' => 'edit-track');
+    public array $menuEditRoutes = ['respondent.tracks.edit-track'];
 
     /**
      * Menu actions to show in Show box.
      *
      * If controller is numeric $menuActionController is used, otherwise
      * the key specifies the controller.
-     *
-     * @var array (int/controller => action)
      */
-    public array $menuShowRoutes = array('track' => 'show-track');
+    public array $menuShowRoutes = ['respondent.tracks.show-track'];
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+        protected Translated $translatedUtil,       
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Creates the model
@@ -81,7 +84,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        $model = $this->loader->getTracker()->getRespondentTrackModel();
+        $model = $this->tracker->getRespondentTrackModel();
 
         $model->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
 

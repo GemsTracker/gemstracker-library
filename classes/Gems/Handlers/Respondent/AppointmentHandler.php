@@ -18,9 +18,13 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\AppointmentModel;
 use Gems\Model;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Agenda\AppointmentItemYesNoDeleteSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
+use Gems\Snippets\Agenda\AppointmentTokensSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelItemYesNoDeleteSnippet;
+use Gems\Snippets\Track\TracksForAppointment;
 use Gems\Tracker\Respondent;
 use Gems\User\UserLoader;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -106,13 +110,6 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     public $currentUser;
 
     /**
-     * The snippets used for the delete action.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $deleteSnippets = ['Agenda\\YesNoAppointmentDeleteSnippet'];
-
-    /**
      * The parameters used for the index action minus those in autofilter.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -153,8 +150,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         ContentTitleSnippet::class,
         AppointmentShowSnippet::class,
         CurrentButtonRowSnippet::class,
-        // 'Track\\TracksForAppointment',
-        // 'Agenda\\AppointmentTokensSnippet',
+        TracksForAppointment::class,
+        AppointmentTokensSnippet::class,
     ];
 
     public function __construct(

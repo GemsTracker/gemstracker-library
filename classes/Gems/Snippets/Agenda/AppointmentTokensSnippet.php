@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Engine\StepEngineAbstract;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -25,57 +33,51 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  */
 class AppointmentTokensSnippet extends \Gems\Snippets\Token\RespondentTokenSnippet
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        SnippetOptions                      $snippetOptions,
+        RequestInfo                         $requestInfo,
+        MenuSnippetHelper                   $menuHelper,
+        TranslatorInterface                 $translate,
+        Tracker                             $tracker,
+        protected \Zend_Db_Adapter_Abstract $db
+    )
     {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker);
+
         $this->caption = $this->_("Tokens set by this appointment");
         $this->onEmpty = $this->_("No tokens are set by this appointment");
     }
 
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $metaModel) : array
     {
-        parent::processFilterAndSort($model);
+        $filter = parent::getFilter($metaModel);
 
-        $appId = $this->request->getParam(\Gems\Model::APPOINTMENT_ID);
+        $appId = $this->requestInfo->getParam(Model::APPOINTMENT_ID);
 
         if ($appId) {
             $appKeyPrefix = $this->db->quote(FieldsDefinition::makeKey(FieldMaintenanceModel::APPOINTMENTS_NAME, ''));
-            $appSource    = $this->db->quote(\Gems\Tracker\Engine\StepEngineAbstract::APPOINTMENT_TABLE);
+            $appSource = $this->db->quote(StepEngineAbstract::APPOINTMENT_TABLE);
 
             $or[] = $this->db->quoteInto(
-                    "gro_valid_after_source = $appSource AND
+                "gro_valid_after_source = $appSource AND
                         (gto_id_respondent_track, gro_valid_after_field) IN
                             (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
                                 FROM gems__respondent2track2appointment
                                 WHERE gr2t2a_id_appointment = ?)",
-                    $appId
-                    );
+                $appId
+            );
             $or[] = $this->db->quoteInto(
-                    "gro_valid_for_source = $appSource AND
+                "gro_valid_for_source = $appSource AND
                         (gto_id_respondent_track, gro_valid_for_field) IN
                             (SELECT gr2t2a_id_respondent_track, CONCAT($appKeyPrefix, gr2t2a_id_app_field)
                                 FROM gems__respondent2track2appointment
                                 WHERE gr2t2a_id_appointment = ?)",
-                    $appId
-                    );
+                $appId
+            );
+
+            $filter[] = '(' . implode(') OR (', $or) . ')';
         }
 
-        $model->addFilter(array('(' . implode(') OR (', $or) . ')'));
+        return $filter;
     }
 }
