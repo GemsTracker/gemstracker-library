@@ -102,7 +102,7 @@ class TrackVisualDefinitionSnippet extends \Gems\Snippets\ModelTableSnippetAbstr
                 if ($round === null) {
                     continue;
                 }
-                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $this->db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $db->quote($round) . ' then "X" else NULL end)');
+                $fields[$round] = new \Zend_Db_Expr('max(case when (gro_round_description = ' . $this->db->quote($round) . ' AND gro_condition > 0) then "C" when gro_round_description = ' . $this->db->quote($round) . ' then "X" else NULL end)');
             }
             $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
