@@ -12,6 +12,10 @@
 namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -24,34 +28,15 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
  */
 class FieldsTitleSnippet extends ContentTitleSnippet
 {
+
     /**
-     * Required: the engine of the current track
-     *
-     * @var \Gems\Tracker\Engine\TrackEngineInterface
+     * @var TrackEngineInterface
      */
     protected $trackEngine;
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(SnippetOptions $snippetOptions, RequestInfo $requestInfo, Translator $translator)
     {
-        parent::afterRegistry();
-
-        $this->contentTitle = sprintf($this->_('Fields in %s track'), $this->trackEngine->getTrackName());
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
+        parent::__construct($snippetOptions, $requestInfo);
+        $this->contentTitle = sprintf($translator->_('Fields in %s track'), $this->trackEngine->getTrackName());
     }
 }

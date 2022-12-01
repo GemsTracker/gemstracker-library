@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Generic;
 
+use Zalt\Html\Html;
+use Zalt\Snippets\SnippetAbstract;
+
 /**
  *
  *
@@ -20,7 +23,7 @@ namespace Gems\Snippets\Generic;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ContentTitleSnippet extends \Zalt\Snippets\SnippetAbstract
+class ContentTitleSnippet extends SnippetAbstract
 {
     /**
      * The title to display
@@ -46,7 +49,7 @@ class ContentTitleSnippet extends \Zalt\Snippets\SnippetAbstract
     public function getHtmlOutput()
     {
         if ($this->contentTitle) {
-            return \Zalt\Html\Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
+            return Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
         }
     }
 

@@ -183,9 +183,9 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
     {
         if (! $this->model instanceof RoundModel) {
             $this->model = $this->trackEngine->getRoundModel(false, 'index');
-            $this->model->applyParameters(['gro_id_track' => $this->trackEngine->getTrackId()]);
             $this->model->setKeys(['rid' => 'gro_id_round']);
         }
+        $this->extraFilter['gro_id_track'] = $this->trackEngine->getTrackId();
 
         $br = Html::create('br');
         $sp = Html::raw(' ');
