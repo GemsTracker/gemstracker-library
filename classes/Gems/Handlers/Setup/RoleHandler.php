@@ -85,13 +85,13 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     protected $usedPrivileges;
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        private readonly RouteHelper $routeHelper,
         private readonly AclRepository $aclRepository,
         private readonly UrlHelper $urlHelper,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**
@@ -201,7 +201,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     /**
      * Action for showing a edit item page with extra title
      */
-    public function editAction(): void
+    public function editAction()
     {
         $model   = $this->getModel();
 
@@ -217,7 +217,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         parent::editAction();
     }
 
-    public function deleteAction(): void
+    public function deleteAction()
     {
         $model   = $this->getModel();
 
@@ -237,9 +237,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 implode(', ', $children)
             ), MessageStatus::Danger);
 
-            /*return new RedirectResponse($this->urlHelper->generate('setup.access.roles.show', [
+            return new RedirectResponse($this->urlHelper->generate('setup.access.roles.show', [
                 \MUtil\Model::REQUEST_ID => $id,
-            ]));*/ throw new \Exception(); // TODO
+            ]));
         }
 
         parent::deleteAction();
