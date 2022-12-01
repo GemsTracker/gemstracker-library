@@ -261,7 +261,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      *
      * @param bool $resetMvc When true only the filtered resulsts
      */
-    public function autofilterAction(bool $resetMvc = true): void
+    public function autofilterAction(bool $resetMvc = true)
     {
         //$htmlOrig = $this->html;
         //$div      = $this->html->div(array('id' => 'autofilter_target', 'class' => 'table-container'));
@@ -279,7 +279,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a create new item page with extra title
      */
-    public function createAction(): void
+    public function createAction()
     {
         $this->createEditParameters = $this->createEditParameters + $this->_createExtraParameters;
 
@@ -289,7 +289,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a deactivate item page with extra titles
      */
-    public function deactivateAction(): void
+    public function deactivateAction()
     {
         $this->deactivateParameters = $this->deactivateParameters + $this->_deactivateExtraParameters;
 
@@ -299,7 +299,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a delete item page with extra titles
      */
-    public function deleteAction(): void
+    public function deleteAction()
     {
         $this->deleteParameters = $this->deleteParameters + $this->_deleteExtraParameters;
 
@@ -309,7 +309,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a edit item page with extra title
      */
-    public function editAction(): void
+    public function editAction()
     {
         $this->createEditParameters = $this->createEditParameters + $this->_editExtraParameters;
 
@@ -319,7 +319,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Export model data
      */
-    public function exportAction(): void
+    public function exportAction()
     {
         // TODO Add export action to snippet
     }
@@ -531,7 +531,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Generic model based import action
      */
-    public function importAction(): void
+    public function importAction()
     {
         $this->importParameters = $this->importParameters + $this->_importExtraParameters;
 
@@ -541,7 +541,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a browse page
      */
-    public function indexAction(): void
+    public function indexAction()
     {
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
         if (! isset($this->indexParameters['contentTitle'])) {
@@ -567,7 +567,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing a reactivate item page with extra titles
      */
-    public function reactivateAction(): void
+    public function reactivateAction()
     {
         $this->reactivateParameters = $this->reactivateParameters + $this->_reactivateExtraParameters;
 
@@ -577,7 +577,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * Action for showing an item page with title
      */
-    public function showAction(): void
+    public function showAction()
     {
         if (! isset($this->showParameters['contentTitle'])) {
             $this->showParameters['contentTitle'] = $this->getShowTitle();
