@@ -11,8 +11,16 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use Gems\Agenda\Agenda;
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\RouteHelper;
 use Gems\Util\Translated;
+use Laminas\Validator\GreaterThan;
+use Laminas\Validator\LessThan;
+use MUtil\Model;
 use MUtil\Model\Dependency\DependencyAbstract;
+use MUtil\Validate\IsNot;
+use Zalt\Html\AElement;
 
 /**
  *
@@ -48,7 +56,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
      *
-     * Can be overridden in sub class
+     * Can be overridden in subclass
      *
      * @var array of name => array(setting => setting)
      */
@@ -59,21 +67,19 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     ];
 
     /**
-     * @var \Zend_Db_Adapter_Abstract
+     * @var Agenda
      */
-    protected $db;
-    
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected $agenda;
 
     /**
-     *
-     * @var \Gems\Menu
+     * @var ResultFetcher
      */
-    protected $menu;
+    protected $resultFetcher;
+
+    /**
+     * @var RouteHelper
+     */
+    protected $routeHelper;
 
     /**
      * @var Translated
@@ -103,7 +109,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     public function getChanges(array $context, bool $new = false): array
     {
         // Only change anything when there are filters
-        $filters = $this->loader->getAgenda()->getFilterList();
+        $filters = $this->agenda->getFilterList();
 
         if (! $filters) {
             return array();
@@ -131,7 +137,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
             $periodUnits = $this->translatedUtil->getPeriodUnits();
             
             if (isset($context['gtf_id_track'], $context['gtf_id_order'])) {
-                $previous = $this->db->fetchRow(
+                $previous = $this->resultFetcher->fetchRow(
                     "SELECT * FROM gems__track_appointments WHERE gtap_id_track = ? AND gtap_id_order < ? ORDER BY gtap_id_order DESC LIMIT 1",
                     [$context['gtf_id_track'], $context['gtf_id_order']]
                 );
@@ -156,7 +162,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'required'          => true,
                 // 'size'              => 5, // Causes trouble during save
                 'filters[int]'      => 'Int',
-                'validators[isnot]' => new \MUtil\Validate\IsNot(0, $this->_('This value may not be zero!')),
+                'validators[isnot]' => new IsNot(0, $this->_('This value may not be zero!')),
             ];
             $output['gtf_min_diff_unit'] = [
                 'label'        => $this->_('Minimal difference unit'),
@@ -180,12 +186,12 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                     $output['gtf_max_diff_length']['description'] = $this->_(
                             'Must be negative, just like the minimal difference.'
                             );
-                    $output['gtf_max_diff_length']['validators[lt]'] = new \Zend_Validate_LessThan(0);
+                    $output['gtf_max_diff_length']['validators[lt]'] = new LessThan(0);
                 } else {
                     $output['gtf_max_diff_length']['description'] = $this->_(
                             'Must be positive, just like the minimal difference.'
                             );
-                    $output['gtf_max_diff_length']['validators[gt]'] = new \Zend_Validate_GreaterThan(0);
+                    $output['gtf_max_diff_length']['validators[gt]'] = new GreaterThan(0);
                 }
                 $output['gtf_max_diff_unit'] = [
                     'label'        => $this->_('Maximum difference unit'),
@@ -214,7 +220,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'label'        => ' ',
                 'elementClass' => 'Exhibitor',
             ];
-            $output['gtf_create_track'] = $this->loader->getAgenda()->getTrackCreateElement();
+            $output['gtf_create_track'] = $this->agenda->getTrackCreateElement();
         }
 
         $label = false;
@@ -254,17 +260,22 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
     /**
      * Show filter as link
      *
-     * @param string $value
-     * @param int $raw
+     * @param string|null $value
+     * @param int|null $raw
+     * @return string|AElement|null
      */
-    public function showFilter($value, $raw)
+    public function showFilter(?string $value, ?int $raw): string|AElement|null
     {
-        $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
+        if ($value === null) {
+            return null;
+        }
 
-        if (! $menuFilter) {
+        $menuFilterUrl = $this->routeHelper->getRouteUrl('setup.agenda.agenda-filter.show', [Model::REQUEST_ID => $raw]);
+
+        if (! $menuFilterUrl) {
             return $value;
         }
 
-        return \MUtil\Html\AElement::a($menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]), $value);
+        return AElement::a($menuFilterUrl, $value);
     }
 }
