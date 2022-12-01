@@ -21,4 +21,21 @@ class MenuBuildItemsEvent extends Event
     {
         return $this->items;
     }
+
+    public function removeItems(array $itemNames): void
+    {
+        $this->removeItemsFromArray($itemNames, $this->items);
+    }
+
+    private function removeItemsFromArray(array $itemNames, array &$items) {
+        foreach ($items as $i => &$item) {
+            if (in_array($item['name'], $itemNames)) {
+                unset($items[$i]);
+            }
+
+            if (!empty($item['children'])) {
+                $this->removeItemsFromArray($itemNames, $item['children']);
+            }
+        }
+    }
 }

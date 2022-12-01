@@ -126,16 +126,20 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if ($this->aclRepository->hasRolesFromConfig()) {
             $roles = array_values($this->aclRepository->getResolvedRoles());
             foreach ($roles as $i => $role) {
-                $roles[$i]['id'] = $i + 1;
-
                 if ($detailed && 'show' === $action) {
                     $roles[$i]['inherited'] = $role['grl_parents'];
                     $roles[$i]['not_allowed'] = implode(',', $role['grl_parents'] ?? []) . "\t" . implode(',', $role['grl_privileges'] ?? []);
                 }
             }
             $model = new NestedArrayModel('gems__roles', $roles);
+            $model->setKeys([\MUtil\Model::REQUEST_ID => 'grl_name']);
         } else {
             $model = new \MUtil\Model\TableModel('gems__roles');
+
+            $id = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
+            if ($id !== null && !ctype_digit((string)$id)) {
+                throw new \Exception();
+            }
         }
 
         $model->set('grl_name', 'label', $this->_('Name'),

@@ -624,9 +624,23 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.access.roles',
                 controllerClass: \Gems\Handlers\Setup\RoleHandler::class,
                 pages: [
-                    ...$this->defaultPages,
+                    'index',
+                    'autofilter',
+                    'create',
+                    'edit',
+                    'delete',
                     'overview',
                     'privilege',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.roles',
+                controllerClass: \Gems\Handlers\Setup\RoleHandler::class,
+                basePath: '/setup/access/roles/show',
+                pages: [
+                    'show',
+                ],
+                parameters: [
+                    'id' => '\d+|[a-z\d]+', // static config storage uses role names in urls. int check is present in RoleHandler
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.groups',
