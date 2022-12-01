@@ -12,11 +12,8 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
-use Gems\MenuNew\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Roles;
-use Gems\Screens\ScreenLoader;
-use Gems\User\Mask\MaskStore;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
@@ -85,7 +82,6 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public $loader;
 
     public function __construct(
-        RouteHelper $routeHelper,
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         private readonly Roles $roles,
@@ -93,10 +89,8 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly AclRepository $aclRepository,
         private readonly AccessRepository $accessRepository,
         private readonly Translated $translatedUtil,
-        private readonly ScreenLoader $screenLoader,
-        private readonly MaskStore $maskStore,
     ) {
-        parent::__construct($routeHelper, $responder, $translate);
+        parent::__construct($responder, $translate);
     }
 
     /**
@@ -160,79 +154,91 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $model->set('ggp_id_group', 'label', 'id');
         }
 
-        $model->set('ggp_name', 'label', $this->_('Name'),
-            'minlength', 4,
-            'size', 15,
-            'translate', true,
-            'validator', $model->createUniqueValidator('ggp_name')
-        );
-        $model->set('ggp_description', 'label', $this->_('Description'),
-            'size', 40,
-            'translate', true
-        );
-        $model->set('ggp_role', 'label', $this->_('Role'),
-            'multiOptions', $this->aclRepository->getRoleValues()
-        );
+        $model->set('ggp_name', [
+            'label' => $this->_('Name'),
+            'minlength' => 4,
+            'size' => 15,
+            'translate' => true,
+            'validator' => $model->createUniqueValidator('ggp_name'),
+        ]);
+        $model->set('ggp_description', [
+            'label' => $this->_('Description'),
+            'size' => 40,
+            'translate' => true,
+        ]);
+        $model->set('ggp_role', [
+            'label' => $this->_('Role'),
+            'multiOptions' => $this->aclRepository->getRoleValues(),
+        ]);
         $model->setOnLoad('ggp_role', [$this->roles, 'translateToRoleName']);
         $model->setOnSave('ggp_role', [$this->roles, 'translateToRoleId']);
 
         $groups = $this->accessRepository->getGroups();
         unset($groups['']);
-        $model->set('ggp_may_set_groups', 'label', $this->_('May set these groups'),
-            'elementClass', 'MultiCheckbox',
-            'multiOptions', $groups
-        );
+        $model->set('ggp_may_set_groups', [
+            'label' => $this->_('May set these groups'),
+            'elementClass' => 'MultiCheckbox',
+            'multiOptions' => $groups,
+        ]);
         $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'ggp_may_set_groups');
 
-        $model->set('ggp_default_group', 'label', $this->_('Default group'),
-            'description', $this->_('Default group when creating new staff member'),
-            'elementClass', 'Select',
-            'multiOptions', $this->accessRepository->getGroups()
-        );
+        $model->set('ggp_default_group', [
+            'label' => $this->_('Default group'),
+            'description' => $this->_('Default group when creating new staff member'),
+            'elementClass' => 'Select',
+            'multiOptions' => $this->accessRepository->getGroups(),
+        ]);
 
         $yesNo = $this->translatedUtil->getYesNo();
-        $model->set('ggp_staff_members', 'label', $this->_('Staff'),
-            'elementClass', 'Checkbox',
-            'multiOptions', $yesNo
-        );
-        $model->set('ggp_respondent_members', 'label', $this->_('Respondents'),
-            'elementClass', 'Checkbox',
-            'multiOptions', $yesNo
-        );
-        $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Login allowed from IP Ranges'),
-            'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
-            'elementClass', 'Textarea',
-            'itemDisplay', [$this, 'ipWrap'],
-            'rows', 4,
-            'validator', new \Gems\Validate\IPRanges()
-        );
-        $model->setIfExists('ggp_no_2factor_ip_ranges', 'label', $this->_('Two factor Optional IP Ranges'),
-            'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
-            'default', '127.0.0.1|::1',
-            'elementClass', 'Textarea',
-            'itemDisplay', [$this, 'ipWrap'],
-            'rows', 4,
-            'validator', new \Gems\Validate\IPRanges()
-        );
+        $model->set('ggp_staff_members', [
+            'label' => $this->_('Staff'),
+            'elementClass' => 'Checkbox',
+            'multiOptions' => $yesNo,
+        ]);
+        $model->set('ggp_respondent_members', [
+            'label' => $this->_('Respondents'),
+            'elementClass' => 'Checkbox',
+            'multiOptions' => $yesNo,
+        ]);
+        $model->set('ggp_allowed_ip_ranges', [
+            'label' => $this->_('Login allowed from IP Ranges'),
+            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
+            'elementClass' => 'Textarea',
+            'itemDisplay' => [$this, 'ipWrap'],
+            'rows' => 4,
+            'validator' => new \Gems\Validate\IPRanges(),
+        ]);
+        $model->setIfExists('ggp_no_2factor_ip_ranges', [
+            'label' => $this->_('Two factor Optional IP Ranges'),
+            'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
+            'default' => '127.0.0.1|::1',
+            'elementClass' => 'Textarea',
+            'itemDisplay' => [$this, 'ipWrap'],
+            'rows' => 4,
+            'validator' => new \Gems\Validate\IPRanges(),
+        ]);
 
-        $model->setIfExists('ggp_2factor_set', 'label', $this->_('Login with two factor set'),
-            'elementClass', 'Radio',
-            'multiOptions', $this->userLoader->getGroupTwoFactorSetOptions(),
-            'separator', '<br/>'
-        );
-        $model->setIfExists('ggp_2factor_not_set', 'label', $this->_('Login without two factor set'),
-            'elementClass', 'Radio',
-            'multiOptions', $this->userLoader->getGroupTwoFactorNotSetOptions(),
-            'separator', '<br/>'
-        );
-        $model->set('ggp_group_active', 'label', $this->_('Active'),
-            'elementClass', 'Checkbox',
-            'multiOptions', $yesNo
-        );
+        $model->setIfExists('ggp_2factor_set', [
+            'label' => $this->_('Login with two factor set'),
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->userLoader->getGroupTwoFactorSetOptions(),
+            'separator' => '<br/>',
+        ]);
+        $model->setIfExists('ggp_2factor_not_set', [
+            'label' => $this->_('Login without two factor set'),
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->userLoader->getGroupTwoFactorNotSetOptions(),
+            'separator' => '<br/>',
+        ]);
+        $model->set('ggp_group_active', [
+            'label' => $this->_('Active'),
+            'elementClass' => 'Checkbox',
+            'multiOptions' => $yesNo,
+        ]);
 
         if ($detailed) {
-            $html = \MUtil\Html::create()->h4($this->_('Screen settings'));
+            /*$html = \MUtil\Html::create()->h4($this->_('Screen settings'));
             $model->set('screensettings', 'label', ' ',
                 'default', $html,
                 'elementClass', 'Html',
@@ -253,7 +259,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 'default', 'Gems\\Screens\\Respondent\\Show\\GemsProjectDefaultShow',
                 'elementClass', 'Radio',
                 'multiOptions', $this->screenLoader->listRespondentShowScreens()
-            );
+            );*/
 
             //$this->maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
         }
