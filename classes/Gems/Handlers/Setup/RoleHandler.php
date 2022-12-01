@@ -15,10 +15,15 @@ use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\RouteHelper;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\MenuMiddleware;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\NestedArrayModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\MessageStatus;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -84,6 +89,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         private readonly AclRepository $aclRepository,
+        private readonly UrlHelper $urlHelper,
     ) {
         parent::__construct($routeHelper, $responder, $translate);
     }
@@ -194,7 +200,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function editAction(): void
     {
         $model   = $this->getModel();
-        $data    = $model->loadFirst();
+
+        $id = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
+        $data = $model->loadFirst(['grl_id_role' => $id]);
 
         //If we try to edit master, add an error message and reroute
         if (isset($data['grl_name']) && $data['grl_name']=='master') {
@@ -203,6 +211,34 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         }
 
         parent::editAction();
+    }
+
+    public function deleteAction(): void
+    {
+        $model   = $this->getModel();
+
+        $id = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
+        $data = $model->loadFirst(['grl_id_role' => $id]);
+
+        $children = $this->aclRepository->getChildren($data['grl_name']);
+
+        // If we try to delete a parent, add an error message and reroute
+        if (count($children) > 0) {
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->addMessage(sprintf(
+                $this->_('This role is being used as a parent of roles %s and hence cannot be deleted'),
+                implode(', ', $children)
+            ), MessageStatus::Danger);
+
+            /*return new RedirectResponse($this->urlHelper->generate('setup.access.roles.show', [
+                \MUtil\Model::REQUEST_ID => $id,
+            ]));*/ throw new \Exception(); // TODO
+        }
+
+        parent::deleteAction();
     }
 
     /**
@@ -256,8 +292,8 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function formatNotAllowed($data)
     {
         list($parents_string, $privileges_string) = explode("\t", $data, 2);
-        $parents    = explode(',', $parents_string);
-        $privileges = explode(',', $privileges_string);
+        $parents    = strlen($parents_string) > 0 ? explode(',', $parents_string) : [];
+        $privileges = strlen($privileges_string) > 0 ? explode(',', $privileges_string) : [];
         if (count($privileges) > 0 ) {
             $privileges = array_combine($privileges, $privileges);
         }

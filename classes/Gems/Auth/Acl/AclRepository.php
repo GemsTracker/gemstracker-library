@@ -85,6 +85,18 @@ class AclRepository
         }
     }
 
+    public function getChildren(string $roleName): array
+    {
+        $children = [];
+        foreach ($this->roleAdapter->getRolesConfig() as $role) {
+            if (in_array($roleName, $role[RoleAdapterInterface::ROLE_PARENTS])) {
+                $children[] = $role[RoleAdapterInterface::ROLE_NAME];
+            }
+        }
+
+        return $children;
+    }
+
     public function getResolvedRoles(): array
     {
         return $this->roleAdapter->getResolvedRoles();
