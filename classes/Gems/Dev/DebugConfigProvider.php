@@ -9,7 +9,7 @@ class DebugConfigProvider
 {
     public function __invoke(): array
     {
-        if (getenv('APP_DEBUG') === true || getenv('APP_DEBUG') === 1) {
+        if (getenv('APP_DEBUG') === 'true' || getenv('APP_DEBUG') === '1') {
             return [
                 'pipeline' => [
                     DebugbarMiddleware::class,
