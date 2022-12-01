@@ -6,12 +6,11 @@ use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
-use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DebugBar;
-use DebugBar\StandardDebugBar;
+use Gems\Dev\DebugBar\PDOCollector;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Middlewares\Debugbar as DebugbarMiddleware;
 use Psr\Container\ContainerInterface;
@@ -30,6 +29,12 @@ class DebugBarMiddlewareFactory implements FactoryInterface
         $debugBar->addCollector(new TimeDataCollector());
         $debugBar->addCollector(new MemoryCollector());
         $debugBar->addCollector(new ExceptionsCollector());
+
+        if ($container->has(\PDO::class)) {
+            $debugBar->addCollector(new PDOCollector($container->get(\PDO::class)));
+        }
+
+
 
         $debugBar->addCollector($container->get(ConfigCollector::class));
 
