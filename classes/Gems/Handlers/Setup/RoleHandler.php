@@ -18,6 +18,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\RedirectResponse;
+use Laminas\Validator\Regex;
 use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\NestedArrayModel;
@@ -44,18 +45,18 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected array $autofilterParameters = array(
-        'extraSort'   => array(
+    protected array $autofilterParameters = [
+        'extraSort'   => [
             'grl_name' => SORT_ASC,
-        ),
-    );
+        ],
+    ];
 
     /**
      * Tags for cache cleanup after changes, passed to snippets
      *
      * @var array
      */
-    public array $cacheTags = array('gems_acl', 'roles', 'group', 'groups');
+    public array $cacheTags = ['gems_acl', 'roles', 'group', 'groups'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -67,9 +68,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected array $createEditParameters = array(
+    protected array $createEditParameters = [
         'usedPrivileges' => 'getUsedPrivileges',
-    );
+    ];
 
     /**
      * The snippets used for the create and edit actions.
@@ -105,7 +106,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     {
         $table = \Zalt\Html\TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
-        $div = \Zalt\Html\Html::create()->div(array('class' => 'table-container'));
+        $div = \Zalt\Html\Html::create()->div(['class' => 'table-container']);
         $div[] = $table;
         $this->html[] = $div;
     }
@@ -142,53 +143,61 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             }
         }
 
-        $model->set('grl_name', 'label', $this->_('Name'),
-                'size', 15,
-                'minlength', 4
-                );
-        $model->set('grl_description', 'label', $this->_('Description'),
-                'size', 40);
-        $model->set('grl_parents', 'label', $this->_('Parents'));
+        $model->set('grl_name', [
+            'label' => $this->_('Name'),
+            'size' => 15,
+            'minlength' => 4
+        ]);
+        $model->set('grl_description', [
+            'label' => $this->_('Description'),
+            'size' => 40,
+        ]);
+        $model->set('grl_parents', ['label' => $this->_('Parents')]);
 
         $tpa = new \MUtil\Model\Type\ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
         $model->setOnLoad('grl_parents', fn ($parents) => $this->aclRepository->convertKeysToNames($parents, true));
 
-        $model->set('grl_privileges', 'label', $this->_('Privileges'));
+        $model->set('grl_privileges', ['label' => $this->_('Privileges')]);
         $tpr = new \MUtil\Model\Type\ConcatenatedRow(',', '<br/>');
         $tpr->apply($model, 'grl_privileges');
 
         if ($detailed) {
-            $model->set('grl_name',
-                    'validators[unique]', $model->createUniqueValidator('grl_name'),
-                    'validators[nomaster]', new \MUtil\Validate\IsNot(
-                            'master',
-                            $this->_('The name "master" is reserved')
-                            )
-                    );
+            $model->set('grl_name', [
+                'validators[unique]' => $model->createUniqueValidator('grl_name'),
+                'validators[nomaster]' => new \MUtil\Validate\IsNot(
+                    'master',
+                    $this->_('The name "master" is reserved')
+                ),
+                'validators[pattern]' => (new Regex('/^[a-z][a-z0-9]+$/'))->setMessage(
+                    $this->_('The name should be alphanumerical and start with a letter')
+                ),
+            ]);
 
-            $model->set('grl_privileges', 'formatFunction', array($this, 'formatPrivileges'));
+            $model->set('grl_privileges', ['formatFunction' => [$this, 'formatPrivileges']]);
 
             if ('show' === $action) {
                 if (!$this->aclRepository->hasRolesFromConfig()) {
                     $model->addColumn('grl_parents', 'inherited');
                 }
                 $tpa->apply($model, 'inherited');
-                $model->set('inherited',
-                        'label', $this->_('Inherited privileges'),
-                        'formatFunction', array($this, 'formatInherited'));
+                $model->set('inherited', [
+                    'label' => $this->_('Inherited privileges'),
+                    'formatFunction' => [$this, 'formatInherited'],
+                ]);
                 $model->setOnLoad('inherited', [$this->aclRepository, 'convertKeysToNames']);
 
                 // Concatenated field, we can not use onload so handle translation to role names in the formatFunction
                 if (!$this->aclRepository->hasRolesFromConfig()) {
                     $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
                 }
-                $model->set('not_allowed',
-                        'label', $this->_('Not allowed'),
-                        'formatFunction', array($this, 'formatNotAllowed'));
+                $model->set('not_allowed', [
+                    'label' => $this->_('Not allowed'),
+                    'formatFunction' => [$this, 'formatNotAllowed']
+                ]);
             }
         } else {
-            $model->set('grl_privileges', 'formatFunction', array($this, 'formatLongLine'));
+            $model->set('grl_privileges', ['formatFunction' => [$this, 'formatLongLine']]);
         }
 
         if (!$this->aclRepository->hasRolesFromConfig()) {
@@ -211,7 +220,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         //If we try to edit master, add an error message and reroute
         if (isset($data['grl_name']) && $data['grl_name']=='master') {
             $this->addMessage($this->_('Editing `master` is not allowed'));
-            $this->_reroute(array('action'=>'index'), true);
+            $this->_reroute(['action'=>'index'], true);
         }
 
         parent::editAction();
@@ -360,11 +369,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     protected function getInheritedPrivileges(array $parents)
     {
         if (! $parents) {
-            return array();
+            return [];
         }
 
         $rolePrivileges = $this->aclRepository->getResolvedRoles();
-        $inherited      = array();
+        $inherited      = [];
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
                 $inherited = $inherited + array_flip($rolePrivileges[$parent][RoleAdapterInterface::ROLE_RESOLVED_PRIVILEGES]);
@@ -434,7 +443,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function overviewAction()
     {
-        $roles = array();
+        $roles = [];
 
         foreach ($this->aclRepository->getResolvedRoles() as $roleName => $roleConfig) {
             $roles[$roleName][$this->_('Role')]    = $roleName;
@@ -456,7 +465,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function privilegeAction()
     {
-        $privileges = array();
+        $privileges = [];
 
         foreach ($this->acl->getPrivilegeRoles() as $privilege => $roles) {
             $privileges[$privilege][$this->_('Privilege')] = $privilege;
@@ -473,11 +482,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         ksort($nonexistent);
 
         foreach ($unassigned as $privilege => $description) {
-            $privileges[$privilege] = array(
+            $privileges[$privilege] = [
                 $this->_('Privilege') => $privilege,
                 $this->_('Allowed')   => null,
                 $this->_('Denied')    => null
-            );
+            ];
         }
         ksort($privileges);
 
