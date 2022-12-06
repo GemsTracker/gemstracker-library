@@ -43,6 +43,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 {
+    use TopicCallableTrait;
+    
     /**
      *
      * @var \Gems\AccessLog
@@ -62,13 +64,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @var string Optional
      */
     protected $formTitle;
-
-    /**
-     * When set getTopic uses this function instead of parent class.
-     *
-     * @var callable
-     */
-    protected $topicCallable;
 
     /**
      *
@@ -354,21 +349,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             return sprintf($this->_('New %s...'), $this->getTopic());
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());
-        }
-    }
-
-    /**
-     * Helper function to allow generalized statements about the items in the model to used specific item names.
-     *
-     * @param int $count
-     * @return $string
-     */
-    public function getTopic($count = 1)
-    {
-        if (is_callable($this->topicCallable)) {
-            return call_user_func($this->topicCallable, $count);
-        } else {
-            return parent::getTopic($count);
         }
     }
 
