@@ -397,14 +397,14 @@ class Route
                     'id2' => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.episodes-of-care',
-                controllerClass: \Gems\Actions\CareEpisodeHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
-                parentParameters: [
+            ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
+                controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
+                basePath:                          '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
+                parentParameters:                  [
                     'id1',
                     'id2',
                 ],
-                parameters: [
+                parameters:                        [
                     \Gems\Model::EPISODE_ID => '\d+',
                 ],
             ),

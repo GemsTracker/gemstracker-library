@@ -60,51 +60,13 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
     }
 
-    /**
-     * Adds rows from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     */
-    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
-    {
-        if ($menuItem = $this->getEditMenuItem()) {
-            // Add click to edit
-            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
-        }
-
-        parent::addShowTableRows($bridge, $model);
-    }
-
-    /**
-     * Finds a specific active menu item
-     *
-     * @param string $controller
-     * @param string $action
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function findMenuItem($controller, $action = 'index')
-    {
-        return $this->menu->find(['controller' => $controller, 'action' => $action, 'allowed' => true]);
-    }
-
-    /**
-     * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function getEditMenuItem()
-    {
-        return null; //$this->findMenuItem($this->request->getControllerName(), 'edit');
-    }
-
     public function getHtmlOutput()
     {
         if (! $this->abortUrl) {
             $this->abortUrl = $this->menuHelper->getCurrentParentRoute();
         }
         if (! $this->afterDeleteUrl) {
-            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'), []);
+            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'), $this->requestInfo->getParams()) ?: '';
         }
         
         if ($table = parent::getHtmlOutput()) {
@@ -137,7 +99,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
     /**
      * Overrule this function if you want to perform a different
      * action than deleting when the user choose 'yes'.
-     */
+     * /
     protected function performAction()
     {
         // $data = $this->getModel()->loadFirst();

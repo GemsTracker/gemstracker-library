@@ -11,6 +11,17 @@
 
 namespace Gems\Snippets\Track;
 
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Tracker;
+use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -22,42 +33,32 @@ namespace Gems\Snippets\Track;
  */
 class TracksForAppointment extends TracksSnippet
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        Translated $translatedUtil,
+        protected \Zend_Db_Adapter_Abstract $db,
+    )
     {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $translatedUtil);
+
         $this->caption = $this->_("Tracks using this appointment");
         $this->onEmpty = $this->_("No tracks use this appointment");
     }
 
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $metaModel) : array
     {
         $filter[] = $this->db->quoteInto(
-                "gr2t_id_respondent_track IN (
+            "gr2t_id_respondent_track IN (
                     SELECT gr2t2a_id_respondent_track
                     FROM gems__respondent2track2appointment
                     WHERE gr2t2a_id_appointment = ?)",
-                $this->request->getParam(\Gems\Model::APPOINTMENT_ID)
-                );
-
-        // \MUtil\Model::$verbose = true;
-
-        $model->setFilter($filter);
-        $this->processSortOnly($model);
+            $this->requestInfo->getParam(Model::APPOINTMENT_ID)
+        );
+        return $filter;
     }
 }
+

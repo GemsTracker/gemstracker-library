@@ -11,9 +11,17 @@
 
 namespace Gems\Snippets\Agenda;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
 use Gems\Model\EpisodeOfCareModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -39,33 +47,24 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
-    /**
-     * The default controller for menu actions, if null the current controller is used.
-     *
-     * @var array (int/controller => action)
-     */
-    public $menuActionController = 'care-episode';
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        SnippetOptions $snippetOptions, 
+        RequestInfo $requestInfo, 
+        MenuSnippetHelper $menuHelper, 
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        CurrentUserRepository $currentUserRepository,
+        protected Model $modelLoader, 
+    )
     {
-        parent::afterRegistry();
-
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+        
         if (null !== $this->calSearchFilter) {
             $this->caption = $this->_('Example episodes');
             if ($this->calSearchFilter instanceof AppointmentFilterInterface) {
@@ -73,10 +72,10 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                     \MUtil\Model::SORT_DESC_PARAM => 'gec_startdate',
                     $this->calSearchFilter->getSqlEpisodeWhere(),
                     'limit' => 10,
-                    ];
+                ];
                 // \MUtil\EchoOut\EchoOut::track($this->calSearchFilter->getSqlEpisodeWhere());
 
-                $this->bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_ROWS;
+                $this->bridgeMode = BridgeInterface::MODE_ROWS;
             } elseif (false === $this->calSearchFilter) {
                 $this->onEmpty = $this->_('Filter is inactive');
                 $this->searchFilter = ['1=0'];
@@ -92,7 +91,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof EpisodeOfCareModel) {
-            $this->model = $this->loader->getModels()->createEpisodeOfCareModel();
+            $this->model = $this->modelLoader->createEpisodeOfCareModel($this->agenda);
 
             $this->model->applyBrowseSettings();
         }
@@ -119,13 +118,13 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
-     */
+     * /
     public function hasHtmlOutput(): bool
     {
-        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+        if (true || $this->currentUser->hasPrivilege('pr.episodes')) {
             return parent::hasHtmlOutput();
         }
 
         return false;
-    }
+    } // */ 
 }
