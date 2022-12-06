@@ -344,7 +344,6 @@ class ConfigProvider
             EventSubscriber::class,
             \Gems\Communication\EventSubscriber::class,
             \Gems\AuthNew\EventSubscriber::class,
-            \Gems\Auth\Acl\EventSubscriber::class,
         ];
     }
 

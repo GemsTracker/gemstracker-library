@@ -18,6 +18,7 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
@@ -48,6 +49,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
                     MenuMiddleware::class,
                 ],
