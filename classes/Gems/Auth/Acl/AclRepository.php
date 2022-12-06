@@ -2,6 +2,7 @@
 
 namespace Gems\Auth\Acl;
 
+use Brick\VarExporter\VarExporter;
 use Gems\MenuNew\RouteHelper;
 use Gems\UntranslatedString;
 use Laminas\Permissions\Acl\Acl;
@@ -154,5 +155,28 @@ class AclRepository
         asort($roles);
 
         return $roles;
+    }
+
+    public function buildConfigFile(): string
+    {
+        $template = '<?php
+
+namespace Gems\Config;
+
+class Role
+{
+    public function __invoke(): array
+    {
+        return [
+            \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
+            \'roles\' => %s,
+        ];
+    }
+}' . PHP_EOL;
+
+        $roles = VarExporter::export($this->roleAdapter->getRolesConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
+        $roles = str_replace("\n", "\n            ", $roles);
+
+        return sprintf($template, $roles);
     }
 }

@@ -40,7 +40,10 @@ class DbRoleAdapter implements RoleAdapterInterface
                     RoleAdapterInterface::ROLE_PARENTS => array_map(function ($id) {
                         return $this->idMapping[$id] ?? throw new \Exception('Could not find parent ' . $id);
                     }, $dbRole['grl_parents'] === null ? [] : explode(',', $dbRole['grl_parents'])),
-                    RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES => explode(',', $dbRole['grl_privileges']),
+                    RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES => array_values(array_filter(
+                        explode(',', $dbRole['grl_privileges']),
+                        fn (string $privilege) => !empty(trim($privilege)),
+                    )),
                 ];
             }
 
