@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Buttons;
 
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Generic\ButtonRowSnippet;
 
 /**
  *
@@ -22,7 +22,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 19:07:12
  */
-class NewFieldButtonRow extends CurrentButtonRowSnippet
+class NewFieldButtonRow extends ButtonRowSnippet
 {
     protected $trackId;
 
@@ -36,17 +36,5 @@ class NewFieldButtonRow extends CurrentButtonRowSnippet
         ];
 
         return parent::addButtons();
-        $menuList = [];
-
-        $matchedParams = $this->requestInfo->getRequestMatchedParams();
-
-        $route = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.track-fields.create', $matchedParams);
-
-        $menuList[] = [
-            'label' => $this->_('New field'),
-            'url' =>$route,
-        ];
-
-        return $menuList;
     }
 }

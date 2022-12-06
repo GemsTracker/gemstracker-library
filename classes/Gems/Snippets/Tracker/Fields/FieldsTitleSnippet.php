@@ -31,27 +31,10 @@ class FieldsTitleSnippet extends ContentTitleSnippet
      */
     protected $trackEngine;
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function getHtmlOutput()
     {
-        parent::afterRegistry();
-
         $this->contentTitle = sprintf($this->_('Fields in %s track'), $this->trackEngine->getTrackName());
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
+        
+        return parent::getHtmlOutput(); 
     }
 }

@@ -13,10 +13,10 @@ namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Html;
 use Gems\Snippets\ModelTableSnippetAbstract;
-use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Tracker\Model\RoundModel;
 use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -130,48 +130,19 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
         parent::addBrowseTableColumns($bridge, $model);
     }
 
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     * /
-    public function afterRegistry()
+//    public function getRequestFilter(MetaModelInterface $metaModel) : array
+//    {
+//    }
+
+    protected function cleanUpFilter(array $filter, MetaModelInterface $metaModel): array
     {
-        parent::afterRegistry();
-
-        $model = $this->getModel();
-
-        $br = Html::create('br');
-        $sp = Html::raw(' ');
-
-        if (!is_array($this->columns)) {
-            $this->columns = [];
+        if (isset($filter['trackId'])) {
+            $filter['gro_id_track'] = $filter['trackId'];
+            unset($filter['trackId']);
+        } elseif ($this->requestInfo->getParam('trackId')) {
+            $filter['gro_id_track'] = $this->requestInfo->getParam('trackId');
         }
-
-        $this->columns[10] = ['gro_id_order'];
-        $this->columns[20] = ['gro_id_survey'];
-        $this->columns[30] = ['gro_round_description'];
-        $this->columns[40] = ['gro_icon_file'];
-        $this->columns[45] = ['ggp_name'];
-        $fromHeader = [
-            '', // No content
-            [$this->_('Valid from'), $br]  // Force break in the header
-        ];
-        $untilHeader = ['', [$this->_('Valid until'), $br]];
-        $this->columns[50] = [$fromHeader,'gro_valid_after_field', $sp, 'gro_valid_after_source', $sp, 'gro_valid_after_id'];
-        $this->columns[60] = [$untilHeader, 'gro_valid_for_field', $sp, 'gro_valid_for_source', $sp, 'gro_valid_for_id'];
-        $this->columns[70] = ['gro_active'];
-        if ($label = $model->get('gro_changed_event', 'label')) {
-            $this->columns[80] = ['gro_changed_event'];
-        }
-        if ($label = $model->get('gro_changed_event', 'label')) {
-            $this->columns[90] = ['gro_display_event'];
-        }
-        $this->columns[100] = ['gro_code'];
-        $this->columns[110] = ['condition_display'];
-        // Organizations can possibly be replaced with a condition
-        $this->columns[120] = ['organizations'];
+        return parent::cleanUpFilter($filter, $metaModel);
     }
 
     /**
@@ -221,4 +192,10 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
         return $this->model;
     }
 
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        $output['trackId'] = 'gro_id_track';
+        return $output;
+    }
 }

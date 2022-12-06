@@ -7,6 +7,7 @@ use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
+use Zalt\Model\Bridge\BridgeInterface;
 
 class RouteHelper
 {
@@ -52,13 +53,13 @@ class RouteHelper
 
     
     
-    public function getLateRouteUrl(string $name, array $paramLateMappings = []): ?LateCall
+    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null): ?LateCall
     {
         $route = $this->getRoute($name);
-
         if (null === $route) {
             return null;
         }
+        
         $routeParams = [];
         if (isset($route['params'])) {
             foreach ($route['params'] as $paramName) {
@@ -73,7 +74,16 @@ class RouteHelper
         }
         // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
 
-        return Late::method($this->urlHelper, 'generate', $name, Late::getRa($routeParams));
+        if ($bridge) {
+            $params = [];
+            foreach ($routeParams as $paramName => $lateName) {
+                $params[$paramName] = $bridge->getLate($lateName);
+            }
+            // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
+        } else {
+            $params = Late::getRa($routeParams);
+        }
+        return Late::method($this->urlHelper, 'generate', $name, $params);
     }
 
     /**
