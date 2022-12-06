@@ -18,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AgendaActivityController extends \Gems\Actions\AgendaActivityAction
+class AgendaActivityController extends \Gems\Handlers\Setup\AgendaActivityHandler
 { }

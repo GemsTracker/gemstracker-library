@@ -45,6 +45,8 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+    
+    protected string $onEmptyAlt = '';
 
     public function __construct(SnippetOptions $snippetOptions,
                                 RequestInfo $requestInfo,
@@ -55,6 +57,10 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+
+        if ($this->onEmptyAlt) {
+            $this->onEmpty = $this->onEmptyAlt;
+        }
     }
 
     /**
@@ -150,7 +156,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
         $this->model->refreshGroupSettings();
-
+        
         // \MUtil\Model::$verbose = true;
         return $this->model;
     }

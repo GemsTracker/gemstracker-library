@@ -37,8 +37,6 @@ abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetai
     
     public function getOnEmpty(): mixed
     {
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->requestInfo->getParams(), true) . "\n", FILE_APPEND);
-
         if ($this->requestInfo->getParam(Model::REQUEST_ID)) {
             return sprintf(
                 $this->_('%s "%s" not found!'),
