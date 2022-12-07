@@ -65,13 +65,6 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
 
     public function getHtmlOutput()
     {
-        if (! $this->abortUrl) {
-            $this->abortUrl = $this->menuHelper->getCurrentParentRoute();
-        }
-        if (! $this->afterDeleteUrl) {
-            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'), $this->requestInfo->getParams()) ?: '';
-        }
-        
         if ($table = parent::getHtmlOutput()) {
             if ($title = $this->getTitle()) {
                 $htmlDiv = Html::div();
@@ -97,6 +90,18 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
     protected function getTitle()
     {
         return $this->displayTitle;
+    }
+
+    public function hasHtmlOutput() : bool
+    {
+        if (! $this->abortUrl) {
+            $this->abortUrl = $this->menuHelper->getCurrentParentUrl();
+        }
+        if (! $this->afterDeleteUrl) {
+            $this->afterDeleteUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getRelatedRoute('index'), $this->requestInfo->getParams()) ?: '';
+        }
+
+        return parent::hasHtmlOutput();
     }
 
     /**

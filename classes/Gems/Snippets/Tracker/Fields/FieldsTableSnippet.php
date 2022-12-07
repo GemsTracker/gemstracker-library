@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 
 
 /**
@@ -86,6 +87,17 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         return $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface;
     }
 
+    protected function cleanUpFilter(array $filter, MetaModelInterface $metaModel): array
+    {
+        if (isset($filter['trackId'])) {
+            $filter['gtf_id_track'] = $filter['trackId'];
+            unset($filter['trackId']);
+        } elseif ($this->requestInfo->getParam('trackId')) {
+            $filter['gtf_id_track'] = $this->requestInfo->getParam('trackId');
+        }
+        return parent::cleanUpFilter($filter, $metaModel);
+    }
+
     /**
      * Creates the model
      *
@@ -98,5 +110,12 @@ class FieldsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         return $this->model;
+    }
+    
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        $output['trackId'] = 'gtf_id_track';
+        return $output;
     }
 }

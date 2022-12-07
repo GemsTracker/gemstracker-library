@@ -135,16 +135,21 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     ];
 
     /**
+     * \Gems only parameters used for the show action. Can be overruled
+     * by setting $this->editParameters or $this->createEditParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private array $_showExtraParameters = array(
+        'topicCallable' => 'getTopicCallable',
+    );
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
     // protected $autofilterSnippets = 'ModelTableSnippet';
-
-    /**
-     * @var int User id from request
-     */
-    protected int $currentUserId = 1;
 
     /**
      * The snippets used for the autofilter action.
@@ -164,6 +169,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         ModelFormSnippet::class,
         CurrentButtonRowSnippet::class,
         ];
+
+    /**
+     * @var int User id from request
+     */
+    protected int $currentUserId = 1;
 
     /**
      * The parameters used for the delete action.
@@ -579,6 +589,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function showAction()
     {
+        $this->showParameters = $this->showParameters + $this->_showExtraParameters;
+
         if (! isset($this->showParameters['contentTitle'])) {
             $this->showParameters['contentTitle'] = $this->getShowTitle();
         }

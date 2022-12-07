@@ -168,7 +168,7 @@ class TrackRoundsHandler extends TrackMaintenanceWithEngineHandlerAbstract
 
         $model = $trackEngine->getRoundModel($detailed, $action);
         $model->set('gro_id_track', 'default', $trackId);
-        $model->applyParameters(['gro_id_track' => $trackId]);
+        $this->defaultParameters['extraFilter'] = ['gro_id_track' => $trackId];
 
         if ($detailed) {
             if ($action == 'create') {

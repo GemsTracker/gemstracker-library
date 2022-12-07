@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Buttons;
 
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Generic\ButtonRowSnippet;
 
 /**
  *
@@ -22,7 +22,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 9-sep-2015 19:11:42
  */
-class NewRoundButtonRow extends CurrentButtonRowSnippet
+class NewRoundButtonRow extends ButtonRowSnippet
 {
     protected $trackId;
 
@@ -34,26 +34,9 @@ class NewRoundButtonRow extends CurrentButtonRowSnippet
     protected function addButtons(): array
     {
         $this->extraRoutesLabelled = [
-            'track-builder.track-maintenance.track-rounds.create' => $this->_('New field'),
+            'track-builder.track-maintenance.track-rounds.create' => $this->_('New round'),
         ];
 
         return parent::addButtons();
-        $menuList = [];
-        $route = $this->routeHelper->getRoute('track-builder.track-maintenance.track-rounds.create');
-
-        $matchedParams = $this->requestInfo->getCurrentRouteResult()->getMatchedParams();
-
-        if ($this->trackId) {
-            $matchedParams['trackId'] = (int)$this->trackId;
-        }
-
-        $params = $this->routeHelper->getRouteParamsFromKnownParams($route, $matchedParams);
-
-        $menuList[] = [
-            'label' => $this->_('New round'),
-            'url' => $this->routeHelper->getRouteUrl($route['name'], $params),
-        ];
-
-        return $menuList;
     }
 }

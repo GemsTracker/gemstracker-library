@@ -9,9 +9,19 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
+use Gems\Agenda\Agenda;
+use Gems\Snippets\Agenda\AutosearchFormSnippet;
+use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Util;
 use Gems\Util\Translated;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,14 +32,14 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.8.5 09-Oct-2018 13:48:01
  */
-class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
+class AgendaDiagnosisHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['gad_diagnosis_code' => SORT_ASC, 'gad_description' => SORT_ASC],
         'searchFields' => 'getSearchFields',
@@ -40,24 +50,29 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = ['diagnosis', 'diagnoses'];
+    public array $cacheTags = ['diagnosis', 'diagnoses'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        AutosearchFormSnippet::class,
+        ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
-        'onEmpty'         => 'getShowOnEmpty',
+        'onEmptyAlt'      => 'getShowOnEmpty',
+        'sortParamAsc'    => 'asrt',
+        'sortParamDesc'   => 'dsrt',
     ];
 
     /**
@@ -65,22 +80,22 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
-        'Agenda\\CalendarTableSnippet',
+    protected array $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
+        CalendarTableSnippet::class,
     ];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    public $util;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        protected Translated $translatedUtil,
+        protected Util $util,
+    ) {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Cleanup appointments
@@ -100,6 +115,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $this->addSnippets($snippets, $params);
     }
+    
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -111,7 +127,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel($detailed, $action): ModelAbstract
     {
         $model      = new \MUtil\Model\TableModel('gems__agenda_diagnoses');
 
@@ -130,7 +146,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $model->setIfExists('gad_coding_method',    'label', $this->_('Coding system'),
             'description', $this->_('The coding system used.'),
-            'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->loader->getAgenda()->getDiagnosisCodingSystems()
+            'multiOptions', $this->translatedUtil->getEmptyDropdownArray() + $this->agenda->getDiagnosisCodingSystems()
         );
 
         $model->setIfExists('gad_code',             'label', $this->_('Diagnosis code'),
@@ -158,7 +174,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Agenda diagnoses');
     }
@@ -180,7 +196,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return string
      */
-    public function getShowCaption()
+    public function getShowCaption(): string
     {
         return $this->_('Example appointments');
     }
@@ -189,7 +205,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return string
      */
-    public function getShowOnEmpty()
+    public function getShowOnEmpty(): string
     {
         return $this->_('No example diagnosis found');
 
@@ -199,10 +215,10 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getShowFilter()
+    public function getShowFilter(): array
     {
         return [
-            \MUtil\Model::SORT_DESC_PARAM => 'gap_admission_time',
+            $this->showParameters['sortParamDesc'] => 'gap_admission_time',
             'gap_diagnosis_code' => $this->_getIdParam(),
             'limit' => 10,
         ];
@@ -214,7 +230,7 @@ class AgendaDiagnosisAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('diagnosis', 'diagnoses', $count);
     }
