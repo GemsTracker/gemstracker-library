@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Generic;
 
 use Zalt\Html\Html;
-use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\TranslatableSnippetAbstract;
 
 /**
  *
@@ -23,7 +23,8 @@ use Zalt\Snippets\SnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ContentTitleSnippet extends SnippetAbstract
+
+class ContentTitleSnippet extends TranslatableSnippetAbstract
 {
     /**
      * The title to display

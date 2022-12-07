@@ -34,9 +34,10 @@ class RoundsTitleSnippet extends ContentTitleSnippet
      */
     protected $trackEngine;
 
-    public function __construct(SnippetOptions $snippetOptions, RequestInfo $requestInfo, Translator $translator)
+    public function getHtmlOutput()
     {
-        parent::__construct($snippetOptions, $requestInfo);
-        $this->contentTitle = sprintf($translator->_('Rounds in %s track'), $this->trackEngine->getTrackName());
+        $this->contentTitle = sprintf($this->_('Rounds in %s track'), $this->trackEngine->getTrackName());
+        
+        return parent::getHtmlOutput();
     }
 }

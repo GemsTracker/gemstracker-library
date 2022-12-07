@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Gems\Snippets;
 
-use Zalt\Model\Data\DataReaderInterface;
+use MUtil\Model;
+use Zalt\Html\HtmlException;
 
 /**
  *
@@ -21,5 +22,31 @@ use Zalt\Model\Data\DataReaderInterface;
  */
 abstract class ModelDetailTableSnippetAbstract extends \Zalt\Snippets\ModelDetailTableSnippetAbstract
 {
+    use TopicCallableTrait;
+    
     protected $class = 'displayer table';
+    
+    public function getHtmlOutput()
+    {
+        if (! $this->onEmpty) {
+            $this->onEmpty = $this->getOnEmpty();
+        }
+
+        return parent::getHtmlOutput();
+    }
+    
+    public function getOnEmpty(): mixed
+    {
+        if ($this->requestInfo->getParam(Model::REQUEST_ID)) {
+            return sprintf(
+                $this->_('%s "%s" not found!'),
+                ucfirst($this->getTopic(1)),
+                $this->requestInfo->getParam(Model::REQUEST_ID)
+            );
+        }
+        return sprintf(
+            $this->_('%s not found!'),
+            ucfirst($this->getTopic(1))
+        );
+    }
 }

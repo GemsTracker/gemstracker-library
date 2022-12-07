@@ -12,6 +12,7 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
 use Mezzio\Session\SessionMiddleware;
@@ -157,6 +158,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelDetailTableSnippet',
+        CurrentButtonRowSnippet::class,
         'Tracker\\TrackVisualDefinitionTitleSnippet',
         'Tracker\\TrackVisualDefinitionSnippet',
         'Tracker\\Fields\\FieldsTitleSnippet',

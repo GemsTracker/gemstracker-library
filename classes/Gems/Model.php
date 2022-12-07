@@ -210,12 +210,12 @@ class Model
      *
      * @return EpisodeOfCareModel
      */
-    public function createEpisodeOfCareModel(): EpisodeOfCareModel
+    public function createEpisodeOfCareModel(Agenda $agenda): EpisodeOfCareModel
     {
         /**
          * @var EpisodeOfCareModel
          */
-        return $this->overloader->create('EpisodeOfCareModel');
+        return $this->overloader->create('EpisodeOfCareModel', $agenda);
     }
 
     /**

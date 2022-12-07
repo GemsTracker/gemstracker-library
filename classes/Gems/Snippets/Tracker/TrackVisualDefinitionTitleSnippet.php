@@ -34,9 +34,10 @@ class TrackVisualDefinitionTitleSnippet extends ContentTitleSnippet
      */
     protected $trackEngine;
 
-    public function __construct(SnippetOptions $snippetOptions, RequestInfo $requestInfo, Translator $translator)
+    public function getHtmlOutput()
     {
-        parent::__construct($snippetOptions, $requestInfo);
-        $this->contentTitle = sprintf($translator->_('Quick view %s track'), $this->trackEngine->getTrackName());
+        $this->contentTitle = sprintf($this->_('Quick view %s track'), $this->trackEngine->getTrackName());
+        
+        return parent::getHtmlOutput();
     }
 }

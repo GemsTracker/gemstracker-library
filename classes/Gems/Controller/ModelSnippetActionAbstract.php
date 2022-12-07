@@ -36,7 +36,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_autofilterExtraParameters = array(
+    private array $_autofilterExtraParameters = array(
         'browse'        => true,
         'containingId'  => 'autofilter_target',
         'keyboard'      => true,
@@ -55,7 +55,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_createExtraParameters = array(
+    private array $_createExtraParameters = array(
         'formTitle'     => 'getCreateTitle',
         'topicCallable' => 'getTopicCallable',
         'csrfGuard'     => 'getCsrfGuard',
@@ -67,7 +67,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_deactivateExtraParameters = array(
+    private array $_deactivateExtraParameters = array(
         'confirmQuestion' => 'getDeactivateQuestion',
         'displayTitle'    => 'getDeactivateTitle',
         'formTitle'       => 'getDeactivateTitle',
@@ -80,7 +80,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_deleteExtraParameters = array(
+    private array $_deleteExtraParameters = array(
         'deleteQuestion' => 'getDeleteQuestion',
         'displayTitle'   => 'getDeleteTitle',
         'formTitle'      => 'getDeleteTitle',
@@ -93,7 +93,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_editExtraParameters = array(
+    private array $_editExtraParameters = array(
         'formTitle'     => 'getEditTitle',
         'topicCallable' => 'getTopicCallable',
         'csrfGuard'     => 'getCsrfGuard',
@@ -105,7 +105,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_exportExtraParameters = [
+    private array $_exportExtraParameters = [
         'exportClasses' => 'getExportClasses',
     ];
 
@@ -115,7 +115,7 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initializPdfation
      */
-    private $_importExtraParameters = array(
+    private array $_importExtraParameters = array(
         'formatBoxClass'   => 'browser table',
         'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
@@ -128,11 +128,21 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    private $_reactivateExtraParameters = array(
+    private array $_reactivateExtraParameters = array(
         'confirmQuestion' => 'getReactivateQuestion',
         'displayTitle'    => 'getReactivateTitle',
         'formTitle'       => 'getReactivateTitle',
         'topicCallable'   => 'getTopicCallable',
+    );
+
+    /**
+     * \Gems only parameters used for the show action. Can be overruled
+     * by setting $this->editParameters or $this->createEditParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private array $_showExtraParameters = array(
+        'topicCallable' => 'getTopicCallable',
     );
 
     /**
@@ -794,6 +804,8 @@ abstract class ModelSnippetActionAbstract extends \MUtil\Controller\ModelSnippet
      */
     public function showAction()
     {
+        $this->showParameters = $this->showParameters + $this->_showExtraParameters;
+
         if (! isset($this->showParameters['contentTitle'])) {
             $this->showParameters['contentTitle'] = $this->getShowTitle();
         }

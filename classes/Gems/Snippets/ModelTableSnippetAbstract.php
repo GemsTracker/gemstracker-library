@@ -16,8 +16,8 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Marker;
-use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -100,7 +100,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $metaModel = $dataModel->getMetaModel();
-        $keys      = $metaModel->getKeys();
+        $keys      = $this->getRouteMaps($metaModel);
         
         if ($metaModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -173,7 +173,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      */
     protected function getEditUrls(TableBridge $bridge, array $keys): array
     {
-        return $this->menuHelper->getLateRelatedUrls($this->menuEditRoutes, $keys);
+        return $this->menuHelper->getLateRelatedUrls($this->menuEditRoutes, $keys, $bridge);
     }
 
     public function getHtmlOutput()
@@ -192,12 +192,17 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
             return $table;
         }
     }
-
+    
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        return $metaModel->getKeys();
+    }
+    
     /**
      * Returns a show menu item, if access is allowed by privileges
      */
     protected function getShowUrls(TableBridge $bridge, array $keys): array
     {
-        return $this->menuHelper->getLateRelatedUrls($this->menuShowRoutes, $keys);
+        return $this->menuHelper->getLateRelatedUrls($this->menuShowRoutes, $keys, $bridge);
     }
 }

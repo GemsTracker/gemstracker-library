@@ -395,14 +395,14 @@ class Route
                     'id2' => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.episodes-of-care',
-                controllerClass: \Gems\Actions\CareEpisodeHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
-                parentParameters: [
+            ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
+                controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
+                basePath:                          '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
+                parentParameters:                  [
                     'id1',
                     'id2',
                 ],
-                parameters: [
+                parameters:                        [
                     \Gems\Model::EPISODE_ID => '\d+',
                 ],
             ),
@@ -578,9 +578,9 @@ class Route
             ],
 
 
-            ...$this->createBrowseRoutes(baseName: 'setup.codes.reception',
-                controllerClass: \Gems\Actions\ReceptionAction::class,
-                parameters: [
+            ...$this->createSnippetRoutes(baseName: 'setup.codes.reception',
+                controllerClass:                   \Gems\Handlers\Setup\ReceptionCodeHandler::class,
+                parameters:                        [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
             ),
@@ -636,30 +636,30 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.activity',
-                controllerClass: \Gems\Actions\AgendaActivityAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.activity',
+                controllerClass:                   \Gems\Handlers\Setup\AgendaActivityHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'cleanup',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.procedure',
-                controllerClass: \Gems\Actions\AgendaProcedureAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.procedure',
+                controllerClass:                   \Gems\Handlers\Setup\AgendaProcedureHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'cleanup',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.diagnosis',
-                controllerClass: \Gems\Actions\AgendaDiagnosisAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.diagnosis',
+                controllerClass:                   \Gems\Handlers\Setup\AgendaDiagnosisHandler::class,
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.agenda.location',
                 controllerClass: \Gems\Actions\LocationAction::class,

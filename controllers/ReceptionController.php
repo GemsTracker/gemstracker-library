@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ReceptionController extends \Gems\Actions\ReceptionAction
+class ReceptionController extends \Gems\Handlers\Setup\ReceptionCodeHandler
 {
 }
