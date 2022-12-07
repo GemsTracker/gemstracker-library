@@ -223,7 +223,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     {
         if ($this->_form instanceof \Gems\TabForm) {
             if ($links = $this->getMenuList()) {
-                $linkContainer = \MUtil\Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer = \Zalt\Html\Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
@@ -285,7 +285,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      */
     public function getCancelRoute()
     {
-        return $this->menuHelper->getCurrentParentUrl();;
+        return $this->menuHelper->getCurrentParentUrl();
     }
 
     /**
@@ -301,7 +301,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 
         $title = $this->getTitle();
         if ($title) {
-            $htmlDiv->h3($title, array('class' => 'title'));
+            $htmlDiv->h3($title, ['class' => 'title']);
         }
 
         $form = parent::getHtmlOutput();

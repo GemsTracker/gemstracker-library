@@ -288,9 +288,9 @@ class Translated
     public function formatDateTimeNever($dateValue)
     {
         if ($dateValue) {
-            return $this->describeTimeFromNow($dateValue);
+            return Html::raw($this->describeTimeFromNow($dateValue));
         } else {
-            return Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return Html::raw(Html::create()->span($this->_('never'), ['class' => 'disabled']));
         }
     }
 

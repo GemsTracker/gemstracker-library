@@ -11,9 +11,19 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Tracker;
+use Gems\Tracker\Respondent;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Adds basic track editing snippet parameter processing and checking.
@@ -26,21 +36,8 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
+class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
     /**
      * Optional, required when creating
      *
@@ -54,13 +51,6 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      * @var string Patient "nr"
      */
     protected $patientId;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
 
     /**
      * The respondent
@@ -112,22 +102,21 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Optional, required when creating or loader should be set
      *
-     * @var int The user Id of the one doing the changing
+     * @var int The user ID of the one doing the changing
      */
-    protected $userId;
+    protected int $currentUserId;
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ((! $this->userId) && $this->currentUser) {
-            $this->userId = $this->currentUser->getUserId();
-        }
-        return $this->loader && $this->request && parent::checkRegistryRequestsAnswers();
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
     }
 
     /**
@@ -137,12 +126,11 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        $tracker = $this->loader->getTracker();
-        $model   = $tracker->getRespondentTrackModel();
+        $model   = $this->tracker->getRespondentTrackModel();
 
-        if (! $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
+        if (! $this->trackEngine instanceof TrackEngineInterface) {
             if (! $this->respondentTrack) {
-                $this->respondentTrack = $tracker->getRespondentTrack($this->respondentTrackId);
+                $this->respondentTrack = $this->tracker->getRespondentTrack($this->respondentTrackId);
             }
             $this->trackEngine = $this->respondentTrack->getTrackEngine();
         }
@@ -188,7 +176,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+        if ($this->respondent instanceof Respondent) {
             if (! $this->patientId) {
                 $this->patientId = $this->respondent->getPatientNumber();
             }
@@ -210,12 +198,7 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
         }
         // Try to get $this->respondentTrack filled
         if ($this->respondentTrackId && (! $this->respondentTrack)) {
-            $this->respondentTrack = $this->loader->getTracker()->getRespondentTrack($this->respondentTrackId);
-        }
-
-        // Set the user id
-        if (! $this->userId) {
-            $this->userId = $this->loader->getCurrentUser()->getUserId();
+            $this->respondentTrack = $this->tracker->getRespondentTrack($this->respondentTrackId);
         }
 
         if ($this->respondentTrack) {
@@ -238,15 +221,15 @@ class EditTrackSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
                 if ($this->trackEngine) {
                     $this->trackId = $this->trackEngine->getTrackId();
                 } else {
-                    $this->trackId = $this->request->getParam(\Gems\Model::TRACK_ID);
+                    $this->trackId = $this->requestInfo->getParam(\Gems\Model::TRACK_ID);
                 }
             }
             // Try to get $this->trackEngine filled
             if ($this->trackId && (! $this->trackEngine)) {
-                $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
+                $this->trackEngine = $this->tracker->getTrackEngine($this->trackId);
             }
 
-            if (! ($this->trackEngine && $this->patientId && $this->organizationId && $this->userId)) {
+            if (! ($this->trackEngine && $this->patientId && $this->organizationId && $this->currentUserId)) {
                 throw new \Gems\Exception\Coding('Missing parameter for ' . __CLASS__  .
                         ': could not find data for editing a respondent track nor the track engine, patientId and organizationId needed for creating one.');
             }

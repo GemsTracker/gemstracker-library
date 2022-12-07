@@ -11,8 +11,18 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Gems\Tracker\Token;
+use Gems\Util\ReceptionCodeLibrary;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for editing reception code of token.
@@ -31,12 +41,6 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      * @var string
      */
     protected $_replacementTokenId;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      * Array of items that should be shown to the user
@@ -72,7 +76,7 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     /**
      * The token shown
      *
-     * @var \Gems\Tracker\Token
+     * @var Token
      */
     protected $token;
 
@@ -83,11 +87,16 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected $unDeleteRight = 'pr.token.undelete';
 
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected ReceptionCodeLibrary $receptionCodeLibrary,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     /**
      * Hook that allows actions when data was saved
@@ -110,9 +119,10 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     {
         $model = $this->token->getModel();
 
-        $model->set('gto_reception_code',
-            'label',        $model->get('grc_description', 'label'),
-            'required',     true);
+        $model->set('gto_reception_code', [
+            'label' => $model->get('grc_description', 'label'),
+            'required' => true,
+        ]);
 
         return $model;
     }
@@ -123,15 +133,39 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected function getMenuList(): array
     {
-        $links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
+        $items = [
+            [
+                'route' => 'respondent.show',
+                'label' => $this->_('Show patient'),
+            ],
+            [
+                'route' => 'respondent.tracks.index',
+                'label' => $this->_('Show tracks'),
+            ],
+            [
+                'route' => 'respondent.tracks.show-track',
+                'label' => $this->_('Show track'),
+                'parameters' => [
+                    Model::RESPONDENT_TRACK => $this->token->getRespondentTrackId(),
+                ],
+            ],
+            [
+                'route' => 'respondent.tracks.show',
+                'label' => $this->_('Show token'),
+            ],
+        ];
 
-        $controller = $this->request->getControllerName();
-
-        $links->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'))
-                ->addByController('track', 'show', $this->_('Show token'));
+        $links = [];
+        foreach($items as $item) {
+            $params = $this->requestInfo->getRequestMatchedParams();
+            if (isset($item['parameters'])) {
+                $params += $item['parameters'];
+            }
+            $url = $this->menuHelper->getRouteUrl($item['route'], $params);
+            if ($url) {
+                $links[$item['route']] = Html::actionLink($url, $item['label']);
+            }
+        }
 
         return $links;
     }
@@ -143,15 +177,13 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     public function getReceptionCodes()
     {
-        $rcLib = $this->util->getReceptionCodeLibrary();
-
         if ($this->unDelete) {
-            return $rcLib->getTokenRestoreCodes();
+            return $this->receptionCodeLibrary->getTokenRestoreCodes();
         }
         if ($this->token->isCompleted()) {
-            return $rcLib->getCompletedTokenDeletionCodes();
+            return $this->receptionCodeLibrary->getCompletedTokenDeletionCodes();
         }
-        return $rcLib->getUnansweredTokenDeletionCodes();
+        return $this->receptionCodeLibrary->getUnansweredTokenDeletionCodes();
     }
 
     protected function loadForm()
@@ -275,12 +307,16 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     protected function setAfterSaveRoute()
     {
         // Default is just go to the index
-        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
+        if ($this->routeAction && ($this->requestInfo->getCurrentAction() !== $this->routeAction)) {
             $tokenId = $this->_replacementTokenId ? $this->_replacementTokenId : $this->token->getTokenId();
-            $this->afterSaveRouteUrl = array(
-                $this->request->getActionKey() => $this->routeAction,
-                \MUtil\Model::REQUEST_ID       => $tokenId,
-                );
+
+            $currentRouteParts = explode('.', $this->requestInfo->getRouteName());
+            $currentRouteParts[count($currentRouteParts)-1] = $this->routeAction;
+
+            $params = $this->requestInfo->getRequestMatchedParams();
+            $params[\MUtil\Model::REQUEST_ID] = $tokenId;
+
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl(join('.', $currentRouteParts), $params);
         }
 
         return $this;

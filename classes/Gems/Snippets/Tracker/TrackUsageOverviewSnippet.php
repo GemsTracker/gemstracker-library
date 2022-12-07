@@ -11,8 +11,17 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Snippets\ModelTableSnippetAbstract;
+use Gems\Tracker;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Tracker\Respondent;
+use Gems\Tracker\RespondentTrack;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,13 +32,11 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 30-apr-2015 16:37:27
  */
-class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    public $extraSort = [
+        'gr2t_created' => SORT_DESC
+    ];
 
     /**
      * Menu actions to show in Edit box.
@@ -56,7 +63,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var boolean
      */
-    protected $multiTracks = true;
+    protected bool $multiTracks = true;
 
     /**
      * The oganization ID
@@ -106,21 +113,14 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $trackId;
 
-    /**
-     *
-     * @var \Gems\Tracker\TrackerInterface
-     */
-    protected $tracker;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->loader instanceof \Gems\Loader;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
 
     /**
@@ -154,7 +154,6 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             return false;
         }
 
-        $this->tracker = $this->loader->getTracker();
         $matchedParams = $this->requestInfo->getRequestMatchedParams();
 
         if (! $this->respondentTrackId && isset($matchedParams[Model::RESPONDENT_TRACK])) {
@@ -162,11 +161,11 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         if ($this->respondentTrackId) {
-            if (! $this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
+            if (! $this->respondentTrack instanceof RespondentTrack) {
                 $this->respondentTrack = $this->tracker->getRespondentTrack($this->respondentTrackId);
             }
         }
-        if ($this->respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
+        if ($this->respondentTrack instanceof RespondentTrack) {
             if (! $this->respondentTrackId) {
                 $this->respondentTrackId = $this->respondentTrack->getRespondentTrackId();
             }
@@ -183,7 +182,7 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->onEmpty = $this->_('This track is assigned only once to this respondent.');
 
         } else {
-            if ($this->respondent instanceof \Gems\Tracker\Respondent) {
+            if ($this->respondent instanceof Respondent) {
                 if (! $this->respondentId) {
                     $this->respondentId = $this->respondent->getId();
                 }
@@ -200,28 +199,20 @@ class TrackUsageOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
 
-        if ((! $this->trackId) && $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
+        if ((! $this->trackId) && $this->trackEngine instanceof TrackEngineInterface) {
             $this->trackId = $this->trackEngine->getTrackId();
         }
 
-        return $this->trackId && $this->respondentId && $this->organizationId && parent::hasHtmlOutput();
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
-    {
-        $model->setFilter(array(
+        $this->extraFilter = [
             'gr2t_id_track'        => $this->trackId,
             'gr2t_id_user'         => $this->respondentId,
             'gr2t_id_organization' => $this->organizationId,
-        ));
+        ];
         if ($this->respondentTrackId) {
-            $model->addFilter(array(sprintf('gr2t_id_respondent_track != %d', intval($this->respondentTrackId))));
+            $this->extraFilter[] = sprintf('gr2t_id_respondent_track != %d', $this->respondentTrackId);
         }
-        $model->setSort(array('gr2t_created' => SORT_DESC));
+
+
+        return $this->trackId && $this->respondentId && $this->organizationId && parent::hasHtmlOutput();
     }
 }

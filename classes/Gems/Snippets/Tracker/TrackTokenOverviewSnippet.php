@@ -11,9 +11,20 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for showing the all tokens for a single track for a single patient
@@ -68,6 +79,19 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     protected $trackData;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        TokenRepository $tokenRepository,
+        protected CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
+        $this->currentUser = $this->currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -80,27 +104,23 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        $tData = $this->util->getTokenData();
-
-        // Signal the bridge that we need these values
-        $bridge->gr2t_id_respondent_track;
-        $bridge->gr2o_patient_nr;
-
-        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
+        $bridge->tr()->appendAttrib('class', Late::iif(
                         $bridge->gro_id_round,
                         $bridge->row_class,
                         array($bridge->row_class , ' inserted')
                         ));
 
         // Add token status
-        $bridge->td($tData->getTokenStatusLinkForBridge($bridge, false))->appendAttrib('class', 'text-right');
+        $bridge->td(Html::raw($this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper)))->appendAttrib('class', 'text-right');
 
         // Columns
         $bridge->addSortable('gsu_survey_name')
-                ->append(\MUtil\Lazy::iif(
+                ->append(Late::iif(
                         $bridge->gro_icon_file,
-                        \MUtil\Lazy::iif($bridge->gto_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
-                            \MUtil\Lazy::iif($bridge->gro_icon_file, \MUtil\Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))))
+                        Late::iif($bridge->gto_icon_file, \Zalt\Html\Html::create('img', ['src' => $bridge->gto_icon_file, 'class' => 'icon']
+                        ),
+                            Late::iif($bridge->gro_icon_file, \Zalt\Html\Html::create('img', ['src' => $bridge->gro_icon_file, 'class' => 'icon']
+                            )))
                         ));
         $bridge->addSortable('gto_round_description');
         $bridge->addSortable('ggp_name');
@@ -118,6 +138,15 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $this->addTokenLinks($bridge);
     }
 
+    public function getFilter(MetaModelInterface $metaModel): array
+    {
+        $filter = parent::getFilter($metaModel);
+
+        $filter['gto_id_respondent_track'] = $this->respondentTrackId;
+
+        return $filter;
+    }
+
     /**
      * Create the snippets content
      *
@@ -126,14 +155,14 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $table = parent::getHtmlOutput($view);
+        $table = parent::getHtmlOutput();
 
         $table->class = $this->class;
         $this->applyHtmlAttributes($table);
         $this->class = false;
-        $tableContainer = \MUtil\Html::create()->div(array('class' => 'table-container'), $table);
+        $tableContainer = \Zalt\Html\Html::create()->div(['class' => 'table-container'], $table);
 
         return $tableContainer;
     }
@@ -175,17 +204,5 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         } else {
             return false;
         }
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
-    {
-        $model->setFilter(['gto_id_respondent_track' => $this->respondentTrackId]);
-
-        $this->processSortOnly($model);
     }
 }

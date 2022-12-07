@@ -9,6 +9,12 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\TabSnippetAbstract;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  * Respondent token filter tabs
  *
@@ -16,23 +22,23 @@ namespace Gems\Snippets\Token;
  * @subpackage Snippets
  * @since      Class available since version 1.1
  */
-class TokenTabsSnippet extends \Zalt\Snippets\TabSnippetAbstract
+class TokenTabsSnippet extends TabSnippetAbstract
 {
-    /**
-     * Default href parameter values
-     *
-     * Clicking a tab always resets the page counter
-     *
-     * @var array
-     */
-    protected $href = array('page' => null);
-
     /**
      * The RESPONDENT model, not the token model
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuSnippetHelper,
+        protected Translator $translator,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuSnippetHelper);
+    }
 
     /**
      * Return optionally the single parameter key which should left out for the default value,
@@ -50,13 +56,13 @@ class TokenTabsSnippet extends \Zalt\Snippets\TabSnippetAbstract
      *
      * @return array tabId => label
      */
-    protected function getTabs()
+    protected function getTabs(): array
     {
-        $tabs['default'] = array($this->_('Default'), 'title' => $this->_('To do 2 weeks ahead and done'));
-        $tabs['todo']    = $this->_('To do');
-        $tabs['done']    = $this->_('Done');
-        $tabs['missed']  = $this->_('Missed');
-        $tabs['all']     = $this->_('All');
+        $tabs['default'] = [$this->translator->_('Default'), 'title' => $this->translator->_('To do 2 weeks ahead and done')];
+        $tabs['todo']    = $this->translator->_('To do');
+        $tabs['done']    = $this->translator->_('Done');
+        $tabs['missed']  = $this->translator->_('Missed');
+        $tabs['all']     = $this->translator->_('All');
 
         return $tabs;
     }

@@ -80,7 +80,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $autofilterSnippets = [
         'Tracker\\TrackTableSnippet',
-        //'Tracker\\Buttons\\TrackIndexButtonRow',
+        'Tracker\\Buttons\\TrackIndexButtonRow',
         'Tracker\\AvailableTracksSnippet',
     ];
 
@@ -147,12 +147,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
         'Tracker\\EditTrackSnippet',
         'Tracker\\TrackSurveyOverviewSnippet',
     ];
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
 
     /**
      * The default parameters used for any token action like answers or sho0w
@@ -350,8 +344,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     protected array $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
         'Tracker\\SingleSurveyAvailableTracksSnippet',
-        'ModelItemTableSnippet',
-        //'Tracker\\Buttons\\TrackActionButtonRow',
+        'ModelDetailTableSnippet',
+        'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
@@ -513,7 +507,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
 
-        $batch = $this->loader->getTracker()->checkTrackRounds(
+        $batch = $this->tracker->checkTrackRounds(
             'trackCheckRoundsResp_' . $respondent->getId(),
             $this->currentUser->getUserId(),
             $where
@@ -548,7 +542,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $token       = $this->getToken();
         $where       = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
-        $batch = $this->loader->getTracker()->recalculateTokens(
+        $batch = $this->tracker->recalculateTokens(
             'answersCheckToken__' . $token->getTokenId(),
             $this->currentUser->getUserId(),
             $where
@@ -575,7 +569,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
-        $batch = $this->loader->getTracker()->checkTrackRounds(
+        $batch = $this->tracker->checkTrackRounds(
             'trackCheckRoundsFor_' . $respTrackId,
             $this->currentUser->getUserId(),
             $where
@@ -601,7 +595,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gto_id_respondent_track = ?', $respTrackId);
-        $batch = $this->loader->getTracker()->recalculateTokens(
+        $batch = $this->tracker->recalculateTokens(
             'answersCheckAllFor__' . $respTrackId,
             $this->currentUser->getUserId(),
             $where
@@ -894,7 +888,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         }
 
         $respTrackId = $this->request->getAttribute(\Gems\Model::RESPONDENT_TRACK);
-        $tracker     = $this->loader->getTracker();
+        $tracker     = $this->tracker;
 
         if ($respTrackId) {
             $respTrack = $tracker->getRespondentTrack($respTrackId);
@@ -988,7 +982,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $tokenId = $this->getTokenId();
 
         if ($tokenId) {
-            $token = $this->loader->getTracker()->getToken($tokenId);
+            $token = $this->tracker->getToken($tokenId);
         }
         if ($token && $token->exists) {
             if (! array_key_exists($token->getOrganizationId(), $this->currentUser->getAllowedOrganizations())) {
@@ -1103,7 +1097,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
                 }
             }
 
-            $engine = $this->loader->getTracker()->getTrackEngine($trackId);
+            $engine = $this->tracker->getTrackEngine($trackId);
         }
 
         return $engine;
@@ -1268,7 +1262,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
 
-        $batch = $this->loader->getTracker()->recalcTrackFields(
+        $batch = $this->tracker->recalcTrackFields(
             'trackRecalcFieldsResp_' . $respondent->getId(),
             $where
         );
@@ -1292,7 +1286,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
         $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
-        $batch = $this->loader->getTracker()->recalcTrackFields(
+        $batch = $this->tracker->recalcTrackFields(
             'trackRecalcFieldsFor_' . $respTrackId,
             $where
         );

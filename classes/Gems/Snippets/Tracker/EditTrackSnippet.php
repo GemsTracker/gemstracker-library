@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Tracker\Snippets\EditTrackSnippetAbstract;
 use Mezzio\Session\SessionInterface;
 
 /**
@@ -21,7 +22,7 @@ use Mezzio\Session\SessionInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
+class EditTrackSnippet extends EditTrackSnippetAbstract
 {
     /**
      * @var SessionInterface
@@ -34,13 +35,6 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
      */
     protected function getMenuList(): array
     {
-        /*$links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        $links->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'));*/
-
         $links = [];
 
         $routes = [
@@ -48,12 +42,13 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
             'respondent.tracks.index',
             'respondent.tracks.view',
         ];
-        $currentParams = $this->requestInfo->getRequestMatchedParams();
 
         foreach($routes as $routeName) {
-            $route = $this->routeHelper->getRoute($routeName);
-            $routeParams = $this->routeHelper->getRouteParamsFromKnownParams($route, $currentParams);
-            $links[$this->_('Show respondent')] = $this->routeHelper->getRouteUrl($routeName, $routeParams);
+
+            $routeUrl = $this->menuHelper->getRouteUrl($routeName, $this->requestInfo->getRequestMatchedParams());
+            if ($routeUrl) {
+                $links[$this->_('Show respondent')] = $routeUrl;
+            }
         }
 
         return $links;
@@ -83,14 +78,14 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
         // Retrieve the key if just created
         if ($this->createData) {
             $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
-            $this->respondentTrack   = $this->loader->getTracker()->getRespondentTrack($this->formData);
+            $this->respondentTrack   = $this->tracker->getRespondentTrack($this->formData);
 
             // Explicitly save the fields as the transformer in the model only handles
             // before save event (like default values) for existing respondenttracks
             $this->respondentTrack->setFieldData($this->formData);
 
             // Create the actual tokens!!!!
-            $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->session, $this->userId);
+            $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->session, $this->currentUserId);
             $refresh = true;
 
         } else {
@@ -101,7 +96,7 @@ class EditTrackSnippet extends \Gems\Tracker\Snippets\EditTrackSnippetAbstract
         if ($refresh) {
             // Perform a refresh from the database, to avoid date trouble
             $this->respondentTrack->refresh();
-            $this->respondentTrack->checkTrackTokens($this->userId);
+            $this->respondentTrack->checkTrackTokens($this->currentUserId);
         }
 
 

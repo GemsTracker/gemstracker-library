@@ -239,17 +239,12 @@ class TokenRepository
      * @param boolean $showAnswers
      * @return \MUtil\Html\AElement
      */
-    public function getTokenAnswerLink(MenuSnippetHelper $helper, string $patientNr, int $organizationId, string $tokenId, string $tokenStatus, bool $keepCaps = true, bool $showAnswers = true): ?AElement
+    public function getTokenAnswerLink($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps = true, $showAnswers = true): ?AElement
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
-            $routeName = 'respondent.tracks.answer';
             $label = $this->translator->_('Answers');
 
-            $link = \Gems\Html::actionLink($helper->getRouteUrl($routeName, [
-                'id' => $tokenId,
-                Model::REQUEST_ID1 => $patientNr,
-                Model::REQUEST_ID2 => $organizationId,
-            ]), $label);
+            $link = \Gems\Html::actionLink($url, $label);
 
             if ($link) {
                 $link->title = sprintf($this->translator->_('See answers for token %s'), strtoupper($tokenId));
@@ -274,14 +269,52 @@ class TokenRepository
             //return null;
         }
 
+        $url = $helper->getLateRouteUrl('respondent.tracks.answer', [
+            'id' => $bridge->getLate('gto_id_token'),
+            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
+        ]);
+
         return Late::method($this, 'getTokenAnswerLink',
-            $bridge->getLazy('gr2o_patient_nr'),
-            $bridge->getLazy('gto_id_organization'),
-            $bridge->getLazy('gto_id_token'),
-            $bridge->getLazy('token_status'),
+            $url,
+            $bridge->getLate('gr2o_patient_nr'),
+            $bridge->getLate('gto_id_organization'),
+            $bridge->getLate('gto_id_token'),
+            $bridge->getLate('token_status'),
             $keepCaps,
-            $bridge->getLazy('show_answers')
+            $bridge->getLate('show_answers')
         );
+    }
+
+    /**
+     * Generate a menu link for answers pop-up
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $staffToken Is token answerable by staff
+     * @param boolean $keepCaps Keep the capital letters in the label
+     */
+    public function getTokenAskButton($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $staffToken, $keepCaps)
+    {
+        if ('O' == $tokenStatus || 'P' == $tokenStatus) {
+            if ($url && $staffToken) {
+                $label = $this->translator->_('Fill in');
+
+                if ('P' == $tokenStatus) {
+                    $label = $this->translator->_('Continue');
+                }
+
+                $link = \Gems\Html::actionLink($url, $label);
+
+                if ($link) {
+                    $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
+
+                    return $link;
+                }
+            }
+
+            return $this->getTokenCopyLink($tokenId, $tokenStatus);
+        }
     }
 
     /**
@@ -298,8 +331,15 @@ class TokenRepository
             //return null;
         }
 
+        $url = $helper->getLateRouteUrl('ask.take', [
+            'id' => $bridge->getLate('gto_id_token'),
+            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
+        ]);
+
         if ($forceButton) {
             return Late::method($this, 'getTokenAskButton',
+                $url,
                 $bridge->getLate('gr2o_patient_nr'),
                 $bridge->getLate('gto_id_organization'),
                 $bridge->getLate('gto_id_token'),
@@ -310,6 +350,7 @@ class TokenRepository
         }
 
         return Late::method($this, 'getTokenAskButton',
+            $url,
             $bridge->getLate('gr2o_patient_nr'),
             $bridge->getLate('gto_id_organization'),
             $bridge->getLate('gto_id_token'),
@@ -329,7 +370,7 @@ class TokenRepository
      */
     public function getTokenAskLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, $forceButton = false, $keepCaps = false): array
     {
-        $method = $this->getTokenAskButtonForBridge($bridge, $forceButton, $keepCaps);
+        $method = $this->getTokenAskButtonForBridge($bridge, $helper, $forceButton, $keepCaps);
 
         if (! $method) {
             $method = Late::method($this, 'getTokenCopyLink',
@@ -343,6 +384,22 @@ class TokenRepository
                 $bridge->getLate('token_status'), $bridge->getLate('ggp_staff_members')
             ),
         ];
+    }
+
+    /**
+     * Generate a token item with (in the future) a copy to clipboard button
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
+     * @param boolean $staffToken Is token answerable by staff
+     * @return string
+     */
+    public function getTokenCopyLinkClass($tokenStatus, $staffToken)
+    {
+        if (('O' == $tokenStatus || 'P' == $tokenStatus) && ! $staffToken) {
+            return 'token';
+        }
+        return null;
     }
 
     /**
@@ -448,6 +505,18 @@ class TokenRepository
 
 
         return \Gems\Html::actionLink($url, $label);
+    }
+
+    /**
+     * De a lazy status description text for bridges
+     *
+     * @param TableBridgeAbstract $bridge
+     * @param boolean $addDescription Add the description after the icon
+     * @return LateCall
+     */
+    public function getTokenStatusDescriptionForBridge(TableBridgeAbstract $bridge, $addDescription = false): LateCall
+    {
+        return Late::method($this, 'getStatusDescription', $bridge->getLazy('token_status'));
     }
 
     /**

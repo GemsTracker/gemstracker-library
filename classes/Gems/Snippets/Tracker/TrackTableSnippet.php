@@ -11,9 +11,15 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\OrganizationRepository;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;
-use Gems\Util;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,11 +29,11 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 18-Apr-2018 18:40:08
  */
-class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class TrackTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
     protected $model;
 
@@ -37,35 +43,32 @@ class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $respondent;
 
-    /**
-     *
-     * @var Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected OrganizationRepository $organizationRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }
 
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $metaModel): array
     {
-        parent::processFilterAndSort($model);
-
-        $filter = $model->getFilter();
+        $filter =  parent::getFilter($metaModel);
 
         if (isset($filter['gr2o_id_organization'])) {
-            $otherOrgs = $this->util->getOtherOrgsFor($filter['gr2o_id_organization']);
+            $otherOrgs = $this->organizationRepository->getAllowedOrganizationsFor((int)$filter['gr2o_id_organization']);
             if (is_array($otherOrgs)) {
                 // If more than one org, do not use patient number but resp id
                 if (isset($filter['gr2o_patient_nr'])) {
@@ -79,8 +82,9 @@ class TrackTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
                 if (isset($this->extraFilter['gr2t_id_organization'])) {
                     $this->extraFilter['gr2t_id_organization'] = $otherOrgs;
                 }
-                $model->setFilter($filter);
             }
         }
+
+        return $filter;
     }
 }
