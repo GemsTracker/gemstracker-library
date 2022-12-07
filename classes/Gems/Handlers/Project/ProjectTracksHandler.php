@@ -10,11 +10,12 @@
 
 namespace Gems\Handlers\Project;
 
-use Gems\Model;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Tracker\TrackSurveyOverviewSnippet;
+use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -50,6 +51,8 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         ],
     ];
 
+    protected User $currentUser;
+    
     /**
      * The parameters used for the show action
      *
@@ -81,10 +84,13 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
     )
     {
         parent::__construct($responder, $translate);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
