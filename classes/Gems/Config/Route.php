@@ -348,25 +348,25 @@ class Route
                     EmptyHandler::class
                 ],
             ],
-            ...$this->createBrowseRoutes(baseName: 'project.tracks',
-                controllerClass: \Gems\Actions\ProjectTracksAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'project.tracks',
+                controllerClass:                   \Gems\Handlers\Project\ProjectTracksHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'show',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     'show',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'project.surveys',
-                controllerClass: \Gems\Actions\ProjectSurveysAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'project.surveys',
+                controllerClass:                   \Gems\Handlers\Project\ProjectSurveysHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'show',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     'show',
                 ],
             ),
@@ -661,14 +661,14 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.diagnosis',
                 controllerClass:                   \Gems\Handlers\Setup\AgendaDiagnosisHandler::class,
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.location',
-                controllerClass: \Gems\Actions\LocationAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.location',
+                controllerClass:                   \Gems\Handlers\Setup\LocationHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'cleanup',
                     'merge',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
                     'merge',

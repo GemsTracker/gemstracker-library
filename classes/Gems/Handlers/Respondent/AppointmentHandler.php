@@ -18,12 +18,12 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\AppointmentModel;
 use Gems\Model;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Agenda\AppointmentFormSnippet;
 use Gems\Snippets\Agenda\AppointmentItemYesNoDeleteSnippet;
 use Gems\Snippets\Agenda\AppointmentShowSnippet;
 use Gems\Snippets\Agenda\AppointmentTokensSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\Track\TracksForAppointment;
 use Gems\Tracker\Respondent;
 use Gems\User\UserLoader;
@@ -74,7 +74,8 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $createEditSnippets = [
-        'Agenda\\AppointmentFormSnippet',
+        AppointmentFormSnippet::class,
+        CurrentButtonRowSnippet::class,
     ];
 
     /**

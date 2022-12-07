@@ -9,9 +9,18 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
+use Gems\Html;
+use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Util;
 use Gems\Util\Translated;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,14 +31,14 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
+class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['glo_name' => SORT_ASC],
     ];
@@ -39,17 +48,19 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = ['location', 'locations'];
+    public array $cacheTags = ['location', 'locations'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
-        'onEmpty'         => 'getShowOnEmpty',
+        'onEmptyAlt'      => 'getShowOnEmpty',
+        'sortParamAsc'    => 'asrt',
+        'sortParamDesc'   => 'dsrt',
     ];
 
     /**
@@ -57,22 +68,21 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
-        'Agenda\\CalendarTableSnippet',
+    protected array $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
+        CalendarTableSnippet::class,
     ];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    public $util;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Translated $translatedUtil,
+        protected Util $util,
+    ) {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Cleanup appointments
@@ -100,16 +110,16 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array or false
      */
-    public function getBrowseColumns()
+    public function getBrowseColumns(): array
     {
         // Newline placeholder
-        $br = \MUtil\Html::create('br');
-        $sp = \MUtil\Html::raw(' ');
+        $br = Html::create('br');
+        $sp = Html::raw(' ');
 
         $columns[10] = ['glo_name', $br, 'glo_organizations'];
         $columns[20] = ['glo_url', $br, 'glo_url_route'];
-        $columns[30] = ['glo_address_1', $br, 'glo_zipcode', \MUtil\Html::raw('&nbsp;&nbsp;'), 'glo_city'];
-        $columns[40] = [\MUtil\Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to'];
+        $columns[30] = ['glo_address_1', $br, 'glo_zipcode', Html::raw('&nbsp;&nbsp;'), 'glo_city'];
+        $columns[40] = [Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to'];
 
         return $columns;
     }
@@ -125,7 +135,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel($detailed, $action): ModelAbstract
     {
         $model = new \MUtil\Model\TableModel('gems__locations');
         $yesNo = $this->translatedUtil->getYesNo();
@@ -203,7 +213,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Locations');
     }
@@ -246,7 +256,7 @@ class LocationAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('location', 'locations', $count);
     }
