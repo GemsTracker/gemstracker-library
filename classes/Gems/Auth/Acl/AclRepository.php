@@ -17,7 +17,6 @@ class AclRepository
     public function __construct(
         private readonly array $config,
         private readonly RoleAdapterInterface $roleAdapter,
-        private readonly GroupAdapterInterface $groupAdapter,
     ) {
     }
 
@@ -212,28 +211,5 @@ class Role
         $roles = str_replace("\n", "\n            ", $roles);
 
         return sprintf($template, $roles);
-    }
-
-    public function buildGroupConfigFile(): string
-    {
-        $template = '<?php
-
-namespace Gems\Config;
-
-class Group
-{
-    public function __invoke(): array
-    {
-        return [
-            \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
-            \'groups\' => %s,
-        ];
-    }
-}' . PHP_EOL;
-
-        $groups = VarExporter::export($this->groupAdapter->getGroupsConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
-        $groups = str_replace("\n", "\n            ", $groups);
-
-        return sprintf($template, $groups);
     }
 }

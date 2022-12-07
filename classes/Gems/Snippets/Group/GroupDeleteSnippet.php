@@ -12,11 +12,12 @@
 namespace Gems\Snippets\Group;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\GroupRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
-use Mezzio\Helper\UrlHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\MessageStatus;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -52,6 +53,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         MessengerInterface $messenger,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
+        private readonly GroupRepository $groupRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
     }
@@ -92,6 +94,20 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
 
             return false;
         }
+
+        $dependents = $this->groupRepository->getDependingGroups($data['ggp_code']);
+
+        // If we try to delete a group on which others are dependent, add an error message and reroute
+        if (count($dependents) > 0) {
+            $this->messenger->addMessage(sprintf(
+                $this->_('This group is being used by groups %s and hence cannot be deleted'),
+                implode(', ', $dependents)
+            ), MessageStatus::Danger);
+            $this->afterActionRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
+
+            return false;
+        }
+
         // TODO: Reenable?
         //$this->menu->getParameterSource()->offsetSet('ggp_role', $data['ggp_role']);
 
