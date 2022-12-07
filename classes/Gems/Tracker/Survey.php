@@ -119,8 +119,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
                     'ggp_description' => '',
                     'ggp_role' => 'respondent',
                     'ggp_group_active' => 0,
-                    'ggp_respondent_members' => 1,
-                    'ggp_staff_members' => 0) + $this->_data;
+                    'ggp_member_type' => 'respondent') + $this->_data;
             }
         }
     }
@@ -672,11 +671,11 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isTakenByStaff()
     {
-        if (! $this->_has('ggp_staff_members')) {
+        if (! $this->_has('ggp_member_type')) {
             $this->_ensureGroupData();
         }
 
-        return (boolean) $this->_get('ggp_staff_members');
+        return $this->_get('ggp_member_type') === 'staff';
     }
 
     /**

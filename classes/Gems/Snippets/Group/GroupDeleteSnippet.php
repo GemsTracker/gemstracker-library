@@ -11,7 +11,15 @@
 
 namespace Gems\Snippets\Group;
 
+use Gems\Auth\Acl\AclRepository;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Mezzio\Helper\UrlHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -35,6 +43,19 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        private readonly AclRepository $aclRepository,
+        private readonly CurrentUserRepository $currentUserRepository,
+        private readonly UrlHelper $urlHelper,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
+    }
 
     /**
      * Creates the model
@@ -61,19 +82,21 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
     {
         $model = $this->getModel();
         $data  = $model->loadFirst();
-        $roles = $this->currentUser->getAllowedRoles();
+        $roles = $this->aclRepository->getAllowedRoles($this->currentUserRepository->getCurrentUser());
 
         //\MUtil\EchoOut\EchoOut::track($data);
 
         // Perform access check here, before anything has happened!!!
         if (isset($data['ggp_role']) && (! isset($roles[$data['ggp_role']]))) {
-            $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-            $this->afterSaveRouteUrl = array($this->request->getActionKey() => 'show');
-            $this->resetRoute        = false;
+            $this->messenger->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
+            $this->afterActionRouteUrl = $this->urlHelper->generate('setup.access.groups.show', [
+                \MUtil\Model::REQUEST_ID => $data['ggp_id_group'],
+            ]);
 
             return false;
         }
-        $this->menu->getParameterSource()->offsetSet('ggp_role', $data['ggp_role']);
+        // TODO: Reenable?
+        //$this->menu->getParameterSource()->offsetSet('ggp_role', $data['ggp_role']);
 
         return parent::hasHtmlOutput();
     }

@@ -12,12 +12,17 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Repository\AccessRepository;
-use Gems\Roles;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\MessageStatus;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -84,11 +89,12 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        private readonly Roles $roles,
         private readonly UserLoader $userLoader,
         private readonly AclRepository $aclRepository,
         private readonly AccessRepository $accessRepository,
+        private readonly CurrentUserRepository $currentUserRepository,
         private readonly Translated $translatedUtil,
+        private readonly UrlHelper $urlHelper,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -161,6 +167,12 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'translate' => true,
             'validator' => $model->createUniqueValidator('ggp_name'),
         ]);
+        $model->set('ggp_code', [
+            'label' => $this->_('Code'),
+            'minlength' => 4,
+            'size' => 15,
+            'validator' => $model->createUniqueValidator('ggp_code'),
+        ]);
         $model->set('ggp_description', [
             'label' => $this->_('Description'),
             'size' => 40,
@@ -170,8 +182,6 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'label' => $this->_('Role'),
             'multiOptions' => $this->aclRepository->getRoleValues(),
         ]);
-        $model->setOnLoad('ggp_role', [$this->roles, 'translateToRoleName']);
-        $model->setOnSave('ggp_role', [$this->roles, 'translateToRoleId']);
 
         $groups = $this->accessRepository->getGroups();
         unset($groups['']);
@@ -190,17 +200,12 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'multiOptions' => $this->accessRepository->getGroups(),
         ]);
 
-        $yesNo = $this->translatedUtil->getYesNo();
-        $model->set('ggp_staff_members', [
-            'label' => $this->_('Staff'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $yesNo,
+        $model->set('ggp_member_type', [
+            'label' => $this->_('Can be assigned to'),
+            'elementClass' => 'Radio',
+            'multiOptions' => $this->translatedUtil->getMemberTypes(),
         ]);
-        $model->set('ggp_respondent_members', [
-            'label' => $this->_('Respondents'),
-            'elementClass' => 'Checkbox',
-            'multiOptions' => $yesNo,
-        ]);
+
         $model->set('ggp_allowed_ip_ranges', [
             'label' => $this->_('Login allowed from IP Ranges'),
             'description' => $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25'),
@@ -231,6 +236,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'multiOptions' => $this->userLoader->getGroupTwoFactorNotSetOptions(),
             'separator' => '<br/>',
         ]);
+        $yesNo = $this->translatedUtil->getYesNo();
         $model->set('ggp_group_active', [
             'label' => $this->_('Active'),
             'elementClass' => 'Checkbox',
@@ -288,11 +294,11 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     {
         $br = \Zalt\Html\Html::create('br');
         return [
-            ['ggp_name', $br, 'ggp_role'],
+            ['ggp_name', $br, 'ggp_code', $br, 'ggp_role'],
             ['ggp_description'],
             ['ggp_may_set_groups'],
             ['ggp_default_group', $br, 'ggp_group_active'],
-            ['ggp_staff_members', $br, 'ggp_respondent_members'],
+            ['ggp_member_type'],
             ['ggp_allowed_ip_ranges'],
             ['ggp_no_2factor_ip_ranges'],
             ['ggp_2factor_not_set', $br, 'ggp_2factor_set'],

@@ -75,8 +75,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
         'ggp_role'               => 'nologin',
         'ggp_may_set_groups'     => '',
         'ggp_group_active'       => 0,
-        'ggp_staff_members'      => 0,
-        'ggp_respondent_members' => 0,
+        'ggp_member_type'        => '',
         'ggp_allowed_ip_ranges'  => '',
         'ggp_mask_settings'      => array(),
         );
@@ -351,7 +350,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function isStaff()
     {
-        return (boolean) $this->_get('ggp_staff_members');
+        return $this->_get('ggp_member_type') === 'staff';
     }
 
     /**

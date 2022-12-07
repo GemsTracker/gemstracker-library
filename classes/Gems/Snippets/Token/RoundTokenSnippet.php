@@ -93,12 +93,13 @@ class RoundTokenSnippet extends RespondentTokenSnippet
         $bridge->useRowHref = false;
 
         $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
-        $actionLinks[] = array(
-            $bridge->ggp_staff_members->if(
-                    $this->createMenuLink($bridge, 'ask', 'take'),
-                    $bridge->calc_id_token->strtoupper()
-                    ),
-            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
+//      TODO
+//        $actionLinks[] = array(
+//            $bridge->ggp_staff_members->if(
+//                    $this->createMenuLink($bridge, 'ask', 'take'),
+//                    $bridge->calc_id_token->strtoupper()
+//                    ),
+//            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
         // calc_id_token is empty when the survey has been completed
 
         // Remove nulls

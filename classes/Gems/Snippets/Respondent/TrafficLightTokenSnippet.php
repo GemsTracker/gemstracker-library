@@ -333,7 +333,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             'gr2t_reception_code',  // For deleted tracks
             'gr2t_comment',         // For deleted tracks
             'gto_result',
-            'ggp_respondent_members' // For edit vs take (respondent / staff)
+            'ggp_member_type' // For edit vs take (respondent / staff)
         );
         foreach ($items as $item)
         {
@@ -376,7 +376,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             case 'O': // Open
             case 'P': // Partial
                 $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', '', $this->_takeSurvey);
-                if ($tokenData['ggp_respondent_members'] == 1) {
+                if ($tokenData['ggp_member_type'] == 'respondent') {
                     $tokenLink = $this->createMenuLink($tokenData, 'track', 'show', '', $this->_tokenShow);
                 }
                 if (is_null($tokenData['gto_valid_until'])) {

@@ -15,6 +15,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -55,7 +56,9 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
     public function __construct(SnippetOptions $snippetOptions,
                                 protected RequestInfo $requestInfo,
                                 protected MenuSnippetHelper $menuHelper,
-                                TranslatorInterface $translate)
+                                TranslatorInterface $translate,
+                                protected MessengerInterface $messenger,
+    )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
     }

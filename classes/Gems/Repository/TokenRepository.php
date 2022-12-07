@@ -304,7 +304,7 @@ class TokenRepository
                 $bridge->getLate('gto_id_organization'),
                 $bridge->getLate('gto_id_token'),
                 $bridge->getLate('token_status'),
-                true,
+                'staff',
                 $keepCaps
             );
         }
@@ -314,7 +314,7 @@ class TokenRepository
             $bridge->getLate('gto_id_organization'),
             $bridge->getLate('gto_id_token'),
             $bridge->getLate('token_status'),
-            $bridge->getLate('ggp_staff_members'),
+            $bridge->getLate('ggp_member_type'),
             $keepCaps
         );
     }
@@ -340,7 +340,7 @@ class TokenRepository
         return [
             $method,
             'class' => Late::method($this, 'getTokenCopyLinkClass',
-                $bridge->getLate('token_status'), $bridge->getLate('ggp_staff_members')
+                $bridge->getLate('token_status'), $bridge->getLate('ggp_member_type')
             ),
         ];
     }
