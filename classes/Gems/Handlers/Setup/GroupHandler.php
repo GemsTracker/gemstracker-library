@@ -12,17 +12,11 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
-use Gems\Legacy\CurrentUserRepository;
-use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Repository\AccessRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
-use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Message\MessageStatus;
-use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -92,9 +86,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly UserLoader $userLoader,
         private readonly AclRepository $aclRepository,
         private readonly AccessRepository $accessRepository,
-        private readonly CurrentUserRepository $currentUserRepository,
         private readonly Translated $translatedUtil,
-        private readonly UrlHelper $urlHelper,
     ) {
         parent::__construct($responder, $translate);
     }
