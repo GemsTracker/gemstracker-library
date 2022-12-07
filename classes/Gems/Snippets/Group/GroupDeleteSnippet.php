@@ -52,7 +52,6 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         MessengerInterface $messenger,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
-        private readonly UrlHelper $urlHelper,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
     }

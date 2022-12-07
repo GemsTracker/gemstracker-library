@@ -173,6 +173,16 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'size' => 15,
             'validator' => $model->createUniqueValidator('ggp_code'),
         ]);
+        if ($action === 'edit') {
+            if ($this->requestInfo->isPost()) {
+                $model->remove('ggp_code');
+            } else {
+                $model->set('ggp_code', [
+                    'readonly' => 'readonly',
+                    'disabled' => 'disabled',
+                ]);
+            }
+        }
         $model->set('ggp_description', [
             'label' => $this->_('Description'),
             'size' => 40,

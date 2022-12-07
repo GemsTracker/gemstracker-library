@@ -14,7 +14,6 @@ namespace Gems\Snippets\Group;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
-use Gems\MenuNew\RouteHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
