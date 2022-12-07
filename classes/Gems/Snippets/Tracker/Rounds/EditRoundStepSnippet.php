@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TrackDataRepository;
@@ -41,9 +42,10 @@ class EditRoundStepSnippet extends EditRoundSnippetAbstract
         MenuSnippetHelper $menuHelper,
         Tracker $tracker,
         TrackDataRepository $trackDataRepository,
+        CurrentUserRepository $currentUserRepository,
         protected Locale $locale,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $tracker, $trackDataRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $tracker, $trackDataRepository, $currentUserRepository);
     }
 
     /**

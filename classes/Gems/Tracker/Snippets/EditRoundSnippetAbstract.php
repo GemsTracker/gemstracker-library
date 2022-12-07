@@ -12,6 +12,7 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
@@ -38,10 +39,7 @@ class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
 {
     protected bool $onlyUsedElements = true;
 
-    /**
-     * @var User
-     */
-    protected $currentUser;
+    protected int $currentUserId;
 
     /**
      *
@@ -70,9 +68,11 @@ class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         protected Tracker $tracker,
-        protected TrackDataRepository $trackDataRepository
+        protected TrackDataRepository $trackDataRepository,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
     }
 
     protected function beforeSave()
@@ -218,7 +218,7 @@ class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
             $this->formData = $model->save($this->formData);
         }
 
-        $this->trackEngine->updateRoundCount($this->currentUser->getUserId());
+        $this->trackEngine->updateRoundCount($this->currentUserId);
         
         return $output;
     }

@@ -64,7 +64,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
     /**
      * @var string Format to use for whole date tokens
      */
-    public static $dateOnlyFormat = 'dd-MM-yyyy';
+    public static $dateOnlyFormat = 'd-m-Y';
 
     /**
      * @var string \Gems\Util\Translated Format function to use for whole date tokens after date
@@ -79,7 +79,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
     /**
      * @var string Format to use for date/time tokens
      */
-    public static $dateTimeFormat = 'dd-MM-yyyy HH:mm';
+    public static $dateTimeFormat = 'd-m-Y H:i';
 
     /**
      * @var string \Gems\Util\Translated Format function to use for date/time tokens after date
