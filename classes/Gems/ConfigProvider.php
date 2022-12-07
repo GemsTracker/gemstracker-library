@@ -8,7 +8,9 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
+use Gems\Auth\Acl\DbGroupAdapter;
 use Gems\Auth\Acl\DbRoleAdapter;
+use Gems\Auth\Acl\GroupAdapterInterface;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
@@ -18,6 +20,7 @@ use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
+use Gems\Config\Group;
 use Gems\Config\Messenger;
 use Gems\Config\Role;
 use Gems\Config\Route;
@@ -103,6 +106,7 @@ class ConfigProvider
         $routeSettings = new Route();
         $surveySettings = new Survey();
         $roleSettings = new Role();
+        $groupSettings = new Group();
 
         return [
             'temp_config' => [ // TODO: Temporary
@@ -117,6 +121,7 @@ class ConfigProvider
             'dependencies'  => $this->getDependencies(),
             'email'         => $this->getEmailSettings(),
             'events'        => $this->getEventSubscribers(),
+            'groups'        => $groupSettings(),
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'messenger'     => $messengerSettings(),
@@ -292,6 +297,7 @@ class ConfigProvider
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
 
                 RoleAdapterInterface::class => DbRoleAdapter::class,
+                GroupAdapterInterface::class => DbGroupAdapter::class,
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
