@@ -16,6 +16,7 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Model\AppointmentModel;
 use Gems\Tracker\Respondent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -72,6 +73,20 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     public $menuActionController = 'appointment';
 
     /**
+     * Menu routes or routeparts to show in Edit box.
+     *
+     * @var array (int/label => route or routepart)
+     */
+    protected  array $menuEditRoutes = ['respondent.appointments.edit'];
+
+    /**
+     * Menu routes or routeparts to show in Show box.
+     *
+     * @var array (int/label => route or routepart)
+     */
+    protected array $menuShowRoutes = ['respondent.appointments.show'];
+
+    /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
@@ -112,18 +127,18 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
 
-        $keys = [Model::APPOINTMENT_ID => 'gap_id_appointment'];
+        $keys = $this->getRouteMaps($model->getMetaModel());
         
         $episode = $this->currentUser->hasPrivilege('pr.episodes');
 
-        $br      = \Zalt\Html\Html::create('br');
+        $br      = Html::create('br');
 
         $table   = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
         $bridge->tr()->appendAttrib('class', $bridge->row_class);
         
         if ($this->showMenu) {
-            foreach ($this->getShowUrls($bridge, $keys) as $linkParts) {
+            foreach ($this->getShowUrls($bridge, $keys, $bridge) as $linkParts) {
                 if (! isset($linkParts['label'])) {
                     $linkParts['label'] = $this->_('Show');
                 }
@@ -164,7 +179,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             );
         }
         if ($this->showMenu) {
-            foreach ($this->getEditUrls($bridge, $keys) as $linkParts) {
+            foreach ($this->getEditUrls($bridge, $keys, $bridge) as $linkParts) {
                 if (! isset($linkParts['label'])) {
                     $linkParts['label'] = $this->_('Show');
                 }
@@ -180,7 +195,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->model instanceof Model\AppointmentModel) {
+        if ($this->model instanceof AppointmentModel) {
             $model = $this->model;
         } else {
             $model = $this->modelLoader->createAppointmentModel($this->agenda);
@@ -214,7 +229,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     public function formatDate($value)
     {
-        return \Zalt\Html\Html::create(
+        return Html::create(
             'span',
             // array('class' => 'date'),
             \MUtil\Model::reformatDate($value, 'Y-m-d', 'j M Y')
@@ -228,7 +243,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     public function formatTime($value)
     {
-        return \Zalt\Html\Html::create(
+        return Html::create(
             'span',
             ' ',
             // array('class' => 'time'),
@@ -249,5 +264,13 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         }
 
         return $filter;
+    }
+
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        $output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
+        $output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        return $output;
     }
 }

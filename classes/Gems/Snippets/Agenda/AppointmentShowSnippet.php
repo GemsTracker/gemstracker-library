@@ -13,6 +13,7 @@ namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\Agenda;
 use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -41,7 +42,8 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         protected Agenda $agenda,
-        protected Model $modelLoader
+        protected MenuSnippetHelper $menuHelper,
+        protected Model $modelLoader,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
@@ -73,8 +75,10 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
             $this->model = $this->modelLoader->createAppointmentModel($this->agenda);
             $this->model->applyDetailSettings();
         }
-        $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
-        $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
+        $metaModel = $this->model->getMetaModel();
+        $metaModel->set('gap_id_episode', 'formatFunction', [$this, 'displayEpisode']);
+        $metaModel->set('gap_admission_time', 'formatFunction', [$this, 'displayDate']);
+        $metaModel->set('gap_discharge_time', 'formatFunction', [$this, 'displayDate']);
 
         return $this->model;
     }
@@ -94,5 +98,32 @@ class AppointmentShowSnippet extends \Gems\Snippets\ModelDetailTableSnippetAbstr
         $td->append(' ');
         $td->img()->src = 'stopwatch.png';
         return $div;
+    }
+
+    /**
+     * Display the episode
+     * @param int $episodeId
+     * @return string
+     */
+    public function displayEpisode($episodeId)
+    {
+        if (! $episodeId) {
+            return null;
+        }
+        $episode = $this->agenda->getEpisodeOfCare($episodeId);
+
+        if (! $episode->exists) {
+            return $episodeId;
+        }
+
+        $keys = $this->requestInfo->getRequestMatchedParams();
+        $keys[Model::EPISODE_ID] = $episodeId;
+        $href = $this->menuHelper->getRouteUrl('respondent.episodes-of-care.show', $keys);
+
+        if (! $href) {
+            return $episode->getDisplayString();
+        }
+
+        return Html::create('a', $href, $episode->getDisplayString());
     }
 }

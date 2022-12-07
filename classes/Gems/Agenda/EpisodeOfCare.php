@@ -156,7 +156,7 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      */
     public function getDisplayString()
     {
-        $results[] = $this->getStartDate()->toString($this->agenda->episodeDisplayFormat);
+        $results[] = $this->getStartDate()->format($this->agenda->episodeDisplayFormat);
         $results[] = $this->getSubject();
         $results[] = $this->getDiagnosis();
 

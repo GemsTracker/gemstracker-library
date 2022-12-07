@@ -21,6 +21,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Html\TableElement;
 use Zalt\Late\LateCall;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -77,11 +78,12 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         $bridge->gr2o_id_organization;
         
-        $respKeys = ['id1' => 'gr2o_patient_nr', 'id2' => 'gr2o_id_organization',];
-        $appointmentHref = $this->menuHelper->getLateRouteUrl('respondent.appointments.show', [Model::APPOINTMENT_ID => 'gap_id_appointment'] + $respKeys);
+        $keys = $this->getRouteMaps($model->getMetaModel());
+        
+        $appointmentHref = $this->menuHelper->getLateRouteUrl('respondent.appointments.show', $keys, $bridge);
         $appointmentButton = isset($appointmentHref['url']) ? Html::actionLink($appointmentHref['url'], $this->_('Show appointment')) : null;
         
-        $respondentHref = $this->menuHelper->getLateRouteUrl('respondent.show', $respKeys);
+        $respondentHref = $this->menuHelper->getLateRouteUrl('respondent.show', $keys, $bridge);
         $respondentButton = isset($respondentHref['url']) ? Html::actionLink($respondentHref['url'], $this->_('Show respondent')) : null;
 
         $br = Html::create('br');
@@ -159,5 +161,13 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         
         // \MUtil\Model::$verbose = true;
         return $this->model;
+    }
+    
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        $output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
+        $output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        return $output;
     }
 }

@@ -674,13 +674,13 @@ class Route
                     'merge',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.staff',
-                controllerClass: \Gems\Actions\AgendaStaffAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.staff',
+                controllerClass:                   \Gems\Handlers\Setup\AgendaStaffHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'merge',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'merge',
                 ],
