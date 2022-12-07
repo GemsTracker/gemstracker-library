@@ -14,6 +14,7 @@ namespace Gems\Snippets\Group;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\MenuNew\RouteHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -112,9 +113,9 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 if ($this->createData) {
                     $this->formData['ggp_role'] = reset($roles);
                 } else {
-                    $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-                    $this->afterSaveRouteUrl = array($this->request->getActionKey() => 'show');
-                    $this->resetRoute        = false;
+                    $this->messenger->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
+                    $this->redirectRoute = $this->menuHelper->getRelatedRouteUrl('show');
+
                     return $this->formData;
                 }
             }

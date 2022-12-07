@@ -89,9 +89,7 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         // Perform access check here, before anything has happened!!!
         if (isset($data['ggp_role']) && (! isset($roles[$data['ggp_role']]))) {
             $this->messenger->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-            $this->afterActionRouteUrl = $this->urlHelper->generate('setup.access.groups.show', [
-                \MUtil\Model::REQUEST_ID => $data['ggp_id_group'],
-            ]);
+            $this->afterActionRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
 
             return false;
         }
