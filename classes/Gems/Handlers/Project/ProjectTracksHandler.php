@@ -168,16 +168,4 @@ class ProjectTracksHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
     {
         return $this->getModel()->loadFirst(['gtr_id_track' => $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID)]);
     }
-
-    /**
-     * Show the questions in a survey
-     */
-    public function questionsAction()
-    {
-        $this->addSnippet('Survey\\SurveyQuestionsSnippet',
-                'menu', $this->menu,
-                'surveyId', $this->_getParam(\Gems\Model::SURVEY_ID),
-                'trackId', $this->_getIdParam()
-                );
-    }
 }

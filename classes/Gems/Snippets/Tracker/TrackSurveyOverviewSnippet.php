@@ -11,11 +11,13 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Late\Late;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -86,13 +88,13 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
         $table = $html->div(array('class' => 'table-container'))->table($trackRepeater, array('class' => 'browser table'));
         $table->setOnEmpty($this->_('No surveys in track'));
 
-        /*if ($link = $this->findMenuItem('project-tracks', 'questions')) {
-            $table->tr()->onclick = array('location.href=\'', $link->toHRefAttribute($trackRepeater), '\';');
-            $table->addColumn($link->toActionLinkLower($trackRepeater));
-        }*/
+        $link = $this->menuHelper->getLateRouteUrl('project.surveys.show', [\MUtil\Model::REQUEST_ID => $trackRepeater->gsu_id_survey]);
+        if ($link) {
+            $table->addColumn(Html::actionLink($link['url'], $this->_('preview')));
+        }
 
         $surveyName[] = $trackRepeater->gsu_survey_name;
-        $surveyName[] = \MUtil\Lazy::iif($trackRepeater->gro_icon_file, \MUtil\Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
+        $surveyName[] = Late::iif($trackRepeater->gro_icon_file, Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
 
         $table->addColumn($surveyName,                           $this->_('Survey'));
         $table->addColumn($trackRepeater->gro_round_description, $this->_('Details'));
@@ -130,7 +132,6 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
      *
      * @return boolean
      */
@@ -164,6 +165,6 @@ class TrackSurveyOverviewSnippet extends \Zalt\Snippets\TranslatableSnippetAbstr
             }
         }
 
-        return \MUtil\Html::raw(trim($line));
+        return Html::raw(trim($line));
     }
 }

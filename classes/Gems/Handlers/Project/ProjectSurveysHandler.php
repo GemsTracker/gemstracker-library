@@ -12,9 +12,10 @@ namespace Gems\Handlers\Project;
 
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
-use Gems\Snippets\ModelItemTableSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\Survey\SurveyQuestionsSnippet;
 use Gems\Util\Translated;
 use MUtil\Model\ModelAbstract;
@@ -42,6 +43,7 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $autofilterParameters = [
+        'columns' => 'getBrowseColumns',
         'extraFilter' => [
              'gsu_surveyor_active' => 1,
              'gsu_active'          => 1,
@@ -50,11 +52,6 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
             'gsu_survey_name' => SORT_ASC,
         ],
     ];
-
-    /**
-     * @var array
-     */
-    public array $config;
 
     /**
      *
@@ -81,7 +78,7 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      */
     protected array $showSnippets = [
         ContentTitleSnippet::class,
-        ModelItemTableSnippet::class,
+        ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
         SurveyQuestionsSnippet::class,
     ];
@@ -90,7 +87,7 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected Translated $translatedUtil,
+        protected Model $modelLoader,
     )
     {
         parent::__construct($responder, $translate);
@@ -111,46 +108,21 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      */
     protected function createModel($detailed, $action): ModelAbstract
     {
-        $yesNo = $this->translatedUtil->getYesNo();
-
-        $model = new \Gems\Model\JoinModel('surveys', 'gems__surveys');
-        $model->addTable('gems__groups',  ['gsu_id_primary_group' => 'ggp_id_group']);
-
-        $model->addColumn(
-                "(SELECT COUNT(DISTINCT gro_id_track)
-                    FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track
-                    WHERE gro_id_survey = gsu_id_survey)",
-                'track_count'
-                );
-
-        $model->resetOrder();
-
-        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-
+        $model = $this->modelLoader->getSurveyMaintenanceModel();
         if ($detailed) {
-            $model->set('gsu_survey_description', 'label', $this->_('Description'),
-                    'formatFunction', [__CLASS__, 'formatDescription']
-                    );
-            $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->config['app']['name']),
-                    'elementClass', 'Checkbox',
-                    'multiOptions', $yesNo
-                    );
+            $model->applyDetailSettings($this->_getIdParam());
+            
+            $model->setCol(
+                ['gsu_surveyor_id', 'gsu_surveyor_active', 'gsu_survey_pdf', 'gsu_beforeanswering_event', 
+                    'gsu_completed_event', 'gsu_display_event', 'gsu_id_source', 'gsu_active', 'gsu_status', 
+                    'gsu_survey_warnings', 'gsu_allow_export', 'gsu_code', 'gsu_export_code'], 
+                ['label' => null]);
+        } else {
+            $model->applyBrowseSettings();
+            $model->set('track_count', 'label', $this->_('Usage'));
+            $model->addColumn('COALESCE(gsu_external_description, gsu_survey_name)', 'used_external_description', 'gsu_external_description');
         }
-
-        $model->set('ggp_name',        'label', $this->_('By'));
-        $model->set('track_count',     'label', $this->_('Usage'),
-                'description', $this->_('How many track definitions use this survey?'));
-        $model->set('gsu_insertable',  'label', $this->_('Insertable'),
-                'description', $this->_('Can this survey be manually inserted into a track?'),
-                'multiOptions', $yesNo
-                );
-
-        if ($detailed) {
-            $model->set('gsu_duration',         'label', $this->_('Duration description'),
-                    'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".')
-                    );
-        }
-
+        
         return $model;
     }
 
@@ -163,6 +135,16 @@ class ProjectSurveysHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
     public static function formatDescription($value)
     {
         return Html::raw(strip_tags($value));
+    }
+
+    public function getBrowseColumns() : bool|array
+    {
+        $br = Html::br();
+        return [
+            10 => ['gsu_survey_name', $br, 'used_external_description', $br, 'gsu_survey_description'],
+            20 => ['gsu_id_primary_group', $br, 'gsu_survey_languages'],
+            30 => ['track_count', 'gsu_insertable']
+        ];
     }
 
     /**

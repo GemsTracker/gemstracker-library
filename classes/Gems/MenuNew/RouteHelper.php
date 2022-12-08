@@ -7,6 +7,7 @@ use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
+use Zalt\Late\LateInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 
 class RouteHelper
@@ -77,7 +78,11 @@ class RouteHelper
         if ($bridge) {
             $params = [];
             foreach ($routeParams as $paramName => $lateName) {
-                $params[$paramName] = $bridge->getLate($lateName);
+                if ($lateName instanceof LateInterface) {
+                    $params[$paramName] = $lateName;
+                } else {
+                    $params[$paramName] = $bridge->getLate($lateName);
+                }
             }
             // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
         } else {
