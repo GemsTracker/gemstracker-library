@@ -7,6 +7,7 @@ use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
+use Zalt\Late\LateInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 
 class RouteHelper
@@ -17,7 +18,7 @@ class RouteHelper
         private readonly Acl $acl,
         private readonly UrlHelper $urlHelper,
         private readonly ?string $userRole,
-        array $config,
+        private readonly array $config,
     ) {
         $this->routes = [];
         foreach ($config['routes'] as $route) {
@@ -77,7 +78,11 @@ class RouteHelper
         if ($bridge) {
             $params = [];
             foreach ($routeParams as $paramName => $lateName) {
-                $params[$paramName] = $bridge->getLate($lateName);
+                if ($lateName instanceof LateInterface) {
+                    $params[$paramName] = $lateName;
+                } else {
+                    $params[$paramName] = $bridge->getLate($lateName);
+                }
             }
             // file_put_contents('data/logs/echo.txt', __FUNCTION__ . '(' . __LINE__ . '): ' . "$name -> " . print_r($routeParams, true) . "\n", FILE_APPEND);
         } else {
@@ -108,6 +113,30 @@ class RouteHelper
             return $output;
         }
         return null;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllRoutePrivileges(): array
+    {
+        return self::getAllRoutePrivilegesFromConfig($this->routes);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getAllRoutePrivilegesFromConfig(array $configRoutes): array
+    {
+        $privileges = [];
+
+        foreach ($configRoutes as $route) {
+            if (isset($route['options']['privilege'])) {
+                $privileges[$route['options']['privilege']] = true;
+            }
+        }
+
+        return array_keys($privileges);
     }
 
     public function getRoute(string $name): ?array
@@ -189,16 +218,16 @@ class RouteHelper
 
         $route = $this->routes[$name];
 
-        return empty($route['options']['permission']) || $this->hasPermission($route['options']['permission']);
+        return empty($route['options']['privilege']) || $this->hasPrivilege($route['options']['privilege']);
     }
 
     protected function hasMatchingParameters($requiredParams, $availableParamKeys): bool
     {
         return ! array_diff($requiredParams, $availableParamKeys);
-    }    
-    
-    public function hasPermission(string $resource): bool
+    }
+
+    public function hasPrivilege(string $resource): bool
     {
-        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource);
+        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->config['temp_config']['disable_privileges'];
     }
 }

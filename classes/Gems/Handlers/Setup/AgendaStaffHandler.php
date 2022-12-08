@@ -9,9 +9,18 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
+use Gems\Snippets\Agenda\AutosearchFormSnippet;
+use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Util;
 use Gems\Util\Translated;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,14 +31,14 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
+class AgendaStaffHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
         'extraSort'   => ['gas_name' => SORT_ASC],
         'searchFields' => 'getSearchFields',
@@ -40,24 +49,29 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array
      */
-    public $cacheTags = ['staff'];
+    public array $cacheTags = ['staff'];
     
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        AutosearchFormSnippet::class,
+        ];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'caption'         => 'getShowCaption',
-        'onEmpty'         => 'getShowOnEmpty',
+        'onEmptyAlt'      => 'getShowOnEmpty',
+        'sortParamAsc'    => 'asrt',
+        'sortParamDesc'   => 'dsrt',
     ];
 
     /**
@@ -65,22 +79,21 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
-        'Agenda\\CalendarTableSnippet',
-    ];
+    protected array $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CurrentButtonRowSnippet::class,
+        CalendarTableSnippet::class,
+        ];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    public $util;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Translated $translatedUtil,
+        protected Util $util,
+    ) {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Cleanup appointments
@@ -112,7 +125,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel($detailed, $action): ModelAbstract
     {
         $dblookup   = $this->util->getDbLookup();
         $model      = new \MUtil\Model\TableModel('gems__agenda_staff');
@@ -161,7 +174,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Agenda healthcare provider');
     }
@@ -217,7 +230,7 @@ class AgendaStaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('healthcare staff', 'healthcare staff', $count);
     }

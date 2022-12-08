@@ -640,6 +640,74 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
+                            'name' => 'setup.access.roles.index',
+                            'label' => $this->translator->trans('Roles'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.roles.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.roles.overview',
+                                    'label' => $this->translator->trans('Overview'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.roles.privilege',
+                                    'label' => $this->translator->trans('Privilege'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.roles.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.roles.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.roles.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.access.groups.index',
+                            'label' => $this->translator->trans('Groups'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.groups.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.groups.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.groups.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.groups.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'setup.access.organizations.index',
                             'label' => $this->translator->trans('Organizations'),
                             'type' => 'route-link-item',

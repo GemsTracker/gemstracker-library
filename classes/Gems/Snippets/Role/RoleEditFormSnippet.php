@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets\Role;
 
+use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\RoleAdapterInterface;
+use Gems\MenuNew\MenuSnippetHelper;
+use Laminas\Permissions\Acl\Acl;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -25,11 +33,7 @@ use Zalt\Model\Data\FullDataInterface;
  */
 class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
-    /**
-     *
-     * @var \MUtil\Acl
-     */
-    protected $acl;
+    protected Acl $acl;
 
     /**
      * As it is better for translation utilities to set the labels etc. translated,
@@ -59,6 +63,19 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * @var \Zend_View
      */
     protected $view;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        private readonly AclRepository $aclRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+
+        $this->acl = $this->aclRepository->getAcl();
+    }
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -130,7 +147,6 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 );
 
         $allPrivileges       = $this->usedPrivileges;
-        $rolePrivileges      = $this->acl->getRolePrivileges();
 
         if (isset($this->formData['grl_parents']) && $this->formData['grl_parents']) {
             $inherited           = $this->getInheritedPrivileges($this->formData['grl_parents']);
@@ -168,9 +184,9 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
         if (isset($this->formData['grl_parents']) && is_array($this->formData['grl_parents'])) {
             $this->formData['grl_parents'] = implode(
-                    ',',
-                    \Gems\Roles::getInstance()->translateToRoleIds($this->formData['grl_parents'])
-                    );
+                ',',
+                $this->aclRepository->convertNamesToKeys($this->formData['grl_parents'])
+            );
         }
 
         //Always add nologin privilege to 'nologin' role
@@ -208,13 +224,11 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
             return array();
         }
 
-        $rolePrivileges = $this->acl->getRolePrivileges();
+        $rolePrivileges = $this->aclRepository->getResolvedRoles();
         $inherited      = array();
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
-                $inherited = $inherited + array_flip($rolePrivileges[$parent][\Zend_Acl::TYPE_ALLOW]);
-                $inherited = $inherited +
-                        array_flip($rolePrivileges[$parent][\MUtil\Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]);
+                $inherited = $inherited + array_flip($rolePrivileges[$parent][RoleAdapterInterface::ROLE_RESOLVED_PRIVILEGES]);
             }
         }
         // Sneaks in:
@@ -234,8 +248,8 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         parent::loadFormData();
         // \MUtil\EchoOut\EchoOut::track($this->formData);
 
-        if ($this->request->isPost()) {
-            if (! $this->request->getParam('grl_parents')) {
+        if ($this->requestInfo->isPost()) {
+            if (! $this->requestInfo->getParam('grl_parents')) {
                 $this->formData['grl_parents'] = [];
             }
         }

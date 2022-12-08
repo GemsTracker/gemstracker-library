@@ -80,4 +80,32 @@ class Menu extends MenuNode
         }
         return $this->renderNode();
     }
+
+    /**
+     * @return string[][]
+     */
+    public function getRouteLabelsByPrivilege(): array
+    {
+        return $this->gatherRouteLabelsByPrivilege(null, $this->children);
+    }
+
+    /**
+     * @param string|null $prefix
+     * @param MenuNode[] $children
+     * @return string[][]
+     */
+    private function gatherRouteLabelsByPrivilege(?string $prefix, array $children): array
+    {
+        return array_reduce($children, function (array $carry, MenuItem $child) use ($prefix) {
+            $route = $this->routeHelper->getRoute($child->name);
+
+            $newPrefix = ($prefix ? $prefix . ' -> ' : '') . $child->getLabel();
+
+            if (isset($route['options']['privilege'])) {
+                $carry[$route['options']['privilege']][] = $newPrefix;
+            }
+
+            return array_merge($carry, $this->gatherRouteLabelsByPrivilege($newPrefix, $child->children));
+        }, []);
+    }
 }

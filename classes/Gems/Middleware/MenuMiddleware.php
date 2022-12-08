@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Middleware;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\MenuNew\Menu;
 use Gems\MenuNew\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
@@ -32,7 +33,11 @@ class MenuMiddleware implements MiddlewareInterface
         /** @var \Mezzio\Router\RouteResult $routeResult */
         $routeResult = $request->getAttribute('Mezzio\Router\RouteResult');
 
-        $userRole = $request->getAttribute('userRole');
+        $userRole = null;
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($user) {
+            $userRole = $user->getRole();
+        }
 
         $routeHelper = new RouteHelper($this->acl, $this->urlHelper, $userRole, $this->config);
 

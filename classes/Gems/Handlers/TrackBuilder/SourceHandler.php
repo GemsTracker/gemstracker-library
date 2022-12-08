@@ -16,6 +16,7 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
 use Gems\Util\Translated;
@@ -65,6 +66,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ResultFetcher $resultFetcher,
+        protected RouteHelper $routeHelper,
         protected Translated $translatedUtil,
         protected AccesslogRepository $accesslog,
         protected ValueEncryptor $valueEncryptor,

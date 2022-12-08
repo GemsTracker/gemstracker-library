@@ -11,7 +11,13 @@
 
 namespace Gems\Snippets\Group;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -21,7 +27,7 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 17:41:20
  */
-class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippet
+class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 {
     /**
      *
@@ -34,6 +40,17 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippet
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        private readonly CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
 
     /**
      * Creates the model
@@ -95,7 +112,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippet
 
             $model     = $this->getModel();
             $roles     = $model->get('ggp_role', 'multiOptions');
-            $userRoles = $this->currentUser->getAllowedRoles();
+            $userRoles = $this->currentUserRepository->getCurrentUser()->getAllowedRoles();
 
             // \MUtil\EchoOut\EchoOut::track($userRoles, $roles);
             // Make sure we get the roles as they are labeled
@@ -117,7 +134,8 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippet
             }
             $model->set('ggp_role', 'multiOptions', $roles);
 
-            $this->menu->getParameterSource()->offsetSet('ggp_role', $this->formData['ggp_role']);
+            // TODO: Reenable?
+            // $this->menu->getParameterSource()->offsetSet('ggp_role', $this->formData['ggp_role']);
         }
         
         return $this->formData;

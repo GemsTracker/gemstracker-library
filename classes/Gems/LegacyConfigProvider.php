@@ -23,6 +23,7 @@ use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker\TrackEvents;
+use Gems\User\Mask\MaskStore;
 use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
@@ -98,6 +99,7 @@ class LegacyConfigProvider
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyTranslatedUtil' => \Gems\Util\Translated::class,
                 'LegacyUrlHelper' => UrlHelper::class,
+                'LegacyMaskStore' => MaskStore::class,
                 'LegacyUtil' => \Gems\Util::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,

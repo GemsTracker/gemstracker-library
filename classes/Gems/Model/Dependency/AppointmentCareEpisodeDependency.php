@@ -11,6 +11,7 @@
 
 namespace Gems\Model\Dependency;
 
+use Gems\Agenda\Agenda;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\DependencyAbstract;
 
@@ -53,22 +54,10 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
      */
     protected $_effecteds = array('gap_id_episode');
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $util;
+    public function __construct(protected Agenda $agenda, protected Translated $translatedUtil)
+    {
+        parent::__construct();
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -92,7 +81,6 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
      */
     public function getChanges(array $context, bool $new = false): array
     {
-        $agenda  = $this->loader->getAgenda();
         $options = $this->translatedUtil->getEmptyDropdownArray();
 
         if (isset($context['gap_id_user'], $context['gap_id_organization'])) {
@@ -108,8 +96,8 @@ class AppointmentCareEpisodeDependency extends DependencyAbstract
                 $where = null;
             }
 
-            $options = $options + $agenda->getEpisodesAsOptions(
-                    $agenda->getEpisodesForRespId($context['gap_id_user'], $context['gap_id_organization'], $where)
+            $options = $options + $this->agenda->getEpisodesAsOptions(
+                    $this->agenda->getEpisodesForRespId($context['gap_id_user'], $context['gap_id_organization'], $where)
                     );
         }
         return ['gap_id_episode' => ['multiOptions' => $options]];

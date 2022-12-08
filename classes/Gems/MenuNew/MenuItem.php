@@ -11,13 +11,15 @@ abstract class MenuItem extends MenuNode
 
     abstract protected function register();
 
-    abstract protected function hasPermission(): bool;
+    abstract protected function hasAccess(): bool;
 
     protected function attachParent(MenuNode $parent): void
     {
         $this->parent = $parent;
         $this->menu = $parent->getMenu();
     }
+
+    abstract public function getLabel(): string;
 
     protected function getMenu(): Menu
     {
@@ -64,7 +66,7 @@ abstract class MenuItem extends MenuNode
 
     public function open(array $params): bool
     {
-        return $this->open = $this->hasPermission();
+        return $this->open = $this->hasAccess();
     }
 
     public function renderNode(): string
