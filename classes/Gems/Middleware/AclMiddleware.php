@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Middleware;
 
+use Gems\AuthNew\AuthenticationMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Template\TemplateRendererInterface;
@@ -16,7 +17,8 @@ class AclMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly Acl $acl,
-        private readonly TemplateRendererInterface $template
+        private readonly TemplateRendererInterface $template,
+        private readonly array $config,
     ) {
     }
 
@@ -27,13 +29,17 @@ class AclMiddleware implements MiddlewareInterface
         $route = $routeResult->getMatchedRoute();
         $options = $route->getOptions();
 
-        $userRole = $request->getAttribute('userRole');
+        $userRole = null;
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($user) {
+            $userRole = $user->getRole();
+        }
 
         if (
-            !empty($options['permission']) && (
+            !empty($options['privilege']) && (
                 $userRole === null
-                || !$this->acl->isAllowed($userRole, $options['permission'])
-            )
+                || !$this->acl->isAllowed($userRole, $options['privilege'])
+            ) && !$this->config['temp_config']['disable_privileges']
         ) {
             return new HtmlResponse($this->template->render('error::404'), 404);
         }

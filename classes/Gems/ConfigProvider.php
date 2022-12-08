@@ -8,6 +8,7 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
 use Gems\Auth\Acl\ConfigRoleAdapter;
+use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
@@ -18,6 +19,7 @@ use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
 use Gems\Config\Messenger;
+use Gems\Config\Role;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Factory\DoctrineDbalFactory;
@@ -100,8 +102,12 @@ class ConfigProvider
         $messengerSettings = new Messenger();
         $routeSettings = new Route();
         $surveySettings = new Survey();
+        $roleSettings = new Role();
 
         return [
+            'temp_config' => [ // TODO: Temporary
+                'disable_privileges' => true,
+            ],
             'app'           => $appSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
@@ -118,8 +124,8 @@ class ConfigProvider
             'survey'        => $surveySettings(),
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
-            'permissions'   => $this->getPermissions(),
-            'roles'         => $this->getRoles(),
+            'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
+            'roles'         => $roleSettings(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
@@ -285,7 +291,7 @@ class ConfigProvider
                 SessionPersistenceInterface::class => PhpSessionPersistence::class,
                 CsrfGuardFactoryInterface::class => FlashCsrfGuardFactory::class,
 
-                RoleAdapterInterface::class => ConfigRoleAdapter::class,
+                RoleAdapterInterface::class => DbRoleAdapter::class,
 
                 // Translation
                 Translator::class => TranslatorInterface::class,
@@ -653,26 +659,30 @@ class ConfigProvider
     }
 
     /**
-     * Returns the permissions defined by this module
+     * Returns the supplementary privileges defined by this module
      *
      * @return mixed[]
      */
-    protected function getPermissions(): array
+    protected function getSupplementaryPrivileges(): array
     {
         return [
-        ];
-    }
-
-    /**
-     * Returns the roles defined by this project
-     *
-     * @return mixed[]
-     */
-    public function getRoles(): array
-    {
-        return [
-            'staff' => [],
-            'super' => [],
+            'pr.organization-switch' => new UntranslatedString('Grant access to all organization.'),
+            'pr.plan.mail-as-application' => new UntranslatedString('Grant right to impersonate the site when mailing.'),
+            'pr.respondent.multiorg' => new UntranslatedString('Display multiple organizations in respondent overview.'),
+            'pr.episodes.rawdata' => new UntranslatedString('Display raw data in Episodes of Care.'),
+            'pr.respondent.result' => new UntranslatedString('Display results in token overviews.'),
+            'pr.respondent.select-on-track' => new UntranslatedString('Grant checkboxes to select respondents on track status in respondent overview.'),
+            'pr.respondent.show-deleted' => new UntranslatedString('Grant checkbox to view deleted respondents in respondent overview.'),
+            'pr.respondent.who' => new UntranslatedString('Display staff member name in token overviews.'),
+            'pr.staff.edit.all' => new UntranslatedString('Grant right to edit staff members from all organizations.'),
+            'pr.export.add-resp-nr' => new UntranslatedString('Grant right to export respondent numbers with survey answers.'),
+            'pr.export.gender-age' => new UntranslatedString('Grant right to export gender and age information with survey answers.'),
+            'pr.staff.see.all' => new UntranslatedString('Display all organizations in staff overview.'),
+            'pr.group.switch' => new UntranslatedString('Grant right to switch groups.'),
+            'pr.token.mail.freetext' => new UntranslatedString('Grant right to send free text (i.e. non-template) email messages.'),
+            'pr.systemuser.seepwd' => new UntranslatedString('Grant right to see password of system users (without editing right).'),
+            'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
+            'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.')
         ];
     }
 }

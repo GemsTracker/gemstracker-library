@@ -18,6 +18,7 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
@@ -48,6 +49,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
                     MenuMiddleware::class,
                 ],
@@ -621,6 +623,31 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
+            ...$this->createSnippetRoutes(baseName: 'setup.access.roles',
+                controllerClass: \Gems\Handlers\Setup\RoleHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'create',
+                    'edit',
+                    'delete',
+                    'overview',
+                    'privilege',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.roles',
+                controllerClass: \Gems\Handlers\Setup\RoleHandler::class,
+                basePath: '/setup/access/roles/show',
+                pages: [
+                    'show',
+                ],
+                parameters: [
+                    'id' => '\d+|[a-z\d]+', // static config storage uses role names in urls. int check is present in RoleHandler
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.groups',
+                controllerClass: \Gems\Handlers\Setup\GroupHandler::class,
+            ),
             ...$this->createBrowseRoutes(baseName: 'setup.access.organizations',
                 controllerClass: \Gems\Actions\OrganizationAction::class,
             ),

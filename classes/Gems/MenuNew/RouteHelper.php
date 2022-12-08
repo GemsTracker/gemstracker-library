@@ -18,7 +18,7 @@ class RouteHelper
         private readonly Acl $acl,
         private readonly UrlHelper $urlHelper,
         private readonly ?string $userRole,
-        array $config,
+        private readonly array $config,
     ) {
         $this->routes = [];
         foreach ($config['routes'] as $route) {
@@ -115,6 +115,30 @@ class RouteHelper
         return null;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAllRoutePrivileges(): array
+    {
+        return self::getAllRoutePrivilegesFromConfig($this->routes);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getAllRoutePrivilegesFromConfig(array $configRoutes): array
+    {
+        $privileges = [];
+
+        foreach ($configRoutes as $route) {
+            if (isset($route['options']['privilege'])) {
+                $privileges[$route['options']['privilege']] = true;
+            }
+        }
+
+        return array_keys($privileges);
+    }
+
     public function getRoute(string $name): ?array
     {
         if (!$this->hasAccessToRoute($name)) {
@@ -194,16 +218,16 @@ class RouteHelper
 
         $route = $this->routes[$name];
 
-        return empty($route['options']['permission']) || $this->hasPermission($route['options']['permission']);
+        return empty($route['options']['privilege']) || $this->hasPrivilege($route['options']['privilege']);
     }
 
     protected function hasMatchingParameters($requiredParams, $availableParamKeys): bool
     {
         return ! array_diff($requiredParams, $availableParamKeys);
-    }    
-    
-    public function hasPermission(string $resource): bool
+    }
+
+    public function hasPrivilege(string $resource): bool
     {
-        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource);
+        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->config['temp_config']['disable_privileges'];
     }
 }

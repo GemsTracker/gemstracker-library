@@ -146,7 +146,6 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
     {
         parent::afterRegistry();
 
-        $this->maskStore = $this->loader->getUserMaskStore();
         $this->maskStore->setMaskSettings($this->_data['ggp_mask_settings']);
     }
 

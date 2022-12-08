@@ -12,6 +12,8 @@
 namespace Gems\User\Mask;
 
 use MUtil\Translate\TranslateableTrait;
+use MUtil\Translate\Translator;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  *
@@ -70,6 +72,15 @@ class MaskStore extends \Gems\Loader\TargetLoaderAbstract
      * @var string Name separator for creating unique field names
      */
     protected $keySeparator = '___';
+
+    public function __construct(ProjectOverloader $_overLoader, Translator $translate)
+    {
+        $this->translate = $translate;
+
+        parent::__construct($_overLoader);
+
+        $this->afterRegistry();
+    }
 
     /**
      * Set $this->_settings to array of [groupname => [label, description, class, maskFields]
