@@ -369,7 +369,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getReceptionCodeLibrary()
     {
-        return $this->_getClass('receptionCodeLibrary');
+        return $this->containerLoad('receptionCodeLibrary');
     }
 
     /**

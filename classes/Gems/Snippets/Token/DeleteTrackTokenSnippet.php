@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Repository\ReceptionCodeRepository;
@@ -93,9 +94,10 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
         protected ReceptionCodeLibrary $receptionCodeLibrary,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
     }
 
     /**

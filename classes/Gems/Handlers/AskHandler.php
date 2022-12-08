@@ -11,11 +11,17 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\SnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
 use Gems\MenuNew\RouteNotFoundException;
+use Gems\Tracker;
 use Gems\Tracker\Token;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -25,7 +31,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class AskAction extends \Gems\Controller\Action
+class AskHandler extends SnippetLegacyHandlerAbstract
 {
     /**
      * @var \Gems\User\Organization
@@ -57,12 +63,6 @@ class AskAction extends \Gems\Controller\Action
      * @var float
      */
     protected $labelWidthFactor = 0.8;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    public $locale;
 
     /**
      * The parameters used for the lost action.
@@ -140,15 +140,6 @@ class AskAction extends \Gems\Controller\Action
     protected $token;
 
     /**
-     * The tracker
-     *
-     * set by _initToken()
-     *
-     * @var \Gems\Tracker
-     */
-    public $tracker;
-
-    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -160,23 +151,15 @@ class AskAction extends \Gems\Controller\Action
      */
     public bool $useHtmlView = true;
 
-    /**
-     * Leave on top, so we won't miss this
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        /**
-         * If not in the index action, add the following to the head section
-         *      <meta name="robots" content="noindex">
-         */
-        $action = $this->requestHelper->getActionName();
-
-        if ($action !== 'index') {
-            // $view = \Zend_Controller_Front::getInstance()->getParam('bootstrap')->getResource('view');
-            // $this->view->getHelper('headMeta')->appendName('robots', 'noindex, nofollow');
-        }
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
+        protected Locale $locale,
+    ) {
+        parent::__construct($responder, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -191,7 +174,7 @@ class AskAction extends \Gems\Controller\Action
         }
 
         $tokenId = $this->request->getAttribute(Model::REQUEST_ID);
-        if (null === $tokenId && $this->requestHelper->isPost()) {
+        if (null === $tokenId && $this->requestInfo->isPost()) {
             $postData = $this->request->getParsedBody();
             if (isset($postData[Model::REQUEST_ID])) {
                 $tokenId = $postData[Model::REQUEST_ID];
@@ -279,7 +262,8 @@ class AskAction extends \Gems\Controller\Action
         $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->getName()));
         $this->html->h3($form->getDescription());
         $this->html[] = $form;
-        $this->html->pInfo($this->_('Tokens identify a survey that was assigned to you personally.') . ' ' . $this->_('Entering the token and pressing OK will open that survey.'));
+        $this->html->pInfo(
+            $this->_('Tokens identify a survey that was assigned to you personally.') . ' AskHandler.php' . $this->_('Entering the token and pressing OK will open that survey.'));
 
         if ($this->currentUser->isActive()) {
             if ($this->currentUser->isLogoutOnSurvey()) {

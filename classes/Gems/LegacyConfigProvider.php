@@ -27,6 +27,7 @@ use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Permissions\Acl\Acl;
+use Mezzio\Helper\UrlHelper;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -96,6 +97,7 @@ class LegacyConfigProvider
                 'LegacyTracker' => \Gems\Tracker::class,
                 'LegacyTranslate' => TranslatorInterface::class,
                 'LegacyTranslatedUtil' => \Gems\Util\Translated::class,
+                'LegacyUrlHelper' => UrlHelper::class,
                 'LegacyUtil' => \Gems\Util::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,

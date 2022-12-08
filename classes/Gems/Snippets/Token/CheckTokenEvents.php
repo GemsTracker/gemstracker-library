@@ -11,7 +11,18 @@
 
 namespace Gems\Snippets\Token;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\Tracker;
 use Gems\Tracker\Mock\TokenReadonly;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\TableElement;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Snippets\SnippetAbstract;
+use Zalt\Snippets\TranslatableSnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -20,37 +31,25 @@ use Gems\Tracker\Mock\TokenReadonly;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
+class CheckTokenEvents extends TranslatableSnippetAbstract
 {
-    /**
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * @var \Zend_Locale
-     */
-    protected $locale;
-    
-    /**
-     * @var \MUtil\Registry\Source
-     */
-    protected $source;
+    protected User $currentUser;
     
     /**
      * @var \Gems\Tracker\Token
      */
     protected $token;
-    
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->token instanceof \Gems\Tracker\Token;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected Locale $locale,
+        protected ProjectOverloader $projectOverloader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -63,8 +62,7 @@ class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
-        $checkToken = new TokenReadonly($this->token);
-        $this->source->applySource($checkToken);
+        $checkToken = $this->projectOverloader->create(TokenReadonly::class, $this->token);
 
         $checkSurvey = $checkToken->getSurvey();
 
@@ -91,7 +89,7 @@ class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
                 ->strong($beforeEvent->getEventName());
             
             $answers = $checkToken->getRawAnswers();
-            $checkToken->getUrl($this->locale, $this->currentUser->getUserId());
+            $checkToken->getUrl($this->locale->getLanguage(), $this->currentUser->getUserId());
             
             $currentAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
             $currentLog     = $checkToken->getMockChanges('log');
@@ -115,7 +113,7 @@ class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
             // \MUtil\EchoOut\EchoOut::track($checkToken->getMockChanges());
             
             $checkToken->unsetRawAnswers();
-            $checkToken->getUrl($this->locale, $this->currentUser->getUserId());
+            $checkToken->getUrl($this->locale->getLanguage(), $this->currentUser->getUserId());
             $emptyAnswers = $checkToken->getMockChanges('setRawAnswers', 'answers');
             $emptyLog     = $checkToken->getMockChanges('log');
             if (($emptyAnswers && ($emptyAnswers != $currentAnswers)) || ($emptyLog && ($emptyLog != $currentLog))) {
@@ -144,7 +142,7 @@ class CheckTokenEvents extends \MUtil\Snippets\SnippetAbstract
     
     protected function showArrayTable(array $data, $caption = false)
     {
-        $table = new \MUtil\Html\TableElement();
+        $table = new TableElement();
         $table->class = 'displayer table table-condensed table-bordered';
         
         if ($caption) {

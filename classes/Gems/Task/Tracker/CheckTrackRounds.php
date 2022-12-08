@@ -42,6 +42,6 @@ class CheckTrackRounds extends \MUtil\Task\TaskAbstract
         $respTrack = $tracker->getRespondentTrack($respTrackData);
         $engine    = $respTrack->getTrackEngine();
 
-        $engine->checkRoundsFor($respTrack, $userId, $batch);
+        $engine->checkRoundsFor($respTrack, null, $userId, $batch);
     }
 }

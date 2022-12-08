@@ -227,8 +227,8 @@ class Route
     public function getAskRoutes(): array
     {
         return [
-            ...$this->createBrowseRoutes(baseName: 'ask',
-                controllerClass: \Gems\Actions\AskAction::class,
+            ...$this->createSnippetRoutes(baseName: 'ask',
+                controllerClass: \Gems\Actions\AskHandler::class,
                 pages: [
                     'index',
                     'forward',
@@ -443,10 +443,20 @@ class Route
                 pages: [
                     'show-track',
                     'edit-track',
+                    'delete-track',
+                    'check-track-answers',
+                    'check-track',
+                    'recalc-fields',
+                    'export-track',
                 ],
                 parameterRoutes: [
                     'show-track',
                     'edit-track',
+                    'delete-track',
+                    'check-track-answers',
+                    'check-track',
+                    'recalc-fields',
+                    'export-track',
                 ],
                 parentParameters: [
                     'id1',

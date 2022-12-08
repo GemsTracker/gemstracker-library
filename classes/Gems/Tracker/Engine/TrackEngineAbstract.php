@@ -421,7 +421,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     }
 
 
-    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, SessionInterface $session, $userId, \Gems\Task\TaskRunnerBatch $batch = null)
+    public function checkRoundsFor(\Gems\Tracker\RespondentTrack $respTrack, SessionInterface $session = null, $userId, \Gems\Task\TaskRunnerBatch $batch = null)
     {
         if (null === $batch) {
             $batch = new \Gems\Task\TaskRunnerBatch('tmptrack' . $respTrack->getRespondentTrackId(), $this->overLoader, $session);

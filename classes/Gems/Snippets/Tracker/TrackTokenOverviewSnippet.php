@@ -15,8 +15,8 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Repository\TokenRepository;
+use Gems\Snippets\TokenModelSnippetAbstract;
 use Gems\Tracker;
-use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
@@ -39,7 +39,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
+class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -117,9 +117,9 @@ class TrackTokenOverviewSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gsu_survey_name')
                 ->append(Late::iif(
                         $bridge->gro_icon_file,
-                        Late::iif($bridge->gto_icon_file, \Zalt\Html\Html::create('img', ['src' => $bridge->gto_icon_file, 'class' => 'icon']
+                        Late::iif($bridge->gto_icon_file, Html::create('img', ['src' => $bridge->gto_icon_file, 'class' => 'icon']
                         ),
-                            Late::iif($bridge->gro_icon_file, \Zalt\Html\Html::create('img', ['src' => $bridge->gro_icon_file, 'class' => 'icon']
+                            Late::iif($bridge->gro_icon_file, Html::create('img', ['src' => $bridge->gro_icon_file, 'class' => 'icon']
                             )))
                         ));
         $bridge->addSortable('gto_round_description');
