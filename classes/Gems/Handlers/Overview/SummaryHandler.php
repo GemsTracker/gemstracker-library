@@ -9,7 +9,18 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Overview;
+
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\Tracker\Summary\SummarySearchFormSnippet;
+use Gems\Snippets\Tracker\Summary\SummaryTableSnippet;
+use Gems\User\User;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -20,7 +31,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
+class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -32,7 +43,7 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = array(
         'browse'    => false,
         'extraSort' => array('gro_id_order' => SORT_ASC),
     );
@@ -42,26 +53,47 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Summary\\SummaryTableSnippet';
+    protected array $autofilterSnippets = [ 
+        SummaryTableSnippet::class,
+    ];
 
     /**
      *
      * @var \Gems\User\User
      */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    public User $currentUser;
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker\\Summary\\SummarySearchFormSnippet');
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        SummarySearchFormSnippet::class,
+    ];
+
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected array $indexStopSnippets = [
+        CurrentSiblingsButtonRowSnippet::class,
+    ];
+
+    public function __construct(
+        SnippetResponderInterface $responder, 
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected TrackDataRepository $trackDataRepository,
+    )
+    {
+        parent::__construct($responder, $translate);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -74,7 +106,7 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel($detailed, $action): ModelAbstract
     {
         $select = $this->getSelect();
 
@@ -106,7 +138,7 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
-            $model->addFilter(array('gto_id_organization' => $this->currentUser->getRespondentOrgFilter()));
+            $this->autofilterParameters['extraFilter']['gto_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         }
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
@@ -116,8 +148,9 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
                 $model->addFilter(array($where));
             }
         } else {
-            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['extraFilter'][1] = 0;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+            $this->_snippetParams['onEmpty'] = $this->indexParameters['onEmpty'] = $this->autofilterParameters['onEmpty'];
         }
 
         return $model;
@@ -128,7 +161,7 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Summary');
     }
@@ -140,7 +173,7 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gto_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
@@ -149,8 +182,8 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         if (!isset($this->defaultSearchData['gto_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
-            if (count($tracks) == 1) {
+            $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
+            if (\count($tracks) == 1) {
                 $this->defaultSearchData['gto_id_track'] = key($tracks);
             }
         }
@@ -246,8 +279,8 @@ class SummaryAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
-        return $this->plural('token', 'tokens', $count);
+        return $this->plural('track', 'tracks', $count);
     }
 }

@@ -18,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class ComplianceController extends \Gems\Actions\ComplianceAction
+class ComplianceController extends \Gems\Handlers\Overview\ComplianceHandler
 {
 
 }

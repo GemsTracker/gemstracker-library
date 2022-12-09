@@ -59,13 +59,6 @@ class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
     public array $menuShowRoutes = ['show-track'];
 
     /**
-     * Are we working in a multi tracks environment?
-     *
-     * @var boolean
-     */
-    protected bool $multiTracks = true;
-
-    /**
      * The oganization ID
      *
      * @var int
@@ -150,10 +143,6 @@ class TrackUsageOverviewSnippet extends ModelTableSnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        if (! $this->multiTracks) {
-            return false;
-        }
-
         $matchedParams = $this->requestInfo->getRequestMatchedParams();
 
         if (! $this->respondentTrackId && isset($matchedParams[Model::RESPONDENT_TRACK])) {

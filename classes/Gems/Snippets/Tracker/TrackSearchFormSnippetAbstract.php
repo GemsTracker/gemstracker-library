@@ -11,6 +11,13 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -40,6 +47,20 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippe
      */
     protected $trackFieldId  = false;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+        protected TrackDataRepository $trackData,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Add filler select to the elements array
      *
@@ -56,26 +77,9 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippe
             $trackId = -1;
         }
 
-        $sql = $this->db->quoteInto("SELECT ggp_name, ggp_name as label FROM (
-                    SELECT DISTINCT ggp_name
-                        FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
-                            INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
-                            INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                        WHERE ggp_group_active = 1 AND
-                            gro_active=1 AND
-                            gtr_active=1 AND
-                            gtr_id_track = ?
+        $options = $this->trackData->getRespondersForTrack($trackId);
 
-                UNION ALL
-
-                    SELECT DISTINCT gtf_field_name as ggp_name
-                        FROM gems__track_fields
-                        WHERE gtf_field_type = 'relation' AND
-                            gtf_id_track = ?
-                ) AS tmpTable
-                ORDER BY ggp_name", $trackId);
-
-        $elements[$elementId] = $this->_createSelectElement($elementId, $sql, $this->_('(all fillers)'));
+        $elements[$elementId] = $this->_createSelectElement($elementId, $options, $this->_('(all fillers)'));
     }
 
     /**
@@ -129,7 +133,7 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippe
         $this->trackFieldId = $elementId;
 
         $orgs   = $this->currentUser->getRespondentOrganizations();
-        $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+        $tracks = $this->trackData->getTracksForOrgs($orgs);
 
         if (count($tracks) > 1) {
             $elements[$elementId] = $this->_createSelectElement($elementId, $tracks, $this->_('(select a track)'));

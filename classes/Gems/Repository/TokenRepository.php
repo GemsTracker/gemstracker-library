@@ -2,14 +2,16 @@
 
 namespace Gems\Repository;
 
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Tracker;
 use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;
 use MUtil\Model;
 use MUtil\Translate\Translator;
 use Zalt\Html\AElement;
-use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
 use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
@@ -18,7 +20,10 @@ class TokenRepository
 {
     protected User $currentUser;
 
-    public function __construct(protected Translator $translator, CurrentUserRepository $currentUserRepository)
+    public function __construct(
+        protected Tracker $tracker,
+        protected Translator $translator, 
+        CurrentUserRepository $currentUserRepository)
     {
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
@@ -157,9 +162,9 @@ class TokenRepository
      * Returns the decription to add to the answer
      *
      * @param string $value Character
-     * @return string
+     * @return HtmlElement
      */
-    public function getStatusIcon(string $value): string
+    public function getStatusIcon(string $value): HtmlElement
     {
         $status = $this->getStatusIcons();
 
@@ -223,6 +228,7 @@ class TokenRepository
             ];
 
             foreach ($status as $val => $stat) {
+                $stat[0]->append($val); // Temp fix until icons work
                 $stat->appendAttrib('class', $this->getStatusClass($val));
             }
         }
@@ -237,14 +243,14 @@ class TokenRepository
      * @param string $tokenStatus
      * @param boolean $keepCaps Keep the capital letters in the label
      * @param boolean $showAnswers
-     * @return \MUtil\Html\AElement
+     * @return \Zalt\Html\AElement
      */
     public function getTokenAnswerLink($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps = true, $showAnswers = true): ?AElement
     {
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
             $label = $this->translator->_('Answers');
 
-            $link = \Gems\Html::actionLink($url, $label);
+            $link = Html::actionLink($url, $label);
 
             if ($link) {
                 $link->title = sprintf($this->translator->_('See answers for token %s'), strtoupper($tokenId));
@@ -304,7 +310,7 @@ class TokenRepository
                     $label = $this->translator->_('Continue');
                 }
 
-                $link = \Gems\Html::actionLink($url, $label);
+                $link = Html::actionLink($url, $label);
 
                 if ($link) {
                     $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
@@ -408,7 +414,7 @@ class TokenRepository
      * @param string $tokenId
      * @param string $tokenStatus
      * @param boolean $canMail
-     * @return \MUtil\Html\AElement
+     * @return \Zalt\Html\AElement
      */
     public function getTokenEmailLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, bool $canMail): ?AElement
     {
@@ -422,7 +428,7 @@ class TokenRepository
             ]);
 
             if ($href) {
-                $link = \Gems\Html::actionLink($href);
+                $link = Html::actionLink($href);
             }
 
             if ($link) {
@@ -464,7 +470,7 @@ class TokenRepository
             $label = $this->translator->_('+');
         }
 
-        $link = \Gems\Html::actionLink($helper->getRouteUrl($routeName, [
+        $link = Html::actionLink($helper->getRouteUrl($routeName, [
             Model::REQUEST_ID1 => $patientNr,
             Model::REQUEST_ID2 => $organizationId,
             Model::REQUEST_ID => $tokenId,
@@ -504,7 +510,7 @@ class TokenRepository
         ]);
 
 
-        return \Gems\Html::actionLink($url, $label);
+        return Html::actionLink($url, $label);
     }
 
     /**
@@ -528,31 +534,30 @@ class TokenRepository
      * @param string $roundDescr
      * @param string $surveyName
      * @param string $result
-     * @return \MUtil\Html\AElement
+     * @return \Zalt\Html\AElement
      */
-    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, string $patientNr, string $roundDescr, string $surveyName, string $result): ?AElement
+    public function getTokenStatusLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, string $patientNr, int $organizationId, string $roundDescr, string $surveyName, string $result): ?HtmlElement
     {
         if ($tokenId) {
-            $href = $helper->getRouteUrl('show', [
-                'gto_id_token' => $tokenId,
-                \Gems\Model::ID_TYPE => 'token',
+            $href = $helper->getRouteUrl('respondent.tracks.show', [
+                \MUtil\Model::REQUEST_ID  => $tokenId,
+                \MUtil\Model::REQUEST_ID1 => $patientNr,
+                \MUtil\Model::REQUEST_ID2 => $organizationId,
             ]);
-            if ($href) {
-                $link = \Zalt\Html\Html::create('a', $href);
+
+            if (! $href) {
+                return null;
             }
-
-            // $link->title = sprintf($this->_('Inspect token %s'), strtoupper($tokenId));
+            
+            $link = Html::create('a', $href);
         } else {
-            $link = \Zalt\Html\Html::create('span');
+            $link = Html::create('span');
         }
 
-        if ($link) {
-            $link->append($this->getStatusIcon($tokenStatus));
-            $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
+        $link->append($this->getStatusIcon($tokenStatus));
+        $link->title = $this->getTokenStatusTitle($tokenId, $tokenStatus, $patientNr, $roundDescr, $surveyName, $result);
 
-            return $link;
-        }
-        return null;
+        return $link;
     }
 
     /**
@@ -577,8 +582,8 @@ class TokenRepository
         ]);
 
         $link = Late::iff($url,
-            \Zalt\Html\Html::create('a', $url),
-            \Zalt\Html\Html::create('span'));
+            Html::create('a', $url),
+            Html::create('span'));
 
         $link->append($this->getStatusIcon($bridge->getLate('token_status')));
         $link->title = Late::method($this, 'getTokenStatusTitle',
@@ -588,6 +593,25 @@ class TokenRepository
         );
 
         return $link;
+    }
+
+    /**
+     * De a status show link
+     */
+    public function getTokenStatusLinkForTokenId(MenuSnippetHelper $helper, string $tokenId):  ?HtmlElement
+    {
+        $token = $tokenId ? $this->tracker->getToken($tokenId) : null;
+
+        if (! ($tokenId && $token->exists)) {
+            return $this->getStatusIcon('D');
+        }
+
+        return $this->getTokenStatusLink(
+            $helper,
+            $tokenId, $token->getStatusCode(),
+            $token->getPatientNumber(), $token->getOrganizationId(), $token->getRoundDescription(),
+            $token->getSurveyName(), $token->getResult()
+        );
     }
 
     /**

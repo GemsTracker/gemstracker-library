@@ -45,7 +45,6 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $autofilterParameters = [
-        'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
     ];
 

@@ -168,6 +168,6 @@ class UtilDbHelper
             $this->cache->setCacheItem($cacheLangKey, $result);
         }
 
-        return $result;
+        return $result ?: [];
     }
 }

@@ -49,7 +49,6 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $defaultParameters = array(
-        'multiTracks' => 'isMultiTracks',
         'respondent' => 'getRespondent',
     );
 
@@ -134,14 +133,5 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
         }
 
         return null;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    protected function isMultiTracks()
-    {
-        return true;
     }
 }

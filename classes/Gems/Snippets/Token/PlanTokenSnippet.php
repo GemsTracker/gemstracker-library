@@ -55,12 +55,6 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     public $browse = true;
 
-    /**
-     *
-     * @var boolean
-     */
-    protected $multiTracks = true;
-
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -124,16 +118,13 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        if ($this->multiTracks) {
-            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-            $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
-            $bridge->addMultiSort(
-                'gtr_track_name', 'gr2t_track_info',
-                array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),
-                'gsu_survey_name', 'gto_round_description');
-        } else {
-            $bridge->addMultiSort('gto_round_description', \MUtil\Html::raw('; '), 'gsu_survey_name');
-        }
+        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $bridge->addMultiSort(
+            'gtr_track_name', 'gr2t_track_info',
+            array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),
+            'gsu_survey_name', 'gto_round_description');
+
         $bridge->addSortable('assigned_by');
     }
 

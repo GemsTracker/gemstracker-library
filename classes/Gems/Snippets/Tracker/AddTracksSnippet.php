@@ -184,12 +184,12 @@ class AddTracksSnippet extends TranslatableSnippetAbstract
 
             if ($trackType == 'tracks') {
                 $params[Model::TRACK_ID] = $data->key;
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view', $params);
-                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
+                $menuViewUrl   = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.view', $params);
+                $menuCreateUrl = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.' . $action, $params);
             } else {
                 $params[Model::SURVEY_ID] = $data->key;
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey', $params);
-                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
+                $menuViewUrl   = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.view-survey', $params);
+                $menuCreateUrl = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.' . $action, $params);
             }
 
             if (count($tracks) > $this->scrollTreshold) {

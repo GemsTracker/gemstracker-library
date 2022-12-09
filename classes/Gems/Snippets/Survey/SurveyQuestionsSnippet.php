@@ -227,7 +227,7 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
 
             if ($this->trackId && (! $this->surveyId)) {
                 // Use the track ID to get the id of the first active survey
-                $this->surveyId = $this->resultFetcher->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ? ORDER BY gro_id_order', $this->trackId);
+                $this->surveyId = $this->resultFetcher->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ? ORDER BY gro_id_order', [$this->trackId]);
             }
         }
         // \MUtil\EchoOut\EchoOut::track($this->surveyId, $this->trackId);

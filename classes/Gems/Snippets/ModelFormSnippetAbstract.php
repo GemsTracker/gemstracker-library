@@ -271,6 +271,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     {
         if (! $this->afterSaveRouteUrl) {
             $route  = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $route . "\n", FILE_APPEND);
             $keys   = $this->getModel()->getMetaModel()->getKeys();
             $params = $this->requestInfo->getRequestMatchedParams();
             foreach ($keys as $key => $field) { 
@@ -281,7 +282,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
                 }
             }
             
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($route, $params);
+            $this->afterSaveRouteUrl = $this->menuHelper->routeHelper->getRouteUrl($route, $params);
         }
         parent::setAfterSaveRoute();
     }

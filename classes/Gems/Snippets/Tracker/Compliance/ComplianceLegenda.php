@@ -11,6 +11,10 @@
 
 namespace Gems\Snippets\Tracker\Compliance;
 
+use Gems\Html;
+use Zalt\Html\ImgElement;
+use Zalt\Html\TableElement;
+
 /**
  *
  * @package    Gems
@@ -19,7 +23,7 @@ namespace Gems\Snippets\Tracker\Compliance;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 18-Nov-2019 19:02:35
  */
-class ComplianceLegenda extends \MUtil\Snippets\SnippetAbstract
+class ComplianceLegenda extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
     /**
      * The factor to divide maxWidth with to get the emWidth
@@ -51,13 +55,10 @@ class ComplianceLegenda extends \MUtil\Snippets\SnippetAbstract
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $table    = new \MUtil\Html\TableElement();
+        $table    = new TableElement();
         $table->class = 'compliance timeTable table table-condensed';
 
         $roundStyle = $this->getRoundStyle();
@@ -80,7 +81,7 @@ class ComplianceLegenda extends \MUtil\Snippets\SnippetAbstract
                         );
             }
             if ($round['icon']) {
-                $icon = \MUtil\Html\ImgElement::imgFile($round['icon'], [
+                $icon = ImgElement::imgFile($round['icon'], [
                     'alt'   => substr($round['survey'], 0, 2),
                     'title' => $round['survey'],
                     ]);
@@ -133,7 +134,7 @@ class ComplianceLegenda extends \MUtil\Snippets\SnippetAbstract
             $survey = $this->model->get($name, 'survey');
             if ($survey) {
                 $icon  = $this->model->get($name, 'roundIcon');
-                $round = $this->model->get($name, 'round');
+                $round = $this->model->get($name, 'round') ?: '';
                 $roundSpan++;
                 $id++;
 
