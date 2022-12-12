@@ -15,13 +15,17 @@ use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\Locale\Locale;
 use Gems\Tracker;
+use Gems\Tracker\Survey;
+use Gems\Tracker\Token;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\TableElement;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\Snippets\TableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
- * Shows the questions in a survey in a human readavle manner
+ * Shows the questions in a survey in a human-readable manner
  *
  * @package    Gems
  * @subpackage Snippets_Survey
@@ -29,7 +33,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
+class SurveyQuestionsSnippet extends TableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -57,7 +61,7 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
 
     /**
      *
-     * @var \Gems\Tracker\Survey
+     * @var Survey
      */
     protected $survey;
 
@@ -99,13 +103,14 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
-        TranslatorInterface $translate,
+        protected TranslatorInterface $translator,
         protected Locale $locale,
         protected Tracker $tracker,
         protected ResultFetcher $resultFetcher,
+        protected StatusMessengerInterface $statusMessenger,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo);
     }
 
     /**
@@ -117,12 +122,12 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
      */
     protected function addColumns(TableElement $table)
     {
-        $table->thhrow($this->_('Group'), ['class' => 'group']);
+        $table->thhrow($this->translator->_('Group'), ['class' => 'group']);
         $tr = $table->thead()->tr();
-        $tr->th($this->_('Question code'));
+        $tr->th($this->translator->_('Question code'));
         $tr->th(' ');
-        $tr->th($this->_('Question'));
-        $tr->th($this->_('Answer options'));
+        $tr->th($this->translator->_('Question'));
+        $tr->th($this->translator->_('Answer options'));
         
         $cond    = Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
         $hidden  = Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
@@ -139,12 +144,12 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
             $col2 = $visible;
             if ($row['alwaysHidden']) {
                 $tr->appendAttrib('class', 'hideAlwaysQuestion');
-                $tr->title = $this->_('Hidden question');
+                $tr->title = $this->translator->_('Hidden question');
                 $col2 = $hidden;
             }
             if ($row['hasConditon']) {
                 $tr->appendAttrib('class', 'conditionQuestion');
-                $tr->title = $this->_('Conditional question');
+                $tr->title = $this->translator->_('Conditional question');
                 $col2 = $cond;
             }
             $tr->td($key, ['class' => $row['class']]);
@@ -159,19 +164,19 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
         $div = Html::create('div');
 
         if ($this->surveyId && $this->data) {
-            $div->h3(sprintf($this->_('Questions in survey %s'), $this->survey->getName()));
+            $div->h3(sprintf($this->translator->_('Questions in survey %s'), $this->survey->getName()));
             $div->append(parent::getHtmlOutput());
         } else {
-            $this->addMessage($this->_('Survey not found'));
+            $this->statusMessenger->addMessage($this->translator->_('Survey not found'));
             if ($this->surveyId) {
-                $div->pInfo(sprintf($this->_('Survey %s does not exist.'), $this->surveyId));
+                $div->pInfo(sprintf($this->translator->_('Survey %s does not exist.'), $this->surveyId));
             } else {
-                $div->pInfo($this->_('Survey not specified.'));
+                $div->pInfo($this->translator->_('Survey not specified.'));
             }
         }
         /*$item = $this->menu->getCurrentParent();
         if ($item) {
-            $div->append($item->toActionLink($this->_('Cancel'), $this->request));
+            $div->append($item->toActionLink($this->translator->_('Cancel'), $this->request));
         }*/
 
         return $div;
@@ -192,9 +197,9 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
         // Apply translations
         if (! $this->showAnswersTranslated) {
             // Here, not in e.g. __construct as these vars may be set during initiation
-            $this->showAnswersNone       = $this->_($this->showAnswersNone);
-            $this->showAnswersRemoved    = $this->_($this->showAnswersRemoved);
-            $this->showAnswersSeparator  = $this->_($this->showAnswersSeparator);
+            $this->showAnswersNone       = $this->translator->_($this->showAnswersNone);
+            $this->showAnswersRemoved    = $this->translator->_($this->showAnswersRemoved);
+            $this->showAnswersSeparator  = $this->translator->_($this->showAnswersSeparator);
             $this->showAnswersTranslated = true;
         }
 
@@ -203,7 +208,7 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
         $this->repeater = null;
 
         if (! $this->surveyId) {
-            if (($this->token instanceof \Gems\Tracker\Token) && $this->token->exists) {
+            if (($this->token instanceof Token) && $this->token->exists) {
                 $this->surveyId = $this->token->getSurveyId();
                 
             } elseif ($this->trackData && (! $this->trackId)) {
@@ -233,11 +238,11 @@ class SurveyQuestionsSnippet extends \Zalt\Snippets\TableSnippetAbstract
         // \MUtil\EchoOut\EchoOut::track($this->surveyId, $this->trackId);
 
         // Get the survey
-        if ($this->surveyId && (! $this->survey instanceof \Gems\Tracker\Survey)) {
+        if ($this->surveyId && (! $this->survey instanceof Survey)) {
             $this->survey = $this->tracker->getSurvey($this->surveyId);
         }
         // Load the data
-        if (($this->survey instanceof \Gems\Tracker\Survey) && $this->survey->exists) {
+        if (($this->survey instanceof Survey) && $this->survey->exists) {
             $this->data = $this->survey->getQuestionInformation($this->locale->getCurrentLanguage());
             //\MUtil\EchoOut\EchoOut::track($this->data);
         }
