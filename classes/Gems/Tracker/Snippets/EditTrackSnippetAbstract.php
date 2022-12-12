@@ -38,6 +38,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
 {
+    protected string $afterSaveRoutePart = 'show-track';
+
     /**
      * Optional, required when creating
      *
@@ -72,13 +74,6 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
      * @var int Respondent Track Id
      */
     protected $respondentTrackId;
-
-    /**
-     * The name of the action to forward to after form completion
-     *
-     * @var string
-     */
-    protected $routeAction = 'show-track';
 
     /**
      * Optional, required when creating or $trackId should be set
@@ -272,22 +267,5 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
                     );
         }
         return $this->formData;
-    }
-
-    /**
-     * If menu item does not exist or is not allowed, redirect to index
-     *
-     * @return \Gems\Snippets\ModelFormSnippetAbstract
-     */
-    protected function setAfterSaveRoute()
-    {
-        parent::setAfterSaveRoute();
-
-        if (is_array($this->afterSaveRouteUrl)) {
-            if (isset($this->afterSaveRouteUrl['action'], $this->formData['gr2t_id_respondent_track']) &&
-                    'index' !== $this->afterSaveRouteUrl['action']) {
-                $this->afterSaveRouteUrl[\Gems\Model::RESPONDENT_TRACK] = $this->formData['gr2t_id_respondent_track'];
-            }
-        }
     }
 }

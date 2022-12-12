@@ -5,6 +5,7 @@ namespace Gems\MenuNew;
 use Gems\Html;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\Exception\RuntimeException;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
 use Zalt\Late\LateInterface;
@@ -52,8 +53,6 @@ class RouteHelper
         return $links;
     }
 
-    
-    
     public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null): ?LateCall
     {
         $route = $this->getRoute($name);
@@ -91,6 +90,39 @@ class RouteHelper
         return Late::method($this->urlHelper, 'generate', $name, $params);
     }
 
+    /**
+     * @param string $name
+     * @param array  $parameters Mix of fixed and late parameters (not using the stack)
+     * @return \Zalt\Late\LateCall|null
+     */
+    public function getMixedLateRouteUrl(string $name, array $parameters = []): ?LateCall
+    {
+        $route = $this->getRoute($name);
+        if (null === $route) {
+            return null;
+        }
+
+        $late = false;
+        $routeParams = [];
+        if (isset($route['params'])) {
+            foreach ($route['params'] as $paramName) {
+                if (isset($parameters[$paramName])) {
+                    $routeParams[$paramName] = $parameters[$paramName];
+                    $late = $late || $parameters[$paramName] instanceof LateInterface;
+                    
+                } else {
+                    throw new RuntimeException(sprintf(
+                        "Route %s expects a parameter value for %s.",
+                        $name, $paramName));
+                }
+            }
+        }
+        if ($late) {
+            return Late::method($this->urlHelper, 'generate', $name, $routeParams);
+        }
+        return $this->urlHelper->generate($name, $routeParams);
+    }
+    
     /**
      * @param string $current  The route to compare to
      * @param string $relative Routes related to current, e.g. a different action in the same route.

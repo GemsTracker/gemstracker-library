@@ -272,17 +272,17 @@ class Route
                     EmptyHandler::class,
                 ]
             ],
-            ...$this->createBrowseRoutes(baseName: 'overview.summary',
-                controllerClass: \Gems\Actions\SummaryAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.summary',
+                controllerClass:                   \Gems\Handlers\Overview\SummaryHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.compliance',
-                controllerClass: \Gems\Actions\ComplianceAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.compliance',
+                controllerClass:                   \Gems\Handlers\Overview\ComplianceHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
@@ -501,6 +501,25 @@ class Route
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
+                controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                pages: [
+                    'insert',
+                    'view-survey',
+                ],
+                parameterRoutes: [
+                    'insert',
+                    'view-survey',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                parameters: [
+                    \Gems\Model::SURVEY_ID => '\d+',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tokens',

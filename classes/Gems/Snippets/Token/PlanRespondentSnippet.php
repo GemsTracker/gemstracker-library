@@ -80,24 +80,19 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         $bridge->addSortable('gr2o_patient_nr');
         $bridge->addSortable('respondent_name')->colspan = 2;
 
-        if ($this->multiTracks) {
-            $bridge->addSortable('grs_birthday');
-            $bridge->addMultiSort('grs_city', array($respondentButton));
+        $bridge->addSortable('grs_birthday');
+        $bridge->addMultiSort('grs_city', array($respondentButton));
 
-            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
-            // Row with track info
-            $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
-            $td = $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
-            $td->class   = 'indentLeft';
-            $td->colspan = 4;
-            $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
-            $td = $bridge->addMultiSort('track_progress', array($trackButton));
-            $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
-        } else {
-            $bridge->addSortable('grs_birthday');
-            $bridge->addMultiSort('track_progress', array($respondentButton));
-        }
+        // Row with track info
+        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
+        $td = $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
+        $td->class   = 'indentLeft';
+        $td->colspan = 4;
+        $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
+        $td = $bridge->addMultiSort('track_progress', array($trackButton));
+        $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
         $col = $bridge->addColumn(

@@ -130,9 +130,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     protected array $createParameters = [
         'createData'  => true,
         'formTitle'   => 'getCreateTrackTitle',
-        'multiTracks' => 'isMultiTracks',
         'trackEngine' => 'getTrackEngine',
-        'csrfGuard'     => 'getCsrfGuard',
+        'csrfGuard'   => 'getCsrfGuard',
         'session'     => 'getSession',
     ];
 
@@ -187,7 +186,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteTrackParameters = [
         'formTitle'         => null,
-        'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
         'topicCallable'     => 'getTopicCallable',
@@ -225,7 +223,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
     protected array $editTrackParameters = [
         'createData'        => false,
         'formTitle'         => 'getTrackTitle',
-        'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
         'trackEngine'       => 'getTrackEngine',
@@ -328,7 +325,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
     protected array $showTrackParameters = [
         'contentTitle'      => 'getTrackTitle',
         'extraFilter'       => 'getNoRespondentFilter',
-        'multiTracks'       => 'isMultiTracks',
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
         'displayMenu'       => false,
@@ -343,7 +339,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $showTrackSnippets = [
         'Generic\\ContentTitleSnippet',
-        'Tracker\\SingleSurveyAvailableTracksSnippet',
         'ModelDetailTableSnippet',
         'Tracker\\Buttons\\TrackActionButtonRow',
         'Tracker\\TrackUsageTextDetailsSnippet',
@@ -388,7 +383,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $viewParameters = [
         'contentTitle' => 'getViewTrackTitle',
-        'multiTracks'  => 'isMultiTracks',
         'trackEngine'  => 'getTrackEngine',
         'trackId'      => 'getTrackId',
     ];
@@ -631,21 +625,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function createAction(): void
     {
-        if (! $this->isMultiTracks()) {
-            // Fix for double pressing of create button
-            $request = $this->getRequest();
-            $model   = $this->getModel();
-
-            $model->setFilter(array()) // First clear existing filter
-            ->applyRequest($request);
-            $data = $model->loadFirst();
-
-            if ($data) {
-                $this->_reroute(array($request->getActionKey() => 'edit-track'));
-                return;
-            }
-        }
-
         if ($this->createSnippets) {
             $params = $this->_processParameters($this->createParameters + $this->createEditParameters);
 
@@ -893,37 +872,10 @@ class TrackHandler extends RespondentChildHandlerAbstract
         if ($respTrackId) {
             $respTrack = $tracker->getRespondentTrack($respTrackId);
         } else {
-            if ($this->isMultiTracks()) {
-                throw new \Gems\Exception($this->_('No track specified for respondent!'));
-            }
-
-            $respondent = $this->getRespondent();
-            $respTracks = $tracker->getRespondentTracks(
-                $respondent->getId(),
-                $respondent->getOrganizationId(),
-                array('grc_success DESC', 'gr2t_start_date')
-            );
-            $trackId = $this->escort->getTrackId();
-            if ($trackId) {
-                foreach ($respTracks as $respTrack) {
-                    if ($respTrack instanceof \Gems\Tracker\RespondentTrack) {
-                        if ($trackId == $respTrack->getTrackId()) {
-                            // Return the right track if it exists
-                            break;
-                        }
-                    }
-                }
-            } else {
-                $respTrack = reset($respTracks);
-            }
+            throw new \Gems\Exception($this->_('No track specified for respondent!'));
         }
         if (! $respTrack instanceof \Gems\Tracker\RespondentTrack) {
-            if ($this->isMultiTracks()) {
-                throw new \Gems\Exception($this->_('No track found for respondent!'));
-            } else {
-                $this->menu->getParameterSource()->offsetSet('track_can_be_created', 1);
-                return null;
-            }
+            throw new \Gems\Exception($this->_('No track found for respondent!'));
         }
 
         // Otherwise return the last created track (yeah some implementations are not correct!)
@@ -1086,15 +1038,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $trackId = $this->request->getAttribute(\Gems\model::TRACK_ID);
 
             if (! $trackId) {
-                if ($this->isMultiTracks()) {
-                    throw new \Gems\Exception($this->_('No track engine specified!'));
-                }
-
-                $trackId = $this->escort->getTrackId();
-
-                if (! $trackId) {
-                    return null;
-                }
+                throw new \Gems\Exception($this->_('No track engine specified!'));
             }
 
             $engine = $this->tracker->getTrackEngine($trackId);
@@ -1166,22 +1110,15 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $trackEngine = $this->getTrackEngine();
 
-        if ($this->isMultiTracks()) {
-            $respondent = $this->getRespondent();
+        $respondent = $this->getRespondent();
 
-            // Set params
-            return sprintf(
-                $this->_('%s track assignments for respondent nr %s: %s'),
-                $trackEngine->getTrackName(),
-                $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
-                $this->getRespondent()->getFullName()
-            );
-        } else {
-            return sprintf(
-                $this->_('%s track overview'),
-                $trackEngine->getTrackName()
-            );
-        }
+        // Set params
+        return sprintf(
+            $this->_('%s track assignments for respondent nr %s: %s'),
+            $trackEngine->getTrackName(),
+            $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
+            $this->getRespondent()->getFullName()
+        );
     }
 
     /**

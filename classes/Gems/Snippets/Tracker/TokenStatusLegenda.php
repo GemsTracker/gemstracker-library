@@ -11,6 +11,14 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Repository\TokenRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\TableElement;
+use Zalt\Late\Late;
+use Zalt\Late\RepeatableByKeyValue;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,28 +28,22 @@ namespace Gems\Snippets\Tracker;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class TokenStatusLegenda extends \MUtil\Snippets\SnippetAbstract
+class TokenStatusLegenda extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function __construct(
+        SnippetOptions $snippetOptions, 
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected TokenRepository $tokenRepository,
+    )
     {
-        $tUtil = $this->util->getTokenData();
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+    }
 
-        $repeater = new \MUtil\Lazy\RepeatableByKeyValue($tUtil->getEveryStatus());
-        $table    = new \MUtil\Html\TableElement();
+    public function getHtmlOutput()
+    {
+        $repeater = new RepeatableByKeyValue($this->tokenRepository->getEveryStatus());
+        $table    = new TableElement();
         $table->class = 'compliance timeTable rightFloat table table-condensed';
         $table->setRepeater($repeater);
 
@@ -49,9 +51,9 @@ class TokenStatusLegenda extends \MUtil\Snippets\SnippetAbstract
         $cell = $table->td();
         $cell->class = array(
             'round',
-            \MUtil\Lazy::method($tUtil, 'getStatusClass', $repeater->key)
+            Late::method($this->tokenRepository, 'getStatusClass', $repeater->key)
             );
-        $cell->append(\MUtil\Lazy::method($tUtil, 'getStatusIcon', $repeater->key));
+        $cell->append(Late::method($this->tokenRepository, 'getStatusIcon', $repeater->key));
         $table->td($repeater->value);
 
         return $table;

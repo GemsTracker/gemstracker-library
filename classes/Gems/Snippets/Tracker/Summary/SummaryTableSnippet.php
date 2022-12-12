@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Summary;
 
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -30,14 +31,10 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
+        $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
         $this->applyTextMarker();
         
         // \MUtil\Model::$verbose = true;
@@ -91,7 +88,7 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
      */
     public function percentageLazy($part, $total)
     {
-        return \MUtil\Lazy::method($this, 'showPercentage', $part, $total);
+        return Late::method($this, 'showPercentage', $part, $total);
     }
 
     /**

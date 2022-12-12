@@ -80,12 +80,9 @@ class RespondentPlanTokenSnippet extends PlanTokenSnippet
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        if ($this->multiTracks) {
-            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-            $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
-        } else {
-            $bridge->addSortable('gr2t_track_info');
-        }
+        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
+
         $bridge->addSortable('assigned_by');
     }
 }

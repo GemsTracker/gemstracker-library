@@ -14,6 +14,7 @@ namespace Gems\Snippets;
 use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\JQuery\Form\Element\DatePicker;
+use Laminas\Db\Sql\Select;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -105,12 +106,12 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
     public function __construct(
         SnippetOptions $snippetOptions,
-        protected RequestInfo $requestInfo,
+        RequestInfo $requestInfo,
         TranslatorInterface $translate,
         protected ResultFetcher $resultFetcher,
         )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     /**
@@ -270,7 +271,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     {
         if ($options instanceof ModelAbstract) {
             $options = $options->get($name, 'multiOptions');
-        } elseif (is_string($options)) {
+        } elseif (is_string($options) || $options instanceof Select) {
             $options = $this->resultFetcher->fetchPairs($options);
             natsort($options);
         }

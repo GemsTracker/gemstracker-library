@@ -38,12 +38,6 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     protected User $currentUser;
 
     /**
-     *
-     * @var boolean
-     */
-    protected $multiTracks = true;
-
-    /**
      * Display the period selector
      *
      * @var boolean
@@ -205,13 +199,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         }
 
         // Add track selection
-        if ($this->multiTracks) {
-            $elements['gto_id_track'] = $this->_createSelectElement(
-                    'gto_id_track',
-                    $this->getAllTrackTypes($allowedOrgs, $data),
-                    $this->_('(all tracks)')
-                    );
-        }
+        $elements['gto_id_track'] = $this->_createSelectElement(
+                'gto_id_track',
+                $this->getAllTrackTypes($allowedOrgs, $data),
+                $this->_('(all tracks)')
+                );
 
         $elements['gto_round_description'] = $this->_createSelectElement(
                 'gto_round_description',
