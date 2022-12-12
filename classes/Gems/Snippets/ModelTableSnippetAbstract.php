@@ -195,7 +195,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
-        return $metaModel->getKeys();
+        return $metaModel->getMaps();
     }
     
     /**
