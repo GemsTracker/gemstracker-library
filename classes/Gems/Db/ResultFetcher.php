@@ -3,6 +3,7 @@
 namespace Gems\Db;
 
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
@@ -82,6 +83,11 @@ class ResultFetcher
     public function getAdapter(): Adapter
     {
         return $this->db;
+    }
+
+    public function getPlatform(): PlatformInterface
+    {
+        return $this->db->getPlatform();
     }
 
     public function getSelect(null|string|TableIdentifier $table = null): Select
