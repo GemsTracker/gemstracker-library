@@ -11,7 +11,10 @@
 
 namespace Gems\Handlers\Respondent;
 
+use Gems\Batch\BatchRunnerLoader;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Pdf;
+use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
@@ -422,6 +425,9 @@ class TrackHandler extends RespondentChildHandlerAbstract
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected Tracker $tracker,
+        protected BatchRunnerLoader $batchRunnerLoader,
+        protected ProjectSettings $projectSettings,
+        protected Pdf $pdf,
     ) {
         parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
     }
@@ -470,27 +476,28 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function checkAllAnswersAction()
     {
-        $respondent = $this->getRespondent();
-        $where      = $this->db->quoteInto('gto_id_respondent = ?', $respondent->getId());
-
-        $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
-
-        $batch = $this->tracker->recalculateTokens($session,
+        $respondent  = $this->getRespondent();
+        $where       = 'gto_id_respondent = ?';
+        $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'answersCheckAllResp_' . $respondent->getId(),
             $this->currentUser->getUserId(),
-            $where
+            $where,
+            $respondent->getId()
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_('Checking all surveys of respondent %s, %s for answers.'),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-            'itemDescription', $this->_('This task (re)checks all tokens of this respondent for answers.')
-        );
+        $batchRunner->setJobInfo([
+            $this->_('This task (re)checks all tokens of this respondent for answers.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -498,23 +505,34 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function checkAllTracksAction()
     {
-        $respondent = $this->getRespondent();
-        $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
-
+        $respondent  = $this->getRespondent();
+        $where       = 'gr2t_id_user = ?';
         $batch = $this->tracker->checkTrackRounds(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackCheckRoundsResp_' . $respondent->getId(),
             $this->currentUser->getUserId(),
-            $where
+            $where,
+            $respondent->getId()
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_('Checking round assignments for all tracks of respondent %s, %s.'),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Track\\CheckRoundsInformation');
+        $batchRunner->setJobInfo([
+            $this->_('Updates existing token description and order to the current round description and order.'),
+            $this->_('Updates the survey of unanswered tokens when the round survey was changed.'),
+            $this->_('Removes unanswered tokens when the round is no longer active.'),
+            $this->_('Creates new tokens for new rounds.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -535,23 +553,26 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function checkTokenAnswersAction()
     {
         $token       = $this->getToken();
-        $where       = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
+        $where       = 'gto_id_token = ?';
         $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'answersCheckToken__' . $token->getTokenId(),
             $this->currentUser->getUserId(),
-            $where
-        );
-        $batch->autoStart = true;
-
-        $title = sprintf(
-            $this->_("Checking the token %s for answers."),
+            $where,
             $token->getTokenId()
         );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-            'itemDescription', $this->_('This task checks one token for answers.')
-        );
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
+            $this->_("Checking the token %s for answers."),
+            $token->getTokenId()
+        ));
+
+        $batchRunner->setJobInfo([
+            $this->_('This task checks one token for answers.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -562,22 +583,34 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
+        $where       = 'gr2t_id_respondent_track = ?';
         $batch = $this->tracker->checkTrackRounds(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackCheckRoundsFor_' . $respTrackId,
             $this->currentUser->getUserId(),
-            $where
+            $where,
+            $respTrackId
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_("Checking round assignments for track '%s' of respondent %s, %s."),
             $trackEngine->getTrackName(),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Track\\CheckRoundsInformation');
+        $batchRunner->setJobInfo([
+            $this->_('Updates existing token description and order to the current round description and order.'),
+            $this->_('Updates the survey of unanswered tokens when the round survey was changed.'),
+            $this->_('Removes unanswered tokens when the round is no longer active.'),
+            $this->_('Creates new tokens for new rounds.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -588,24 +621,28 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = $this->db->quoteInto('gto_id_respondent_track = ?', $respTrackId);
+        $where       = 'gto_id_respondent_track = ?';
         $batch = $this->tracker->recalculateTokens(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'answersCheckAllFor__' . $respTrackId,
             $this->currentUser->getUserId(),
-            $where
+            $where,
+            $respTrackId
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_("Checking the surveys in track '%s' of respondent %s, %s for answers."),
             $trackEngine->getTrackName(),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Survey\\CheckAnswersInformation',
-            'itemDescription', $this->_('This task checks all tokens for this track for this respondent for answers.')
-        );
+        $batchRunner->setJobInfo([
+            $this->_('This task checks all tokens for this track for this respondent for answers.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -1132,11 +1169,11 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         parent::init();
 
-        if (in_array($this->requestHelper->getActionName(), $this->tokenReturnActions)) {
+        if (in_array($this->requestInfo->getCurrentAction(), $this->tokenReturnActions)) {
             // Tell the system where to return to after a survey has been taken
             $route = [
-                    'route' => $this->requestHelper->getRouteResult()->getMatchedRouteName(),
-                ] + $this->requestHelper->getRouteResult()->getMatchedParams();
+                    'route' => $this->requestInfo->getRouteName(),
+                ] + $this->requestInfo->getRequestMatchedParams();
             $this->currentUser->setSurveyReturn($route);
         }
     }
@@ -1167,11 +1204,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function pdfAction()
     {
-        // Make sure nothing else is output
-        $this->initRawOutput();
-
         // Output the PDF
-        $this->loader->getPdf()->echoPdfByTokenId($this->_getIdParam());
+        $this->pdf->echoPdfByTokenId($this->_getIdParam());
     }
 
     /**
@@ -1196,22 +1230,32 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function recalcAllFieldsAction()
     {
-        $respondent = $this->getRespondent();
-        $where      = $this->db->quoteInto('gr2t_id_user = ?', $respondent->getId());
-
+        $respondent  = $this->getRespondent();
+        $where       = 'gr2t_id_user = ?';
         $batch = $this->tracker->recalcTrackFields(
-            'trackRecalcFieldsResp_' . $respondent->getId(),
-            $where
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
+            'answersCheckAllResp_' . $respondent->getId(),
+            $where,
+            $respondent->getId()
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_('Recalculating fields for all tracks of respondent %s, %s.'),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Track\\RecalcFieldsInformation');
+        $batchRunner->setJobInfo([
+            $this->_('Recalculates the values the fields should have.'),
+            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
+            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -1222,21 +1266,32 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $respondent  = $this->getRespondent();
         $respTrackId = $this->getRespondentTrackId();
         $trackEngine = $this->getTrackEngine();
-        $where       = $this->db->quoteInto('gr2t_id_respondent_track = ?', $respTrackId);
+        $where       = 'gr2t_id_respondent_track = ?';
         $batch = $this->tracker->recalcTrackFields(
+            $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackRecalcFieldsFor_' . $respTrackId,
-            $where
+            $where,
+            $respTrackId
         );
 
-        $title = sprintf(
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle(sprintf(
             $this->_("Recalculating fields for track '%s' of respondent %s, %s."),
             $trackEngine->getTrackName(),
             $respondent->getPatientNumber(),
             $respondent->getFullName()
-        );
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        ));
 
-        $this->addSnippet('Track\\RecalcFieldsInformation');
+        $batchRunner->setJobInfo([
+            $this->_('Recalculates the values the fields should have.'),
+            $this->_('Couple existing appointments to tracks where an appointment field is not filled.'),
+            $this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'),
+            $this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'),
+            $this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'),
+            $this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'),
+        ]);
+
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
