@@ -12,6 +12,7 @@ class GroupImporter
         private readonly DbGroupAdapter $dbAdapter,
         private readonly ConfigGroupAdapter $configAdapter,
     ) {
+        $this->configAdapter->validateGroupsConfig();
     }
 
     public function import(): array
@@ -30,82 +31,97 @@ class GroupImporter
         $sql = new Sql($this->db);
 
         if (count($added) > 0) {
-            // Keep a register of roles to be added, tracking the dependencies on other roles.
-            // Once a role to be added has no dependencies, it can be added
-            $dependencyRegister = [];
-            foreach ($added as $add) {
-                $group = $configGroups[$add];
-                $dependencyRegister[$add] = [];
-                $dependencyGroups = $group['ggp_may_set_groups'];
-                if ($group['ggp_default_group'] !== null) {
-                    $dependencyGroups[] = $group['ggp_default_group'];
-                }
-                $dependencyGroups = array_unique($dependencyGroups);
-
-                foreach ($dependencyGroups as $dependency) {
-                    if (!isset($codeToId[$dependency])) {
-                        $dependencyRegister[$add][$dependency] = true;
-                    }
-                }
-            }
-
-            while (count($dependencyRegister) > 0) {
-                foreach ($dependencyRegister as $addCode => $dependencies) {
-                    if (count($dependencies) === 0) {
-                        $group = $this->transformGroupToDbFormat($configGroups[$addCode], $codeToId);
-                        $group['ggp_changed_by'] = $group['ggp_created_by'] = 0;
-                        $group['ggp_changed'] = $group['ggp_created'] = date('Y-m-d H:i:s');
-
-                        // Insert
-                        $insert = $sql->insert('gems__groups');
-                        $insert->values($group);
-
-                        $statement = $sql->prepareStatementForSqlObject($insert);
-                        $result = $statement->execute();
-                        $codeToId[$addCode] = $result->getGeneratedValue();
-
-                        // Update dependency array
-                        unset($dependencyRegister[$addCode]);
-                        foreach($dependencyRegister as $addCode2 => $dependencies2) {
-                            unset($dependencyRegister[$addCode2][$addCode]);
-                        }
-                        continue 2;
-                    }
-                }
-                throw new \Exception('Detected infinite loop');
-            }
+            $this->add($added, $sql, $configGroups, $codeToId);
         }
 
         if (count($updated) > 0) {
-            foreach ($updated as $updateCode) {
-                $group = $this->transformGroupToDbFormat($configGroups[$updateCode], $codeToId);
-                $group['ggp_changed_by'] = 0;
-                $group['ggp_changed'] = date('Y-m-d H:i:s');
+            $this->update($updated, $sql, $configGroups, $codeToId);
+        }
 
-                $update = $sql->update('gems__groups');
-                $update->set($group);
-                $update->where->equalTo('ggp_code', $updateCode);
+        if (count($deleted) > 0) {
+            $this->delete($deleted, $sql);
+        }
 
-                $statement = $sql->prepareStatementForSqlObject($update);
-                $result = $statement->execute();
-                if ($result->getAffectedRows() !== 1) {
-                    throw new \Exception();
+        return $diff;
+    }
+
+    private function add(array $added, Sql $sql, array $configGroups, array &$codeToId): void
+    {
+        // Keep a register of roles to be added, tracking the dependencies on other roles.
+        // Once a role to be added has no dependencies, it can be added
+        $dependencyRegister = [];
+        foreach ($added as $add) {
+            $group = $configGroups[$add];
+            $dependencyRegister[$add] = [];
+            $dependencyGroups = $group['ggp_may_set_groups'];
+            if ($group['ggp_default_group'] !== null) {
+                $dependencyGroups[] = $group['ggp_default_group'];
+            }
+            $dependencyGroups = array_unique($dependencyGroups);
+
+            foreach ($dependencyGroups as $dependency) {
+                if (!isset($codeToId[$dependency])) {
+                    $dependencyRegister[$add][$dependency] = true;
                 }
             }
         }
 
-        if (count($deleted) > 0) {
-            $delete = $sql->delete('gems__groups');
-            $delete->where->in('ggp_code', $deleted);
+        while (count($dependencyRegister) > 0) {
+            foreach ($dependencyRegister as $addCode => $dependencies) {
+                if (count($dependencies) === 0) {
+                    $group = $this->transformGroupToDbFormat($configGroups[$addCode], $codeToId);
+                    $group['ggp_changed_by'] = $group['ggp_created_by'] = 0;
+                    $group['ggp_changed'] = $group['ggp_created'] = date('Y-m-d H:i:s');
 
-            $statement = $sql->prepareStatementForSqlObject($delete);
+                    // Insert
+                    $insert = $sql->insert('gems__groups');
+                    $insert->values($group);
+
+                    $statement = $sql->prepareStatementForSqlObject($insert);
+                    $result = $statement->execute();
+                    $codeToId[$addCode] = $result->getGeneratedValue();
+
+                    // Update dependency array
+                    unset($dependencyRegister[$addCode]);
+                    foreach($dependencyRegister as $addCode2 => $dependencies2) {
+                        unset($dependencyRegister[$addCode2][$addCode]);
+                    }
+                    continue 2;
+                }
+            }
+            throw new \Exception('Detected infinite loop');
+        }
+    }
+
+    private function update(array $updated, Sql $sql, array $configGroups, array $codeToId): void
+    {
+        foreach ($updated as $updateCode) {
+            $group = $this->transformGroupToDbFormat($configGroups[$updateCode], $codeToId);
+            $group['ggp_changed_by'] = 0;
+            $group['ggp_changed'] = date('Y-m-d H:i:s');
+
+            $update = $sql->update('gems__groups');
+            $update->set($group);
+            $update->where->equalTo('ggp_code', $updateCode);
+
+            $statement = $sql->prepareStatementForSqlObject($update);
             $result = $statement->execute();
-            if ($result->getAffectedRows() !== count($deleted)) {
+            if ($result->getAffectedRows() !== 1) {
                 throw new \Exception();
             }
         }
+    }
 
-        return $diff;
+    private function delete(array $deleted, Sql $sql): void
+    {
+        $delete = $sql->delete('gems__groups');
+        $delete->where->in('ggp_code', $deleted);
+
+        $statement = $sql->prepareStatementForSqlObject($delete);
+        $result = $statement->execute();
+        if ($result->getAffectedRows() !== count($deleted)) {
+            throw new \Exception();
+        }
     }
 
     private function transformGroupToDbFormat(array $group, array $codeToId): array

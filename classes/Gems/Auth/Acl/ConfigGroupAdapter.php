@@ -15,4 +15,13 @@ class ConfigGroupAdapter implements GroupAdapterInterface
     {
         return $this->groups;
     }
+
+    public function validateGroupsConfig(): void
+    {
+        foreach ($this->groups as $keyCode => $group) {
+            if ($group['ggp_code'] !== $keyCode) {
+                throw new \InvalidArgumentException('Mismatch between group key "' . $keyCode . '" and code "' . $group['ggp_code'] . '"');
+            }
+        }
+    }
 }
