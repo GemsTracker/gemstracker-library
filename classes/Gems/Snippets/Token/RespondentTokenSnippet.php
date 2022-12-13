@@ -12,7 +12,9 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Gems\Snippets\TokenModelSnippetAbstract;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
@@ -24,7 +26,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
+class RespondentTokenSnippet extends TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -33,11 +35,12 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array(
+    protected $_fixedSort = [
             'calc_used_date'  => SORT_ASC,
             'gtr_track_name'  => SORT_ASC,
             'gto_round_order' => SORT_ASC,
-            'gto_created'     => SORT_ASC);
+            'gto_created'     => SORT_ASC
+    ];
 
     /**
      * Sets pagination on or off.
@@ -147,12 +150,7 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         return $this->respondent && parent::hasHtmlOutput();
     }
 
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function getFilter(MetaModelInterface $metaModel): array
     {
         $filter['gto_id_respondent']   = $this->respondent->getId();
         if (is_array($this->forOtherOrgs)) {
@@ -175,13 +173,11 @@ class RespondentTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         // NOTE! $this->model does not need to be the token model, but $model is a token model
         $tabFilter = $this->model->getMeta('tab_filter');
         if ($tabFilter) {
-            $model->addFilter($tabFilter);
+            $this->extraFilter = $tabFilter;
         }
 
-        $model->addFilter($filter);
+        $this->extraFilter += $filter;
 
-        // \MUtil\EchoOut\EchoOut::track($model->getFilter());
-
-        $this->processSortOnly($model);
+        return parent::getFilter($metaModel);
     }
 }

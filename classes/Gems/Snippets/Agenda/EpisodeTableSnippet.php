@@ -121,7 +121,7 @@ class EpisodeTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * /
     public function hasHtmlOutput(): bool
     {
-        if (true || $this->currentUser->hasPrivilege('pr.episodes')) {
+        if ($this->currentUser->hasPrivilege('pr.episodes')) {
             return parent::hasHtmlOutput();
         }
 

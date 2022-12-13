@@ -41,7 +41,6 @@ class OverviewPlanAction extends TokenSearchHandlerAbstract
      */
     protected array $autofilterParameters = array(
         'dateSelector' => 'getDateSelector',
-        'multiTracks'  => 'isMultiTracks',
         'surveyReturn' => 'setSurveyReturn',
         );
 

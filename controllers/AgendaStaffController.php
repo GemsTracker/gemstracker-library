@@ -18,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AgendaStaffController extends \Gems\Actions\AgendaStaffAction
+class AgendaStaffController extends \Gems\Handlers\Setup\AgendaStaffHandler
 { }

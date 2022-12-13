@@ -33,7 +33,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
  *
  * Extra helpers are:
  * - Form title:   getTitle()
- * - Menu helpers: $this->menu, beforeDispay() & getMenuList()
  *
  * @package    Gems
  * @subpackage Snippets
@@ -51,6 +50,8 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      */
     // protected $accesslog;
 
+    protected string $afterSaveRoutePart = 'show';
+
     /**
      * Shortfix to add class attribute
      *
@@ -64,19 +65,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @var string Optional
      */
     protected $formTitle;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $menuShowChildren = false;
-
-    /**
-     *
-     * @var boolean
-     */
-    protected $menuShowSiblings = false;
-
+    
     /**
      * When true a tabbed form is used.
      *
@@ -215,49 +204,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     }
 
     /**
-     * Perform some actions on the form, right before it is displayed but already populated
-     *
-     * Here we add the table display to the form.
-     */
-    public function beforeDisplay()
-    {
-        if ($this->_form instanceof \Gems\TabForm) {
-            if ($links = $this->getMenuList()) {
-                $linkContainer = \MUtil\Html::create()->div(array('class' => 'element-container-labelless'));
-                $linkContainer[] = $links;
-
-                $element = $this->_form->createElement('html', 'formLinks');
-                $element->setValue($linkContainer)
-                        ->setOrder(999)
-                        ->removeDecorator('HtmlTag')
-                        ->removeDecorator('Label')
-                        ->removeDecorator('DtDdWrapper');
-
-                $this->_form->resetContext();
-                $this->_form->addElement($element);
-
-                if (is_null($this->_form->getDisplayGroup(\Gems\TabForm::GROUP_OTHER))) {
-                    $this->_form->addDisplayGroup(array($element), \Gems\TabForm::GROUP_OTHER);
-                } else {
-                    $this->_form->getDisplayGroup(\Gems\TabForm::GROUP_OTHER)->addElement($element);
-                }
-            }
-        } elseif($links = $this->getMenuList()) {
-            $linkContainer = Html::div(['class' => 'element-container-labelless']);
-            $linkContainer[] = $links;
-
-            $element = $this->_form->createElement('html', 'formLinks');
-            $element->setValue($linkContainer)
-                    ->setOrder(999)
-                    ->removeDecorator('HtmlTag')
-                    ->removeDecorator('Label')
-                    ->removeDecorator('DtDdWrapper');
-
-            $this->_form->addElement($element);
-        }
-    }
-
-    /**
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
@@ -281,14 +227,6 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     }
 
     /**
-     * @return null|string
-     */
-    public function getCancelRoute()
-    {
-        return $this->menuHelper->getCurrentParentUrl();;
-    }
-
-    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
@@ -301,39 +239,13 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 
         $title = $this->getTitle();
         if ($title) {
-            $htmlDiv->h3($title, array('class' => 'title'));
+            $htmlDiv->h3($title, ['class' => 'title']);
         }
 
         $form = parent::getHtmlOutput();
         $htmlDiv[] = $form;
 
         return $htmlDiv;
-    }
-
-    /**
-     * overrule to add your own buttons.
-     *
-     * @return string[]
-     */
-    protected function getMenuList(): array
-    {
-        $urls = [];
-        // $urls[$this->_('Cancel')] = $this->getCancelRoute();
-
-        $links = [];
-        foreach($urls as $label => $url) {
-            $links[] = Html::actionLink($url, $label);
-        }
-
-        /*if ($this->menuShowSiblings) {
-            $links->addCurrentSiblings();
-        }
-
-        if ($this->menuShowChildren) {
-            $links->addCurrentChildren();
-        }*/
-
-        return $links;
     }
 
     /**
@@ -358,22 +270,19 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     protected function setAfterSaveRoute()
     {
         if (! $this->afterSaveRouteUrl) {
+            $route  = $this->menuHelper->getRelatedRoute($this->afterSaveRoutePart);
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $route . "\n", FILE_APPEND);
             $keys   = $this->getModel()->getMetaModel()->getKeys();
             $params = $this->requestInfo->getRequestMatchedParams();
             foreach ($keys as $key => $field) { 
                 if (isset($this->formData[$field])) {
                     $params[$key] = $this->formData[$field];
-                } else {
+                } elseif (! isset($params[$key])) {
                     $params[$key] = null;
                 }
             }
             
-            $saveRoute = $this->menuHelper->getCurrentParentRoute();
-            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl($saveRoute, $params);
-            $url = $this->menuHelper->getRouteUrl($saveRoute, $params);
-            if ($url) {
-                $this->afterSaveRouteUrl = $url;
-            }
+            $this->afterSaveRouteUrl = $this->menuHelper->routeHelper->getRouteUrl($route, $params);
         }
         parent::setAfterSaveRoute();
     }

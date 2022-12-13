@@ -24,7 +24,7 @@ use Zalt\Model\Bridge\BridgeInterface;
  */
 class MenuSnippetHelper
 {
-    protected RouteHelper $routeHelper;
+    public RouteHelper $routeHelper;
 
     public function __construct(
         protected Menu $menu,

@@ -12,6 +12,9 @@
 namespace Gems\Model;
 
 use Gems\Agenda\Agenda;
+use Gems\Html;
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
 
 /**
  *
@@ -56,12 +59,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
     protected $db;
 
     /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
      * @var \Gems\Util\Translated
      */
     protected $translatedUtil;
@@ -88,6 +85,26 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         $this->addColumn(new \Zend_Db_Expr("'appointment'"), \Gems\Model::ID_TYPE);
         $this->setKeys(array(\Gems\Model::APPOINTMENT_ID => 'gap_id_appointment'));
+        
+        $this->addColumn(
+            "CASE WHEN gap_status IN ('" .
+            implode("', '", $this->agenda->getStatusKeysInactive()) .
+            "') THEN 'deleted' ELSE '' END",
+            'row_class'
+        );
+
+        $codes = $this->agenda->getStatusCodesInactive();
+        if (isset($codes['CA'])) {
+            $cancelCode = 'CA';
+        } elseif ($codes) {
+            reset($codes);
+            $cancelCode = key($codes);
+        } else {
+            $cancelCode = null;
+        }
+        if ($cancelCode) {
+            $this->setDeleteValues('gap_status', $cancelCode);
+        }
     }
 
     /**
@@ -143,39 +160,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
                 'glo',
                 false
             );
-        }
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * This function is no needed if the classes are setup correctly
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        if ($this->agenda) {
-            $this->addColumn(
-                "CASE WHEN gap_status IN ('" .
-                implode("', '", $this->agenda->getStatusKeysInactive()) .
-                "') THEN 'deleted' ELSE '' END",
-                'row_class'
-            );
-
-            $codes = $this->agenda->getStatusCodesInactive();
-            if (isset($codes['CA'])) {
-                $cancelCode = 'CA';
-            } elseif ($codes) {
-                reset($codes);
-                $cancelCode = key($codes);
-            } else {
-                $cancelCode = null;
-            }
-            if ($cancelCode) {
-                $this->setDeleteValues('gap_status', $cancelCode);
-            }
         }
     }
 
@@ -244,7 +228,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
             'multiOptions', $this->agenda->getStatusCodes());
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
-                'formatFunction', [$this, 'showEpisode'],
                 'required', false);
         }
 
@@ -296,7 +279,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         if ($this->currentUser->hasPrivilege('pr.episodes')) {
             $this->setIfExists('gap_id_episode', 'multiOptions', $empty);
-            $this->addDependency('AppointmentCareEpisodeDependency');
+            $this->addDependency(['AppointmentCareEpisodeDependency', $this->agenda, $this->translatedUtil]);
         }
         return $this;
     }
@@ -377,38 +360,6 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->autoTrackUpdate = $value;
 
         return $this;
-    }
-
-    /**
-     * Display the episode
-     * @param int $episodeId
-     * @return string
-     */
-    public function showEpisode($episodeId)
-    {
-        if (! $episodeId) {
-            return null;
-        }
-        $episode = $this->agenda->getEpisodeOfCare($episodeId);
-
-        if (! $episode->exists) {
-            return $episodeId;
-        }
-
-        $episodeItem = $this->menu->findAllowedController('care-episode', 'show');
-        if ($episodeItem) {
-            $href = $episodeItem->toHRefAttribute(['gec_episode_of_care_id' => $episodeId]);
-        } else {
-            $href = false;
-        }
-
-        if (! $href) {
-            return $episode->getDisplayString();
-        }
-
-        $onclick = new \MUtil\Html\OnClickArrayAttribute();
-        $onclick->addCancelBubble(true);
-        return \MUtil\Html::create('a', $href, $episode->getDisplayString(), $onclick);
     }
 
     /**

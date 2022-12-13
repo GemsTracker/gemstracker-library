@@ -229,8 +229,8 @@ class Route
     public function getAskRoutes(): array
     {
         return [
-            ...$this->createBrowseRoutes(baseName: 'ask',
-                controllerClass: \Gems\Actions\AskAction::class,
+            ...$this->createSnippetRoutes(baseName: 'ask',
+                controllerClass: \Gems\Actions\AskHandler::class,
                 pages: [
                     'index',
                     'forward',
@@ -272,17 +272,17 @@ class Route
                     EmptyHandler::class,
                 ]
             ],
-            ...$this->createBrowseRoutes(baseName: 'overview.summary',
-                controllerClass: \Gems\Actions\SummaryAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.summary',
+                controllerClass:                   \Gems\Handlers\Overview\SummaryHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.compliance',
-                controllerClass: \Gems\Actions\ComplianceAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.compliance',
+                controllerClass:                   \Gems\Handlers\Overview\ComplianceHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
@@ -350,25 +350,25 @@ class Route
                     EmptyHandler::class
                 ],
             ],
-            ...$this->createBrowseRoutes(baseName: 'project.tracks',
-                controllerClass: \Gems\Actions\ProjectTracksAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'project.tracks',
+                controllerClass:                   \Gems\Handlers\Project\ProjectTracksHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'show',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     'show',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'project.surveys',
-                controllerClass: \Gems\Actions\ProjectSurveysAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'project.surveys',
+                controllerClass:                   \Gems\Handlers\Project\ProjectSurveysHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'show',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     'show',
                 ],
             ),
@@ -445,10 +445,20 @@ class Route
                 pages: [
                     'show-track',
                     'edit-track',
+                    'delete-track',
+                    'check-track-answers',
+                    'check-track',
+                    'recalc-fields',
+                    'export-track',
                 ],
                 parameterRoutes: [
                     'show-track',
                     'edit-track',
+                    'delete-track',
+                    'check-track-answers',
+                    'check-track',
+                    'recalc-fields',
+                    'export-track',
                 ],
                 parentParameters: [
                     'id1',
@@ -491,6 +501,25 @@ class Route
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
+                controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+                pages: [
+                    'insert',
+                    'view-survey',
+                ],
+                parameterRoutes: [
+                    'insert',
+                    'view-survey',
+                ],
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                parameters: [
+                    \Gems\Model::SURVEY_ID => '\d+',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tokens',
@@ -688,26 +717,26 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.diagnosis',
                 controllerClass:                   \Gems\Handlers\Setup\AgendaDiagnosisHandler::class,
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.location',
-                controllerClass: \Gems\Actions\LocationAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.location',
+                controllerClass:                   \Gems\Handlers\Setup\LocationHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'cleanup',
                     'merge',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'cleanup',
                     'merge',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.agenda.staff',
-                controllerClass: \Gems\Actions\AgendaStaffAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'setup.agenda.staff',
+                controllerClass:                   \Gems\Handlers\Setup\AgendaStaffHandler::class,
+                pages:                             [
                     ...$this->defaultPages,
                     'merge',
                 ],
-                parameterRoutes: [
+                parameterRoutes:                   [
                     ...$this->defaultParameterRoutes,
                     'merge',
                 ],

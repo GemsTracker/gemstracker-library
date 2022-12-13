@@ -11,8 +11,19 @@
 
 namespace Gems\Snippets\Tracker\Compliance;
 
+use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Repository\TokenRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\AElement;
+use Zalt\Html\ImgElement;
+use Zalt\Late\Alternate;
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -43,49 +54,46 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowRoutes = ['track' => 'show-track'];
+    public array $menuShowRoutes = ['respondent.tracks.show-track'];
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions, 
+        RequestInfo $requestInfo, 
+        MenuSnippetHelper $menuHelper, 
+        TranslatorInterface $translate,
+        protected TokenRepository $tokenRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $this->applyTextMarker();
 
+        $keys[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
+        $keys[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        $keys[Model::RESPONDENT_TRACK]   = 'gr2t_id_respondent_track';
+
         // Add link to patient to overview
-        $menuItems = $this->findUrls('show', $bridge);
-        if ($menuItems) {
-            $menuItem = reset($menuItems);
-            if ($menuItem instanceof \Gems\Menu\SubMenuItem) {
-                $href = $menuItem->toHRefAttribute($bridge);
+        $showResp = $this->menuHelper->getLateRouteUrl('respondent.show', $keys, $bridge);
+        if ($showResp) {
+            $aElem = new AElement($showResp['url']);
+            $aElem->setOnEmpty('');
 
-                if ($href) {
-                    $aElem = new \MUtil\Html\AElement($href);
-                    $aElem->setOnEmpty('');
+            // Make sure org is known
+            $model->get('gr2o_id_organization');
 
-                    // Make sure org is known
-                    $model->get('gr2o_id_organization');
-
-                    $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-                    $model->set('respondent_name', 'itemDisplay', $aElem);
-                }
-            }
+            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $model->set('respondent_name', 'itemDisplay', $aElem);
         }
 
-        $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'compliance');
 
@@ -93,18 +101,21 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
         $th_row = $thead->tr(array('class' => 'rounds'));
         $th     = $th_row->td();
         $span   = 1;
-        $cRound = null;
+        $cRound = '';
         $cDesc  = null;
         $thead->tr();
-
-        if ($showMenuItems = $this->getShowUrls($bridge)) {
-            foreach($showMenuItems as $showMenuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Show')));
+        
+        if ($this->showMenu) {
+            foreach ($this->getShowUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $this->_('Show')));
             }
         }
 
         // Initialize alter
-        $alternateClass = new \MUtil\Lazy\Alternate(array('odd', 'even'));
+        $alternateClass = new Alternate(array('odd', 'even'));
 
         foreach($model->getItemsOrdered() as $name) {
             $label = $model->get($name, 'label');
@@ -123,7 +134,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
                     $span    = 1;
                     $cRound  = $round;
                     if ($cIcon = $model->get($name, 'roundIcon')) {
-                        $cDesc = \MUtil\Html\ImgElement::imgFile($cIcon, array(
+                        $cDesc = ImgElement::imgFile($cIcon, array(
                             'alt'   => $cRound,
                             'title' => $cRound
                         ));
@@ -136,11 +147,11 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
                 }
 
                 if ($model->get($name, 'noSort')) {
-                    $result = 'res_' . substr($name, 5);
+                    // $result = 'res_' . substr($name, 5);
                     $token  = 'tok_' . substr($name, 5);
 
                     $tds   = $bridge->addColumn(
-                            \MUtil\Lazy::method($tUtil, 'getTokenStatusLinkForTokenId', $bridge->$token),
+                            Late::method($this->tokenRepository, 'getTokenStatusLinkForTokenId', $this->menuHelper, $bridge->$token),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
                 } else {

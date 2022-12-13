@@ -15,9 +15,20 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Date\Period;
+use Gems\Html;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Tracker;
+use Gems\Tracker\Snippets\EditTokenSnippetAbstract;
+use MUtil\Model\Type\ChangeTracker;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -27,16 +38,31 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstract
+class EditTrackTokenSnippet extends EditTokenSnippetAbstract
 {
+    protected int $currentUserId;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        Tracker $tracker,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $tracker);
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
+
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FormBridgeInterface $bridge
+     * @param FullDataInterface $model
      */
     protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
     {
@@ -53,7 +79,11 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
             }
         }
 
-        parent::addFormElements($bridge, $model);
+        $metaModel = $this->getModel()->getMetaModel();
+        $this->initItems($metaModel);
+
+        //And any remaining item
+        $this->addItems($bridge, $this->_items);
     }
 
     /**
@@ -62,13 +92,39 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
      */
     protected function getMenuList(): array
     {
-        $links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
+        $items = [
+            [
+                'route' => 'respondent.show',
+                'label' => $this->_('Show patient'),
+            ],
+            [
+                'route' => 'respondent.tracks.index',
+                'label' => $this->_('Show tracks'),
+            ],
+            [
+                'route' => 'respondent.tracks.show-track',
+                'label' => $this->_('Show track'),
+                'parameters' => [
+                    Model::RESPONDENT_TRACK => $this->token->getRespondentTrackId(),
+                ],
+            ],
+            [
+                'route' => 'respondent.tracks.show',
+                'label' => $this->_('Show token'),
+            ],
+        ];
 
-        $links->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'))
-                ->addByController('track', 'show', $this->_('Show token'));
+        $links = [];
+        foreach($items as $item) {
+            $params = $this->requestInfo->getRequestMatchedParams();
+            if (isset($item['parameters'])) {
+                $params += $item['parameters'];
+            }
+            $url = $this->menuHelper->getRouteUrl($item['route'], $params);
+            if ($url) {
+                $links[$item['route']] = Html::actionLink($url, $item['label']);
+            }
+        }
 
         return $links;
     }
@@ -104,7 +160,7 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
                         'gto_changed',
                         'assigned_by',
                         ),
-                    $metaModel->getMeta(\MUtil\Model\Type\ChangeTracker::HIDDEN_FIELDS, array())
+                    $metaModel->getMeta(ChangeTracker::HIDDEN_FIELDS, array())
                     );
             if (! $this->createData) {
                 array_unshift($this->_items, 'gto_id_token');
@@ -151,11 +207,11 @@ class EditTrackTokenSnippet extends \Gems\Tracker\Snippets\EditTokenSnippetAbstr
         $updateData['gto_valid_until']        = $this->formData['gto_valid_until'];
         $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
         $updateData['gto_comment']            = $this->formData['gto_comment'];
-        \MUtil\EchoOut\EchoOut::track($updateData);
+
         $this->token->refresh($updateData);
 
         $respTrack = $this->token->getRespondentTrack();
-        $userId    = $this->loader->getCurrentUser()->getUserId();
+        $userId    = $this->currentUserId;
         $changed   = $respTrack->checkTrackTokens($userId, $this->token);
 
         if ($changed) {

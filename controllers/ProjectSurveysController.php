@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ProjectSurveysController extends \Gems\Actions\ProjectSurveysAction
+class ProjectSurveysController extends \Gems\Handlers\Project\ProjectSurveysHandler
 {
 }

@@ -18,7 +18,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class SummaryController extends \Gems\Actions\SummaryAction
+class SummaryController extends \Gems\Handlers\Overview\SummaryHandler
 {
 
 }

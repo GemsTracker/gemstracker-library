@@ -18,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class LocationController extends \Gems\Actions\LocationAction
+class LocationController extends \Gems\Handlers\Setup\LocationHandler
 { }

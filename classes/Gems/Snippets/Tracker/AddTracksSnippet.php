@@ -20,6 +20,7 @@ use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Late\RepeatableByKeyValue;
+use Zalt\Snippets\TranslatableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -35,40 +36,29 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
+class AddTracksSnippet extends TranslatableSnippetAbstract
 {
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
     /**
      * When using bootstrap and more than this number of items the dropdowns will
      * support scrolling.
      *
      * @var int
      */
-    public $scrollTreshold = 10;
+    public int $scrollTreshold = 10;
 
     /**
      * Switch to set display of respondent dropdown on or off
      *
      * @var mixed When string, string is used for display, when false, nothing is displayed
      */
-    public $showForRespondents = true;
+    public bool|string $showForRespondents = true;
 
     /**
      * Switch to set display of staff dropdown on or off
      *
      * @var mixed When string, string is used for display, when false, nothing is displayed
      */
-    public $showForStaff = true;
+    public bool|string $showForStaff = true;
 
 
     /**
@@ -76,13 +66,13 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      *
      * @var mixed When string, string is used for display, when false, nothing is displayed
      */
-    public $showForTracks = true;
+    public bool|string $showForTracks = true;
 
     /**
      *
      * @var mixed When string, string is used for display, when false, nothing is displayed
      */
-    public $showTitle = true;
+    public bool|string $showTitle = true;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -179,39 +169,32 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
             $this->cache->setCacheItem($cacheId, $tracks, ['surveys', 'tracks']);
         }
 
-        if ($trackType != 'tracks') {
-            $div = Html::create()->div(['class' => 'btn-group']);
-        } else {
-            $div = Html::create()->div(['class' => 'toolbox btn-group']);
-        }
+        $div = Html::create()->div(['class' => 'dropdown btn-group']);
 
         if ($tracks) {
             $params = $this->requestInfo->getRequestMatchedParams();
 
-            $div->button($trackTypeDescription,
-                ['class' => 'toolanchor btn', 'data-toggle' => 'dropdown', 'type' => 'button']);
-            $dropdownButton = $div->button([
+            $div->button($trackTypeDescription, [
                 'class' => 'btn dropdown-toggle',
-                'data-toggle' => 'dropdown',
+                'data-bs-toggle' => 'dropdown',
                 'type' => 'button',
             ]);
-            $dropdownButton->span(['class' => 'caret', 'renderClosingTag' => true]);
 
             $data = new RepeatableByKeyValue($tracks);
 
             if ($trackType == 'tracks') {
                 $params[Model::TRACK_ID] = $data->key;
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view', $params);
-                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
+                $menuViewUrl   = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.view', $params);
+                $menuCreateUrl = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.' . $action, $params);
             } else {
                 $params[Model::SURVEY_ID] = $data->key;
-                $menuViewUrl = $this->routeHelper->getRouteUrl('respondent.tracks.view-survey', $params);
-                $menuCreateUrl = $this->routeHelper->getRouteUrl('respondent.tracks.' . $action, $params);
+                $menuViewUrl   = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.view-survey', $params);
+                $menuCreateUrl = $this->routeHelper->getMixedLateRouteUrl('respondent.tracks.' . $action, $params);
             }
 
             if (count($tracks) > $this->scrollTreshold) {
                 // Add a header and scroll class so we keep rounded corners
-                $top  = $div->ul(['class' => 'dropdown-menu', 'role' => 'menu']);
+                $top  = $div->ul(['class' => 'dropdown-menu']);
                 $link = $top->li(['class' => 'disabled'])->a('#');
                 $link->i(['class' => 'fa fa-chevron-down fa-fw pull-left', 'renderClosingTag' => true]);
                 $link->i(['class' => 'fa fa-chevron-down fa-fw pull-right', 'renderClosingTag' => true]);
@@ -221,9 +204,6 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
                 $li = $div->ul(['class' => 'dropdown-menu', 'role' => 'menu'], $data)->li();
             }
 
-            $link = $li->a($menuViewUrl, ['class' => 'rightFloat info']);
-            $link->i(['class' => 'fa fa-info-circle'])->raw('&nbsp;');
-
             if (count($tracks) > $this->scrollTreshold) {
                 // Add a footer so we keep rounded corners
                 $link = $top->li(['class' => 'disabled'])->a('#');
@@ -231,23 +211,17 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
                 $link->i(['class' => 'fa fa-chevron-up fa-fw pull-right', 'renderClosingTag' => true]);
             }
 
-            $toolboxRowAttributes = ['class' => 'add'];
+            $toolboxRowAttributes = ['class' => 'dropdown-item'];
             $li->a($menuCreateUrl,
                 $data->value,
                 $toolboxRowAttributes);
 
         } else {
-            $div->button($trackTypeDescription,
-                ['class' => 'toolanchor btn disabled', 'data-toggle' => 'dropdown', 'type' => 'button']);
-            $dropdownButton = $div->button([
-                'class' => 'disabled btn dropdown-toggle',
-                'data-toggle' => 'dropdown',
+            $div->button($trackTypeDescription, [
+                'class' => 'btn dropdown-toggle',
+                'data-bs-toggle' => 'dropdown',
                 'type' => 'button',
             ]);
-            $dropdownButton->span(['class' => 'caret', 'renderClosingTag' => true]);
-            $options = ['class' => 'dropdown-menu disabled', 'role' => 'menu'];
-
-            $div->ul($this->_('None available'), $options);
         }
 
         return $div;
@@ -273,7 +247,7 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 
         $output  = false;
 
-        $addToLists = Html::create()->div(['class' => 'tooldock']);
+        $addToLists = Html::create()->div(['class' => 'track-buttons']);
         if ($this->showTitle) {
             $addToLists->strong($this->showTitle);
         }
@@ -285,8 +259,8 @@ class AddTracksSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
             }
         }
         if ($this->showForRespondents || $this->showForStaff) {
-            $div = Html::create()->div(['class' => 'toolbox btn-group']);
-            $div->button($this->_('Surveys for'), ['class' => 'toolanchor btn', 'type' => 'button']);
+            $div = Html::create()->div(['class' => 'btn-group']);
+            $div->button($this->_('Surveys for'), ['class' => 'btn', 'type' => 'button', 'disabled' => true ]);
 
             if ($this->showForRespondents) {
                 $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);

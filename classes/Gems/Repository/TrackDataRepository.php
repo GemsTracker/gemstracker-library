@@ -5,6 +5,7 @@ namespace Gems\Repository;
 use Gems\Db\ResultFetcher;
 use Gems\Util\UtilDbHelper;
 use Laminas\Db\Sql\Predicate\Predicate;
+use Laminas\Db\Sql\Predicate\PredicateSet;
 
 class TrackDataRepository
 {
@@ -73,6 +74,26 @@ class TrackDataRepository
         );
     }
 
+    public function getRespondersForTrack(int $trackId): array
+    {
+        $select1 = $this->resultFetcher->getSelect('gems__groups');
+        $select1->columns(['ggp_name'])
+            ->join('gems__surveys', 'ggp_id_group = gsu_id_primary_group', [])
+            ->join('gems__rounds', 'gsu_id_survey = gro_id_survey', [])
+            ->join('gems__tracks', 'gro_id_track = gtr_id_track', [])
+            ->where(['gro_active' => 1, 'gtr_active' => 1, 'gtr_id_track' => $trackId]);
+        $result1 = $this->resultFetcher->fetchCol($select1) ?: [];
+
+        $select2 = $this->resultFetcher->getSelect('gems__track_fields');
+        $select2->columns(['gtf_field_name'])
+            ->where(['gtf_field_type' => 'relation', 'gtf_id_track' => $trackId]);
+        $result2 = $this->resultFetcher->fetchCol($select2) ?: [];
+        
+        $output = array_unique(array_merge($result1, $result2));
+        
+        return array_combine($output, $output);
+    }
+    
     /**
      * Returns all available languages used in surveys
      *
@@ -85,7 +106,7 @@ class TrackDataRepository
                     FROM gems__surveys
                     ORDER BY gsu_survey_languages";
 
-        $result = $this->resultFetcher->fetchCol($sql);
+        $result = $this->resultFetcher->fetchCol($sql) ?: [];
 
         foreach ($result as $value) {
             if (strpos($value, ', ') !== false) {
@@ -99,6 +120,29 @@ class TrackDataRepository
         }
 
         return $return;
+    }
+
+    /**
+     * @param array $organizations As $organizationId => $organizationName
+     * @return array
+     */
+    public function getTracksForOrgs(array $organizations)
+    {
+        $whereNest = new Predicate([], PredicateSet::COMBINED_BY_OR);
+
+        foreach($organizations as $organizationId => $organizationName) {
+            $whereNest->like('gtr_organizations', "%|$organizationId|%");
+        }
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($whereNest->, true) . "\n", FILE_APPEND);
+
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__tracks',
+            'gtr_id_track',
+            'gtr_track_name',
+            ['tracks'],
+            [$whereNest],
+            'asort'
+        );
     }
 
     /**

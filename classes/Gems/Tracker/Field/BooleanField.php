@@ -26,7 +26,7 @@ class BooleanField extends FieldAbstract
     protected function addModelSettings(array &$settings)
     {
         $empty = [];
-        $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+        $multi = $this->_fieldDefinition['gtf_field_values'] ? explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']) : [];
         if (empty($this->_fieldDefinition['gtf_field_values']) || empty($multi)) {
             $multi = $this->translatedUtil->getYesNo();
         }

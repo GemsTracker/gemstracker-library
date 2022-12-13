@@ -85,7 +85,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         ModelDetailTableSnippet::class,
         CurrentButtonRowSnippet::class,
         CalendarTableSnippet::class,
-    ];
+        ];
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -128,7 +128,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
      */
     protected function createModel($detailed, $action): ModelAbstract
     {
-        $model      = new \MUtil\Model\TableModel('gems__agenda_activities');
+        $model = new \MUtil\Model\TableModel('gems__agenda_activities');
 
         \Gems\Model::setChangeFieldsByPrefix($model, 'gaa');
 

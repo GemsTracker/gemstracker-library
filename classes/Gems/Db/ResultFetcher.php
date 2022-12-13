@@ -3,6 +3,7 @@
 namespace Gems\Db;
 
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
@@ -84,10 +85,21 @@ class ResultFetcher
         return $this->db;
     }
 
+    public function getPlatform(): PlatformInterface
+    {
+        return $this->db->getPlatform();
+    }
+
+    public function getSelect(null|string|TableIdentifier $table = null): Select
+    {
+        return $this->sql->select($table);
+    }
+
     public function query(Select|string $select, ?array $params = null)
     {
         $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
         if ($select instanceof Select) {
+            // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' . $select->getSqlString($this->db->getPlatform()) . "\n", FILE_APPEND);
             $statement = $this->sql->prepareStatementForSqlObject($select);
             $result = $statement->execute($params);
             $resultSet->initialize($result);
@@ -99,10 +111,5 @@ class ResultFetcher
         }
 
         return $this->db->query($select, $params, $resultSet);
-    }
-
-    public function getSelect(null|string|TableIdentifier $table = null): Select
-    {
-        return $this->sql->select($table);
     }
 }

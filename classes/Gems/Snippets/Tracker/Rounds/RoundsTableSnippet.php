@@ -61,7 +61,7 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
      *
      * @var array (int/controller => action)
      */
-    //public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
+    public array $menuEditRoutes = ['track-builder.track-maintenance.track-rounds.edit'];
 
     /**
      * Menu actions to show in Show box.

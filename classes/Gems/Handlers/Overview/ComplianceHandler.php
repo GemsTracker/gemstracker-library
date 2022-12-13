@@ -1,8 +1,20 @@
 <?php
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Overview;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TokenRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\Tracker\Compliance\ComplianceLegenda;
+use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
+use Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet;
+use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\User\Group;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,14 +34,16 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
+class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Compliance\\ComplianceTableSnippet';
+    protected array $autofilterSnippets = [
+        ComplianceTableSnippet::class,
+    ];
 
     /**
      *
@@ -38,28 +52,39 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $currentUser;
 
     /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker\\Compliance\\ComplianceSearchFormSnippet');
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        ComplianceSearchFormSnippet::class,
+    ];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStopSnippets = [
-        'Tracker\\TokenStatusLegenda',
-        'Tracker\\Compliance\\ComplianceLegenda',
-        'Generic\\CurrentSiblingsButtonRowSnippet',
+    protected array $indexStopSnippets = [
+        CurrentSiblingsButtonRowSnippet::class,
+        TokenStatusLegenda::class,
+        ComplianceLegenda::class,
         ];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected TokenRepository $tokenRepository,
+        protected TrackDataRepository $trackDataRepository,
+    )
+    {
+        parent::__construct($responder, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -72,7 +97,7 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel($detailed, $action): ModelAbstract
     {
         $model = new \Gems\Model\JoinModel('resptrack' , 'gems__respondent2track');
         $model->addTable('gems__respondent2org', array(
@@ -101,8 +126,9 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
             $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
-            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['extraFilter'][1] = 0;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+            $this->_snippetParams['onEmpty'] = $this->autofilterParameters['onEmpty'];
             return $model;
         }
 
@@ -132,7 +158,8 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
             return $model;
         }
 
-        $status = $this->util->getTokenData()->getStatusExpression();
+        $status = $this->tokenRepository->getStatusExpression();
+        $status = new \Zend_Db_Expr($status->getExpression());
 
         $select = $this->db->select();
         $select->from('gems__tokens', array(
@@ -191,11 +218,11 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * Get the model for export and have the option to change it before using for export
      * @return
      */
-    public function getExportModel()
+    public function getExportModel(): ModelAbstract
     {
         $model         = parent::getExportModel();
         $statusColumns = $model->getColNames('label');
-        $everyStatus   = $this->util->getTokenData()->getEveryStatus();
+        $everyStatus   = $this->tokenRepository->getEveryStatus();
         foreach ($statusColumns as $colName) {
             // For the compliance columns, we add the translation for the letter codes and move the decription to the label
             // This way the column shows the full survey name and round description
@@ -211,7 +238,7 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Compliance');
     }
@@ -223,7 +250,7 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
@@ -232,8 +259,8 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
-            if (count($tracks) == 1) {
+            $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
+            if (\count($tracks) == 1) {
                 $this->defaultSearchData['gr2t_id_track'] = key($tracks);
             }
         }
@@ -247,7 +274,7 @@ class ComplianceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('track', 'tracks', $count);
     }

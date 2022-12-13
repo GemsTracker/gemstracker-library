@@ -96,6 +96,8 @@ class Menu
                             'label' => $this->translator->trans('Change organization'),
                             'type' => 'route-link-item',
                         ],
+
+
                         [
                             'name' => 'respondent.episodes-of-care.index',
                             'label' => $this->translator->trans('Episodes'),
@@ -165,6 +167,43 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
+                                    'name' => 'respondent.tracks.show-track',
+                                    'label' => $this->translator->trans('Show track'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'respondent.tracks.edit-track',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.delete-track',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.check-track-answers',
+                                            'label' => $this->translator->trans('Check answers'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.check-track',
+                                            'label' => $this->translator->trans('Check rounds'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.recalc-fields',
+                                            'label' => $this->translator->trans('Recalculate fields'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.export-track',
+                                            'label' => $this->translator->trans('Export track'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                                [
                                     'name' => 'respondent.tracks.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
@@ -175,8 +214,28 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
+                                            'name' => 'respondent.tracks.correct',
+                                            'label' => $this->translator->trans('Correct answers'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
                                             'name' => 'respondent.tracks.delete',
                                             'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.questions',
+                                            'label' => $this->translator->trans('Preview'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.check-token',
+                                            'label' => $this->translator->trans('Token check'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'respondent.tracks.check-token-answers',
+                                            'label' => $this->translator->trans('(Re)check answers'),
                                             'type' => 'route-link-item',
                                         ],
                                     ],

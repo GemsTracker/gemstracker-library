@@ -13,6 +13,7 @@ namespace Gems\Snippets;
 
 
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
 use MUtil\Model\ModelAbstract;
@@ -33,7 +34,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
+class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -43,23 +44,11 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $class = 'browser table compliance';
 
     /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
      * A model, not necessarily the token model
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -67,6 +56,7 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
         protected MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected Tracker $tracker,
+        protected TokenRepository $tokenRepository,
     )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $menuHelper, $translate);
@@ -79,14 +69,13 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function addActionLinks(TableBridge $bridge)
     {
         $actionLinks = [];
-        // Action links
-//        $actionLinks[] = $tData->getTokenAskLinkForBridge($bridge);
-//        $actionLinks[] = $tData->getTokenAnswerLinkForBridge($bridge);
+        $actionLinks[] = $this->tokenRepository->getTokenAskLinkForBridge($bridge, $this->menuHelper);
+        $actionLinks[] = $this->tokenRepository->getTokenAnswerLinkForBridge($bridge, $this->menuHelper);
 
         // Remove nulls
         $actionLinks = array_filter($actionLinks);
         if ($actionLinks) {
-            $bridge->addItemLink($actionLinks);
+            $bridge->addColumns($actionLinks);
         }
     }
 
@@ -96,11 +85,9 @@ class TokenModelSnippetAbstract extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function addTokenLinks(TableBridge $bridge)
     {
-        $link = null; // $this->util->getTokenData()->getTokenShowLinkForBridge($bridge, true);
+        $link = $this->tokenRepository->getTokenShowLinkForBridge($bridge, $this->menuHelper);
 
-        if ($link) {
-            $bridge->addItemLink($link);
-        }
+        $bridge->addItemLink($link);
     }
 
     /**

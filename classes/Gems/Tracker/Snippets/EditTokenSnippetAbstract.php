@@ -11,7 +11,17 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Tracker;
+use Gems\Tracker\Model\StandardTokenModel;
+use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\HtmlInterface;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Adds basic token editing snippet parameter processing and checking.
@@ -24,23 +34,8 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
+abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
 {
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
     /**
      * Optional: $request or $tokenData must be set
      *
@@ -59,27 +54,27 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
      */
     protected $tokenId;
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->loader && $this->request && parent::checkRegistryRequestsAnswers();
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        protected Tracker $tracker,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
         $model = $this->token->getModel();
 
-        if ($model instanceof \Gems\Tracker\Model\StandardTokenModel) {
+        if ($model instanceof StandardTokenModel) {
             $model->addEditTracking();
 
             if ($this->createData) {
@@ -95,15 +90,14 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput()
     {
 
         if ($this->tokenId) {
             if ($this->token->exists) {
-                return parent::getHtmlOutput($view);
+                return parent::getHtmlOutput();
             } else {
                 $this->addMessage(sprintf($this->_('Token %s not found.'), $this->tokenId));
             }
@@ -141,13 +135,13 @@ abstract class EditTokenSnippetAbstract extends \Gems\Snippets\ModelFormSnippetA
         if (! $this->tokenId) {
             if ($this->token) {
                 $this->tokenId = $this->token->getTokenId();
-            } elseif ($this->request) {
-                $this->tokenId = $this->request->getParam(\MUtil\Model::REQUEST_ID);
+            } else {
+                $this->tokenId = $this->requestInfo->getParam(Model::REQUEST_ID);
             }
         }
 
         if ($this->tokenId && (! $this->token)) {
-            $this->token = $this->loader->getTracker()->getToken($this->tokenId);
+            $this->token = $this->tracker->getToken($this->tokenId);
         }
 
         // Output always true, returns an error message as html when anything is wrong

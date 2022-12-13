@@ -11,6 +11,8 @@
 
 namespace Gems\Model\Bridge;
 
+use Zalt\Snippets\ModelBridge\DetailTableBridge;
+
 /**
  * Special vertical table bridge with an extra third column,
  *
@@ -20,11 +22,11 @@ namespace Gems\Model\Bridge;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class ThreeColumnTableBridge extends \MUtil\Model\Bridge\VerticalTableBridge
+class ThreeColumnTableBridge extends DetailTableBridge
 {
     public function addMarkerRow()
     {
-        $this->table->tr()->td(array('colspan' => 3));
+        $this->table->tr()->td(['colspan' => 3]);
     }
 
     public function add($items, $colspan = 1.5)
@@ -32,7 +34,7 @@ class ThreeColumnTableBridge extends \MUtil\Model\Bridge\VerticalTableBridge
         // 1.5 because only three total and some math later on
 
         foreach ((array) $items as $item) {
-            $this->addItem($item, null, array('colspan' => $colspan));
+            $this->addItem($item, null, ['colspan' => $colspan]);
         }
     }
 
@@ -50,7 +52,7 @@ class ThreeColumnTableBridge extends \MUtil\Model\Bridge\VerticalTableBridge
             $first   = array_shift($items);
 
             $this->addItem($first, null);
-            $this->td($with, array('rowspan' => $rowspan));
+            $this->td($with, ['rowspan' => $rowspan]);
         } else {
             $colspan = 1.5;
         }

@@ -29,13 +29,6 @@ class TrackUsageTextDetailsSnippet extends \MUtil\Snippets\SnippetAbstract
     protected $db;
 
     /**
-     * Are we working in a multi tracks environment?
-     *
-     * @var boolean
-     */
-    protected $multiTracks = true;
-
-    /**
      * When true the name is show as a header
      * @var boolean
      */
@@ -118,10 +111,6 @@ class TrackUsageTextDetailsSnippet extends \MUtil\Snippets\SnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        if (! $this->multiTracks) {
-            return false;
-        }
-
         if (! $this->trackData) {
             if (! $this->trackId) {
                 if ($this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {

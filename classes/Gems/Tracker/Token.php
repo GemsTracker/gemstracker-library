@@ -1307,9 +1307,9 @@ class Token extends \Gems\Registry\TargetAbstract
      *
      * @return string
      */
-    public function getResult()
+    public function getResult(): string
     {
-        return $this->_gemsData['gto_result'];
+        return $this->_gemsData['gto_result'] ?: '';
     }
 
     /**
@@ -1342,9 +1342,9 @@ class Token extends \Gems\Registry\TargetAbstract
      *
      * @return string Round description
      */
-    public function getRoundDescription()
+    public function getRoundDescription(): string
     {
-        return $this->_gemsData['gto_round_description'];
+        return $this->_gemsData['gto_round_description'] ?: '';
     }
 
     /**
