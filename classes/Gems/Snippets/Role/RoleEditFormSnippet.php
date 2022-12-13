@@ -14,6 +14,8 @@ namespace Gems\Snippets\Role;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\MenuNew\MenuSnippetHelper;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 use Laminas\Permissions\Acl\Acl;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -71,6 +73,8 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
         private readonly AclRepository $aclRepository,
+        private readonly \Zend_Db_Adapter_Abstract $zendDbAdapter,
+        private readonly Adapter $dbAdapter,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
@@ -199,6 +203,43 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
         if (isset($this->formData['grl_privileges'])) {
             $this->formData['grl_privileges'] = implode(',', $this->formData['grl_privileges']);
+        }
+    }
+
+    protected function saveData(): int
+    {
+        $id = $this->requestInfo->getParam(\MUtil\Model::REQUEST_ID);
+
+        if ($id === null) {
+            // Add
+            return parent::saveData();
+        }
+
+        // Edit
+        $this->zendDbAdapter->beginTransaction();
+        try {
+            $oldData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
+
+            $return = parent::saveData();
+
+            $newData = $this->getModel()->loadFirst(['grl_id_role' => $id]);
+
+            if ($newData['grl_name'] !== $oldData['grl_name']) {
+                $sql = new Sql($this->dbAdapter);
+
+                $update = $sql->update('gems__groups');
+                $update->set(['ggp_role' => $newData['grl_name']]);
+                $update->where->equalTo('ggp_role', $oldData['grl_name']);
+
+                $statement = $sql->prepareStatementForSqlObject($update);
+                $statement->execute();
+            }
+
+            $this->zendDbAdapter->commit();
+            return $return;
+        } catch (\Throwable $e) {
+            $this->zendDbAdapter->rollback();
+            throw $e;
         }
     }
 
