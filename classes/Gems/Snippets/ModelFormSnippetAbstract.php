@@ -65,6 +65,20 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * @var string Optional
      */
     protected $formTitle;
+
+    /**
+     * Automatically calculate and set the width of the labels
+     *
+     * @var int
+     */
+    protected int $layoutAutoWidthFactor = 0;
+
+    /**
+     * Set the (fixed) width of the labels, if zero: is calculated
+     *
+     * @var int
+     */
+    protected int $layoutFixedWidth = 0;
     
     /**
      * When true a tabbed form is used.
