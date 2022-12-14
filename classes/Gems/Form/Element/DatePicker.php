@@ -17,7 +17,13 @@ class DatePicker extends Text
             $this->_value = $this->_value->format($this->dateFormat);
         }
 
-        //unset($this->dateFormat);
+        if (isset($this->datePickerSettings)) {
+            $this->setAttrib('data-date-picker-settings', json_encode($this->datePickerSettings));
+            unset($this->datePickerSettings);
+        }
+
+        $this->setAttrib('data-date-format', $this->dateFormat);
+        unset($this->dateFormat);
         unset($this->storageFormat);
 
         return parent::render($view);

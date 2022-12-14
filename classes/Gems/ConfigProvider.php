@@ -354,11 +354,7 @@ class ConfigProvider
         $dateFormat = [
             'dateFormat'   => 'd-m-Y',
             'description'  => 'dd-mm-yyyy',
-            'jQueryParams' => [
-                'changeMonth' => true, 
-                'changeYear'  => true, 
-                'duration'    => 'fast',
-                ],
+            'datePickerSettings' => [],
             'size'         => 10,
             'storageFormat' => 'Y-m-d',
             ];
@@ -366,11 +362,9 @@ class ConfigProvider
         $timeFormat = [
             'dateFormat'   => 'H:i',
             'description'  => 'hh:mm',
-            'jQueryParams' => [
-                'duration'    => 'fast', 
-                'stepMinute'  => 5, 
-//                'timeJsUrl'   => $jstUrl,
-                ],
+            'datePickerSettings' => [
+                'minutesStep'  => 5,
+            ],
             'size'        => 6,
             'storageFormat' => 'H:i:s',
             ];
@@ -378,13 +372,8 @@ class ConfigProvider
         $dateTimeFormat = [
             'dateFormat'   => 'd-m-Y H:i',
             'description'  => 'dd-mm-yyyy hh:mm',
-            'jQueryParams' => [
-                'changeMonth' => true,
-                'changeYear'  => true,
-                'duration'    => 'fast',
-                'stepMinute'  => 5,
-                'size'        => 8,
-//                'timeJsUrl'   => $jstUrl,
+            'datePickerSettings' => [
+                'minutesStep'  => 5,
             ],
             'size'         => 16,
             'storageFormat' => 'Y-m-d H:i:s',
