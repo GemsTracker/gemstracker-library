@@ -27,18 +27,12 @@ class GroupRepository
     {
         $template = '<?php
 
-namespace Gems\Config;
-
-class Group
-{
-    public function __invoke(): array
-    {
-        return [
-            \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
-            \'groups\' => %s,
-        ];
-    }
-}' . PHP_EOL;
+return [
+    \'groups\' => [
+        \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
+        \'groups\' => %s,
+    ],
+];' . PHP_EOL;
 
         $groups = VarExporter::export($this->groupAdapter->getGroupsConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
         $groups = str_replace("\n", "\n            ", $groups);

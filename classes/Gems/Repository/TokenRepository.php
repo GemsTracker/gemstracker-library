@@ -297,13 +297,13 @@ class TokenRepository
      *
      * @param string $tokenId
      * @param string $tokenStatus
-     * @param boolean $staffToken Is token answerable by staff
+     * @param boolean $memberType To determine whether the token is answerable by staff
      * @param boolean $keepCaps Keep the capital letters in the label
      */
-    public function getTokenAskButton($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $staffToken, $keepCaps)
+    public function getTokenAskButton($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $memberType, $keepCaps)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
-            if ($url && $staffToken) {
+            if ($url && $memberType === 'staff') {
                 $label = $this->translator->_('Fill in');
 
                 if ('P' == $tokenStatus) {
@@ -397,12 +397,12 @@ class TokenRepository
      *
      * @param string $tokenId
      * @param string $tokenStatus
-     * @param boolean $staffToken Is token answerable by staff
+     * @param boolean $memberType To determine whether the token is answerable by staff
      * @return string
      */
-    public function getTokenCopyLinkClass($tokenStatus, $staffToken)
+    public function getTokenCopyLinkClass($tokenStatus, $memberType)
     {
-        if (('O' == $tokenStatus || 'P' == $tokenStatus) && ! $staffToken) {
+        if (('O' == $tokenStatus || 'P' == $tokenStatus) && $memberType !== 'staff') {
             return 'token';
         }
         return null;

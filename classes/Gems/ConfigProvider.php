@@ -20,9 +20,7 @@ use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
-use Gems\Config\Group;
 use Gems\Config\Messenger;
-use Gems\Config\Role;
 use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Factory\DoctrineDbalFactory;
@@ -105,8 +103,6 @@ class ConfigProvider
         $messengerSettings = new Messenger();
         $routeSettings = new Route();
         $surveySettings = new Survey();
-        $roleSettings = new Role();
-        $groupSettings = new Group();
 
         return [
             'temp_config' => [ // TODO: Temporary
@@ -121,7 +117,6 @@ class ConfigProvider
             'dependencies'  => $this->getDependencies(),
             'email'         => $this->getEmailSettings(),
             'events'        => $this->getEventSubscribers(),
-            'groups'        => $groupSettings(),
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'messenger'     => $messengerSettings(),
@@ -130,7 +125,6 @@ class ConfigProvider
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
             'supplementary_privileges'   => $this->getSupplementaryPrivileges(),
-            'roles'         => $roleSettings(),
             'routes'        => $routeSettings(),
             'security'      => $this->getSecuritySettings(),
             'session'       => $this->getSession(),
