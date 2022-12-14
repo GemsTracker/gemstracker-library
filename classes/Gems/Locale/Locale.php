@@ -57,7 +57,9 @@ class Locale
             $language = $this->getCurrentLanguage();
         }
 
-        $typeDefaults = [];
+        $typeDefaults = [
+            'lang' => $language,
+        ];
 
         if (isset($this->config['defaultTypes'])) {
             $typeDefaults = $this->config['defaultTypes'];
@@ -69,6 +71,10 @@ class Locale
                     $typeDefaults[$modelType][$settingName] = $value;
                 }
             }
+        }
+
+        foreach($typeDefaults as $modelType=>$settings) {
+            $typeDefaults[$modelType]['lang'] = $language;
         }
 
         return $typeDefaults;

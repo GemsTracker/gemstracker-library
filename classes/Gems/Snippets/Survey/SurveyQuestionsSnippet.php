@@ -110,7 +110,7 @@ class SurveyQuestionsSnippet extends TableSnippetAbstract
         protected StatusMessengerInterface $statusMessenger,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translator);
     }
 
     /**

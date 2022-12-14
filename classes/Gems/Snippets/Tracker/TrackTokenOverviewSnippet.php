@@ -183,6 +183,15 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
         return null;
     }
 
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        $output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
+        $output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        $output[\MUtil\Model::REQUEST_ID] = 'gto_id_token';
+        return $output;
+    }
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
