@@ -132,7 +132,7 @@ class DbLookup extends UtilAbstract
                 'ggp_id_group',
                 'ggp_name',
                 'groups',
-                'ggp_group_active = 1 AND ggp_staff_members = 1',
+                'ggp_group_active = 1 AND ggp_member_type = \'staff\'',
                 'natsort');
         } catch (\Exception $exc) {
             // Intentional fallthrough when no db present
@@ -151,7 +151,7 @@ class DbLookup extends UtilAbstract
     {
         $sql = "SELECT ggp_id_group, ggp_role
             FROM gems__groups
-            WHERE ggp_group_active = 1 AND ggp_staff_members = 1
+            WHERE ggp_group_active = 1 AND ggp_member_type = 'staff'
             ORDER BY ggp_role";
 
         return $this->_getSelectPairsCached(__FUNCTION__, $sql, null, 'groups');
@@ -172,7 +172,7 @@ class DbLookup extends UtilAbstract
                 'ggp_id_group',
                 'ggp_name',
                 'groups',
-                'ggp_group_active = 1 AND ggp_respondent_members = 1',
+                'ggp_group_active = 1 AND ggp_member_type = \'respondent\'',
                 'natsort');
     }
 
@@ -218,7 +218,7 @@ class DbLookup extends UtilAbstract
     public function getDefaultGroup()
     {
         $groups  = $this->getActiveStaffGroups();
-        $roles   = $this->db->fetchPairs('SELECT ggp_role, ggp_id_group FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
+        $roles   = $this->db->fetchPairs('SELECT ggp_role, ggp_id_group FROM gems__groups WHERE ggp_group_active=1 AND ggp_member_type=\'staff\' ORDER BY ggp_name');
         $current = null;
 
         foreach (array_reverse($this->acl->getRoles()) as $roleId) {
@@ -608,7 +608,7 @@ class DbLookup extends UtilAbstract
             'ggp_id_group',
             'ggp_name',
             'groups',
-            'ggp_staff_members = 1',
+            'ggp_member_type = \'staff\'',
             'natsort');
     }
 

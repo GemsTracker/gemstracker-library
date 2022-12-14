@@ -258,6 +258,11 @@ class MenuSnippetHelper
         return $output;
     }
 
+    public function getRelatedRouteUrl(string $routePart): string
+    {
+        return $this->getRouteUrl($this->getRelatedRoute($routePart), $this->requestInfo->getParams());
+    }
+
     public function getRouteUrl(?string $route, array $params): ?string
     {
         if ($route) {

@@ -139,7 +139,7 @@ class AddTracksSnippet extends TranslatableSnippetAbstract
                         ->where('gsu_surveyor_active = 1')
                         ->where('gsu_active = 1')
                         ->where('ggp_group_active = 1')
-                        ->where('ggp_respondent_members = 1')
+                        ->where('ggp_member_type = \'respondent\'')
                         ->where('gsu_insertable = 1')
                         ->where('gsu_insert_organizations LIKE \'%|'.$orgId.'|%\'')
                         ->order('gsu_survey_name');
@@ -152,7 +152,7 @@ class AddTracksSnippet extends TranslatableSnippetAbstract
                         ->where('gsu_surveyor_active = 1')
                         ->where('gsu_active = 1')
                         ->where('ggp_group_active = 1')
-                        ->where('ggp_staff_members = 1')
+                        ->where('ggp_member_type = \'staff\'')
                         ->where('gsu_insertable = 1')
                         ->where('gsu_insert_organizations LIKE \'%|'.$orgId.'|%\'')
                         ->order('gsu_survey_name');

@@ -120,7 +120,7 @@ class TokenBulkMailFormSnippet extends MailFormSnippet
             } elseif (! $tokenData['gr2o_email']) {
                 $title = $this->_('Respondent does not have an e-mail address.');
                 $menuFind = array('controller' => 'respondent', 'action' => 'edit');
-            } elseif ($tokenData['ggp_respondent_members'] == 0) {
+            } elseif ($tokenData['ggp_member_type'] == 'respondent') {
                 $title = $this->_('Survey cannot be taken by a respondent.');
             } else {
                 $title = $this->_('Survey cannot be taken at this moment.');

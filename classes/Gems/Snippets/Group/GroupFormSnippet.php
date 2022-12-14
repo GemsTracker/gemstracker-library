@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Group;
 
+use Gems\Auth\Acl\AclRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -47,6 +48,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
@@ -59,22 +61,6 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        // Replace two checkboxes with on radio button control
-        $this->model->set('ggp_staff_members', 'elementClass', 'Hidden');
-        $this->model->setOnSave('ggp_staff_members', array($this, 'saveIsStaff'));
-        $this->model->set('ggp_respondent_members', 'elementClass', 'Hidden');
-        $this->model->setOnSave('ggp_respondent_members', array($this, 'saveIsRespondent'));
-
-        $options = array(
-            '1' => $this->model->get('ggp_staff_members', 'label'),
-            '2' => $this->model->get('ggp_respondent_members', 'label')
-            );
-        $this->model->set('staff_respondent', 'label', $this->_('Can be assigned to'),
-                'elementClass', 'Radio',
-                'multiOptions', $options,
-                'order', $this->model->getOrder('ggp_staff_members') + 1);
-        $this->model->setOnLoad('staff_respondent', array($this, 'loadStaffRespondent'));
-
         return $this->model;
     }
 
@@ -112,7 +98,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
             $model     = $this->getModel();
             $roles     = $model->get('ggp_role', 'multiOptions');
-            $userRoles = $this->currentUserRepository->getCurrentUser()->getAllowedRoles();
+            $userRoles = $this->aclRepository->getAllowedRoles($this->currentUserRepository->getCurrentUser());
 
             // \MUtil\EchoOut\EchoOut::track($userRoles, $roles);
             // Make sure we get the roles as they are labeled
@@ -126,9 +112,9 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 if ($this->createData) {
                     $this->formData['ggp_role'] = reset($roles);
                 } else {
-                    $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-                    $this->afterSaveRouteUrl = array($this->request->getActionKey() => 'show');
-                    $this->resetRoute        = false;
+                    $this->messenger->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
+                    $this->redirectRoute = $this->menuHelper->getRelatedRouteUrl('show');
+
                     return $this->formData;
                 }
             }
@@ -139,68 +125,5 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
         }
         
         return $this->formData;
-    }
-
-    /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a value
-     *
-     * If empty or \Zend_Db_Expression (after save) it will return just the value
-     * currently there are no checks for a valid date format.
-     *
-     * @see \MUtil\Model\ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @param boolean $isPost True when passing on post data
-     * @return int|string
-     */
-    public function loadStaffRespondent($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
-    {
-        if (! $isPost) {
-            if (!isset($context['staff_respondent'])) {
-                if (isset($context['ggp_staff_members']) && $context['ggp_staff_members'] == 1) {
-                    return 1;
-                } else if (isset($context['ggp_respondent_members']) && $context['ggp_respondent_members'] == 1) {
-                    return 2;
-                }
-            }
-        }
-
-        return $value;
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see \MUtil\Model\ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return int
-     */
-    public function saveIsRespondent($value, $isNew = false, $name = null, array $context = array())
-    {
-        return (isset($context['staff_respondent']) && (2 == $context['staff_respondent'])) ? 1 : 0;
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input value as an integer
-     *
-     * @see \MUtil\Model\ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return int
-     */
-    public function saveIsStaff($value, $isNew = false, $name = null, array $context = array())
-    {
-        return (isset($context['staff_respondent']) && (1 == $context['staff_respondent'])) ? 1 : 0;
     }
 }

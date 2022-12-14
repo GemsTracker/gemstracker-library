@@ -383,14 +383,14 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      *
      * @param string $tokenId
      * @param string $tokenStatus
-     * @param boolean $staffToken Is token answerable by staff
+     * @param string $memberType To determine whether the token is answerable by staff
      * @param boolean $keepCaps Keep the capital letters in the label
      * @return \MUtil\Html\AElement
      */
-    public function getTokenAskButton($patientNr, $organizationId, $tokenId, $tokenStatus, $staffToken, $keepCaps)
+    public function getTokenAskButton($patientNr, $organizationId, $tokenId, $tokenStatus, $memberType, $keepCaps)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
-            if ($staffToken) {
+            if ($memberType === 'staff') {
                 $routeName = 'ask.take';
                 $label = $this->_('Fill in');
 
@@ -435,7 +435,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
                 $bridge->getLazy('gto_id_organization'),
                 $bridge->getLazy('gto_id_token'),
                 $bridge->getLazy('token_status'),
-                true,
+                'staff',
                 $keepCaps
             );
         }
@@ -445,7 +445,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
             $bridge->getLazy('gto_id_organization'),
             $bridge->getLazy('gto_id_token'),
             $bridge->getLazy('token_status'),
-            $bridge->getLazy('ggp_staff_members'),
+            $bridge->getLazy('ggp_member_type'),
             $keepCaps
         );
     }
@@ -471,7 +471,7 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
         return [
             $method,
             'class' => \MUtil\Lazy::method($this, 'getTokenCopyLinkClass',
-                $bridge->getLazy('token_status'), $bridge->getLazy('ggp_staff_members')
+                $bridge->getLazy('token_status'), $bridge->getLazy('ggp_member_type')
             ),
         ];
     }
@@ -495,12 +495,12 @@ class TokenData extends \MUtil\Translate\TranslateableAbstract
      *
      * @param string $tokenId
      * @param string $tokenStatus
-     * @param boolean $staffToken Is token answerable by staff
+     * @param boolean $memberType To determine whether the token is answerable by staff
      * @return string
      */
-    public function getTokenCopyLinkClass($tokenStatus, $staffToken)
+    public function getTokenCopyLinkClass($tokenStatus, $memberType)
     {
-        if (('O' == $tokenStatus || 'P' == $tokenStatus) && ! $staffToken) {
+        if (('O' == $tokenStatus || 'P' == $tokenStatus) && $memberType !== 'staff') {
             return 'token';
         }
     }

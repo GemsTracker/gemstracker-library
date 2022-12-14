@@ -5,6 +5,7 @@ namespace Gems\Auth\Acl;
 use Brick\VarExporter\VarExporter;
 use Gems\MenuNew\RouteHelper;
 use Gems\UntranslatedString;
+use Gems\User\User;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\Permissions\Acl\Role\GenericRole;
@@ -157,22 +158,48 @@ class AclRepository
         return $roles;
     }
 
-    public function buildConfigFile(): string
+    /**
+     * Returns the current roles a user may set.
+     *
+     * NOTE! A user can set a role, unless it <em>requires a higher role level</em>.
+     *
+     * I.e. an admin is not allowed to set a super role as super inherits and expands admin. But it is
+     * allowed to set the nologin and respondent roles that are not inherited by the admin as they are
+     * in a different hierarchy.
+     *
+     * An exception is the role master as it is set by the system. You gotta be a master to set the master
+     * role.
+     *
+     * @return string[] With identical keys and values roleId => roleId
+     */
+    public function getAllowedRoles(User $user): array
+    {
+        $userRole = $user->getRole();
+        if ($userRole === 'master') {
+            $output = $this->acl->getRoles();
+            return array_combine($output, $output);
+        }
+
+        $output = [$userRole => $userRole];
+        foreach ($this->acl->getRoles() as $role) {
+            if (! $this->acl->inheritsRole($role, $userRole, true)) {
+                $output[$role] = $role;
+            }
+        }
+        unset($output['master']);
+        return $output;
+    }
+
+    public function buildRoleConfigFile(): string
     {
         $template = '<?php
 
-namespace Gems\Config;
-
-class Role
-{
-    public function __invoke(): array
-    {
-        return [
-            \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
-            \'roles\' => %s,
-        ];
-    }
-}' . PHP_EOL;
+return [
+    \'roles\' => [
+        \'definition_date\' => \'' . date('Y-m-d H:i:s') . '\',
+        \'roles\' => %s,
+    ],
+];' . PHP_EOL;
 
         $roles = VarExporter::export($this->roleAdapter->getRolesConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
         $roles = str_replace("\n", "\n            ", $roles);

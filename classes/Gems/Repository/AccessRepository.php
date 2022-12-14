@@ -24,7 +24,7 @@ class AccessRepository
                 ['groups'],
                 [
                     'ggp_group_active' =>  1,
-                    'ggp_staff_members' => 1
+                    'ggp_member_type' => 'staff',
                 ],
                 'natsort');
 

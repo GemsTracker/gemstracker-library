@@ -21,12 +21,23 @@ class GemsGroups extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'identity' => 'enable',
             ])
-            ->addColumn('ggp_name', 'string', [
+            ->addColumn('ggp_code', 'string', [
                 'null' => false,
                 'limit' => 30,
                 'collation' => 'utf8mb4_unicode_ci',
                 'encoding' => 'utf8mb4',
                 'after' => 'ggp_id_group',
+            ])
+            ->addIndex(['ggp_code'], [
+                'name' => 'ggp_code',
+                'unique' => true,
+            ])
+            ->addColumn('ggp_name', 'string', [
+                'null' => false,
+                'limit' => 30,
+                'collation' => 'utf8mb4_unicode_ci',
+                'encoding' => 'utf8mb4',
+                'after' => 'ggp_code',
             ])
             ->addColumn('ggp_description', 'string', [
                 'null' => false,
@@ -74,12 +85,19 @@ class GemsGroups extends Phinx\Migration\AbstractMigration
                 'limit' => MysqlAdapter::INT_TINY,
                 'after' => 'ggp_staff_members',
             ])
+            ->addColumn('ggp_member_type', 'string', [
+                'null' => false,
+                'limit' => 30,
+                'collation' => 'utf8mb4_unicode_ci',
+                'encoding' => 'utf8mb4',
+                'after' => 'ggp_respondent_members',
+            ])
             ->addColumn('ggp_allowed_ip_ranges', 'text', [
                 'null' => true,
                 'limit' => 65535,
                 'collation' => 'utf8mb4_unicode_ci',
                 'encoding' => 'utf8mb4',
-                'after' => 'ggp_respondent_members',
+                'after' => 'ggp_member_type',
             ])
             ->addColumn('ggp_no_2factor_ip_ranges', 'text', [
                 'null' => true,

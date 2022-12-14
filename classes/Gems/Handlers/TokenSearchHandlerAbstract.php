@@ -235,10 +235,10 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
                 case 'hasnomail':
                     $filter[] =
                         "((gr2o_email IS NULL OR gr2o_email = '') AND
-                                ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1) 
+                                ggp_member_type = 'respondent' AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
                              OR
                              ((grr_email IS NULL OR grr_email = '') AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)";
+                                ggp_member_type = 'respondent' AND gto_id_relationfield > 0 AND grr_mailable = 1)";
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     // Exclude not mailable, we don't want to ask them for email if we are not allowed to use it anyway
@@ -246,7 +246,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
                     break;
 
                 case 'notmailable':
-                    $filter[] = '(((gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 0) OR (gto_id_relationfield > 0 AND grr_mailable = 0) OR gr2t_mailable = 0) AND ggp_respondent_members = 1';
+                    $filter[] = '(((gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 0) OR (gto_id_relationfield > 0 AND grr_mailable = 0) OR gr2t_mailable = 0) AND ggp_member_type = \'respondent\'';
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
                     break;
@@ -260,10 +260,10 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
                 case 'tomail':
                     $filter[] =
                         "(gr2o_email IS NOT NULL AND gr2o_email != '' AND
-                                ggp_respondent_members = 1 AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
+                                ggp_member_type = 'respondent' AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable = 1)
                               OR
                               (grr_email IS NOT NULL AND grr_email != '' AND
-                                ggp_respondent_members = 1 AND gto_id_relationfield > 0 AND grr_mailable = 1)";
+                                ggp_member_type = 'respondent' AND gto_id_relationfield > 0 AND grr_mailable = 1)";
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;

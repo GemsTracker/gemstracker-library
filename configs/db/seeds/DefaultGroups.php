@@ -26,8 +26,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => 903,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 1,
-                'ggp_respondent_members' => 0,
+                'ggp_member_type' => 'staff',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0
@@ -41,8 +40,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => 903,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 1,
-                'ggp_respondent_members' => 0,
+                'ggp_member_type' => 'staff',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0
@@ -56,8 +54,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => 903,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 1,
-                'ggp_respondent_members' => 0,
+                'ggp_member_type' => 'staff',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0
@@ -71,8 +68,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => null,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 1,
-                'ggp_respondent_members' => 0,
+                'ggp_member_type' => 'staff',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0
@@ -86,8 +82,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => null,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 0,
-                'ggp_respondent_members' => 1,
+                'ggp_member_type' => 'respondent',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0
@@ -101,8 +96,7 @@ class DefaultGroups extends AbstractSeed
                 'ggp_default_group' => null,
                 'ggp_no_2factor_ip_ranges' => '127.0.0.1',
                 'ggp_group_active' => 1,
-                'ggp_staff_members' => 0,
-                'ggp_respondent_members' => 1,
+                'ggp_member_type' => 'respondent',
                 'ggp_changed_by' => 0,
                 'ggp_created' => $now->format('Y-m-d H:i:s'),
                 'ggp_created_by' => 0

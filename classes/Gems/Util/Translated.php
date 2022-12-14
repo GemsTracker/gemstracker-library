@@ -496,4 +496,20 @@ class Translated
         return $value;
     }
 
+    /**
+     * Group member types
+     *
+     * @staticvar array $data
+     * @return array respondent => Respondents, staff => Staff
+     */
+    public function getMemberTypes(): array
+    {
+        static $data;
+
+        if (! $data) {
+            $data = ['respondent' => $this->_('Respondents'), 'staff' => $this->_('Staff')];
+        }
+
+        return $data;
+    }
 }

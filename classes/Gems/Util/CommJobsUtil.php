@@ -97,7 +97,7 @@ class CommJobsUtil extends UtilAbstract
      */
     protected function _addStaffFilter(array &$filter, $fallbackMethod)
     {
-        $filter['ggp_staff_members'] = 1;
+        $filter['ggp_member_type'] = 'staff';
         if ('O' == $fallbackMethod) {
             $filter[] = 'gor_contact_email IS NOT NULL';
         }
@@ -133,7 +133,7 @@ class CommJobsUtil extends UtilAbstract
                 break;
         }
 
-        $filter['ggp_staff_members'] = 0;
+        $filter[] = 'ggp_member_type != \'staff\'';
 
         switch ($toMethod) {
             case 'A':
@@ -226,10 +226,10 @@ class CommJobsUtil extends UtilAbstract
 
             if ($target == 3) {
                 // Only staff
-                $sqlGroups .= $this->db->quoteInto(" AND ggp_staff_members = 1");
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = 'staff'");
             } elseif ($target == 2) {
                 // Only respondents
-                $sqlGroups .= $this->db->quoteInto(" AND ggp_respondent_members = 1");
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = 'respondent'");
             }
         }
 
