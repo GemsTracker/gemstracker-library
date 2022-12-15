@@ -65,6 +65,7 @@
         "doctrine/orm": "^2.13",
         "erusev/parsedown": "~1.7",
         "gemstracker/gems-api": "dev-main",
+        "gemstracker/gems-fhir-api": "dev-main",
         "ifsnop/mysqldump-php": "^2.9",
         "laminas/laminas-authentication": "^2.10",
         "laminas/laminas-db": "^2.15.0",
@@ -126,6 +127,10 @@
         {
             "type": "git",
             "url": "https://github.com/gemstracker/gems-api.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/gemstracker/gems-fhir-api.git"
         },
         {
             "type": "git",
