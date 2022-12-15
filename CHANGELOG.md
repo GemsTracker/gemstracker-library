@@ -78,6 +78,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Document the db (#16)
 - Dossier export cannot open in a new tab in EPD environments (#691)
 - Focus tracking does not work on sub forms and element (#671)
+- Mail template subject line should be a required field (#676)
 - Remove label 'Not checked' from LimeSurvey answers (#692)
 
 ### Programmability
