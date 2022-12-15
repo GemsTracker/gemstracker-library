@@ -388,7 +388,10 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'validators[unique]', $this->createUniqueValidator(array('gtf_id_order', 'gtf_id_track'))
                 );
 
-        $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
+        $this->set('gtf_field_code',        'elementClass', 'Text', 
+               'minlength', 4,
+               'validator', $this->createUniqueValidator(array('gtf_field_code', 'gtf_id_track'))
+                );
         $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30, 'translate', true);
         $this->set('gtf_field_values',      'elementClass', 'Hidden', 'translate', true);
         $this->set('gtf_field_default',     'elementClass', 'Hidden');
