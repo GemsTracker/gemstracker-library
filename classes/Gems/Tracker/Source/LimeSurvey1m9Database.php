@@ -690,6 +690,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends \Gems_Tracker_Source_Sou
                     $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
                 } else {
                     $messages[] = sprintf($this->_('Skipped the \'%s\' survey because it has an expiry date.'), $surveyor_title);
+                    return $messages;
                 }
             }
             $survey->saveSurvey($values, $userId);
