@@ -30,12 +30,15 @@ use Zalt\SnippetsLoader\SnippetLoader;
  */
 class GemsSnippetResponder extends MezzioLaminasSnippetResponder
 {
+    protected LayoutSettings $layoutSettings;
+
     protected MenuSnippetHelper $menuHelper;
     
     public function __construct(
-        protected SnippetLoader $snippetLoader,
+        SnippetLoader $snippetLoader,
         protected LayoutRenderer $layoutRenderer
     ) {
+        parent::__construct($snippetLoader);
     }
     
     public function getSnippetsResponse(array $snippetNames, mixed $snippetOptions = [], ?ServerRequestInterface $request = null) : ResponseInterface
@@ -56,9 +59,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         $headers = [];
 
         if ($this->layoutRenderer) {
-            $layoutSettings = new LayoutSettings();
-            $layoutSettings->setTemplate( 'gems::legacy-view');
-            return new HtmlResponse($this->layoutRenderer->render($layoutSettings, $this->request, $data), $statusCode, $headers);
+            return new HtmlResponse($this->layoutRenderer->render($this->layoutSettings, $this->request, $data), $statusCode, $headers);
         }
         
         return $output;
@@ -74,7 +75,11 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
             $this->menuHelper = new MenuSnippetHelper($menu, $requestInfo);
             
             $this->snippetLoader->addConstructorVariable(MenuSnippetHelper::class, $this->menuHelper);
-        }        
+        }
+
+        $this->layoutSettings = new LayoutSettings();
+        $this->layoutSettings->setTemplate( 'gems::legacy-view');
+        $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);
         
         return $requestInfo;
     }
