@@ -64,6 +64,7 @@
         "doctrine/dbal": "^3.4",
         "doctrine/orm": "^2.13",
         "erusev/parsedown": "~1.7",
+        "gemstracker/gems-api": "dev-main",
         "ifsnop/mysqldump-php": "^2.9",
         "laminas/laminas-authentication": "^2.10",
         "laminas/laminas-db": "^2.15.0",
@@ -122,6 +123,14 @@
         }
     },
     "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/gemstracker/gems-api.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/gemstracker/gems-oauth2.git"
+        },
         {
             "type": "git",
             "url": "https://github.com/GemsTracker/MUtil.git"
