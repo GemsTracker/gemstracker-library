@@ -1732,6 +1732,9 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.l
 -- PATCH: Fix comm template spelling mistake
 UPDATE gems__comm_templates SET gct_name = REPLACE(gct_name, 'treatement', 'treatment');
 
+-- PATCH: Add pr.ask role
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.ask') WHERE grl_name IN ('nologin', 'guest') AND grl_privileges NOT LIKE '%,pr.ask%';
+
 -- GEMS VERSION: 68
 -- PATCH: Add seeing answers by group
 ALTER TABLE gems__surveys ADD gsu_answers_by_group boolean not null default 0 AFTER gsu_id_primary_group;
@@ -1745,3 +1748,4 @@ ALTER TABLE gems__appointments
 
 -- PATCH: Add index to log activity
 ALTER TABLE gems__log_activity ADD INDEX gla_created (gla_created);
+
