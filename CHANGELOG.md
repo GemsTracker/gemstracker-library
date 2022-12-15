@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1p10]
 - Source synching gives an error on expired surveys in a newly attached source (#750)
+- pr.ask privilege is not in guest role (#735)
 
 ## [1.9.1p9]
 ### Fixed

@@ -1731,3 +1731,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.site-maint.l
 
 -- PATCH: Fix comm template spelling mistake
 UPDATE gems__comm_templates SET gct_name = REPLACE(gct_name, 'treatement', 'treatment');
+
+-- PATCH: Add pr.ask role
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.ask') WHERE grl_name IN ('nologin', 'guest') AND grl_privileges NOT LIKE '%,pr.ask%';
