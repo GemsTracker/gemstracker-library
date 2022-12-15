@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [1.9.1p10]
-- Source synching gives an error on expired surveys in a newly attached source (#750)
+- Mail template subject line should be a required field (#676)
 - pr.ask privilege is not in guest role (#735)
+- Source synching gives an error on expired surveys in a newly attached source (#750)
 
 ## [1.9.1p9]
 ### Fixed
