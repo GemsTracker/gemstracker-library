@@ -125,7 +125,7 @@ abstract class BeforeAnsweringAbstract extends \MUtil_Translate_TranslateableAbs
         }
 
         $akey = $this->_answerKeyMap[$ukey];
-        if ($keepAnswer && isset($this->_answers[$akey]) && $this->_answers[$akey]) {
+        if ($keepAnswer && isset($this->_output[$akey]) && $this->_output[$akey]) {
             if ($log) {
                 $val = $this->_answers[$akey];
                 $this->log("Blocked setting of $key to $value, $key already set in output to $val.");
