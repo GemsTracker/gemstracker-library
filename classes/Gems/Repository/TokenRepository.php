@@ -490,7 +490,7 @@ class TokenRepository
      * @param boolean $plusLabel Show plus instead of label
      * @return AElement
      */
-    public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): AElement
+    public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): ?AElement
     {
         if (! $this->currentUser->hasPrivilege('respondent.track.show')) {
             //return null;
@@ -503,14 +503,16 @@ class TokenRepository
             $label = $this->translator->_('+');
         }
 
-        $url = $helper->getLateRouteUrl($routeName, [
+        $link = $helper->getLateRouteUrl($routeName, [
             Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
             Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
             Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
         ]);
 
-
-        return Html::actionLink($url, $label);
+        if (isset($link['url'])) {
+            return Html::actionLink($link['url'], $label);
+        }
+        return null;
     }
 
     /**
@@ -522,7 +524,7 @@ class TokenRepository
      */
     public function getTokenStatusDescriptionForBridge(TableBridgeAbstract $bridge, $addDescription = false): LateCall
     {
-        return Late::method($this, 'getStatusDescription', $bridge->getLazy('token_status'));
+        return Late::method($this, 'getStatusDescription', $bridge->getLate('token_status'));
     }
 
     /**

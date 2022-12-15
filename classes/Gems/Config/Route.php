@@ -62,8 +62,15 @@ class Route
                 ...$this->getProjectRoutes(),
                 ...$this->getSetupRoutes(),
                 ...$this->getTrackBuilderRoutes(),
+                ...$this->getApiRoutes(),
             ]),
         ];
+    }
+
+    public function getApiRoutes(): array
+    {
+        $apiRoutes = new ApiRoutes();
+        return $apiRoutes();
     }
 
     public function getLoggedOutRoutes(): array

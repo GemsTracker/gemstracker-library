@@ -19,6 +19,7 @@ use Gems\Tracker\Model\StandardTokenModel;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -81,13 +82,14 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
 
     /**
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param TableBridge $bridge
      */
     protected function addTokenLinks(TableBridge $bridge)
     {
         $link = $this->tokenRepository->getTokenShowLinkForBridge($bridge, $this->menuHelper);
-
-        $bridge->addItemLink($link);
+        if ($link) {
+            $bridge->addItemLink($link);
+        }
     }
 
     /**

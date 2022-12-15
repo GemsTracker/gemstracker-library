@@ -244,6 +244,10 @@ class RespondentNewHandler extends RespondentChildHandlerAbstract
         'onclick'          => 'getEditLink',
         // 'respondentData'   => 'getRespondentData',
         '-run-once'        => 'openedRespondent',
+        'tag'              => 'show-respondent',
+        'vueOptions'       => [
+            ':show-respondent-info' => 1,
+        ],
     ];
 
     /**
@@ -254,10 +258,9 @@ class RespondentNewHandler extends RespondentChildHandlerAbstract
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'Respondent\\MultiOrganizationTab',
-        'Respondent\\RespondentDetailsSnippet',
-    	'Tracker\\AddTracksSnippet',
-        'Token\\TokenTabsSnippet',
-        'Token\\RespondentTokenSnippet',
+        //'Respondent\\RespondentDetailsSnippet',
+    	//'Tracker\\AddTracksSnippet',
+        'Vue\\PatientVueSnippet',
     ];
 
     /**

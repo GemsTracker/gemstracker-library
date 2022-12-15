@@ -7,6 +7,12 @@
     {{ include('@gems/vite.html.twig') }}
     {% block header %}
     {% endblock %}
+    <style>
+        :root {
+            --bs-primary: #167c85;
+            --bs-secondary: #1a355d;
+        }
+    </style>
 </head>
 <body
         {% if current_identity is defined %}
@@ -25,14 +31,6 @@
     </header>
 
     <div class="content">
-        <div id="main-container" class="include-menu">
-            <div id="main">
-                {% if breadcrumbs is defined %}{{ include('@layout/breadcrumbs.html.twig') }}{% endif %}
-                {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
-
-                {% block content %}{% endblock %}
-            </div>
-        </div>
         <div id="menu" role="navigation">
             {% if menuHtml is defined %}
                 {{ menuHtml }}
@@ -40,6 +38,14 @@
             {% if mainMenu is defined %}
                 {{ mainMenu.renderMenu()|raw }}
             {% endif %}
+        </div>
+        <div id="main-container" class="include-menu">
+            <div id="main">
+                {% if breadcrumbs is defined %}{{ include('@layout/breadcrumbs.html.twig') }}{% endif %}
+                {% if statusMessenger is defined %}{{ include('@layout/flash-messages.html.twig') }}{% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
         </div>
         <footer>
         </footer>

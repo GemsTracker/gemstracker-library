@@ -19,6 +19,8 @@ use MUtil\Model\TableModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -120,5 +122,25 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
         $this->modelLoader->addDatabaseTranslations($model);
 
         return $model;
+    }
+
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        $output = parent::getRouteMaps($metaModel);
+        //$output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
+        //$output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
+        $output[Model::TRACK_ID] = 'gtr_id_track';
+        return $output;
+    }
+
+    /**
+     * Returns a show menu item, if access is allowed by privileges
+     */
+    protected function getShowUrls(TableBridge $bridge, array $keys): array
+    {
+        $params = $this->requestInfo->getRequestMatchedParams();
+        $params[Model::TRACK_ID] = $bridge->getLate('gtr_id_track');
+
+        return $this->menuHelper->getRouteUrls(['respondent.tracks.create'], $params);
     }
 }

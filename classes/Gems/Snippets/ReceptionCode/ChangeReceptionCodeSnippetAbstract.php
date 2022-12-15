@@ -11,7 +11,15 @@
 
 namespace Gems\Snippets\ReceptionCode;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\MetaModelInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,8 +30,10 @@ use Zalt\Model\MetaModelInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 7-mei-2015 11:17:41
  */
-abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFormSnippetAbstract
+abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstract
 {
+    protected User $currentUser;
+
     /**
      * Array of items that should be shown to the user
      *
@@ -53,12 +63,6 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
     protected $hiddenItems = array();
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * The item containing the reception code field
      *
      * @var string
@@ -86,10 +90,17 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
      */
     protected $unDeleteRight;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Called after loadFormData() and isUndeleting() but before the form is created
@@ -173,7 +184,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
         if ($this->unDelete) {
             $label = $this->_('Restore code');
         } else {
-            if ($this->unDeleteRight && (! $this->loader->getCurrentUser()->hasPrivilege($this->unDeleteRight))) {
+            if ($this->unDeleteRight && (! $this->currentUser->hasPrivilege($this->unDeleteRight))) {
                 $this->addMessage($this->_('Watch out! You yourself cannot undo this change!'));
             }
             $label = $this->_('Rejection code');
@@ -234,10 +245,8 @@ abstract class ChangeReceptionCodeSnippetAbstract extends \Gems\Snippets\ModelFo
 
         $changed = $this->setReceptionCode(
                 $this->formData[$this->receptionCodeItem],
-                $this->loader->getCurrentUser()->getUserId()
+                $this->currentUser->getUserId()
                 );
-
-        $this->accesslog->logChange($this->request, null, $this->formData);
         
         return $changed;
     }
