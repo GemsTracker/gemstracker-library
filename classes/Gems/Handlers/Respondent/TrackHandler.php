@@ -437,9 +437,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     public function answerAction()
     {
-        // Set menu OFF
-        $this->menu->setVisible(false);
-
         $token = $this->getToken();
         if (! $token->isViewable()) {
             throw new \Gems\Exception(
@@ -451,7 +448,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         $snippets = $token->getAnswerSnippetNames();
 
         if ($snippets) {
-            $this->setTitle(sprintf($this->_('Token answers: %s'), strtoupper($token->getTokenId())));
+            //$this->setTitle(sprintf($this->_('Token answers: %s'), strtoupper($token->getTokenId())));
 
             $params = $this->_processParameters($this->answerParameters + $this->defaultTokenParameters);
 
