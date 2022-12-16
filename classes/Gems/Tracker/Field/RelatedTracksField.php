@@ -11,6 +11,12 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\RespondentTrack;
+use MUtil\Model;
+use Zalt\Html\HtmlElement;
+
 /**
  *
  * @package    Gems
@@ -38,33 +44,23 @@ class RelatedTracksField extends MultiselectField
      * @var string class for showtracks list display
      */
     protected $displayClass;
-    
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
 
     /**
      * @var bool When true the value is saved with padded seperators
      */
     protected $padSeperators = true;
-    
-    /**
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
 
     /**
-     * @var \Zend_View
+     * @var RouteHelper
      */
-    protected $view;
+    protected $routeHelper;
+
+    /**
+     * @var Tracker
+     */
+    protected $tracker;
+
+    protected $urlHelper;
     
     /**
      * @inheritDoc
@@ -102,7 +98,7 @@ class RelatedTracksField extends MultiselectField
             $output['elementClass'] = 'Exhibitor';
             $output['description']  = $this->_('No other tracks to select');
         } else {
-            $respondentTracks = $this->loader->getTracker()->getRespondentTracks($context['gr2t_id_user'], $context['gr2t_id_organization'], ['gr2t_start_date DESC']);
+            $respondentTracks = $this->tracker->getRespondentTracks($context['gr2t_id_user'], $context['gr2t_id_organization'], ['gr2t_start_date DESC']);
 
             // Remove the current track itself as an option
             unset($respondentTracks[$context['gr2t_id_respondent_track']]);
@@ -110,12 +106,12 @@ class RelatedTracksField extends MultiselectField
             if ($respondentTracks) {
                 $options = [];
                 foreach ($respondentTracks as $respondentTrack) {
-                    if ($respondentTrack instanceof \Gems\Tracker\RespondentTrack) {
+                    if ($respondentTrack instanceof RespondentTrack) {
                         $class = $this->getTrackClass($respondentTrack);
                         $label = $this->getTrackLabel($respondentTrack);
                         
                         if ($class) {
-                            $label = \MUtil\Html::create('span', $label, ['class' => $class])->render($this->view);
+                            $label = \Zalt\Html\Html::create('span', $label, ['class' => $class])->render();
                         }
                         $options[$respondentTrack->getRespondentTrackId()] = $label;
                     }
@@ -167,42 +163,37 @@ class RelatedTracksField extends MultiselectField
     
     /**
      * @param $value
-     * @return \MUtil\Html\HtmlElement
+     * @return HtmlElement
      */
     public function showTracks($value)
     {
         if (! is_array($value)) {
             $value = explode('|', $value);
         }
-        
-        if (! $this->request) {
-            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-        }
 
-        $baseUrl      = ['gr2o_patient_nr' => $this->request->getParam(\MUtil\Model::REQUEST_ID1), 'gr2o_id_organization' => $this->request->getParam(\MUtil\Model::REQUEST_ID2)];
-        $tracker      = $this->loader->getTracker();
-        $showMenuItem = $this->menu->findAllowedController('track', 'show-track');
-        
+        $ul = \Zalt\Html\Html::create('span', $this->_('No linked tracks selected.'));
         if ($value) {
-            $ul = \MUtil\Html::create('ul', ['class' => $this->displayClass]);
+            $ul = \Zalt\Html\Html::create('ul', ['class' => $this->displayClass]);
             foreach ($value as $respondentTrackId) {
                 // \MUtil\EchoOut\EchoOut::track($respondentTrackId);
-                $respondentTrack = $tracker->getRespondentTrack($respondentTrackId);
+                $respondentTrack = $this->tracker->getRespondentTrack($respondentTrackId);
 
                 $label = $this->getTrackLabel($respondentTrack);
 
                 $li = $ul->li();
                 $li->class = $this->getTrackClass($respondentTrack);
-                if ($showMenuItem) {
-                    $baseUrl['gr2t_id_respondent_track'] = $respondentTrackId;
-                    $li->a($showMenuItem->toHRefAttribute($baseUrl), $label);
+
+                $url = $this->routeHelper->getRouteUrl('respondent.tracks.show-track', [
+                   Model::REQUEST_ID1 => $respondentTrack->getPatientNumber(),
+                   Model::REQUEST_ID2 => $respondentTrack->getOrganizationId(),
+                   \Gems\Model::RESPONDENT_TRACK => $respondentTrack->getRespondentTrackId(),
+                ]);
+                if ($url) {
+                    $li->a($showMenuItem->toHRefAttribute($url), $label);
                 } else {
                     $li->append($label);
                 }
             }
-        } else {
-            $ul = \MUtil\Html::create('span', $this->_('No linked tracks selected.'));
-            
         }
         
         return $ul;
