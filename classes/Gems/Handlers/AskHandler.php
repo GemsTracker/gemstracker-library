@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers;
 
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;

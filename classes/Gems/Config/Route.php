@@ -237,7 +237,7 @@ class Route
     {
         return [
             ...$this->createSnippetRoutes(baseName: 'ask',
-                controllerClass: \Gems\Actions\AskHandler::class,
+                controllerClass: \Gems\Handlers\AskHandler::class,
                 pages: [
                     'index',
                     'forward',
