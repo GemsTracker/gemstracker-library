@@ -6,6 +6,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Sql;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 
 class ManualMailerFactory
@@ -24,12 +25,12 @@ class ManualMailerFactory
         $this->db = $db;
     }
 
-    public function getMailer(?string $from): \Symfony\Component\Mailer\Mailer
+    public function getMailer(?string $from): Mailer
     {
         $dsn = $this->getMailDsnFromFrom($from);
 
         $transport = Transport::fromDsn($dsn);
-        return new \Symfony\Component\Mailer\Mailer($transport);
+        return new Mailer($transport);
     }
 
     protected function getMailDsnFromFrom(?string $from): string

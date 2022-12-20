@@ -18,11 +18,13 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Handlers\Respondent\RespondentShowHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
+use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
@@ -406,6 +408,15 @@ class Route
                     'id2' => '\d+',
                 ],
             ),
+            [
+                'name' => 'respondent-show',
+                'path' => '/respondent-show/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    LegacyCurrentUserMiddleware::class,
+                    RespondentShowHandler::class,
+                ],
+            ],
             ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
                 controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
                 basePath:                          '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
@@ -639,16 +650,19 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
-
-            ...$this->createBrowseRoutes(baseName: 'setup.communication.template',
-                controllerClass: \Gems\Actions\CommTemplateAction::class,
-            ),
             ...$this->createBrowseRoutes(baseName: 'setup.communication.job',
                 controllerClass: \Gems\Actions\CommJobAction::class,
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
             ),
+            ...$this->createBrowseRoutes(baseName: 'setup.communication.template',
+                controllerClass: \Gems\Actions\CommTemplateAction::class,
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.communication.server',
+                controllerClass: \Gems\Actions\MailServerHandler::class,
+            ),
+
             ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
                 controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
             ),
