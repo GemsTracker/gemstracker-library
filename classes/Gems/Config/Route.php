@@ -19,6 +19,7 @@ use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Middleware\AclMiddleware;
+use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
@@ -44,6 +45,7 @@ class Route
             ...$this->routeGroup([
                 'middleware' => [
                     SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
                     SessionMiddleware::class,
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,

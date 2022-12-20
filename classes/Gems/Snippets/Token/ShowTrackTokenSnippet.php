@@ -84,7 +84,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             [
                 'route' => 'respondent.tracks.correct',
                 'label' => $this->_('Correct answers'),
-                'disabled' => $this->token->isCompleted(),
+                'disabled' => !$this->token->isCompleted(),
             ],
             [
                 'route' => 'respondent.tracks.delete',
@@ -96,7 +96,11 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         foreach($items as $item) {
             $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $this->requestInfo->getRequestMatchedParams());
             if ($url) {
-                $buttons[$item['route']] = Html::actionLink($url, $item['label']);
+                if (isset($item['disabled']) && $item['disabled'] === true) {
+                    $buttons[$item['route']] = Html::actionDisabled($item['label']);
+                } else {
+                    $buttons[$item['route']] = Html::actionLink($url, $item['label']);
+                }
             }
         }
 

@@ -16,12 +16,19 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
 use Gems\MenuNew\RouteNotFoundException;
+use Gems\Middleware\ClientIpMiddleware;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Project\ProjectSettings;
 use Gems\Tracker;
+use \Gems\Tracker\Form\AskTokenForm;
 use Gems\Tracker\Token;
+use Gems\Util\MaintenanceLock;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 
 /**
  *
@@ -91,11 +98,6 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     protected $maintenanceModeSnippets = ['Ask\\MaintenanceModeAskSnippet'];
 
     /**
-     * @var \Gems\Project\ProjectSettings
-     */
-    public $project;
-
-    /**
      * The parameters used for the lost action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -116,19 +118,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     protected $resumeLaterSnippets = 'Ask\\ResumeLaterSnippet';
 
-    /**
-     * @var RouteHelper
-     */
-    public $routeHelper;
-
-    /**
-     * The current token ID
-     *
-     * set by _initToken()
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tokenId;
+    protected ?string $tokenId = null;
 
     /**
      * The current token
@@ -157,9 +147,13 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
         protected Locale $locale,
+        protected ProjectSettings $project,
+        protected RouteHelper $routeHelper,
+        protected MaintenanceLock $maintenanceLock,
     ) {
         parent::__construct($responder, $translate);
         $this->currentUser = $currentUserRepository->getCurrentUser();
+
     }
 
     /**
@@ -187,7 +181,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
         $this->tokenId = $this->tracker->filterToken($tokenId);
         // Now check if the token is valid
-        $validator = $this->tracker->getTokenValidator();
+        $validator = $this->tracker->getTokenValidator($this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE));
 
         if (! $this->tokenId || $validator->isValid($this->tokenId) === false) {
             return false;
@@ -255,9 +249,9 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     /**
      * Function for overruling the display of the login form.
      *
-     * @param \Gems\Tracker\Form\AskTokenForm $form
+     * @param AskTokenForm $form
      */
-    protected function displayTokenForm(\Gems\Tracker\Form\AskTokenForm $form)
+    protected function displayTokenForm(AskTokenForm $form)
     {
         $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->getName()));
         $this->html->h3($form->getDescription());
@@ -285,7 +279,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         }
     }
 
-    protected function forward(string $action): void
+    protected function forward(string $action)
     {
         $this->redirectUrl = $this->getActionUrl($action);
     }
@@ -301,10 +295,12 @@ class AskHandler extends SnippetLegacyHandlerAbstract
          * Find token *
          **************/
 
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+
         if (! $this->_initToken()) {
             if ($this->tokenId) {
                 // There is a token but is incorrect
-                $this->addMessage(sprintf(
+                $messenger->addMessage(sprintf(
                     $this->_('The token %s does not exist (any more).'),
                     strtoupper($this->tokenId)
                 ));
@@ -313,8 +309,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return;
         }
 
-        if ($this->util->getMaintenanceLock()->isLocked()) {
-            $this->addSnippet($this->maintenanceModeSnippets, ['token' => $this->token]);
+        if ($this->maintenanceLock->isLocked()) {
+            $this->addSnippets($this->maintenanceModeSnippets, ['token' => $this->token]);
             return;
         }
 
@@ -349,33 +345,34 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         }
 
         // Snippet had nothing to display, because of an answer
-        if ($this->requestHelper->getActionName() == 'return') {
-            $this->addMessage(sprintf(
+        if ($this->requestInfo->getCurrentAction() == 'return') {
+            $messenger->addMessage(sprintf(
                 $this->_('Thank you for answering. At the moment we have no further surveys for you to take.'),
                 strtoupper($this->tokenId)
             ));
         } else {
-            $this->addMessage(sprintf(
+            $messenger->addMessage(sprintf(
                 $this->_('The survey for token %s has been answered and no further surveys are open.'),
                 strtoupper($this->tokenId)
             ));
         }
 
+        $url = $this->routeHelper->getRouteUrl('ask.index');
+
         // Do not enter a loop!! Reroute!
-        $this->_reroute(array('controller' => 'ask', 'action' => 'index'), true);
+        return new RedirectResponse($url);
     }
 
     protected function getActionUrl(string $action): string
     {
-        $currentRoute = $this->requestHelper->getRouteResult();
-        $currentRouteName = $currentRoute->getMatchedRouteName();
+        $currentRouteName = $this->requestInfo->getRouteName();
         $routeParts = explode('.', $currentRouteName);
         array_pop($routeParts);
         $routeParts[] = $action;
 
         $newRouteName = join('.', $routeParts);
         $newRouteInfo = $this->routeHelper->getRoute($newRouteName);
-        $newRouteParams = $this->routeHelper->getRouteParamsFromKnownParams($newRouteInfo, $currentRoute->getMatchedParams());
+        $newRouteParams = $this->routeHelper->getRouteParamsFromKnownParams($newRouteInfo, $this->requestInfo->getRequestMatchedParams());
 
         return $this->routeHelper->getRouteUrl($newRouteName, $newRouteParams);
     }
@@ -393,8 +390,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function indexAction()
     {
-        if ($this->util->getMaintenanceLock()->isLocked()) {
-            $this->addSnippet($this->maintenanceModeSnippets);
+        if ($this->maintenanceLock->isLocked()) {
+            $this->addSnippets($this->maintenanceModeSnippets);
             return;
         }
 
@@ -406,7 +403,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             'labelWidthFactor' => 0.8
         ));
 
-        if ($this->requestHelper->isPost() && $form->isValid($this->request->getParsedBody(), false)) {
+        if ($this->requestInfo->isPost() && $form->isValid($this->request->getParsedBody(), false)) {
             $this->forwardAction();
             return;
         }
@@ -442,14 +439,19 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return;
         }
 
-        if ((! $this->currentUser->isActive()) && $this->getParam('resumeLater', 0)) {
+        if ((! $this->currentUser->isActive()) && $this->requestInfo->getParam('resumeLater', 0)) {
             $this->forward('resume-later');
             return;
         }
 
+        $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+
         if ($url = $this->token->getReturnUrl()) {
             // Check for completed tokens
+
+
             $this->tracker->processCompletedTokens(
+                $session,
                 $this->token->getRespondentId(),
                 $this->token->getChangedBy(),
                 $this->token->getOrganizationId()
@@ -467,19 +469,20 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         }
 
         // Check for completed tokens
-        $this->tracker->processCompletedTokens($this->token->getRespondentId(), $this->currentUser->getUserId());
+        $this->tracker->processCompletedTokens($session, $this->token->getRespondentId(), $this->currentUser->getUserId());
 
         // Get return route parameters
-        $parameters = $this->currentUser->getSurveyReturn();
-        if (! $parameters) {
+        $url = $this->currentUser->getSurveyReturn();
+        if ($url) {
             // Default fallback for the fallback
-            $request = $this->getRequest();
-            $parameters[$request->getControllerKey()] = 'respondent';
-            $parameters[$request->getActionKey()]     = 'show';
-            $parameters[\MUtil\Model::REQUEST_ID]      = $this->token->getPatientNumber();
+            return new RedirectResponse($url);
         }
 
-        $this->_reroute($parameters, true);
+        $url = $this->routeHelper->getRouteUrl('respondent.show', [
+            Model::REQUEST_ID1 => $this->token->getPatientNumber(),
+            Model::REQUEST_ID2 => $this->token->getOrganizationId(),
+        ]);
+        return new RedirectResponse($url);
     }
 
     /**
@@ -529,7 +532,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             exit();
 
         } catch (\Gems\Tracker\Source\SurveyNotFoundException $e) {
-            $this->addMessage(sprintf(
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->addMessage(sprintf(
                 $this->_('The survey for token %s is no longer active.'),
                 strtoupper($this->tokenId)
             ));

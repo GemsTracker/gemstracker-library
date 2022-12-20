@@ -14,6 +14,7 @@ namespace Gems;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Token\TokenSelect;
+use Gems\Tracker\Token\TokenValidator;
 use Mezzio\Session\SessionInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -679,9 +680,14 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      *
      * @return \Gems\Tracker\Token\TokenValidator
      */
-    public function getTokenValidator()
+    public function getTokenValidator(string $clientIpAddress = null)
     {
-        return $this->_loadClass('Token\\TokenValidator', true);
+        /**
+         * @var $tokenValidator TokenValidator
+         */
+        $tokenValidator = $this->containerLoad('Token\\TokenValidator');
+        $tokenValidator->setClientIp($clientIpAddress);
+        return $tokenValidator;
     }
 
     /**
