@@ -19,6 +19,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\SourceRepository;
+use Gems\Repository\StaffRepository;
 use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
@@ -91,6 +92,7 @@ class LegacyConfigProvider
                 'LegacyPdf' => Pdf::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
                 'LegacySourceRepository' => SourceRepository::class,
+                'LegacyStaffRepository' => StaffRepository::class,
                 'LegacySurveyRepository' => SurveyRepository::class,
                 'LegacyTokenRepository' => TokenRepository::class,
                 'LegacyTrackDataRepository' => TrackDataRepository::class,

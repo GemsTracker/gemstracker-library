@@ -32,7 +32,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class RespondentNewHandler extends RespondentChildHandlerAbstract
+class RespondentHandler extends RespondentChildHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -119,7 +119,7 @@ class RespondentNewHandler extends RespondentChildHandlerAbstract
         'menuShowSiblings' => true,
         'menuShowChildren' => true,
         'resetRoute'       => true,
-        'useTabbedForm'    => true,
+        'useTabbedForm'    => false,
     ];
 
     /**

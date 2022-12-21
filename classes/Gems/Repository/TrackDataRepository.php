@@ -37,6 +37,26 @@ class TrackDataRepository
     }
 
     /**
+     * Returns array (description => description) of all round descriptions in all tracks, sorted by name
+     *
+     * @return array
+     */
+    public function getAllRoundDescriptions()
+    {
+        $select = $this->resultFetcher->getSelect('gems__rounds');
+        $select->columns([
+            'gro_round_description',
+            'gro_round_description',
+        ])->where
+            ->isNotNull('gro_round_description')
+            ->notEqualTo('gro_round_description', '')
+            ->notEqualTo('gro_id_round', 0);
+        $select->group(['gro_round_description']);
+
+        return $this->utilDbHelper->getSelectPairsCached(__FUNCTION__, $select, null, ['tracks']);
+    }
+
+    /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      * @param  boolean $active Only show active surveys Default: False
      * @return array of survey ID and survey name pairs

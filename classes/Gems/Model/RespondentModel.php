@@ -3,6 +3,7 @@
 namespace Gems\Model;
 
 use Gems\Exception\RespondentAlreadyExists;
+use Gems\Repository\StaffRepository;
 use Gems\Util\Localized;
 
 /**
@@ -97,6 +98,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
+
+    /**
+     * @var StaffRepository
+     */
+    protected $staffRepository;
 
     /**
      * @var \Gems\Util\Translated
@@ -713,7 +719,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      */
     protected function getChangersList()
     {
-        return $this->util->getDbLookup()->getStaff();
+        return $this->staffRepository->getStaff();
     }
 
     /**

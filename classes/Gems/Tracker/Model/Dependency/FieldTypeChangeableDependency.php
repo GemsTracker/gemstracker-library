@@ -102,6 +102,8 @@ class FieldTypeChangeableDependency extends DependencyAbstract
                 'onchange'     => 'this.form.submit();',
             ));
         }
+
+        return [];
     }
 
     /**
