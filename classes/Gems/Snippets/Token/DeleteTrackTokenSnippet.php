@@ -21,7 +21,9 @@ use Gems\Tracker\Token;
 use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\MessageStatus;
 use Zalt\Message\MessengerInterface;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -193,8 +195,11 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
         parent::loadForm();
 
         if ($this->fixedReceptionCode == 'redo' && $this->token->isExpired()) {
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
             $messenger = $this->getMessenger();
-            $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), 'danger');
+            $messenger->addMessage($this->_("Watch out! Token is currently expired and you won't be able to answer it unless you change the valid from date."), MessageStatus::Danger, true);
         }
     }
 

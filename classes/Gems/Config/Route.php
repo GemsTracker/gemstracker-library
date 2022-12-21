@@ -390,7 +390,7 @@ class Route
     {
         return [
             ...$this->createSnippetRoutes(baseName: 'respondent',
-                controllerClass: \Gems\Handlers\Respondent\RespondentNewHandler::class,
+                controllerClass: \Gems\Handlers\Respondent\RespondentHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'change-consent',
@@ -590,8 +590,8 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
-            ...$this->createBrowseRoutes(baseName: 'setup.project-information',
-                controllerClass: \Gems\Actions\ProjectInformationAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.project-information',
+                controllerClass: \Gems\Handlers\Setup\ProjectInformationHandler::class,
                 pages: [
                     'index',
                     'errors',
@@ -664,7 +664,7 @@ class Route
                 controllerClass: \Gems\Handlers\Setup\CommMessengersHandler::class,
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.communication.template',
-                controllerClass: \Gems\Handlers\Setup\CommTemplateAction::class,
+                controllerClass: \Gems\Handlers\Setup\CommTemplateHandler::class,
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.communication.server',
                 controllerClass: \Gems\Handlers\Setup\MailServerHandler::class,

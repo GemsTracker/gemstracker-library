@@ -1013,6 +1013,35 @@ class Menu
                             ],
                         ],
                         [
+                            'name' => 'setup.communication.messenger.index',
+                            'label' => $this->translator->trans('Messenger'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.communication.messenger.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.communication.messenger.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.communication.messenger.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.communication.messenger.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'setup.communication.template.index',
                             'label' => $this->translator->trans('Templates'),
                             'type' => 'route-link-item',

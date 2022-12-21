@@ -12,8 +12,23 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Event\Application\AnswerFilterEvent;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\Locale;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TokenRepository;
+use Gems\Snippets\ModelTableSnippetAbstract;
+use Gems\Tracker;
+use Gems\User\User;
+use MUtil\Model;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
+use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Displays answers to a survey.
@@ -24,7 +39,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
+class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -44,48 +59,20 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     protected $answerFilter;
 
     /**
-     *
-     * @var \Gems\Util\BasePath
-     */
-    protected $basepath;
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string
      */
     protected $class = 'answer answers browser table compliance copy-to-clipboard-before';
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+
+    protected User $currentUser;
 
     /**
      *
      * @var string Format used for displaying dates.
      */
     protected $dateFormat = 'j M Y';
-
-    /**
-     * @var \Gems\Event\EventDispatcher
-     */
-    protected $event;
-
-    /**
-     * Required
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
 
     /**
      * Switch to put the display of the cancel and print buttons.
@@ -132,11 +119,20 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected $tokenId;
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected EventDispatcherInterface $event,
+        protected Locale $locale,
+        protected Tracker $tracker,
+        protected TokenRepository $tokenRepository,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -150,35 +146,35 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
         if ($this->showSelected) {
-            $selectedClass = \MUtil\Lazy::iff(\MUtil\Lazy::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
+            $selectedClass = Late::iff(Late::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
         } else {
             $selectedClass = null;
         }
 
         $bridge->th($this->_('Status'));
         $td = $bridge->tdh([
-            $this->util->getTokenData()->getTokenStatusLinkForBridge($bridge),
+            $this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper),
             ' ',
-            \MUtil\Lazy::first($bridge->grc_description, $this->_('OK')),
+            Late::first($bridge->grc_description, $this->_('OK')),
             ]);
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
         if ($model->has('grr_name') && $model->has('gtf_field_name')) {
             $td = $bridge->tdh(
-                    \MUtil\Lazy::iif($bridge->grr_name, array($bridge->grr_name, $br)),
-                    \MUtil\Lazy::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
+                    Late::iif($bridge->grr_name, array($bridge->grr_name, $br)),
+                    Late::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
                     $bridge->gto_round_description,
-                    \MUtil\Lazy::iif($bridge->gto_round_description, $br),
-                    \MUtil\Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    Late::iif($bridge->gto_round_description, $br),
+                    Late::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
                     );
         } else {
             $td = $bridge->tdh(
                     $bridge->gto_round_description,
-                    \MUtil\Lazy::iif($bridge->gto_round_description, $br),
-                    \MUtil\Lazy::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
+                    Late::iif($bridge->gto_round_description, $br),
+                    Late::iif($bridge->gto_completion_time, $bridge->gto_completion_time, $bridge->gto_valid_from)
                     );
         }
         $td->appendAttrib('class', $selectedClass);
@@ -189,7 +185,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
 
         $eventName = 'gems.survey.answers.display-filter';
 
-        if ($this->answerFilter instanceof \Gems\Tracker\Snippets\AnswerNameFilterInterface) {
+        if ($this->answerFilter instanceof AnswerNameFilterInterface) {
             $answerFilter = $this->answerFilter;
             $eventFunction = function (AnswerFilterEvent $event) use ($answerFilter) {
                 $bridge = $event->getBridge();
@@ -214,9 +210,9 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
             $this->event->removeListener($eventName, $eventFunction, 100);
         }
 
-        $cond    = \MUtil\Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
-        $hidden  = \MUtil\Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
-        $visible = \MUtil\Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
+        $cond    = Html::create('i', ['class' => 'fa fa-code-fork', 'renderClosingTag' => true]);
+        $hidden  = Html::create('i', ['class' => 'fa fa-eye-slash', 'renderClosingTag' => true]);
+        $visible = Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
         
         foreach($answerNames as $name) {
             $label = $model->get($name, 'label');
@@ -255,7 +251,15 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->th($this->_('Token'));
 
         $tokenUpper = $bridge->gto_id_token->strtoupper();
-        if ($this->showTakeButton && $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
+
+        $url = $this->menuHelper->getLateRouteUrl('ask.take', [
+            Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+        ]);
+
+        $td = $bridge->tdh($bridge->can_be_taken->if($url, $tokenUpper));
+
+
+        /*if ($this->showTakeButton && $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
             $source = new \Gems\Menu\ParameterSource();
             $source->setTokenId($bridge->gto_id_token);
             $source->offsetSet('can_be_taken', $bridge->can_be_taken);
@@ -269,7 +273,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
             $td = $bridge->tdh($bridge->can_be_taken->if($link, $tokenUpper));
         } else {
             $td = $bridge->tdh($tokenUpper);
-        }
+        }*/
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
     }
@@ -277,9 +281,9 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Add the buttons to the result div
      *
-     * @param \MUtil\Html\HtmlElement $html
+     * @param HtmlElement $html
      */
-    protected function addButtons(\MUtil\Html\HtmlElement $html)
+    protected function addButtons(HtmlElement $html)
     {
         $buttonDiv = $html->buttonDiv();
         $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
@@ -289,9 +293,9 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     /**
      * Add elements that form the header
      *
-     * @param \MUtil\Html\HtmlElement $htmlDiv
+     * @param HtmlElement $htmlDiv
      */
-    public function addHeaderInfo(\MUtil\Html\HtmlElement $htmlDiv)
+    public function addHeaderInfo(HtmlElement $htmlDiv)
     {
         $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
 
@@ -306,22 +310,6 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        // If loaded inline by Ajax request, disable the buttons
-        if ($this->request->isXmlHttpRequest()) {
-            $this->showButtons = false;
-        }
-    }
-
-    /**
      * Creates the model
      *
      * @return \MUtil\Model\ModelAbstract
@@ -330,7 +318,9 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         $model = $this->token->getSurveyAnswerModel($this->locale->getLanguage());
 
-        $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'token_status');
+        $rawExpression = $this->tokenRepository->getStatusExpression()->getExpression();
+
+        $model->addColumn(new \Zend_Db_Expr($rawExpression), 'token_status');
         $model->addColumn(new \Zend_Db_Expr("' '"), 'blank');
 
         $model->set('gto_valid_from', 'dateFormat', $this->dateFormat);
@@ -348,7 +338,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         // $view->headScript()->appendFile($this->basepath->getBasePath() . '/gems/js/gems.copyToClipboard.js');
         
-        $htmlDiv = \MUtil\Html::create()->div(array('class' => 'answer-container'));
+        $htmlDiv = Html::create()->div(array('class' => 'answer-container'));
 
         if ($this->tokenId) {
             if ($this->token->exists) {
@@ -356,7 +346,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
                     $this->addHeaderInfo($htmlDiv);
                 }
 
-                $table = parent::getHtmlOutput($view);
+                $table = parent::getHtmlOutput();
                 $table->setPivot(true, 2, 1);
 
                 $this->applyHtmlAttributes($table);
@@ -395,7 +385,7 @@ class AnswerModelSnippetGeneric extends \Gems\Snippets\ModelTableSnippetAbstract
                 $this->tokenId = $this->token->getTokenId();
             }
         } elseif (! $this->token) {
-            $this->token = $this->loader->getTracker()->getToken($this->tokenId);
+            $this->token = $this->tracker->getToken($this->tokenId);
         }
 
         // Output always true, returns an error message as html when anything is wrong

@@ -281,7 +281,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
     protected function forward(string $action)
     {
-        $this->redirectUrl = $this->getActionUrl($action);
+        return new RedirectResponse($this->getActionUrl($action));
     }
 
     /**
@@ -305,7 +305,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
                     strtoupper($this->tokenId)
                 ));
             }
-            $this->forward('index');
+            return $this->forward('index');
             return;
         }
 
@@ -435,13 +435,11 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     {
         if (! $this->_initToken()) {
             // In all other cases: the action that generates meaningfull warnings and is reachable for everyone
-            $this->forward('forward');
-            return;
+            return $this->forward('forward');
         }
 
         if ((! $this->currentUser->isActive()) && $this->requestInfo->getParam('resumeLater', 0)) {
-            $this->forward('resume-later');
-            return;
+            return $this->forward('resume-later');
         }
 
         $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
@@ -464,8 +462,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
         // No return? Check for old style user based return
         if (! $this->currentUser->isActive()) {
-            $this->forward('forward');
-            return;
+            return $this->forward('forward');
         }
 
         // Check for completed tokens
@@ -490,7 +487,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function takeAction()
     {
-        $this->forward('to-survey');
+        return $this->forward('to-survey');
     }
 
     /**
@@ -498,7 +495,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function tokenAction()
     {
-        $this->forward('index');
+        return $this->forward('index');
     }
 
     /**
@@ -508,8 +505,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     {
         if (! $this->_initToken()) {
             // Default option
-            $this->forward('index');
-            return;
+            return $this->forward('index');
         }
 
         $language = $this->locale->getLanguage();
@@ -539,7 +535,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             ));
 
             // Default option
-            $this->forward('index');
+            return $this->forward('index');
         }
     }
 }
