@@ -10,7 +10,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\CurrentOrganizationMiddleware;

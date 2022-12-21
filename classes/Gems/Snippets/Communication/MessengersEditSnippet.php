@@ -2,13 +2,19 @@
 
 namespace Gems\Snippets\Communication;
 
-class MessengersEditSnippet extends \Gems\Snippets\ModelFormSnippet
-{
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
-    {
-        $htmlDiv = parent::getHtmlOutput($view);
+use Gems\Snippets\ModelFormSnippet;
+use Zalt\Html\Html;
 
-        $infoDiv = \MUtil\Html::div(['class' => 'alert alert-info', 'role' => "alert"]);
+class MessengersEditSnippet extends ModelFormSnippet
+{
+    public function getHtmlOutput()
+    {
+        $htmlDiv = parent::getHtmlOutput();
+
+        $infoDiv = Html::div([
+            'class' => 'alert alert-info',
+            'role' => 'alert',
+        ]);
 
         $infoDiv->h4($this->_('Instructions'));
         $infoDiv->pInfo($this->_('HTTP API messengers can be configured in /var/settings/communication.php'));
