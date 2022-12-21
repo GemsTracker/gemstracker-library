@@ -9,15 +9,22 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\MenuNew\RouteHelper;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Project\ProjectSettings;
+use Gems\Util\MaintenanceLock;
 use Gems\Versions;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
-use MUtil\Html;
+use Zalt\Html\Html;
 use MUtil\Model;
-use Phinx\Util\Util;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Message\StatusMessengerInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -27,49 +34,16 @@ use Phinx\Util\Util;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ProjectInformationAction  extends \Gems\Controller\Action
+class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 {
-    /**
-     *
-     * @var \Gems\AccessLog
-     */
-    public $accesslog;
-
-    /**
-     * @var HelperAdapter
-     */
-    public $cache;
-
-    /**
-     * @var array
-     */
-    public $config;
-
     protected array $_defaultParameters = [];
     protected array $defaultParameters = [];
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    public $menu;
 
     protected $monitorParameters = [
         'monitorJob' => 'getMaintenanceMonitorJob'
     ];
 
     protected $monitorSnippets = 'MonitorSnippet';
-
-    /**
-     *
-     * @var \Gems\Project\ProjectSettings
-     */
-    public $project;
-
-    /**
-     * @var RouteHelper
-     */
-    public $routeHelper;
 
     /**
      * Set to true in child class for automatic creation of $this->html.
@@ -83,15 +57,19 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      */
     public bool $useHtmlView = true;
 
-    /**
-     * @var Util
-     */
-    public $util;
-
-    /**
-     * @var Versions
-     */
-    public $versions;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected UrlHelper $urlHelper,
+        protected MaintenanceLock $maintenanceLock,
+        protected Versions $versions,
+        protected RouteHelper $routeHelper,
+        protected ProjectSettings $projectSettings,
+        protected HelperAdapter $cache,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Returns the data to show in the index action
@@ -102,7 +80,6 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      */
     protected function _getData()
     {
-
 
         $projectName = null;
         if (isset($this->config['app']['name'])) {
@@ -120,7 +97,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
         //$data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
         $data[$this->_('Application environment')] = getenv('APP_ENV');
-        $data[$this->_('Application baseuri')]     = $this->util->getCurrentURI();
+        $data[$this->_('Application baseuri')]     = $this->urlHelper->getBasePath();
         //$data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
         //$data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
         $data[$this->_('PHP version')]             = phpversion();
@@ -138,7 +115,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
      */
     protected function _processParameters(array $input)
     {
-        $output = array();
+        $output = [];
 
         foreach ($input + $this->defaultParameters + $this->_defaultParameters as $key => $value) {
             if (is_string($value) && method_exists($this, $value)) {
@@ -156,8 +133,8 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
     protected function _showTable($caption, $data, $nested = false)
     {
-        $tableContainer = \MUtil\Html::create()->div(array('class' => 'table-container'));
-        $table = \MUtil\Html\TableElement::createArray($data, $caption, $nested);
+        $tableContainer = Html::create()->div(array('class' => 'table-container'));
+        $table = \Zalt\Html\TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
         $tableContainer[] = $table;
         $this->html[] = $tableContainer;
@@ -174,7 +151,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     {
         $this->html->h2($caption);
 
-        $params = $this->requestHelper->getRouteResult()->getMatchedParams();
+        $params = $this->requestInfo->getRequestMatchedParams();
         if ($emptyLabel && (isset($params[Model::REQUEST_ID]) && 1 == $params[\MUtil\Model::REQUEST_ID]) && file_exists($logFile)) {
             unlink($logFile);
         }
@@ -286,8 +263,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
 
         $data = $this->_getData();
 
-        $lock = $this->util->getMaintenanceLock();
-        if ($lock->isLocked()) {
+        if ($this->maintenanceLock->isLocked()) {
             $label = $this->_('Turn Maintenance Mode OFF');
         } else {
             $label = $this->_('Turn Maintenance Mode ON');
@@ -342,9 +318,14 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public function cachecleanAction()
     {
         $this->cache->clear();
-        $this->addMessage($this->_('Cache cleaned'));
+        /**
+         * @var $messenger StatusMessengerInterface
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        $messenger->addSuccess($this->_('Cache cleaned'));
         // Redirect
-        $this->redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        $redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($redirectUrl);
     }
 
     public function phpAction()
@@ -364,7 +345,7 @@ class ProjectInformationAction  extends \Gems\Controller\Action
     public function projectAction()
     {
         //Clone the object, we don't want to modify the original
-        $project = clone $this->project;
+        $project = clone $this->projectSettings;
 
         //Now remove some keys want to keep for ourselves
         if ($project->offsetExists('admin')) {
