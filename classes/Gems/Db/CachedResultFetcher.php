@@ -68,6 +68,11 @@ class CachedResultFetcher
         return $this->resultFetcher->getAdapter();
     }
 
+    public function getResultFetcher(): ResultFetcher
+    {
+        return $this->resultFetcher;
+    }
+
     public function getSelect(null|string|TableIdentifier $table = null): Select
     {
         return $this->resultFetcher->getSelect($table);
