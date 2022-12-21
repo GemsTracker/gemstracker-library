@@ -11,6 +11,10 @@
 
 namespace Gems\User;
 
+use Gems\Registry\CachedArrayTargetAbstract;
+use Gems\Repository\OrganizationRepository;
+use Gems\Site\SiteUtil;
+
 /**
  * Contains information on the organization of the current User
  *
@@ -22,7 +26,7 @@ namespace Gems\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Organization extends \Gems\Registry\CachedArrayTargetAbstract
+class Organization extends CachedArrayTargetAbstract
 {
     /**
      *
@@ -96,17 +100,21 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
     protected $loader;
 
     /**
+     * @var OrganizationRepository
+     */
+    protected $organizationRepository;
+
+    /**
+     * @var SiteUtil
+     */
+    protected $siteUtil;
+
+    /**
      * Set in child classes
      *
      * @var string Name of table used in gtrs_table
      */
     protected $translationTable = 'gems__organizations';
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
 
     /**
      * Creates the object.
@@ -128,18 +136,7 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function allowsRespondentLogin()
     {
-        return (boolean) $this->_get('gor_respondent_group') && $this->canHaveRespondents();
-    }
-
-    /**
-     * Set menu parameters from the organization
-     *
-     * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\Tracker\Token (continuation pattern)
-     */
-    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
-    {
-        $source->offsetSet('can_add_respondents', $this->canCreateRespondents());
+        return $this->_get('gor_respondent_group') && $this->canHaveRespondents();
     }
 
     /**
@@ -159,7 +156,7 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
      */
     public function canHaveRespondents()
     {
-        return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
+        return $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
     }
 
     /**
@@ -433,7 +430,7 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
     public function getPreferredSiteUrl()
     {
         if (! $this->_has('preferredSite')) {
-            $this->_set('preferredSite', $this->util->getSites()->getOrganizationPreferredUrl($this->_id));
+            $this->_set('preferredSite', $this->siteUtil->getOrganizationPreferredUrl($this->_id));
         }
 
         return $this->_get('preferredSite');
@@ -595,7 +592,7 @@ class Organization extends \Gems\Registry\CachedArrayTargetAbstract
         }
 
         if ($data) {
-            $data['can_access'] = $this->util->getDbLookup()->getAllowedOrganizationsFor($id);
+            $data['can_access'] = $this->organizationRepository->getAllowedOrganizationsFor($id);
         } else {
             $data = $this->_noOrganization;
             $data['gor_id_organization'] = $id;

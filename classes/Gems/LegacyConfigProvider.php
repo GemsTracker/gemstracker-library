@@ -23,6 +23,7 @@ use Gems\Repository\StaffRepository;
 use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
+use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Mask\MaskStore;
 use Gems\Util\ConsentUtil;
@@ -91,6 +92,7 @@ class LegacyConfigProvider
                 'LegacyResultFetcher' => ResultFetcher::class,
                 'LegacyPdf' => Pdf::class,
                 'LegacyProject' => \Gems\Project\ProjectSettings::class,
+                'LegacySiteUtil' => SiteUtil::class,
                 'LegacySourceRepository' => SourceRepository::class,
                 'LegacyStaffRepository' => StaffRepository::class,
                 'LegacySurveyRepository' => SurveyRepository::class,
