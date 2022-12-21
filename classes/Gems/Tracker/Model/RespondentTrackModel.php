@@ -17,6 +17,8 @@ use Gems\Util\Translated;
 use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
 use MUtil\Model\Dependency\OffOnElementsDependency;
+use DateTimeImmutable;
+use DateTimeInterface;
 
 /**
  * The RespondentTrackModel is the model used to display and edit
@@ -389,7 +391,9 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
             // Of course do not do so when we got a time format
             $list = DatePicker::splitTojQueryDateTimeFormat($displayFormat);
             if (! $list[2]) {
-                $newValues['gr2t_end_date'] = DateTime::createFromFormat($displayFormat, $newValues['gr2t_end_date']);
+                if (!$newValues['gr2t_end_date'] instanceof DateTimeInterface) {
+                    $newValues['gr2t_end_date'] = DateTimeImmutable::createFromFormat($displayFormat, $newValues['gr2t_end_date']);
+                }
                 $newValues['gr2t_end_date']->setTime(23, 59, 59);
             }
         }

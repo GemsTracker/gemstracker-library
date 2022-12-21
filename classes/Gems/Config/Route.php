@@ -487,6 +487,9 @@ class Route
                 parameters: [
                     \Gems\Model::RESPONDENT_TRACK => '\d+',
                 ],
+                postRoutes: [
+                    'edit-track',
+                ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
