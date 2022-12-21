@@ -348,7 +348,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
         } else {
             $currentUrl = $this->util->getCurrentURI();
         }
-        return $currentUrl . '/ask/return/' . \MUtil\Model::REQUEST_ID . '/{TOKEN}';
+        return $currentUrl . '/ask/return/{TOKEN}';
     }
 
     /**

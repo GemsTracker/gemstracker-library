@@ -551,7 +551,7 @@ class Token extends \Gems\Registry\TargetAbstract
                 $oldCompletionTime = $this->_gemsData['gto_completion_time'];
                 //Set completion time for completion event
                 if ($setCompletionTime) {
-                    $values['gto_completion_time']          = $complTime->toString(\Gems\Tracker::DB_DATETIME_FORMAT);
+                    $values['gto_completion_time']          = $complTime->format(\Gems\Tracker::DB_DATETIME_FORMAT);
                     $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
                 }
 

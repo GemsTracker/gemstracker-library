@@ -149,7 +149,7 @@ class Translated
         }
 
         $diff  = $dateTime->diff(new DateTimeImmutable());
-        $hours = $dateTime->h + (24 * $diff->days);
+        $hours = intval($dateTime->format('H')) + (24 * $diff->days);
 
         if (abs($hours) < 49) {
             if ($hours > 1) {

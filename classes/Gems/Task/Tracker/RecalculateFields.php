@@ -11,6 +11,8 @@
 
 namespace Gems\Task\Tracker;
 
+use Gems\Tracker;
+
 /**
  *
  *
@@ -23,9 +25,9 @@ namespace Gems\Task\Tracker;
 class RecalculateFields extends \MUtil\Task\TaskAbstract
 {
     /**
-     * @var \Gems\Loader
+     * @var Tracker
      */
-    public $loader;
+    protected $tracker;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -36,8 +38,7 @@ class RecalculateFields extends \MUtil\Task\TaskAbstract
     public function execute($respTrackData = null)
     {
         $batch     = $this->getBatch();
-        $tracker   = $this->loader->getTracker();
-        $respTrack = $tracker->getRespondentTrack($respTrackData);
+        $respTrack = $this->tracker->getRespondentTrack($respTrackData);
 
         $fieldsChanged = false;
         $tokensChanged = $respTrack->recalculateFields($fieldsChanged);

@@ -116,7 +116,9 @@ class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
         // <base>/index.php/survey/index/sid/834486/token/234/lang/en
         $baseurl = $this->getBaseUrl();
         $start = $baseurl . ('/' == substr($baseurl, -1) ? '' : '/');
-        if (stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false || (ini_get('security.limit_extensions') && ini_get('security.limit_extensions')!='')) {
+        if (str_contains($_SERVER['SERVER_SOFTWARE'], 'apache')
+            || str_contains($_SERVER['SERVER_SOFTWARE'], 'nginx')
+            || (ini_get('security.limit_extensions') && ini_get('security.limit_extensions')!='')) {
             // Apache : index.php/
             $start .= 'index.php/';
         } else {
