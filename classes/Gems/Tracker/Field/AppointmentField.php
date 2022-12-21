@@ -14,8 +14,14 @@ namespace Gems\Tracker\Field;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\Agenda\Agenda;
+use Gems\Agenda\Appointment;
 use Gems\Date\Period;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
 use Gems\Util\Translated;
+use MUtil\Model;
+use Zalt\Html\Html;
 
 /**
  *
@@ -69,30 +75,21 @@ class AppointmentField extends FieldAbstract
     protected $_lastActiveKey;
 
     /**
+     * @var Agenda
+     */
+    protected $agenda;
+
+    /**
      * The format string for outputting appointments
      *
      * @var string
      */
-    protected $appointmentTimeFormat = 'j M Y H:i';
+    protected string $appointmentTimeFormat = 'j M Y H:i';
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var RouteHelper
      */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     * Required
-     *
-     * @var \Zend_Controller_Request_Abstract
-     */
-    protected $request;
+    protected $routeHelper;
 
     /**
      * @var Translated
@@ -125,8 +122,7 @@ class AppointmentField extends FieldAbstract
             return $currentValue;
         }
 
-        $agenda      = $this->loader->getAgenda();
-        $appointment = $agenda->getAppointment($currentValue);
+        $appointment = $this->agenda->getAppointment($currentValue);
 
         if ($appointment && $appointment->isActive()) {
             $time = $appointment->getAdmissionTime();
@@ -150,13 +146,11 @@ class AppointmentField extends FieldAbstract
     public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
         if ($currentValue || isset($this->_fieldDefinition['gtf_filter_id'])) {
-            $agenda = $this->loader->getAgenda();
-
             if ($this->_lastActiveKey && isset($this->_fieldDefinition['gtf_filter_id'])) {
                 $fromDate   = false;
                 $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
 
-                if (($lastActive instanceof \Gems\Agenda\Appointment) && $lastActive->isActive()) {
+                if (($lastActive instanceof Appointment) && $lastActive->isActive()) {
                     $fromDate = $lastActive->getAdmissionTime();
                 }
 
@@ -165,14 +159,14 @@ class AppointmentField extends FieldAbstract
                     if ($trackData['gr2t_start_date'] instanceof DateTimeInterface) {
                         $fromDate = $trackData['gr2t_start_date'];
                     } else {
-                        $fromDate = DateTimeImmutable::createFromFormat(\Gems\Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
+                        $fromDate = DateTimeImmutable::createFromFormat(Tracker::DB_DATETIME_FORMAT, $trackData['gr2t_start_date']);
                     }
                     // Always use start of the day for start date comparisons
-                    $fromDate->setTime('00:00:00');
+                    $fromDate->setTime(0,0);
                 }
 
                 if ($fromDate instanceof DateTimeInterface) {
-                    $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
+                    $select = $this->agenda->createAppointmentSelect(array('gap_id_appointment'));
                     $select->onlyActive()
                             ->forFilterId($this->_fieldDefinition['gtf_filter_id'])
                             ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization']);
@@ -233,7 +227,7 @@ class AppointmentField extends FieldAbstract
             }
 
             if ($this->_lastActiveKey && $currentValue) {
-                $appointment = $agenda->getAppointment($currentValue);
+                $appointment = $this->agenda->getAppointment($currentValue);
 
                 if ($appointment->isActive()) {
                     self::$_lastActiveAppointment[$this->_lastActiveKey] = $appointment;
@@ -293,10 +287,9 @@ class AppointmentField extends FieldAbstract
             return null;
         }
 
-        $agenda = $this->loader->getAgenda();
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
-        $output['multiOptions'] = $empty + $agenda->getActiveAppointments(
+        $output['multiOptions'] = $empty + $this->agenda->getActiveAppointments(
                 $context['gr2t_id_user'],
                 $context['gr2t_id_organization']
                 );
@@ -324,28 +317,22 @@ class AppointmentField extends FieldAbstract
         if (! $value) {
             return $this->_('Unknown');
         }
-        if ($value instanceof \Gems\Agenda\Appointment) {
+        if ($value instanceof Appointment) {
             $appointment = $value;
         } else {
-            $appointment = $this->loader->getAgenda()->getAppointment($value);
+            $appointment = $this->agenda->getAppointment($value);
         }
-        if ($appointment instanceof \Gems\Agenda\Appointment) {
-            if (! $this->menu instanceof \Gems\Menu) {
-                $this->menu = $this->loader->getMenu();
+        if ($appointment instanceof Appointment) {
+            $url = $this->routeHelper->getRouteUrl('respondent.appointments.show', [
+                Model::REQUEST_ID1 => $appointment->getPatientNumber(),
+                Model::REQUEST_ID2 => $appointment->getOrganizationId(),
+                \Gems\Model::APPOINTMENT_ID => $appointment->getId(),
+            ]);
+
+            if ($url) {
+                return Html::create('a', $url, $appointment->getDisplayString());
             }
-            $menuItem = $this->menu->findAllowedController('appointment', 'show');
-            if ($menuItem) {
-                if (! $this->request) {
-                    $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-                }
-                $href = $menuItem->toHRefAttribute(
-                        array('gap_id_appointment' => $appointment->getId()),
-                        $this->request
-                        );
-                if ($href) {
-                    return \MUtil\Html::create('a', $href, $appointment->getDisplayString());
-                }
-            }
+
             return $appointment->getDisplayString();
         }
 

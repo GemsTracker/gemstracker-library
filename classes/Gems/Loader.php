@@ -134,7 +134,7 @@ class Loader extends LoaderAbstract
      */
     public function getAgenda()
     {
-        return $this->_getClass('agenda');
+        return $this->_getClass('Agenda\\Agenda');
     }
 
     /**
