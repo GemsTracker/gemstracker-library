@@ -76,17 +76,15 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
                     $action  = 'token.answered';
                     $message = sprintf($this->_("Token '%s' was answered."), $token->getTokenId());
                 }
-                if (! $this->request instanceof \Zend_Controller_Request_Abstract) {
-                    $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-                }
-                $this->accesslog->logEntry(
+
+                /*$this->accesslog->logEntry(
                         $this->request,
                         $action,
                         true,
                         $message,
                         $token->getArrayCopy(),
                         $token->getRespondentId()
-                        );
+                        );*/
 
             }
             if ($result & \Gems\Tracker\Token::COMPLETION_EVENTCHANGE) {
