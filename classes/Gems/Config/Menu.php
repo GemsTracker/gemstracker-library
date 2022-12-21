@@ -984,6 +984,35 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
+                            'name' => 'setup.communication.job.index',
+                            'label' => $this->translator->trans('Automatic messaging'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.communication.job.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.communication.job.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.communication.job.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.communication.job.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'setup.communication.template.index',
                             'label' => $this->translator->trans('Templates'),
                             'type' => 'route-link-item',
@@ -1038,6 +1067,18 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.communication.log.index',
+                            'label' => $this->translator->trans('Communication log'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.communication.log.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],

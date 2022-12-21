@@ -11,6 +11,15 @@
 
 namespace Gems\Snippets\Mail\Log;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\AutosearchFormSnippet;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,8 +29,22 @@ namespace Gems\Snippets\Mail\Log;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class MailLogSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class MailLogSearchSnippet extends AutosearchFormSnippet
 {
+
+    protected User $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+        protected TrackDataRepository $trackDataRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -36,29 +59,27 @@ class MailLogSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         // Search text
         $elements = parent::getAutoSearchElements($data);
 
-        $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
-
-        $br  = \MUtil\Html::create()->br();
+        $this->_addPeriodSelectors($elements, [
+            'grco_created' => $this->_('Date sent'),
+        ]);
 
         $elements[] = null;
 
-        $dbLookup = $this->util->getDbLookup();
-
         $elements[] = $this->_createSelectElement(
                 'gto_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $this->trackDataRepository->getAllTracks(),
                 $this->_('(select a track)')
                 );
 
         $elements[] = $this->_createSelectElement(
                 'gto_id_survey',
-                $this->util->getTrackData()->getAllSurveys(),
+                $this->trackDataRepository->getAllSurveys(),
                 $this->_('(all surveys)')
                 );
 
         $elements[] = $this->_createSelectElement(
                 'grco_organization',
-                $this->loader->getCurrentUser()->getRespondentOrganizations(),
+                $this->currentUser->getRespondentOrganizations(),
                 $this->_('(all organizations)')
                 );
 

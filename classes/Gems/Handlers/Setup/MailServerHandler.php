@@ -64,7 +64,9 @@ class MailServerHandler extends ModelSnippetLegacyHandlerAbstract
          * @var $model MailServerModel
          */
         $model = $this->overloader->create(MailServerModel::class);
-        $model->applyDetailSettings();
+        if ($detailed) {
+            $model->applyDetailSettings();
+        }
 
         return $model;
     }

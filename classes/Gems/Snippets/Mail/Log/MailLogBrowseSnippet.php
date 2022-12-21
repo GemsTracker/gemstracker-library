@@ -11,8 +11,17 @@
 
 namespace Gems\Snippets\Mail\Log;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TokenRepository;
+use Gems\Snippets\ModelTableSnippet;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,19 +31,20 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippet
+class MailLogBrowseSnippet extends ModelTableSnippet
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    protected User $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected TokenRepository $tokenRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -52,18 +62,22 @@ class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippet
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
+        $keys = $this->getRouteMaps($model);
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowUrls();
+            $showMenuItems = $this->getShowUrls($bridge, $keys);
 
-            foreach ($showMenuItems as $menuItem) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+            foreach ($showMenuItems as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(\Gems\Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
 
         // Newline placeholder
-        $br = \MUtil\Html::create('br');
-        $by = \MUtil\Html::raw($this->_(' / '));
-        $sp = \MUtil\Html::raw('&nbsp;');
+        $br = Html::create('br');
+        $by = Html::raw($this->_(' / '));
+        $sp = Html::raw('&nbsp;');
 
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -77,25 +91,23 @@ class MailLogBrowseSnippet extends \Gems\Snippets\ModelTableSnippet
         $bridge->addMultiSort('status',        $by, 'filler',          $br, 'grco_topic');
 
         if ($this->showMenu) {
-            $items  = $this->findUrls('track', 'show');
-            $links  = array();
-            $params = array('gto_id_token'  => $bridge->gto_id_token, \Gems\Model::ID_TYPE => 'token');
-            $title  = \MUtil\Html::create('strong', $this->_('+'));
+            $params = [
+                \MUtil\Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+                \MUtil\Model::REQUEST_ID2 => $bridge->getLate('gr2o_id_organization'),
+                \MUtil\Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+            ];
+            $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $params);
 
-
-            foreach ($items as $item) {
-                if ($item instanceof \Gems\Menu\SubMenuItem) {
-                    $bridge->addItemLink($item->toActionLinkLower($this->request, $params, $title));
-                }
-            }
+            $label = Html::create('strong', $this->_('+'));
+            $bridge->addItemLink(\Gems\Html::actionLink($url, $label));
         }
         $bridge->getTable()->appendAttrib('class', 'compliance');
 
         $tbody = $bridge->tbody();
         $td = $tbody[0][0];
-        $td->appendAttrib(
+        /*$td->appendAttrib(
                 'class',
-                \MUtil\Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->getLazy('status'))
-                );
+                \Zalt\Late\Late::method($this->tokenRepository, 'getStatusClass', $bridge->getLazy('status'))
+                );*/
     }
 }

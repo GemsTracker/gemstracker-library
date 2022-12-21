@@ -12,6 +12,16 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Middleware\CurrentOrganizationMiddleware;
+use Gems\Model\CommLogModel;
+use Gems\Snippets\AutosearchFormSnippet;
+use MUtil\Model\ModelAbstract;
+use DateTimeImmutable;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 /**
  * Controller for looking at mail activity
  *
@@ -21,7 +31,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
+class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -33,23 +43,38 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
-        'extraSort'   => array('grco_created' => SORT_DESC),
-        );
+    protected array $autofilterParameters = [
+        'extraSort'   => [
+            'grco_created' => SORT_DESC
+        ],
+    ];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Mail\\Log\\MailLogBrowseSnippet';
+    protected array $autofilterSnippets = ['Mail\\Log\\MailLogBrowseSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Mail\\Log\\MailLogSearchSnippet');
+    protected array $indexStartSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'Mail\\Log\\MailLogSearchSnippet'
+    ];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected ProjectOverloader $overloader,
+        protected \Zend_Db_Adapter_Abstract $db,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -60,19 +85,24 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
-        return $this->loader->getModels()->getCommLogModel($detailed);
+        /**
+         * @var $model CommLogModel
+         */
+        $model = $this->overloader->create('Model\\CommLogModel');
+        $model->applySetting($detailed);
+        return $model;
     }
 
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Mail Activity Log');
     }
@@ -81,9 +111,9 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('mail activity', 'mail activities', $count);
     }
@@ -95,15 +125,17 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
             $from = new DateTimeImmutable('-14 days');
             $until = new DateTimeImmutable('+1 day');
 
+            $currentOrganizationId = $this->request->getAttribute(CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE);
+
             $this->defaultSearchData = array(
-                \Gems\Snippets\AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created',
-                'grco_organization' => $this->loader->getOrganization()->getId(),
+                AutosearchFormSnippet::PERIOD_DATE_USED => 'grco_created',
+                'grco_organization' => $currentOrganizationId,
                 'datefrom'          => $from,
                 'dateuntil'         => $until,
                 );
@@ -118,11 +150,11 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
         if ($where) {
             $filter[] = $where;
         }
@@ -133,7 +165,7 @@ class MailLogAction extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      * Resend a log item
      */
-    public function resendAction()
+    public function resendAction(): void
     {
         $this->addSnippets('Gems\\Snippets\\Communication\\ResendCommLogItemSnippet');        
     }

@@ -642,6 +642,10 @@ class Route
                 ],
             ),
 
+            ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
+                controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
+            ),
+
             [
                 'name' => 'setup.communication',
                 'path' => '/setup/communication',
@@ -650,8 +654,8 @@ class Route
                     EmptyHandler::class,
                 ],
             ],
-            ...$this->createBrowseRoutes(baseName: 'setup.communication.job',
-                controllerClass: \Gems\Actions\CommJobAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.communication.job',
+                controllerClass: \Gems\Handlers\Setup\CommJobHandler::class,
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
@@ -662,9 +666,8 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.communication.server',
                 controllerClass: \Gems\Actions\MailServerHandler::class,
             ),
-
-            ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
-                controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.communication.log',
+                controllerClass: \Gems\Actions\CommLogHandler::class,
             ),
 
             [
