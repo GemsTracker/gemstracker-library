@@ -44,9 +44,9 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
 
     /**
      *
-     * @var \Gems\TrackEvents
+     * @var TrackEvents
      */
-    protected $events;
+    protected $trackEvents;
 
     /**
      * @var array
@@ -278,7 +278,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     public function getAnswerSnippetNames(\Gems\Tracker\Token $token)
     {
         if ($this->_has('gsu_display_event') && $this->_get('gsu_display_event')) {
-            $event = $this->events->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
+            $event = $this->trackEvents->loadSurveyDisplayEvent($this->_get('gsu_display_event'));
 
             return $event->getAnswerDisplaySnippets($token);
         }
@@ -575,7 +575,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     public function getSurveyBeforeAnsweringEvent()
     {
         if ($this->_has('gsu_beforeanswering_event') && $this->_get('gsu_beforeanswering_event')) {
-            return $event = $this->events->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
+            return $event = $this->trackEvents->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
         }
     }
 
@@ -587,7 +587,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     public function getSurveyCompletedEvent()
     {
         if ($this->_has('gsu_completed_event') && $this->_get('gsu_completed_event')) {
-            return $event = $this->events->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
+            return $event = $this->trackEvents->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
         }
     }
 

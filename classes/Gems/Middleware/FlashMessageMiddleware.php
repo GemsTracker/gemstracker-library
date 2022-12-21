@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Zalt\Message\MezzioFlashMessenger;
+use Zalt\Message\MezzioSessionMessenger;
 use Zalt\Message\StatusMessengerInterface;
 
 class FlashMessageMiddleware implements MiddlewareInterface
@@ -48,7 +49,7 @@ class FlashMessageMiddleware implements MiddlewareInterface
 
         $flashMessages = ($this->flashMessageFactory)($session, $this->sessionKey);
 
-        $statusMessenger = new MezzioFlashMessenger($flashMessages);
+        $statusMessenger = new MezzioSessionMessenger($session);
 
         return $handler->handle(
             $request
