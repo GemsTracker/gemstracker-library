@@ -11,10 +11,16 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -25,7 +31,7 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 22-apr-2015 15:32:11
  */
-class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract
+class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
 {
     /**
      *
@@ -59,6 +65,16 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      */
     protected $useCount = 0;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
+    }
+
     /**
      * Creates the model
      *
@@ -85,13 +101,10 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      */
     protected function setAfterDeleteRoute()
     {
-        parent::setAfterDeleteRoute();
+        $this->afterActionRouteUrl = $this->menuHelper->getRouteUrl('track-builder.track-maintenance.show', [
+            'trackId' => $this->trackId,
+        ]);
 
-        if (is_array($this->afterSaveRouteUrl)) {
-            $this->afterSaveRouteUrl[\MUtil\Model::REQUEST_ID] = $this->trackId;
-            $this->afterSaveRouteUrl[\Gems\Model::ROUND_ID]    = null;
-            $this->afterSaveRouteUrl[$this->confirmParameter]  = null;
-        }
     }
 
     /**
@@ -109,7 +122,7 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         if ($model instanceof RoundModel) {
             $refCount = $model->getRefCount($this->roundId);
             if ($refCount) {
-                $this->addMessage(sprintf($this->plural(
+                $this->messenger->addMessage(sprintf($this->plural(
                     'This round is used %s time in another round.', 'This round is used %s times in other rounds.',
                     $refCount
                 ), $refCount));
@@ -118,15 +131,14 @@ class RoundDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
             $this->useCount = $model->getStartCount($this->roundId);
             
             if ($this->useCount) {
-                $this->addMessage(sprintf($this->plural(
+                $this->messenger->addMessage(sprintf($this->plural(
                     'This round has been completed %s time.', 'This round has been completed %s times.',
                     $this->useCount
                 ), $this->useCount));
             }
 
-            \MUtil\EchoOut\EchoOut::track($refCount, $this->useCount);
             if ($refCount || $this->useCount) {
-                $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
+                $this->messenger->addMessage($this->_('This round cannot be deleted, only deactivated.'));
                 $this->deleteQuestion = $this->_('Do you want to deactivate this round?');
                 $this->displayTitle   = $this->_('Deactivate round');
             }
