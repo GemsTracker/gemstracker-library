@@ -22,14 +22,13 @@ use Redis;
 class MonologFactory implements FactoryInterface
 {
 
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): Logger
     {
+        $logger = $this->createLogger($requestedName);
+
         $config = $container->get('config');
         if (isset($config['log'], $config['log'][$requestedName])) {
             $logConfig = $config['log'][$requestedName];
-
-            $logger = new Logger($requestedName);
-
             foreach($logConfig['writers'] as $handlerName => $handlerConfig) {
                 $priority = Level::Debug;
                 if (isset($handlerConfig['priority'])) {
@@ -106,8 +105,17 @@ class MonologFactory implements FactoryInterface
                     }
                 }
             }
-            return $logger;
         }
+        return $logger;
+    }
+
+    protected function createLogger($requestedName): Logger
+    {
+        if (class_exists($requestedName, false)) {
+            return new $requestedName();
+        }
+
+        return new Logger($requestedName);
     }
 
     /**

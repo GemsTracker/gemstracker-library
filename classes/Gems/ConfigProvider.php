@@ -30,6 +30,7 @@ use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
 use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
+use Gems\Log\ErrorLogger;
 use Gems\Messenger\MessengerFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Messenger\TransportFactory;
@@ -225,6 +226,11 @@ class ConfigProvider
     public function getDependencies(): array
     {
         return [
+            'delegators' => [
+                \Laminas\Stratigility\Middleware\ErrorHandler::class => [
+                    ErrorLogEventListenerDelegatorFactory::class,
+                ],
+            ],
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
@@ -234,6 +240,7 @@ class ConfigProvider
                 // Logs
                 'LegacyLogger' => MonologFactory::class,
                 'embeddedLoginLog' => MonologFactory::class,
+                ErrorLogger::class => MonologFactory::class,
 
                 // Cache
                 \Symfony\Component\Cache\Adapter\AdapterInterface::class => CacheFactory::class,
@@ -414,6 +421,17 @@ class ConfigProvider
     protected function getLoggers(): array
     {
         return [
+            ErrorLogger::class => [
+                'writers' => [
+                    'stream' => [
+                        'name' => 'stream',
+                        'priority' => LogLevel::DEBUG,
+                        'options' => [
+                            'stream' =>  'data/logs/php-error.log',
+                        ],
+                    ],
+                ],
+            ],
             'LegacyLogger' => [
                 'writers' => [
                     'stream' => [
