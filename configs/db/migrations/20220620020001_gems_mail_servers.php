@@ -8,12 +8,18 @@ class GemsMailServers extends Phinx\Migration\AbstractMigration
     {
         $this->table('gems__mail_servers', [
                 'id' => false,
-                'primary_key' => ['gms_from'],
+                'primary_key' => ['gms_id_server'],
                 'engine' => 'InnoDB',
                 'encoding' => 'utf8mb4',
                 'collation' => 'utf8mb4_unicode_ci',
                 'comment' => '',
                 'row_format' => 'DYNAMIC',
+            ])
+            ->addColumn('gms_id_server', 'integer', [
+                'null' => false,
+                'limit' => MysqlAdapter::INT_BIG,
+                'signed' => false,
+                'identity' => 'enable',
             ])
             ->addColumn('gms_from', 'string', [
                 'null' => false,

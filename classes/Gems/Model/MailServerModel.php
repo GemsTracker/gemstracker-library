@@ -21,9 +21,6 @@ class MailServerModel extends JoinModel
 
     public function afterRegistry()
     {
-        // Key can be changed by users
-        $this->copyKeys();
-
         $this->set(
             'gms_from',
             'label',

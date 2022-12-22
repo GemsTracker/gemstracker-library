@@ -23,6 +23,7 @@ use Gems\Config\App;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
+use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
