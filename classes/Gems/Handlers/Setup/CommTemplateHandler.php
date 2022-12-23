@@ -11,9 +11,13 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\Locale\Locale;
-use Gems\Project\ProjectSettings;
-use Gems\Util\Translated;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Model\CommTemplateModel;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -24,71 +28,40 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
+class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * Tags for cache cleanup after changes, passed to snippets
      *
      * @var array
      */
-    public $cacheTags = ['commTemplates'];
+    public array $cacheTags = ['commTemplates'];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Mail\\MailModelFormSnippet';
+    //protected array $createEditSnippets = ['Mail\\MailModelFormSnippet'];
 
-    /**
-     * @var Locale
-     */
-    public $locale;
-
-    /**
-     * @var ProjectSettings
-     */
-    public $project;
+    protected ProjectOverloader $overloader;
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = 'Mail\\CommTemplateShowSnippet';
+    //protected array $showSnippets = ['Mail\\CommTemplateShowSnippet'];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    public $util;
-
-    /**
-     * Display a template body
-     *
-     * @param string $bbcode
-     * @return \MUtil\Html\HtmlElement
-     */
-    public function bbToHtml($bbcode)
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        ProjectOverloader $projectOverloader,
+    )
     {
-        if (empty($bbcode)) {
-            $em = \MUtil\Html::create('em');
-            $em->raw($this->_('&laquo;empty&raquo;'));
-
-            return $em;
-        }
-
-        $text = \MUtil\Markup::render($bbcode, 'Bbcode', 'Html');
-
-        $div = \MUtil\Html::create('div', array('class' => 'mailpreview'));
-        $div->raw($text);
-
-        return $div;
+        parent::__construct($responder, $translate);
+        $this->overloader = clone $projectOverloader;
+        $this->overloader->setDependencyResolver(new ConstructorDependencyResolver());
     }
 
     /**
@@ -102,9 +75,13 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $allLanguages    = $this->util->getLocalized()->getLanguages();
+        /**
+         * @var ModelAbstract
+         */
+        return $this->overloader->create(CommTemplateModel::class);
+        /*$allLanguages    = $this->util->getLocalized()->getLanguages();
         $currentLanguage = $this->locale->getLanguage();
         $markEmptyCall   = array($this->translatedUtil, 'markEmpty');
 
@@ -180,7 +157,7 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
 
-        return $model;
+        return $model;*/
     }
 
     /**
@@ -210,19 +187,19 @@ class CommTemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
         return $html;
     }
 
-    public function getCreateTitle()
+    public function getCreateTitle(): string
     {
         return $this->_('New template');
     }
 
-    public function getEditTitle()
+    public function getEditTitle(): string
     {
         $data = $this->getModel()->loadFirst();
 
         return sprintf($this->_('Edit template: %s'), $data['gct_name']);
     }
 
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Email templates');
     }

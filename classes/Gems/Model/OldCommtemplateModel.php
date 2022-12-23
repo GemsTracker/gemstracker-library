@@ -20,7 +20,7 @@ namespace Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CommtemplateModel extends \Gems\Model\JoinModel
+class OldCommtemplateModel extends \Gems\Model\JoinModel
 {
 
     protected $locale;

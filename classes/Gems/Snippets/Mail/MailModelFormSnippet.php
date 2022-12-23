@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Mail;
 
+use Gems\Model\CommTemplateModel;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\FullDataInterface;
 
@@ -180,7 +181,7 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
-        if ($this->model instanceof \Gems\Model\CommtemplateModel) 
+        if ($this->model instanceof CommTemplateModel)
         {
             $sub = $this->model->get('gctt', 'model');
             
