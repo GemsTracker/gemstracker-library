@@ -3,6 +3,7 @@
 namespace Gems\Config;
 
 use Gems\Api\RestModelConfigProviderAbstract;
+use Gems\Model\CommTemplateModel;
 use Gems\Model\InsertableQuestionnaireModel;
 use Gems\Model\SimpleTrackModel;
 
@@ -48,6 +49,29 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'organization',
                 ],
             ],
+            'comm-template' => [
+                'model' => CommTemplateModel::class,
+                'constructor' => true,
+                'methods' => ['GET', 'POST'],
+                'allowed_fields' => [
+                    'id',
+                    'gct_id_template',
+                    'name',
+                    'gct_name',
+                    'code',
+                    'gct_code',
+                    'mailTarget',
+                    'gct_target',
+                    'translations' => [
+                        'language',
+                        'gctt_lang',
+                        'subject',
+                        'gct_subject',
+                        'body',
+                        'gct_body',
+                    ],
+                ],
+            ]
         ];
     }
 }
