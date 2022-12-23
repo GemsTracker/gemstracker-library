@@ -228,7 +228,7 @@ class TokenRepository
             ];
 
             foreach ($status as $val => $stat) {
-                $stat[0]->append($val); // Temp fix until icons work
+                //$stat[0]->append($val); // Temp fix until icons work
                 $stat->appendAttrib('class', $this->getStatusClass($val));
             }
         }
