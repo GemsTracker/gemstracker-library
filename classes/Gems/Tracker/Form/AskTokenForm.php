@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Form;
 
+use MUtil\Bootstrap\Form\Element\Text;
+
 /**
  *
  *
@@ -29,6 +31,8 @@ class AskTokenForm extends \Gems\Form\AutoLoadFormAbstract
      */
     protected $_tokenFieldName = \MUtil\Model::REQUEST_ID;
 
+    protected $clientIp;
+
     /**
      *
      * @var \Gems\Tracker
@@ -41,6 +45,9 @@ class AskTokenForm extends \Gems\Form\AutoLoadFormAbstract
             $options['class'] .= ' ask-token-form';
         } else {
             $options['class'] = 'ask-token-form';
+        }
+        if (isset($options['clientIp'])) {
+            $this->clientIp = $options['clientIp'];
         }
         parent::__construct($options);
     }
@@ -59,14 +66,14 @@ class AskTokenForm extends \Gems\Form\AutoLoadFormAbstract
             $max_length = $tokenLib->getLength();
 
             // Veld token
-            $element = new \Zend_Form_Element_Text($this->_tokenFieldName);
+            $element = new Text($this->_tokenFieldName);
             $element->setLabel($this->translate->_('Token'));
             $element->setDescription(sprintf($this->translate->_('Enter tokens as %s.'), $tokenLib->getFormat()));
             $element->setAttrib('size', $max_length + 2);
             $element->setAttrib('maxlength', $max_length);
             $element->setRequired(true);
             $element->addFilter($this->tracker->getTokenFilter());
-            $element->addValidator($this->tracker->getTokenValidator());
+            $element->addValidator($this->tracker->getTokenValidator($this->clientIp));
 
             $this->addElement($element);
         }
