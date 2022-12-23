@@ -398,10 +398,15 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         // Make sure to return to the forward screen
         $this->currentUser->setSurveyReturn();
 
-        $form    = $this->tracker->getAskTokenForm(array(
-            'displayOrder' => array('element', 'description', 'errors'),
-            'labelWidthFactor' => 0.8
-        ));
+        $form    = $this->tracker->getAskTokenForm([
+            'displayOrder' => [
+                'element',
+                'description',
+                'errors',
+            ],
+            'labelWidthFactor' => 0.8,
+            'clientIp' => $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
+        ]);
 
         if ($this->requestInfo->isPost() && $form->isValid($this->request->getParsedBody(), false)) {
             $this->forwardAction();
@@ -503,6 +508,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function toSurveyAction()
     {
+
+
         if (! $this->_initToken()) {
             // Default option
             return $this->forward('index');
