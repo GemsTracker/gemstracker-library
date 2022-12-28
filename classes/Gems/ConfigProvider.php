@@ -81,6 +81,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\MetaModelLoaderFactory;
+use Zalt\Model\Sql\Laminas\LaminasRunner;
+use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
+use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -276,6 +281,9 @@ class ConfigProvider
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
+                LaminasRunner::class => LaminasRunnerFactory::class,
+                MetaModelLoader::class => MetaModelLoaderFactory::class,
+                
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
                 GemsSnippetResponder::class => GemsSnippetResponderFactory::class, 
@@ -305,6 +313,8 @@ class ConfigProvider
                 Translator::class => TranslatorInterface::class,
                 SnippetResponderInterface::class => GemsSnippetResponder::class,
                 \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
+                
+                SqlRunnerInterface::class => LaminasRunner::class,
             ]
         ];
     }

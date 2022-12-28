@@ -14,6 +14,7 @@ namespace Gems\Snippets;
 use Gems\Db\ResultFetcher;
 use Gems\Form;
 use Gems\JQuery\Form\Element\DatePicker;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
@@ -522,12 +523,12 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * Helper function to generate a period query string
      *
      * @param array $filter A filter array or $request->getParams()
-     * @param \Zend_Db_Adapter_Abstract $db
+     * @param PlatformInterface $dbPlatform
      * @param $inFormat Optional format to use for date when reading
      * @param $outFormat Optional format to use for date in query
      * @return string
      */
-    public static function getPeriodFilter(array &$filter, \Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
+    public static function getPeriodFilter(array &$filter, PlatformInterface $dbPlatform, $inFormat = null, $outFormat = null)
     {
         $from   = array_key_exists('datefrom', $filter) ? $filter['datefrom'] : null;
         $until  = array_key_exists('dateuntil', $filter) ? $filter['dateuntil'] : null;
@@ -562,26 +563,26 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                     return sprintf(
                             '(%1$s <= %4$s OR (%1$s IS NULL AND %2$s IS NOT NULL)) AND
                                 (%2$s >= %3$s OR %2$s IS NULL)',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($datefrom),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($datefrom),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 if ($datefrom) {
                     return sprintf(
                             '%2$s >= %3$s OR (%2$s IS NULL AND %1$s IS NOT NULL)',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($datefrom)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($datefrom)
                             );
                 }
                 if ($dateuntil) {
                     return sprintf(
                             '%1$s <= %3$s OR (%1$s IS NULL AND %2$s IS NOT NULL)',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 return;
@@ -593,26 +594,26 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                 if ($datefrom && $dateuntil) {
                     return sprintf(
                             '%1$s >= %3$s AND %2$s <= %4$s',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($datefrom),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($datefrom),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 if ($datefrom) {
                     return sprintf(
                             '%1$s >= %3$s AND (%2$s IS NULL OR %2$s >= %3$s)',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($datefrom)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($datefrom)
                             );
                 }
                 if ($dateuntil) {
                     return sprintf(
                             '%2$s <= %3$s AND (%1$s IS NULL OR %1$s <= %3$s)',
-                            $db->quoteIdentifier($periods[0]),
-                            $db->quoteIdentifier($periods[1]),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($periods[0]),
+                            $dbPlatform->quoteIdentifier($periods[1]),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 return;
@@ -621,23 +622,23 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                 if ($datefrom && $dateuntil) {
                     return sprintf(
                             '%s BETWEEN %s AND %s',
-                            $db->quoteIdentifier($period),
-                            $db->quote($datefrom),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($period),
+                            $dbPlatform->quoteValue($datefrom),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 if ($datefrom) {
                     return sprintf(
                             '%s >= %s',
-                            $db->quoteIdentifier($period),
-                            $db->quote($datefrom)
+                            $dbPlatform->quoteIdentifier($period),
+                            $dbPlatform->quoteValue($datefrom)
                             );
                 }
                 if ($dateuntil) {
                     return sprintf(
                             '%s <= %s',
-                            $db->quoteIdentifier($period),
-                            $db->quote($dateuntil)
+                            $dbPlatform->quoteIdentifier($period),
+                            $dbPlatform->quoteValue($dateuntil)
                             );
                 }
                 return;

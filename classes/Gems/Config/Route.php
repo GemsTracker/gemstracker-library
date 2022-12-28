@@ -299,8 +299,8 @@ class Route
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.field-report',
-                controllerClass: \Gems\Actions\FieldReportAction::class,
+            ...$this->createSnippetRoutes(baseName: 'overview.field-report',
+                controllerClass: \Gems\Handlers\Overview\FieldReportHandler::class,
                 pages: [
                     'index',
                     'autofilter',

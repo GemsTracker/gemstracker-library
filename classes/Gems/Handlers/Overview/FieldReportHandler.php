@@ -9,9 +9,19 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Overview;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Tracker\Fields\FieldReportSearchSnippet;
+use Gems\Tracker;
 use Gems\Tracker\Model\FieldDataModel;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,7 +32,7 @@ use Gems\Tracker\Model\FieldDataModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 17:50:22
  */
-class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
+class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -34,7 +44,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = array(
         'browse' => false,
         'columns' => 'getBrowseColumns',
         );
@@ -54,12 +64,6 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     *
      * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
     protected $engine;
@@ -69,7 +73,10 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Tracker\\Fields\\FieldReportSearchSnippet');
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        FieldReportSearchSnippet::class,
+    ];
 
     /**
      * Where statement filtering out organizations
@@ -99,6 +106,20 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     protected $trackId;
 
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected ResultFetcher $resultFetcher,
+        protected TrackDataRepository $trackDataRepository,
+        protected Tracker $tracker,
+    )
+    {
+        parent::__construct($responder, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -110,15 +131,15 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel($detailed, $action): ModelAbstract
     {
         $filter = $this->getSearchFilter($action !== 'export');
 
-        // Return empty model when no track sel;ected
+        // Return empty model when no track selected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             $model = new \Gems\Model\JoinModel('trackfields' , 'gems__track_fields');
             $model->set('gtf_field_name', 'label', $this->_('Name'));
-            $model->setFilter(array('1=0'));
+            $model->setFilter([1 => 0]);
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
 
             return $model;
@@ -126,8 +147,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $this->trackId = $filter['gtf_id_track'];
 
-        $tracker      = $this->loader->getTracker();
-        $this->engine = $tracker->getTrackEngine($this->trackId);
+        $this->engine = $this->tracker->getTrackEngine($this->trackId);
 
         $orgs         = $this->currentUser->getRespondentOrgFilter();
         if (isset($filter['gr2t_id_organization'])) {
@@ -140,12 +160,12 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
             WHERE gr2t_id_track = ? AND grc_success = 1" . $this->orgWhere;
         
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
             $sql .= ' AND ' . $where;
         }
         $this->dateWhere = $where; 
 
-        $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
+        $this->trackCount = $this->resultFetcher->fetchOne($sql, $this->trackId);
 
         $model = $this->engine->getFieldsMaintenanceModel();
         //$model->setFilter($filter);
@@ -235,7 +255,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
         }
 
         // \MUtil\EchoOut\EchoOut::track($sql);
-        $this->trackFilled = $this->db->fetchOne($sql);
+        $this->trackFilled = $this->resultFetcher->fetchOne($sql);
 
         $value = $this->trackFilled;
         return sprintf(
@@ -288,7 +308,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
         }
 
         // \MUtil\EchoOut\EchoOut::track($sql);
-        $value = $this->db->fetchOne($sql);
+        $value = $this->resultFetcher->fetchOne($sql);
         return sprintf(
                 $this->_('%d (uses per value: %01.2f)'),
                 $value,
@@ -300,7 +320,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * Get the browse columns
      * @return array
      */
-    public function getBrowseColumns()
+    public function getBrowseColumns(): array
     {
         $filter = $this->getSearchFilter(true);
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
@@ -324,7 +344,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Track fields');
     }
@@ -336,7 +356,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
@@ -345,8 +365,8 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
         
         if (!isset($this->defaultSearchData['gtf_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
-            if (count($tracks) == 1) {
+            $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
+            if (\count($tracks) == 1) {
                 $this->defaultSearchData['gtf_id_track'] = key($tracks);
             }
         }
@@ -360,7 +380,7 @@ class FieldReportAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('track', 'tracks', $count);
     }

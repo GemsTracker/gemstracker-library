@@ -18,8 +18,18 @@ use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Snippets\Tracker\Summary\SummarySearchFormSnippet;
 use Gems\Snippets\Tracker\Summary\SummaryTableSnippet;
 use Gems\User\User;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Sql;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModel;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Sql\Laminas\LaminasRunner;
+use Zalt\Model\Sql\Laminas\LaminasSelectModel;
+use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -87,6 +97,8 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
         protected \Zend_Db_Adapter_Abstract $db,
+        protected Adapter $laminasDb,
+        protected MetaModelLoader $metaModelLoader,
         protected TrackDataRepository $trackDataRepository,
     )
     {
@@ -106,35 +118,39 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action): ModelAbstract
-    {
-        $select = $this->getSelect();
+    public function createModel($detailed, $action): DataReaderInterface
+    {      
+        $select = $this->getLaminasSelect();
+        
+        $dataModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'summary', $select);
+        $metaModel = $dataModel->getMetaModel();
 
+        $dataModel->setTextFilter('search');
         // \MUtil\Model::$verbose = true;
-        $model = new \MUtil\Model\SelectModel($select, 'summary');
+        // $model = new \MUtil\Model\SelectModel($select, 'summary');
 
         // Make sure of filter and sort for these fields
-        $model->set('gro_id_order');
-        $model->set('gto_id_track');
-        $model->set('gto_id_organization');
+        $metaModel->set('gro_id_order');
+        $metaModel->set('gto_id_track');
+        $metaModel->set('gto_id_organization');
 
-        $model->resetOrder();
-        $model->set('gro_round_description', 'label', $this->_('Round'));
-        $model->set('gsu_survey_name',       'label', $this->_('Survey'));
-        $model->set('answered', 'label', $this->_('Answered'));
-        $model->set('missed',   'label', $this->_('Missed'));
-        $model->set('open',     'label', $this->_('Open'));
-        $model->set('total',    'label', $this->_('Total'));
-        // $model->set('future',   'label', $this->_('Future'));
-        // $model->set('unknown',  'label', $this->_('Unknown'));
-        // $model->set('is',       'label', ' ');
-        // $model->set('success',  'label', $this->_('Success'));
-        // $model->set('removed',  'label', $this->_('Removed'));
+        $metaModel->resetOrder();
+        $metaModel->set('gro_round_description', 'label', $this->_('Round'));
+        $metaModel->set('gsu_survey_name',       'label', $this->_('Survey'));
+        $metaModel->set('answered', 'label', $this->_('Answered'));
+        $metaModel->set('missed',   'label', $this->_('Missed'));
+        $metaModel->set('open',     'label', $this->_('Open'));
+        $metaModel->set('total',    'label', $this->_('Total'));
+        // $metaModel->set('future',   'label', $this->_('Future'));
+        // $metaModel->set('unknown',  'label', $this->_('Unknown'));
+        // $metaModel->set('is',       'label', ' ');
+        // $metaModel->set('success',  'label', $this->_('Success'));
+        // $metaModel->set('removed',  'label', $this->_('Removed'));
 
-        $model->setMulti(['answered', 'missed', 'open', 'total'],
+        $metaModel->setMulti(['answered', 'missed', 'open', 'total'],
                 'tdClass', 'centerAlign', 'thClass', 'centerAlign', 'no_text_search', true);
 
-        $model->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
+        $metaModel->set('filler',  'label', $this->_('Filler'), 'no_text_search', true);
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
@@ -143,16 +159,16 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
             // Add the period filter
-            if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
-                $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
-                $model->addFilter(array($where));
+            if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->laminasDb)) {
+                // $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
+                $dataModel->addFilter(array($where));
             }
         } else {
             $this->autofilterParameters['extraFilter'][1] = 0;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
         }
 
-        return $model;
+        return $dataModel;
     }
 
     /**
@@ -189,7 +205,81 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         return parent::getSearchDefaults();
     }
+    
+    public function getLaminasSelect() : Select
+    {
+        $fields['answered'] = new Expression("SUM(
+            CASE
+            WHEN grc_success = 1 AND gto_completion_time IS NOT NULL
+            THEN 1 ELSE 0 END
+            )");
+        $fields['missed']   = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1 AND
+                 gto_completion_time IS NULL AND
+                 gto_valid_until < CURRENT_TIMESTAMP AND
+                 (gto_valid_from IS NOT NULL AND gto_valid_from <= CURRENT_TIMESTAMP)
+            THEN 1 ELSE 0 END
+            )');
+        $fields['open']   = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1 AND gto_completion_time IS NULL AND
+                gto_valid_from <= CURRENT_TIMESTAMP AND
+                (gto_valid_until >= CURRENT_TIMESTAMP OR gto_valid_until IS NULL)
+            THEN 1 ELSE 0 END
+            )');
+        $fields['total'] = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1 AND (
+                    gto_completion_time IS NOT NULL OR
+                    (gto_valid_from IS NOT NULL AND gto_valid_from <= CURRENT_TIMESTAMP)
+                )
+            THEN 1 ELSE 0 END
+            )');
+        /*
+        $fields['future'] = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_from > CURRENT_TIMESTAMP
+            THEN 1 ELSE 0 END
+            )');
+        $fields['unknown'] = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_from IS NULL
+            THEN 1 ELSE 0 END
+            )');
+        $fields['is']      = new Expression("'='");
+        $fields['success'] = new Expression('SUM(
+            CASE
+            WHEN grc_success = 1
+            THEN 1 ELSE 0 END
+            )');
+        $fields['removed'] = new Expression('SUM(
+            CASE
+            WHEN grc_success = 0
+            THEN 1 ELSE 0 END
+            )');
+        // */
 
+        $fields['filler'] = new Expression('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
+
+        $sql = new Sql($this->laminasDb);
+        $select = $sql->select('gems__tokens', $fields);
+
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
+               ->join('gems__rounds', 'gto_id_round = gro_id_round', ['gro_round_description', 'gro_id_survey'])
+               ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', ['gsu_survey_name'])
+               ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
+               ->join('gems__track_fields', new Expression('gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
+               ->group(['gto_id_token', 'gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', $fields['filler']]);
+
+        $filter = $this->getSearchFilter();
+        if (array_key_exists('fillerfilter', $filter)) {
+            $select->having(['filler' => $filter['fillerfilter']]);
+        }
+
+        return $select;
+    }
+        
    /**
      * Select creation function, allowes overruling in child classes
      *

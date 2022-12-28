@@ -41,7 +41,7 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
 
         $bridge->add(
                 'gro_round_description',
-                $bridge->createSortLink('gro_id_order', $model->get('gro_round_description', 'label'))
+                $bridge->createSortLink('gro_id_order', $model->getMetaModel()->get('gro_round_description', 'label'))
                 );
         $bridge->addSortable('gsu_survey_name');
         $bridge->th(array($bridge->createSortLink('answered'), 'colspan' => 2))->class = 'centerAlign';

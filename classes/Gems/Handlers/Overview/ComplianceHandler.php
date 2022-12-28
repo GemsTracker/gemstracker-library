@@ -2,6 +2,7 @@
 
 namespace Gems\Handlers\Overview;
 
+use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
@@ -12,6 +13,7 @@ use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\User\Group;
+use Laminas\Db\Adapter\Platform\PlatformInterface;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -76,7 +78,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected ResultFetcher $resultFetcher,
         protected TokenRepository $tokenRepository,
         protected TrackDataRepository $trackDataRepository,
     )
@@ -128,22 +130,23 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $this->autofilterParameters['extraFilter'][1] = 0;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
-            $this->_snippetParams['onEmpty'] = $this->autofilterParameters['onEmpty'];
             return $model;
         }
 
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
             $model->addFilter(array($where));
         }
 
-        $select = $this->db->select();
+        $select = $this->resultFetcher->getSelect();
         $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
                 ->joinLeft('gems__track_fields', 'gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
                 ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
-                ->where('gro_id_track = ?', $filter['gr2t_id_track'])
-                ->where('gsu_active = 1')   //Only active surveys
+                ->where([
+                    'gro_id_track' => $filter['gr2t_id_track'],
+                    'gsu_active' => 1, //Only active surveys
+                ])   
                 ->order('gro_id_order');
 
         $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
@@ -152,7 +155,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if (array_key_exists('fillerfilter', $filter)) {
             $select->having('filler = ?', $filter['fillerfilter']);
         }
-        $data = $this->db->fetchAll($select);
+        $data = $this->resultFetcher->fetchAll($select);
 
         if (! $data) {
             return $model;
@@ -161,18 +164,15 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $status = $this->tokenRepository->getStatusExpression();
         $status = new \Zend_Db_Expr($status->getExpression());
 
-        $select = $this->db->select();
-        $select->from('gems__tokens', array(
+        $select = $this->resultFetcher->getSelect();
+        $select->from('gems__tokens', [
             'gto_id_respondent_track', 'gto_id_round', 'gto_id_token', 'status' => $status, 'gto_result',
-            ))->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
-                // ->where('grc_success = 1')
-                ->where('gto_id_track = ?', $filter['gr2t_id_track'])
-                ->order('grc_success')
-                ->order('gto_id_respondent_track')
-                ->order('gto_round_order');
+            ])->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
+                ->where(['gto_id_track' => $filter['gr2t_id_track']])
+                ->order(['grc_success', 'gto_id_respondent_track', 'gto_round_order']);
 
         // \MUtil\EchoOut\EchoOut::track($this->db->fetchAll($select));
-        $newModel = new \MUtil\Model\SelectModel($select, 'tok');
+        $newModel = new \MUtil\Model\SelectModel($select->getSqlString(), 'tok');
         $newModel->setKeys(array('gto_id_respondent_track'));
 
         $transformer = new \MUtil\Model\Transform\CrossTabTransformer();
