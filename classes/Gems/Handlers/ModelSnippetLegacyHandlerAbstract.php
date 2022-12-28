@@ -46,6 +46,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'onEmpty'       => 'getOnEmptyText',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
+        'textSearch'    => 'searchText', 
     ];
 
     /**

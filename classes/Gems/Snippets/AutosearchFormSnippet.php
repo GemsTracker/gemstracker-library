@@ -103,7 +103,12 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      *
      * @var string
      */
-    protected $searchLabel;
+    protected string $searchLabel = '';
+
+    /**
+     * @var string Fieldname for text search
+     */
+    protected string $textSearch = 'search';
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -364,8 +369,11 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     protected function getAutoSearchElements(array $data)
     {
+        if (! $this->textSearch) {
+            return [];
+        }
         // Search text
-        $element = $this->form->createElement('text', $this->model->getTextFilter(),
+        $element = $this->form->createElement('text', $this->textSearch,
                 array('label' => $this->searchLabel, 'size' => 20, 'maxlength' => 30));
         return array($element);
     }
