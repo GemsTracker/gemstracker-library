@@ -41,12 +41,12 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array Mixed key => value array for snippet initialization
      */
     private array $_autofilterExtraParameters = [
-        'browse'        => true,
-        'containingId'  => 'autofilter_target',
-        'onEmpty'       => 'getOnEmptyText',
-        'sortParamAsc'  => 'asrt',
-        'sortParamDesc' => 'dsrt',
-        'textSearch'    => 'searchText', 
+        'browse'          => true,
+        'containingId'    => 'autofilter_target',
+        'onEmpty'         => 'getOnEmptyText',
+        'sortParamAsc'    => 'asrt',
+        'sortParamDesc'   => 'dsrt',
+        'textSearchField' => 'searchText', 
     ];
 
     /**

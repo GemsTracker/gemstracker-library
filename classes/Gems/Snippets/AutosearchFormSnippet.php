@@ -108,7 +108,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     /**
      * @var string Fieldname for text search
      */
-    protected string $textSearch = 'search';
+    protected string $textSearchField = 'search';
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -369,11 +369,11 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     protected function getAutoSearchElements(array $data)
     {
-        if (! $this->textSearch) {
+        if (! $this->textSearchField) {
             return [];
         }
         // Search text
-        $element = $this->form->createElement('text', $this->textSearch,
+        $element = $this->form->createElement('text', $this->textSearchField,
                 array('label' => $this->searchLabel, 'size' => 20, 'maxlength' => 30));
         return array($element);
     }
@@ -469,8 +469,8 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         $neededParams = $this->getFixedParams();
         $searchData   = $this->getSearchData();
         $fixedParams  = array_intersect_key($searchData, array_flip($neededParams));
-        $href = array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true) + $fixedParams;
-        return \MUtil\Html::attrib('href', $href);
+        // $href = array('action' => 'autofilter', $this->textSearchField => null, 'RouteReset' => true) + $fixedParams;
+        // return Html::attrib('href', $href);
     }
 
     /**

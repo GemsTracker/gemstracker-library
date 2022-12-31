@@ -152,7 +152,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     {
         $model = $this->getModel();
 
-        $textKey = $model->getTextFilter();
+        $textKey = $this->textSearchField;
         $filter  = $model->getFilter();
 
         if (isset($filter[$textKey])) {
