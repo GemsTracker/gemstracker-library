@@ -79,9 +79,6 @@ class MailLogBrowseSnippet extends ModelTableSnippet
         $by = Html::raw($this->_(' / '));
         $sp = Html::raw('&nbsp;');
 
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         if ($this->currentUser->areAllFieldsMaskedWhole('respondent_name', 'grs_surname_prefix', 'grco_address')) {
             $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $br, 'gtr_track_name');
         } else {

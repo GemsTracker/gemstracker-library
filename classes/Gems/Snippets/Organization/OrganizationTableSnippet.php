@@ -51,9 +51,6 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippet
             $bridge->addItemLink(Html::actionLink($menuItem, $showLabel));
         }
 
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         $br = Html::create()->br();
 
         $orgName[] = Late::iff($bridge->gor_url,

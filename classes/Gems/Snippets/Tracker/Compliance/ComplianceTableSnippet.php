@@ -75,8 +75,6 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        $this->applyTextMarker();
-
         $keys[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
         $keys[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
         $keys[Model::RESPONDENT_TRACK]   = 'gr2t_id_respondent_track';

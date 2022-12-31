@@ -48,9 +48,6 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
             }
         }
 
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         if ($this->columns) {
             foreach ($this->columns as $column) {
                 call_user_func_array(array($bridge, 'addMultiSort'), $column);

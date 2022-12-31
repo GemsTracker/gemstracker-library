@@ -167,9 +167,6 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
             }
         }
 
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         $this->addBrowseColumn1($bridge, $dataModel);
         $this->addBrowseColumn2($bridge, $dataModel);
         $this->addBrowseColumn3($bridge, $dataModel);

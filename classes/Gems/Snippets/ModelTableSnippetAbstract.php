@@ -115,9 +115,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
             }
         }
 
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         parent::addBrowseTableColumns($bridge, $dataModel);
 
         if ($this->showMenu) {
@@ -141,29 +138,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     protected function addPaginator($table, \Zend_Paginator $paginator)
     {
         //$table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
-    }
-
-    /**
-     * Make sure generic search text results are marked
-     *
-     * @return void
-     */
-    protected function applyTextMarker()
-    {
-        $model = $this->getModel();
-
-        $textKey = $this->textSearchField;
-        $filter  = $model->getFilter();
-
-        if (isset($filter[$textKey])) {
-            $searchText = $filter[$textKey];
-            $marker = new Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
-            foreach ($model->getItemNames() as $name) {
-                if ($model->get($name, 'label') && (! $model->is($name, 'no_text_search', true))) {
-                    $model->set($name, 'markCallback', [$marker, 'mark']);
-                }
-            }
-        }
     }
 
     /**

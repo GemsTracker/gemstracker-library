@@ -98,9 +98,6 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
         parent::addBrowseTableColumns($bridge, $model);
 
         $bridge->getTable()->addColumn(null,$this->_('Action'));
@@ -161,30 +158,6 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
     protected function addPaginator(TableElement $table, \Zend_Paginator $paginator)
     {
         // $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
-    }
-
-    /**
-     * Make sure generic search text results are marked
-     *
-     * @return void
-     */
-    protected function applyTextMarker()
-    {
-        $model = $this->getModel();
-
-        $textKey = $model->getTextFilter();
-        $filter  = $model->getFilter();
-
-        if (isset($filter[$textKey])) {
-            $searchText = $filter[$textKey];
-            // \MUtil\EchoOut\EchoOut::r('[' . $searchText . ']');
-            $marker = new \MUtil\Html\Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
-            foreach ($model->getItemNames() as $name) {
-                if ($model->get($name, 'label') && (! $model->get($name, 'no_text_search'))) {
-                    $model->set($name, 'markCallback', array($marker, 'mark'));
-                }
-            }
-        }
     }
 
     /**

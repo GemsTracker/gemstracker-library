@@ -35,7 +35,6 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
-        $this->applyTextMarker();
         
         // \MUtil\Model::$verbose = true;
 
