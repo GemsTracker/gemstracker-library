@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\AgendaFactory;
 use Gems\Auth\Acl\AclFactory;
-use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\DbGroupAdapter;
 use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\GroupAdapterInterface;
@@ -81,6 +80,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\MetaModelLoaderFactory;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
@@ -127,6 +127,7 @@ class ConfigProvider
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'messenger'     => $messengerSettings(),
+            'model'         => MetaModelConfigProvider::getConfig(),
             'monitor'       => $this->getMonitorSettings(),
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),

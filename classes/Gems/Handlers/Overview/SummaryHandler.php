@@ -267,7 +267,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', ['gsu_survey_name'])
                ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
                ->join('gems__track_fields', new Expression('gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
-               ->group(['gto_id_token', 'gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', 'filler']);
+               ->group(['gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', 'filler']);
 
         $filter = $this->getSearchFilter();
         if (array_key_exists('fillerfilter', $filter)) {
