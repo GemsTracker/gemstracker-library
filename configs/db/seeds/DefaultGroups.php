@@ -20,6 +20,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 900,
                 'ggp_name' => 'Super Administrators',
+                'ggp_code' => 'superadmin',
                 'ggp_description' => 'Super administrators with access to the whole site',
                 'ggp_role' => 'super',
                 'ggp_may_set_groups' => '900,901,902,903',
@@ -34,6 +35,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 901,
                 'ggp_name' => 'Site Admins',
+                'ggp_code' => 'siteadmin',
                 'ggp_description' => 'Site Administrators',
                 'ggp_role' => 'siteadmin',
                 'ggp_may_set_groups' => '901,902,903',
@@ -48,6 +50,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 902,
                 'ggp_name' => 'Local Admins',
+                'ggp_code' => 'localadmin',
                 'ggp_description' => 'Local Administrators',
                 'ggp_role' => 'admin',
                 'ggp_may_set_groups' => '903',
@@ -62,6 +65,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 903,
                 'ggp_name' => 'Staff',
+                'ggp_code' => 'staff',
                 'ggp_description' => 'Health care staff',
                 'ggp_role' => 'staff',
                 'ggp_may_set_groups' => null,
@@ -76,6 +80,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 904,
                 'ggp_name' => 'Respondents',
+                'ggp_code' => 'respondents',
                 'ggp_description' => 'Respondents',
                 'ggp_role' => 'respondent',
                 'ggp_may_set_groups' => null,
@@ -90,6 +95,7 @@ class DefaultGroups extends AbstractSeed
             [
                 'ggp_id_group' => 905,
                 'ggp_name' => 'Security',
+                'ggp_code' => 'security',
                 'ggp_description' => 'Security',
                 'ggp_role' => 'security',
                 'ggp_may_set_groups' => null,
