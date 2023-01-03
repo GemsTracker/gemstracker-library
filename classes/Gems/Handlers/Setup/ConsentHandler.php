@@ -50,7 +50,6 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected MetaModelLoader $metaModelLoader,
-        protected Model $modelLoader,
         protected ConsentUtil $consentUtil,
     ) {
         parent::__construct($responder, $translate);

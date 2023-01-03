@@ -13,9 +13,16 @@ use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\User\Group;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Having;
+use Laminas\Db\Sql\Select;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Sql\Laminas\LaminasSelectModel;
+use Zalt\Model\Transform\CrossTabTransformer;
+use Zalt\Model\Transform\JoinTransformer;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -77,7 +84,9 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        protected Adapter $laminasDb,
         CurrentUserRepository $currentUserRepository,
+        protected MetaModelLoader $metaModelLoader,
         protected ResultFetcher $resultFetcher,
         protected TokenRepository $tokenRepository,
         protected TrackDataRepository $trackDataRepository,
@@ -138,31 +147,33 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $model->addFilter(array($where));
         }
 
-        $select = $this->resultFetcher->getSelect();
-        $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
-                ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
-                ->joinLeft('gems__track_fields', 'gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"', array())
-                ->joinInner('gems__groups', 'gsu_id_primary_group =  ggp_id_group', array())
-                ->where([
-                    'gro_id_track' => $filter['gr2t_id_track'],
-                    'gsu_active' => 1, //Only active surveys
-                ])   
-                ->order('gro_id_order');
+        $fields['filler'] = new Expression('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
 
-        $fields['filler'] = new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)');
-        $select->columns($fields);
+        $select = $this->resultFetcher->getSelect();
+        $select->from('gems__rounds')
+            ->columns(['gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file', $fields['filler']])
+            ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
+            ->join('gems__track_fields', new Expression('gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
+            ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
+            ->where([
+                'gro_id_track' => $filter['gr2t_id_track'],
+                'gsu_active' => 1, //Only active surveys
+            ])   
+            ->order('gro_id_order');
 
         if (array_key_exists('fillerfilter', $filter)) {
-            $select->having('filler = ?', $filter['fillerfilter']);
+            $having = new Having();
+            $having->equalTo($fields['filler'], $filter['fillerfilter']);
+            // $select->having($having);
         }
         $data = $this->resultFetcher->fetchAll($select);
-
+        
         if (! $data) {
             return $model;
         }
 
         $status = $this->tokenRepository->getStatusExpression();
-        $status = new \Zend_Db_Expr($status->getExpression());
+        $status = new Expression($status->getExpression());
 
         $select = $this->resultFetcher->getSelect();
         $select->from('gems__tokens', [
@@ -172,10 +183,11 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 ->order(['grc_success', 'gto_id_respondent_track', 'gto_round_order']);
 
         // \MUtil\EchoOut\EchoOut::track($this->db->fetchAll($select));
-        $newModel = new \MUtil\Model\SelectModel($select->getSqlString(), 'tok');
-        $newModel->setKeys(array('gto_id_respondent_track'));
+        $newModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'compliance', $select);
+        $metaModel = $newModel->getMetaModel();
+        $metaModel->setKeys(['gto_id_respondent_track']);
 
-        $transformer = new \MUtil\Model\Transform\CrossTabTransformer();
+        $transformer = $this->metaModelLoader->createTransformer(CrossTabTransformer::class);
         $transformer->addCrosstabField('gto_id_round', 'status', 'stat_')
                 ->addCrosstabField('gto_id_round', 'gto_id_token', 'tok_')
                 ->addCrosstabField('gto_id_round', 'gto_result', 'res_');
@@ -193,17 +205,17 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             $transformer->set('res_' . $row['gro_id_round']);
         }
 
-        $newModel->addTransformer($transformer);
+        $metaModel->addTransformer($transformer);
         // \MUtil\EchoOut\EchoOut::track($data);
 
-        $joinTrans = new \MUtil\Model\Transform\JoinTransformer();
+        $joinTrans = $this->metaModelLoader->createTransformer(JoinTransformer::class);
         $joinTrans->addModel($newModel, array('gr2t_id_respondent_track' => 'gto_id_respondent_track'));
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr');
         $model->set('respondent_name');
         $model->set('gr2t_start_date');
-        $model->addTransformer($joinTrans);
+        $metaModel->addTransformer($joinTrans);
 
         // Add masking if needed
         $group = $this->currentUser->getGroup();

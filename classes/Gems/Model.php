@@ -42,7 +42,7 @@ use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use OpenRosa\Model\OpenRosaFormModel;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\Model\Transformer\ModelTransformerInterface;
+use Zalt\Model\Transform\ModelTransformerInterface;
 use Zend_Db_Adapter_Abstract;
 use Zend_Db_Expr;
 

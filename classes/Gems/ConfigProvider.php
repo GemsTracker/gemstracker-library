@@ -24,6 +24,7 @@ use Gems\Config\Route;
 use Gems\Config\Survey;
 use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
+use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
@@ -32,7 +33,8 @@ use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Log\ErrorLogger;
 use Gems\Messenger\MessengerFactory;
-use Gems\Factory\DoctrineOrmFactory;
+use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
+use Gems\Model\MetaModelLoaderFactory;
 use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\SnippetsLoader\GemsSnippetResponder;
@@ -82,7 +84,6 @@ use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelLoader;
-use Zalt\Model\MetaModelLoaderFactory;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
 use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
@@ -127,7 +128,7 @@ class ConfigProvider
             'locale'        => $this->getLocaleSettings(),
             'log'           => $this->getLoggers(),
             'messenger'     => $messengerSettings(),
-            'model'         => MetaModelConfigProvider::getConfig(),
+            'model'         => $this->getModelSettings(),
             'monitor'       => $this->getMonitorSettings(),
             'migrations'    => $this->getMigrations(),
             'password'      => $this->getPasswordSettings(),
@@ -283,7 +284,7 @@ class ConfigProvider
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
                 LaminasRunner::class => LaminasRunnerFactory::class,
-                MetaModelLoader::class => MetaModelLoaderFactory::class,
+                GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
                 
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
@@ -310,6 +311,8 @@ class ConfigProvider
                 RoleAdapterInterface::class => DbRoleAdapter::class,
                 GroupAdapterInterface::class => DbGroupAdapter::class,
 
+                MetaModelLoader::class => GemsMetaModelLoader::class,
+                
                 // Translation
                 Translator::class => TranslatorInterface::class,
                 SnippetResponderInterface::class => GemsSnippetResponder::class,
@@ -492,6 +495,14 @@ class ConfigProvider
         ];
     }
 
+    protected function getModelSettings(): array
+    {
+        $settings = MetaModelConfigProvider::getConfig();
+        $settings['translateDatabaseFields'] = true;
+        
+        return $settings;
+    }
+    
     protected function getMonitorSettings(): array
     {
         /*

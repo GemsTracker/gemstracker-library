@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Overview;
 
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Model\MetaModelLoader;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -23,14 +24,9 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
-use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\MetaModel;
-use Zalt\Model\MetaModelLoader;
-use Zalt\Model\Sql\Laminas\LaminasRunner;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
-use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -97,7 +93,6 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder, 
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected \Zend_Db_Adapter_Abstract $db,
         protected Adapter $laminasDb,
         protected MetaModelLoader $metaModelLoader,
         protected TrackDataRepository $trackDataRepository,
@@ -267,13 +262,13 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', ['gsu_survey_name'])
                ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
                ->join('gems__track_fields', new Expression('gto_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
-               ->group(['gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', 'filler']);
+               ->group(['gro_id_order', 'gro_round_description', 'gro_id_survey', 'gsu_survey_name', $fields['filler']]);
 
         $filter = $this->getSearchFilter();
         if (array_key_exists('fillerfilter', $filter)) {
             $having = new Having();
             $having->equalTo($fields['filler'], $filter['fillerfilter']);
-            $select->having(['filler' => $filter['fillerfilter']]);
+            $select->having($having);
         }
 
         return $select;

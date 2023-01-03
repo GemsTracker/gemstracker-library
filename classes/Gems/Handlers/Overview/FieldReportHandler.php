@@ -165,7 +165,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         }
         $this->dateWhere = $where; 
 
-        $this->trackCount = $this->resultFetcher->fetchOne($sql, $this->trackId);
+        $this->trackCount = $this->resultFetcher->fetchOne($sql, [$this->trackId]);
 
         $model = $this->engine->getFieldsMaintenanceModel();
         //$model->setFilter($filter);
