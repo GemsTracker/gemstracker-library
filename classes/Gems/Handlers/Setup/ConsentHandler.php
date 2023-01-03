@@ -17,6 +17,9 @@ use Gems\Util\ConsentUtil;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\TableModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelLoader;
+use Zalt\Model\Sql\SqlTableModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -46,6 +49,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        protected MetaModelLoader $metaModelLoader,
         protected Model $modelLoader,
         protected ConsentUtil $consentUtil,
     ) {
@@ -63,33 +67,32 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = new TableModel('gems__consents');
-        $model->copyKeys(); // The user can edit the keys.
-        $model->addColumn('gco_description', 'origKey');
+        $model = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__consents');
+        
+        $metaModel = $model->getMetaModel();
+        $metaModel->setKeys(['gco_description' => 'gco_description']);
+        $metaModel->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
-        $model->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
-
-        $model->set('gco_order',       'label', $this->_('Order'), 'size', '10',
+        $metaModel->set('gco_order',       'label', $this->_('Order'), 'size', '10',
                     'description', $this->_('Determines order of presentation in interface.'),
                     'validator', 'Digits');
-        $model->set('gco_code',        'label', $this->_('Consent code'),
+        $metaModel->set('gco_code',        'label', $this->_('Consent code'),
                     'multiOptions', $this->consentUtil->getConsentTypes(),
                     'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
         if ($detailed) {
-            $model->set('gco_description', 'validator', $model->createUniqueValidator('gco_description'));
-            $model->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
+            // $metaModel->set('gco_description', 'validator', $model->createUniqueValidator('gco_description'));
+            // $metaModel->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
         }
 
         if ('create' == $action || 'edit' == $action) {
-            $this->modelLoader->addDatabaseTranslationEditFields($model);
+            // $this->metaModelLoader->addDatabaseTranslationEditFields($metaModel);
         } else {
-            $this->modelLoader->addDatabaseTranslations($model);
-            // $model->setKeys(['origKey']);
+            // $this->metaModelLoader->addDatabaseTranslations($metaModel);
         }
 
-        \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);
+        // \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);
 
         return $model;
     }

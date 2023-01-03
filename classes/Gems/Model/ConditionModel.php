@@ -181,7 +181,7 @@ class ConditionModel extends \Gems\Model\JoinModel
      * @param array $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
-    public function delete($filter = true, array $saveTables = null)
+    public function delete($filter = null, array $saveTables = null): int
     {
         $this->setChanged(0);
         $conditions = $this->load($filter);

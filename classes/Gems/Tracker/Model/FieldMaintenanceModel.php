@@ -432,7 +432,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @return int The number of items deleted
      */
-    public function delete($filter = true)
+    public function delete($filter = null): int
     {
         $rows = $this->load($filter);
 

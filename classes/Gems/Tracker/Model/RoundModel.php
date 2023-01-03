@@ -45,7 +45,7 @@ class RoundModel extends JoinModel
      * @param array $saveTables Array of table names => save mode
      * @return int The number of items deleted
      */
-    public function delete($filter = true, array $saveTables = null)
+    public function delete($filter = null, array $saveTables = null): int
     {
         $this->trackUsage();
         $rows = $this->load($filter);
@@ -68,6 +68,7 @@ class RoundModel extends JoinModel
                 }
             }
         }
+        return $this->getChanged();
     }
 
     /**

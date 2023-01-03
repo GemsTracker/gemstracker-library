@@ -45,7 +45,7 @@ class OldCommtemplateModel extends \Gems\Model\JoinModel
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @return int The number of items deleted
      */
-    public function delete($filter = true, $saveTables = null)
+    public function delete($filter = null, $saveTables = null): int
     {
         $deleted = 0;
 

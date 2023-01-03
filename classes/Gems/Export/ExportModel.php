@@ -55,9 +55,9 @@ class ExportModel extends \MUtil\Model\ModelAbstract
         return $newValues;
     }
 
-    public function delete($filter = true)
+    public function delete($filter = null): int
     {
-        return false;
+        return 0;
     }
 
     public function hasNew(): bool 
