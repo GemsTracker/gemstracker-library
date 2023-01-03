@@ -17,8 +17,8 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
 use Laminas\Db\Sql\Select;
-use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasSelectModel;
 use Zalt\Model\Transform\CrossTabTransformer;
@@ -106,9 +106,9 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    public function createModel($detailed, $action): ModelAbstract
+    public function createModel($detailed, $action): DataReaderInterface
     {
         $model = new \Gems\Model\JoinModel('resptrack' , 'gems__respondent2track');
         $model->addTable('gems__respondent2org', array(
@@ -176,14 +176,14 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $status = new Expression($status->getExpression());
 
         $select = $this->resultFetcher->getSelect();
-        $select->from('gems__tokens', [
-            'gto_id_respondent_track', 'gto_id_round', 'gto_id_token', 'status' => $status, 'gto_result',
-            ])->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
-                ->where(['gto_id_track' => $filter['gr2t_id_track']])
-                ->order(['grc_success', 'gto_id_respondent_track', 'gto_round_order']);
+        $select->from('gems__tokens')
+            ->columns(['gto_id_respondent_track', 'gto_id_round', 'gto_id_token', 'status' => $status, 'gto_result'])
+            ->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', [])
+            ->where(['gto_id_track' => $filter['gr2t_id_track']])
+            ->order(['grc_success', 'gto_id_respondent_track', 'gto_round_order']);
 
         // \MUtil\EchoOut\EchoOut::track($this->db->fetchAll($select));
-        $newModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'compliance', $select);
+        $newModel = $this->metaModelLoader->createModel(LaminasSelectModel::class, 'tok', $select);
         $metaModel = $newModel->getMetaModel();
         $metaModel->setKeys(['gto_id_respondent_track']);
 
@@ -194,7 +194,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         foreach ($data as $row) {
             $name = 'stat_' . $row['gro_id_round'];
-            $transformer->set($name, 'label', \MUtil\Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
+            $transformer->set($name, 'label', substr($row['gsu_survey_name'], 0, 2),
                     'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
                     'noSort', true,
                     'round', $row['gro_round_description'],
@@ -215,7 +215,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $model->set('gr2o_patient_nr');
         $model->set('respondent_name');
         $model->set('gr2t_start_date');
-        $metaModel->addTransformer($joinTrans);
+        $model->addTransformer($joinTrans);
 
         // Add masking if needed
         $group = $this->currentUser->getGroup();
@@ -230,7 +230,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * Get the model for export and have the option to change it before using for export
      * @return
      */
-    public function getExportModel(): ModelAbstract
+    public function getExportModel(): DataReaderInterface
     {
         $model         = parent::getExportModel();
         $statusColumns = $model->getColNames('label');

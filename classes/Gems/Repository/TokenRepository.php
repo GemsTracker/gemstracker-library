@@ -600,7 +600,7 @@ class TokenRepository
     /**
      * De a status show link
      */
-    public function getTokenStatusLinkForTokenId(MenuSnippetHelper $helper, string $tokenId):  ?HtmlElement
+    public function getTokenStatusLinkForTokenId(MenuSnippetHelper $helper, ?string $tokenId):  ?HtmlElement
     {
         $token = $tokenId ? $this->tracker->getToken($tokenId) : null;
 

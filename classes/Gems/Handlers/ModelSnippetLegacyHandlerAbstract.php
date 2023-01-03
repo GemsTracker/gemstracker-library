@@ -20,10 +20,10 @@ use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
-use MUtil\Model\ModelAbstract;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -410,7 +410,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * Get the model for export and have the option to change it before using for export
      * @return
      */
-    protected function getExportModel(): ModelAbstract
+    protected function getExportModel(): DataReaderInterface
     {
         $model = $this->getModel();
         $noExportColumns = $model->getColNames('noExport');
