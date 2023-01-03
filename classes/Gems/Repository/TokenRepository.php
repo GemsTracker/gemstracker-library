@@ -276,7 +276,7 @@ class TokenRepository
         }
 
         $url = $helper->getLateRouteUrl('respondent.tracks.answer', [
-            'id' => $bridge->getLate('gto_id_token'),
+            Model::REQUEST_ID  => $bridge->getLate('gto_id_token'),
             Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
             Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
         ]);

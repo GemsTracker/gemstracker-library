@@ -45,6 +45,10 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
+    protected array $autofilterParameters = [
+        'extraFilter' => ['grc_success' => 1],
+    ];
+    
     /**
      * The snippets used for the autofilter action.
      *
@@ -118,7 +122,6 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $model->addTable('gems__respondents', array('gr2o_id_user' => 'grs_id_user'));
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
-        $model->addFilter(array('grc_success' => 1));
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));

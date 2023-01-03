@@ -18,9 +18,9 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Tracker\Fields\FieldReportSearchSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\FieldDataModel;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use MUtil\Model\ModelAbstract;
+use MUtil\Model\DatabaseModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -131,7 +131,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action): ModelAbstract
+    public function createModel($detailed, $action): DataReaderInterface
     {
         $filter = $this->getSearchFilter($action !== 'export');
 
@@ -139,7 +139,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             $model = new \Gems\Model\JoinModel('trackfields' , 'gems__track_fields');
             $model->set('gtf_field_name', 'label', $this->_('Name'));
-            $model->setFilter([1 => 0]);
+            $this->autofilterParameters['extraFilter'][] = DatabaseModelAbstract::WHERE_NONE;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
 
             return $model;
