@@ -1,26 +1,30 @@
 <?php
 
-namespace Gems\Actions;
-
-use Gems\User\Group;
+namespace Gems\Handlers\Overview;
 
 /**
  * @package    Gems
- * @subpackage Default
+ * @subpackage Handlers\Overview
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
  */
+
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Tracker;
+use Gems\User\Group;
+use MUtil\Model\DatabaseModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
  * @package    Gems
- * @subpackage Default
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.7.0
+ * @subpackage Handlers\Overview
+ * @since      Class available since version 2.0
  */
-class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
+class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -32,33 +36,29 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('menuShowRoutes' => array('track' => 'show-track'));
+    protected array $autofilterParameters = [
+        'extraFilter' => ['grc_success' => 1],
+    ];
 
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Fields\\FieldOverviewTableSnippet';
+    protected array $autofilterSnippets = ['Tracker\\Fields\\FieldOverviewTableSnippet'];
 
     /**
      *
      * @var \Gems\User\User
      */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected $currentUser;
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array(
+    protected array $indexStartSnippets = array(
         'Generic\\ContentTitleSnippet',
         'Tracker\\Compliance\\ComplianceSearchFormSnippet'
         );
@@ -66,9 +66,23 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      *  We don't want the filler to show as it is irrelevant to this overview
      */
-    protected $indexParameters = array(
+    protected array $indexParameters = array(
         'showFiller'    => false
         );
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected ResultFetcher $resultFetcher,
+        protected TrackDataRepository $trackDataRepository,
+        protected Tracker $tracker,
+    )
+    {
+        parent::__construct($responder, $translate);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -79,11 +93,10 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @return DataReaderInterface
      */
-    public function createModel($detailed, $action)
+    public function createModel($detailed, $action): DataReaderInterface
     {
-        //
         $model = new \Gems\Model\JoinModel('resptrack' , 'gems__respondent2track');
         $model->addTable('gems__respondent2org', array(
             'gr2t_id_user' => 'gr2o_id_user',
@@ -92,7 +105,6 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->addTable('gems__respondents', array('gr2o_id_user' => 'grs_id_user'));
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
-        $model->addFilter(array('grc_success' => 1));
 
         $model->addColumn(
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
@@ -108,21 +120,21 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $filter = $this->getSearchFilter($action !== 'export');
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
-            $model->addFilter(array('gr2t_id_organization' => $this->currentUser->getRespondentOrgFilter()));
+            $this->autofilterParameters['extraFilter']['gr2t_id_organization'] = $this->currentUser->getRespondentOrgFilter();
         }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
-            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['extraFilter'][] = DatabaseModelAbstract::WHERE_NONE;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
             return $model;
         }
 
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
-            $model->addFilter(array($where));
+        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
+            $this->autofilterParameters['extraFilter'][] = $where;
         }
 
         $trackId = $filter['gr2t_id_track'];
-        $engine = $this->loader->getTracker()->getTrackEngine($trackId);
+        $engine = $this->tracker->getTrackEngine($trackId);
         $engine->addFieldsToModel($model, false);
 
         // Add masking if needed
@@ -130,7 +142,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
         if ($group instanceof Group) {
             $group->applyGroupToModel($model, false);
         }
-
+        
         return $model;
     }
 
@@ -139,7 +151,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Respondent Track fields');
     }
@@ -151,7 +163,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! isset($this->defaultSearchData['gr2t_id_organization'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
@@ -160,7 +172,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         if (!isset($this->defaultSearchData['gr2t_id_track'])) {
             $orgs = $this->currentUser->getRespondentOrganizations();
-            $tracks = $this->util->getTrackData()->getTracksForOrgs($orgs);
+            $tracks = $this->trackDataRepository->getTracksForOrgs($orgs);
             if (count($tracks) == 1) {
                 $this->defaultSearchData['gr2t_id_track'] = key($tracks);
             }
@@ -175,7 +187,7 @@ class FieldOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->plural('track field', 'track fields', $count);
     }

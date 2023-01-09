@@ -18,6 +18,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 9-mrt-2015 17:20:33
  */
-class FieldOverviewController extends \Gems\Actions\FieldOverviewAction
+class FieldOverviewController extends \Gems\Handlers\Overview\FieldOverviewHandler
 {
 }

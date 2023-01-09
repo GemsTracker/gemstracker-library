@@ -307,9 +307,9 @@ class Route
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.field-overview',
-                controllerClass: \Gems\Actions\FieldOverviewAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.field-overview',
+                controllerClass:                   \Gems\Handlers\Overview\FieldOverviewHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',

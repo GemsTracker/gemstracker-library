@@ -71,7 +71,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
         $model = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__consents');
         
         $metaModel = $model->getMetaModel();
-        $metaModel->setKeys(['gco_description' => 'gco_description']);
+        // $metaModel->setKeys(['gco_description' => 'gco_description']);
         $metaModel->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
         $metaModel->set('gco_order',       'label', $this->_('Order'), 'size', '10',
