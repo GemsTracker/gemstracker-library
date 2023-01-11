@@ -29,7 +29,7 @@ class RespondentMailFields extends OrganizationMailFields
             'name'          => $this->respondent->getName(),
             'reply_to'      => null,
             'to'            => $this->respondent->getEmailAddress(),
-            'reset_ask'     => null,
+            'reset_ask'     => $this->respondent->getOrganization()->getPreferredSiteUrl() . '/password-reset',
         ];
 
         return $mailFields;

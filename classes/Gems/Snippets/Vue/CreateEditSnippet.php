@@ -2,7 +2,6 @@
 
 namespace Gems\Snippets\Vue;
 
-use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
 use Gems\Locale\Locale;
 use Mezzio\Template\TemplateRendererInterface;
@@ -12,15 +11,24 @@ use Zalt\Html\Html;
 use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class PatientVueSnippet extends SnippetAbstract
+class CreateEditSnippet extends SnippetAbstract
 {
-    protected string $appId = 'app';
+    protected $appId = 'app';
 
-    protected int $organizationId;
+    /**
+     * True when the form should edit a new model item.
+     *
+     * @var boolean
+     */
+    protected $createData = false;
 
-    protected string $patientNr;
+    protected string $dataEndpoint;
 
-    protected $tag;
+    protected string $dataResource;
+
+    protected $formType = 'horizontal';
+
+    protected string $tag = 'gems-form';
 
     protected $vueOptions = [];
 
@@ -35,34 +43,45 @@ class PatientVueSnippet extends SnippetAbstract
         parent::__construct($snippetOptions, $requestInfo);
     }
 
+    protected function getDataEndpoint()
+    {
+        return $this->dataEndpoint;
+    }
+
+    protected function getDataResource()
+    {
+        return $this->dataResource;
+    }
+
     public function getHtmlOutput()
     {
         $attributes = [
             'base-url' => '/',
             'api-url' => '/api',
-            'patient-nr' => $this->patientNr,
-            ':organization-id' => $this->organizationId,
+            'resource' => $this->getDataResource(),
+            'endpoint' => $this->getDataEndpoint(),
+            'form-type' => $this->formType,
             'locale' => $this->locale->getCurrentLanguage(),
             ...$this->vueOptions,
         ];
+
+        if ($this->createData === false) {
+            $attributes['edit'] = $this->requestInfo->getParam(Model::REQUEST_ID);
+        }
 
         $container = Html::div(['id' => $this->appId]);
         $app = Html::create($this->tag, $attributes);
 
         $container->append($app);
 
+        $this->layoutSettings->addResource('resource/js/gems-vue.js');
+
         return $container;
     }
 
     public function hasHtmlOutput(): bool
     {
-        $attributes = $this->requestInfo->getRequestMatchedParams();
-        if (!isset($attributes[Model::REQUEST_ID1], $attributes[Model::REQUEST_ID2])) {
-            return false;
-        }
-        $this->patientNr = (string) $attributes[Model::REQUEST_ID1];
-        $this->organizationId = (int) $attributes[Model::REQUEST_ID2];
-        $this->layoutSettings->addResource('resource/js/gems-vue.js');
+
         return parent::hasHtmlOutput();
     }
 }

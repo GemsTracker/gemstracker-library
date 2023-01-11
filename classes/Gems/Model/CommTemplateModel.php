@@ -4,32 +4,54 @@ namespace Gems\Model;
 
 use Gems\Locale\Locale;
 use Gems\Model;
+use Gems\Model\Transform\HtmlSanitizeTransformer;
+use Gems\Repository\MailRepository;
+use Gems\Util\Translated;
 use MUtil\Model\TableModel;
-use MUtil\Model\Transform\NestedTransformer;
-use MUtil\Model\Transform\RequiredRowsTransformer;
 use MUtil\Translate\Translator;
+use Zalt\Model\MetaModelInterface;
 
 class CommTemplateModel extends JoinModel
 {
-    public function __construct(protected Translator $translator, protected Locale $locale, protected array $config)
+    public function __construct(
+        protected Translator $translator,
+        protected Locale $locale,
+        protected MailRepository $mailRepository,
+        protected array $config,
+        protected Translated $translatedUtil,
+    )
     {
         parent::__construct('commTemplate', 'gems__comm_templates', 'gct', true);
 
         $this->set('gct_id_template', [
             'apiName' => 'id',
+            'elementClass' => 'hidden',
         ]);
         $this->set('gct_name', [
             'label' => $translator->_('Name'),
+            'size' => 50,
             'apiName' => 'name',
         ]);
+
+        $commTargets = $this->mailRepository->getMailTargets();
         $this->set('gct_target', [
             'label' => $translator->_('Mail Target'),
             'apiName' => 'mailTarget',
+            'multiOptions' => $commTargets,
+            'formatFunction' => [$this->translator, 'trans'],
         ]);
+        if (array_key_exists('token', $commTargets)) {
+            $this->set('gct_target', [
+                'default' => 'token',
+            ]);
+        }
+
+
         $this->set('gct_code', [
             'label' => $translator->_('Code'),
             'apiName' => 'code',
             'description' => $translator->_('Optional code name to link the template to program code.'),
+            'formatFunction' => [$this->translatedUtil, 'markEmpty'],
         ]);
 
         Model::setChangeFieldsByPrefix($this, 'gct');
@@ -38,15 +60,23 @@ class CommTemplateModel extends JoinModel
         $subModel->set('gctt_lang', [
             'label' => $translator->_('Language'),
             'apiName' => 'language',
+            'multiOptions' => array_combine($this->locale->getAvailableLanguages(), $this->locale->getAvailableLanguages()),
+            'elementClass' => 'Html',
         ]);
         $subModel->set('gctt_subject', [
             'label' => $translator->_('Subject'),
             'apiName' => 'subject',
+            'formatFunction' => [$this->translatedUtil, 'markEmpty'],
         ]);
         $subModel->set('gctt_body', [
             'label' => $translator->_('Body'),
             'apiName' => 'body',
+            'elementClass' => 'Textarea',
+            'cols' => 100,
+            'rows' => 10
         ]);
+
+        $subModel->addTransformer(new HtmlSanitizeTransformer(['gctt_subject', 'gctt_body']));
 
         $requiredRows = [
             [
@@ -61,26 +91,22 @@ class CommTemplateModel extends JoinModel
             }
         }
 
-        $requiredRowsTransformer = new RequiredRowsTransformer();
-        $requiredRowsTransformer->setRequiredRows($requiredRows);
-        $subModel->addTransformer($requiredRowsTransformer);
-
-        $trans = new NestedTransformer();
-        $trans->addModel($subModel, [
+        $oneToMany = new OneToManyTransformer();
+        $oneToMany->addModel($subModel, [
             'gct_id_template' => 'gctt_id_template',
         ],
             'translations');
 
-        $this->addTransformer($trans);
-        $this->set('translations',
-            'model', $subModel,
-            'elementClass', 'FormTable',
-            'type', \MUtil\Model::TYPE_CHILD_MODEL
-        );
+        $this->addTransformer($oneToMany);
+        $this->set('translations', [
+            'model' => $subModel,
+            'elementClass' => 'commTemplateTranslations',
+            'type' => MetaModelInterface::TYPE_CHILD_MODEL,
+            'label' => $this->translator->_('Translations'),
+        ]);
 
-        $this->addModel($subModel, [
-            'gct_id_template' => 'gctt_id_template',
-        ],
-        'translations');
+        $requiredRowsTransformer = new Model\Transform\SubmodelRequiredRows('translations');
+        $requiredRowsTransformer->setRequiredRows($requiredRows);
+        $this->addTransformer($requiredRowsTransformer);
     }
 }
