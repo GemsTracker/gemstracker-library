@@ -10,9 +10,12 @@ class ConfigRoleAdapter implements RoleAdapterInterface
         'pr.setup.access.roles.create',
         'pr.setup.access.roles.edit',
         'pr.setup.access.roles.delete',
+        'pr.setup.access.roles.download',
+        'pr.setup.access.roles.diff',
         'pr.setup.access.groups.create',
         'pr.setup.access.groups.edit',
         'pr.setup.access.groups.delete',
+        'pr.setup.access.groups.download',
     ];
 
     private readonly array $roles;
