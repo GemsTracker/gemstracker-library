@@ -20,7 +20,7 @@ class ConfigRoleAdapter implements RoleAdapterInterface
 
     private readonly array $roles;
 
-    public function __construct(array $config)
+    public function __construct(private readonly array $config)
     {
         $roles = $config['roles']['roles'] ?? [];
         foreach ($roles as $roleName => $role) {
@@ -32,6 +32,11 @@ class ConfigRoleAdapter implements RoleAdapterInterface
     public function getRolesConfig(): array
     {
         return $this->roles;
+    }
+
+    public function getDefinitionDate(): \DateTime
+    {
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $this->config['roles']['definition_date']);
     }
 
     public function convertKeyToName(mixed $key, bool $loose = false): string

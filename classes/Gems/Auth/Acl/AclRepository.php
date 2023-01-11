@@ -16,7 +16,7 @@ class AclRepository
 
     public function __construct(
         private readonly array $config,
-        private readonly RoleAdapterInterface $roleAdapter,
+        public readonly RoleAdapterInterface $roleAdapter,
     ) {
     }
 

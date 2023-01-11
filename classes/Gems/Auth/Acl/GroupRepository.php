@@ -7,7 +7,7 @@ use Brick\VarExporter\VarExporter;
 class GroupRepository
 {
     public function __construct(
-        private readonly GroupAdapterInterface $groupAdapter,
+        public readonly GroupAdapterInterface $groupAdapter,
     ) {
     }
 

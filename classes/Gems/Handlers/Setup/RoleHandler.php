@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -366,7 +367,14 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->_('Administrative roles');
+        $title = $this->_('Administrative roles');
+
+        $roleAdapter = $this->aclRepository->roleAdapter;
+        if ($roleAdapter instanceof ConfigRoleAdapter) {
+            $title .= ' (' . $this->_('Defined on') . ' ' . $roleAdapter->getDefinitionDate()->format('d-m-Y H:i') . ')';
+        }
+
+        return $title;
     }
 
     /**

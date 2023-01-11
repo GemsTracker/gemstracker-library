@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\ConfigGroupAdapter;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Repository\AccessRepository;
 use Gems\User\UserLoader;
@@ -331,7 +332,14 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->_('Administrative groups');
+        $title = $this->_('Administrative groups');
+
+        $groupAdapter = $this->groupRepository->groupAdapter;
+        if ($groupAdapter instanceof ConfigGroupAdapter) {
+            $title .= ' (' . $this->_('Defined on') . ' ' . $groupAdapter->getDefinitionDate()->format('d-m-Y H:i') . ')';
+        }
+
+        return $title;
     }
 
     /**
