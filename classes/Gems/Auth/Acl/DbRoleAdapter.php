@@ -12,8 +12,10 @@ class DbRoleAdapter implements RoleAdapterInterface
 
     private ?array $idMapping = null;
 
-    public function __construct(private readonly ResultFetcher $resultFetcher)
-    {
+    public function __construct(
+        private readonly ResultFetcher $resultFetcher,
+        private readonly array $config,
+    ) {
     }
 
     private function fetchRoles(): array
@@ -34,16 +36,27 @@ class DbRoleAdapter implements RoleAdapterInterface
 
             $roles = [];
             foreach ($dbRoles as $dbRole) {
+                $privileges = array_filter(
+                    explode(',', $dbRole['grl_privileges']),
+                    fn (string $privilege) => !empty(trim($privilege)),
+                );
+
+                if (empty($this->config['roles']) && empty($this->config['groups'])) {
+                    $privileges = array_diff($privileges, [
+                        'pr.setup.access.roles.download',
+                        'pr.setup.access.roles.diff',
+                        'pr.setup.access.groups.download',
+                        'pr.setup.access.groups.diff',
+                    ]);
+                }
+
                 $roles[$dbRole['grl_name']] = [
                     RoleAdapterInterface::ROLE_NAME => $dbRole['grl_name'],
                     RoleAdapterInterface::ROLE_DESCRIPTION => $dbRole['grl_description'],
                     RoleAdapterInterface::ROLE_PARENTS => array_map(function ($id) {
                         return $this->idMapping[$id] ?? throw new \Exception('Could not find parent ' . $id);
                     }, $dbRole['grl_parents'] === null ? [] : explode(',', $dbRole['grl_parents'])),
-                    RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES => array_values(array_filter(
-                        explode(',', $dbRole['grl_privileges']),
-                        fn (string $privilege) => !empty(trim($privilege)),
-                    )),
+                    RoleAdapterInterface::ROLE_ASSIGNED_PRIVILEGES => array_values($privileges),
                 ];
             }
 
