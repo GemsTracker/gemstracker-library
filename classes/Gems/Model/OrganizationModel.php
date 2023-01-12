@@ -12,8 +12,12 @@
 
 namespace Gems\Model;
 
+use Gems\Model;
+use Gems\Screens\ScreenLoader;
 use Gems\Tracker\TrackEvents;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
+use Zalt\Html\Html;
 
 /**
  * Contains the organization
@@ -44,6 +48,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
     protected $loader;
 
     /**
+     * @var Model
+     */
+    protected $modelLoader;
+
+    /**
      * @var bool Whether or not we are editing
      */
     protected $notEditing = true;
@@ -55,6 +64,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
     protected $project;
 
     /**
+     * @var ScreenLoader
+     */
+    protected $screenLoader;
+
+    /**
      * @var TrackEvents
      */
     protected $trackEvents;
@@ -63,6 +77,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
      * @var Translated
      */
     protected $translatedUtil;
+
+    /**
+     * @var UserLoader
+     */
+    protected $userLoader;
 
     /**
      *
@@ -96,7 +115,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
     public function applyBrowseSettings()
     {
         $dbLookup    = $this->util->getDbLookup();
-        $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+        $definitions = $this->userLoader->getAvailableStaffDefinitions();
         $localized   = $this->util->getLocalized();
         $projectName = null;
         $yesNo       = $this->translatedUtil->getYesNo();
@@ -190,21 +209,20 @@ class OrganizationModel extends \Gems\Model\JoinModel
             '' => $this->_('Defer to user group setting'),
             ];
 
-        $screenLoader = $this->loader->getScreenLoader();
         $this->setIfExists('gor_respondent_edit', 'label', $this->_('Respondent edit screen'),
-                'multiOptions', $groupLevel + $screenLoader->listRespondentEditScreens()
+                'multiOptions', $groupLevel + $this->screenLoader->listRespondentEditScreens()
                 );
         $this->setIfExists('gor_respondent_show', 'label', $this->_('Respondent show screen'),
-                'multiOptions', $groupLevel + $screenLoader->listRespondentShowScreens()
+                'multiOptions', $groupLevel + $this->screenLoader->listRespondentShowScreens()
                 );
         $this->setIfExists('gor_respondent_subscribe', 'label', $this->_('Subscribe screen'),
-                'multiOptions', $screenLoader->listSubscribeScreens()
+                'multiOptions', $this->screenLoader->listSubscribeScreens()
                 );
         $this->setIfExists('gor_respondent_unsubscribe', 'label', $this->_('Unsubscribe screen'),
-                'multiOptions', $screenLoader->listUnsubscribeScreens()
+                'multiOptions', $this->screenLoader->listUnsubscribeScreens()
                 );
         $this->setIfExists('gor_token_ask', 'label', $this->_('Token ask screen'),
-                'multiOptions', $screenLoader->listTokenAskScreens()
+                'multiOptions', $this->screenLoader->listTokenAskScreens()
                 );
 
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
@@ -218,7 +236,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         }
 
         if ($this->notEditing && $this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslations($this);
+            $this->modelLoader->addDatabaseTranslations($this);
         }
 
         return $this;
@@ -253,7 +271,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
             );
 
         if ($this->notEditing && $this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslations($this);
+            $this->modelLoader->addDatabaseTranslations($this);
         }
 
         return $this;
@@ -274,6 +292,13 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $yesNo = $this->translatedUtil->getYesNo();
 
         // GENERAL TAB
+        /*$html = Html::create()->h4($this->_('General'));
+        $this->set('general', [
+            'default' => $html,
+            'label' => ' ',
+            'elementClass' => 'html',
+            'value' => $html,
+        ]);*/
         $this->set('gor_name',
                 'size', 25,
                 'validator', $this->createUniqueValidator('gor_name')
@@ -300,7 +325,14 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
 
         // EMAIL TAB
-        $this->set('gor_contact_name', 'tab', $this->_('Email') . ' & ' . $this->_('Token'),
+        $html = Html::create()->h4($this->_('Email') . ' & ' . $this->_('Token'));
+        $this->set('emailAndToken', [
+            'default' => $html,
+            'label' => ' ',
+            'elementClass' => 'html',
+            'value' => $html,
+        ]);
+        $this->set('gor_contact_name',
                 'order', $this->getOrder('gor_active') + 1000,
                 'size', 25
                 );
@@ -330,7 +362,14 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $this->set('gor_reset_pass_template');
 
         // ACCESS TAB
-        $this->set('gor_has_login',  'tab', $this->_('Access'),
+        $html = Html::create()->h4($this->_('Access'));
+        $this->set('access', [
+            'default' => $html,
+            'label' => ' ',
+            'elementClass' => 'html',
+            'value' => $html,
+        ]);
+        $this->set('gor_has_login',
                 'order', $this->getOrder('gor_reset_pass_template') + 1000,
                 'elementClass', 'CheckBox'
                 );
@@ -365,7 +404,14 @@ class OrganizationModel extends \Gems\Model\JoinModel
         }
 
         // INTERFACE TAB
-        $this->setIfExists('gor_respondent_edit', 'tab', $this->_('Interface'),
+        $html = Html::create()->h4($this->_('Interface'));
+        $this->set('interface', [
+            'default' => $html,
+            'label' => ' ',
+            'elementClass' => 'html',
+            'value' => $html,
+        ]);
+        $this->setIfExists('gor_respondent_edit',
                 'default', '',
                 'elementClass', 'Radio'
                 );
@@ -400,7 +446,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         }
 
         if ($this->project->translateDatabaseFields()) {
-            $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+            $this->modelLoader->addDatabaseTranslationEditFields($this);
         }
 
         return $this;
@@ -425,7 +471,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         }
         foreach ($data as &$row) {
             if (isset($row['gor_user_class']) && !empty($row['gor_user_class'])) {
-                $definition = $this->loader->getUserLoader()->getUserDefinition($row['gor_user_class']);
+                $definition = $this->userLoader->getUserDefinition($row['gor_user_class']);
 
                 if ($definition instanceof \Gems\User\UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                     $definition->addConfigFields($this);

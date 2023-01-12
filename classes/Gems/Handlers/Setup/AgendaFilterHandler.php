@@ -11,7 +11,11 @@
 
 namespace Gems\Actions;
 
-use Gems\Controller\ModelSnippetActionAbstract;
+use Gems\Agenda\Agenda;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,31 +26,31 @@ use Gems\Controller\ModelSnippetActionAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 23:30:18
  */
-class AgendaFilterHandler extends ModelSnippetActionAbstract
+class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $autofilterParameters = array(
+    protected array $autofilterParameters = [
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gaf_id_order' => SORT_ASC),
-        );
+        'extraSort'   => ['gaf_id_order' => SORT_ASC],
+    ];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('appointment_filters');
+    public array $cacheTags = ['appointment_filters'];
 
     /**
      * The snippets used for the create and edit actions.
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $createEditSnippets = [
+    protected array $createEditSnippets = [
         'ModelFormSnippet',
         'Agenda\\ApplyFiltersInformation',
         ];
@@ -56,31 +60,31 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
      *
      * @var array()
      */
-    protected $defaultSearchData = ['gaf_active' => 1];
+    protected array $defaultSearchData = ['gaf_active' => 1];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Tracker\\Fields\\FilterSearchFormSnippet'];
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Tracker\\Fields\\FilterSearchFormSnippet'];
 
     /**
      * The snippets used for the index action, after those in autofilter
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $indexStopSnippets = [
+    protected array $indexStopSnippets = [
         'Generic\\CurrentSiblingsButtonRowSnippet',
         'Agenda\\ApplyFiltersInformation',
-        ];
+    ];
 
     /**
      * The snippets used for the show action
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'calSearchFilter' => 'getShowFilter',
         'browse' => true,
         ];
@@ -88,16 +92,25 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
     /**
      * The snippets used for the show action
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $showSnippets = array(
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippet',
         'Agenda\\EpisodeTableSnippet',
         'Agenda\\CalendarTableSnippet',
         'Agenda\\FilterSqlSnippet',
         'Agenda\\ApplyFiltersInformation',
-        );
+    ];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -110,9 +123,9 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = $this->loader->getAgenda()->newFilterModel();
+        $model = $this->agenda->newFilterModel();
 
         if ($detailed) {
             if (('edit' == $action) || ('create' == $action)) {
@@ -130,9 +143,9 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Appointment filters');
     }
@@ -141,9 +154,9 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('appointment filter', 'appointment filters', $count);
     }
@@ -154,7 +167,7 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -227,7 +240,7 @@ class AgendaFilterHandler extends ModelSnippetActionAbstract
      */
     public function getShowFilter()
     {
-        $filter = $this->loader->getAgenda()->getFilter($this->_getIdParam());
+        $filter = $this->agenda->getFilter($this->_getIdParam());
 
         if ($filter) {
             return $filter;

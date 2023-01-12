@@ -11,6 +11,17 @@
 
 namespace Gems\Snippets\Organization;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\ModelFormSnippet;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use MUtil\Html;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,21 +31,23 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippet
+class OrganizationEditSnippet extends ModelFormSnippet
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+    protected User $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
+        protected UserLoader $userLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-   /**
      * Hook that allows actions when data was saved
      *
      * When not rerouted, the form will be populated afterwards
@@ -67,13 +80,13 @@ class OrganizationEditSnippet extends \Gems\Snippets\ModelTabFormSnippet
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
 
             // Show allowed organizations
-            $org         = $this->loader->getOrganization($this->formData['gor_id_organization']);
+            $org         = $this->userLoader->getOrganization($this->formData['gor_id_organization']);
             $allowedOrgs = $org->getAllowedOrganizations();
             //Strip self
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
             $display = join(', ', $allowedOrgs);
             if (! $display) {
-                $display = \MUtil\Html::create('em', $this->_('No access to other organizations.'));
+                $display = Html::create('em', $this->_('No access to other organizations.'));
             }
             $this->formData['allowed'] = $display;
             $model->set('allowed', 'value', $display);

@@ -11,6 +11,15 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
+use Gems\Agenda\Agenda;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\AutosearchFormSnippet;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -19,13 +28,26 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 31-Dec-2019 12:20:32
  */
-class FilterSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class FilterSearchFormSnippet extends AutosearchFormSnippet
 {
     /**
      *
      * @var \Gems\User\User
      */
     protected $currentUser;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected Agenda $agenda,
+        protected TrackDataRepository $trackDataRepository,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -38,22 +60,20 @@ class FilterSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
-        $agenda = $this->loader->getAgenda();
-
         $elements = parent::getAutoSearchElements($data);
 
         $elements['gaf_class']  = $this->_createSelectElement('gaf_class',  $this->model, $this->_('(all types)'));
         $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model, $this->_('(any active)'));
 
-        $elements[] = \MUtil\Html::create('br');
-        $elements[] = \MUtil\Html::create('strong', $this->_('Usage'));
+        $elements[] = \Zalt\Html\Html::create('br');
+        $elements[] = \Zalt\Html\Html::create('strong', $this->_('Usage'));
 
         $tracks = [
             -1 => $this->_('(not used in any track)'),
             -2 => $this->_('(used in any track)'),
 //            -3 => $this->_('(used but not to create track)'),
 //            -4 => $this->_('(used to create track)'),
-            ] + $this->util->getTrackData()->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
+            ] + $this->trackDataRepository->getTracksForOrgs($this->currentUser->getRespondentOrganizations());
 
         $elements['used_in_track'] = $this->_createSelectElement(
                 'used_in_track',
@@ -63,7 +83,7 @@ class FilterSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
 
         $creators = [
             -1 => $this->_('(any creation)'),
-            ] + $agenda->getTrackCreateOptions();
+            ] + $this->agenda->getTrackCreateOptions();
         $elements['creates_track'] = $this->_createSelectElement(
                 'creates_track',
                 $creators,
@@ -74,7 +94,7 @@ class FilterSearchFormSnippet extends \Gems\Snippets\AutosearchFormSnippet
         $filters = [
             -1 => $this->_('(not used in any filter)'),
             -2 => $this->_('(used in any filter)'),
-            ] + $agenda->getFilterList();
+            ] + $this->agenda->getFilterList();
         $elements['used_in_filter'] = $this->_createSelectElement(
                 'used_in_filter',
                 $filters,

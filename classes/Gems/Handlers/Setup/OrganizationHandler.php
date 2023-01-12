@@ -11,6 +11,13 @@
 
 namespace Gems\Actions;
 
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Model;
+use Gems\User\UserLoader;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
+
 /**
  * Generic controller class for showing and editing organizations
  *
@@ -20,7 +27,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
+class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      *
@@ -33,21 +40,21 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Organization\\OrganizationTableSnippet';
+    protected array $autofilterSnippets = ['Organization\\OrganizationTableSnippet'];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('organization', 'organizations');
+    public array $cacheTags = ['organization', 'organizations'];
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Organization\\OrganizationEditSnippet';
+    protected array $createEditSnippets = ['Organization\\OrganizationEditSnippet'];
 
     /**
      *
@@ -66,55 +73,19 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Organization\\OrganizationSearchSnippet');
+    protected array $indexStartSnippets = [
+        'Generic\\ContentTitleSnippet',
+        'Organization\\OrganizationSearchSnippet'
+    ];
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
-     * Switch the active organization
-     */
-    public function changeUiAction()
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected UserLoader $userLoader,
+        protected Model $modelLoader,
+    )
     {
-        $request  = $this->getRequest();
-        $orgId    = urldecode($request->getParam('org'));
-        $oldOrg   = $this->currentUser->getCurrentOrganizationId();
-        $origUrl  = base64_decode($request->getParam('current_uri'));
-
-        $allowedOrganizations = $this->currentUser->getAllowedOrganizations();
-        if (isset($allowedOrganizations[$orgId])) {
-            $this->currentUser->setCurrentOrganization($orgId);
-
-            if ($origUrl) {
-                // Check for organization id in url, but not when a patient id is stated
-                if (strpos($origUrl, '/' . \MUtil\Model::REQUEST_ID1 . '/') === false) {
-                    foreach ($this->currentUser->possibleOrgIds as $key) {
-                        $finds[]    = '/' . $key. '/' . $oldOrg;
-                        $replaces[] = '/' . $key. '/' . $orgId;
-                    }
-                    $correctUrl = str_replace($finds, $replaces, $origUrl);
-                } else {
-                    $correctUrl = $origUrl;
-                }
-                // \MUtil\EchoOut\EchoOut::track($origUrl, $correctUrl);
-                $this->getResponse()->setRedirect($correctUrl);
-            } else {
-                $this->currentUser->gotoStartPage($this->menu, $request);
-            }
-            return;
-        }
-
-        throw new \Gems\Exception(
-                $this->_('Inaccessible or unknown organization'),
-                403, null,
-                sprintf(
-                        $this->_('Access to this page is not allowed for current role: %s.'),
-                        $this->currentUser->getRole()
-                        )
-                );
+        parent::__construct($responder, $translate);
     }
 
     /**
@@ -152,7 +123,7 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $go    = true;
         $orgId = $this->_getIdParam();
-        $org   = $this->loader->getOrganization($orgId);
+        $org   = $this->userLoader->getOrganization($orgId);
 
         if (! $org->getRespondentChangeEventClass()) {
             $go = false;
@@ -205,14 +176,11 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
-        if ($this->escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
-            $styles = \MUtil\Lazy::call(array($this->escort, 'getStyles'));
-        } else {
-            $styles = array();
-        }
-        $model = $this->loader->getModels()->getOrganizationModel($styles);
+        $styles = [];
+
+        $model = $this->modelLoader->getOrganizationModel($styles);
 
         if ($detailed) {
             if (('create' == $action) || ('edit' == $action)) {
@@ -227,7 +195,7 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
         return $model;
     }
 
-    public function getEditTitle()
+    public function getEditTitle(): string
     {
         $data    = $this->getModel()->loadFirst();
         $subject = $data['gor_name'];
@@ -243,9 +211,9 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
     /**
      * Helper function to get the title for the index action.
      *
-     * @return $string
+     * @return string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Participating organizations');
     }
@@ -256,7 +224,7 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter();
 
@@ -298,9 +266,9 @@ class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
-     * @return $string
+     * @return string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('organization', 'organizations', $count);
     }
