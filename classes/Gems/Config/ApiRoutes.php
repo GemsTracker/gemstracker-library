@@ -3,6 +3,7 @@
 namespace Gems\Config;
 
 use Gems\Api\RestModelConfigProviderAbstract;
+use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\InsertableQuestionnaireModel;
 use Gems\Model\SimpleTrackModel;
@@ -12,18 +13,23 @@ class ApiRoutes extends RestModelConfigProviderAbstract
 
     public function __invoke()
     {
-        return [
-            ...$this->getRoutes(),
-        ];
+        return $this->routeGroup(
+            [
+                'path' => $this->pathPrefix,
+                'middleware' => $this->getMiddleware(),
+            ],
+            $this->getRoutes()
+        );
     }
 
-    public function getRestModels(): array
+    public function getRoutes(): array
     {
         return [
-            'tracks' => [
-                'model' => SimpleTrackModel::class,
-                'methods' => ['GET'],
-                'allowed_fields' => [
+            ...$this->createModelRoute(
+                endpoint: 'tracks',
+                model: SimpleTrackModel::class,
+                methods: ['GET'],
+                allowedFields: [
                     'id',
                     'name',
                     'start',
@@ -32,12 +38,13 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'valid',
                     'organization',
                 ],
-                'idField' => 'id',
-            ],
-            'insertable-questionnaire' => [
-                'model' => InsertableQuestionnaireModel::class,
-                'methods' => ['GET'],
-                'allowed_fields' => [
+                idField: 'id',
+            ),
+            ...$this->createModelRoute(
+                endpoint: 'insertable-questionnaire',
+                model: InsertableQuestionnaireModel::class,
+                methods: ['GET'],
+                allowedFields: [
                     'resourceType',
                     'id',
                     'status',
@@ -48,30 +55,39 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                     'item',
                     'organization',
                 ],
-            ],
-            'comm-template' => [
-                'model' => CommTemplateModel::class,
-                'constructor' => true,
-                'methods' => ['GET', 'POST'],
-                'allowed_fields' => [
+            ),
+            ...$this->createModelRoute(
+                endpoint: 'comm-template',
+                model: CommTemplateModel::class,
+                methods: ['GET', 'POST', 'PATCH'],
+                allowedFields: [
                     'id',
-                    'gct_id_template',
                     'name',
-                    'gct_name',
                     'code',
-                    'gct_code',
                     'mailTarget',
-                    'gct_target',
                     'translations' => [
                         'language',
-                        'gctt_lang',
                         'subject',
-                        'gct_subject',
                         'body',
-                        'gct_body',
                     ],
                 ],
-            ]
+                allowedSaveFields: [
+                    'gct_id_template',
+                    'gct_name',
+                    'gct_code',
+                    'gct_target',
+                    'translations' => [
+                        'gctt_lang',
+                        'gctt_subject',
+                        'gctt_body',
+                    ],
+                ],
+            ),
+            ...$this->createRoute(
+                name: 'comm-fields',
+                path: 'comm-fields/{target:[a-zA-Z0-9-_]+}[/{id:[a-zA-Z0-9-_]+}[/{organizationId:\d+}]]',
+                handler: CommFieldsHandler::class,
+            ),
         ];
     }
 }

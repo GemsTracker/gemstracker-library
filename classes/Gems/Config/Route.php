@@ -666,7 +666,7 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.communication.messenger',
                 controllerClass: \Gems\Handlers\Setup\CommMessengersHandler::class,
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.communication.template',
+            ...$this->createSnippetRoutes(baseName: 'setup.communication.template',
                 controllerClass: \Gems\Handlers\Setup\CommTemplateHandler::class,
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.communication.server',

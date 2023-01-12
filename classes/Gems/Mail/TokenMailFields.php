@@ -43,9 +43,9 @@ class TokenMailFields extends RespondentMailFields
             'todo_track' => sprintf($this->translator->plural('%d survey', '%d surveys', $todoCounts['track'], $language), $todoCounts['track']),
             'todo_track_count' => $todoCounts['track'],
             'token' => strtoupper($this->token->getTokenId()),
-            'token_from' => $this->token->getValidFrom()->format('Y-m-d'),
+            'token_from' => $this->token->getValidFrom() instanceof \DateTimeInterface ? $this->token->getValidFrom()->format('Y-m-d') : null,
             'token_link' => '[url=' . $tokenLink . ']' . $survey->getExternalName() . '[/url]',
-            'token_until' => $this->token->getValidUntil()->format('Y-m-d'),
+            'token_until' => $this->token->getValidUntil() instanceof \DateTimeInterface ? $this->token->getValidUntil()->format('Y-m-d') : null,
             'token_url' => $tokenLink,
             'token_url_input' => $askUrl . 'index/' . $this->token->getTokenId(),
             'track' => $this->token->getTrackName(),
@@ -94,6 +94,13 @@ class TokenMailFields extends RespondentMailFields
 
     protected function getTodoCounts()
     {
+        if ($this->token instanceof \Gems\Fake\Token) {
+            return [
+                'all' => 1,
+                'track' => 1,
+            ];
+        }
+
         $tSelect = $this->tokenSelect;
         $db = $tSelect->getSelect()->getAdapter();
         $tSelect->columns([

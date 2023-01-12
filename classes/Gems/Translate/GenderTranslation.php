@@ -6,6 +6,7 @@ namespace Gems\Translate;
 use Gems\Event\Application\TranslatorEvent;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 trait GenderTranslation
 {
@@ -45,13 +46,19 @@ trait GenderTranslation
     public function _($text, $locale = null, $gender = null)
     {
         if ($gender && isset($this->genderTranslates[$gender])) {
-            $adapter = $this->genderTranslates[$gender]->getAdapter();
+            $adapter = $this->genderTranslates[$gender];
+            if ($adapter instanceof \Symfony\Component\Translation\Translator) {
+                $catalogue = $adapter->getCatalogue($locale);
+                if ($catalogue->has($text)) {
+                    return $adapter->trans($text, [], null, $locale);
+                }
+            }
             if ($adapter instanceof \Zend_Translate_Adapter && $adapter->isTranslated($text, false, $locale)) {
                 return $adapter->_($text, $locale);
             }
         }
 
-        return $this->translateAdapter->_($text, $locale);
+        return $this->translate->_($text, [], null, $locale);
     }
 
     /**
@@ -64,6 +71,11 @@ trait GenderTranslation
      */
     protected function initTranslateable()
     {
+        if ($this->translate instanceof TranslatorInterface) {
+            $this->initGenderTranslations();
+            return;
+        }
+
         if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
             // OK
             $this->initGenderTranslations();

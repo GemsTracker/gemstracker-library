@@ -163,6 +163,11 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         return false;
     }
 
+    public function createResetKey(\Gems\User\User $user)
+    {
+        return $this->project->getValueHash(random_bytes(64), 'sha256');
+    }
+
     /**
      * Returns an initialized \Laminas\Authentication\Adapter\AdapterInterface
      *
@@ -292,7 +297,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
             // Keep using the key.
             $data['gup_reset_key'] = $row['gup_reset_key'];
         } else {
-            $data['gup_reset_key'] = hash('sha256', time() . $user->getEmailAddress());
+            $data['gup_reset_key'] = $this->createResetKey();
         }
         $data['gup_reset_requested'] = new \MUtil\Db\Expr\CurrentTimestamp();
 
@@ -304,7 +309,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
                 return $data['gup_reset_key'];
 
             } catch (\Zend_Db_Exception $zde) {
-                $data['gup_reset_key'] = hash('sha256', time() . $user->getEmailAddress());
+                $data['gup_reset_key'] = $this->createResetKey();
             }
         }
     }
