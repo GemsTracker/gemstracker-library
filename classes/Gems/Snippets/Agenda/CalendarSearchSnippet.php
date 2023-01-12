@@ -27,7 +27,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CalendarSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class CalendarSearchSnippet extends AutosearchFormSnippet
 {
     /**
      *
@@ -58,7 +58,7 @@ class CalendarSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
      * @param array $data The $form field values (can be usefull, but no need to set them)
      * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(array $data)
+    public function getAutoSearchElements(array $data)
     {
         $elements = parent::getAutoSearchElements($data);
 

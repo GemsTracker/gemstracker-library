@@ -11,9 +11,12 @@ namespace Gems\Handlers\Respondent;
 
 use DateTimeImmutable;
 use Gems\Agenda\Agenda;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\User\User;
+use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -26,7 +29,7 @@ use function Gems\Actions\count;
  * @subpackage Handlers\Respondents
  * @since      Class available since version 2.0
  */
-class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
+class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -82,7 +85,7 @@ class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         TranslatorInterface       $translator,
         protected Agenda          $agenda,
         CurrentUserRepository     $currentUserRepository,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected Adapter $db,
         protected Model           $modelLoader,
     ) {
         parent::__construct($responder, $translator);
@@ -119,7 +122,7 @@ class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = Model::getTypeDefault(Model::TYPE_DATE, 'dateFormat');
+            $format = \MUtil\Model::getTypeDefault(\MUtil\Model::TYPE_DATE, 'dateFormat');
         }
 
         return $format;
@@ -156,9 +159,9 @@ class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter(
+        $where = AutosearchFormSnippet::getPeriodFilter(
             $filter,
-            $this->db,
+            $this->db->getPlatform(),
             $this->getDateFormat(),
             'Y-m-d H:i:s');
 
@@ -176,9 +179,8 @@ class CalendarHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
     public function simpleApiAction()
     {
-        $this->disableLayout();
 
-        $data         = $this->getRequest()->getParams();
+        $data         = $this->requestInfo->getParams();
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
         $translator   = new \Gems\Model\Translator\AppointmentTranslator($this->_('Direct import'));
