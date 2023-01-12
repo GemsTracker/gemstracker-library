@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Organization;
 
 use Gems\Html;
+use Gems\Snippets\ModelTableSnippet;
 use Zalt\Html\AElement;
 use Zalt\Late\Late;
 use Zalt\Model\Data\DataReaderInterface;
@@ -26,7 +27,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippet
+class OrganizationTableSnippet extends ModelTableSnippet
 {
     /**
      * Set a fixed model sort.
@@ -41,14 +42,11 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippet
     {
         $bridge->tr()->class = $bridge->row_class;
 
-        $showMenuItems = $this->getShowUrls($bridge);
-        foreach ($showMenuItems as $keyOrLabel => $menuItem) {
-            $showLabel = $keyOrLabel;
-            if (is_int($showLabel)) {
-                $showLabel = $this->_('Show');
-            }
+        $keys = $this->getRouteMaps($model->getMetaModel());
 
-            $bridge->addItemLink(Html::actionLink($menuItem, $showLabel));
+        $showMenuItems = $this->getShowUrls($bridge, $keys);
+        foreach ($showMenuItems as $menuItem) {
+            $bridge->addItemLink(Html::actionLink($menuItem['url'], $menuItem['label']));
         }
 
         $br = Html::create()->br();
@@ -73,13 +71,9 @@ class OrganizationTableSnippet extends \Gems\Snippets\ModelTableSnippet
         $bridge->add('gor_accessible_by');
 
 
-        $editMenuItems = $this->getEditUrls($bridge);
-        foreach ($editMenuItems as $keyOrLabel => $menuItem) {
-            $editLabel = $keyOrLabel;
-            if (is_int($editLabel)) {
-                $editLabel = $this->_('Edit');
-            }
-            $bridge->addItemLink(Html::actionLink($menuItem, $editLabel));
+        $editMenuItems = $this->getEditUrls($bridge, $keys);
+        foreach ($editMenuItems as $menuItem) {
+            $bridge->addItemLink(Html::actionLink($menuItem['url'], $menuItem['label']));
         }
     }
 }

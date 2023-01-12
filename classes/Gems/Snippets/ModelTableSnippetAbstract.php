@@ -143,7 +143,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return string[]
+     * @return string[][]
      */
     protected function getEditUrls(TableBridge $bridge, array $keys): array
     {

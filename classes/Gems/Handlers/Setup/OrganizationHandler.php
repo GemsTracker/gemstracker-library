@@ -20,7 +20,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class OrganizationAction extends \Gems\Controller\ModelSnippetActionAbstract
+class OrganizationHandler extends \Gems\Controller\ModelSnippetActionAbstract
 {
     /**
      *

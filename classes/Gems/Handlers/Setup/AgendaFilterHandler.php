@@ -11,7 +11,7 @@
 
 namespace Gems\Actions;
 
-use Gems\Agenda\AppointmentFilterModel;
+use Gems\Controller\ModelSnippetActionAbstract;
 
 /**
  *
@@ -22,7 +22,7 @@ use Gems\Agenda\AppointmentFilterModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 23:30:18
  */
-class AgendaFilterAction extends \Gems\Controller\ModelSnippetActionAbstract
+class AgendaFilterHandler extends ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
