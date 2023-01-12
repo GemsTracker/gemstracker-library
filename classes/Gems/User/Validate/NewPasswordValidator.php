@@ -13,6 +13,7 @@ namespace Gems\User\Validate;
 
 use Gems\User\PasswordChecker;
 use Gems\User\User;
+use Laminas\Validator\ValidatorInterface;
 
 /**
  *
@@ -23,7 +24,7 @@ use Gems\User\User;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class NewPasswordValidator implements \Zend_Validate_Interface
+class NewPasswordValidator implements ValidatorInterface
 {
     /**
      * The reported problems with the password.

@@ -777,8 +777,18 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff.delete',
-                                            'label' => $this->translator->trans('Delete'),
+                                            'name' => 'setup.access.staff.reset',
+                                            'label' => $this->translator->trans('Reset password'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.staff.deactivate',
+                                            'label' => $this->translator->trans('Deactivate'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.staff.staff-log',
+                                            'label' => $this->translator->trans('Staff log'),
                                             'type' => 'route-link-item',
                                         ],
                                     ],

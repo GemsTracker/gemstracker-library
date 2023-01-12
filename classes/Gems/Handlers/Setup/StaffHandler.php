@@ -8,7 +8,17 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
+
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Middleware\FlashMessageMiddleware;
+use Gems\Model;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -18,7 +28,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
+class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -30,7 +40,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraFilter' => [
             'gsf_is_embedded' => 0,
             'gsf_logout_on_survey' => 0,
@@ -42,14 +52,14 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Staff\\StaffTableSnippet';
+    protected array $autofilterSnippets = ['Staff\\StaffTableSnippet'];
 
     /**
      * Variable to set tags for cache cleanup after changes
      *
      * @var array
      */
-    public $cacheTags = array('staff');
+    public array $cacheTags = ['staff'];
 
     /**
      * The parameters used for the edit actions, overrules any values in
@@ -62,7 +72,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'routeAction' => 'reset',
     ];
 
@@ -71,7 +81,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Staff\\StaffCreateEditSnippet';
+    protected array $createEditSnippets = ['Staff\\StaffCreateEditSnippet'];
 
     /**
      *
@@ -89,33 +99,33 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $deactivateParameters = array('saveData' => array('gsf_active' => 0));
+    protected array $deactivateParameters = ['saveData' => ['gsf_active' => 0]];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Staff\StaffSearchSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Staff\StaffSearchSnippet'];
 
     /**
      * The parameters used for the mail action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $mailParameters = array(
+    protected array $mailParameters = [
         'mailTarget'  => 'staff',
         'identifier'  => '_getIdParam',
         'routeAction' => 'show',
         'formTitle'   => 'getMailFormTitle',
-    );
+    ];
 
     /**
      * Snippets for mail
      *
      * @var mixed String or array of snippets name
      */
-    protected $mailSnippets = array('Mail\\MailFormSnippet');
+    protected array $mailSnippets = ['Mail\\MailFormSnippet'];
 
     /**
      * The parameters used for the reactivate action.
@@ -127,51 +137,63 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $reactivateParameters = array('saveData' => array('gsf_active' => 1));
+    protected array $reactivateParameters = ['saveData' => ['gsf_active' => 1]];
 
     /**
      * The parameters used for the reset action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $resetParameters = array(
+    protected array $resetParameters = [
         'askOld'           => false,   // Do not ask for the old password
         'forceRules'       => false,   // If user logs in using password that does not obey the rules, he is forced to change it
         'menuShowChildren' => true,
         'menuShowSiblings' => true,
         'routeAction'      => 'show',
         'user'             => 'getSelectedUser',
-    );
+    ];
 
     /**
      * Snippets for reset
      *
      * @var mixed String or array of snippets name
      */
-    protected $resetSnippets = array('User\\AdminPasswordResetSnippet');
+    protected array $resetSnippets = ['User\\AdminPasswordResetSnippet'];
 
     /**
      * The parameters used for the mail action.
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $switchParameters = array(
+    protected array $switchParameters = [
         'switch' => true,
-    );
+    ];
 
     /**
      * Snippets for mail
      *
      * @var mixed String or array of snippets name
      */
-    protected $switchSnippets = array('Staff\\SystemUserCreateEditSnippet');
+    protected array $switchSnippets = ['Staff\\SystemUserCreateEditSnippet'];
 
     /**
      * True for staff model, otherwise system user model
      *
      * @var boolean
      */
-    protected $useStaffModel = true;
+    protected bool $useStaffModel = true;
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected UserLoader $userLoader,
+        protected Model $modelLoader,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        parent::__construct($responder, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -184,7 +206,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    public function createModel($detailed, $action)
+    public function createModel(bool $detailed, string $action): ModelAbstract
     {
         $defaultOrgId = null;
 
@@ -220,7 +242,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
         }
 
         // \MUtil\Model::$verbose = true;
-        $model = $this->loader->getModels()->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
+        $model = $this->modelLoader->getStaffModel(! (('deactivate' === $action) || ('reactivate' === $action)));
 
         if ($this->useStaffModel) {
             $model->applySettings($detailed, $action);
@@ -236,7 +258,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getDeactivateTitle()
+    public function getDeactivateTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -252,7 +274,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Staff');
     }
@@ -262,7 +284,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return string
      */
-    public function getMailFormTitle()
+    public function getMailFormTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -274,7 +296,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getReactivateTitle()
+    public function getReactivateTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -291,7 +313,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -308,7 +330,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @staticvar \Gems\User\User $user
      * @return \Gems\User\User or false when not available
      */
-    public function getSelectedUser()
+    public function getSelectedUser(): User
     {
         static $user = null;
 
@@ -318,7 +340,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
 
         $staffId = $this->_getIdParam();
         if ($staffId) {
-            $user = $this->loader->getUserLoader()->getUserOrNullByStaffId($staffId) ?? false;
+            $user = $this->userLoader->getUserOrNullByStaffId($staffId) ?? false;
         } else {
             $user = false;
         }
@@ -331,7 +353,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getShowTitle()
+    public function getShowTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -348,7 +370,7 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('staff member', 'staff members', $count);
     }
@@ -384,7 +406,8 @@ class StaffAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $user = $this->getSelectedUser();
         $user->clearTwoFactorKey();
-        $this->addMessage(
+        $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        $statusMessenger->addMessage(
             sprintf($this->_('Two factor key cleared for user %s'),
                 $user->getLoginName()),
             'success');

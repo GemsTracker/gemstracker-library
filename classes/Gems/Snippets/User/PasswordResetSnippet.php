@@ -12,6 +12,8 @@
 namespace Gems\Snippets\User;
 
 use Gems\Snippets\FormSnippetAbstract;
+use Gems\User\Form\ChangePasswordForm;
+use Zalt\Snippets\Zend\ZendFormSnippetAbstract;
 
 /**
  *
@@ -22,21 +24,21 @@ use Gems\Snippets\FormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 16:58:43
  */
-class PasswordResetSnippet extends FormSnippetAbstract
+class PasswordResetSnippet extends ZendFormSnippetAbstract
 {
     /**
      * Should a user specific check question be asked?
      *
      * @var boolean Not set when null
      */
-    protected $askCheck = null;
+    protected ?bool $askCheck = null;
 
     /**
      * Should the old password be requested.
      *
      * @var boolean Not set when null
      */
-    protected $askOld = null;
+    protected ?bool $askOld = null;
 
     /**
      * Returns an array of elements for check fields during password reset and/or
@@ -47,39 +49,33 @@ class PasswordResetSnippet extends FormSnippetAbstract
      *
      * @return array Of 'label name' => 'required values' or \Zend_Form_Element elements Not set when null
      */
-    protected $checkFields = null;
+    protected ?array $checkFields = null;
 
     /**
      * @var bool Normally we check if the user is active ON THIS SITE, but not in the admin panel 
      */
-    protected $checkCurrentOrganization = true;
+    protected bool $checkCurrentOrganization = true;
 
     /**
      * Should the password rules be enforced.
      *
      * @var boolean Not set when null
      */
-    protected $forceRules = null;
+    protected ?bool $forceRules = null;
 
     /**
      * Form label width factor
      *
      * @var float
      */
-    protected $labelWidthFactor = 1.2;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected float $labelWidthFactor = 1.2;
 
     /**
      * Should the password rules be reported.
      *
      * @var boolean Not set when null
      */
-    protected $reportRules = null;
+    protected ?bool $reportRules = null;
 
     /**
      *
@@ -92,9 +88,9 @@ class PasswordResetSnippet extends FormSnippetAbstract
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
-        if ($form instanceof \Gems\User\Form\ChangePasswordForm) {
+        if ($form instanceof ChangePasswordForm) {
             $form->loadDefaultElements();
         }
     }
@@ -105,11 +101,11 @@ class PasswordResetSnippet extends FormSnippetAbstract
      * As the save button is not part of the model - but of the interface - it
      * does deserve it's own function.
      */
-    protected function addSaveButton()
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass): void
     {
         $this->_saveButton = $this->_form->getSubmitButton();
 
-        parent::addSaveButton();
+        parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
     }
 
     /**

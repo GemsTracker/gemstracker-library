@@ -951,7 +951,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
                     "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
                     $groupId
                     );
-            $groupsAllowed = is_array($setGroups) ? explode(',', $setGroups) : [];
+            $groupsAllowed = is_array($setGroups) ? $setGroups : explode(',', $setGroups);
         } catch (\Zend_Db_Exception $e) {
             // The database might not be updated
             $groupsAllowed = [];

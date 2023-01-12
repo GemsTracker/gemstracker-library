@@ -27,6 +27,7 @@ use Gems\Screens\ScreenLoader;
 use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Mask\MaskStore;
+use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
 use Gems\Util\ConsentUtil;
 use Gems\Util\Localized;
@@ -90,6 +91,7 @@ class LegacyConfigProvider
                 'LegacyModelLoader' => Model::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyOrganizationRepository' => OrganizationRepository::class,
+                'LegacyPasswordChecker' => PasswordChecker::class,
                 'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyResultFetcher' => ResultFetcher::class,
                 'LegacyPdf' => Pdf::class,

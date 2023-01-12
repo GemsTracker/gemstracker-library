@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;

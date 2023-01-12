@@ -11,6 +11,11 @@
 
 namespace Gems\User\Form;
 
+use Gems\User\PasswordChecker;
+use Gems\User\Validate\NewPasswordValidator;
+use MUtil\Bootstrap\Form\Element\Password;
+use MUtil\Validate\IsConfirmed;
+
 /**
  *
  *
@@ -98,6 +103,11 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
      * @var boolean
      */
     protected $forceRules = true;
+
+    /**
+     * @var PasswordChecker
+     */
+    protected $passwordChecker;
 
     /**
      * Should the password rules be reported.
@@ -266,17 +276,18 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
 
         if (! $element) {
             // Field new password
-            $element = new \Zend_Form_Element_Password($this->_newPasswordFieldName);
+            $element = new Password($this->_newPasswordFieldName);
+
             $element->setLabel($this->_('New password'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
-            $element->addValidator(new \Gems\User\Validate\NewPasswordValidator($this->user));
+            $element->addValidator(new NewPasswordValidator($this->user, $this->passwordChecker));
 
-            $validator = new \MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->_('Repeat password'));
+            $validator = new IsConfirmed($this->_newPasswordFieldName, $this->_('Repeat password'));
             $validator->setMessage(
                     $this->_("Must be the same as %fieldDescription%."),
-                    \MUtil_Validate_IsConfirmed::NOT_SAME
+                    IsConfirmed::NOT_SAME
                     );
             $element->addValidator($validator);
 
@@ -289,7 +300,7 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
     /**
      * Returns/sets a check old password element.
      *
-     * @return \Zend_Form_Element_Password
+     * @return Password()
      */
     public function getOldPasswordElement()
     {
@@ -297,7 +308,7 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
 
         if (! $element) {
             // Field current password
-            $element = new \Zend_Form_Element_Password($this->_oldPasswordFieldName);
+            $element = new Password($this->_oldPasswordFieldName);
             $element->setLabel($this->_('Current password'));
             $element->setAttrib('size', 40);
             $element->setRenderPassword(true);
@@ -315,7 +326,7 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
     /**
      * Returns/sets a repeat password element.
      *
-     * @return \Zend_Form_Element_Password
+     * @return Password()
      */
     public function getRepeatPasswordElement()
     {
@@ -323,16 +334,16 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
 
         if (! $element) {
             // Field repeat password
-            $element = new \Zend_Form_Element_Password($this->_repeatPasswordFieldName);
+            $element = new Password($this->_repeatPasswordFieldName);
             $element->setLabel($this->_('Repeat password'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
 
-            $validator = new \MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->_('New password'));
+            $validator = new IsConfirmed($this->_newPasswordFieldName, $this->_('New password'));
             $validator->setMessage(
                     $this->_("Must be the same as %fieldDescription%."),
-                    \MUtil_Validate_IsConfirmed::NOT_SAME
+                    IsConfirmed::NOT_SAME
                     );
             $element->addValidator($validator);
 
@@ -373,7 +384,7 @@ class ChangePasswordForm extends \Gems\Form\AutoLoadFormAbstract
         $element = $this->getElement($this->_reportRulesFieldName);
 
         if (! $element) {
-            $info = $this->user->reportPasswordWeakness();
+            $info = $this->passwordChecker->reportPasswordWeakness($this->user, null);
 
             // Show password info
             if ($info) {

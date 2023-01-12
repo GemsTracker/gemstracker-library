@@ -28,14 +28,14 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      *
      * @var boolean Not set when null
      */
-    protected $askOld = true;
+    protected ?bool $askOld = true;
 
     /**
      * Should the password rules be enforced.
      *
      * @var boolean Not set when null
      */
-    protected $forceRules = true;
+    protected ?bool $forceRules = true;
 
     /**
      *
@@ -49,7 +49,7 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      *
      * @var boolean Not set when null
      */
-    protected $reportRules = true;
+    protected ?bool $reportRules = true;
 
     /**
      * A parameter that if true resets the queue
@@ -91,9 +91,9 @@ class CheckPasswordChangeRequiredSnippet extends PasswordResetSnippet
      * As the save button is not part of the model - but of the interface - it
      * does deserve it's own function.
      */
-    protected function addSaveButton()
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass): void
     {
-        parent::addSaveButton();
+        parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
 
         $this->addCancelButton();
     }

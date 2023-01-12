@@ -9,7 +9,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
+
+use Zalt\Html\Html;
 
 /**
  *
@@ -19,7 +21,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 02-Sep-2019 17:26:07
  */
-class SystemUserAction extends \Gems\Actions\StaffAction
+class SystemUserHandler extends StaffHandler
 {
     /**
      * The parameters used for the autofilter action.
@@ -31,7 +33,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'columns' => 'getBrowseColumns',
         'extraFilter' => [[
             'gsf_is_embedded' => 1,
@@ -51,7 +53,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'routeAction' => 'show',
         ];
 
@@ -60,14 +62,14 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Staff\\SystemUserCreateEditSnippet';
+    protected array $createEditSnippets = ['Staff\\SystemUserCreateEditSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Staff\SystemUserSearchSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Staff\SystemUserSearchSnippet'];
 
     /**
      * The parameters used for the show action
@@ -79,7 +81,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = [
+    protected array $showParameters = [
         'selectedUser' => 'getSelectedUser',
         ];
 
@@ -88,7 +90,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelItemTableSnippet',
         'User\\EmbeddedUserTestUrlForm',
@@ -99,22 +101,22 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $switchSnippets = array('Staff\\StaffCreateEditSnippet');
+    protected array $switchSnippets = ['Staff\\StaffCreateEditSnippet'];
 
     /**
      * True for staff model, otherwise system user model
      *
      * @var boolean
      */
-    protected $useStaffModel = false;
+    protected bool $useStaffModel = false;
 
     /**
      *
      * @return array
      */
-    public function getBrowseColumns()
+    public function getBrowseColumns(): array
     {
-        $br = \MUtil\Html::create('br');
+        $br = Html::create('br');
 
         return [
             10 => array('gsf_login', $br, 'gsf_last_name'),
@@ -129,7 +131,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @return $string
      */
-    public function getDeactivateTitle()
+    public function getDeactivateTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -145,7 +147,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('System users');
     }
@@ -155,7 +157,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @return $string
      */
-    public function getReactivateTitle()
+    public function getReactivateTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -172,7 +174,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
@@ -191,7 +193,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      *
      * @return $string
      */
-    public function getShowTitle()
+    public function getShowTitle(): string
     {
         $user = $this->getSelectedUser();
 
@@ -208,7 +210,7 @@ class SystemUserAction extends \Gems\Actions\StaffAction
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('system user', 'system users', $count);
     }

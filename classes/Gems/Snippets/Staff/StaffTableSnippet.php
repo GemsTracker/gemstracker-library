@@ -12,11 +12,14 @@
 namespace Gems\Snippets\Staff;
 
 use Gems\Html;
-use Gems\Loader;
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Model\StaffModel;
+use Gems\Snippets\ModelTableSnippetAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -29,7 +32,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 24-sep-2015 16:23:26
  */
-class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class StaffTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -38,7 +41,7 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array('name' => SORT_ASC);
+    protected $_fixedSort = ['name' => SORT_ASC];
 
     /**
      * Menu routes or routeparts to show in Edit box.
@@ -47,17 +50,19 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var MetaModelInterface
      */
     protected $model;
 
-    public function __construct(SnippetOptions $snippetOptions,
-                                protected RequestInfo $requestInfo,
-                                protected MenuSnippetHelper $menuHelper,
-                                protected Loader $loader,
-                                TranslatorInterface $translate)
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+    )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
 
     /**
@@ -93,11 +98,13 @@ class StaffTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      */
     protected function createModel(): DataReaderInterface
     {
-        if ($this->model instanceof \Gems\Model\StaffModel) {
+        if ($this->model instanceof StaffModel) {
             $model = $this->model;
         } else {
-            $model = $this->loader->getModels()->getStaffModel();
-            $model->applyBrowseSettings();
+            /**
+             * @var $model StaffModel
+             */
+            $model = $this->modelLoader->getStaffModel();
         }
 
         return $model;

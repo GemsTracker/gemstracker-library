@@ -11,6 +11,14 @@
 
 namespace Gems\Snippets\Staff;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\AccessRepository;
+use Gems\Snippets\AutosearchFormSnippet;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  *
@@ -20,8 +28,20 @@ namespace Gems\Snippets\Staff;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 28-sep-2015 12:19:23
  */
-class StaffSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class StaffSearchSnippet extends AutosearchFormSnippet
 {
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        CurrentUserRepository $currentUserRepository,
+        protected AccessRepository $accessRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -36,12 +56,11 @@ class StaffSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         $elements = parent::getAutoSearchElements($data);
 
         if ($elements) {
-            $optionsG = $this->util->getDbLookup()->getGroups();
+            $optionsG = $this->accessRepository->getGroups();
             $elementG = $this->_createSelectElement('gsf_id_primary_group', $optionsG, $this->_('(all groups)'));
             $elements[] = $elementG;
 
-            $user     = $this->loader->getCurrentUser();
-            $optionsO = $user->getAllowedOrganizations();
+            $optionsO = $this->currentUser->getAllowedOrganizations();
             if (count($optionsO) > 1) {
                 $elementO = $this->_createSelectElement('gsf_id_organization', $optionsO, $this->_('(all organizations)'));
                 $elements[] = $elementO;

@@ -28,7 +28,7 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
     /**
      * @var bool Normally we check if the user is active ON THIS SITE, but not in the admin panel
      */
-    protected $checkCurrentOrganization = true;
+    protected bool $checkCurrentOrganization = true;
 
     /**
      * @var CommunicationRepository
@@ -46,7 +46,7 @@ class AdminPasswordResetSnippet extends PasswordResetSnippet
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
         if ($this->user->hasEmailAddress()) {
             $order = count($form->getElements())-1;

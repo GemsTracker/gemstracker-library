@@ -729,10 +729,20 @@ class Route
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.organizations',
-                controllerClass: \Gems\Actions\OrganizationHandler::class,
+                controllerClass: \Gems\Handlers\Setup\OrganizationHandler::class,
             ),
-            ...$this->createBrowseRoutes(baseName: 'setup.access.staff',
-                controllerClass: \Gems\Actions\StaffAction::class,
+            ...$this->createSnippetRoutes(baseName: 'setup.access.staff',
+                controllerClass: \Gems\Handlers\Setup\StaffHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'create',
+                    'show',
+                    'edit',
+                    'reset',
+                    'deactivate',
+                    'staff-log',
+                ],
             ),
 
             [
@@ -793,7 +803,7 @@ class Route
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.agenda.filter',
-                controllerClass: \Gems\Actions\AgendaFilterHandler::class,
+                controllerClass: \Gems\Handlers\Setup\AgendaFilterHandler::class,
                 pages: [
                     ...$this->defaultPages,
                     'check-filter',
