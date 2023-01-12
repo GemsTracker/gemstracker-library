@@ -16,6 +16,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Model\CommLogModel;
 use Gems\Snippets\AutosearchFormSnippet;
+use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use DateTimeImmutable;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -70,7 +71,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected ProjectOverloader $overloader,
-        protected \Zend_Db_Adapter_Abstract $db,
+        protected Adapter $db
     )
     {
         parent::__construct($responder, $translate);
@@ -154,7 +155,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db->getPlatform());
         if ($where) {
             $filter[] = $where;
         }
