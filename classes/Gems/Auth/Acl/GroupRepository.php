@@ -7,7 +7,7 @@ use Brick\VarExporter\VarExporter;
 class GroupRepository
 {
     public function __construct(
-        private readonly GroupAdapterInterface $groupAdapter,
+        public readonly GroupAdapterInterface $groupAdapter,
     ) {
     }
 
@@ -34,8 +34,7 @@ return [
     ],
 ];' . PHP_EOL;
 
-        $groups = VarExporter::export($this->groupAdapter->getGroupsConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
-        $groups = str_replace("\n", "\n            ", $groups);
+        $groups = VarExporter::export($this->groupAdapter->getGroupsConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY, 2);
 
         return sprintf($template, $groups);
     }

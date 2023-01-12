@@ -12,11 +12,10 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
-use Gems\MenuNew\Menu;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Regex;
 use Mezzio\Helper\UrlHelper;
@@ -35,6 +34,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 {
+    use RoleHandlerTrait;
+
     /**
      * The parameters used for the autofilter action.
      *
@@ -78,12 +79,6 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $createEditSnippets = ['Role\\RoleEditFormSnippet'];
-
-    /**
-     *
-     * @var array
-     */
-    protected $usedPrivileges;
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -255,6 +250,21 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     }
 
     /**
+     * Download the roles php config
+     */
+    public function downloadAction()
+    {
+        $phpFile = $this->aclRepository->buildRoleConfigFile();
+
+        return new \Laminas\Diactoros\Response\TextResponse($phpFile, 200, [
+            'content-type' => 'text/php',
+            'content-length' => strlen($phpFile),
+            'content-disposition' => 'inline; filename="roles.php"',
+            'cache-control' => 'no-store',
+        ]);
+    }
+
+    /**
      * Output for browsing rols
      *
      * @param array $privileges
@@ -357,7 +367,14 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->_('Administrative roles');
+        $title = $this->_('Administrative roles');
+
+        $roleAdapter = $this->aclRepository->roleAdapter;
+        if ($roleAdapter instanceof ConfigRoleAdapter) {
+            $title .= ' (' . $this->_('Defined on') . ' ' . $roleAdapter->getDefinitionDate()->format('d-m-Y H:i') . ')';
+        }
+
+        return $title;
     }
 
     /**
@@ -394,48 +411,6 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->plural('role', 'roles', $count);
-    }
-
-    /**
-     * Get the privileges a role can have.
-     *
-     * @return array
-     */
-    protected function getUsedPrivileges()
-    {
-        if (! $this->usedPrivileges) {
-            /** @var Menu $menu */
-            $menu = $this->request->getAttribute(MenuMiddleware::MENU_ATTRIBUTE);
-            $routeLabelsByPrivilege = $menu->getRouteLabelsByPrivilege();
-            $privileges = $this->routeHelper->getAllRoutePrivileges();
-            $supplementaryPrivileges = $this->aclRepository->getSupplementaryPrivileges();
-
-            $privilegeNames = [];
-            foreach ($routeLabelsByPrivilege as $privilege => $labels) {
-                $privilegeNames[$privilege] = implode("<br/>&nbsp; + ", $labels);
-            }
-
-            foreach ($privileges as $privilege) {
-                if (!isset($privilegeNames[$privilege])) {
-                    $privilegeNames[$privilege] = $privilege;
-                }
-            }
-
-            foreach ($supplementaryPrivileges as $privilege => $label) {
-                if (!isset($privilegeNames[$privilege])) {
-                    $privilegeNames[$privilege] = $label->trans($this->translate);
-                }
-            }
-
-            asort($privilegeNames);
-            //don't allow to edit the pr.nologin and pr.islogin privilege
-            unset($privilegeNames['pr.nologin']);
-            unset($privilegeNames['pr.islogin']);
-
-            $this->usedPrivileges = $privilegeNames;
-        }
-
-        return $this->usedPrivileges;
     }
 
     /**

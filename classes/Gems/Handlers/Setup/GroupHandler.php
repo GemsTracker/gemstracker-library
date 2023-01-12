@@ -12,6 +12,8 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Auth\Acl\AclRepository;
+use Gems\Auth\Acl\ConfigGroupAdapter;
+use Gems\Auth\Acl\GroupRepository;
 use Gems\Repository\AccessRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
@@ -85,6 +87,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         private readonly UserLoader $userLoader,
         private readonly AclRepository $aclRepository,
+        private readonly GroupRepository $groupRepository,
         private readonly AccessRepository $accessRepository,
         private readonly Translated $translatedUtil,
     ) {
@@ -130,6 +133,21 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         } else {
             $this->redirectUrl = '/';
         }
+    }
+
+    /**
+     * Download the roles php config
+     */
+    public function downloadAction()
+    {
+        $phpFile = $this->groupRepository->buildGroupConfigFile();
+
+        return new \Laminas\Diactoros\Response\TextResponse($phpFile, 200, [
+            'content-type' => 'text/php',
+            'content-length' => strlen($phpFile),
+            'content-disposition' => 'inline; filename="groups.php"',
+            'cache-control' => 'no-store',
+        ]);
     }
 
     /**
@@ -314,7 +332,14 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function getIndexTitle(): string
     {
-        return $this->_('Administrative groups');
+        $title = $this->_('Administrative groups');
+
+        $groupAdapter = $this->groupRepository->groupAdapter;
+        if ($groupAdapter instanceof ConfigGroupAdapter) {
+            $title .= ' (' . $this->_('Defined on') . ' ' . $groupAdapter->getDefinitionDate()->format('d-m-Y H:i') . ')';
+        }
+
+        return $title;
     }
 
     /**

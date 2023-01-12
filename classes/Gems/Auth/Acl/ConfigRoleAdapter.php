@@ -10,14 +10,17 @@ class ConfigRoleAdapter implements RoleAdapterInterface
         'pr.setup.access.roles.create',
         'pr.setup.access.roles.edit',
         'pr.setup.access.roles.delete',
+        'pr.setup.access.roles.download',
+        'pr.setup.access.roles.diff',
         'pr.setup.access.groups.create',
         'pr.setup.access.groups.edit',
         'pr.setup.access.groups.delete',
+        'pr.setup.access.groups.download',
     ];
 
     private readonly array $roles;
 
-    public function __construct(array $config)
+    public function __construct(private readonly array $config)
     {
         $roles = $config['roles']['roles'] ?? [];
         foreach ($roles as $roleName => $role) {
@@ -29,6 +32,11 @@ class ConfigRoleAdapter implements RoleAdapterInterface
     public function getRolesConfig(): array
     {
         return $this->roles;
+    }
+
+    public function getDefinitionDate(): \DateTime
+    {
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $this->config['roles']['definition_date']);
     }
 
     public function convertKeyToName(mixed $key, bool $loose = false): string

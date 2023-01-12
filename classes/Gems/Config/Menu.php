@@ -660,6 +660,16 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
+                                    'name' => 'setup.access.roles.download',
+                                    'label' => $this->translator->trans('Download'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.roles.diff',
+                                    'label' => $this->translator->trans('Changes'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
                                     'name' => 'setup.access.roles.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
@@ -686,6 +696,16 @@ class Menu
                                 [
                                     'name' => 'setup.access.groups.create',
                                     'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.groups.download',
+                                    'label' => $this->translator->trans('Download'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.groups.diff',
+                                    'label' => $this->translator->trans('Changes'),
                                     'type' => 'route-link-item',
                                 ],
                                 [

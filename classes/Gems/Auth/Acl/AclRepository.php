@@ -16,7 +16,7 @@ class AclRepository
 
     public function __construct(
         private readonly array $config,
-        private readonly RoleAdapterInterface $roleAdapter,
+        public readonly RoleAdapterInterface $roleAdapter,
     ) {
     }
 
@@ -201,8 +201,7 @@ return [
     ],
 ];' . PHP_EOL;
 
-        $roles = VarExporter::export($this->roleAdapter->getRolesConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY);
-        $roles = str_replace("\n", "\n            ", $roles);
+        $roles = VarExporter::export($this->roleAdapter->getRolesConfig(), VarExporter::TRAILING_COMMA_IN_ARRAY, 2);
 
         return sprintf($template, $roles);
     }
