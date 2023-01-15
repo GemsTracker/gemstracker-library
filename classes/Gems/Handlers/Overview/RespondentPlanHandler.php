@@ -9,10 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Overview;
 
-use Gems\Handlers\TokenSearchHandlerAbstract;
+use Gems\Db\ResultFetcher;
+use Gems\MenuNew\RouteHelper;
+use Gems\Selector\TokenDateSelector;
+use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -22,7 +27,7 @@ use Gems\Tracker\Model\StandardTokenModel;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class RespondentPlanAction extends TokenSearchHandlerAbstract
+class RespondentPlanHandler extends TokenSearchHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -40,6 +45,17 @@ class RespondentPlanAction extends TokenSearchHandlerAbstract
         'Tracker\\TokenStatusLegenda',
         'Generic\\CurrentSiblingsButtonRowSnippet',
         ];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        ResultFetcher $resultFetcher,
+        protected RouteHelper $routeHelper,
+        protected TokenDateSelector $dateSelector,
+    ) {
+        parent::__construct($responder, $translate, $tracker, $resultFetcher);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
