@@ -337,11 +337,9 @@ class TokenRepository
             //return null;
         }
 
-        $url = $helper->getLateRouteUrl('ask.take', [
+        $url = $helper->getLateRouteUrl('ask.forward', [
             'id' => $bridge->getLate('gto_id_token'),
-            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
-            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
-        ]);
+        ], $bridge);
 
         if ($forceButton) {
             return Late::method($this, 'getTokenAskButton',
@@ -397,6 +395,20 @@ class TokenRepository
      *
      * @param string $tokenId
      * @param string $tokenStatus
+     * @return string
+     */
+    public function getTokenCopyLink($tokenId, $tokenStatus)
+    {
+        if ('O' == $tokenStatus || 'P' == $tokenStatus) {
+            return $tokenId . ' ';
+        }
+    }
+
+    /**
+     * Generate a token item with (in the future) a copy to clipboard button
+     *
+     * @param string $tokenId
+     * @param string $tokenStatus
      * @param boolean $memberType To determine whether the token is answerable by staff
      * @return string
      */
@@ -418,7 +430,8 @@ class TokenRepository
      */
     public function getTokenEmailLink(MenuSnippetHelper $helper, string $tokenId, string $tokenStatus, bool $canMail): ?AElement
     {
-        if ($canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
+        // TODO: The email route does not yet exist 
+        if (false && $canMail && ('O' == $tokenStatus || 'P' == $tokenStatus)) {
             $href = $helper->getRouteUrl('email',
             [
                 'gto_id_token' => $tokenId,
@@ -450,7 +463,7 @@ class TokenRepository
         }
 
         return Late::method($this, 'getTokenEmailLink',
-            $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'), $bridge->getLate('can_email')
+            $helper, $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'), $bridge->getLate('can_email')
         );
     }
 

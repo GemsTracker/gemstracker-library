@@ -317,25 +317,25 @@ class Route
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.overview-plan',
-                controllerClass: \Gems\Actions\OverviewPlanAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.overview-plan',
+                controllerClass:                   \Gems\Handlers\Overview\OverviewPlanHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.token-plan',
-                controllerClass: \Gems\Actions\TokenPlanAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.token-plan',
+                controllerClass:                   \Gems\Handlers\Overview\TokenPlanHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.respondent-plan',
-                controllerClass: \Gems\Actions\RespondentPlanAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.respondent-plan',
+                controllerClass:                   \Gems\Handlers\Overview\RespondentPlanHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',

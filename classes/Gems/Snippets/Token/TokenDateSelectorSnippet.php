@@ -21,7 +21,7 @@ namespace Gems\Snippets\Token;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class TokenDateSelectorSnippet extends \MUtil\Snippets\SnippetAbstract
+class TokenDateSelectorSnippet extends \Zalt\Snippets\SnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -39,7 +39,7 @@ class TokenDateSelectorSnippet extends \MUtil\Snippets\SnippetAbstract
     /**
      * Required
      *
-     * @var \Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstracto
      */
     protected $request;
 

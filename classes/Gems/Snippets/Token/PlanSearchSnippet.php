@@ -13,11 +13,14 @@ namespace Gems\Snippets\Token;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
+use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -49,7 +52,9 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        protected SurveyRepository $surveyRepository,
         protected TokenRepository $tokenRepository,
+        protected TrackDataRepository $trackDataRepository,
         CurrentUserRepository $currentUserRepository,
 
     ) {
@@ -184,10 +189,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
             $elements[] = null; // break into separate spans
         }
 
-        $allowedOrgs = $this->getOrganizationList($data);
+        $allowedOrgs   = $this->getOrganizationList($data);
+        $allowedOrgIds = array_keys($allowedOrgs);
 
         $elements['select_title'] = $this->_('Select:');
-        $elements['break1']       = \MUtil\Html::create('br');
+        $elements['break1']       = Html::create('br');
 
         // Select organization
         if (count($allowedOrgs) > 1) {
@@ -213,11 +219,11 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
 
         $elements['gto_id_survey'] = $this->_createSelectElement(
                 'gto_id_survey',
-                $this->getAllSurveys($allowedOrgs, $data),
+                $this->surveyRepository->getAllSurveysForOrgs($allowedOrgIds),
                 $this->_('(all surveys)')
                 );
 
-        $elements['break2'] = \MUtil\Html::create('br');
+        $elements['break2'] = Html::create('br');
 
         // Add status selection
         $elements['token_status'] = $this->_createSelectElement(
@@ -365,45 +371,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
      */
     protected function getAllTrackTypes($allowedOrgs, array $data)
     {
-        return $this->util->getTrackData()->getActiveTracks(array_keys($allowedOrgs));
-    }
-
-    /**
-     *
-     * @param string $orgWhere
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return mixed SQL string or array
-     */
-    protected function getAllSurveys($allowedOrgs, array $data)
-    {
-        if ($allowedOrgs) {
-            $orgIn = "gto_id_organization IN (" . implode(',', array_keys($allowedOrgs)) . ")";
-            $orgWhere = "(INSTR(gtr_organizations, '|" .
-                implode("|') > 0 OR INSTR(gtr_organizations, '|", array_keys($allowedOrgs)) .
-                "|') > 0)";
-        } else {
-            $orgIn = $orgWhere = "1 = 1";
-        }
-
-        return "(SELECT DISTINCT gsu_id_survey, gsu_survey_name
-                    FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
-                        INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-                    WHERE gsu_active=1 AND
-                        gro_active=1 AND
-                        gtr_active=1 AND
-                        $orgWhere)
-
-                UNION DISTINCT
-
-                (SELECT DISTINCT gsu_id_survey, gsu_survey_name
-                    FROM gems__tokens
-                    INNER JOIN gems__surveys ON (gto_id_survey = gsu_id_survey AND gsu_active = 1)
-                    INNER JOIN gems__tracks ON (gto_id_track = gtr_id_track AND gtr_active = 1)
-                    WHERE
-                        gto_id_round = 0 AND
-                        $orgIn
-                )
-                ORDER BY gsu_survey_name";
+        return $this->trackDataRepository->getActiveTracksForOrgs(array_keys($allowedOrgs));
     }
 
     /**

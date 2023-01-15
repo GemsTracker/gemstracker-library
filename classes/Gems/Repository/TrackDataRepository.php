@@ -73,6 +73,13 @@ class TrackDataRepository
         );
     }
 
+    public function getAllTrackRoundsForOrgs(array $allowedOrgIds)
+    {
+        $where = new Predicate();
+        $where->notEqualTo('gtr_track_class', 'SingleSurveyEngine');
+        
+    }
+
     /**
      * Returns array (id => name) of all tracks, sorted alphabetically
      *

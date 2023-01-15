@@ -16,6 +16,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\Selector\TokenDateSelector;
 use Gems\Tracker;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -74,6 +75,7 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
      */
     public function getDateSelector()
     {
+        $this->dateSelector->setRequestInfo($this->requestInfo);
         return $this->dateSelector;
     }
 

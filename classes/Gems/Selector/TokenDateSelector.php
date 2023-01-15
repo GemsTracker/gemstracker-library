@@ -11,10 +11,12 @@
 
 namespace Gems\Selector;
 
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
 
 /**
  *
@@ -48,12 +50,13 @@ class TokenDateSelector extends DateSelectorAbstract
 
     public function __construct(
         Translator $translator,
-        \Zend_Db_Adapter_Abstract $db,
-        Translated $translatedUtil,
         Localized $localized,
-        protected TokenRepository $tokenRepository,
+        \Zend_Db_Adapter_Abstract $db,
+        MenuSnippetHelper $menuSnippetHelper,
+        Translated $translatedUtil,
+        protected TokenRepository $tokenRepository
     ) {
-        parent::__construct($translator, $db, $translatedUtil, $localized);
+        parent::__construct($translator, $localized, $db, $menuSnippetHelper, $translatedUtil);
 
     }
 
@@ -94,8 +97,11 @@ class TokenDateSelector extends DateSelectorAbstract
      */
     protected function processSelect(\Zend_Db_Select $select)
     {
-        $select->columns(['gto_id_token']);
-        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', ['gsu_id_primary_group', 'gsu_active']);
-        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', ['grc_success']);
+        $select->columns([]);
+        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', []);
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', []);
+//        $select->columns(['gto_id_token']);
+//        $select->join('gems__surveys', 'gto_id_survey = gsu_id_survey', ['gsu_id_primary_group', 'gsu_active']);
+//        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', ['grc_success']);
     } // */
 }

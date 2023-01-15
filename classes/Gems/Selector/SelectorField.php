@@ -11,6 +11,9 @@
 
 namespace Gems\Selector;
 
+use Zalt\Html\HrefArrayAttribute;
+use Zalt\Late\RepeatableInterface;
+
 /**
  *
  *
@@ -50,12 +53,12 @@ class SelectorField
         return $this->filter;
     }
 
-    public function getHRef(\MUtil\Lazy\RepeatableInterface $repeater, array $url = array())
+    public function getHRef(RepeatableInterface $repeater, array $url = array())
     {
         $url[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
         $url[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = $this->name;
-        $url[\MUtil\Model::AUTOSEARCH_RESET]                   = null;
-        return new \MUtil\Html\HrefArrayAttribute($url);
+//        $url[\MUtil\Model::AUTOSEARCH_RESET]                   = null;
+        return new HrefArrayAttribute($url);
     }
 
     public function getLabel()

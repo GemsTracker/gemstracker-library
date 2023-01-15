@@ -70,6 +70,24 @@ class MenuSnippetHelper
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
 
+    /**
+     * @return string label
+     */
+    public function getCurrentLabel(): string
+    {
+        $current = $this->requestInfo->getRouteName();
+        if ($current) {
+            try {
+                $menuItem = $this->menu->find($current);
+                if ($menuItem instanceof RouteLinkItem) {
+                    return $menuItem->label;
+                }
+            } catch (MenuItemNotFoundException $minfe) {
+            }
+        }
+        return '';
+    }
+
     public function getCurrentParentRoute(): ?string
     {
         $current = $this->requestInfo->getRouteName();
@@ -89,24 +107,6 @@ class MenuSnippetHelper
     }
 
     /**
-     * @return string label
-     */
-    public function getCurrentLabel(): string
-    {
-        $current = $this->requestInfo->getRouteName();
-        if ($current) {
-            try {
-                $menuItem = $this->menu->find($current);
-                if ($menuItem instanceof RouteLinkItem) {
-                    return $menuItem->label;
-                }
-            } catch (MenuItemNotFoundException $minfe) {
-            }
-        }
-        return '';
-    }
-    
-    /**
      * @param int $maxSteps
      * @return array[] routename => [label, url]
      */
@@ -119,7 +119,12 @@ class MenuSnippetHelper
         $routes = $this->getParentRoutes($current, $maxSteps);
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
     }
-    
+
+    public function getCurrentRoute(): ?string
+    {
+        return $this->requestInfo->getRouteName();
+    }
+
     /**
      * @return array[] routename => [label, url]
      */
@@ -131,6 +136,14 @@ class MenuSnippetHelper
         }
         $routes = $this->getSiblingRoutes($current);
         return $this->getRouteUrls($routes, $this->requestInfo->getParams());
+    }
+
+    /**
+     * @return array[] routename => [label, url]
+     */
+    public function getCurrentUrl(): ?string
+    {
+        return $this->getRouteUrl($this->getCurrentRoute(), $this->requestInfo->getParams());
     }
 
     /**

@@ -279,7 +279,9 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options) || $options instanceof Select) {
             $options = $this->resultFetcher->fetchPairs($options);
-            natsort($options);
+            if ($options) {
+                natsort($options);
+            }
         }
         if ($options || null !== $empty)
         {

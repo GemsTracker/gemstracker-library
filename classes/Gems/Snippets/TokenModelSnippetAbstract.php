@@ -53,14 +53,14 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
 
     public function __construct(
         SnippetOptions $snippetOptions,
-        protected RequestInfo $requestInfo,
-        protected MenuSnippetHelper $menuHelper,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         protected Tracker $tracker,
         protected TokenRepository $tokenRepository,
     )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $menuHelper, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
     }
 
     /**

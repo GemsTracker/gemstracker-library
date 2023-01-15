@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\Respondent;
 
-use Gems\Handlers\TokenSearchHandlerAbstract;
+use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;

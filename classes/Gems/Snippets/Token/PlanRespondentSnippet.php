@@ -12,8 +12,16 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TokenRepository;
+use Gems\Tracker;
+use MUtil\Model;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\AElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -42,35 +50,50 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         'gto_round_description' => SORT_ASC,
         );
 
-    /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
-     */
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        Tracker $tracker,
+        TokenRepository $tokenRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
+    }
+
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
-        $tData = $this->util->getTokenData();
+        // Make sure org is known
+        $model->get('gr2o_id_organization');
+
+        $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
+        if ($respondentRoute) {
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $aElem = new AElement($menu['url']);
+            $aElem->setOnEmpty('');
+
+
+//            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+//            $model->set('respondent_name', 'itemDisplay', $aElem);
+        }
 
         $bridge->gr2t_id_respondent_track; // Data needed for edit button
         $bridge->gr2o_id_organization; // Data needed for edit button
 
         // Get the buttons
-        $respMenu = $this->menu->findAllowedController('respondent', 'show');
-        if ($respMenu) {
-            $respondentButton = $respMenu->toActionLink($this->request, $bridge, $this->_('Show respondent'));
-            $respondentButton->appendAttrib('class', 'rightFloat');
+        $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
+        if ($respondentRoute) {
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $respondentButton = new AElement($menu['url'], $this->_('Show respondent'), ['class' => 'actionlink btn rightFloat']);
+            $respondentButton->setOnEmpty('');
         } else {
             $respondentButton = null;
         }
-        $trackMenu = $this->menu->findAllowedController('respondent', 'show-track');
-        if ($trackMenu) {
-            $trackButton = $trackMenu->toActionLink($this->request, $bridge, $this->_('Show track'));
-            $trackButton->appendAttrib('class', 'rightFloat');
+        $respondentTrackRoute = $this->menuHelper->getRelatedRoute('respondent.tracks.show-track');
+        if ($respondentTrackRoute) {
+            $menu = $this->menuHelper->getLateRouteUrl($respondentTrackRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization', 'rt' => 'gr2t_id_respondent_track'], $bridge);
+            $trackButton = new AElement($menu['url'], $this->_('Show track'), ['class' => 'actionlink btn rightFloat']);
+            $trackButton->setOnEmpty('');
         } else {
             $trackButton = null;
         }

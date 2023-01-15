@@ -17,6 +17,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class OverviewPlanController extends \Gems\Actions\OverviewPlanAction
+class OverviewPlanController extends \Gems\Handlers\Overview\OverviewPlanHandler
 {
 }

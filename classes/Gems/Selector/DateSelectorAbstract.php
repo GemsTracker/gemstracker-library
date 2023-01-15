@@ -15,6 +15,7 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Model\Transform\RequiredRowsTransformer;
@@ -118,12 +119,15 @@ abstract class DateSelectorAbstract
      * @var string
      */
     protected string $dateType = 'W';
+    
+    protected RequestInfo $requestInfo; 
 
     public function __construct(
         protected Translator $translator,
-        protected \Zend_Db_Adapter_Abstract $db,
-        protected Translated $translatedUtil,
         protected Localized $localized,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected MenuSnippetHelper $menuSnippetHelper,
+        protected Translated $translatedUtil,
     )
     {}
 
@@ -157,7 +161,12 @@ abstract class DateSelectorAbstract
                 $keyCount = 1;
                 $groupby['period_1'] = new \Zend_Db_Expr("CONVERT($this->dateFrom, DATE)");
 
-                $date = $date->setTime(0, 0, 0)->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'D'));
+                $intervalInt = ($this->dateFactor - $this->dateRange);
+                $interval = new DateInterval('P' . abs($intervalInt) . 'D');
+                if ($intervalInt < 0) {
+                    $interval->invert = 1;
+                }
+                $date = $date->setTime(0, 0, 0)->add($interval);
                 $lAdd = new DateInterval('P1D');
 
                 $start = $date->format('c');
@@ -184,8 +193,13 @@ abstract class DateSelectorAbstract
                 //$groupby['period_1'] = new \Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
                 $groupby['period_2'] = new \Zend_Db_Expr("WEEK($this->dateFrom, 3)");
 
+                $intervalInt = (7 * ($this->dateFactor - $this->dateRange));
+                $interval  = new DateInterval('P' . abs($intervalInt) . 'D');
+                if ($intervalInt < 0) {
+                    $interval->invert = 1;
+                }
                 $date = $date->setTime(0, 0, 0)->modify('this monday')
-                    ->add(new DateInterval('P' . (7 * ($this->dateFactor - $this->dateRange)) . 'D'));
+                    ->add($interval);
                 $lAdd = new DateInterval('P7D');
                 $lSub = new DateInterval('PT1S');
 
@@ -210,8 +224,13 @@ abstract class DateSelectorAbstract
                 $keyCount = 2;
                 $groupby['period_2'] = new \Zend_Db_Expr("MONTH($this->dateFrom)");
 
+                $intervalInt = ($this->dateFactor - $this->dateRange);
+                $interval = new DateInterval('P' . abs($intervalInt) . 'M');
+                if ($intervalInt < 0) {
+                    $interval->invert = 1;
+                }
                 $date = $date->setTime(0, 0, 0)->modify('first day of this month')
-                             ->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'M'));
+                             ->add($interval);
                 $lAdd = new DateInterval('P1M');
                 $lSub = new DateInterval('PT1S');
 
@@ -235,8 +254,13 @@ abstract class DateSelectorAbstract
             case 'Y':
                 $keyCount = 1;
 
-                $date = $date->setTime(0, 0, 0)->modify('first day of this January')
-                             ->add(new DateInterval('P' . ($this->dateFactor - $this->dateRange) . 'Y'));
+                $intervalInt = ($this->dateFactor - $this->dateRange);
+                $interval = new DateInterval('P' . abs($intervalInt) . 'Y');
+                if ($intervalInt < 0) {
+                    $interval->invert = 1;
+                }
+                $date = $date->setTime(0, 0, 0)->modify('first day of January this year')
+                             ->add($interval);
                 $lAdd = new DateInterval('P1Y');
                 $lSub = new DateInterval('PT1S');
 
@@ -303,7 +327,7 @@ abstract class DateSelectorAbstract
         $this->processSelect($select);
 
         // \MUtil\EchoOut\EchoOut::r((string) $select);
-
+        // file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  (string) $select . "\n", FILE_APPEND);
         $model = new \MUtil\Model\SelectModel($select, $this->dataTableName);
 
         // Display by column cannot use formatFunction as it is a simple repeater
@@ -437,7 +461,7 @@ abstract class DateSelectorAbstract
 
         $bridge->setBaseUrl(array('action' => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
 
-        $columnClass = \MUtil\Lazy::iff($repeater->range, null, 'selectedColumn');
+        $columnClass = Late::iff($repeater->range, null, 'selectedColumn');
 
         $this->setTableHeader($bridge, $repeater, $columnClass);
         $this->setTableBody(  $bridge, $repeater, $columnClass);
@@ -472,7 +496,7 @@ abstract class DateSelectorAbstract
         $defaults = $this->getDefaultSearchData();
 
         $this->dateFactor = $this->processSelectorFilterName(self::DATE_FACTOR, $requestInfo, $filter, $defaults);
-        $this->dateGroup  = $this->processSelectorFilterName(self::DATE_GROUP, $requestInfo, $filter, $defaults);
+        $this->dateGroup  = intval($this->processSelectorFilterName(self::DATE_GROUP, $requestInfo, $filter, $defaults));
         $this->dateType   = $this->processSelectorFilterName(self::DATE_TYPE, $requestInfo, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);
@@ -506,10 +530,15 @@ abstract class DateSelectorAbstract
         $model = $this->getModel();
         $model->setFilter($filter);
     }
+    
+    public function setRequestInfo(RequestInfo $requestInfo)
+    {
+        $this->requestInfo = $requestInfo;
+    }
 
     protected function setTableBody(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $bridge->getBaseUrl();
+        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
         $onEmpty = $this->translator->_('-');
 
         foreach ($this->getFields() as $name => $field) {
@@ -520,7 +549,7 @@ abstract class DateSelectorAbstract
             $td->class = $field->getLabelClass();
 
             // Repeating column
-            $href = $field->getHRef($repeater, $baseurl);
+            $href = $field->getHRef($repeater, [$baseurl]);
             $td = $bridge->td();
             $td->a($href, $repeater->$name);
             $td->class = array($this->dataCellClass, $field->getClass(), $columnClass);
@@ -533,20 +562,21 @@ abstract class DateSelectorAbstract
 
     protected function setTableFooter(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $bridge->getBaseUrl();
+        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
 
         // Empty cell for left column
         $bridge->tf();
 
         $href = array(
+            $baseurl,
             self::DATE_FACTOR => $repeater->df_link,
             \MUtil\Model::AUTOSEARCH_RESET => null,
-            ) + $baseurl;
+            );
 
         // Repeating column
         $tf = $bridge->tf();
         $tf->class = array($this->dataCellClass, $columnClass);
-        $tf->iflink($repeater->df_link->strlen(),
+        $tf->iflink(Late::iff($repeater->df_link, $repeater->df_link->strlen(), 0),
             array('href' => $href, $repeater->df_label, 'class' => 'browselink btn btn-xs'),
             array($repeater->df_label, 'class' => 'browselink btn btn-xs disabled'));
         $tf->setRepeater($repeater);
@@ -555,8 +585,8 @@ abstract class DateSelectorAbstract
 
     protected function setTableHeader(TableBridge $bridge, RepeatableInterface $repeater, $columnClass)
     {
-        $baseurl = $bridge->getBaseUrl();
-
+        $baseurl = $this->menuSnippetHelper->getRouteUrl($this->requestInfo->getRouteName(), $this->requestInfo->getRequestMatchedParams());
+        
         // Left cell with period types
         $th = $bridge->th($this->translator->_('Period'), ' ');
         $th->class = 'middleAlign';
@@ -571,7 +601,7 @@ abstract class DateSelectorAbstract
             if ($letter == $this->dateType) {
                 $thdiv->span($content, array('class' => 'browselink btn btn-primary btn-xs disabled'));
             } else {
-                $thdiv->a(array(self::DATE_TYPE => $letter, self::DATE_FACTOR => $this->dateFactorChanges[$letter]) + $baseurl,
+                $thdiv->a(new HrefArrayAttribute([$baseurl, self::DATE_TYPE => $letter, self::DATE_FACTOR => $this->dateFactorChanges[$letter]]),
                         $content,
                         array('class' => 'browselink btn btn-default btn-xs', 'title' => $title));
             }
@@ -603,14 +633,15 @@ abstract class DateSelectorAbstract
         }
         $th = $bridge->th();
         $th->class = array($this->dataCellClass, $columnClass);
-        $th->a(array(self::DATE_FACTOR => $repeater->date_factor, \MUtil\Model::AUTOSEARCH_RESET => null) + $baseurl,
+        $th->a(array($baseurl, self::DATE_FACTOR => $repeater->date_factor),
                 $header
                 );
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
 
-        $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
-        $baseurl[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = null;
-        $th->onclick = array('location.href=\'', new HrefArrayAttribute($baseurl), '\';');
+        $newbase[] = $baseurl;
+        $newbase[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
+        $newbase[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = null;
+        $th->onclick = array('location.href=\'', new HrefArrayAttribute($newbase), '\';');
     }
 }

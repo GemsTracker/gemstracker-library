@@ -15,9 +15,11 @@ use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
+use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\AElement;
 use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -61,28 +63,21 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         Tracker $tracker,
-        protected TokenRepository $tokenDataRepository,
+        TokenRepository $tokenRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
     }
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
+     * @inheritdoc 
      */
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         // Add link to patient to overview
-        $href = $this->menuHelper->getRelatedRoute('respondent.show');
-
-        if ($href) {
-            $aElem = new \Zalt\Html\AElement($href);
+        $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
+        if ($respondentRoute) {
+            $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
+            $aElem = new AElement($menu['url'], ['class' => 'actionlink btn']);
             $aElem->setOnEmpty('');
 
             // Make sure org is known
@@ -122,7 +117,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort(
             'gtr_track_name', 'gr2t_track_info',
-            array($bridge->gtr_track_name->if(\MUtil\Html::raw(' &raquo; ')), ' '),
+            array($bridge->gtr_track_name->if(Html::raw(' &raquo; ')), ' '),
             'gsu_survey_name', 'gto_round_description');
 
         $bridge->addSortable('assigned_by');
@@ -136,33 +131,31 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      */
     protected function addRespondentCell(TableBridge $bridge, ModelAbstract $model)
     {
-        $bridge->addMultiSort('gr2o_patient_nr', \MUtil\Html::raw('; '), 'respondent_name');
+        $bridge->addMultiSort('gr2o_patient_nr', Html::raw('; '), 'respondent_name');
     }
 
     /**
-     * Return a list of possible action buttons for the token
-     *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @return array of HtmlElements
+     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
+     * @return AElement[] 
      */
-    public function createActionButtons(TableBridge $bridge)
+    public function createActionButtons(TableBridge $bridge): array
     {
         // Action links
-        //$actionLinks['ask']    = $this->tokenDataRepository->getTokenAskLinkForBridge($bridge, true);
-        //$actionLinks['email']  = $this->tokenDataRepository->getTokenEmailLinkForBridge($bridge);
-        //$actionLinks['answer'] = $this->tokenDataRepository->getTokenAnswerLinkForBridge($bridge);
+        $actionLinks['ask']    = $this->tokenRepository->getTokenAskLinkForBridge($bridge, $this->menuHelper, true);
+        $actionLinks['email']  = $this->tokenRepository->getTokenEmailLinkForBridge($bridge, $this->menuHelper);
+        $actionLinks['answer'] = $this->tokenRepository->getTokenAnswerLinkForBridge($bridge, $this->menuHelper);
 
         $output = [];
-        /*foreach ($actionLinks as $key => $actionLink) {
+        foreach ($actionLinks as $key => $actionLink) {
             if ($actionLink) {
                 $output[] = ' ';
-                $output[$key] = \MUtil\Html::create(
+                $output[$key] = Html::create(
                         'div',
                         $actionLink,
                         ['class' => 'rightFloat', 'renderWithoutContent' => false, 'style' => 'clear: right;']
                         );
             }
-        }*/
+        }
 
         return $output;
     }
@@ -171,27 +164,27 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * Returns a '+' token button
      *
      * @param TableBridge $bridge
-     * @return \MUtil\Html\AElement
+     * @return 
      */
     protected function createInfoPlusCol(TableBridge $bridge)
     {
-        /*return [
+        return [
             'class' => 'text-right',
-            $this->tokenDataRepository->getTokenStatusLinkForBridge($bridge),
+            $this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper),
             ' ',
-            $this->tokenDataRepository->getTokenShowLinkForBridge($bridge, true)
-            ];*/
+            $this->tokenRepository->getTokenShowLinkForBridge($bridge, $this->menuHelper, true)
+            ];
     }
 
     /**
      * Returns a '+' token button
      *
      * @param TableBridge $bridge
-     * @return \MUtil\Html\AElement
+     * @return ?AElement
      */
     protected function createShowTokenButton(TableBridge $bridge)
     {
-        $link = $this->tokenDataRepository->getTokenShowLinkForBridge($bridge, true);
+        $link = $this->tokenDataRepository->getTokenShowLinkForBridge($bridge, $this->menuHelper, true);
 
         if ($link) {
             return $link;
