@@ -4,6 +4,7 @@
 namespace Gems\Repository;
 
 
+use Gems\Db\ResultFetcher;
 use Gems\Model;
 use Gems\Model\RespondentModel;
 use Gems\Tracker\Respondent;
@@ -21,7 +22,12 @@ class RespondentRepository
 {
     protected array $respondents = [];
 
-    public function __construct(protected Adapter $db, protected Model $modelLoader, protected ProjectOverloader $overLoader)
+    public function __construct(
+        protected Adapter $db, 
+        protected Model $modelLoader, 
+        protected ProjectOverloader $overLoader,
+        protected ResultFetcher $resultFetcher,
+    )
     {
     }
 
@@ -40,6 +46,20 @@ class RespondentRepository
         }
 
         return $this->respondents[$organizationId][$patientId];
+    }
+    
+    /**
+     *
+     * @return array
+     */
+    public function getRespondentConsents(): array
+    {
+        $select = $this->resultFetcher->getSelect('gems__consents');
+        $select->columns(['gco_description'])
+            ->order('gco_order');
+        $sql = "SELECT gco_description, gco_description FROM gems__consents ORDER BY gco_order";
+
+        return $this->resultFetcher->fetchPairs($select) ?: [];
     }
 
     public function getRespondentId(string $patientNr, ?int $organizationId=null): ?int

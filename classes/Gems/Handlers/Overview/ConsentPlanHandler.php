@@ -9,7 +9,16 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Overview;
+
+use Gems\Html;
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Util\ReceptionCodeLibrary;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Action for consent overview
@@ -20,19 +29,13 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
+class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      *
      * @var \Gems\User\User
      */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected $currentUser;
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -44,7 +47,7 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $indexParameters = [
+    protected array $indexParameters = [
         'addCurrentSiblings' => false,
         ];
 
@@ -53,7 +56,7 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet'];
 
     /**
      * The parameters used for the show action
@@ -65,41 +68,40 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array(
+    protected array $showParameters = [
         'browse'        => true,
         'onEmpty'       => 'getOnEmptyText',
         'showMenu'      => false,
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
-        );
+        ];
 
     /**
      * The snippets used for the show action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = [
+    protected array $showSnippets = [
         'ModelTableSnippet',
         'Generic\\CurrentSiblingsButtonRowSnippet'
         ];
 
-    /**
-     * @var \Gems\Util
-     */
-    public $util;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        CurrentUserRepository $currentUserRepository,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected RespondentRepository $respondentRepository,
+    ) {
+        parent::__construct($responder, $translate);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
+     * @inheritdoc 
      */
-    protected function createModel($detailed, $action)
+    protected function createModel($detailed, $action): DataReaderInterface
     {
         // Export all
         if ('export' === $action) {
@@ -115,8 +117,8 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
             $fields[$month] = new \Zend_Db_Expr("MONTH(gr2o_created)");
         }
 
-        $consents = $this->util->getDbLookup()->getUserConsents();
-        $deleteds = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
+        $consents = $this->respondentRepository->getRespondentConsents();
+        $deleteds = $this->receptionCodeLibrary->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
             $fields[$translated] = new \Zend_Db_Expr(sprintf($sql, $consent));
@@ -150,9 +152,11 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
         $model->resetOrder();
         $model->set('gor_name', 'label', $this->_('Organization'));
         foreach ($fields as $field => $expr) {
-            $model->set($field, 'label', $field,
-                    'tdClass', 'rightAlign',
-                    'thClass', 'rightAlign');
+            if ($field != $expr) {
+                $model->set($field, 'label', $field,
+                            'tdClass', 'rightAlign',
+                            'thClass', 'rightAlign');
+            }
         }
         foreach ($deleteds as $code => $translated) {
             $model->set($translated,
@@ -160,15 +164,16 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
                     'thClass', 'rightAlign smallTime');
         }
         foreach (array($this->_('Total OK'), $this->_('Dropped'), $this->_('Total')) as $name) {
-            $model->set($name, 'itemDisplay', \MUtil\Html::create('strong'),
-                    'tableHeaderDisplay', \MUtil\Html::create('em'),
+            $model->set($name, 'itemDisplay', Html::create('strong'),
+                    'tableHeaderDisplay', Html::create('em'),
                     'tdClass', 'rightAlign selectedColumn',
                     'thClass', 'rightAlign selectedColumn'
                     );
         }
 
         if ($detailed) {
-            $model->set($month, 'formatFunction', $this->util->getLocalized()->getMonthName);
+            // TODO: show month description
+            // $model->set($month, 'formatFunction', );
         }
 
         // Only show organizations the user is allowed to see
@@ -186,7 +191,7 @@ class ConsentPlanAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic($count = 1): string
     {
         return $this->_('consent per organization');
     }

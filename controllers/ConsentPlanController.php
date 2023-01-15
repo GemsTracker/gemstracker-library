@@ -18,5 +18,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class ConsentPlanController extends \Gems\Actions\ConsentPlanAction
+class ConsentPlanController extends \Gems\Handlers\Overview\ConsentPlanHandler
 { }

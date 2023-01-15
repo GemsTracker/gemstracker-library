@@ -26,8 +26,12 @@ class ResultFetcher
         }
         $firstRow = reset($resultArray);
 
-        $keyKey = key($firstRow);
+        $keyKey   = key($firstRow);
         $valueKey = key(array_slice($firstRow, 1, 1, true));
+        if (! $valueKey) {
+            // For one column us it for both data sets
+            $valueKey = $keyKey;
+        }
 
         return array_column($resultArray, $valueKey, $keyKey);
     }

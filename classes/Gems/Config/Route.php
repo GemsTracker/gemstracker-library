@@ -341,9 +341,9 @@ class Route
                     'export',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'overview.consent-plan',
-                controllerClass: \Gems\Actions\ConsentPlanAction::class,
-                pages: [
+            ...$this->createSnippetRoutes(baseName: 'overview.consent-plan',
+                controllerClass:                   \Gems\Handlers\Overview\ConsentPlanHandler::class,
+                pages:                             [
                     'index',
                     'autofilter',
                     'export',
