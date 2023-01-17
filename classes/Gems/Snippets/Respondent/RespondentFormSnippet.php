@@ -80,7 +80,7 @@ class RespondentFormSnippet extends ModelFormSnippet
                     if (! $data) {
                         $data = $this->resultFetcher->fetchRow(
                                 "SELECT * FROM gems__respondents WHERE grs_ssn = ?",
-                                $this->formData['grs_ssn']
+                                [$this->formData['grs_ssn']]
                                 );
 
                         if ($data) {

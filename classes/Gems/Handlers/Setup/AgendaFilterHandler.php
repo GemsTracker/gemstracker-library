@@ -13,8 +13,18 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Agenda\Agenda;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use MUtil\Model\ModelAbstract;
+use Gems\Snippets\Agenda\ApplyFiltersInformation;
+use Gems\Snippets\Agenda\CalendarTableSnippet;
+use Gems\Snippets\Agenda\EpisodeTableSnippet;
+use Gems\Snippets\Agenda\FilterSqlSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Snippets\ModelFormSnippet;
+use Gems\Snippets\Tracker\Fields\FilterSearchFormSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Bridge\BridgeInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -51,8 +61,8 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array of snippets name
      */
     protected array $createEditSnippets = [
-        'ModelFormSnippet',
-        'Agenda\\ApplyFiltersInformation',
+        ModelFormSnippet::class,
+        ApplyFiltersInformation::class,
         ];
 
     /**
@@ -67,7 +77,10 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var array of snippets name
      */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Tracker\\Fields\\FilterSearchFormSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        FilterSearchFormSnippet::class,
+        ];
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -75,8 +88,8 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array of snippets name
      */
     protected array $indexStopSnippets = [
-        'Generic\\CurrentSiblingsButtonRowSnippet',
-        'Agenda\\ApplyFiltersInformation',
+        CurrentButtonRowSnippet::class,
+        ApplyFiltersInformation::class,
     ];
 
     /**
@@ -86,6 +99,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $showParameters = [
         'calSearchFilter' => 'getShowFilter',
+        'bridgeMode' => BridgeInterface::MODE_SINGLE_ROW,
         'browse' => true,
         ];
 
@@ -95,12 +109,12 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array of snippets name
      */
     protected array $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
-        'Agenda\\EpisodeTableSnippet',
-        'Agenda\\CalendarTableSnippet',
-        'Agenda\\FilterSqlSnippet',
-        'Agenda\\ApplyFiltersInformation',
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        EpisodeTableSnippet::class,
+        CalendarTableSnippet::class,
+        FilterSqlSnippet::class,
+        ApplyFiltersInformation::class,
     ];
 
     public function __construct(
@@ -112,18 +126,7 @@ class AgendaFilterHandler extends ModelSnippetLegacyHandlerAbstract
         parent::__construct($responder, $translate);
     }
 
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(bool $detailed, string $action): ModelAbstract
+    protected function createModel(bool $detailed, string $action): DataReaderInterface
     {
         $model = $this->agenda->newFilterModel();
 

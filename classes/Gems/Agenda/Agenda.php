@@ -92,19 +92,6 @@ class Agenda
     }
     
     /**
-     *
-     * @param type $container A container acting as source for \MUtil\Registry\Source
-     * @param array $dirs The directories where to look for requested classes
-     * /
-    public function __construct($container, array $dirs)
-    {
-        parent::__construct($container, $dirs);
-
-        // Make sure the tracker is known
-        $this->addRegistryContainer(array('agenda' => $this));
-    }
-
-    /**
      * Get the select statement for appointments in getAppointments()
      *
      * Allows for overruling on project level

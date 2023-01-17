@@ -13,8 +13,10 @@ namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Agenda\SubFilterDependencyInterface;
+use Gems\Html;
 use Gems\Util\Translated;
 use MUtil\Validate\NotEqualTo;
+use Zalt\Html\AElement;
 
 /**
  *
@@ -122,7 +124,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
         static $showMenuItem = false;
 
         if (false === $showMenuItem) {
-            $showMenuItem = $this->menu->findAllowedController('agenda-filter', 'show');
+            // $showMenuItem = $this->menu->findAllowedController('agenda-filter', 'show');
         }
 
         if (isset($this->_filters[$raw])) {
@@ -134,14 +136,14 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
         }
 
         if ($showMenuItem instanceof \Gems\Menu\SubMenuItem) {
-            return \MUtil\Html\AElement::a(
+            return AElement::a(
                 $showMenuItem->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]),
                 $text,
                 ['class' => $class]
             );
         }
 
-        return \MUtil\Html::create('span', $text, ['class' => $class]);
+        return Html::create('span', $text, ['class' => $class]);
     }
 
     /**

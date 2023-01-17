@@ -11,6 +11,7 @@
 
 namespace Gems\Agenda;
 
+use Gems\Html;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
 
@@ -313,8 +314,6 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     /**
      * A ModelAbstract->setOnSave() function that returns an paired array of filters
      *
-     * @see \MUtil\Model\ModelAbstract
-     *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
@@ -341,8 +340,6 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     /**
      * A ModelAbstract->setOnSave() function that a nested array containing the tracks and fields using
      * this filter
-     *
-     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -376,12 +373,12 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     public function showFilters($value)
     {
         if (! ($value && is_array($value))) {
-            return \MUtil\Html::create('em', $this->_('Not used in filters'));
+            return Html::create('em', $this->_('Not used in filters'));
         }
 
         $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
 
-        $list = \MUtil\Html::create('ol');
+        $list = Html::create('ol');
         foreach ($value as $id => $label) {
             $li = $list->li();
 
@@ -406,13 +403,13 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     public function showTracks($value)
     {
         if (! ($value && is_array($value))) {
-            return \MUtil\Html::create('em', $this->_('Not used in tracks'));
+            return Html::create('em', $this->_('Not used in tracks'));
         }
 
         $menuTrack  = $this->menu->findAllowedController('track-maintenance', 'show');
         $menuField  = $this->menu->findAllowedController('track-fields', 'show');
 
-        $list = \MUtil\Html::create('ol');
+        $list = Html::create('ol');
         foreach ($value as $row) {
             $li = $list->li();
 
