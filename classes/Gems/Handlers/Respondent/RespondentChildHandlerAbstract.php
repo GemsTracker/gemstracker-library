@@ -99,8 +99,8 @@ abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerA
     public function getRespondent(): Respondent
     {
         if (! $this->_respondent) {
-            $patientNumber = $this->request->getAttribute(Model::REQUEST_ID1);
-            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2);
+            $patientNumber  = $this->request->getAttribute(Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(Model::REQUEST_ID2, $this->currentUser->getCurrentOrganizationId());
 
             $this->_respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 

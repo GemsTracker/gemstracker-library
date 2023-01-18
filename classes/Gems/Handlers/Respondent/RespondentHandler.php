@@ -11,6 +11,7 @@
 
 namespace Gems\Handlers\Respondent;
 
+use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\RespondentModel;
@@ -280,6 +281,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         CurrentUserRepository $currentUserRepository,
         protected Model $modelLoader,
         protected OrganizationRepository $organizationRepository,
+        protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
     ) {
         parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
@@ -743,7 +745,17 @@ class RespondentHandler extends RespondentChildHandlerAbstract
 
             }
         }
-
+        
+        if (isset($filter['locations'])) {
+            $filter[] = sprintf(
+                "(gr2o_id_user, gr2o_id_organization) IN (
+                    SELECT gr2t_id_user, gr2t_id_organization FROM gems__respondent2track INNER JOIN gems__respondent2track2field ON gr2t_id_respondent_track = gr2t2f_id_respondent_track 
+                    WHERE gr2t2f_value = %s AND gr2t2f_id_field IN (SELECT gtf_id_field FROM gems__track_fields WHERE gtf_field_type = 'location'))",
+                $this->resultFetcher->getPlatform()->quoteValue($filter['locations'])
+            );
+            unset($filter['locations']);
+        }
+        // dd($filter);
         if (! isset($filter['show_with_track'])) {
             $filter['show_with_track'] = 1;
         }

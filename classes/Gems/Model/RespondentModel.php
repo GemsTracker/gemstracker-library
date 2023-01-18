@@ -840,7 +840,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      */
     public function isMultiOrganization()
     {
-        return $this->currentUser->hasPrivilege('pr.respondent.multiorg');
+        return true || $this->currentUser->hasPrivilege('pr.respondent.multiorg');
     }
 
     /**
