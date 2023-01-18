@@ -641,6 +641,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'setup.codes.mail-code.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                     ],

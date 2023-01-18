@@ -2,16 +2,17 @@
 
 namespace Gems\Snippets\Export;
 
-use MUtil\Snippets\SnippetAbstract;
+use Gems\Loader;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Task\TaskRunnerBatch;
+use Mezzio\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\SnippetsLoader\SnippetOptions;
 
-class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
+class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
-
     /**
      *
      * @var \Gems\Export
@@ -23,21 +24,31 @@ class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
      * 
      * @var array
      */
-    protected $exportClasses;
-    
-    public $request;
+    //protected $exportClasses;
 
-    public function afterRegistry() {
-        parent::afterRegistry();
-        $this->export = $this->loader->getExport();
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        Loader $loader,
+        private readonly MenuSnippetHelper $menuHelper,
+        private readonly TranslatorInterface $translator,
+        private readonly SessionInterface $session,
+        private readonly ProjectOverloader $overLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo);
 
-        if (!isset($this->exportClasses)) {
+        $this->export = $loader->getExport();
+
+        //if (!isset($this->exportClasses)) {
             $this->exportClasses = $this->export->getExportClasses();
-        }
+        //}
     }
 
-    public function getHtmlOutput(\Zend_View_Abstract $view = null) {
-        $post = $this->request->getPost();
+    public function getHtmlOutput() {
+        $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
+        $batch->reset();
+
+        $post = $this->requestInfo->getRequestPostParams();
 
         if (isset($post['type'])) {
             $currentType = $post['type'];
@@ -48,16 +59,20 @@ class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
 
         $form = new \Gems\Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
 
-        $url = $view->url() . '/step/batch';
+        $url = $this->menuHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'batch']);
         $form->setAction($url);
 
         $elements = array();
 
-        $elements['type'] = $form->createElement('select', 'type', array('label' => $this->_('Export to'), 'multiOptions' => $this->exportClasses, 'class' => 'autosubmit'));
+        $elements['type'] = $form->createElement('select', 'type', [
+            'label' => $this->translator->trans('Export to'),
+            'multiOptions' => $this->exportClasses,
+            'class' => 'autosubmit'
+        ]);
 
         $form->addElements($elements);
 
-        $exportClass        = $this->export->getExport($currentType);
+        $exportClass        = $this->export->getExport($currentType, $this->session);
         $exportName         = $exportClass->getName();
         $exportFormElements = $exportClass->getFormElements($form, $data);
 
@@ -70,17 +85,17 @@ class ExportFormSnippet extends \MUtil\Snippets\SnippetAbstract
             $post[$exportName] = $exportClass->getDefaultFormValues();
         }
 
-        $element = $form->createElement('submit', 'export_submit', array('label' => $this->_('Export')));
+        $element = $form->createElement('submit', 'export_submit', array('label' => $this->translator->trans('Export')));
         $form->addElement($element);
 
         if ($post) {
             $form->populate($post);
         }
 
-        $container = \MUtil\Html::div(array('id' => 'export-form'));
+        $container = \Gems\Html::div(array('id' => 'export-form'));
         $container->append($form);
         $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->request->getActionName())), 'export-form', true);
+        $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
 
         return $container;
     }

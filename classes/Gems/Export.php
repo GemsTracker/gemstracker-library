@@ -11,6 +11,8 @@
 
 namespace Gems;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  * @package    Gems
@@ -72,9 +74,9 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      * @param type $container A container acting as source fro \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
-    public function __construct($container, array $dirs)
+    public function __construct($container)
     {
-        parent::__construct($container, $dirs);
+        parent::__construct($container);
 
         // Make sure the export is known
         $this->addRegistryContainer(array('export' => $this));
@@ -99,9 +101,9 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return \Gems\Export\ExportInterface
      */
-    public function getExport($type)
+    public function getExport(string $type, ?SessionInterface $session)
     {
-        return $this->_getClass($type);
+        return $this->_getClass($type, null, [$session]);
     }
 
     /**

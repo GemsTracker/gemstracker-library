@@ -10,6 +10,8 @@
 
 namespace Gems\Export;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  * @package    Gems
@@ -18,7 +20,7 @@ namespace Gems\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract implements ExportInterface
+abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstract implements ExportInterface
 {
     /**
      * @var \Zend_Session_Namespace    Own session used for non-batch exports
@@ -113,6 +115,11 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @return array Form elements
      */
     public function getFormElements(&$form, &$data) {}
+
+    public function __construct(
+        private readonly ?SessionInterface $session
+    ) {
+    }
 
     /**
      * @return string|null Optional snippet containing help text
@@ -250,8 +257,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     public function afterRegistry() {
         parent::afterRegistry();
 
-        if (!$this->batch) {
-            $this->_session = new \Zend_Session_Namespace(__CLASS__);
+        if (isset($this->batch) === isset($this->session)) {
+            throw new \Exception('Should either set batch or session');
         }
     }
 
