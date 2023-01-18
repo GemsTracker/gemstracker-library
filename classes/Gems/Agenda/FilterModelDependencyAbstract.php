@@ -1,26 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  *
  * @package    Gems
  * @subpackage Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
- * @license    New BSD License
  */
 
 namespace Gems\Agenda;
 
-use MUtil\Model\Dependency\ValueSwitchDependency;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Dependency\ValueSwitchDependency;
+use Zalt\Model\MetaModel;
 
 /**
  * Default dependency for any AppointFilter
  *
  * @package    Gems
  * @subpackage Agenda
- * @copyright  Copyright (c) 2014 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.6.5 15-okt-2014 18:10:36
+ * @since      Class available since version 2.0
  */
 abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
 {
@@ -31,7 +32,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gaf_class');
+    protected array $_dependentOn = ['gaf_class'];
 
     /**
      * The number of gaf_filter_textN fields/
@@ -45,7 +46,14 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @var int
      */
-    protected $_maxNameCalcLength = 200;
+    protected int $_maxNameCalcLength = 200;
+
+    public function __construct(TranslatorInterface $translate)
+    {
+        parent::__construct([], $translate);
+        
+        $this->afterLoad();
+    }
 
     /**
      * Called after the check that all required registry values
@@ -53,11 +61,9 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @return void
      */
-    public function afterRegistry()
+    public function afterLoad()
     {
-        parent::afterRegistry();
-
-        $setOnSave = \MUtil\Model\ModelAbstract::SAVE_TRANSFORMER;
+        $setOnSave = MetaModel::SAVE_TRANSFORMER;
         $switches  = $this->getTextSettings();
 
         // Make sure the calculated name is saved
@@ -89,7 +95,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateAndCheckName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateAndCheckName($value, $isNew = false, $name = null, array $context = array()): string
     {
         return substr($this->calcultateName($value, $isNew, $name, $context), 0, $this->_maxNameCalcLength);
     }
@@ -105,21 +111,21 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    abstract public function calcultateName($value, $isNew = false, $name = null, array $context = array());
+    abstract public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string;
 
     /**
      * Get the class name for the filters, the part after *_Agenda_Filter_
      *
      * @return string
      */
-    abstract public function getFilterClass();
+    abstract public function getFilterClass(): string;
 
     /**
      * Get the name for this filter class
      *
      * @return string
      */
-    abstract public function getFilterName();
+    abstract public function getFilterName(): string;
 
     /**
      * Get the settings for the gaf_filter_textN fields
@@ -128,7 +134,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    abstract public function getTextSettings();
+    abstract public function getTextSettings(): array;
 
     /**
      * Set the maximum length of the calculated name field
@@ -136,7 +142,7 @@ abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
      * @param int $length
      * @return \Gems\Agenda\FilterModelDependencyAbstract
      */
-    public function setMaximumCalcLength($length = 200)
+    public function setMaximumCalcLength(int $length = 200): FilterModelDependencyAbstract
     {
         $this->_maxNameCalcLength = $length;
 

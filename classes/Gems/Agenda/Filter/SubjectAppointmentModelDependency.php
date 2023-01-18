@@ -36,7 +36,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
     {
         if (isset($context['gaf_filter_text1'])) {
             return sprintf($this->_('Appointment subject contains %s'), $context['gaf_filter_text1']);
@@ -50,7 +50,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'SubjectAppointmentFilter';
     }
@@ -60,7 +60,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('Appointment subject match');
     }
@@ -72,7 +72,7 @@ class SubjectAppointmentModelDependency extends FilterModelDependencyAbstract
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    public function getTextSettings()
+    public function getTextSettings(): array
     {
         $description = sprintf($this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."

@@ -69,7 +69,9 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
         $regexp = $this->toRegexp($this->_value);
 
         foreach (array_reverse($this->_filter) as $filter) {
-            $regexp = '{[^}]*' . $this->toRegexp($filter) . '(:{[^}]*:|:)' . $regexp;
+            if ($filter) {
+                $regexp = '\\\\{[^\\\\}]*' . $this->toRegexp($filter) . '(:\\\\{[^\\\\}]*:|:)' . $regexp;
+            }
         }
         // \MUtil\EchoOut\EchoOut::track($regexp);
 
@@ -84,7 +86,6 @@ class JsonDiagnosisEpisodeFilter extends EpisodeFilterAbstract
     public function getSqlEpisodeWhere()
     {
         $regex = $this->getRegex();
-
         return "gec_diagnosis_data REGEXP '$regex'";
     }
 

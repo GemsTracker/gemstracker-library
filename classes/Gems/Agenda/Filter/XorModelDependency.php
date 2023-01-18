@@ -26,7 +26,7 @@ class XorModelDependency extends XandModelDependency
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'XorAppointmentFilter';
     }
@@ -36,7 +36,7 @@ class XorModelDependency extends XandModelDependency
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('NOT ANY (XOR) combination filter');
     }
