@@ -259,7 +259,7 @@ class Agenda
      */
     public function createAppointmentSelect($fields = '*')
     {
-        return $this->subloadeer->create('AppointmentSelect', $fields);
+        return $this->subloader->create('AppointmentSelect', $fields);
     }
 
     /**
@@ -367,7 +367,7 @@ class Agenda
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
-            $this->_appointments[$appointmentId] = $this->subloader->create('appointment', $appointmentData);
+            $this->_appointments[$appointmentId] = $this->subloader->create('Gems\\Agenda\\Appointment', $appointmentData);
         } elseif (is_array($appointmentData)) {
             // Make sure the new values are set in the object
             $this->_appointments[$appointmentId]->refresh($appointmentData);

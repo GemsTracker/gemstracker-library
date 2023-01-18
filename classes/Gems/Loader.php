@@ -14,6 +14,7 @@ namespace Gems;
 use Gems\Loader\LoaderAbstract;
 use Gems\Tracker\TrackEvents;
 use Gems\User\User;
+use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
 
 /**
  *
@@ -134,6 +135,7 @@ class Loader extends LoaderAbstract
      */
     public function getAgenda()
     {
+        return $this->loadByDependency('Gems\\Agenda\\Agenda');
         return $this->_getClass('Agenda\\Agenda');
     }
 
@@ -150,7 +152,7 @@ class Loader extends LoaderAbstract
      *
      * @return \Gems\User\User
      */
-    public function getCurrentUser(): User
+    public function getCurrentUser() : User
     {
         $loader = $this->getUserLoader();
 
@@ -160,14 +162,14 @@ class Loader extends LoaderAbstract
     /**
      * @return \Gems\Db\DbTranslations
      */
-    public function getDbTranslations($config=null)
+    public function getDbTranslations($config = null)
     {
         return $this->_loadClass('Db\\DbTranslations', true, ['config' => $config]);
     }
 
     /**
      *
-     * @param int $userId
+     * @param int                       $userId
      * @param \Zend_Db_Adapter_Abstract $db
      * @return \Gems\User\Embed\EmbedLoader
      */
@@ -188,7 +190,7 @@ class Loader extends LoaderAbstract
      *
      * @return TrackEvents
      */
-    public function getEvents(): TrackEvents
+    public function getEvents() : TrackEvents
     {
         /**
          * @var TrackEvents
@@ -220,9 +222,9 @@ class Loader extends LoaderAbstract
      * Best usage would be to load from within the model, so return type can be
      * fixed there and code completion would work like desired
      *
-     * @param string $name
+     * @param string                     $name
      * @param \MUtil\Model\ModelAbstract $model
-     * @param array $data
+     * @param array                      $data
      * @return mixed
      */
     public function getInstance($name, $model, $data)
@@ -291,7 +293,7 @@ class Loader extends LoaderAbstract
      * @return Model
      * @deprecated use Dependency injection!
      */
-    public function getModels(): Model
+    public function getModels() : Model
     {
         /**
          * @var Model
@@ -324,9 +326,9 @@ class Loader extends LoaderAbstract
     /**
      * Get a respondent object
      *
-     * @param string $patientId   Patient number, you can use $respondentId instead
-     * @param int $organizationId Organization id
-     * @param int $respondentId   Optional respondent id, used when patient id is empty
+     * @param string $patientId      Patient number, you can use $respondentId instead
+     * @param int    $organizationId Organization id
+     * @param int    $respondentId   Optional respondent id, used when patient id is empty
      * @return \Gems\Tracker\Respondent
      */
     public function getRespondent($patientId, $organizationId, $respondentId = null)
@@ -410,7 +412,7 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @param string $id
+     * @param string                            $id
      * @param \MUtil\Batch\Stack\Stackinterface $stack Optional different stack than session stack
      * @return \Gems\Task\TaskRunnerBatch
      */
@@ -457,7 +459,7 @@ class Loader extends LoaderAbstract
     /**
      *
      * @param string $login_name
-     * @param int $organization
+     * @param int    $organization
      * @return \Gems\User\User
      */
     public function getUser($login_name, $organization)
@@ -501,5 +503,16 @@ class Loader extends LoaderAbstract
     public function getVersions()
     {
         return $this->_getClass('versions');
+    }
+
+    protected function loadByDependency(string $class)
+    {
+        static $resolveByDependecy = new ConstructorDependencyParametersResolver();
+
+        $old = $this->_overLoader->getDependencyResolver();
+        $this->_overLoader->setDependencyResolver($resolveByDependecy);
+        $output = $this->_overLoader->create('Gems\\Agenda\\Agenda');
+        $this->_overLoader->setDependencyResolver($old);
+        return $output;
     }
 }
