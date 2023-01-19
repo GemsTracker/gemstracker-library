@@ -325,7 +325,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
     /**
      * Check the valid from and until dates for this token
      *
-     * @param \GemS_Tracker_Token $token
+     * @param \Gems\Tracker\Token $token
      * @param array $round
      * @param int   $userId Id of the user who takes the action (for logging)
      * @param \Gems\Tracker\RespondentTrack Current respondent track

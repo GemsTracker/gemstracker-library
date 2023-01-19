@@ -11,6 +11,7 @@
 
 namespace Gems\Tracker\Model;
 
+use Gems\Html;
 use Gems\Event\Application\NamedArrayEvent;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
 use Gems\Event\EventDispatcher;
@@ -315,7 +316,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 
         $this->set('htmlCreate',
                    'elementClass', 'None', 'nohidden', true,
-                   'value', \MUtil\Html::create('h3', $this->_('Automatic track creation'))
+                   'value', Html::create('h3', $this->_('Automatic track creation'))
         );
 
         $this->set('gtf_create_track', 'label', $this->_('When not assigned'),
@@ -595,8 +596,6 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
     /**
      * A ModelAbstract->setOnLoad() function that concatenates the
      * value if it is an array.
-     *
-     * @see \MUtil\Model\ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

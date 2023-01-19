@@ -11,9 +11,12 @@
 
 namespace Gems\Agenda;
 
+use Gems\Db\ResultFetcher;
 use Gems\Html;
+use Gems\MenuNew\RouteHelper;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -27,23 +30,11 @@ use Gems\Util\Translated;
 class AppointmentFilterModel extends \Gems\Model\JoinModel
 {
     /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
      * The filter dependency class names, the parts after *_Agenda_Filter_
      *
      * @var array (dependencyClassName)
      */
-    protected $filterDependencies = [
+    protected array $filterDependencies = [
         'ActProcModelDependency',
         'AndModelDependency',
         'DiagnosisEpisodeModelDependency',
@@ -64,13 +55,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
      *
      * @var array filterClassName => Label
      */
-    protected $filterOptions;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
+    protected array $filterOptions;
 
     /**
      * The sub filter dependency class names, needed separately for
@@ -80,17 +65,20 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     protected $subFilters = [];
 
     /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
      *
      * @param string $name
      */
-    public function __construct($name = 'app-filter')
+    public function __construct(
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        protected ResultFetcher $resultFetcher,
+        protected RouteHelper $routeHelper,
+        protected Translated $translatedUtil,
+    )
     {
-        parent::__construct($name, 'gems__appointment_filters', 'gaf');
+        $this->translate = $translate;
+        
+        parent::__construct('app-filter', 'gems__appointment_filters', 'gaf');
     }
 
     /**
@@ -213,7 +201,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
         $this->set('gaf_active',        'elementClass', 'Checkbox');
 
         if ($create) {
-            $default = $this->db->fetchOne("SELECT MAX(gaf_id_order) FROM gems__appointment_filters");
+            $default = $this->resultFetcher->fetchOne("SELECT MAX(gaf_id_order) FROM gems__appointment_filters");
             $this->set('gaf_id_order', 'default', intval($default) + 10);
         }
 
@@ -285,8 +273,8 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
      */
     protected function loadFilterDependencies($activateDependencies = true)
     {
-        if (! $this->filterOptions) {
-            $maxLength = $this->get('gaf_calc_name', 'maxlength');
+        if (! isset($this->filterOptions)) {
+            $maxLength = intval($this->get('gaf_calc_name', 'maxlength'));
 
             $this->filterOptions = array();
             foreach ($this->filterDependencies as $dependencyClass) {
@@ -325,7 +313,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
         if ($isNew || (! isset($context['gaf_id']))) {
             return [];
         }
-        $output       = $this->db->fetchPairs($this->getSubFilterIdSql(
+        $output       = $this->resultFetcher->fetchPairs($this->getSubFilterIdSql(
                 $context['gaf_id'],
                 "gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) AS used_name"
                 ));
@@ -352,11 +340,11 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
         if ($isNew || (! isset($context['gaf_id']))) {
             return [];
         }
-        $output = $this->db->fetchAll(
+        $output = $this->resultFetcher->fetchAll(
                 "SELECT gtr_id_track, gtr_track_name, gtap_id_app_field, gtap_field_name
                     FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
                     WHERE gtap_filter_id = ?",
-                $context['gaf_id']);
+                [$context['gaf_id']]);
 
         if ($output) {
             return $output;
@@ -376,17 +364,16 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
             return Html::create('em', $this->_('Not used in filters'));
         }
 
-        $menuFilter = $this->menu->findAllowedController('agenda-filter', 'show');
-
+        $showMenu = (bool) $this->routeHelper->hasAccessToRoute('setup.agenda.filter.show');
         $list = Html::create('ol');
         foreach ($value as $id => $label) {
             $li = $list->li();
 
-            if ($menuFilter) {
+            if ($showMenu) {
                 $li->em()->a(
-                        $menuFilter->toHRefAttribute([\MUtil\Model::REQUEST_ID => $id]),
-                        $label
-                        );
+                    $this->routeHelper->getRouteUrl('setup.agenda.filter.show', [\MUtil\Model::REQUEST_ID => intval($id)]),
+                    $label
+                    );
             } else {
                 $li->em($label);
             }

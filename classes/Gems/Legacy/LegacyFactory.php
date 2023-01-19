@@ -32,6 +32,9 @@ class LegacyFactory implements FactoryInterface
 
         switch ($requestedName) {
             case \Gems\Loader::class:
+                $requestedName = $this->stripOverloader($requestedName);
+                return $this->loader->create($requestedName, $this->loader, []);
+                
             case \Gems\Util::class:
             case \Gems\Tracker::class:
             case \Gems\Tracker\TrackEvents::class:

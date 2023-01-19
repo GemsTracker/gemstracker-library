@@ -12,7 +12,9 @@
 namespace Gems\Agenda\Filter;
 
 use Gems\Agenda\FilterModelDependencyAbstract;
+use Gems\Repository\OrganizationRepository;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -24,16 +26,14 @@ use Gems\Util\Translated;
  */
 class OrganizationModelDependency extends FilterModelDependencyAbstract
 {
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        TranslatorInterface $translate,
+        protected OrganizationRepository $organizationRepository,
+        protected Translated $translatedUtil,
+    )
+    {
+        parent::__construct($translate);
+    }
 
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -47,9 +47,9 @@ class OrganizationModelDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
     {
-        $options = $this->util->getDbLookup()->getOrganizations();
+        $options = $this->organizationRepository->getOrganizations();
         $output  = [];
 
         foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $field) {
@@ -76,7 +76,7 @@ class OrganizationModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'OrganizationAppointmentFilter';
     }
@@ -86,7 +86,7 @@ class OrganizationModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('Organization filter');
     }
@@ -98,10 +98,10 @@ class OrganizationModelDependency extends FilterModelDependencyAbstract
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    public function getTextSettings()
+    public function getTextSettings(): array
     {
         $options = $this->translatedUtil->getEmptyDropdownArray() +
-                $this->util->getDbLookup()->getOrganizations();
+            $this->organizationRepository->getOrganizations();
 
         foreach (['gaf_filter_text1', 'gaf_filter_text2', 'gaf_filter_text3', 'gaf_filter_text4'] as $i => $field) {
             $output[$field] = [

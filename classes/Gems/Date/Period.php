@@ -50,30 +50,34 @@ class Period
         if ($period) {
             switch (strtoupper($type)) {
                 case 'Q':
-                    $periodString = 'P' . ($period * 3) . 'M';
+                    $periodString = 'P' . abs($period * 3) . 'M';
                     break;
 
                 case 'N':
-                    $periodString = 'PT' . $period . 'M;';
+                    $periodString = 'PT' . abs($period) . 'M;';
                     break;
                     
                 case 'H':
                 case 'S':
-                    $periodString = 'PT' . $period . strtoupper($type);
+                    $periodString = 'PT' . abs($period) . strtoupper($type);
                     break;
 
                 case 'D':
                 case 'M':
                 case 'W':
                 case 'Y':
-                    $periodString = 'P' . $period . strtoupper($type);
+                    $periodString = 'P' . abs($period) . strtoupper($type);
                     break;
 
                 default:
                     throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
 
             }
-            return $date->add(new DateInterval($periodString));
+            $interval = new DateInterval($periodString);
+            if ($period < 0) {
+                $interval->invert;
+            }
+            return $date->add($interval);
         }
 
         return $date;

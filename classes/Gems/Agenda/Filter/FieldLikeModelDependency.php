@@ -11,8 +11,10 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  *
@@ -25,16 +27,15 @@ use Gems\Util\Translated;
  */
 class FieldLikeModelDependency extends FilterModelDependencyAbstract
 {
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
+    public function __construct(
+        TranslatorInterface $translate, 
+        protected Agenda $agenda,
+        protected Translated $translatedUtil,
+    )
+    {
+        parent::__construct($translate);
+    }
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
 
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -48,7 +49,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = [])
+    public function calcultateName($value, $isNew = false, $name = null, array $context = []): string
     {
         $fields = $this->agenda->getFieldLabels();
 
@@ -97,7 +98,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'FieldLikeAppointmentFilter';
     }
@@ -107,7 +108,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('Field match filter');
     }
@@ -119,7 +120,7 @@ class FieldLikeModelDependency extends FilterModelDependencyAbstract
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    public function getTextSettings()
+    public function getTextSettings(): array
     {
         $fields = $this->agenda->getFieldLabels();
         $description = sprintf($this->_(

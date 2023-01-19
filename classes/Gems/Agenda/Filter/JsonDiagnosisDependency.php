@@ -35,7 +35,7 @@ class JsonDiagnosisDependency extends FilterModelDependencyAbstract
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
     {
         $filter[] = $context['gaf_filter_text1'];
         $filter[] = $context['gaf_filter_text2'];
@@ -66,7 +66,7 @@ class JsonDiagnosisDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'JsonDiagnosisEpisodeFilter';
     }
@@ -76,7 +76,7 @@ class JsonDiagnosisDependency extends FilterModelDependencyAbstract
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('Diagnosis Data match');
     }
@@ -88,7 +88,7 @@ class JsonDiagnosisDependency extends FilterModelDependencyAbstract
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    public function getTextSettings()
+    public function getTextSettings(): array
     {
         $description = sprintf($this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."

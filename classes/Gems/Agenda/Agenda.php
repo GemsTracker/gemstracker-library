@@ -17,6 +17,8 @@ use MUtil\Model;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\TranslateableTrait;
+use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
+use Zalt\Loader\DependencyResolver\ResolverInterface;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -55,29 +57,9 @@ class Agenda
      */
     public $episodeDisplayFormat = 'd-M-Y';
 
-    /**
-     *
-     * @var \Gems\Cache\HelperAdapter
-     * / 
-    protected $cache;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     * /
-    protected $db;
-
-    /**
-     *
-     * @var ProjectOverloader
-     * /
-    protected $subLoader;
-
-    /**
-     * @var \Gems\Util
-     * /
-    protected $util;
-
+    protected ResolverInterface $resolveByParameter;
+    protected ResolverInterface $resolveByDependecy;
+    
     /**
      * Sets the source of variables and the first directory for snippets
      */
@@ -89,6 +71,9 @@ class Agenda
         )
     {
         $this->translate = $translator;
+
+        $this->resolveByParameter = $this->subloader->getDependencyResolver();
+        $this->resolveByDependecy = new ConstructorDependencyParametersResolver();
     }
     
     /**
@@ -274,7 +259,7 @@ class Agenda
      */
     public function createAppointmentSelect($fields = '*')
     {
-        return $this->subloadeer->create('AppointmentSelect', $fields);
+        return $this->subloader->create('AppointmentSelect', $fields);
     }
 
     /**
@@ -382,7 +367,7 @@ class Agenda
         // \MUtil\EchoOut\EchoOut::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
-            $this->_appointments[$appointmentId] = $this->subloader->create('appointment', $appointmentData);
+            $this->_appointments[$appointmentId] = $this->subloader->create('Gems\\Agenda\\Appointment', $appointmentData);
         } elseif (is_array($appointmentData)) {
             // Make sure the new values are set in the object
             $this->_appointments[$appointmentId]->refresh($appointmentData);
@@ -1398,16 +1383,22 @@ class Agenda
      */
     public function newFilterObject($className)
     {
-        return $this->subloader->create("Filter\\$className");
+        $this->subloader->setDependencyResolver($this->resolveByDependecy);
+        $output = $this->subloader->create("Filter\\$className");
+        $this->subloader->setDependencyResolver($this->resolveByParameter);
+        return $output;
     }
 
     /**
      *
      * @return \Gems\Agenda\AppointmentFilterModel
      */
-    public function newFilterModel()
+    public function newFilterModel(): AppointmentFilterModel
     {
-        return $this->subloader->create('AppointmentFilterModel');
+        $this->subloader->setDependencyResolver($this->resolveByDependecy);
+        $output = $this->subloader->create('AppointmentFilterModel');
+        $this->subloader->setDependencyResolver($this->resolveByParameter);
+        return $output;
     }
 
     /**

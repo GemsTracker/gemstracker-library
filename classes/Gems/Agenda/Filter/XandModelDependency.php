@@ -32,7 +32,7 @@ class XandModelDependency extends AndModelDependency
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
     {
         $output = $this->calcultateNameOutput($value, $isNew, $name, $context);
 
@@ -48,7 +48,7 @@ class XandModelDependency extends AndModelDependency
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'XandAppointmentFilter';
     }
@@ -58,7 +58,7 @@ class XandModelDependency extends AndModelDependency
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('NOT ALL (XAND) combination filter');
     }

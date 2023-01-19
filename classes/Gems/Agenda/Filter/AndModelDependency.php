@@ -11,12 +11,16 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Agenda\SubFilterDependencyInterface;
 use Gems\Html;
+use Gems\MenuNew\RouteHelper;
 use Gems\Util\Translated;
 use MUtil\Validate\NotEqualTo;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Html\AElement;
+use Zalt\Html\HrefArrayAttribute;
 
 /**
  *
@@ -35,34 +39,16 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      */
     protected $_filters;
 
-    /**
-     *
-     * @var \Gems\Agenda\Agenda
-     */
-    protected $agenda;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
+    public function __construct(
+        TranslatorInterface $translate,
+        protected Agenda $agenda,
+        protected RouteHelper $routeHelper,
+        protected Translated $translatedUtil,
+    )
     {
         $this->_filters = $this->translatedUtil->getEmptyDropdownArray() + $this->agenda->getFilterList();
 
-        parent::afterRegistry();
+        parent::__construct($translate);
     }
 
     /**
@@ -76,7 +62,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    public function calcultateName($value, $isNew = false, $name = null, array $context = array())
+    public function calcultateName($value, $isNew = false, $name = null, array $context = array()): string
     {
         $output = $this->calcultateNameOutput($value, $isNew, $name, $context);
 
@@ -98,7 +84,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      * @param array $context Optional, the other values being saved
      * @return string
      */
-    protected function calcultateNameOutput($value, $isNew, $name, $context)
+    protected function calcultateNameOutput($value, $isNew, $name, $context): array
     {
         $output = array();
 
@@ -117,16 +103,10 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      *
      * @staticvar \Gems\Menu\SubMenuItem $showMenuItem
      * @param int $value
-     * @return \MUtil\Html\HtmlElement
+     * @return \Zalt\Html\HtmlElement
      */
     public function displayFilterLink($value, $raw)
     {
-        static $showMenuItem = false;
-
-        if (false === $showMenuItem) {
-            // $showMenuItem = $this->menu->findAllowedController('agenda-filter', 'show');
-        }
-
         if (isset($this->_filters[$raw])) {
             $class = '';
             $text  = $this->_filters[$raw];
@@ -135,14 +115,17 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
             $text  = $raw . ' ' . $this->_('(inactive filter)');
         }
 
-        if ($showMenuItem instanceof \Gems\Menu\SubMenuItem) {
-            return AElement::a(
-                $showMenuItem->toHRefAttribute([\MUtil\Model::REQUEST_ID => $raw]),
-                $text,
-                ['class' => $class]
-            );
+        if ($raw && $this->routeHelper->hasAccessToRoute('setup.agenda.filter.show')) {
+            $route = $this->routeHelper->getRouteUrl('setup.agenda.filter.show', [\MUtil\Model::REQUEST_ID => intval($raw)]);
+            if ($route) {
+                return AElement::a(
+                    new HrefArrayAttribute($route),
+                    $text,
+                    ['class' => $class]
+                );
+            }
         }
-
+        
         return Html::create('span', $text, ['class' => $class]);
     }
 
@@ -151,7 +134,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'AndAppointmentFilter';
     }
@@ -161,7 +144,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('AND filter combination');
     }
@@ -183,7 +166,7 @@ class AndModelDependency extends FilterModelDependencyAbstract implements SubFil
      *
      * @return array gaf_filter_textN => array(modelFieldName => fieldValue)
      */
-    public function getTextSettings()
+    public function getTextSettings(): array
     {
         $messages = array(
             'gaf_id' => $this->_('Sub filter may not be the same as this filter.'),

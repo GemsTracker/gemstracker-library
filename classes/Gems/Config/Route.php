@@ -743,6 +743,12 @@ class Route
                     'deactivate',
                     'staff-log',
                 ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'reset',
+                    'deactivate',
+                    'staff-log',
+                ]
             ),
 
             [

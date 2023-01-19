@@ -29,7 +29,7 @@ class OrModelDependency extends AndModelDependency
      *
      * @return string
      */
-    public function getFilterClass()
+    public function getFilterClass(): string
     {
         return 'OrAppointmentFilter';
     }
@@ -39,7 +39,7 @@ class OrModelDependency extends AndModelDependency
      *
      * @return string
      */
-    public function getFilterName()
+    public function getFilterName(): string
     {
         return $this->_('OR combination filter');
     }
