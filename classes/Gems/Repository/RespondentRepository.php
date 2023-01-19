@@ -31,7 +31,7 @@ class RespondentRepository
     {
     }
 
-    public function getRespondent(?string $patientId, int $organizationId, ?int $respondentId = null): Respondent
+    public function getRespondent(?string $patientId, ?int $organizationId, ?int $respondentId = null): Respondent
     {
         if ($patientId) {
             if (isset($this->respondents[$organizationId][$patientId])) {
