@@ -330,7 +330,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      * @staticvar \Gems\User\User $user
      * @return \Gems\User\User or false when not available
      */
-    public function getSelectedUser(): User
+    public function getSelectedUser(): User|false
     {
         static $user = null;
 
