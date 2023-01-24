@@ -13,6 +13,7 @@ use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
+use Gems\Handlers\ChangeGroupHandler;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
@@ -232,6 +233,14 @@ class Route
                 'allowed_methods' => ['GET'],
                 'middleware' => [
                     ChangeOrganizationHandler::class,
+                ],
+            ],
+            [
+                'name' => 'group.switch-ui',
+                'path' => '/group/switch-ui',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeGroupHandler::class,
                 ],
             ],
         ];

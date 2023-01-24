@@ -4,6 +4,7 @@ namespace Gems\AuthNew;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\TfaService;
+use Gems\Handlers\ChangeGroupHandler;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\User\User;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -55,6 +56,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $tfaService = new TfaService($session, $authenticationService, $this->otpMethodBuilder);
             if ($tfaService->requiresAuthentication($user, $request)) {
                 return $this->redirectWithIntended($user, $request, $this->router->generateUri('tfa.login'));
+            }
+
+            if (null !== ($currentGroupId = $session->get(ChangeGroupHandler::CURRENT_USER_GROUP_ATTRIBUTE))) {
+                $allowedGroups = $user->getAllowedStaffGroups(false);
+
+                if (isset($allowedGroups[$currentGroupId])) {
+                    $user->setCurrentGroupId($currentGroupId);
+                }
             }
 
             $request = $request->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user);
