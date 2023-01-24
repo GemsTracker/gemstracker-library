@@ -96,7 +96,7 @@ class MailLogBrowseSnippet extends ModelTableSnippet
             $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $params);
 
             $label = Html::create('strong', $this->_('+'));
-            $bridge->addItemLink(\Gems\Html::actionLink($url, $label));
+            $bridge->addItemLink(\Gems\Html::actionLink($url['url'], $label));
         }
         $bridge->getTable()->appendAttrib('class', 'compliance');
 
