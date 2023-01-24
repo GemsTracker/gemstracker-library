@@ -3,11 +3,10 @@
 namespace Gems\Event\Application;
 
 use Gems\Tracker\Respondent;
-use Gems\User\User;
 
 interface RespondentCommunicationInterface
 {
-    public function getCurrentUser(): User;
+    public function getCurrentUserId(): int;
 
     public function getCommunicationJob(): array;
 

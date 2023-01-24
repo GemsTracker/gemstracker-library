@@ -3,12 +3,14 @@
 namespace Gems\Event\Application;
 
 use Gems\Tracker\Respondent;
-use Gems\User\User;
 use Symfony\Contracts\EventDispatcher\Event;
+use Exception;
 
-class RespondentCommunicationSent extends Event implements RespondentCommunicationInterface
+class RespondentCommunicationFailed extends Event implements RespondentCommunicationInterface
 {
-    const NAME = 'respondent.communication.sent';
+    const NAME = 'respondent.communication.failed';
+
+    protected Exception $exception;
 
     protected Respondent $respondent;
 
@@ -22,16 +24,13 @@ class RespondentCommunicationSent extends Event implements RespondentCommunicati
 
     private array $communicationJob;
 
-    public function __construct(Respondent $respondent, int $currentUserId, array $communicationJob = [], )
+    public function __construct(Exception $exception, Respondent $respondent, int $currentUserId, array $communicationJob = [], )
     {
         $this->respondent = $respondent;
         $this->currentUserId = $currentUserId;
         $this->communicationJob = $communicationJob;
+        $this->exception = $exception;
     }
-
-    /**
-     * @return User
-     */
     public function getCurrentUserId(): int
     {
         return $this->currentUserId;

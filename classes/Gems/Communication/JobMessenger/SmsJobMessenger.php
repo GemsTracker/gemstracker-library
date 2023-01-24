@@ -3,57 +3,34 @@
 namespace Gems\Communication\JobMessenger;
 
 use Gems\Communication\Http\SmsClientInterface;
-use Gems\Event\Application\TokenCommunicationSent;
+use Gems\Event\Application\TokenEventCommunicationFailed;
+use Gems\Event\Application\TokenEventCommunicationSent;
 use Gems\Exception\ClientException;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Log\LogHelper;
 use Gems\Communication\CommunicationRepository;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
-use Gems\User\User;
 use League\HTMLToMarkdown\HtmlConverter;
-use MUtil\Registry\TargetInterface;
-use MUtil\Registry\TargetTrait;
-use MUtil\Translate\TranslateableTrait;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use Gems\Communication\Exception;
 
-class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
+class SmsJobMessenger implements JobMessengerInterface
 {
-    use TargetTrait;
-    use TranslateableTrait;
+    protected int $currentUserId;
 
-    /**
-     * @var CommunicationRepository
-     */
-    protected $communicationRepository;
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var User
-     */
-    protected $currentUser;
-
-    /**
-     * @var EventDispatcher
-     */
-    protected $event;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Tracker
-     */
-    protected $tracker;
+    public function __construct(
+        protected Tracker $tracker,
+        protected EventDispatcherInterface $event,
+        protected CommunicationRepository $communicationRepository,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
 
     protected function getFallbackPhonenumber($job)
     {
@@ -71,13 +48,12 @@ class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
                 return $job['gcj_from_fixed'];
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
         }
     }
 
-    protected function getMessage(array $job, array $tokenData)
+    protected function getMessage(array $job, Token $token)
     {
-        $token = $this->tracker->getToken($tokenData);
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
         $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
@@ -100,7 +76,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
         return $converter->convert($twig->render('message', $mailFields));
     }
 
-    protected function getPhonenumber(array $job, \Gems\Tracker\Token $token, $canBeMessaged)
+    protected function getPhoneNumber(array $job, Token $token, $canBeMessaged)
     {
         $phoneNumber = null;
 
@@ -127,7 +103,7 @@ class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
                 return $this->getFallbackPhonenumber($job);
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+                throw new Exception('Invalid option for \'Filler\'');
         }
 
 
@@ -144,13 +120,12 @@ class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
                 return $this->getFallbackPhonenumber($job);
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+                throw new Exception('Invalid option for \'Addresses used\'');
         }
     }
 
-    public function sendCommunication(array $job, array $tokenData, bool $preview): ?bool
+    public function sendCommunication(array $job, Token $token, bool $preview): ?bool
     {
-        $token = $this->tracker->getToken($tokenData);
         $clientId = 'sms';
         if (isset($job['gcm_method_identifier'])) {
             $clientId = $job['gcm_method_identifier'];
@@ -158,45 +133,38 @@ class SmsJobMessenger extends JobMessengerAbstract implements TargetInterface
         $smsClient = $this->communicationRepository->getSmsClient($clientId);
 
         if (!($smsClient instanceof SmsClientInterface)) {
-            throw new \Gems\Communication\Exception(sprintf('No Sms Client with id %s found', $clientId));
+            throw new Exception(sprintf('No Sms Client with id %s found', $clientId));
         }
 
-        $number = $this->getPhoneNumber($job, $token, $tokenData['can_email']);
-        $message = $this->getMessage($job, $tokenData);
+        $number = $this->getPhoneNumber($job, $token, $token);
+        $message = $this->getMessage($job, $token);
         $from = $this->getFrom($job, $token);
         $phoneNumberFilter = new DutchPhonenumberFilter();
         $filteredNumber = $phoneNumberFilter->filter($number);
 
-        if ($preview) {
-            $this->addBatchMessage(sprintf(
-                $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $number, $from
-            ));
-        } else {
-            try {
+        try {
 
-                $smsClient->sendMessage($filteredNumber, $message, $from);
+            $smsClient->sendMessage($filteredNumber, $message, $from);
 
-                $event = new TokenCommunicationSent($token, $this->currentUser, $job);
-                $event->setFrom([$from]);
-                $event->setSubject($job['gct_name']);
-                $event->setTo([$filteredNumber]);
-                $this->event->dispatch($event, $event::NAME);
+            $event = new TokenEventCommunicationSent($token, $this->currentUserId, $job);
+            $event->setFrom([$from]);
+            $event->setSubject($job['gct_name']);
+            $event->setTo([$filteredNumber]);
+            $this->event->dispatch($event, $event::NAME);
 
-            } catch (ClientException $e) {
+        } catch (ClientException $exception) {
 
-                $info = sprintf("Error sending sms to %s respondent %s with email address %s.",
-                    $token->getOrganizationId(),
-                    $token->getRespondentId(),
-                    $filteredNumber
-                );
+            $smsClient->sendMessage($filteredNumber, $message, $from);
 
-                // Use a gems exception to pass extra information to the log
-                $gemsException = new \Gems\Exception($info, 0, $e);
-                $this->logger->error(LogHelper::getMessageFromException($gemsException));
+            $event = new TokenEventCommunicationFailed($exception, $token, $this->currentUserId, $job);
+            $event->setFrom([$from]);
+            $event->setSubject($job['gct_name']);
+            $event->setTo([$filteredNumber]);
+            $this->event->dispatch($event, $event::NAME);
 
-                return false;
-            }
+            return false;
         }
+
         return true;
     }
 

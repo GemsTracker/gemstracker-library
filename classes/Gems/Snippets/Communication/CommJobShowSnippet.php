@@ -9,7 +9,9 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets\Mail;
+namespace Gems\Snippets\Communication;
+
+use Gems\Snippets\ModelDetailTableSnippet;
 
 /**
  *
@@ -18,25 +20,12 @@ namespace Gems\Snippets\Mail;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class CommJobShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
+class CommJobShowSnippet extends ModelDetailTableSnippet
 {
     /**
      * @return \Zend_Db_Adapter_Abstract
      */
     protected $db;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-        
-        $this->menuList = $this->getMenuList();
-    }
 
 
     /**
@@ -44,7 +33,7 @@ class CommJobShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
      *
      * @return \Gems\Menu\MenuList
      */
-    protected function getMenuList()
+    /*protected function getMenuList()
     {
         $id   = $this->request->getParam(\MUtil\Model::REQUEST_ID);
         $prev = $this->db->fetchOne(
@@ -69,5 +58,5 @@ class CommJobShowSnippet extends \Gems\Snippets\ModelItemTableSnippet
         $links->append($this->menu->getCurrent()->toActionLink(true, \MUtil\Html::raw($this->_('Next &gt;')), [\MUtil\Model::REQUEST_ID => $next]));
 
         return $links;
-    }
+    }*/
 }

@@ -3,15 +3,17 @@
 namespace Gems\Event\Application;
 
 use Gems\Tracker\Respondent;
-use Gems\User\User;
 use Symfony\Component\Mime\Email;
 use Symfony\Contracts\EventDispatcher\Event;
+use Exception;
 
-class RespondentMailSent extends Event implements RespondentCommunicationInterface
+class RespondentMailFailed extends Event implements RespondentCommunicationInterface
 {
-    const NAME = 'respondent.mail.sent';
+    const NAME = 'respondent.mail.failed';
 
     protected Email $email;
+
+    protected Exception $exception;
 
     protected Respondent $respondent;
 
@@ -19,17 +21,15 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
 
     private array $communicationJob;
 
-    public function __construct(Email $email, Respondent $respondent, int $currentUserId, array $communicationJob = [], )
+    public function __construct(Exception $exception, Email $email, Respondent $respondent, int $currentUserId, array $communicationJob = [], )
     {
+        $this->exception = $exception;
         $this->email = $email;
         $this->respondent = $respondent;
         $this->currentUserId = $currentUserId;
         $this->communicationJob = $communicationJob;
     }
 
-    /**
-     * @return User
-     */
     public function getCurrentUserId(): int
     {
         return $this->currentUserId;
@@ -41,6 +41,14 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
     public function getEmail(): Email
     {
         return $this->email;
+    }
+
+    /**
+     * @return Exception
+     */
+    public function getException(): Exception
+    {
+        return $this->exception;
     }
 
     /**

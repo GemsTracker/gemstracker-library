@@ -36,8 +36,8 @@ class OneOf extends \Laminas\Validator\AbstractValidator
      * @var array
      */
     protected array $messageVariables = [
-        'description' => '_description',
-        'fieldDescription' => '_fieldDescription'
+        'description' => 'description',
+        'fieldDescription' => 'fieldDescription'
     ];
 
 
