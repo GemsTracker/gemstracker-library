@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Tracker\Snippets\EditTrackEngineSnippetGeneric;
+
 /**
  * Default snippet for editing track engines instances
  *
@@ -21,6 +23,5 @@ namespace Gems\Snippets\Tracker;
  * @since      Class available since version 1.4
  * @deprecated since version 1.6.5
  */
-class EditTrackEngineSnippet extends \Gems\Tracker\Snippets\EditTrackEngineSnippetGeneric
-{
-}
+class EditTrackEngineSnippet extends EditTrackEngineSnippetGeneric
+{}

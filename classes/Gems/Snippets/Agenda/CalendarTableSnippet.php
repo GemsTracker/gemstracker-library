@@ -101,7 +101,8 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
         $td = $bridge->addSortable('gap_admission_time');
         $td->append(' ');
-        $td->img()->src = 'stopwatch.png';
+        //$td->img()->src = 'stopwatch.png';
+        $td->i(['class' => 'fa fa-stopwatch']);
         $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
         $bridge->addSortable('gor_name');
         $bridge->addSortable('glo_name')->colspan = 2;

@@ -13,6 +13,7 @@ use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
+use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Translate\Translator;
@@ -65,6 +66,20 @@ class CommJobRepository
             1 => $this->translator->_('Automatic'),
             2 => $this->translator->_('Manually'),
         ];
+    }
+
+    public function getAllJobs(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
+        $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger');
+
+        $result = $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, ['comm-jobs']);
+        if ($result) {
+            return $result;
+        }
+
+        return [];
     }
 
     /**
@@ -485,6 +500,59 @@ class CommJobRepository
             SmsJobMessenger::class, 'SmsJobMessenger', 'sms' => $this->smsJobMessenger,
             default => null,
         };
+    }
+
+    /**
+     * Get the filter to use on the tokenmodel when working with a mailjob.
+     *
+     * @return array job_id => description
+     */
+    public function getJobsOverview()
+    {
+        $jobs = $this->getActiveJobs();
+        $bulkFilterOptions = $this->getBulkFilterOptions();
+        $activeOptions = $this->getActiveOptions();
+
+        $jobSummaries = [];
+
+        foreach($jobs as $jobData) {
+            $nameParts = [
+                $this->translator->_('Order'),
+                $jobData['gcj_id_order'],
+            ];
+
+            if (isset($bulkFilterOptions[$jobData['gcj_filter_mode']])) {
+                $nameParts[] = $bulkFilterOptions[$jobData['gcj_filter_mode']];
+            }
+
+            if (isset($activeOptions[$jobData['gcj_active']])) {
+                $nameParts[] = $activeOptions[$jobData['gcj_active']];
+            }
+
+            $jobSummaries[$jobData['gcj_id_job']] = join(' ', $nameParts);
+        }
+
+        return $jobSummaries;
+        /*
+        $fMode = "CASE ";
+        foreach ($this->getBulkFilterOptions() as $key => $label) {
+            $fMode .= "WHEN gcj_filter_mode = '$key' THEN '$label' ";
+        }
+        $fMode .= "ELSE '' END";
+
+        $aMode = "CASE ";
+        foreach ($this->getActiveOptions() as $key => $label) {
+            $aMode .= "WHEN gcj_active = '$key' THEN '$label' ";
+        }
+        $aMode .= "ELSE '' END";
+
+        $select = $this->resultFetcher->getSelect('gems__comm_jobs');
+        $select->columns([
+            'gcj_id_job',
+            new Expression(sprintf("CONCAT('%s', ' ', gcj_id_order, ' ', $fMode, ' ', $aMode)", $this->translator->_('Order'))),
+        ])->order(['gcj_id_order']);
+
+        return $this->resultFetcher->fetchPairs($select);*/
     }
 
     /**

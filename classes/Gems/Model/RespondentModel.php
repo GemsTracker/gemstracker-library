@@ -310,7 +310,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_phone_1',     'label', $this->_('Phone'));
 
         $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
-                'dateFormat', 'j M Y');
+                'dateFormat', 'd-m-Y');
 
         $this->setIfExists('gr2o_opened',
                 'label', $this->_('Opened'),
@@ -377,7 +377,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 );
 
         $this->setIfExists('grs_birthday',    'label', $this->_('Birthday'),
-                'dateFormat', 'j M Y'
+                'dateFormat', 'd-m-Y'
                 );
 
         $this->setIfExists('gr2o_email',       'label', $this->_('E-Mail'),

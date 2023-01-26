@@ -21,6 +21,7 @@ use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Respondent\RespondentShowHandler;
 use Gems\Middleware\AclMiddleware;
+use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
@@ -56,6 +57,7 @@ class Route
                     AuthenticationMiddleware::class,
                     AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [
@@ -567,8 +569,8 @@ class Route
                     \Gems\Model::SURVEY_ID => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.activity-log',
-                controllerClass: \Gems\Actions\RespondentLogAction::class,
+            ...$this->createSnippetRoutes(baseName: 'respondent.activity-log',
+                controllerClass: \Gems\Handlers\Respondent\RespondentLogHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/activity-log',
                 parentParameters: [
                     'id1',
@@ -578,8 +580,8 @@ class Route
                     \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.relations',
-                controllerClass: \Gems\Actions\RespondentRelationAction::class,
+            ...$this->createSnippetRoutes(baseName: 'respondent.relations',
+                controllerClass: \Gems\Handlers\Respondent\RespondentRelationHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/relations',
                 parentParameters: [
                     'id1',
@@ -750,13 +752,24 @@ class Route
                     'edit',
                     'reset',
                     'deactivate',
-                    'staff-log',
+
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'reset',
                     'deactivate',
                     'staff-log',
+                ]
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',
+                controllerClass: \Gems\Handlers\Setup\StaffLogHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'show',
                 ]
             ),
 

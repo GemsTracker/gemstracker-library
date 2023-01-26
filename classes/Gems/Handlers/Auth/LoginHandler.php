@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Audit\AccesslogRepository;
 use Gems\AuthNew\Adapter\GenericRoutedAuthentication;
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationServiceBuilder;

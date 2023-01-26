@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Audit\AccesslogRepository;
 use Gems\Agenda\Agenda;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;

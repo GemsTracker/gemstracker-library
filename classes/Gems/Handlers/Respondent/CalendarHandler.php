@@ -139,10 +139,11 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     {
         if (! $this->defaultSearchData) {
             $org = $this->currentUser->getCurrentOrganization();
+            $today = new DateTimeImmutable('today');
             $this->defaultSearchData = [
                 'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',
-                'datefrom'            => new DateTimeImmutable('today'),
+                'datefrom'            => $today->format('d-m-Y'),
             ];
         }
 
