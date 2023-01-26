@@ -14,6 +14,8 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
+use Gems\AuthTfa\Adapter\OtpAdapterInterface;
+use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
@@ -1580,6 +1582,18 @@ class User extends \MUtil\Translate\TranslateableAbstract
             'SmsHotp' => 'SmsHotp',
             default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
         };
+    }
+
+    public function setTfa(string $className, string $secret, ?bool $enabled = null): void
+    {
+        $newValue = $className . TwoFactorAuthenticatorInterface::SEPERATOR . $secret;
+
+        $this->_setVar('user_two_factor_key', $newValue);
+        if ($enabled !== null) {
+            $this->_setVar('user_enable_2factor', $enabled ? 1 : 0);
+        }
+
+        $this->definition->setTwoFactorKey($this, $newValue, $enabled);
     }
 
     /**

@@ -14,6 +14,11 @@ abstract class AbstractOtpSendDecorator implements OtpAdapterInterface
     ) {
     }
 
+    public function generateSecret(): string
+    {
+        return $this->otp->generateSecret();
+    }
+
     public function generateCode(): string
     {
         return $this->otp->generateCode();

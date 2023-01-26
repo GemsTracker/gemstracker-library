@@ -45,6 +45,11 @@ class HotpAdapter implements OtpAdapterInterface
         return $this->throttleCache;
     }
 
+    public function generateSecret(): string
+    {
+        return HOTP::create(digest: 'sha1', digits: $this->codeLength)->getSecret();
+    }
+
     public function generateCode(): string
     {
         $this->user->incrementOtpCount();

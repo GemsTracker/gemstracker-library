@@ -22,10 +22,8 @@ class OtpMethodBuilder
     ) {
     }
 
-    public function buildOtpMethod(User $user): OtpMethodInterface
+    private function buildSpecificOtpMethod(string $className, User $user): OtpMethodInterface
     {
-        $className = $user->getTfaMethodClass();
-
         $settings = $this->config['twofactor']['methods'][$className] ?? [];
 
         return match($className) {
@@ -40,5 +38,15 @@ class OtpMethodBuilder
             ),
             default => throw new \Exception('Invalid TFA class value "' . $className . '"'),
         };
+    }
+
+    public function buildOtpMethod(User $user): OtpMethodInterface
+    {
+        return $this->buildSpecificOtpMethod($user->getTfaMethodClass(), $user);
+    }
+
+    public function setOtpMethod(User $user, string $className, ?bool $enabled = null): void
+    {
+        $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret(), $enabled);
     }
 }

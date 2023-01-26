@@ -41,6 +41,11 @@ class TotpAdapter implements OtpAdapterInterface
         return $this->throttleCache;
     }
 
+    public function generateSecret(): string
+    {
+        return TOTP::create(period: $this->codeValidSeconds, digest: 'sha1', digits: $this->codeLength)->getSecret();
+    }
+
     public function generateCode(): string
     {
         return $this->otp->now();

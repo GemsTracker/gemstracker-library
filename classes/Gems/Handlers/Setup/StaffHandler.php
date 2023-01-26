@@ -10,12 +10,15 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -189,6 +192,8 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         protected UserLoader $userLoader,
         protected Model $modelLoader,
         CurrentUserRepository $currentUserRepository,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
+        private readonly RouteHelper $routeHelper,
     )
     {
         parent::__construct($responder, $translate);
@@ -423,5 +428,23 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 
             $this->addSnippets($this->switchSnippets, $params);
         }
+    }
+
+    public function resetTfaAction()
+    {
+        $user = $this->getSelectedUser();
+        $user->clearTwoFactorKey();
+
+        $this->otpMethodBuilder->setOtpMethod($user, 'SmsHotp', true);
+
+        $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+        $statusMessenger->addMessage(
+            sprintf($this->_('Two factor key cleared for user %s'), $user->getLoginName()),
+            'success'
+        );
+
+        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.access.staff.reset', [
+            \MUtil\Model::REQUEST_ID => intval($user->getUserId()),
+        ]));
     }
 }
