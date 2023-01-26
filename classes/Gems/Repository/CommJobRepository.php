@@ -2,11 +2,18 @@
 
 namespace Gems\Repository;
 
+use Gems\Cache\HelperAdapter;
+use Gems\Communication\CommunicationRepository;
+use Gems\Communication\JobMessenger\JobMessengerInterface;
+use Gems\Communication\JobMessenger\MailJobMessenger;
+use Gems\Communication\JobMessenger\SmsJobMessenger;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
+use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
+use Laminas\Db\Sql\Expression;
 use Mezzio\Session\SessionInterface;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Translate\Translator;
@@ -19,15 +26,37 @@ class CommJobRepository
 
     protected ResultFetcher $resultFetcher;
 
+    protected string $tokensInMessengerQueueKey = 'messenger.queue.comm-job.tokens';
+
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
+        protected HelperAdapter $cache,
         protected Translator $translator,
         protected Tracker $tracker,
-        CurrentUserRepository $currentUserRepository
+        protected MailJobMessenger $mailJobMessenger,
+        protected SmsJobMessenger $smsJobMessenger,
+        protected CommunicationRepository $communicationRepository,
+        CurrentUserRepository $currentUserRepository,
+
     )
     {
         $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
         $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
+
+    public function getActiveJobs(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
+        $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger')
+            ->where('gcj_active > 0');
+
+        $result = $this->cachedResultFetcher->fetchAll('activeCommJobs', $select, null, ['comm-jobs']);
+        if ($result) {
+            return $result;
+        }
+
+        return [];
     }
 
     public function getActiveOptions(): array
@@ -37,6 +66,20 @@ class CommJobRepository
             1 => $this->translator->_('Automatic'),
             2 => $this->translator->_('Manually'),
         ];
+    }
+
+    public function getAllJobs(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__comm_jobs');
+        $select->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
+            ->join('gems__comm_messengers', 'gcj_id_communication_messenger = gcm_id_messenger');
+
+        $result = $this->cachedResultFetcher->fetchAll('allCommJobs', $select, null, ['comm-jobs']);
+        if ($result) {
+            return $result;
+        }
+
+        return [];
     }
 
     /**
@@ -372,22 +415,16 @@ class CommJobRepository
         return $data;
     }
 
-    /**
-     * Perform automatic job mail
-     */
-    public function getCronBatch(string $id, ProjectOverloader $loader, SessionInterface $session, ?LoggerInterface $cronLog = null): BatchAbstract
+    public function getJob(int $jobId): ?array
     {
-        $batch = new TaskRunnerBatch($id, $loader, $session);
-        if ($cronLog) {
-            $batch->setMessageLogger($cronLog);
-        }
-        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
-
-        if (! $batch->isLoaded()) {
-            $this->loadCronBatch($batch);
+        $activeJobs = $this->getActiveJobs();
+        foreach($activeJobs as $job) {
+            if (isset($job['gcj_id_job']) && $job['gcj_id_job'] == $jobId) {
+                return $job;
+            }
         }
 
-        return $batch;
+        return null;
     }
 
     /**
@@ -399,7 +436,7 @@ class CommJobRepository
      * @param boolean $forceSent Ignore previous sent mails
      * @return array
      */
-    public function getJobFilter(array $job, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false)
+    public function getJobFilter(array $job, ?int $respondentId = null, ?int $organizationId = null, bool $forceSent = false): array
     {
         // Set up filter
         $filter = [
@@ -445,13 +482,77 @@ class CommJobRepository
         $groups = $this->getAllGroups();
 
         if (array_key_exists('gcj_target_group', $job) && $job['gcj_target_group'] && in_array($job['gcj_target_group'], $groups)) {
-            $filter[] = sprintf('(ggp_name = ? AND gto_id_relationfield IS NULL) or gtf_field_name = %s', $job['gcj_target_group']);
+            $platform = $this->cachedResultFetcher->getAdapter()->getPlatform();
+            $quotedTargetGroup = $platform->quoteValue($job['gcj_target_group']);
+            $filter[] = sprintf('(ggp_name = %s AND gto_id_relationfield IS NULL) or gtf_field_name = %s',$quotedTargetGroup, $quotedTargetGroup);
         }
 
         // \MUtil\EchoOut\EchoOut::track($filter);
         // \MUtil\Model::$verbose = true;
 
         return $filter;
+    }
+
+    public function getJobMessenger(string $type): ?JobMessengerInterface
+    {
+        return match ($type) {
+            MailJobMessenger::class, 'MailJobMessenger', 'mail' => $this->mailJobMessenger,
+            SmsJobMessenger::class, 'SmsJobMessenger', 'sms' => $this->smsJobMessenger,
+            default => null,
+        };
+    }
+
+    /**
+     * Get the filter to use on the tokenmodel when working with a mailjob.
+     *
+     * @return array job_id => description
+     */
+    public function getJobsOverview()
+    {
+        $jobs = $this->getActiveJobs();
+        $bulkFilterOptions = $this->getBulkFilterOptions();
+        $activeOptions = $this->getActiveOptions();
+
+        $jobSummaries = [];
+
+        foreach($jobs as $jobData) {
+            $nameParts = [
+                $this->translator->_('Order'),
+                $jobData['gcj_id_order'],
+            ];
+
+            if (isset($bulkFilterOptions[$jobData['gcj_filter_mode']])) {
+                $nameParts[] = $bulkFilterOptions[$jobData['gcj_filter_mode']];
+            }
+
+            if (isset($activeOptions[$jobData['gcj_active']])) {
+                $nameParts[] = $activeOptions[$jobData['gcj_active']];
+            }
+
+            $jobSummaries[$jobData['gcj_id_job']] = join(' ', $nameParts);
+        }
+
+        return $jobSummaries;
+        /*
+        $fMode = "CASE ";
+        foreach ($this->getBulkFilterOptions() as $key => $label) {
+            $fMode .= "WHEN gcj_filter_mode = '$key' THEN '$label' ";
+        }
+        $fMode .= "ELSE '' END";
+
+        $aMode = "CASE ";
+        foreach ($this->getActiveOptions() as $key => $label) {
+            $aMode .= "WHEN gcj_active = '$key' THEN '$label' ";
+        }
+        $aMode .= "ELSE '' END";
+
+        $select = $this->resultFetcher->getSelect('gems__comm_jobs');
+        $select->columns([
+            'gcj_id_job',
+            new Expression(sprintf("CONCAT('%s', ' ', gcj_id_order, ' ', $fMode, ' ', $aMode)", $this->translator->_('Order'))),
+        ])->order(['gcj_id_order']);
+
+        return $this->resultFetcher->fetchPairs($select);*/
     }
 
     /**
@@ -461,7 +562,7 @@ class CommJobRepository
      * @param int $trackId
      * @return array Of round id numbers
      */
-    protected function getRoundIds(string $roundDescription, ?int $trackId = null)
+    protected function getRoundIds(string $roundDescription, ?int $trackId = null): array
     {
         $cacheId = __FUNCTION__;
         $binds = [];
@@ -486,16 +587,111 @@ class CommJobRepository
     }
 
     /**
-     * Perform the actions and load the tasks needed to start the cron batch
-     *
-     * @param TaskRunnerBatch $batch
+     * @param array $jobData
+     * @param int   $respondentId Optional
+     * @param int   $organizationId Optional
+     * @param false $forceSent Ignore previous mails
+     * @return mixed
      */
-    protected function loadCronBatch(TaskRunnerBatch $batch)
+    public function getTokenData(array $jobData, $respondentId = null, $organizationId = null, $forceSent = false): array
     {
-        $batch->addMessage(sprintf($this->translator->_("Starting mail jobs")));
-        $batch->addTask('Mail\\AddAllMailJobsTask');
+        $filter = $this->getJobFilter($jobData, $respondentId, $organizationId, $forceSent);
 
-        // Check for unprocessed tokens,
-        $this->tracker->loadCompletedTokensBatch($batch, null, $this->currentUserId);
+        $model  = $this->tracker->getTokenModel();
+
+        // Fix for #680: token with the valid from the longest in the past should be the
+        // used as first token and when multiple rounds start at the same date the
+        // lowest round order should be used.
+        $model->setSort(['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]);
+
+        // Prevent out of memory errors, only load the tokenid
+        $model->trackUsage();
+        $model->set('gto_id_token');
+
+        return $model->load($filter);
     }
+
+    /**
+     * @param int $commJobId
+     * @return string[][]
+     * @throws Exception
+     * @throws Exception\Coding
+     */
+    public function getSendableTokens(int $commJobId): array
+    {
+        $jobData = $this->getJob($commJobId);
+
+        if (empty($jobData)) {
+            throw new Exception('Mail job not found!');
+        }
+
+        $tokenIds = $this->getTokenData($jobData);
+
+        $sendTokenList = [];
+        $incrementWithoutSendingList = [];
+        foreach($tokenIds as $tokenData) {
+            $token = $this->tracker->getToken($tokenData['gto_id_token']);
+
+            $contactData = $jobData['gcj_target'] . $jobData['gcj_to_method'];
+            $respondentId = $token->getRespondentId();
+
+            if ($relationId = $token->getRelationId()) {
+                $respondentId  .= 'R' . $relationId;
+            }
+
+            switch ($jobData['gcj_process_method']) {
+                case 'M':   // Each token sends an email
+                    $sendTokenList[] = $token->getTokenId();
+                    break;
+
+                case 'A':   // Only first token mailed and marked
+                    if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
+                        $sendTokenList[] = $token->getTokenId();
+                    }
+                    break;
+
+                case 'O':   // Only first token mailed, all marked
+                    if (!isset($sentContactData[$respondentId][$contactData])) {  // When not contacted before
+                        $sendTokenList[] = $token->getTokenId();
+                    } else {
+                        $incrementWithoutSendingList[] = $token->getTokenId();
+                    }
+                    break;
+
+                default:
+                    throw new Exception('Invalid option for `Processing Method`');
+            }
+        }
+
+        return [
+            'send' => $sendTokenList,
+            'markSent' => $incrementWithoutSendingList,
+        ];
+    }
+
+    public function isTokenInQueue(string $tokenId): bool
+    {
+        $tokens = $this->cache->getCacheItem($this->tokensInMessengerQueueKey);
+        if (isset($tokens[$tokenId])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function setTokenIsDoneInQueue(string $tokenId): void
+    {
+        $tokens = $this->cache->getCacheItem($this->tokensInMessengerQueueKey);
+        if (isset($tokens[$tokenId])) {
+            unset($tokens[$tokenId]);
+        }
+        $this->cache->setCacheItem($this->tokensInMessengerQueueKey, $tokens);
+    }
+    public function setTokenIsInQueue(string $tokenId): void
+    {
+        $tokens = $this->cache->getCacheItem($this->tokensInMessengerQueueKey);
+        $tokens[$tokenId] = 1;
+        $this->cache->setCacheItem($this->tokensInMessengerQueueKey, $tokens);
+    }
+
+
 }

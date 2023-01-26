@@ -19,6 +19,7 @@ use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
+use Gems\Config\AutoConfig\MessageHandlers;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
@@ -74,6 +75,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
@@ -164,12 +167,14 @@ class ConfigProvider
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
+                    EventSubscriberInterface::class => ['config' => 'events.subscribers'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
                 ],
                 'attribute' => [
                     AsCommand::class => ['config' => 'console.commands'],
+                    AsMessageHandler::class => MessageHandlers::class,
                 ]
             ],
         ];
@@ -202,6 +207,8 @@ class ConfigProvider
                 StopWorkersCommand::class,
                 DebugCommand::class,
             ],
+            'allow' => true,
+            'role' => 'super',
         ];
     }
 
@@ -363,9 +370,8 @@ class ConfigProvider
     protected function getEventSubscribers(): array
     {
         return [
-            EventSubscriber::class,
-            \Gems\Communication\EventSubscriber::class,
-            \Gems\AuthNew\EventSubscriber::class,
+            'subscribers' => [],
+            'listeners' => [],
         ];
     }
 

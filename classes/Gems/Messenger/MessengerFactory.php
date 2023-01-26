@@ -74,11 +74,12 @@ class MessengerFactory implements FactoryInterface
         if (!isset($config['handlers'])) {
             throw new \Exception(sprintf('No handlers found for bus %s', $this->busName));
         }
-        $handlers = [];
-        foreach($config['handlers'] as $type=>$handler) {
-            $handlers[$type] = (array)$handler;
+        $sortedHandlers = [];
+
+        foreach($config['handlers'] as $type=>$handlers) {
+            $sortedHandlers[$type] = $this->sortHandlers((array) $handlers);
         }
-        return new Psr11HandlersLocator($handlers, $container);
+        return new Psr11HandlersLocator($sortedHandlers, $container);
     }
 
     protected function getSendMessageLocator(array $config, ContainerInterface $container): SendersLocator
@@ -91,5 +92,25 @@ class MessengerFactory implements FactoryInterface
             $routes[$type] = (array)$route;
         }
         return new SendersLocator($routes, $container);
+    }
+
+    protected function sortHandlers(array $handlers): array
+    {
+        $perPriority = [];
+        foreach($handlers as $handlerName=>$handlerOptions) {
+            if (is_int($handlerName)) {
+                $perPriority[0][] = $handlerOptions;
+                continue;
+            }
+            $priority = 0;
+            if (isset($handlerOptions['priority'])) {
+                $priority = $handlerOptions['priority'];
+            }
+
+            $perPriority[$priority][$handlerName] = $handlerOptions;
+        }
+
+        krsort($perPriority);
+        return array_merge(...$perPriority);
     }
 }

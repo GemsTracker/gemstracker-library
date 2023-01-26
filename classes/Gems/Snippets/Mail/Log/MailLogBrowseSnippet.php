@@ -16,6 +16,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\User\User;
+use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
@@ -89,14 +90,14 @@ class MailLogBrowseSnippet extends ModelTableSnippet
 
         if ($this->showMenu) {
             $params = [
-                \MUtil\Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
-                \MUtil\Model::REQUEST_ID2 => $bridge->getLate('gr2o_id_organization'),
-                \MUtil\Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+                Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
+                Model::REQUEST_ID2 => $bridge->getLate('gr2o_id_organization'),
+                Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
             ];
             $url = $this->menuHelper->getLateRouteUrl('respondent.tracks.show', $params);
 
             $label = Html::create('strong', $this->_('+'));
-            $bridge->addItemLink(\Gems\Html::actionLink($url, $label));
+            $bridge->addItemLink(\Gems\Html::actionLink($url['url'], $label));
         }
         $bridge->getTable()->appendAttrib('class', 'compliance');
 

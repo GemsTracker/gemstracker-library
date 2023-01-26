@@ -2,6 +2,7 @@
 
 namespace Gems\Mail;
 
+use Gems\Db\ResultFetcher;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
@@ -13,16 +14,13 @@ class ManualMailerFactory
 {
     protected array $config = [];
 
-    protected Adapter $db;
-
     protected string $defaultDsn = 'native://default';
 
-    public function __construct(Adapter $db, array $config)
+    public function __construct(protected ResultFetcher $resultFetcher, array $config)
     {
         if (isset($config['mail'])) {
             $this->config = $config['mail'];
         }
-        $this->db = $db;
     }
 
     public function getMailer(?string $from): Mailer
@@ -53,20 +51,13 @@ class ManualMailerFactory
 
     protected function getMailServerInfo(?string $from): ?array
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select('gems__mail_servers')
+        $select = $this->resultFetcher->getSelect('gems__mail_servers');
+        $select
             ->columns(['gms_server', 'gms_port', 'gms_user', 'gms_password'])
             ->where(new Like(new Expression("'$from'"), 'gms_from'))
             ->order(new Expression('LENGTH(gms_from) DESC'))
             ->limit(1);
 
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if ($result->valid()) {
-            return $result->current();
-        }
-
-        return null;
+        return $this->resultFetcher->fetchRow($select);
     }
 }

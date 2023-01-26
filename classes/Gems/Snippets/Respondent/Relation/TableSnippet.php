@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Respondent\Relation;
 
+use Gems\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -34,17 +35,21 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
      * @param \MUtil\Model\ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model->has('row_class')) {
+        $metaModel = $dataModel->getMetaModel();
+        $keys      = $this->getRouteMaps($metaModel);
+
+        if ($metaModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditUrls($bridge);
-
-            foreach ($editMenuItems as $menuItem) {
-                $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));
+            foreach ($this->getEditUrls($bridge, $keys) as $linkParts) {
+                if (! isset($linkParts['label'])) {
+                    $linkParts['label'] = $this->_('Show');
+                }
+                $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
             }
         }
 
@@ -53,20 +58,23 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
                 call_user_func_array(array($bridge, 'addMultiSort'), $column);
             }
         } elseif ($this->sortableLinks) {
-            foreach($model->getItemsOrdered() as $name) {
-                if ($label = $model->get($name, 'label')) {
+            foreach($metaModel->getItemsOrdered() as $name) {
+                if ($metaModel->has($name, 'label')) {
+                    $label = $metaModel->get($name, 'label');
                     $bridge->addSortable($name, $label);
                 }
             }
         } else {
-            foreach($model->getItemsOrdered() as $name) {
-                if ($label = $model->get($name, 'label')) {
+            foreach($metaModel->getItemsOrdered() as $name) {
+                if ($metaModel->has($name, 'label')) {
+                    $label = $metaModel->get($name, 'label');
                     $bridge->add($name, $label);
                 }
             }
         }
 
-        if ($deleteButtons = $this->findUrls(['action'], $bridge)) {
+        if ($this->showMenu) {
+            $deleteButtons = $this->menuHelper->getLateRelatedUrls(['delete'], $keys, $bridge);
             foreach($deleteButtons as $deleteButton) {
                 $bridge->addItemLink(\Gems\Html::actionLink($deleteButton, $this->_('Delete')));
             }

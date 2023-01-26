@@ -2,64 +2,35 @@
 
 namespace Gems\Communication\JobMessenger;
 
-
-use Gems\Event\Application\TokenMailSent;
-use Gems\Log\LogHelper;
+use Gems\Communication\Exception;
+use Gems\Event\Application\TokenEventMailFailed;
+use Gems\Event\Application\TokenEventMailSent;
 use Gems\Communication\CommunicationRepository;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\User\UserRepository;
-use MUtil\Registry\TargetInterface;
-use MUtil\Registry\TargetTrait;
-use MUtil\Translate\TranslateableTrait;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 
-class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
+class MailJobMessenger implements JobMessengerInterface
 {
-    use TargetTrait;
-    use TranslateableTrait;
-
-    /**
-     * @var CommunicationRepository
-     */
-    protected $communicationRepository;
-
-    /**
-     * @var array config
-     */
-    protected $config;
-
-    /**
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     * @var EventDispatcher
-     */
-    protected $event;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var Tracker
-     */
-    protected $tracker;
-
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
-
-    public function sendCommunication(array $job, array $tokenData, bool $preview): ?bool
+    protected int $currentUserId;
+    public function __construct(
+        protected Tracker $tracker,
+        protected EventDispatcherInterface $event,
+        protected CommunicationRepository $communicationRepository,
+        protected UserRepository $userRepository,
+        protected readonly array $config,
+        CurrentUserRepository $currentUserRepository,
+    )
     {
-        $token = $this->tracker->getToken($tokenData);
+        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+    }
 
+    public function sendCommunication(array $job, Token $token, bool $preview): ?bool
+    {
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
 
         $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
@@ -71,57 +42,38 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
         $email = $this->communicationRepository->getNewEmail();
         $email->subject($mailTexts['subject'], $mailFields);
 
-        $to = $this->getToEmail($job, $token, $tokenData['can_email']);
+        $to = $this->getToEmail($job, $token);
 
         if (empty($to)) {
-            if ($preview) {
-                $this->addBatchMessage(sprintf(
-                    $this->_('%s %s can not be sent because no email address is available.'), $token->getPatientNumber(), $token->getSurveyName()
-                ));
-            }
-            // Skip to the next token now
+            // Log: no to found
             return null;
-        }
-
-        // If the email is sent to a fall back address, we need to change it!
-        if ($token->getEmail() !== $to) {
-            $email->addTo(new Address($to, $token->getRespondentName()));
         }
 
         // The variable from is used in the preview message
         $from = $this->getFromEmail($job, $token);
         $fromName = $this->getFromName($job, $token);
+        if ($fromName === null) {
+            $fromName = '';
+        }
 
         $mailer = $this->communicationRepository->getMailer($from);
 
-        if ($preview) {
-            $this->addBatchMessage(sprintf(
-                $this->_('Would be sent: %s %s to %s using %s as sender'), $token->getPatientNumber(), $token->getSurveyName(), $email, $from
-            ));
-        } else {
-            try {
-                $email->addFrom(new Address($from, $fromName));
+        try {
+            $email->addFrom(new Address($from, $fromName));
+            $email->addTo(new Address($to, $token->getRespondentName()));
 
-                $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
-                $mailer->send($email);
+            $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
+            $mailer->send($email);
 
-                $event = new TokenMailSent($email, $token, $this->currentUser, $job);
-                $this->event->dispatch($event, $event::NAME);
+            $event = new TokenEventMailSent($email, $token, $this->currentUserId, $job);
+            $this->event->dispatch($event, $event::NAME);
 
-            } catch (\Zend_Mail_Exception $exception) {
-                $info = sprintf("Error mailing to %s respondent %s with email address %s.",
-                    $mailFields['organization'],
-                    $mailFields['full_name'],
-                    $mailFields['email']
-                );
+        } catch (TransportExceptionInterface  $exception) {
 
-                // Use a gems exception to pass extra information to the log
-                $gemsException = new \Gems\Exception($info, 0, $exception);
+            $event = new TokenEventMailFailed($exception, $email, $token, $this->currentUserId, $job);
+            $this->event->dispatch($event, $event::NAME);
 
-                $this->logger->error(LogHelper::getMessageFromException($gemsException));
-
-                return false;
-            }
+            return false;
         }
         return true;
     }
@@ -147,7 +99,7 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
 
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Fallback address used')));
+                throw new Exception('Invalid option for \'Fallback address used\'');
         }
     }
 
@@ -156,8 +108,10 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
         // Set the from address to use in this job
         switch ($job['gcj_from_method']) {
             case 'O':   // Send on behalf of organization
+                if (!$token->getOrganization()->hasEmail()) {
+                    throw new Exception(sprintf('Organization %s has no E-mail for job %d ', $token->getOrganization()->getName(), $job['gcj_id_job']));
+                }
                 return $token->getOrganization()->getEmail();
-
             case 'U':   // Send on behalf of fixed user
                 return $this->getUserEmail((int)$job['gcj_id_user_as']);
 
@@ -170,7 +124,7 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
                 }
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new Exception('Invalid option for \'From address used\'');
         }
     }
 
@@ -186,25 +140,25 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
         }
     }
 
-    public function getToEmail(array $job, Token $token, bool $canBeMailed): string
+    public function getToEmail(array $job, Token $token): string
     {
         $email = null;
 
         switch ($job['gcj_target']) {
             case '0':
-                if ($canBeMailed) {
+                if ($token->getRespondentTrack()->isMailable()) {
                     $email = $token->getEmail();
                 }
                 break;
 
             case '1':
-                if($canBeMailed && $token->hasRelation()) {
+                if($token->hasRelation() && $token->getRelation()->isMailable()) {
                     $email = $token->getRelation()->getEmail();
                 }
                 break;
 
             case '2':
-                if ($canBeMailed) {
+                if ($token->getRespondent()->isMailable()) {
                     $email = $token->getRespondent()->getEmailAddress();
                 }
                 break;
@@ -213,7 +167,7 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
                 return $this->getFallbackEmail($job, $token);
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Filler')));
+                throw new Exception('Invalid option for \'Filler\'');
         }
 
 
@@ -230,7 +184,7 @@ class MailJobMessenger extends JobMessengerAbstract implements TargetInterface
                 return $this->getFallbackEmail($job, $token);
 
             default:
-                throw new \Gems\Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('Addresses used')));
+                throw new Exception('Invalid option for \'Addresses used\'');
         }
     }
 

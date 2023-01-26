@@ -3,6 +3,7 @@
 namespace Gems\Communication;
 
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Db\ResultFetcher;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\OrganizationMailFields;
 use Gems\Mail\ProjectMailFields;
@@ -25,23 +26,13 @@ use GuzzleHttp\Client;
 
 class CommunicationRepository
 {
-    private Adapter $db;
-
-    private array $config;
-
-    private TemplateRendererInterface $template;
-
-    private Translator $translator;
-    private TokenSelect $tokenSelect;
-
-    public function __construct(Adapter $db, TemplateRendererInterface $template, Translator $translator, TokenSelect $tokenSelect, array $config)
-    {
-        $this->db = $db;
-        $this->template = $template;
-        $this->translator = $translator;
-        $this->tokenSelect = $tokenSelect;
-        $this->config = $config;
-    }
+    public function __construct(
+        protected ResultFetcher $resultFetcher,
+        protected TemplateRendererInterface $template,
+        protected Translator $translator,
+        protected TokenSelect $tokenSelect,
+        protected array $config)
+    {}
 
     public function getCreateAccountTemplate(Organization $organization): ?int
     {
@@ -82,24 +73,18 @@ class CommunicationRepository
     {
         $language = $this->getCommunicationLanguage($language);
 
-        $sql = new Sql($this->db);
-        $select = $sql->select('gems__comm_template_translations');
+        $select = $this->resultFetcher->getSelect('gems__comm_template_translations');
         $select->where([
             'gctt_id_template' => $templateId,
             'gctt_lang' => $language,
         ]);
 
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if ($result->valid()) {
-            $template = $result->current();
-            if ($template && !empty($template['gctt_subject'])) {
-                return [
-                    'subject' => $template['gctt_subject'],
-                    'gctt_body' => $template['gctt_body'],
-                ];
-            }
+        $template = $this->resultFetcher->fetchRow($select);
+        if ($template && !empty($template['gctt_subject'])) {
+            return [
+                'subject' => $template['gctt_subject'],
+                'body' => $template['gctt_body'],
+            ];
         }
 
         if ($language !== $this->getDefaultLanguage()) {
@@ -124,7 +109,7 @@ class CommunicationRepository
 
     public function getMailer(string $from): Mailer
     {
-        $factory = new ManualMailerFactory($this->db, $this->config);
+        $factory = new ManualMailerFactory($this->resultFetcher, $this->config);
         return $factory->getMailer($from);
     }
 
@@ -198,20 +183,11 @@ class CommunicationRepository
 
     public function getTemplateIdFromCode(string $code): ?int
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select('gems__comm_templates');
+        $select = $this->resultFetcher->getSelect('gems__comm_templates');
         $select->where(['gct_code' => $code])
             ->columns(['gct_id_template']);
 
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        if ($result->valid() && $result->current()) {
-            $template = $result->current();
-            return $template['gct_id_template'];
-        }
-
-        return null;
+        return $this->resultFetcher->fetchOne($select);
     }
 
     public function getTokenMailFields(Token $token, string $language = null): array

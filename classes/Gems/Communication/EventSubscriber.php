@@ -5,39 +5,48 @@ namespace Gems\Communication;
 use Gems\Event\Application\RespondentCommunicationInterface;
 use Gems\Event\Application\RespondentCommunicationSent;
 use Gems\Event\Application\RespondentMailSent;
-use Gems\Event\Application\TokenCommunicationSent;
-use Gems\Event\Application\TokenInterface;
-use Gems\Event\Application\TokenMailSent;
+use Gems\Event\Application\TokenEventCommunicationSent;
+use Gems\Event\Application\TokenEventInterface;
+use Gems\Event\Application\TokenEventMailSent;
+use Gems\Event\Application\TokenMarkedAsSent;
+use Gems\Repository\CommJobRepository;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 
 class EventSubscriber implements EventSubscriberInterface
 {
-    private Adapter $db;
-
-    public function __construct(Adapter $db)
-    {
-        $this->db = $db;
-    }
+    public function __construct(
+        protected ContainerInterface $container,
+    )
+    {}
 
     public static function getSubscribedEvents()
     {
         return [
-            TokenCommunicationSent::NAME => [
+            TokenEventCommunicationSent::NAME => [
                 ['logRespondentCommunication'],
                 ['updateToken'],
+                ['removeFromJobQueueList'],
             ],
             RespondentCommunicationSent::NAME => [
                 ['logRespondentCommunication']
             ],
-            TokenMailSent::NAME => [
+            TokenEventMailSent::NAME => [
                 ['logRespondentCommunication'],
                 ['updateToken'],
+                ['removeFromJobQueueList'],
             ],
             RespondentMailSent::NAME => [
                 ['logRespondentCommunication']
             ],
+            TokenMarkedAsSent::NAME => [
+                ['updateToken'],
+                ['removeFromJobQueueList'],
+            ]
         ];
     }
 
@@ -45,11 +54,11 @@ class EventSubscriber implements EventSubscriberInterface
     {
         $respondent = $event->getRespondent();
         $job = $event->getCommunicationJob();
-        $currentUser = $event->getCurrentUser();
+        $currentUserId = $event->getCurrentUserId();
 
         $logData['grco_organization'] = $respondent->getOrganizationId();
         $logData['grco_id_to']        = $respondent->getId();
-        if ($event instanceof TokenInterface) {
+        if ($event instanceof TokenEventInterface) {
             $token = $event->getToken();
             $logData['grco_id_token']     = $token->getTokenId();
         }
@@ -67,7 +76,7 @@ class EventSubscriber implements EventSubscriberInterface
             $to = $event->getTo();
         }
 
-        $logData['grco_id_by']        = $currentUser->getUserId();
+        $logData['grco_id_by']        = $currentUserId;
         $logData['grco_method']       = 'unknown';
         if (isset($job['gcm_type'])) {
             $logData['grco_method']   = $job['gcm_type'];
@@ -93,19 +102,27 @@ class EventSubscriber implements EventSubscriberInterface
             $logData['grco_id_job']   = $job['gcj_id_job'];
         }
 
-        $changeDate                   = new \MUtil_Db_Expr_CurrentTimestamp();
+        $changeDate                   = new Expression('NOW()');
         $logData['grco_changed']      = $changeDate;
-        $logData['grco_changed_by']   = $currentUser->getUserId();
+        $logData['grco_changed_by']   = $currentUserId;
         $logData['grco_created']      = $changeDate;
-        $logData['grco_created_by']   = $currentUser->getUserId();
+        $logData['grco_created_by']   = $currentUserId;
 
-        $table = new TableGateway('gems__log_respondent_communications', $this->db);
+        $db = $this->container->get(Adapter::class);
+        $table = new TableGateway('gems__log_respondent_communications', $db);
         $table->insert($logData);
     }
 
-    public function updateToken(TokenMailSent $event): void
+    public function updateToken(TokenEventInterface $event): void
     {
         $token = $event->getToken();
         $token->setMessageSent();
+    }
+
+    public function removeFromJobQueueList(TokenEventInterface $event): void
+    {
+        $token = $event->getToken();
+        $commJobRepository = $this->container->get(CommJobRepository::class);
+        $commJobRepository->setTokenIsDoneInQueue($token->getTokenId());
     }
 }

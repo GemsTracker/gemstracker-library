@@ -68,6 +68,11 @@ class CachedResultFetcher
         return $this->resultFetcher->getAdapter();
     }
 
+    public function getCache(): HelperAdapter
+    {
+        return $this->cache;
+    }
+
     public function getResultFetcher(): ResultFetcher
     {
         return $this->resultFetcher;

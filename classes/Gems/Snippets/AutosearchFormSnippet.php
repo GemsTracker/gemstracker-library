@@ -118,6 +118,9 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
+        if (! $this->searchLabel) {
+            $this->searchLabel = $this->_('Free search text');
+        }
     }
 
     /**
@@ -322,29 +325,6 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     protected function _createSelectElement($name, $options, $empty = null)
     {
         return $this->_createMultiElement('select', $name, $options, $empty);
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        /*if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
-            $this->requestCache = $this->util->getRequestCache();
-        }
-        if ($this->requestCache) {
-            // Do not store searchButtonId
-            $this->requestCache->removeParams($this->searchButtonId);
-        }*/
-
-        if (! $this->searchLabel) {
-            $this->searchLabel = $this->_('Free search text');
-        }
     }
 
     /**

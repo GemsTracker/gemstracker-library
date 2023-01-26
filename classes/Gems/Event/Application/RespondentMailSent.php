@@ -15,24 +15,24 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
 
     protected Respondent $respondent;
 
-    protected User $currentUser;
+    protected int $currentUser;
 
     private array $communicationJob;
 
-    public function __construct(Email $email, Respondent $respondent, User $currentUser, array $communicationJob = [], )
+    public function __construct(Email $email, Respondent $respondent, int $currentUserId, array $communicationJob = [], )
     {
         $this->email = $email;
         $this->respondent = $respondent;
-        $this->currentUser = $currentUser;
+        $this->currentUserId = $currentUserId;
         $this->communicationJob = $communicationJob;
     }
 
     /**
      * @return User
      */
-    public function getCurrentUser(): User
+    public function getCurrentUserId(): int
     {
-        return $this->currentUser;
+        return $this->currentUserId;
     }
 
     /**

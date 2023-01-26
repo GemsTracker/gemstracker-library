@@ -17,7 +17,9 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\CommJobModel;
 use Gems\Repository\CommJobRepository;
-use Gems\Repository\MailRepository;
+use Gems\Snippets\Communication\CommJobButtonRowSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
 use Gems\Util\CommunicationJobLock;
@@ -94,7 +96,11 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $showSnippets = ['Generic\\ContentTitleSnippet', 'Mail\\CommJobShowSnippet'];
+    protected array $showSnippets = [
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        CommJobButtonRowSnippet::class
+    ];
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -335,7 +341,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         $jobId = $this->request->getAttribute('id');
         if (!is_null($jobId)) {
             $jobId = (int) $jobId;
-            $job   = $this->resultFetcher->fetchRow("SELECT * FROM gems__comm_jobs WHERE gcj_id_job = ?", [$jobId]);
+            $job   = $this->commJobRepository->getJob($jobId);
 
             // Show a different color when not active,
             switch ($job['gcj_active']) {
@@ -358,13 +364,13 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
             $model  = $this->tracker->getTokenModel();
             $filter = $this->commJobRepository->getJobFilter($job);
             $params = [
-                'model'           => $model,
-                'filter'          => $filter,
-                'showActionLinks' => false,
-                'class'           => 'browser table mailjob' . $class,
-                'caption'         => $caption,
-                'onEmpty'         => $this->_('No tokens found to message'),
-                'extraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
+                'tokenModel'           => $model,
+                'tokenFilter'          => $filter,
+                'tokenShowActionLinks' => false,
+                'tokenClass'           => 'browser table mailjob' . $class,
+                'tokenCaption'         => $caption,
+                'tokenOnEmpty'         => $this->_('No tokens found to message'),
+                'tokenExtraSort'       => ['gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC]
             ];
             $this->addSnippet('TokenPlanTableSnippet', $params);
         }

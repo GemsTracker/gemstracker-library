@@ -11,10 +11,19 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
 use Gems\Model\RespondentModel;
+use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker\Respondent;
+use Gems\Util\ReceptionCodeLibrary;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -74,6 +83,19 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected $unDeleteRight = 'pr.respondent.undelete';
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
+        protected Model $modelLoader,
+        protected ReceptionCodeLibrary $receptionCodeLibrary,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
+    }
+
     /**
      * Hook that allows actions when data was saved
      *
@@ -101,7 +123,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
                 $model = $this->respondent->getRespondentModel();
 
             } else {
-                $model = $this->loader->getModels()->getRespondentModel(true);;
+                $model = $this->modelLoader->getRespondentModel(true);;
             }
             $model->applyDetailSettings();
         }
@@ -116,12 +138,10 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     public function getReceptionCodes()
     {
-        $rcLib = $this->util->getReceptionCodeLibrary();
-
         if ($this->unDelete) {
-            return $rcLib->getRespondentRestoreCodes();
+            return $this->receptionCodeLibrary->getRespondentRestoreCodes();
         }
-        return $rcLib->getRespondentDeletionCodes();
+        return $this->receptionCodeLibrary->getRespondentDeletionCodes();
     }
 
     /**

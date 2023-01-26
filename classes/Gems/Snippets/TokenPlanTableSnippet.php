@@ -8,9 +8,15 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Repository\TokenRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Gems\Html;
+use Zalt\Html\TableElement;
 use Zalt\Snippets\ModelBridge\TableBridge;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Displays a table for TokenModel
@@ -21,16 +27,21 @@ use Zalt\Model\Data\DataReaderInterface;
  * @license    New BSD License
  * @since      Class available since version 1.5.6
   */
-class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
+class TokenPlanTableSnippet extends ModelTableSnippet
 {
-    public $filter = array();
-
-    /**
-     * @var \Gems\Escort
-     */
-    public $escort;
+    public $filter = [];
     
     public $showActionLinks = true;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected TokenRepository $tokenRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -38,8 +49,8 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $model
      * @return void
      */
     public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
@@ -51,10 +62,10 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
         $model->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
         $model->set('respondent_name',       'label', $this->_('Name'));
 
-        $HTML  = \MUtil\Html::create();
+        $HTML  = Html::create();
         
         if ($this->showActionLinks) {
-            $rowClass = \MUtil\Html\TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd');
+            $rowClass = TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd');
         } else {
             $rowClass = 'odd';
         }
@@ -63,7 +74,7 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
         if ($this->showActionLinks) {
             $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans            
         } else {
-            $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
+            $bridge->tr(['onlyWhenChanged' => true, 'class' => 'even']);
             $bridge->addColumn(' ');
         }
         $bridge->addSortable('gto_valid_from');
@@ -71,7 +82,7 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
 
         $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
         if ($this->showActionLinks) {
-            $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
+            //$bridge->addMultiSort('ggp_name', [$this->getActionLinks($bridge)]);
         } else {
             $bridge->addSortable('ggp_name');
         }
@@ -83,22 +94,19 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 
-        if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
-            $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
-        } else {
-            $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-            $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
-            $bridge->addMultiSort(
-                'gtr_track_name', 'gr2t_track_info',
-                $bridge->gtr_track_name->if($HTML->raw(' &raquo; ')),
-                'gsu_survey_name', 'gto_round_description');
-        }
+        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $bridge->addMultiSort(
+            'gtr_track_name', 'gr2t_track_info',
+            $bridge->gtr_track_name->if($HTML->raw(' &raquo; ')),
+            'gsu_survey_name', 'gto_round_description');
 
         $bridge->addSortable('assigned_by');
     }
 
     public function getActionLinks(\MUtil\Model\Bridge\TableBridge $bridge)
     {
+        $buttons = [];
         // Get the other token buttons
 //        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => array('email', 'answer'), 'allowed' => true))) {
 //            $buttons = $menuItems->toActionLink($this->request, $bridge);
@@ -122,29 +130,24 @@ class TokenPlanTableSnippet extends \Gems\Snippets\ModelTableSnippet
         return $buttons;
     }
 
-    public function getTokenLinks(\MUtil\Model\Bridge\TableBridge $bridge)
+    public function getTokenLinks(TableBridge $bridge)
     {
-        // Get the token buttons
-        if ($menuItems = $this->menu->findAll(array('controller' => 'track', 'action' => 'show', 'allowed' => true))) {
-            $buttons = $menuItems->toActionLink($this->request, $bridge, $this->_('+'));
-            $buttons->title = $bridge->gto_id_token->strtoupper();
-
-            return $buttons;
-        }
+        return null; //$this->tokenRepository->getTokenStatusLinkForBridge($bridge, $this->menuHelper);
     }
 
-    public function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
+    public function setSnippetOptions(SnippetOptions $snippetOptions): self
     {
-        if (!empty($this->filter)) {
-            $model->setFilter($this->filter);
+        $options = $snippetOptions->getOptions();
+
+        foreach($options as $name => $value) {
+            if (str_starts_with($name, 'token')) {
+                $name = lcfirst(substr($name, 5));
+            }
+            if (property_exists($this, $name)) {
+                $this->setSnippetOption($name, $value);
+            }
         }
 
-        parent::processFilterAndSort($model);
-
-        if (!empty($this->filter)) {
-            $filter = $model->getFilter();
-            unset($filter['gto_id_token']);
-            $model->setFilter($filter);
-        }
+        return $this;
     }
 }
