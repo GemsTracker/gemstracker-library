@@ -576,6 +576,14 @@ class Route
                     'id1',
                     'id2',
                 ],
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show'
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
                 parameters: [
                     \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],

@@ -272,26 +272,9 @@ class Menu
                             'type' => 'route-link-item',
                             'children' => [
                                 [
-                                    'name' => 'respondent.activity-log.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
                                     'name' => 'respondent.activity-log.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'respondent.activity-log.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.activity-log.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
                                 ],
                             ],
                         ],
@@ -787,9 +770,16 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff.staff-log',
+                                            'name' => 'setup.access.staff-log.index',
                                             'label' => $this->translator->trans('Staff log'),
                                             'type' => 'route-link-item',
+                                            'children' => [
+                                                [
+                                                    'name' => 'setup.access.staff-log.show',
+                                                    'label' => $this->translator->trans('Show'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
