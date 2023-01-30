@@ -2,6 +2,8 @@
 
 namespace Gems\MenuNew;
 
+use Gems\Acl\Privilege;
+use Gems\Exception\AuthenticationException;
 use Gems\Html;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
@@ -23,6 +25,9 @@ class RouteHelper
     ) {
         $this->routes = [];
         foreach ($config['routes'] as $route) {
+            if (!isset($route['name'])) {
+                continue;
+            }
             $this->routes[$route['name']] = $route;
         }
     }
@@ -148,7 +153,7 @@ class RouteHelper
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      */
     public function getAllRoutePrivileges(): array
     {
@@ -156,7 +161,7 @@ class RouteHelper
     }
 
     /**
-     * @return string[]
+     * @return mixed[]
      */
     public static function getAllRoutePrivilegesFromConfig(array $configRoutes): array
     {
@@ -164,11 +169,29 @@ class RouteHelper
 
         foreach ($configRoutes as $route) {
             if (isset($route['options']['privilege'])) {
-                $privileges[$route['options']['privilege']] = true;
+                $privilege = $route['options']['privilege'];
+                if (is_string($privilege)) {
+                    $privileges[$privilege] = $privilege;
+                    continue;
+                }
+
+                if ($privilege instanceof Privilege) {
+                    if ($privilege->methods === null) {
+                        $privileges[$privilege->getName()] = $privilege->getLabel();
+                        continue;
+                    }
+                    foreach($privilege->methods as $method) {
+                        try {
+                            $privileges[$privilege->getName($method)] = $privilege->getLabel($method);
+                        } catch (AuthenticationException) {
+                            // Do nothing
+                        }
+                    }
+                }
             }
         }
 
-        return array_keys($privileges);
+        return $privileges;
     }
 
     public function getRoute(string $name): ?array
@@ -258,8 +281,11 @@ class RouteHelper
         return ! array_diff($requiredParams, $availableParamKeys);
     }
 
-    public function hasPrivilege(string $resource): bool
+    public function hasPrivilege(string|Privilege $resource): bool
     {
+        if ($resource instanceof Privilege) {
+            $resource = $resource->name;
+        }
         return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->config['temp_config']['disable_privileges'];
     }
 }

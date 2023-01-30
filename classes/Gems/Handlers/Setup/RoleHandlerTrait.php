@@ -2,6 +2,7 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Acl\Privilege;
 use Gems\MenuNew\Menu;
 use Gems\Middleware\MenuMiddleware;
 
@@ -32,11 +33,17 @@ trait RoleHandlerTrait
                 $privilegeNames[$privilege] = implode("<br/>&nbsp; + ", $labels);
             }
 
-            foreach ($privileges as $privilege) {
-                if (!isset($privilegeNames[$privilege])) {
-                    $privilegeNames[$privilege] = $privilege;
+            asort($privilegeNames);
+
+            asort($privileges);
+
+            foreach ($privileges as $resourceName => $label) {
+                if (!isset($privilegeNames[$resourceName])) {
+                    $privilegeNames[$resourceName] = $label;
                 }
             }
+
+            asort($supplementaryPrivileges);
 
             foreach ($supplementaryPrivileges as $privilege => $label) {
                 if (!isset($privilegeNames[$privilege])) {
@@ -44,7 +51,6 @@ trait RoleHandlerTrait
                 }
             }
 
-            asort($privilegeNames);
             //don't allow to edit the pr.nologin and pr.islogin privilege
             unset($privilegeNames['pr.nologin']);
             unset($privilegeNames['pr.islogin']);

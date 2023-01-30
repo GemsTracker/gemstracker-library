@@ -2,6 +2,7 @@
 
 namespace Gems\MenuNew;
 
+use Gems\Acl\Privilege;
 use Mezzio\Router\RouteResult;
 use Mezzio\Template\TemplateRendererInterface;
 
@@ -102,7 +103,11 @@ class Menu extends MenuNode
             $newPrefix = ($prefix ? $prefix . ' -> ' : '') . $child->getLabel();
 
             if (isset($route['options']['privilege'])) {
-                $carry[$route['options']['privilege']][] = $newPrefix;
+                $resource = $route['options']['privilege'];
+                if ($resource instanceof Privilege) {
+                    $resource = $resource->name;
+                }
+                $carry[$resource][] = $newPrefix;
             }
 
             return array_merge($carry, $this->gatherRouteLabelsByPrivilege($newPrefix, $child->children));
