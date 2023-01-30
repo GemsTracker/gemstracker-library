@@ -11,10 +11,12 @@
 
 namespace Gems\Handlers\Respondent;
 
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
+use Gems\Tracker\Respondent;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -55,11 +57,11 @@ class TokenHandler extends TokenSearchHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
-        \Zend_Db_Adapter_Abstract $db,
+        ResultFetcher $resultFetcher,
         protected RespondentRepository $respondentRepository,
         protected OrganizationRepository $organizationRepository,
     ) {
-        parent::__construct($responder, $translate, $tracker, $db);
+        parent::__construct($responder, $translate, $tracker, $resultFetcher);
     }
 
     /**
@@ -75,9 +77,9 @@ class TokenHandler extends TokenSearchHandlerAbstract
     /**
      * Get the respondent object
      *
-     * @return \Gems\Tracker\Respondent
+     * @return Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
         static $respondent;
 
