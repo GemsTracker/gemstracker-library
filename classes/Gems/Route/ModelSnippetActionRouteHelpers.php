@@ -88,6 +88,11 @@ trait ModelSnippetActionRouteHelpers
         $parameterString = join('/', $combinedParameters);
 
         foreach($pages as $pageName) {
+            $privilege = $basePrivilege . '.' . $pageName;
+            if ($pageName === 'autofilter') {
+                $privilege = $basePrivilege . '.index';
+            }
+
             $route = [
                 'name' => $baseName . '.' . $pageName,
                 'path' => $basePath . '/' . $pageName,
@@ -96,7 +101,7 @@ trait ModelSnippetActionRouteHelpers
                 'options' => [
                     'controller' => $controllerClass,
                     'action' => $pageName,
-                    'privilege' => $basePrivilege . '.' . $pageName,
+                    'privilege' => $privilege,
                 ],
             ];
 
