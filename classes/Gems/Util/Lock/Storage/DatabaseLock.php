@@ -1,18 +1,16 @@
 <?php
 
-namespace Gems\Util;
+namespace Gems\Util\Lock\Storage;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
 use Laminas\Db\TableGateway\TableGateway;
-use DateTimeImmutable;
-use DateTimeInterface;
 
-class DatabaseLockAbstract
+class DatabaseLock extends LockStorageAbstract
 {
     protected int $currentUserId;
-
-    protected string $key;
 
     public function __construct(protected ResultFetcher $resultFetcher, CurrentUserRepository $currentUserRepository)
     {
@@ -86,7 +84,6 @@ class DatabaseLockAbstract
             'gst_created' => $now->format('Y-m-d H:i'),
             'gst_created_by' => $this->currentUserId,
         ]);
-
     }
 
     public function unlock(): void

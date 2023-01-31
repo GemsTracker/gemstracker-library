@@ -4,8 +4,8 @@ namespace Gems\Command;
 
 use Gems\Messenger\Message\CommJob;
 use Gems\Repository\CommJobRepository;
-use Gems\Util\CommJobLock;
-use Gems\Util\MaintenanceLock;
+use Gems\Util\Lock\CommJobLock;
+use Gems\Util\Lock\MaintenanceLock;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

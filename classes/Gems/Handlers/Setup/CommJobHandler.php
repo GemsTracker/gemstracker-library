@@ -22,7 +22,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
-use Gems\Util\CommunicationJobLock;
+use Gems\Util\Lock\CommJobLock;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
@@ -110,7 +110,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected CommJobRepository $commJobRepository,
-        protected CommunicationJobLock $communicationJobLock,
+        protected CommJobLock $communicationJobLock,
     )
     {
         parent::__construct($responder, $translate);

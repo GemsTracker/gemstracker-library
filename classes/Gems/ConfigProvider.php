@@ -53,6 +53,9 @@ use Gems\Translate\TranslationFactory;
 use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
+use Gems\Util\Lock\LockFactory;
+use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Lock\Storage\CacheLock;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -226,7 +229,7 @@ class ConfigProvider
     public function getDbSettings(): array
     {
         return [
-            'driver'    => 'Mysqli',
+            'driver'    => 'pdo_mysql',
             'host'      => getenv('DB_HOST'),
             'username'  => getenv('DB_USER'),
             'password'  => getenv('DB_PASS'),
@@ -289,6 +292,10 @@ class ConfigProvider
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
+
+                // Locks
+                MaintenanceLock::class => [LockFactory::class, CacheLock::class],
+
 
                 LaminasRunner::class => LaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
@@ -448,7 +455,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::DEBUG,
                         'options' => [
-                            'stream' =>  'data/logs/php-error.log',
+                            'stream' => 'data/logs/php-error.log',
                         ],
                     ],
                 ],
@@ -459,7 +466,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/errors.log',
+                            'stream' => 'data/logs/errors.log',
                         ],
                     ],
                 ],
@@ -470,7 +477,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/cron.log',
+                            'stream' => 'data/logs/cron.log',
                         ],
                     ],
                 ],
@@ -481,7 +488,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/embed-logging.log',
+                            'stream' => 'data/logs/embed-logging.log',
                         ],
                     ],
                 ],
