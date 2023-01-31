@@ -46,10 +46,10 @@ class MaskedJsonData extends JsonData
     /**
      * Displays the content
      *
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
-    public function formatDetailed(string $value): HtmlElement|string
+    public function formatDetailed(mixed $value): HtmlElement|string
     {
         //\MUtil\EchoOut\EchoOut::track($value);
         if (is_array($value)) {
@@ -69,7 +69,7 @@ class MaskedJsonData extends JsonData
      * @param string $value
      * @return string
      */
-    public function formatTable(string $value): HtmlElement|string
+    public function formatTable(mixed $value): HtmlElement|string
     {
         if (is_array($value)) {
             $group = $this->currentUser->getGroup();

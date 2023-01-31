@@ -182,7 +182,13 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
         // \MUtil\EchoOut\EchoOut::track($this->formData);
         if ($this->formData['gto_valid_until'] && Period::isDateType($this->formData['gro_valid_for_unit'])) {
             // Make sure date based units are valid until the end of the day.
-            $date = DateTimeImmutable::createFromFormat($model->get('gto_valid_until', 'dateFormat'), $this->formData['gto_valid_until']);
+            $date = $this->formData['gto_valid_until'];
+            if (!$date instanceof DateTimeInterface) {
+                $date = DateTimeImmutable::createFromFormat(
+                    $model->get('gto_valid_until', 'dateFormat'),
+                    $this->formData['gto_valid_until']
+                );
+            }
             $this->formData['gto_valid_until'] = $date->setTime(23, 59, 59);
         }
         
