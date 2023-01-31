@@ -13,6 +13,8 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
+use Gems\Log\ErrorLogger;
+use Gems\Log\Loggers;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
@@ -20,7 +22,10 @@ use Gems\Util\Lock\MaintenanceLock;
 use Gems\Versions;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use MUtil\Model;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
@@ -66,6 +71,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected RouteHelper $routeHelper,
         protected ProjectSettings $projectSettings,
         protected HelperAdapter $cache,
+        protected Loggers $loggers,
     )
     {
         parent::__construct($responder, $translate);
@@ -217,9 +223,37 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
     }
 
+    protected function getLogFile(string $loggerName): ?string
+    {
+        $logger = $this->loggers->getLogger($loggerName);
+
+        if ($logger instanceof Logger) {
+            $handlers = $logger->getHandlers();
+            foreach($handlers as $handler) {
+                if ($handler instanceof StreamHandler) {
+                    $url = $handler->getUrl();
+                    if ($url !== null && is_readable($url)) {
+                        return $url;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public function errorsAction()
     {
-        $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
+        $logFile = $this->getLogFile('LegacyLogger');
+
+        if ($logFile !== null) {
+            $this->_showText(
+                $this->_('Logged errors'),
+                $logFile,
+                $this->_('Empty logfile')
+            );
+            return;
+        }
+        $this->html->div()->append($this->_('No log file set for output'));
     }
 
     public function getMaintenanceMonitorJob()
@@ -354,7 +388,17 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     public function phpErrorsAction()
     {
-        $this->_showText($this->_('Logged PHP errors'), ini_get('error_log'), $this->_('Empty PHP error file'));
+        $logFile = $this->getLogFile(ErrorLogger::class);
+
+        if ($logFile !== null) {
+            $this->_showText(
+                $this->_('Logged errors'),
+                $logFile,
+                $this->_('Empty PHP error file')
+            );
+            return;
+        }
+        $this->html->div()->append($this->_('No log file set for output'));
     }
 
     public function projectAction()
