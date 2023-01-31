@@ -55,4 +55,14 @@ class LoginStatusTracker
     {
         $this->set('passwordResetting', $value);
     }
+
+    public function isRequireAppTotpActive(): bool
+    {
+        return $this->get('settingRequiredAppTotp', false);
+    }
+
+    public function setRequireAppTotpActive(bool $value = true): void
+    {
+        $this->set('settingRequiredAppTotp', $value);
+    }
 }

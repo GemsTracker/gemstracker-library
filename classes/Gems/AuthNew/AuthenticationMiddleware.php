@@ -87,7 +87,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
             return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.login'));
         }
 
-        if (LoginStatusTracker::make($session, $user)->isPasswordResetActive()) {
+        $loginStatusTracker = LoginStatusTracker::make($session, $user);
+        if ($loginStatusTracker->isPasswordResetActive()) {
             /** @var RouteResult $routeResult */
             $routeResult = $request->getAttribute(RouteResult::class);
             if (!in_array($routeResult->getMatchedRouteName(), [
@@ -102,6 +103,22 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ]);
 
                 return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.change-password'));
+            }
+        } elseif (static::CHECK_TFA && $loginStatusTracker->isRequireAppTotpActive()) {
+            /** @var RouteResult $routeResult */
+            $routeResult = $request->getAttribute(RouteResult::class);
+            if (!in_array($routeResult->getMatchedRouteName(), [
+                'auth.set-tfa',
+                'tfa.login',
+                'auth.logout',
+            ])) {
+                /** @var StatusMessengerInterface $flash */
+                $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+                $flash?->addInfos([
+                    $this->translator->trans('Please configure Softtoken TFA to continue.'),
+                ]);
+
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.set-tfa'));
             }
         }
 

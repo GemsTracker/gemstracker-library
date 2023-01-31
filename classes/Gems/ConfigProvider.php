@@ -668,6 +668,7 @@ class ConfigProvider
                     'maxVerifyOtpAttempts' => 5,
                 ],
             ],
+            'requireAppTotp' => true,
         ];
     }
 
