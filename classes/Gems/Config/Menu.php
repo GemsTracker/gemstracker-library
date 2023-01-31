@@ -219,6 +219,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
+                                            'name' => 'respondent.tracks.answer',
+                                            'label' => $this->translator->trans('Answers'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
                                             'name' => 'respondent.tracks.delete',
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',

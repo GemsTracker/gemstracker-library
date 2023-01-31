@@ -5,6 +5,7 @@ namespace Gems\Event\Application;
 
 
 use Symfony\Contracts\EventDispatcher\Event;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 class AnswerFilterEvent extends Event
 {
@@ -29,7 +30,7 @@ class AnswerFilterEvent extends Event
      * @param \MUtil\Model\ModelAbstract $model
      * @param array $currentNames
      */
-    public function __construct(\MUtil\Model\Bridge\TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
+    public function __construct(TableBridge $bridge, \MUtil\Model\ModelAbstract $model, array $currentNames)
     {
         $this->bridge = $bridge;
         $this->model = $model;
