@@ -1564,6 +1564,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
         return $this->_getVar('surveyReturn', array());
     }
 
+    public function hasTfaConfigured(): bool
+    {
+        return $this->_hasVar('user_two_factor_key') && !empty($this->_getVar('user_two_factor_key'));
+    }
+
     public function getTfaMethodClass(): string
     {
         if ($this->_hasVar('user_two_factor_key')) {

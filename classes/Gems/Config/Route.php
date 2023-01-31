@@ -770,6 +770,10 @@ class Route
                     'reset',
                     'deactivate',
                     'staff-log',
+                ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'reset',
                 ]
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',

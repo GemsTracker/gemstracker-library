@@ -163,7 +163,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
         return false;
     }
 
-    public function createResetKey(\Gems\User\User $user)
+    public function createResetKey()
     {
         return $this->project->getValueHash(random_bytes(64), 'sha256');
     }

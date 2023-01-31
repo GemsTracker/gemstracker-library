@@ -20,3 +20,13 @@ UPDATE gems__groups SET ggp_member_type = 'respondent' WHERE ggp_staff_members =
 
 UPDATE gems__groups SET ggp_code = REGEXP_REPLACE(LOWER(ggp_name), '[^a-z_]', '_');
 ALTER TABLE `gems__groups` ADD UNIQUE `ggp_code` (`ggp_code`);
+
+ALTER TABLE `gems__organizations`
+    ADD `gor_reset_tfa_template` bigint unsigned NULL AFTER `gor_reset_pass_template`;
+
+INSERT INTO `gems__comm_templates` (`gct_name`, `gct_target`, `gct_code`, `gct_changed`, `gct_changed_by`, `gct_created`, `gct_created_by`)
+VALUES ('Global TFA reset', 'staffPassword', 'tfaReset', now(), '0', now(), '0');
+
+INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`, `gctt_subject`, `gctt_body`) VALUES
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'en', 'Your TFA has been reset', 'Your softtoken TFA has been reset for the [b]{{organization}}[/b] site [b]{{project}}[/b]. Next time you log in, you will need to verify your login using SMS TFA, after which you can reactivate softtoken TFA.'),
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'nl', 'Je TFA is gereset', 'Je softtoken TFA voor [b]{{organization}}[/b] site [b]{{project}}[/b] is zojuist gewist. De volgende keer dat je inlogt zul je met SMS TFA inloggen, waarna je weer softtoken TFA kunt instellen.');

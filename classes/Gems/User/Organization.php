@@ -447,6 +447,16 @@ class Organization extends CachedArrayTargetAbstract
     }
 
     /**
+     * Get the template id for the reset tfa mail
+     *
+     * @return  integer Template ID
+     */
+    public function getResetTfaTemplate()
+    {
+        return $this->_get('gor_reset_tfa_template');
+    }
+
+    /**
      * Get the Sms from name
      *
      * @return string SMS from
