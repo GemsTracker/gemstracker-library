@@ -81,8 +81,8 @@ class LayoutRenderer
     public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
     {
         $defaultParams = $this->getDefaultParams($request);
-        if (!$layoutSettings->showMenu()) {
-            $defaultParams[MenuMiddleware::class] = null;
+        if (!$layoutSettings->showMenu() && isset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE])) {
+            unset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE]);
         }
         $params['available_organizations'] = $this->getAvailableOrganizations($request);
         $params['ui_switch_groups'] = $this->getUiSwitchGroups($request);
