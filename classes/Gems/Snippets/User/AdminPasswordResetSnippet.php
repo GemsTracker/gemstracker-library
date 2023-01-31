@@ -120,6 +120,7 @@ class AdminPasswordResetSnippet extends ZendFormSnippetAbstract
 
                     $this->otpMethodBuilder->setOtpMethod($this->user, 'SmsHotp', true);
 
+                    $mailFields = $this->communicationRepository->getUserMailFields($this->user, $language);
                     $successMessage = sprintf(
                         $this->_('The two factor key for user %s has been reset and a notification mail has been sent'),
                         $this->user->getLoginName()

@@ -1635,7 +1635,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTwoFactorKey()
     {
-        if ($this->_hasVar('user_two_factor_key')) {
+        if ($this->hasTfaConfigured()) {
             list($class, $key) = explode(
                     TwoFactorAuthenticatorInterface::SEPERATOR,
                     $this->_getVar('user_two_factor_key'),

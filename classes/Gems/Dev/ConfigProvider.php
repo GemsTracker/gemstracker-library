@@ -2,6 +2,9 @@
 
 namespace Gems\Dev;
 
+use Gems\Communication\Http\DevMailSmsClient;
+use Gems\Communication\Http\SmsClientInterface;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -15,6 +18,11 @@ class ConfigProvider
                     'dsn' => 'smtp://mailhog:1025',
                 ],
                 'password' => null,
+                'dependencies' => [
+                    'aliases' => [
+                        SmsClientInterface::class => DevMailSmsClient::class,
+                    ],
+                ]
             ];
         }
 

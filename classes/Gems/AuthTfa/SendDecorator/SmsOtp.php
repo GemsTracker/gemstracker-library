@@ -42,6 +42,9 @@ class SmsOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
             $body = sprintf($this->translator->trans('Please authenticate with this number: %s'), $code);
 
             $phonenumber = $this->user->getPhonenumber();
+            if (empty($phonenumber)) {
+                throw new \Gems\Exception($this->translator->trans('OTP could not be sent, because no phone number is configured'));
+            }
             $filter = new DutchPhonenumberFilter();
 
             $result = $this->smsClient->sendMessage($filter->filter($phonenumber), $body);
