@@ -44,7 +44,6 @@ class MenuMiddleware implements MiddlewareInterface
         $menu = new Menu($this->template, $routeHelper, $this->menuConfig);
 
         // TODO: Disable default param
-        $this->template->addDefaultParam(TemplateRendererInterface::TEMPLATE_ALL, self::MENU_ATTRIBUTE, $menu);
 
         $request = $request->withAttribute(self::MENU_ATTRIBUTE, $menu);
 

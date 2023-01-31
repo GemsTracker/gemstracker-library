@@ -16,13 +16,13 @@ use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
-use Gems\Util\MaintenanceLock;
+use Gems\Util\Lock\MaintenanceLock;
 use Gems\Versions;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
-use Zalt\Html\Html;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -91,8 +91,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data[$this->_('Gems version')]            = $this->versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $this->versions->getBuild();
         $data[$this->_('Gems project')]            = $projectName;
-        //$data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
-        //$data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
+        $data[$this->_('Gems web directory')]      = $this->projectSettings->publicDir;
+        $data[$this->_('Gems root directory')]     = $this->projectSettings->rootDir;
         //$data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
         //$data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
@@ -264,9 +264,9 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data = $this->_getData();
 
         if ($this->maintenanceLock->isLocked()) {
-            $label = $this->_('Turn Maintenance Mode OFF');
+            $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
         } else {
-            $label = $this->_('Turn Maintenance Mode ON');
+            $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
         }
         /*$request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
@@ -276,6 +276,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             ->addByController($request->getControllerName(), 'cacheclean');*/
 
         $buttonList = [
+            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance'), $maintenanceLockLabel),
             \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
         ];
 
@@ -291,8 +292,19 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
      */
     public function maintenanceAction()
     {
+        if ($this->maintenanceLock->isLocked()) {
+            $this->maintenanceLock->unlock();
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->clearMessages();
+            $messenger->addSuccess($this->_('Maintenance mode set OFF'));
+        } else {
+            $this->maintenanceLock->lock();
+        }
         // Switch lock
-        if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
+        /*if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
             $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set ON'));
         } else {
             $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set OFF'));
@@ -301,10 +313,13 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             $this->escort->getMessenger()->clearCurrentMessages();
             $this->escort->getMessenger()->clearMessages();
             \MUtil\EchoOut\EchoOut::out();
-        }
+        }*/
+
 
         // Redirect
-        $this->redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.project-information.index'));
+
+
     }
 
     public function monitorAction() {

@@ -55,7 +55,7 @@ use Gems\Twig\Trans;
 use Gems\Twig\Vite;
 use Gems\Util\Lock\LockFactory;
 use Gems\Util\Lock\MaintenanceLock;
-use Gems\Util\Lock\Storage\CacheLock;
+use Gems\Util\Lock\Storage\FileLock;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -294,7 +294,7 @@ class ConfigProvider
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
                 // Locks
-                MaintenanceLock::class => [LockFactory::class, CacheLock::class],
+                MaintenanceLock::class => [LockFactory::class, FileLock::class],
 
 
                 LaminasRunner::class => LaminasRunnerFactory::class,

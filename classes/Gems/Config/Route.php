@@ -28,6 +28,7 @@ use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\MaintenanceModeMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Model;
@@ -55,6 +56,7 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    MaintenanceModeMiddleware::class,
                     AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
                     AuditLogMiddleware::class,
@@ -626,6 +628,7 @@ class Route
                     'changelog-gems',
                     'changelog',
                     'cacheclean',
+                    'maintenance',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',
