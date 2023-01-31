@@ -8,24 +8,25 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'app:clear-cache', description: 'Clears the application cache')]
+#[AsCommand(name: 'app:clear-config-cache', description: 'Clears the config cache')]
 class ClearConfigCache extends Command
 {
-    protected static $defaultName = 'app:clear-cache';
 
-    private CacheItemPoolInterface $cacheItemPool;
-
-    public function __construct(CacheItemPoolInterface $cacheItemPool)
+    protected ?string $configCacheFileLocation;
+    public function __construct(array $config)
     {
-        $this->cacheItemPool = $cacheItemPool;
+        $this->configCacheFileLocation = $config['config_cache_path'] ?? null;
         parent::__construct();
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->cacheItemPool->clear()) {
+        if ($this->configCacheFileLocation && file_exists($this->configCacheFileLocation)) {
+            unlink($this->configCacheFileLocation);
+            $output->writeln("<info>Config cache at '$this->configCacheFileLocation' has been cleared</info>");
             return static::SUCCESS;
         }
+        $output->writeln("<comment>No Config cache found at '$this->configCacheFileLocation'</comment>");
         return static::FAILURE;
     }
 }

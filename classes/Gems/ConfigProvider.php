@@ -56,6 +56,7 @@ use Gems\Twig\Vite;
 use Gems\Util\Lock\LockFactory;
 use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
+use Gems\Util\Lock\Storage\LockStorageAbstract;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -296,7 +297,6 @@ class ConfigProvider
                 // Locks
                 MaintenanceLock::class => [LockFactory::class, FileLock::class],
 
-
                 LaminasRunner::class => LaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
                 
@@ -326,6 +326,9 @@ class ConfigProvider
                 GroupAdapterInterface::class => DbGroupAdapter::class,
 
                 MetaModelLoader::class => GemsMetaModelLoader::class,
+
+                // Default lock storage
+                LockStorageAbstract::class => FileLock::class,
                 
                 // Translation
                 Translator::class => TranslatorInterface::class,
