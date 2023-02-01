@@ -63,5 +63,6 @@ class GetFirstAnswers extends TranslatableEventAbstract implements SurveyBeforeA
                 $next = $next->getNextToken();
             }
         }
+        return [];
     }
 }

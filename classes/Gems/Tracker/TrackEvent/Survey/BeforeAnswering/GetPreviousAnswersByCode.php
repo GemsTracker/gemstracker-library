@@ -62,5 +62,6 @@ class GetPreviousAnswersByCode extends TranslatableEventAbstract implements Surv
                 }
             }
         }
+        return [];
     }
 }
