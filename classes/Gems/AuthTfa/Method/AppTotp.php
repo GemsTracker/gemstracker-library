@@ -93,7 +93,7 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
         $params['width']  = 200;
         $params['src']    = \MUtil\Html::raw($this->_getQRCodeInline(
             $name,
-            $secret,
+            $formData['twoFactorKey'],
             $title,
             $params
         ));
@@ -111,7 +111,7 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
                 'disabled' => 'disabled',
                 'readonly' => 'readonly',
             ])
-            ->setValue($secret);
+            ->setValue($formData['twoFactorKey']);
 
         $form->addElement($keyElement);
     }

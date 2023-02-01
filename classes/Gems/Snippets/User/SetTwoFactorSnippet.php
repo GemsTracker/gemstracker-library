@@ -32,9 +32,9 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class SetTwoFactorSnippet extends ZendFormSnippetAbstract
 {
-    protected readonly User $user;
+    protected User $user;
 
-    protected readonly SessionInterface $session;
+    protected SessionInterface $session;
 
     private readonly SessionNamespace $sessionNamespace;
 

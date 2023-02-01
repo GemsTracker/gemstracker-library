@@ -71,6 +71,7 @@ class Route
                 ...$this->getProjectRoutes(),
                 ...$this->getSetupRoutes(),
                 ...$this->getTrackBuilderRoutes(),
+                ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
             ]),
         ];
@@ -1008,5 +1009,19 @@ class Route
             ),
 
         ];
+    }
+
+    public function getOptionRoutes(): array
+    {
+        return $this->createSnippetRoutes(baseName: 'option',
+            controllerClass: \Gems\Handlers\OptionHandler::class,
+            pages: [
+                'edit',
+                'overview',
+                'change-password',
+                'two-factor',
+            ],
+            parameterRoutes: [],
+        );
     }
 }

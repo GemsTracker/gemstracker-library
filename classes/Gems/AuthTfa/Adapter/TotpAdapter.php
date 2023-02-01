@@ -5,6 +5,7 @@ namespace Gems\AuthTfa\Adapter;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\TOTP;
+use ParagonIE\ConstantTime\Base32;
 
 class TotpAdapter implements OtpAdapterInterface
 {
@@ -33,7 +34,7 @@ class TotpAdapter implements OtpAdapterInterface
 
     public function generateSecret(): string
     {
-        return TOTP::create(period: $this->codeValidSeconds, digest: 'sha1', digits: $this->codeLength)->getSecret();
+        return Base32::encodeUpper(random_bytes(40));
     }
 
     private function createTotp(User $user): TOTP

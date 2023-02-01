@@ -14,6 +14,8 @@ namespace Gems\Model;
 
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
+use MUtil\Validate\NoScript;
+use MUtil\Validate\SimpleEmail;
 use Zalt\Html\AElement;
 
 /**
@@ -176,7 +178,7 @@ class StaffModel extends \Gems\Model\JoinModel
      */
     public function applyOwnAccountEdit()
     {
-        $noscript = new \MUtil_Validate_NoScript();
+        $noscript = new NoScript();
 
         $this->set('gsf_id_user',        'elementClass', 'None');
         $this->set('gsf_login',          'label', $this->_('Login Name'),
@@ -184,7 +186,7 @@ class StaffModel extends \Gems\Model\JoinModel
         );
         $this->set('gsf_email',          'label', $this->_('E-Mail'),
             'size', 30,
-            'validator', new \MUtil_Validate_SimpleEmail()
+            'validator', new SimpleEmail()
         );
         $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),

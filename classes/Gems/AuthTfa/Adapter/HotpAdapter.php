@@ -6,6 +6,7 @@ use DateInterval;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\HOTP;
+use ParagonIE\ConstantTime\Base32;
 
 class HotpAdapter implements OtpAdapterInterface
 {
@@ -39,7 +40,7 @@ class HotpAdapter implements OtpAdapterInterface
 
     public function generateSecret(): string
     {
-        return HOTP::create(digest: 'sha1', digits: $this->codeLength)->getSecret();
+        return Base32::encodeUpper(random_bytes(40));
     }
 
     private function createHotp(User $user): HOTP

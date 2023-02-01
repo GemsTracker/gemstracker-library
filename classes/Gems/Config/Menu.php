@@ -33,6 +33,7 @@ class Menu
             $this->getProjectMenu(),
             $this->getSetupMenu(),
             $this->getTrackBuilderMenu(),
+            $this->getOptionMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
@@ -1472,6 +1473,32 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    public function getOptionMenu(): array
+    {
+        return [
+            'name' => 'option.edit',
+            'label' => $this->translator->trans('Your account'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'option.overview',
+                    'label' => $this->translator->trans('Activity overview'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'option.change-password',
+                    'label' => $this->translator->trans('Change password'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'option.two-factor',
+                    'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
                 ],
             ],
         ];

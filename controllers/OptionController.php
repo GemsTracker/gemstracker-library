@@ -19,6 +19,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class OptionController extends \Gems\Actions\OptionAction
+class OptionController extends \Gems\Handlers\OptionHandler
 {
 }
