@@ -79,42 +79,34 @@ class RespondentRepository
 
     public function getPatient(string $patientNr, ?int $organizationId=null): ?array
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select();
-        $select->from('gems__respondent2org')
-            ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
+        $select = $this->resultFetcher->getSelect('gems__respondent2org');
+        $select->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
             ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
             ->where(['gr2o_patient_nr' => $patientNr]);
         if ($organizationId !== null) {
             $select->where(['gr2o_id_organization' => $organizationId]);
         }
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        if ($result->valid()) {
-            return $result->current();
-        }
-        return null;
+        return $this->resultFetcher->fetchRow($select);
     }
 
-    public function getPatientByRespondentId(int $respondentId, int $organizationId): ?array
+    public function getPatientByRespondentId(int $respondentId, ?int $organizationId): ?array
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select();
-        $select->from('gems__respondent2org')
+        $select = $this->resultFetcher->getSelect('gems__respondent2org');
+        $select
             ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
             ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
             ->where(['grs_id_user' => $respondentId]);
         if ($organizationId !== null) {
             $select->where(['gr2o_id_organization' => $organizationId]);
         }
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        return $this->resultFetcher->fetchRow($select);
+    }
 
-        if ($result->valid()) {
-            return $result->current();
-        }
-        return null;
+    public function getPatientNr(int $respondentId, ?int $organizationId): ?string
+    {
+        $patient = $this->getPatientByRespondentId($respondentId, $organizationId);
+
+        return $patient['gr2o_patient_nr'] ?? null;
     }
 
     /**
@@ -125,25 +117,20 @@ class RespondentRepository
      */
     public function getPatientsBySsn(string $ssn, string $epdId): ?array
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select();
-        $select->from('gems__respondent2org')
+        $select = $this->resultFetcher->getSelect('gems__respondent2org');
+        $select
             ->join('gems__respondents', 'grs_id_user = gr2o_id_user', ['grs_ssn'])
             ->join('gems__organizations', 'gor_id_organization = gr2o_id_organi')
             ->columns(['gr2o_id_user', 'gr2o_patient_nr', 'gr2o_id_organization'])
             ->where(['grs_ssn' => $ssn,]);
 
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $this->resultFetcher->fetchAll($select);
 
-        $result = $statement->execute();
-
-        $patients = iterator_to_array($result);
-
-        if (count($patients) === 0) {
+        if (count($result) === 0) {
             return null;
         }
 
-        return $patients;
+        return $result;
     }
 
     /**
@@ -154,25 +141,18 @@ class RespondentRepository
      */
     public function getRespondentIdBySsn(string $ssn): ?int
     {
-        $sql = new Sql($this->db);
-        $select = $sql->select();
-        $select->from('gems__respondents')
+        $select = $this->resultFetcher->getSelect('gems__respondents');
+        $select
             ->columns(['grs_id_user'])
             ->where(['grs_ssn' => $ssn]);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
 
-        if ($result->valid() && $result->current()) {
-            $user = $result->current();
-            return (int)$user['grs_id_user'];
-        }
-        return null;
+
+        return $this->resultFetcher->fetchOne($select);
     }
 
     public function getOtherPatientNumbers(string $patientNr, int $organizationId, bool $combined=false): array
     {
-        $sql = new Sql($this->db);
-        $subSelect = $sql->select('gems__respondent2org')
+        $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
             ->columns(['gr2o_id_user'])
             ->where([
                 'gr2o_patient_nr' => $patientNr,
@@ -182,7 +162,7 @@ class RespondentRepository
         $currentOrganizationPredicate = new Predicate();
         $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
 
-        $select = $sql->select('gems__respondent2org')
+        $select = $this->resultFetcher->getSelect('gems__respondent2org')
             ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', [])
             ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
             ->columns(['gr2o_id_organization', 'gr2o_patient_nr'])
@@ -195,10 +175,7 @@ class RespondentRepository
                 ], PredicateSet::COMBINED_BY_OR),
             ]);
 
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-
-        $patients = iterator_to_array($result);
+        $patients = $this->resultFetcher->fetchAll($select);
 
         if ($combined) {
             $combinedPatients = [];
@@ -219,7 +196,7 @@ class RespondentRepository
 
     public function setOpened(string $patientNr, int $organizationId, int $currentUserId): void
     {
-        $table = new TableGateway('gems__respondent2org', $this->db);
+        $table = new TableGateway('gems__respondent2org', $this->resultFetcher->getAdapter());
         $table->update([
             'gr2o_opened' => new Expression('NOW()'),
             'gr2o_opened_by' => $currentUserId,

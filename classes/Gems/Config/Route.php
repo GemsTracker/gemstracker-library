@@ -865,6 +865,17 @@ class Route
                     'edit',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'setup.log.activity',
+                controllerClass: \Gems\Handlers\LogHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
+            ),
 
         ];
     }

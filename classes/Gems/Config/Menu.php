@@ -1157,6 +1157,18 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.log.activity.index',
+                    'label' => $this->translator->trans('Activity log'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.log.activity.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
+                ],
             ],
         ];
     }

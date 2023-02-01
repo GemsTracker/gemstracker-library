@@ -62,6 +62,7 @@ class LogTableSnippet extends ModelTableSnippetAbstract
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if (! $this->columns) {
+            $this->columns = [];
             $br   = Html::create('br');
 
             $this->columns[10] = ['gla_created', $br, 'gls_name'];
