@@ -119,7 +119,7 @@ class StaffLogHandler extends LogHandler
      * @staticvar \Gems\User\User $user
      * @return User or false when not available
      */
-    public function getSelectedUser(): User
+    public function getSelectedUser(): User|bool
     {
         static $user = null;
 
@@ -130,11 +130,9 @@ class StaffLogHandler extends LogHandler
         $staffId = $this->_getIdParam();
         if ($staffId) {
             $user   = $this->userLoader->getUserByStaffId($staffId);
-        } else {
-            $user = false;
+            return $user;
         }
-
-        return $user;
+        return false;
     }
 
     /**
