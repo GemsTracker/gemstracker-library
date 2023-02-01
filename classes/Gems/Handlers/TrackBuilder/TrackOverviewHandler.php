@@ -9,7 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\TrackBuilder;
+
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Html;
+use Gems\Repository\OrganizationRepository;
+use MUtil\Model\ModelAbstract;
+use MUtil\Model\SelectModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Action for consent overview
@@ -20,20 +28,14 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
+class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
 {
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Tracker\\Overview\\TableSnippet';
+    protected array $autofilterSnippets = ['Tracker\\Overview\\TableSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -52,18 +54,23 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array(
+    protected array $showParameters = [
         'browse'        => true,
         'onEmpty'       => 'getOnEmptyText',
         'showMenu'      => true,
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
-        );
+    ];
 
-    /**
-     * @var \Gems\Util
-     */
-    public $util;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected OrganizationRepository $organizationRepository,
+        protected \Zend_Db_Adapter_Abstract $db,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -76,15 +83,15 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $fields = array();
+        $fields = [];
         // Export all
         if ('export' === $action) {
             $detailed = true;
         }
 
-        $organizations = $this->util->getDbLookup()->getOrganizations();
+        $organizations = $this->organizationRepository->getOrganizations();
 
 
         $fields[] = 'gtr_track_name';
@@ -102,7 +109,7 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
         $select = $this->db->select();
         $select->from('gems__tracks', $fields);
 
-        $model = new \MUtil\Model\SelectModel($select, 'track-verview');
+        $model = new SelectModel($select, 'track-verview');
         $model->setKeys(array('gtr_id_track'));
         $model->resetOrder();
 
@@ -128,11 +135,12 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
         return $model;
     }
 
-    public function formatCheckmark($value) {
+    public function formatCheckmark($value)
+    {
         if ($value === 1) {
-            return \MUtil\Html::create('span', array('class'=>'checked'))->append('V');
+            return Html::create('span', ['class'=>'checked'])->i(['class' => 'fa fa-check', 'style' => 'color: green;']);
         }
-        return;
+        return null;
     }
 
     /**
@@ -141,7 +149,7 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->_('track per organization');
     }
@@ -156,10 +164,10 @@ class TrackOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param type $name
      * @param type $field
      * @param type $model
-     * @return type
+     * @return array
      */
     public function noTextFilter($filter, $name, $field, $model)
     {
-        return array();
+        return [];
     }
 }

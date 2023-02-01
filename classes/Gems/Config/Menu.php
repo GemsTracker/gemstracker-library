@@ -1138,6 +1138,25 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.log.maintenance.index',
+                    'label' => $this->translator->trans('Log Setup'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.log.maintenance.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.log.maintenance.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
     }
@@ -1426,7 +1445,7 @@ class Menu
                             ],
                         ],
                         [
-                            'name' => 'track-builder.track-maintenance.track-overview',
+                            'name' => 'track-builder.track-maintenance.track-overview.index',
                             'label' => $this->translator->trans('Track per org'),
                             'type' => 'route-link-item',
                         ],

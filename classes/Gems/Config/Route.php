@@ -852,6 +852,19 @@ class Route
                     'check-filter',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'setup.log.maintenance',
+                controllerClass: \Gems\Handlers\Setup\LogMaintenanceHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                    'edit',
+                ],
+                parameterRoutes: [
+                    'show',
+                    'edit',
+                ],
+            ),
 
         ];
     }
@@ -934,7 +947,6 @@ class Route
                 pages: [
                     ...$this->defaultPages,
                     'import',
-                    'track-overview',
                     'check-all',
                     'recalc-all-fields',
                     'export',
@@ -951,6 +963,13 @@ class Route
                     'recalc-fields',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-overview',
+                controllerClass: \Gems\Handlers\TrackBuilder\TrackOverviewHandler::class,
+                pages: [
+                    'index',
+                ]
+            ),
+
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-fields',
                 controllerClass: \Gems\Handlers\TrackBuilder\TrackFieldsHandler::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-fields',
