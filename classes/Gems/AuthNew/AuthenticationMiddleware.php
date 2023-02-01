@@ -108,7 +108,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
             /** @var RouteResult $routeResult */
             $routeResult = $request->getAttribute(RouteResult::class);
             if (!in_array($routeResult->getMatchedRouteName(), [
-                'auth.set-tfa',
+                'option.two-factor',
                 'tfa.login',
                 'auth.logout',
             ])) {
@@ -118,7 +118,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                     $this->translator->trans('Please configure Softtoken TFA to continue.'),
                 ]);
 
-                return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.set-tfa'));
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('option.two-factor'));
             }
         }
 
