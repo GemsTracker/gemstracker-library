@@ -11,8 +11,9 @@
 
 namespace Gems\Model\Type;
 
-use MUtil\Html\HtmlElement;
 use MUtil\Model\Type\JsonData;
+use Zalt\Html\ElementInterface;
+use Zalt\Html\HtmlElement;
 
 /**
  *
@@ -49,7 +50,7 @@ class MaskedJsonData extends JsonData
      * @param mixed $value
      * @return string
      */
-    public function formatDetailed(mixed $value): HtmlElement|string
+    public function formatDetailed(mixed $value): ElementInterface|string
     {
         //\MUtil\EchoOut\EchoOut::track($value);
         if (is_array($value)) {
@@ -69,7 +70,7 @@ class MaskedJsonData extends JsonData
      * @param string $value
      * @return string
      */
-    public function formatTable(mixed $value): HtmlElement|string
+    public function formatTable(mixed $value): ElementInterface|string
     {
         if (is_array($value)) {
             $group = $this->currentUser->getGroup();
