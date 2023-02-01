@@ -10,6 +10,9 @@
 
 namespace Gems\Snippets\Tracker\Overview;
 
+use Zalt\Model\MetaModelInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
+
 /**
  * Display a tabel that links to the track maintenance
  *
@@ -29,5 +32,15 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippet
      *
      * @var array (int/controller => action)
      */
-    public array $menuShowRoutes = array('track-maintenance' => 'show');
+    public array $menuShowRoutes = ['track-builder.track-maintenance.show'];
+
+    public function getRouteMaps(MetaModelInterface $metaModel): array
+    {
+        return ['trackId' => 'gtr_id_track'];
+    }
+
+    protected function getShowUrls(TableBridge $bridge, array $keys): array
+    {
+        return $this->menuHelper->getLateRouteUrls($this->menuShowRoutes, $keys, $bridge);
+    }
 }
