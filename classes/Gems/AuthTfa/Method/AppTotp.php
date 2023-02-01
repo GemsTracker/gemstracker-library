@@ -2,9 +2,8 @@
 
 namespace Gems\AuthTfa\Method;
 
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 use Gems\AuthTfa\Adapter\TotpAdapter;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
@@ -40,23 +39,13 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
     protected function _getQRCodeInline(string $name, string $secret, ?string $title = null, array $params = [])
     {
         $url = $this->_getQRCodeUrl($title, $name, $secret);
-        [$size, $level] = $this->_getQRParams($params);
 
-        $renderer = new ImageRenderer(
-            new RendererStyle($size, 0),
-            new ImagickImageBackEnd(),
-        );
-        $bacon    = new \BaconQrCode\Writer($renderer);
-        $data     = $bacon->writeString($url, 'utf-8', \BaconQrCode\Common\ErrorCorrectionLevel::M());
-        return 'data:image/png;base64,' . base64_encode($data);
-    }
-
-    protected function _getQRParams($params)
-    {
-        $size = !empty($params['width']) && (int) $params['width'] > 0 ? (int) $params['width'] : 200;
-        $level = !empty($params['level']) && array_search($params['level'], array('L', 'M', 'Q', 'H')) !== false ? $params['level'] : 'M';
-
-        return [$size, $level];
+        return (new QRCode(new QROptions([
+            'eccLevel' => QRCode::ECC_M,
+            'bgColor' => [255, 255, 255],
+            'imageTransparent' => false,
+            'scale' => 4,
+        ])))->render($url);
     }
 
     /**
@@ -89,8 +78,6 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
 
         $params['alt']    = $this->translator->trans('QR Code');
         $params['class']  = 'floatLeft';
-        $params['height'] = 200;
-        $params['width']  = 200;
         $params['src']    = \MUtil\Html::raw($this->_getQRCodeInline(
             $name,
             $formData['twoFactorKey'],
