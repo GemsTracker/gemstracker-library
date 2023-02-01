@@ -34,6 +34,7 @@ class AuditLog
      */
     protected function getAction(string $action): array
     {
+        $action = strtolower($action);
         $actions = $this->getDbActions();
         if (isset($actions[$action])) {
             return $actions[$action];
