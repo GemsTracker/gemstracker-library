@@ -19,17 +19,9 @@ class HotpAdapter implements OtpAdapterInterface
 
     public function __construct(
         array $settings,
-        private readonly User $user,
         private readonly HelperAdapter $throttleCache,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
-
-        $this->otp = HOTP::create(
-            $user->getTwoFactorKey(),
-            $user->getOtpCount(),
-            'sha1',
-            $this->codeLength,
-        );
 
         if (isset($settings['codeValidSeconds'])) {
             $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
@@ -50,16 +42,26 @@ class HotpAdapter implements OtpAdapterInterface
         return HOTP::create(digest: 'sha1', digits: $this->codeLength)->getSecret();
     }
 
-    public function generateCode(): string
+    private function createHotp(User $user): HOTP
     {
-        $this->user->incrementOtpCount();
-
-        return $this->otp->at($this->user->getOtpCount());
+        return HOTP::create(
+            $user->getTwoFactorKeyForAdapter('Hotp'),
+            $user->getOtpCount(),
+            'sha1',
+            $this->codeLength,
+        );
     }
 
-    public function verify(string $code): bool
+    public function generateCode(User $user): string
     {
-        $currentOtpRequested = $this->user->getOtpRequested();
+        $user->incrementOtpCount();
+
+        return $this->createHotp($user)->at($user->getOtpCount());
+    }
+
+    public function verify(User $user, string $code): bool
+    {
+        $currentOtpRequested = $user->getOtpRequested();
 
         $otpValidUntil = $currentOtpRequested->add(new DateInterval('PT' . $this->codeValidSeconds . 'S'));
 
@@ -67,7 +69,7 @@ class HotpAdapter implements OtpAdapterInterface
             return false;
         }
 
-        return $this->otp->verify($code, $this->user->getOtpCount(), 0);
+        return $this->createHotp($user)->verify($code, $user->getOtpCount(), 0);
     }
 
     public function getCodeValidSeconds(): int

@@ -37,7 +37,7 @@ class SmsOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
     public function sendCode(): bool
     {
         if ($this->canSendOtp($this->user)) {
-            $code = $this->otp->generateCode();
+            $code = $this->otp->generateCode($this->user);
 
             $body = sprintf($this->translator->trans('Please authenticate with this number: %s'), $code);
 

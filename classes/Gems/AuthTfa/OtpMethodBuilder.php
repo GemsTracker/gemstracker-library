@@ -22,12 +22,12 @@ class OtpMethodBuilder
     ) {
     }
 
-    private function buildSpecificOtpMethod(string $className, User $user): OtpMethodInterface
+    public function buildSpecificOtpMethod(string $className, User $user): OtpMethodInterface
     {
         $settings = $this->config['twofactor']['methods'][$className] ?? [];
 
         return match($className) {
-            'AppTotp' => new AppTotp($settings, $this->translator, $user, $this->throttleCache),
+            'AppTotp' => new AppTotp($settings, $this->translator, $user, $this->throttleCache, $this->config),
             'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache),
             'SmsHotp' => new SmsHotp(
                 $settings,

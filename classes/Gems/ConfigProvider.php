@@ -669,6 +669,7 @@ class ConfigProvider
                 ],
             ],
             'requireAppTotp' => true,
+            'required' => true,
         ];
     }
 

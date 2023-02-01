@@ -1649,6 +1649,32 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
+     * @return string|null
+     */
+    public function getTwoFactorKeyForAdapter(string $adapter): ?string
+    {
+        $adapters = [
+            'Hotp' => ['MailHotp', 'SmsHotp'],
+            'Totp' => ['AppTotp'],
+        ];
+
+        if ($this->hasTfaConfigured()) {
+            [$method, $key] = explode(
+                TwoFactorAuthenticatorInterface::SEPERATOR,
+                $this->_getVar('user_two_factor_key'),
+                2
+            );
+
+            if (in_array($method, $adapters[$adapter], true)) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
      * @return string
      */
     public function getUserDefinitionClass()

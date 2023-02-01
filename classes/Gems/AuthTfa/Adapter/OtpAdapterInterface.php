@@ -8,9 +8,9 @@ interface OtpAdapterInterface
 {
     public function generateSecret(): string;
 
-    public function generateCode(): string;
+    public function generateCode(User $user): string;
 
-    public function verify(string $code): bool;
+    public function verify(User $user, string $code): bool;
 
     public function getCodeValidSeconds(): int;
 
