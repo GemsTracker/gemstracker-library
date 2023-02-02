@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Gems\Factory;
 
+use Gems\Mail\MailBouncer;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Mailer\Mailer;
@@ -22,6 +23,10 @@ class MailerFactory implements FactoryInterface
         } else {
             $transport = new SendmailTransport();
         }
+
+        // Load the MailBouncer to enable it
+        $container->get(MailBouncer::class);
+
         $mailer = new Mailer($transport);
 
         return $mailer;
