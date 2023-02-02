@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\LogHandler;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -62,8 +63,10 @@ class StaffLogHandler extends LogHandler
         Model $modelLoader,
         Adapter $db,
         protected UserLoader $userLoader,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($responder, $translate, $modelLoader, $db);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
