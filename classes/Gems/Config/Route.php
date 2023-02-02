@@ -422,6 +422,11 @@ class Route
                     'id1' => '[a-zA-Z0-9-_]+',
                     'id2' => '\d+',
                 ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'change-consent',
+                    'change-organization',
+                ]
             ),
             [
                 'name' => 'respondent-show',
