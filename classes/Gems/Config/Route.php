@@ -1025,7 +1025,6 @@ class Route
             pages: [
                 'edit',
                 'overview',
-                'change-password',
                 'two-factor',
             ],
             parameterRoutes: [],

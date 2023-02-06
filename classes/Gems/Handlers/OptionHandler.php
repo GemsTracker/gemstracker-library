@@ -12,9 +12,7 @@
 namespace Gems\Handlers;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\Loader;
 use Gems\Model;
-use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -36,25 +34,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array
      */
     public array $cacheTags = ['staff'];
-
-    /**
-     * The parameters used for the reset action.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $changePasswordParameters = [
-        'askOld'           => true,
-        'menuShowSiblings' => true,
-        'routeAction'      => 'edit',
-        'user'             => 'getCurrentUser',
-    ];
-
-    /**
-     * Snippets for reset
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $changePasswordSnippets = ['User\\PasswordResetSnippet'];
 
     /**
      * The parameters used for the create and edit actions.
@@ -151,23 +130,10 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        private readonly Loader $loader,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
     ) {
         parent::__construct($responder, $translate);
-    }
-
-    /**
-     * Allow a user to change his / her password.
-     */
-    public function changePasswordAction()
-    {
-        if ($this->changePasswordSnippets) {
-            $params = $this->_processParameters($this->changePasswordParameters);
-
-            $this->addSnippets($this->changePasswordSnippets, $params);
-        }
     }
 
     /**

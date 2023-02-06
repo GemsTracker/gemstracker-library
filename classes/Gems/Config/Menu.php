@@ -1491,7 +1491,7 @@ class Menu
                     'type' => 'route-link-item',
                 ],
                 [
-                    'name' => 'option.change-password',
+                    'name' => 'auth.change-password',
                     'label' => $this->translator->trans('Change password'),
                     'type' => 'route-link-item',
                 ],
