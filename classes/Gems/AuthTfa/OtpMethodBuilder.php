@@ -49,4 +49,9 @@ class OtpMethodBuilder
     {
         $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret(), $enabled);
     }
+
+    public function setOtpMethodAndSecret(User $user, string $className, string $secret, ?bool $enabled = null): void
+    {
+        $user->setTfa($className, $secret, $enabled);
+    }
 }

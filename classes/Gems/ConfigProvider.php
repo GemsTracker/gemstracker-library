@@ -664,7 +664,7 @@ class ConfigProvider
                 ],
                 'AppTotp' => [
                     'codeLength' => 6,
-                    'codeValidSeconds' => 300,
+                    'codeValidSeconds' => 30,
                     'maxVerifyOtpAttempts' => 5,
                 ],
             ],

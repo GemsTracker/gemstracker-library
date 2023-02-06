@@ -92,14 +92,29 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
             ->img($params);
         $form->addElement($imgElement);
 
+        $newKeyElement = new \MUtil\Form\Element\FakeSubmit('new_key');
+        $newKeyElement->setLabel($this->translator->trans('Generate new'))
+            ->setAttrib('class', 'button');
+        $form->addElement($newKeyElement);
+
         $keyElement = $form
             ->createElement('Text', 'twoFactorKey', [
-                'label' => $this->translator->trans('TFA key'),
+                'label' => $this->translator->trans('New TFA key'),
                 'disabled' => 'disabled',
                 'readonly' => 'readonly',
             ])
-            ->setValue($formData['twoFactorKey']);
+            ->setValue($formData['twoFactorKey'])
+            ->setDescription($this->translator->trans('The key corresponding to your new TFA. You can safely ignore it.'));
 
         $form->addElement($keyElement);
+
+        $codeElement = $form
+            ->createElement('Text', 'twoFactorCode', [
+                'label' => $this->translator->trans('TFA code'),
+                'required' => true,
+            ])
+            ->setDescription($this->translator->trans('Enter the 6-digit TFA code to confirm the new TFA'));
+
+        $form->addElement($codeElement);
     }
 }

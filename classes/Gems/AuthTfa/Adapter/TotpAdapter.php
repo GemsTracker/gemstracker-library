@@ -58,6 +58,13 @@ class TotpAdapter implements OtpAdapterInterface
         return $totp->verify($code, null, $totp->getPeriod() - 1);
     }
 
+    public function verifyForSecret(string $secret, string $code): bool
+    {
+        $totp = TOTP::create($secret, $this->codeValidSeconds, 'sha1', $this->codeLength);
+
+        return $totp->verify($code, null, $totp->getPeriod() - 1);
+    }
+
     public function getCodeValidSeconds(): int
     {
         return $this->codeValidSeconds;

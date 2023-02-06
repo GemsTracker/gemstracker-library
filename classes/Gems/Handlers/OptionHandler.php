@@ -247,7 +247,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function getShowTwoFactorTitle()
     {
-        return $this->_('Two factor setup');
+        return $this->_('Set a new two factor code');
     }
 
     /**

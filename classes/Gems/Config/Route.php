@@ -1022,6 +1022,9 @@ class Route
                 'two-factor',
             ],
             parameterRoutes: [],
+            postRoutes: [
+                'two-factor',
+            ],
         );
     }
 }
