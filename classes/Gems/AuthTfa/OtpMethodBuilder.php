@@ -45,13 +45,13 @@ class OtpMethodBuilder
         return $this->buildSpecificOtpMethod($user->getTfaMethodClass(), $user);
     }
 
-    public function setOtpMethod(User $user, string $className, ?bool $enabled = null): void
+    public function setOtpMethod(User $user, string $className): void
     {
-        $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret(), $enabled);
+        $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret());
     }
 
-    public function setOtpMethodAndSecret(User $user, string $className, string $secret, ?bool $enabled = null): void
+    public function setOtpMethodAndSecret(User $user, string $className, string $secret): void
     {
-        $user->setTfa($className, $secret, $enabled);
+        $user->setTfa($className, $secret);
     }
 }

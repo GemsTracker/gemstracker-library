@@ -46,7 +46,6 @@ class RespondentUserDefinition extends \Gems\User\DbUserDefinitionAbstract
         $select->from('gems__user_logins', array(
                     'user_login_id'       => 'gul_id_user',
                     'user_two_factor_key' => 'gul_two_factor_key',
-                    'user_enable_2factor' => 'gul_enable_2factor',
                     'user_otp_count'      =>'gul_otp_count',
                     'user_otp_requested'  =>'gul_otp_requested',
                     'user_active'         => 'gul_can_login',

@@ -1023,6 +1023,7 @@ class Route
             ],
             parameterRoutes: [],
             postRoutes: [
+                'edit',
                 'two-factor',
             ],
         );

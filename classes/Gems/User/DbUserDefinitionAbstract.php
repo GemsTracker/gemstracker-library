@@ -336,7 +336,6 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
             $sql = $select->__toString();
             $sql = str_replace([
                 '`gems__user_logins`.`gul_two_factor_key`',
-                '`gems__user_logins`.`gul_enable_2factor`',
                 '`gems__staff`.`gsf_is_embedded`',
                 ], 'NULL', $sql);
             // \MUtil\EchoOut\EchoOut::track($sql);
@@ -457,17 +456,12 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
      *
      * @param \Gems\User\User $user The user whose key to set
      * @param string $newKey
-     * @param boolean $enabled Optional, only set when not null
      * @return $this
      */
-    public function setTwoFactorKey(\Gems\User\User $user, $newKey, $enabled = null)
+    public function setTwoFactorKey(\Gems\User\User $user, $newKey)
     {
         $data['gul_id_user']        = $user->getUserLoginId();
         $data['gul_two_factor_key'] = $newKey;
-
-        if (null !== $enabled) {
-            $data['gul_enable_2factor'] = $enabled ? 1 : 0;
-        }
 
         $model = new \MUtil\Model\TableModel('gems__user_logins');
         \Gems\Model::setChangeFieldsByPrefix($model, 'gul', $user->getUserId());

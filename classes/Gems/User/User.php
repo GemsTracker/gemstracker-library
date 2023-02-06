@@ -1589,16 +1589,13 @@ class User extends \MUtil\Translate\TranslateableAbstract
         };
     }
 
-    public function setTfa(string $className, string $secret, ?bool $enabled = null): void
+    public function setTfa(string $className, string $secret): void
     {
         $newValue = $className . TwoFactorAuthenticatorInterface::SEPERATOR . $secret;
 
         $this->_setVar('user_two_factor_key', $newValue);
-        if ($enabled !== null) {
-            $this->_setVar('user_enable_2factor', $enabled ? 1 : 0);
-        }
 
-        $this->definition->setTwoFactorKey($this, $newValue, $enabled);
+        $this->definition->setTwoFactorKey($this, $newValue);
     }
 
     /**
@@ -2008,7 +2005,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function isTwoFactorEnabled()
     {
-        return (boolean) $this->_getVar('user_enable_2factor') && $this->hasTwoFactor();
+        return (boolean) $this->hasTwoFactor();
     }
 
     /**
@@ -2564,7 +2561,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $enabled
      * @return $this
      */
-    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey, $enabled = null)
+    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey)
     {
         // Make sure the authclass is part of the data
         $authClass = get_class($authenticator);
@@ -2577,11 +2574,8 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $newValue = $authClass . TwoFactorAuthenticatorInterface::SEPERATOR . $newKey;
 
         $this->_setVar('user_two_factor_key', $newValue);
-        if (null !== $enabled) {
-            $this->_setVar('user_enable_2factor', $enabled ? 1 : 0);
-        }
 
-        $this->definition->setTwoFactorKey($this, $newValue, $enabled);
+        $this->definition->setTwoFactorKey($this, $newValue);
 
         return $this;
     }

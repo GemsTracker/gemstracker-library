@@ -12,7 +12,16 @@
 namespace Gems\Snippets\User;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Loader;
+use Gems\Model;
+use Gems\User\User;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\Zend\ZendModelFormSnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,7 +32,7 @@ use Zalt\Model\Data\FullDataInterface;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 15:15:07
  */
-class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
+class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
 {
     /**
      *
@@ -31,23 +40,20 @@ class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      */
     protected $basepath;
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
+    protected User $currentUser;
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected ModelAbstract $model;
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        private readonly Model $modelContainer,
+        private readonly Loader $loader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+    }
 
     /**
      * Hook that allows actions when data was saved
@@ -103,7 +109,7 @@ class OwnAccountEditSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Model\StaffModel) {
-            $this->model = $this->loader->getModels()->getStaffModel(false);
+            $this->model = $this->modelContainer->getStaffModel(false);
             $this->model->applyOwnAccountEdit();
         }
 

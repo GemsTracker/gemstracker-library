@@ -13,6 +13,7 @@ namespace Gems\Handlers;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Loader;
+use Gems\Model;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -69,6 +70,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         'menuShowChildren' => true,
         'onlyUsedElements' => true,
         'routeAction'      => 'edit',
+        'currentUser'      => 'getCurrentUser',
     ];
 
     /**
@@ -151,6 +153,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         private readonly Loader $loader,
         private readonly CurrentUserRepository $currentUserRepository,
+        private readonly Model $modelContainer,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -180,7 +183,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function createModel(bool $detailed, string $action): DataReaderInterface
     {
-        $model = $this->loader->getModels()->getStaffModel(false);
+        $model = $this->modelContainer->getStaffModel(false);
 
         $model->applyOwnAccountEdit();
 

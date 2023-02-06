@@ -118,7 +118,7 @@ class AdminPasswordResetSnippet extends ZendFormSnippetAbstract
                 } else {
                     $this->user->clearTwoFactorKey();
 
-                    $this->otpMethodBuilder->setOtpMethod($this->user, 'SmsHotp', true);
+                    $this->otpMethodBuilder->setOtpMethod($this->user, 'SmsHotp');
 
                     $mailFields = $this->communicationRepository->getUserMailFields($this->user, $language);
                     $successMessage = sprintf(

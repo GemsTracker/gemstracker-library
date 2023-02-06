@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\User;
 
+use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\MenuNew\RouteHelper;
@@ -80,7 +81,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
                 'label' => $this->_('Two Factor method'),
                 'value' => reset($methods),
-                'onchange' => 'this.form.submit();',
             ]);
         }
         $form->addElement($methodElement);
@@ -88,19 +88,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         if ($this->tfaMethod) {
             $this->tfaMethod->addSetupFormElements($form, $this->formData);
         }
-
-        $options = [
-            'label' => $this->_('Enabled'),
-        ];
-        if (!$this->user->canSaveTwoFactorKey()) {
-            $options['disabled'] = true;
-        }
-        if ($this->config['twofactor']['required']) {
-            $options['required'] = true;
-        }
-
-        $keyElement = $form->createElement('Checkbox', 'twoFactorEnabled', $options);
-        $form->addElement($keyElement);
     }
 
     /**
@@ -165,15 +152,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             // Set on save
             $output['twoFactorEnabled'] = 1;
         } else {*/
-
-        $output['twoFactorEnabled'] = 0;
-        if ($this->user->hasTfaConfigured() && $this->user->isTwoFactorEnabled()) {
-            $output['twoFactorEnabled'] = 1;
-        }
-
-        if (! $output['twoFactorEnabled']) {
-            $this->addMessage($this->_('Two factor authentication not active!'));
-        }
         // }
         $output['twoFactorKey'] = null;
 
@@ -304,12 +282,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         $this->formData['twoFactorCode'] = '';
 
         if ($newKey && !empty($code)) {
-            if ($this->user->canSaveTwoFactorKey()) {
-                $enabled = $this->formData['twoFactorEnabled'] ? 1 : 0;
-            } else {
-                $enabled = null;
-            }
-
             $className = (new \ReflectionClass($this->tfaMethod))->getShortName();
             $otpMethod = $this->otpMethodBuilder->buildSpecificOtpMethod($className, $this->user);
             if (!$otpMethod->verifyForSecret($newKey, $code)) {
@@ -321,9 +293,9 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             $this->otpMethodBuilder->setOtpMethodAndSecret(
                 $this->user,
                 $className,
-                $newKey,
-                $enabled
+                $newKey
             );
+            LoginStatusTracker::make($this->session, $this->user)->setRequireAppTotpActive(false);
 
             $this->addMessage($this->_('Two factor authentication setting saved.'));
             $this->generateNewKey();

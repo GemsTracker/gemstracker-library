@@ -435,7 +435,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         $user = $this->getSelectedUser();
         $user->clearTwoFactorKey();
 
-        $this->otpMethodBuilder->setOtpMethod($user, 'SmsHotp', true);
+        $this->otpMethodBuilder->setOtpMethod($user, 'SmsHotp');
 
         $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $statusMessenger->addMessage(

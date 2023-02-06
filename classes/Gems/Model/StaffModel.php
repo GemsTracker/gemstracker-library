@@ -321,13 +321,6 @@ class StaffModel extends \Gems\Model\JoinModel
             'elementClass', 'Exhibitor',
             'multiOptions', $factorOptions
         );
-        if ($detailed) {
-            $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-            );
-        }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
