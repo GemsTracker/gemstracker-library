@@ -21,6 +21,7 @@ class LayoutRenderer
         'statusMessenger' => FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE,
         LocaleMiddleware::LOCALE_ATTRIBUTE,
         AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE,
+        AuthenticationMiddleware::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE,
         CurrentOrganizationMiddleware::CURRENT_ORGANIZATION_ATTRIBUTE,
         CsrfMiddleware::GUARD_ATTRIBUTE,
     ];

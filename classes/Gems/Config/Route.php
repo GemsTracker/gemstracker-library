@@ -117,6 +117,23 @@ class Route
                 ],
             ],
             [
+                'name' => 'auth.logout',
+                'path' => '/logout',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
+                    AuditLogMiddleware::class,
+                    LogoutHandler::class,
+                ],
+            ],
+            [
                 'name' => 'embed.login',
                 'path' => '/embed/login',
                 'allowed_methods' => ['GET', 'POST'],
@@ -211,16 +228,6 @@ class Route
     public function getGeneralRoutes(): array
     {
         return [
-            [
-                'name' => 'auth.logout',
-                'path' => '/logout',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LocaleMiddleware::class,
-                    LogoutHandler::class,
-                ],
-            ],
             [
                 'name' => 'auth.change-password',
                 'path' => '/change-password',
