@@ -30,3 +30,5 @@ VALUES ('Global TFA reset', 'staffPassword', 'tfaReset', now(), '0', now(), '0')
 INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`, `gctt_subject`, `gctt_body`) VALUES
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'en', 'Your TFA has been reset', 'Your softtoken TFA has been reset for the [b]{{organization}}[/b] site [b]{{project}}[/b]. Next time you log in, you will need to verify your login using SMS TFA, after which you can reactivate softtoken TFA.'),
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'nl', 'Je TFA is gereset', 'Je softtoken TFA voor [b]{{organization}}[/b] site [b]{{project}}[/b] is zojuist gewist. De volgende keer dat je inlogt zul je met SMS TFA inloggen, waarna je weer softtoken TFA kunt instellen.');
+
+ALTER TABLE `gems__user_logins` DROP `gul_enable_2factor`;
