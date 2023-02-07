@@ -767,7 +767,7 @@ class Menu
                                         ],
                                         [
                                             'name' => 'setup.access.staff.reset',
-                                            'label' => $this->translator->trans('Reset password'),
+                                            'label' => $this->translator->trans('Reset auth.'),
                                             'type' => 'route-link-item',
                                         ],
                                         [

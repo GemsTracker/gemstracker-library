@@ -161,7 +161,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $resetSnippets = ['User\\AdminPasswordResetSnippet'];
+    protected array $resetSnippets = ['Staff\\StaffResetAuthenticationSnippet'];
 
     /**
      * The parameters used for the mail action.

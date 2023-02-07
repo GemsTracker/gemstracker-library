@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Snippets\User;
+namespace Gems\Snippets\Staff;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Communication\CommunicationRepository;
@@ -31,7 +31,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 11:47:11
  */
-class AdminPasswordResetSnippet extends ZendFormSnippetAbstract
+class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 {
     protected User $user;
 
