@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Audit\AccesslogRepository;
 use Gems\Agenda\Agenda;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Communication\CommunicationRepository;
@@ -17,6 +17,7 @@ use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
 use Gems\Repository\AccessRepository;
+use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
 use Gems\Repository\SourceRepository;
 use Gems\Repository\StaffRepository;
@@ -81,6 +82,7 @@ class LegacyConfigProvider
                 'LegacyBatchRunnerLoader' => BatchRunnerLoader::class,
                 'LegacyCache' => CacheItemPoolInterface::class,
                 'LegacyCommunicationRepository' => CommunicationRepository::class,
+                'LegacyCommJobRepository' => CommJobRepository::class,
                 'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyConsentUtil' => ConsentUtil::class,

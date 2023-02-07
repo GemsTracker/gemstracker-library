@@ -164,11 +164,12 @@ class RouteHelper
 
         foreach ($configRoutes as $route) {
             if (isset($route['options']['privilege'])) {
-                $privileges[$route['options']['privilege']] = true;
+                $label = $route['options']['privilegeLabel'] ?? $route['options']['privilege'];
+                $privileges[$route['options']['privilege']] = $label;
             }
         }
 
-        return array_keys($privileges);
+        return $privileges;
     }
 
     public function getRoute(string $name): ?array

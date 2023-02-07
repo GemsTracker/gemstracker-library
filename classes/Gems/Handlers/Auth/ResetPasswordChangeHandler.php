@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Gems\Handlers\Auth;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Audit\AccesslogRepository;
 use Gems\Layout\LayoutRenderer;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Session\ValidationMessenger;

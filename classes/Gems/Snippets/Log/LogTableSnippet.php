@@ -11,7 +11,10 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Model;
 use Gems\Model\LogModel;
+use Gems\Snippets\ModelTableSnippetAbstract;
+use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -24,7 +27,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 17:17:48
  */
-class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
+class LogTableSnippet extends ModelTableSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -33,13 +36,12 @@ class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      *
      * @var array
      */
-    protected $_fixedSort = array('gla_created' => SORT_DESC);
+    protected $_fixedSort = ['gla_created' => SORT_DESC];
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var Model
      */
-    protected $loader;
+    protected $modelLoader;
 
     /**
      *
@@ -60,12 +62,13 @@ class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
         if (! $this->columns) {
-            $br   = \MUtil\Html::create('br');
+            $this->columns = [];
+            $br   = Html::create('br');
 
-            $this->columns[10] = array('gla_created', $br, 'gls_name');
-            $this->columns[20] = array('gla_message');
-            $this->columns[30] = array('staff_name', $br, 'gla_role');
-            $this->columns[40] = array('respondent_name', $br, 'gla_organization');
+            $this->columns[10] = ['gla_created', $br, 'gls_name'];
+            $this->columns[20] = ['gla_message'];
+            $this->columns[30] = ['staff_name', $br, 'gla_role'];
+            $this->columns[40] = ['respondent_name', $br, 'gla_organization'];
         }
 
         parent::addBrowseTableColumns($bridge, $model);
@@ -79,7 +82,7 @@ class LogTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof LogModel) {
-            $this->model = $this->loader->getModels()->createLogModel();
+            $this->model = $this->modelLoader->createLogModel();
             $this->model->applyBrowseSettings();
         }
 

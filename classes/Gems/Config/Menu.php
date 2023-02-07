@@ -219,6 +219,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
+                                            'name' => 'respondent.tracks.answer',
+                                            'label' => $this->translator->trans('Answers'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
                                             'name' => 'respondent.tracks.delete',
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
@@ -272,26 +277,9 @@ class Menu
                             'type' => 'route-link-item',
                             'children' => [
                                 [
-                                    'name' => 'respondent.activity-log.create',
-                                    'label' => $this->translator->trans('New'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
                                     'name' => 'respondent.activity-log.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
-                                    'children' => [
-                                        [
-                                            'name' => 'respondent.activity-log.edit',
-                                            'label' => $this->translator->trans('Edit'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.activity-log.delete',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                    ],
                                 ],
                             ],
                         ],
@@ -787,9 +775,16 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff.staff-log',
+                                            'name' => 'setup.access.staff-log.index',
                                             'label' => $this->translator->trans('Staff log'),
                                             'type' => 'route-link-item',
+                                            'children' => [
+                                                [
+                                                    'name' => 'setup.access.staff-log.show',
+                                                    'label' => $this->translator->trans('Show'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
@@ -1143,6 +1138,37 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'setup.log.maintenance.index',
+                    'label' => $this->translator->trans('Log Setup'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.log.maintenance.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.log.maintenance.edit',
+                                    'label' => $this->translator->trans('Edit'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'setup.log.activity.index',
+                    'label' => $this->translator->trans('Activity log'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'setup.log.activity.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
+                ],
             ],
         ];
     }
@@ -1431,7 +1457,7 @@ class Menu
                             ],
                         ],
                         [
-                            'name' => 'track-builder.track-maintenance.track-overview',
+                            'name' => 'track-builder.track-maintenance.track-overview.index',
                             'label' => $this->translator->trans('Track per org'),
                             'type' => 'route-link-item',
                         ],

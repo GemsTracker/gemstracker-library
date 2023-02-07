@@ -5,6 +5,7 @@ namespace Gems\Messenger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Messenger\Exception\TransportException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Transport\InMemoryTransport;
 use Symfony\Component\Messenger\Bridge\Redis\Transport\RedisTransport;
 use Symfony\Component\Messenger\Bridge\Redis\Transport\Connection as RedisConnection;
@@ -40,7 +41,7 @@ class TransportFactory implements FactoryInterface
             case 'doctrine':
                 return $this->getDoctrineTransport($transportConfig, $container);
             case 'sync':
-                return $this->getSyncTransport($transportConfig);
+                return $this->getSyncTransport($transportConfig, $container);
             default:
                 throw new \Exception(sprintf('Transport %s not supported', $dsnParts[0]));
         }
@@ -107,9 +108,9 @@ class TransportFactory implements FactoryInterface
         return new RedisTransport(RedisConnection::fromDsn($transportConfig['dsn']));
     }
 
-    protected function getSyncTransport(array $transportConfig): SyncTransport
+    protected function getSyncTransport(array $transportConfig, ContainerInterface $container): SyncTransport
     {
-
-        return new SyncTransport();
+        $bus = $container->get(MessageBusInterface::class);
+        return new SyncTransport($bus);
     }
 }

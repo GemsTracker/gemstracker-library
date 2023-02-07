@@ -264,6 +264,11 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
 
         return $form;
     }
+
+    public function getConsoleUser(): User
+    {
+        return $this->loadUser(self::USER_CONSOLE, 70, 'console');
+    }
     
     public function getCurrentUser() : User
     {

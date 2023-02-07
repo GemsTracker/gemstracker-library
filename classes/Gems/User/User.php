@@ -951,7 +951,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
                     "SELECT ggp_may_set_groups FROM gems__groups WHERE ggp_id_group = ?",
                     $groupId
                     );
-            $groupsAllowed = is_array($setGroups) ? $setGroups : explode(',', $setGroups);
+            $groupsAllowed = is_array($setGroups) ? $setGroups : ($setGroups ? explode(',', $setGroups) : []);
         } catch (\Zend_Db_Exception $e) {
             // The database might not be updated
             $groupsAllowed = [];
@@ -2327,12 +2327,22 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
+     * Set the group of the current user from session
+     *
+     * @param int $groupId
+     */
+    public function setCurrentGroupId(int $groupId): void
+    {
+        $this->_setVar('current_user_group', $groupId);
+    }
+
+    /**
      * (Temporarily) the group of the current user.
      *
      * @param int $groupId
      * @return self
      */
-    public function setGroupTemp($groupId)
+/*    public function setGroupTemp($groupId)
     {
         $this->_group = null;
 
@@ -2359,7 +2369,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             }
         }
         return $this;
-    }
+    }*/
 
     /**
      * Set the locale for this user..

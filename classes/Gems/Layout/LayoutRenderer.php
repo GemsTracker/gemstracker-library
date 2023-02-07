@@ -41,6 +41,26 @@ class LayoutRenderer
         return null;
     }
 
+    protected function getUiSwitchGroups(ServerRequestInterface $request): ?array
+    {
+        /** @var User $user */
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
+            return $user->getAllowedStaffGroups(false);
+        }
+        return null;
+    }
+
+    protected function getUiSwitchCurrentGroup(ServerRequestInterface $request): ?int
+    {
+        /** @var User $user */
+        $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
+        if ($user instanceof User /*&& $user->hasPrivilege('pr.group.switch')*/) {
+            return $user->getGroupId();
+        }
+        return null;
+    }
+
     protected function getDefaultParams(ServerRequestInterface $request): array
     {
         $params = [];
@@ -61,10 +81,12 @@ class LayoutRenderer
     public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
     {
         $defaultParams = $this->getDefaultParams($request);
-        if (!$layoutSettings->showMenu()) {
-            $defaultParams[MenuMiddleware::class] = null;
+        if (!$layoutSettings->showMenu() && isset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE])) {
+            unset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE]);
         }
         $params['available_organizations'] = $this->getAvailableOrganizations($request);
+        $params['ui_switch_groups'] = $this->getUiSwitchGroups($request);
+        $params['ui_switch_current_group'] = $this->getUiSwitchCurrentGroup($request);
 
         $params['resources'] = [
             'general' => 'resource/js/general.js'

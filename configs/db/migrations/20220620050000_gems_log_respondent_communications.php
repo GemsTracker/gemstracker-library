@@ -35,7 +35,7 @@ class GemsLogRespondentCommunications extends Phinx\Migration\AbstractMigration
                 'signed' => false,
                 'after' => 'grco_id_to',
             ])
-            ->addForeignKey('grco_id_by', 'gems__staff', 'gsf_id_user')
+            // ->addForeignKey('grco_id_by', 'gems__staff', 'gsf_id_user')
             ->addColumn('grco_organization', 'integer', [
                 'null' => false,
                 'limit' => MysqlAdapter::INT_BIG,

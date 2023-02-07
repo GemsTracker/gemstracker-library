@@ -9,7 +9,17 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
+
+use Gems\Handlers\LogHandler;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use Laminas\Db\Adapter\Adapter;
+use Gems\Model;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -20,7 +30,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 17:36:20
  */
-class StaffLogAction extends \Gems\Actions\LogAction
+class StaffLogHandler extends LogHandler
 {
     /**
      * The parameters used for the autofilter action.
@@ -32,7 +42,7 @@ class StaffLogAction extends \Gems\Actions\LogAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('extraFilter' => 'getStaffFilter');
+    protected array $autofilterParameters = ['extraFilter' => 'getStaffFilter'];
 
     /**
      *
@@ -45,7 +55,19 @@ class StaffLogAction extends \Gems\Actions\LogAction
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Log\\StaffLogSearchSnippet');
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\StaffLogSearchSnippet'];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Model $modelLoader,
+        Adapter $db,
+        protected UserLoader $userLoader,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($responder, $translate, $modelLoader, $db);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -58,7 +80,7 @@ class StaffLogAction extends \Gems\Actions\LogAction
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
         // Make sure the user is loaded
         $user = $this->getSelectedUser();
@@ -73,7 +95,7 @@ class StaffLogAction extends \Gems\Actions\LogAction
             }
         }
 
-        return $this->loader->getModels()->getStaffLogModel($detailed);
+        return $this->modelLoader->getStaffLogModel($detailed);
     }
 
     /**
@@ -83,7 +105,7 @@ class StaffLogAction extends \Gems\Actions\LogAction
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         $data = parent::getSearchDefaults();
 
@@ -98,9 +120,9 @@ class StaffLogAction extends \Gems\Actions\LogAction
      * Load the user selected by the request - if any
      *
      * @staticvar \Gems\User\User $user
-     * @return \Gems\User\User or false when not available
+     * @return User or false when not available
      */
-    public function getSelectedUser()
+    public function getSelectedUser(): User|bool
     {
         static $user = null;
 
@@ -110,14 +132,10 @@ class StaffLogAction extends \Gems\Actions\LogAction
 
         $staffId = $this->_getIdParam();
         if ($staffId) {
-            $user   = $this->loader->getUserLoader()->getUserByStaffId($staffId);
-            $source = $this->menu->getParameterSource();
-            $user->applyToMenuSource($source);
-        } else {
-            $user = false;
+            $user   = $this->userLoader->getUserByStaffId($staffId);
+            return $user;
         }
-
-        return $user;
+        return false;
     }
 
     /**
@@ -125,8 +143,8 @@ class StaffLogAction extends \Gems\Actions\LogAction
      *
      * @return array
      */
-    public function getStaffFilter()
+    public function getStaffFilter(): array
     {
-        return array('gla_by' => intval($this->_getIdParam()));
+        return ['gla_by' => intval($this->_getIdParam())];
     }
 }

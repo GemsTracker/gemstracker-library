@@ -8,7 +8,13 @@
 
 namespace Gems\Snippets\Staff;
 
+use Gems\Loader;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Description of StaffCreateEditSnippet
@@ -25,19 +31,24 @@ class StaffCreateEditSnippet extends ModelFormSnippet
     protected $isStaff = true;
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * When true we're switching from staff user to system user
      *
      * @var boolean
      */
     protected $switch = false;
 
-     /**
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        private readonly Loader $loader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
+
+    /**
      * Retrieve the header title to display
      *
      * @return string

@@ -9,9 +9,14 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Setup;
 
+use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Model\JoinModel;
 use Gems\Util\Translated;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * The maintenace screen for the action log
@@ -22,7 +27,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
+class LogMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -34,7 +39,7 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = [
+    protected array $autofilterParameters = [
         'extraSort' => ['gls_name' => SORT_ASC],
     ];
 
@@ -48,7 +53,7 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = [
+    protected array $createEditParameters = [
         'cacheTags' => ['accesslog_actions'],
     ];
 
@@ -57,12 +62,16 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet'];
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogMaintenanceSearchSnippet'];
 
-    /**
-     * @var Translated
-     */
-    public $translatedUtil;
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Translated $translatedUtil,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -75,9 +84,9 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = new \Gems\Model\JoinModel('log_maint', 'gems__log_setup', 'gls', true);
+        $model = new JoinModel('log_maint', 'gems__log_setup', 'gls', true);
         $model->set('gls_name', 'label', $this->_('Action'),
                 'elementClass', ('create' == $action) ? 'Text' : 'Exhibitor',
                 'validators[unique]', $model->createUniqueValidator('gls_name'));
@@ -114,7 +123,7 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Logging Setup');
     }
@@ -125,7 +134,7 @@ class LogMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->_('Log action');
     }

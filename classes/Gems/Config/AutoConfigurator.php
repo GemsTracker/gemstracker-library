@@ -30,6 +30,7 @@ class AutoConfigurator
 
         $finder = $this->getFinder();
         foreach($finder as $file) {
+
             $className = str_replace(
                 '\\\\',
                 '\\',
@@ -41,13 +42,11 @@ class AutoConfigurator
             );
             try {
                 $fileReflector = new ReflectionClass($className);
+                $this->checkFileForAutoconfiguration($fileReflector);
             } catch (ReflectionException $e) {
+                //echo $e->getMessage();
             }
-
-            $this->checkFileForAutoconfiguration($fileReflector);
         }
-
-        $this->addChecksumToAutoConfig();
 
         if (count($this->autoconfigConfig)) {
             $this->writeAutoConfigConfig();
@@ -63,21 +62,21 @@ class AutoConfigurator
             if (isset($settings['implements'])) {
                 foreach($settings['implements'] as $interfaceClass => $targetSettings) {
                     if ($reflector->implementsInterface($interfaceClass) && !$reflector->isAbstract()) {
-                        $this->setSettings($reflector->getName(), $targetSettings);
+                        $this->setSettings($reflector, $targetSettings);
                     }
                 }
             }
             if (isset($settings['extends'])) {
                 foreach($settings['extends'] as $parentClass => $targetSettings) {
                     if ($reflector->isSubclassOf($parentClass) && !$reflector->isAbstract()) {
-                        $this->setSettings($reflector->getName(), $targetSettings);
+                        $this->setSettings($reflector, $targetSettings);
                     }
                 }
             }
             if (isset($settings['attribute'])) {
                 foreach($settings['attribute'] as $attributeClass => $targetSettings) {
                     if ($reflector->getAttributes($attributeClass) && !$reflector->isAbstract() && !$reflector->isInterface() && !$reflector->isTrait()) {
-                        $this->setSettings($reflector->getName(), $targetSettings);
+                        $this->setSettings($reflector, $targetSettings);
                     }
                 }
             }
@@ -159,15 +158,24 @@ class AutoConfigurator
         return !$this->hasChangedFiles($this->config['autoconfig']['checksum']);
     }
 
-    protected function setSettings(string $className, array $settings): void
+    protected function setSettings(ReflectionClass $class, string|array $settings): void
     {
-        if (isset($settings['config'])) {
+        if (is_string($settings)) {
+            if (class_exists($settings)) {
+                $settingGenerator = new $settings();
+                $newConfig = $settingGenerator($class, $this->config);
+                $this->autoconfigConfig = array_merge_recursive($this->autoconfigConfig, $newConfig);
+            }
+            return;
+        }
+
+        if (is_array($settings) && isset($settings['config'])) {
             $configNamespaceArray = explode('.', $settings['config']);
 
             $result = [];
             foreach(array_reverse($configNamespaceArray) as $namespaceItem) {
                 if (!$result) {
-                    $result = [$namespaceItem => [$className]];
+                    $result = [$namespaceItem => [$class->getName()]];
                     continue;
                 }
                 $result = [$namespaceItem => $result];

@@ -12,7 +12,7 @@ class RespondentCommunicationSent extends Event implements RespondentCommunicati
 
     protected Respondent $respondent;
 
-    protected User $currentUser;
+    protected int $currentUserId;
 
     protected array $from = [];
 
@@ -22,19 +22,19 @@ class RespondentCommunicationSent extends Event implements RespondentCommunicati
 
     private array $communicationJob;
 
-    public function __construct(Respondent $respondent, User $currentUser, array $communicationJob = [], )
+    public function __construct(Respondent $respondent, int $currentUserId, array $communicationJob = [], )
     {
         $this->respondent = $respondent;
-        $this->currentUser = $currentUser;
+        $this->currentUserId = $currentUserId;
         $this->communicationJob = $communicationJob;
     }
 
     /**
      * @return User
      */
-    public function getCurrentUser(): User
+    public function getCurrentUserId(): int
     {
-        return $this->currentUser;
+        return $this->currentUserId;
     }
 
     /**

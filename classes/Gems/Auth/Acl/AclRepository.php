@@ -128,7 +128,7 @@ class AclRepository
     {
         return array_values(array_unique(array_merge(
             array_keys($this->getSupplementaryPrivileges()),
-            RouteHelper::getAllRoutePrivilegesFromConfig($this->config['routes']),
+            array_keys(RouteHelper::getAllRoutePrivilegesFromConfig($this->config['routes'])),
         )));
     }
 

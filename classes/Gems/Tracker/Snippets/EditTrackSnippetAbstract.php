@@ -90,11 +90,6 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
     protected $trackId;
 
     /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
      * Optional, required when creating or loader should be set
      *
      * @var int The user ID of the one doing the changing
@@ -109,6 +104,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         MenuSnippetHelper $menuHelper,
         protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
+        protected Translated $translatedUtil,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
         $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();

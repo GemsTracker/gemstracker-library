@@ -4,9 +4,7 @@ namespace Gems\Event\Application;
 
 use Gems\Tracker\Token;
 
-interface TokenInterface
+interface TokenEventInterface
 {
     public function getToken(): Token;
-
-    public function setToken(Token $token): void;
 }

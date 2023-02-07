@@ -13,6 +13,7 @@ use Gems\Handlers\Auth\LogoutHandler;
 use Gems\Handlers\Auth\RequestPasswordResetHandler;
 use Gems\Handlers\Auth\ResetPasswordChangeHandler;
 use Gems\Handlers\Auth\TfaLoginHandler;
+use Gems\Handlers\ChangeGroupHandler;
 use Gems\Handlers\ChangeLanguageHandler;
 use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
@@ -20,12 +21,14 @@ use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
 use Gems\Handlers\Respondent\RespondentShowHandler;
 use Gems\Middleware\AclMiddleware;
+use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Middleware\HandlerCsrfMiddleware;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\Middleware\LocaleMiddleware;
+use Gems\Middleware\MaintenanceModeMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
 use Gems\Model;
@@ -53,8 +56,10 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    MaintenanceModeMiddleware::class,
                     AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
                     MenuMiddleware::class,
                 ],
             ], [
@@ -234,6 +239,14 @@ class Route
                     ChangeOrganizationHandler::class,
                 ],
             ],
+            [
+                'name' => 'group.switch-ui',
+                'path' => '/group/switch-ui',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    ChangeGroupHandler::class,
+                ],
+            ],
         ];
     }
 
@@ -409,6 +422,11 @@ class Route
                     'id1' => '[a-zA-Z0-9-_]+',
                     'id2' => '\d+',
                 ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'change-consent',
+                    'change-organization',
+                ]
             ),
             [
                 'name' => 'respondent-show',
@@ -558,19 +576,27 @@ class Route
                     \Gems\Model::SURVEY_ID => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.activity-log',
-                controllerClass: \Gems\Actions\RespondentLogAction::class,
+            ...$this->createSnippetRoutes(baseName: 'respondent.activity-log',
+                controllerClass: \Gems\Handlers\Respondent\RespondentLogHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/activity-log',
                 parentParameters: [
                     'id1',
                     'id2',
                 ],
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show'
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
                 parameters: [
                     \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],
             ),
-            ...$this->createBrowseRoutes(baseName: 'respondent.relations',
-                controllerClass: \Gems\Actions\RespondentRelationAction::class,
+            ...$this->createSnippetRoutes(baseName: 'respondent.relations',
+                controllerClass: \Gems\Handlers\Respondent\RespondentRelationHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/relations',
                 parentParameters: [
                     'id1',
@@ -607,6 +633,7 @@ class Route
                     'changelog-gems',
                     'changelog',
                     'cacheclean',
+                    'maintenance',
                 ],
             ),
             ...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',
@@ -741,8 +768,25 @@ class Route
                     'edit',
                     'reset',
                     'deactivate',
-                    'staff-log',
+
                 ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'reset',
+                    'deactivate',
+                    'staff-log',
+                ]
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',
+                controllerClass: \Gems\Handlers\Setup\StaffLogHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'show',
+                ]
             ),
 
             [
@@ -811,6 +855,30 @@ class Route
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'check-filter',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.log.maintenance',
+                controllerClass: \Gems\Handlers\Setup\LogMaintenanceHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                    'edit',
+                ],
+                parameterRoutes: [
+                    'show',
+                    'edit',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.log.activity',
+                controllerClass: \Gems\Handlers\LogHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show',
+                ],
+                parameterRoutes: [
+                    'show',
                 ],
             ),
 
@@ -895,7 +963,6 @@ class Route
                 pages: [
                     ...$this->defaultPages,
                     'import',
-                    'track-overview',
                     'check-all',
                     'recalc-all-fields',
                     'export',
@@ -912,6 +979,13 @@ class Route
                     'recalc-fields',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-overview',
+                controllerClass: \Gems\Handlers\TrackBuilder\TrackOverviewHandler::class,
+                pages: [
+                    'index',
+                ]
+            ),
+
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-fields',
                 controllerClass: \Gems\Handlers\TrackBuilder\TrackFieldsHandler::class,
                 basePath: '/track-builder/track-maintenance/{trackId:\d+}/track-fields',

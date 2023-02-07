@@ -5,11 +5,11 @@ declare(strict_types=1);
 
 namespace Gems\Cache;
 
+use DateInterval;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Cache\Exception\LogicException;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class HelperAdapter extends TagAwareAdapter
 {
@@ -32,7 +32,7 @@ class HelperAdapter extends TagAwareAdapter
         return preg_replace('([^a-zA-Z0-9_])', '_', $cacheId);
     }
 
-    public function getCacheItem($key)
+    public function getCacheItem(string $key): mixed
     {
         if ($this->pool->hasItem($key)) {
             $item = $this->pool->getItem($key);
@@ -42,7 +42,8 @@ class HelperAdapter extends TagAwareAdapter
         return null;
     }
 
-    public function setCacheItem($key, $value, $tag=null, $expiresAfter=null)
+    public function setCacheItem(string $key, mixed $value, array|string $tag=null,
+        DateInterval|int|null$expiresAfter=null)
     {
         $item = $this->pool->getItem($key);
         if ($tag !== null && $item instanceof CacheItem) {

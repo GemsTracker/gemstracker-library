@@ -11,7 +11,12 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Db\ResultFetcher;
+use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Util\Translated;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,12 +27,18 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-feb-2015 19:46:34
  */
-class LogMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class LogMaintenanceSearchSnippet extends AutosearchFormSnippet
 {
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected Translated $translatedUtil,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+    }
 
     /**
      * Returns a text element for autosearch. Can be overruled.

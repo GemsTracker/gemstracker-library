@@ -192,12 +192,12 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             [
                 'route' => 'respondent.tracks.answer',
                 'label' => $this->_('Answers'),
-                'disabled' => $this->token->isCurrentlyValid(),
+                'disabled' => !$this->token->isStarted(),
             ],
             [
                 'route' => 'respondent.tracks.answer-export',
                 'label' => $this->_('Answer export'),
-                'disabled' => $this->token->isCurrentlyValid(),
+                'disabled' => !$this->token->isStarted(),
             ],
         ];
 

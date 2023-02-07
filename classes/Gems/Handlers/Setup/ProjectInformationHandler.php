@@ -13,16 +13,21 @@ namespace Gems\Handlers\Setup;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
+use Gems\Log\ErrorLogger;
+use Gems\Log\Loggers;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
-use Gems\Util\MaintenanceLock;
+use Gems\Util\Lock\MaintenanceLock;
 use Gems\Versions;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
-use Zalt\Html\Html;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use MUtil\Model;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Html\Html;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -66,6 +71,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected RouteHelper $routeHelper,
         protected ProjectSettings $projectSettings,
         protected HelperAdapter $cache,
+        protected Loggers $loggers,
     )
     {
         parent::__construct($responder, $translate);
@@ -91,8 +97,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data[$this->_('Gems version')]            = $this->versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $this->versions->getBuild();
         $data[$this->_('Gems project')]            = $projectName;
-        //$data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
-        //$data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
+        $data[$this->_('Gems web directory')]      = $this->projectSettings->publicDir;
+        $data[$this->_('Gems root directory')]     = $this->projectSettings->rootDir;
         //$data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
         //$data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
@@ -217,9 +223,37 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
     }
 
+    protected function getLogFile(string $loggerName): ?string
+    {
+        $logger = $this->loggers->getLogger($loggerName);
+
+        if ($logger instanceof Logger) {
+            $handlers = $logger->getHandlers();
+            foreach($handlers as $handler) {
+                if ($handler instanceof StreamHandler) {
+                    $url = $handler->getUrl();
+                    if ($url !== null && is_readable($url)) {
+                        return $url;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public function errorsAction()
     {
-        $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
+        $logFile = $this->getLogFile('LegacyLogger');
+
+        if ($logFile !== null) {
+            $this->_showText(
+                $this->_('Logged errors'),
+                $logFile,
+                $this->_('Empty logfile')
+            );
+            return;
+        }
+        $this->html->div()->append($this->_('No log file set for output'));
     }
 
     public function getMaintenanceMonitorJob()
@@ -264,9 +298,9 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         $data = $this->_getData();
 
         if ($this->maintenanceLock->isLocked()) {
-            $label = $this->_('Turn Maintenance Mode OFF');
+            $maintenanceLockLabel = $this->_('Turn Maintenance Mode OFF');
         } else {
-            $label = $this->_('Turn Maintenance Mode ON');
+            $maintenanceLockLabel = $this->_('Turn Maintenance Mode ON');
         }
         /*$request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
@@ -276,6 +310,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             ->addByController($request->getControllerName(), 'cacheclean');*/
 
         $buttonList = [
+            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance'), $maintenanceLockLabel),
             \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
         ];
 
@@ -291,8 +326,19 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
      */
     public function maintenanceAction()
     {
+        if ($this->maintenanceLock->isLocked()) {
+            $this->maintenanceLock->unlock();
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->clearMessages();
+            $messenger->addSuccess($this->_('Maintenance mode set OFF'));
+        } else {
+            $this->maintenanceLock->lock();
+        }
         // Switch lock
-        if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
+        /*if ($this->util->getMonitor()->reverseMaintenanceMonitor()) {
             $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set ON'));
         } else {
             $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set OFF'));
@@ -301,10 +347,13 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             $this->escort->getMessenger()->clearCurrentMessages();
             $this->escort->getMessenger()->clearMessages();
             \MUtil\EchoOut\EchoOut::out();
-        }
+        }*/
+
 
         // Redirect
-        $this->redirectUrl = $this->urlHelper->generate('setup.project-information.index');
+        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.project-information.index'));
+
+
     }
 
     public function monitorAction() {
@@ -339,7 +388,17 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 
     public function phpErrorsAction()
     {
-        $this->_showText($this->_('Logged PHP errors'), ini_get('error_log'), $this->_('Empty PHP error file'));
+        $logFile = $this->getLogFile(ErrorLogger::class);
+
+        if ($logFile !== null) {
+            $this->_showText(
+                $this->_('Logged errors'),
+                $logFile,
+                $this->_('Empty PHP error file')
+            );
+            return;
+        }
+        $this->html->div()->append($this->_('No log file set for output'));
     }
 
     public function projectAction()

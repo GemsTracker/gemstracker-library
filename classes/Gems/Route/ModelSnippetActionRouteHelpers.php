@@ -31,6 +31,7 @@ trait ModelSnippetActionRouteHelpers
         'create',
         'edit',
         'index',
+        'delete',
     ];
 
     protected array $modelSnippetCustomMiddleware = [

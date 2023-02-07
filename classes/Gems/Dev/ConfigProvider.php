@@ -2,6 +2,8 @@
 
 namespace Gems\Dev;
 
+use Gems\Dev\Middleware\DebugDumperMiddleware;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -15,6 +17,9 @@ class ConfigProvider
                     'dsn' => 'smtp://mailhog:1025',
                 ],
                 'password' => null,
+                'pipeline' => [
+                    DebugDumperMiddleware::class,
+                ],
             ];
         }
 

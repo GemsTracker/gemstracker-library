@@ -9,7 +9,16 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers\Respondent;
+
+use Gems\Exception;
+use Gems\Handlers\LogHandler;
+use Gems\Model;
+use Gems\Repository\RespondentRepository;
+use Gems\Tracker\Respondent;
+use Laminas\Db\Adapter\Adapter;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -20,7 +29,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 16-apr-2015 17:36:20
  */
-class RespondentLogAction extends \Gems\Actions\LogAction
+class RespondentLogHandler extends LogHandler
 {
     /**
      * The parameters used for the autofilter action.
@@ -32,14 +41,24 @@ class RespondentLogAction extends \Gems\Actions\LogAction
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = ['extraFilter' => 'getRespondentFilter'];
+    protected array $autofilterParameters = ['extraFilter' => 'getRespondentFilter'];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        Model $modelLoader,
+        Adapter $db,
+        protected RespondentRepository $respondentRepository,
+    ) {
+        parent::__construct($responder, $translate, $modelLoader, $db);
+    }
 
     /**
      * Get the respondent object
      *
-     * @return \Gems\Tracker\Respondent
+     * @return Respondent
      */
-    public function getRespondent()
+    public function getRespondent(): Respondent
     {
         static $respondent;
 
@@ -47,10 +66,10 @@ class RespondentLogAction extends \Gems\Actions\LogAction
             $patientNumber  = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
             $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
 
-            $respondent = $this->loader->getRespondent($patientNumber, $organizationId);
+            $respondent = $this->respondentRepository->getRespondent($patientNumber, $organizationId);
 
             if ((! $respondent->exists) && $patientNumber && $organizationId) {
-                throw new \Gems\Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
+                throw new Exception(sprintf($this->_('Unknown respondent %s.'), $patientNumber));
             }
         }
 
@@ -62,9 +81,9 @@ class RespondentLogAction extends \Gems\Actions\LogAction
      *
      * @return array
      */
-    public function getRespondentFilter()
+    public function getRespondentFilter(): array
     {
-        return array('gla_respondent_id' => $this->getRespondentId());
+        return ['gla_respondent_id' => $this->getRespondentId()];
     }
 
     /**
@@ -73,7 +92,7 @@ class RespondentLogAction extends \Gems\Actions\LogAction
      *
      * @return int
      */
-    public function getRespondentId()
+    public function getRespondentId(): int
     {
         return $this->getRespondent()->getId();
     }

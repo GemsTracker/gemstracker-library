@@ -11,8 +11,18 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\Model;
+use Gems\Model\LogModel;
+use Gems\Repository\RespondentRepository;
+use Gems\Snippets\ModelDetailTableSnippetAbstract;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Model\Bridge\BridgeAbstract;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,32 +33,27 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 23-apr-2015 11:10:02
  */
-class LogShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
+class LogShowSnippet extends ModelDetailTableSnippetAbstract
 {
     /**
      * One of the \MUtil\Model\Bridge\BridgeAbstract MODE constants
      *
      * @var int
      */
-    protected $bridgeMode = \MUtil\Model\Bridge\BridgeAbstract::MODE_SINGLE_ROW;
+    protected $bridgeMode = BridgeAbstract::MODE_SINGLE_ROW;
 
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected ?LogModel $model;
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
-
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+        protected RespondentRepository $respondentRepository,
+        protected RouteHelper $routeHelper,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+    }
 
     /**
      * Creates the model
@@ -58,61 +63,37 @@ class LogShowSnippet extends \Gems\Snippets\ModelItemTableSnippetAbstract
     protected function createModel(): DataReaderInterface
     {
         if (! $this->model instanceof LogModel) {
-            $this->model = $this->loader->getModels()->createLogModel();
+            $this->model = $this->modelLoader->createLogModel();
             $this->model->applyDetailSettings();
         }
         return $this->model;
     }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     */
-    protected function processFilterAndSort(\MUtil\Model\ModelAbstract $model)
-    {
-        if ($this->request->getParam('log')) {
-            $model->setFilter(array('gla_id' => $this->request->getParam('log')));
-            parent::processSortOnly($model);
-        } else {
-            parent::processFilterAndSort($model);
-        }
-    }
-
-    /**
-     * Set the footer of the browse table.
-     *
-     * Overrule this function to set the header differently, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
-     */
     protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
     {
         $row = $bridge->getRow();
 
         parent::setShowTableFooter($bridge, $model);
 
-        if (isset($row['gla_respondent_id'], $row['gla_organization']) &&
-                ($this->menuList instanceof \Gems\Menu\MenuList)) {
+        $footer = $bridge->tfrow();
+        if (isset($row['gla_respondent_id'], $row['gla_organization'])) {
+            $patientNr = $this->respondentRepository->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
 
-            try {
-                $patientNr = $this->util->getDbLookup()->getPatientNr($row['gla_respondent_id'], $row['gla_organization']);
+            $params = [
+                \MUtil\Model::REQUEST_ID1 => $patientNr,
+                \MUtil\Model::REQUEST_ID2 => $row['gla_organization'],
+            ];
 
-                $this->menuList->addParameterSources(array(
-                    'gr2o_patient_nr'      => $patientNr,
-                    'gr2o_id_organization' => $row['gla_organization'],
-                    ));
+            $url = $this->routeHelper->getRouteUrl('respondent.show', $params);
+            $footer->actionLink($url, $this->_('Respondent'));
+            $footer[] = ' ';
+        }
+        if (isset($row['gsf_id_user'])) {
+            $params = [
+                \MUtil\Model::REQUEST_ID => $row['gsf_id_user'],
+            ];
 
-                $this->menuList->addByController('respondent', 'show', $this->_('Show respondent'));
-            } catch (Exception $exc) {
-                // Retrieving the patient van fail when an incorrect organization was logged. 
-                // We silently fail and do not add thwe 'Show respondent' button
-            }
-
-            
+            $url = $this->routeHelper->getRouteUrl('setup.access.staff.show', $params);
+            $footer->actionLink($url, $this->_('Staff'));
         }
     }
 }

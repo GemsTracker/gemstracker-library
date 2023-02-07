@@ -62,5 +62,6 @@ class GetPreviousAnswers extends TranslatableEventAbstract implements SurveyBefo
                 }
             }
         }
+        return [];
     }
 }

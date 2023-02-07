@@ -11,7 +11,13 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -24,6 +30,19 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
  */
 class LogSearchSnippet extends AutosearchInRespondentSnippet
 {
+
+    protected User $currentUser;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $this->currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -52,7 +71,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
 
         $elements[] = $this->_createSelectElement(
                 'gla_organization',
-                $this->loader->getCurrentUser()->getAllowedOrganizations(),
+                $this->currentUser->getAllowedOrganizations(),
                 $this->_('(all organizations)')
                 );
 

@@ -95,47 +95,6 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     }
 
     /**
-     *
-     * @throws \Exception
-     */
-    public function changeUiAction()
-    {
-        if (! $this->currentUser->hasPrivilege('pr.group.switch', false)) {
-            $this->escort->setError(
-                $this->_('No access to page'),
-                403,
-                sprintf($this->_('Access to the %s/%s page is not allowed for your current group: %s.'),
-                    $this->requestHelper->getControllerName(),
-                    $this->requestHelper->getActionName(),
-                    $this->currentUser->getGroup()->getName()),
-                true);
-        }
-
-        $group = null;
-        $url = null;
-        $queryParams = $this->request->getQueryParams();
-        if (isset($queryParams['group'])) {
-            $group = strtolower($queryParams['group']);
-        }
-        if (isset($queryParams['current_uri'])) {
-            $url = strtolower($queryParams['current_uri']);
-        }
-
-        if ((! $url) || ('/' !== $url[0])) {
-            throw new \Exception($this->_('Illegal group redirect url.'));
-        }
-
-        // Throws exception on invalid value
-        $this->currentUser->setGroupTemp(intval($group));
-
-        if ($url) {
-            $this->redirectUrl = $url;
-        } else {
-            $this->redirectUrl = '/';
-        }
-    }
-
-    /**
      * Download the roles php config
      */
     public function downloadAction()

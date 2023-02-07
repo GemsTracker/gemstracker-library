@@ -19,6 +19,7 @@ use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
 use Gems\Config\App;
+use Gems\Config\AutoConfig\MessageHandlers;
 use Gems\Config\Messenger;
 use Gems\Config\Route;
 use Gems\Config\Survey;
@@ -52,6 +53,10 @@ use Gems\Translate\TranslationFactory;
 use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
+use Gems\Util\Lock\LockFactory;
+use Gems\Util\Lock\MaintenanceLock;
+use Gems\Util\Lock\Storage\FileLock;
+use Gems\Util\Lock\Storage\LockStorageAbstract;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -74,6 +79,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
 use Symfony\Component\Messenger\Command\StopWorkersCommand;
@@ -164,12 +171,14 @@ class ConfigProvider
                     SurveyBeforeAnsweringEventInterface::class => ['config' => 'tracker.trackEvents.Survey/BeforeAnswering'],
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
+                    EventSubscriberInterface::class => ['config' => 'events.subscribers'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],
                 ],
                 'attribute' => [
                     AsCommand::class => ['config' => 'console.commands'],
+                    AsMessageHandler::class => MessageHandlers::class,
                 ]
             ],
         ];
@@ -202,6 +211,8 @@ class ConfigProvider
                 StopWorkersCommand::class,
                 DebugCommand::class,
             ],
+            'allow' => true,
+            'role' => 'super',
         ];
     }
 
@@ -219,7 +230,7 @@ class ConfigProvider
     public function getDbSettings(): array
     {
         return [
-            'driver'    => 'Mysqli',
+            'driver'    => 'pdo_mysql',
             'host'      => getenv('DB_HOST'),
             'username'  => getenv('DB_USER'),
             'password'  => getenv('DB_PASS'),
@@ -283,6 +294,9 @@ class ConfigProvider
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
+                // Locks
+                MaintenanceLock::class => [LockFactory::class, FileLock::class],
+
                 LaminasRunner::class => LaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
                 
@@ -312,6 +326,9 @@ class ConfigProvider
                 GroupAdapterInterface::class => DbGroupAdapter::class,
 
                 MetaModelLoader::class => GemsMetaModelLoader::class,
+
+                // Default lock storage
+                LockStorageAbstract::class => FileLock::class,
                 
                 // Translation
                 Translator::class => TranslatorInterface::class,
@@ -363,9 +380,8 @@ class ConfigProvider
     protected function getEventSubscribers(): array
     {
         return [
-            EventSubscriber::class,
-            \Gems\Communication\EventSubscriber::class,
-            \Gems\AuthNew\EventSubscriber::class,
+            'subscribers' => [],
+            'listeners' => [],
         ];
     }
 
@@ -442,7 +458,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::DEBUG,
                         'options' => [
-                            'stream' =>  'data/logs/php-error.log',
+                            'stream' => 'data/logs/php-error.log',
                         ],
                     ],
                 ],
@@ -453,7 +469,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/errors.log',
+                            'stream' => 'data/logs/errors.log',
                         ],
                     ],
                 ],
@@ -464,7 +480,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/cron.log',
+                            'stream' => 'data/logs/cron.log',
                         ],
                     ],
                 ],
@@ -475,7 +491,7 @@ class ConfigProvider
                         'name' => 'stream',
                         'priority' => LogLevel::NOTICE,
                         'options' => [
-                            'stream' =>  'data/logs/embed-logging.log',
+                            'stream' => 'data/logs/embed-logging.log',
                         ],
                     ],
                 ],

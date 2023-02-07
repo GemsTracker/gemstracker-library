@@ -9,9 +9,15 @@
  * @license    New BSD License
  */
 
-namespace Gems\Actions;
+namespace Gems\Handlers;
 
 use DateTimeImmutable;
+use Gems\Model;
+use Gems\Snippets\AutosearchFormSnippet;
+use Laminas\Db\Adapter\Adapter;
+use MUtil\Model\ModelAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  * Show the action log
@@ -22,39 +28,38 @@ use DateTimeImmutable;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
+class LogHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Log\\LogTableSnippet';
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
+    protected array $autofilterSnippets = ['Log\\LogTableSnippet'];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet'];
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    public $loader;
+    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet'];
 
     /**
      * The snippets used for the show action
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet'];
+    protected array $showSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogShowSnippet'];
+
+    public function __construct(
+        SnippetResponderInterface $responder,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+        protected Adapter $db,
+    )
+    {
+        parent::__construct($responder, $translate);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -67,9 +72,9 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param string $action The current action.
      * @return \MUtil\Model\ModelAbstract
      */
-    protected function createModel($detailed, $action)
+    protected function createModel(bool $detailed, string $action): ModelAbstract
     {
-        $model = $this->loader->getModels()->createLogModel();
+        $model = $this->modelLoader->createLogModel();
 
         if ($detailed) {
             $model->applyDetailSettings();
@@ -85,7 +90,7 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return $string
      */
-    public function getIndexTitle()
+    public function getIndexTitle(): string
     {
         return $this->_('Logging');
     }
@@ -97,17 +102,17 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      *
      * @return array
      */
-    public function getSearchDefaults()
+    public function getSearchDefaults(): array
     {
         if (! $this->defaultSearchData) {
             $from = new DateTimeImmutable('-14 days');
             $until = new DateTimeImmutable('+1 day');
 
-            $this->defaultSearchData = array(
+            $this->defaultSearchData = [
                 'datefrom'         => $from,
                 'dateuntil'        => $until,
                 'dateused'         => 'gla_created',
-                );
+            ];
         }
 
         return parent::getSearchDefaults();
@@ -119,11 +124,11 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param boolean $useRequest Use the request as source (when false, the session is used)
      * @return array or false
      */
-    public function getSearchFilter($useRequest = true)
+    public function getSearchFilter(bool $useRequest = true): array
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db->getPlatform());
         
         if ($where) {
             $filter[] = $where;
@@ -138,7 +143,7 @@ class LogAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @param int $count
      * @return $string
      */
-    public function getTopic($count = 1)
+    public function getTopic(int $count = 1): string
     {
         return $this->plural('log', 'log', $count);
     }

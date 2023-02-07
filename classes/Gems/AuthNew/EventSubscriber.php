@@ -2,7 +2,7 @@
 
 namespace Gems\AuthNew;
 
-use Gems\AccessLog\AccesslogRepository;
+use Gems\Audit\AccesslogRepository;
 use Gems\AuthNew\Adapter\EmbedAuthenticationResult;
 use Gems\AuthNew\Adapter\EmbedIdentity;
 use Gems\AuthNew\Adapter\GemsTrackerAuthenticationResult;

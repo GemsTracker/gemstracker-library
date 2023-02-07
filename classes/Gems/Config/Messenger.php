@@ -2,8 +2,9 @@
 
 namespace Gems\Config;
 
-use Gems\Messenger\MessengerFactory;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Gems\Messenger\Message\CommJob;
+use Gems\Messenger\Message\SendCommJobMessage;
+use Gems\Messenger\Message\SetCommJobTokenAsSent;
 
 class Messenger
 {
@@ -13,7 +14,11 @@ class Messenger
             'buses' => [
                 'messenger.bus.default' => [
                     'middleware' => [],
-                    'routes' => [],
+                    'routes' => [
+                        CommJob::class => 'messenger.transport.default',
+                        SendCommJobMessage::class => 'messenger.transport.default',
+                        SetCommJobTokenAsSent::class => 'messenger.transport.default',
+                    ],
                     'handlers' => [],
                 ],
                 'event.bus' => [

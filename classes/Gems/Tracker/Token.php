@@ -1863,6 +1863,11 @@ class Token extends \Gems\Registry\TargetAbstract
         return true;
     }
 
+    public function isStarted(): bool
+    {
+        return isset($this->_gemsData['gto_start_time']) && $this->_gemsData['gto_start_time'];
+    }
+
     /**
      *
      * @return boolean True when this date was set by user input
