@@ -42,7 +42,7 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
      */
     protected $bridgeMode = BridgeAbstract::MODE_SINGLE_ROW;
 
-    protected ?LogModel $model;
+    protected ?LogModel $model = null;
 
     public function __construct(
         SnippetOptions $snippetOptions,

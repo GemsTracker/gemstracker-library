@@ -13,6 +13,7 @@ namespace Gems\Handlers;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Model\LogModel;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -69,8 +70,9 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         'contentTitle'    => 'getShowLogOverviewTitle',
         'explanationText' => 'getShowLogOverviewExplanation',
         'extraFilter'     => 'getShowLogOverviewFilter',
-        'menuEditRoutes' => false,
+        'menuEditRoutes' => [],
         'menuShowRoutes' => ['show-log'],
+        'model' => 'getLogModel',
     ];
 
     /**
@@ -92,6 +94,8 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $showLogParameters = [
         'contentTitle' => 'getShowLogItemTitle',
+        'extraFilter'     => 'getShowLogOverviewFilter',
+        'model' => 'getLogModel',
     ];
 
     /**
@@ -175,6 +179,20 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         return $this->_('Options');
     }
 
+    protected function getLogModel(): LogModel
+    {
+        $model = $this->modelContainer->createLogModel();
+        $action = $this->requestInfo->getCurrentAction();
+        if ($action === 'overview') {
+            $model->applyBrowseSettings();
+        }
+        if ($action === 'show-log') {
+            $model->applyDetailSettings();
+        }
+
+        return $model;
+    }
+
     /**
      *
      * @return string Title for show log item
@@ -249,7 +267,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     {
         if ($this->showLogSnippets) {
             $params = $this->_processParameters($this->showLogParameters);
-
             $this->addSnippets($this->showLogSnippets, $params);
         }
     }

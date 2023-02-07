@@ -1489,6 +1489,13 @@ class Menu
                     'name' => 'option.overview',
                     'label' => $this->translator->trans('Activity overview'),
                     'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'option.show-log',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
                 ],
                 [
                     'name' => 'auth.change-password',

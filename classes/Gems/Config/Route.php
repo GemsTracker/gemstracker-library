@@ -1026,8 +1026,14 @@ class Route
                 'edit',
                 'overview',
                 'two-factor',
+                'show-log',
             ],
-            parameterRoutes: [],
+            parameterRoutes: [
+                'show-log',
+            ],
+            parameters: [
+                \Gems\Model::LOG_ITEM_ID => '\d+',
+            ],
             postRoutes: [
                 'edit',
                 'two-factor',
