@@ -404,22 +404,6 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         }
     }
 
-    /**
-     * reset two factor authentication
-     */
-    public function reset2faAction()
-    {
-        $user = $this->getSelectedUser();
-        $user->clearTwoFactorKey();
-        $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-        $statusMessenger->addMessage(
-            sprintf($this->_('Two factor key cleared for user %s'),
-                $user->getLoginName()),
-            'success');
-        $router = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-        $router->gotoRoute(['controller'=>'staff', 'action'=>'show'], null, false);
-    }
-
     public function switchUserAction()
     {
         $this->useStaffModel = ! $this->useStaffModel;
@@ -428,23 +412,5 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 
             $this->addSnippets($this->switchSnippets, $params);
         }
-    }
-
-    public function resetTfaAction()
-    {
-        $user = $this->getSelectedUser();
-        $user->clearTwoFactorKey();
-
-        $this->otpMethodBuilder->setOtpMethod($user, 'SmsHotp');
-
-        $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-        $statusMessenger->addMessage(
-            sprintf($this->_('Two factor key cleared for user %s'), $user->getLoginName()),
-            'success'
-        );
-
-        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.access.staff.reset', [
-            \MUtil\Model::REQUEST_ID => intval($user->getUserId()),
-        ]));
     }
 }
