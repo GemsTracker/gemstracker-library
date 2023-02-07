@@ -788,6 +788,9 @@ class Route
                     'show',
                 ]
             ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.system-user',
+                controllerClass: \Gems\Handlers\Setup\SystemUserHandler::class,
+            ),
 
             [
                 'name' => 'setup.agenda',

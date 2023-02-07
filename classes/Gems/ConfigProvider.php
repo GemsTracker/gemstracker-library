@@ -53,6 +53,9 @@ use Gems\Translate\TranslationFactory;
 use Gems\Twig\Csrf;
 use Gems\Twig\Trans;
 use Gems\Twig\Vite;
+use Gems\User\Embed\DeferredUserLoaderInterface;
+use Gems\User\Embed\EmbeddedAuthInterface;
+use Gems\User\Embed\RedirectInterface;
 use Gems\Util\Lock\LockFactory;
 use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
@@ -172,6 +175,9 @@ class ConfigProvider
                     SurveyCompletedEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Completed'],
                     SurveyDisplayEventInterface::class => ['config' => 'tracker.trackEvents.Survey/Display'],
                     EventSubscriberInterface::class => ['config' => 'events.subscribers'],
+                    EmbeddedAuthInterface::class => ['config' => 'embed.auth'],
+                    DeferredUserLoaderInterface::class => ['config' => 'embed.deferredUserLoader'],
+                    RedirectInterface::class => ['config' => 'embed.redirect'],
                 ],
                 'extends' => [
                     ComparatorAbstract::class => ['config' => 'tracker.conditions.comparators'],

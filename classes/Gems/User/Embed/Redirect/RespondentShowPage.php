@@ -11,8 +11,10 @@
 
 namespace Gems\User\Embed\Redirect;
 
+use Gems\MenuNew\RouteHelper;
 use Gems\User\Embed\RedirectAbstract;
-use Mezzio\Helper\UrlHelper;
+use Gems\User\User;
+use MUtil\Model;
 
 /**
  *
@@ -28,40 +30,23 @@ class RespondentShowPage extends RedirectAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('Respondent show page');
-    }
-
-    /**
-     * @return array redirect route
-     */
-    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
-    {
-        $orgId = $deferredUser->getCurrentOrganizationId();
-        
-        $deferredUser->setSessionPatientNr($patientId, $orgId);
-
-        return [
-            $this->request->getControllerKey()  => 'respondent',
-            $this->request->getActionKey()      => 'show',
-            \MUtil\Model::REQUEST_ID1           => $patientId,
-            \MUtil\Model::REQUEST_ID2           => $orgId,
-        ];
+        return $this->translator->_('Respondent show page');
     }
 
     public function getRedirectUrl(
-        UrlHelper $urlHelper,
-        \Gems\User\User $embeddedUser,
-        \Gems\User\User $deferredUser,
-        $patientId,
-        $organizations,
-    ): string {
+        RouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        string $patientId,
+        array $organizations,
+    ): ?string {
         $orgId = $deferredUser->getCurrentOrganizationId();
 
-        return $urlHelper->generate('respondent.show', [
-            \MUtil\Model::REQUEST_ID1 => $patientId,
-            \MUtil\Model::REQUEST_ID2 => $orgId,
+        return $routeHelper->getRouteUrl('respondent.show', [
+            Model::REQUEST_ID1 => $patientId,
+            Model::REQUEST_ID2 => $orgId,
         ]);
     }
 }

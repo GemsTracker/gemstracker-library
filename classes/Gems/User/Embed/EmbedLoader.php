@@ -32,6 +32,11 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
     const SUB_NAMESPACE         = 'User\\Embed';
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * Each embed helper type must implement an embed helper class or interface derived
      * from EmbedHelperInterface specified in this array.
      *
@@ -140,13 +145,30 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
         return $this->listClasses($classType, $paths, 'getLabel');
     }
 
+    protected function getEmbedClassLabelPairs(array $classNames, string $nameMethod = 'getLabel')
+    {
+        $translator = $this->translate;
+        $labels = array_map(function ($authenticatorClass) use ($translator, $nameMethod) {
+            if (class_exists($authenticatorClass)) {
+                $object = new $authenticatorClass($translator);
+                return $object->$nameMethod;
+            }
+            return null;
+        }, $classNames);
+        return array_combine($classNames, $labels);
+    }
+
     /**
      *
      * @return array helpername => string
      */
     public function listAuthenticators()
     {
-        return $this->_listClasses(self::AUTHENTICATE);
+        if (isset($this->config['embed']['auth'])) {
+            $authenticators = $this->config['embed']['auth'];
+            return $this->getEmbedClassLabelPairs($authenticators);
+        }
+        return [];
     }
 
     /**
@@ -168,7 +190,10 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function listDeferredUserLoaders()
     {
-        return $this->_listClasses(self::DEFERRED_USER_LOADER);
+        if (isset($this->config['embed']['deferredUserLoader'])) {
+            return $this->config['embed']['deferredUserLoader'];
+        }
+        return [];
     }
 
     /**
@@ -201,7 +226,10 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function listRedirects()
     {
-        return $this->_listClasses(self::REDIRECT);
+        if (isset($this->config['embed']['redirect'])) {
+            return $this->config['embed']['redirect'];
+        }
+        return [];
     }
 
     /**

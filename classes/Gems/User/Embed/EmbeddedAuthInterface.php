@@ -11,6 +11,8 @@
 
 namespace Gems\User\Embed;
 
+use Gems\User\User;
+
 /**
  *
  * @package    Gems
@@ -24,16 +26,16 @@ interface EmbeddedAuthInterface extends HelperInterface
     /**
      * Authenticate embedded user
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(\Gems\User\User $user, $secretKey);
+    public function authenticate(User $user, string $secretKey): bool;
 
     /**
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems\User\User $user);
+    public function getExampleKey(User $user): string;
 }

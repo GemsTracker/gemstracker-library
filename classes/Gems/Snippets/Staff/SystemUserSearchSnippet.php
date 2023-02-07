@@ -11,6 +11,15 @@
 
 namespace Gems\Snippets\Staff;
 
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\AccessRepository;
+use Gems\Snippets\AutosearchFormSnippet;
+use Gems\User\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  *
  * @package    Gems
@@ -19,8 +28,22 @@ namespace Gems\Snippets\Staff;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 02-Sep-2019 17:53:47
  */
-class SystemUserSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class SystemUserSearchSnippet extends AutosearchFormSnippet
 {
+    protected User $currentUser;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        ResultFetcher $resultFetcher,
+        protected AccessRepository $accessRepository,
+        CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -35,12 +58,11 @@ class SystemUserSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         $elements = parent::getAutoSearchElements($data);
 
         if ($elements) {
-            $optionsG = $this->util->getDbLookup()->getGroups();
+            $optionsG = $this->accessRepository->getGroups();
             $elementG = $this->_createSelectElement('gsf_id_primary_group', $optionsG, $this->_('(all groups)'));
             $elements[] = $elementG;
 
-            $user     = $this->loader->getCurrentUser();
-            $optionsO = $user->getAllowedOrganizations();
+            $optionsO = $this->currentUser->getAllowedOrganizations();
             if (count($optionsO) > 1) {
                 $elementO = $this->_createSelectElement('gsf_id_organization', $optionsO, $this->_('(all organizations)'));
                 $elements[] = $elementO;

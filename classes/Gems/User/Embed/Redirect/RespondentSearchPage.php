@@ -11,7 +11,9 @@
 
 namespace Gems\User\Embed\Redirect;
 
+use Gems\MenuNew\RouteHelper;
 use Gems\User\Embed\RedirectAbstract;
+use Gems\User\User;
 
 /**
  *
@@ -27,21 +29,21 @@ class RespondentSearchPage extends RedirectAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('Respondent search page');
+        return $this->translator->_('Respondent search page');
     }
 
-    /**
-     * @return array redirect route
-     */
-    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
-    {
-        return [
-            $this->request->getControllerKey()  => 'respondent',
-            $this->request->getActionKey()      => 'index',
-            \MUtil\Model::TEXT_FILTER           => $patientId,
-            \MUtil\Model::REQUEST_ID2           => $deferredUser->getCurrentOrganizationId(),
-        ];
+    public function getRedirectUrl(
+        RouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        string $patientId,
+        array $organizations,
+    ): ?string {
+        // Add search params
+        // \MUtil\Model::TEXT_FILTER           => $patientId,
+        // \MUtil\Model::REQUEST_ID2           => $deferredUser->getCurrentOrganizationId(),
+        return $routeHelper->getRouteUrl('respondent.index');
     }
 }

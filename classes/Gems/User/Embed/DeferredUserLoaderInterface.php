@@ -11,6 +11,8 @@
 
 namespace Gems\User\Embed;
 
+use Gems\User\User;
+
 /**
  *
  * @package    Gems
@@ -24,9 +26,9 @@ interface DeferredUserLoaderInterface extends HelperInterface
     /**
      * Get the deferred user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @param string $deferredLogin name of the user to log in
-     * @return \Gems_User_user|null
+     * @return User|null
      */
-    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin);
+    public function getDeferredUser(User $embeddedUser, string $deferredLogin): ?User;
 }

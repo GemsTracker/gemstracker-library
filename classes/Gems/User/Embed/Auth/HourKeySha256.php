@@ -11,7 +11,12 @@
 
 namespace Gems\User\Embed\Auth;
 
+use Gems\Exception\Coding;
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\User;
+use MUtil\EchoOut\EchoOut;
+use DateInterval;
+use DateTimeImmutable;
 
 /**
  *
@@ -26,60 +31,60 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * @var bool Show debug code
      */
-    protected $debug = false;
+    protected bool $debug = false;
 
     /**
      * Default key to use when no two factor key was set
      *
      * @var string
      */
-    protected $defaultKey = 'test';
+    protected string $defaultKey = 'test';
 
     /**
      *
      * @var string Algorithm for the PHP hash() function, E.G. sha256
      */
-    protected $encryptionAlgorithm = 'sha256';
+    protected string $encryptionAlgorithm = 'sha256';
 
     /**
      *
      * @var boolean When true, apply base64 to encryption output
      */
-    protected $encryptionBase64 = true;
+    protected bool $encryptionBase64 = true;
 
     /**
      *
      * @var boolean True when hash() encryption should return raw output
      */
-    protected $encryptionRaw = true;
+    protected bool $encryptionRaw = true;
 
     /**
      * @var bool Is the supplied hash uppercase? in PHP hash lowercase is always supplied
      */
-    protected $encryptionUppercase = false;
+    protected bool $encryptionUppercase = false;
 
     /**
      * Format for date part of key function
      *
      * @var string
      */
-    protected $keyTimeFormat = 'YmdH';
+    protected string $keyTimeFormat = 'YmdH';
 
     /**
      * The number of time periods on either side of the current that is allowed
      *
      * @var int
      */
-    protected $keyTimeValidRange = 1;
+    protected int $keyTimeValidRange = 1;
 
     /**
      * Authenticate embedded user
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param string $secretKey
      * @return bool
      */
-    public function authenticate(\Gems\User\User $user, $secretKey)
+    public function authenticate(User $user, string $secretKey): bool
     {
         return in_array(
             $this->checkKey($secretKey), 
@@ -127,10 +132,10 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
     /**
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems\User\User $user)
+    public function getExampleKey(User $user): string
     {
         $keys = $this->getValidKeys($user);
 
@@ -143,14 +148,14 @@ class HourKeySha256 extends EmbeddedAuthAbstract
     /**
      * Return the authentication string for the user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @return string Preferably containing %s
      */
-    protected function getKeysStart(\Gems\User\User $embeddedUser)
+    protected function getKeysStart(User $embeddedUser)
     {
         $key = $embeddedUser->getSecretKey() ?: $this->defaultKey;
 
-        if (! \MUtil\StringUtil\StringUtil::contains($key, '%s')) {
+        if (!str_contains($key, '%s')) {
             $key .= '%s';
         }
 
@@ -161,9 +166,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return sprintf($this->_('Hour valid key with %s'), $this->encryptionAlgorithm);
+        return sprintf($this->translator->_('Hour valid key with %s'), $this->encryptionAlgorithm);
     }
 
     /**
@@ -200,27 +205,27 @@ class HourKeySha256 extends EmbeddedAuthAbstract
 
         }
 
-        throw new \Gems\Exception\Coding("Invalid last keyTimeFormat character '$timeChar' set.");
+        throw new Coding("Invalid last keyTimeFormat character '$timeChar' set.");
     }
 
     /**
      * Return an array of valid key values for this user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @return array
      */
-    public function getValidKeys(\Gems\User\User $embeddedUser)
+    public function getValidKeys(User $embeddedUser)
     {
         $keyStart = $this->getKeysStart($embeddedUser);
-        // \MUtil\EchoOut\EchoOut::track($keyStart);
+        // EchoOut::track($keyStart);
 
-        if (! \MUtil\StringUtil\StringUtil::contains($keyStart, '%s')) {
+        if (! str_contains($keyStart, '%s')) {
             return [$keyStart];
         }
 
-        $current = new \DateTime();
-        $current->sub(new \DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
-        $addDate = new \DateInterval($this->getTimePeriodString(1));
+        $current = new DateTimeImmutable();
+        $current->sub(new DateInterval($this->getTimePeriodString($this->keyTimeValidRange)));
+        $addDate = new DateInterval($this->getTimePeriodString(1));
         $keys    = [];
 
         for ($i = -$this->keyTimeValidRange; $i <= $this->keyTimeValidRange; $i++) {
@@ -229,9 +234,9 @@ class HourKeySha256 extends EmbeddedAuthAbstract
         }
 
         if ($this->debug) {
-            \MUtil\EchoOut\EchoOut::track($keys);
+           EchoOut::track($keys);
         }
-        // \MUtil\EchoOut\EchoOut::track(hash_algos());
+        // EchoOut::track(hash_algos());
 
         return $keys;
     }

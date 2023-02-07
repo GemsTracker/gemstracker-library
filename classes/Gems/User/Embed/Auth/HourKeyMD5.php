@@ -25,5 +25,5 @@ class HourKeyMD5 extends HourKeySha256
      *
      * @var string Algorithm for the PHP hash(0 function
      */
-    protected $encryptionAlgorithm = 'md5';
+    protected string $encryptionAlgorithm = 'md5';
 }
