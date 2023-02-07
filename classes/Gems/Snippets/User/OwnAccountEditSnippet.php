@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\User;
 
+use Gems\Audit\AccesslogRepository;
 use Gems\Cache\HelperAdapter;
 use Gems\Loader;
 use Gems\Model;
@@ -51,6 +52,7 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
         MessengerInterface $messenger,
         private readonly Model $modelContainer,
         private readonly Loader $loader,
+        private readonly AccesslogRepository $accesslogRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
     }
@@ -65,7 +67,7 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
     protected function afterSave($changed)
     {
         if ($changed) {
-            $this->accesslog->logChange($this->request, null, $this->formData);
+            $this->accesslogRepository->logChange($this->request, null, $this->formData);
 
             // Reload the current user data
             $user       = $this->currentUser;
@@ -108,6 +110,8 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
      */
     protected function createModel(): FullDataInterface
     {
+        $this->extraFilter['gsf_id_user'] = $this->currentUser->getUserId();
+
         if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->modelContainer->getStaffModel(false);
             $this->model->applyOwnAccountEdit();

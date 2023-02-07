@@ -14,12 +14,12 @@ namespace Gems\Snippets\Staff;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Communication\CommunicationRepository;
 use Gems\MenuNew\RouteHelper;
+use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
-use Zalt\Snippets\Zend\ZendFormSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
