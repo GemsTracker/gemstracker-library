@@ -70,14 +70,20 @@ class AdminPasswordResetSnippet extends ZendFormSnippetAbstract
             $form->addElement($resetElement);
 
             $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
-            $resetElement->setLabel($this->_('Reset Softtoken TFA to SMS and send mail'))
+            $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
                 ->setAttrib('class', 'button')
                 ->setOrder($order++);
-            if (!$this->user->hasTfaConfigured() || $this->user->getTfaMethodClass() !== 'AppTotp') {
+            if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
                 $resetElement->setAttrib('disabled', 'disabled');
             }
             $form->addElement($resetElement);
         }
+    }
+
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    {
+        parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
+        $this->_saveButton->setAttrib('class', 'd-none');
     }
 
     /**
@@ -109,8 +115,8 @@ class AdminPasswordResetSnippet extends ZendFormSnippetAbstract
                 $successMessage = $this->_('Reset password mail sent');
             }
         } elseif (isset($this->formData['reset_tfa']) && $this->formData['reset_tfa']) {
-            if (!$this->user->hasTfaConfigured() || $this->user->getTfaMethodClass() !== 'AppTotp') {
-                $this->addMessage($this->_('This user does not have softtoken TFA enabled'));
+            if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
+                $this->addMessage($this->_('This user already has SMS TFA enabled'));
             } else {
                 $templateId = $this->communicationRepository->getResetTfaTemplate($organization);
                 if (!$templateId) {
