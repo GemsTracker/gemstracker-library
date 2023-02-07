@@ -329,7 +329,7 @@ class Menu
         return [
             'name' => 'overview',
             'label' => $this->translator->trans('Overview'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'overview.summary.index',
@@ -436,7 +436,7 @@ class Menu
         return [
             'name' => 'project',
             'label' => $this->translator->trans('Project'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'project.tracks.index',
@@ -471,7 +471,7 @@ class Menu
         return [
             'name' => 'setup',
             'label' => $this->translator->trans('Setup'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'setup.project-information.index',
@@ -531,7 +531,7 @@ class Menu
                 [
                     'name' => 'setup.codes',
                     'label' => $this->translator->trans('Codes'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.codes.reception.index',
@@ -625,7 +625,7 @@ class Menu
                 [
                     'name' => 'setup.access',
                     'label' => $this->translator->trans('Access'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.access.roles.index',
@@ -795,7 +795,7 @@ class Menu
                 [
                     'name' => 'setup.agenda',
                     'label' => $this->translator->trans('Agenda'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.agenda.activity.index',
@@ -1006,7 +1006,7 @@ class Menu
                 [
                     'name' => 'setup.communication',
                     'label' => $this->translator->trans('Communication'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.communication.job.index',

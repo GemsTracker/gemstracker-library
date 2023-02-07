@@ -2,7 +2,7 @@
 
 namespace Gems\MenuNew;
 
-class RouteLinkItem extends MenuItem
+class ContainerLinkItem extends MenuItem
 {
     private ?array $openParams = null;
 
@@ -19,7 +19,14 @@ class RouteLinkItem extends MenuItem
 
     protected function hasAccess(): bool
     {
-        return $this->getMenu()->routeHelper->hasAccessToRoute($this->name);
+        foreach($this->children as $child) {
+            $access = $this->getMenu()->routeHelper->hasAccessToRoute($child->name);
+            if ($access) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getLabel(): string
@@ -50,6 +57,10 @@ class RouteLinkItem extends MenuItem
 
     public function renderContent(): string
     {
+        foreach ($this->children as $child) {
+            $child->open([]);
+        }
+
         $menu = $this->getMenu();
 
         $url = $menu->routeHelper->getRouteUrl($this->name, $this->openParams);
@@ -61,7 +72,7 @@ class RouteLinkItem extends MenuItem
             }
         }
 
-        return $menu->templateRenderer->render('menu::route-link-item', [
+        return $menu->templateRenderer->render('menu::container-link-item', [
             'url' => $url,
             'label' => $this->label,
             'active' => $this->isActive(),
