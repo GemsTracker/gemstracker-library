@@ -58,14 +58,14 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
             $order = count($form->getElements())-1;
             $createElement = new \MUtil\Form\Element\FakeSubmit('create_account');
             $createElement->setLabel($this->_('Create account mail'))
-                        ->setAttrib('class', 'button')
+                        ->setAttrib('class', 'button btn btn-primary')
                         ->setOrder($order++);
 
             $form->addElement($createElement);
 
             $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_password');
             $resetElement->setLabel($this->_('Reset password mail'))
-                        ->setAttrib('class', 'button')
+                        ->setAttrib('class', 'button btn btn-primary')
                         ->setOrder($order++);
             $form->addElement($resetElement);
 
@@ -77,7 +77,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 
             $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
             $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
-                ->setAttrib('class', 'button')
+                ->setAttrib('class', 'button btn btn-primary')
                 ->setOrder($order++);
             if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
                 $resetElement->setAttrib('disabled', 'disabled');
