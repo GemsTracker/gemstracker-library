@@ -58,49 +58,56 @@ class TfaLoginHandler implements RequestHandlerInterface
             return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
         }
 
-        if ($request->getMethod() === 'POST') {
-            if (isset($request->getParsedBody()['resend'])) {
-                $otpMethod = $this->tfaService->getOtpMethod();
-                if ($otpMethod instanceof SendsOtpCodeInterface) {
+        $tfaConfigured = $this->user->hasTfaConfigured();
+        $otpMethod = null;
+        if ($tfaConfigured) {
+            if ($request->getMethod() === 'POST') {
+                if (isset($request->getParsedBody()['resend'])) {
+                    $otpMethod = $this->tfaService->getOtpMethod();
+                    if ($otpMethod instanceof SendsOtpCodeInterface) {
+                        try {
+                            $otpMethod->sendCode();
+                            $session->set('tfa_login_last_send', time());
+
+                            $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage());
+                        } catch (\Gems\Exception $e) {
+                            $this->statusMessenger->addError($e->getMessage());
+                        }
+
+                        return new RedirectResponse($request->getUri());
+                    }
+                }
+
+                return $this->handlePost($request);
+            }
+
+            $otpMethod = $this->tfaService->getOtpMethod();
+            if ($otpMethod instanceof SendsOtpCodeInterface) {
+                $lastSend = $session->get('tfa_login_last_send');
+                if ($lastSend === null || time() - $lastSend > $otpMethod->getCodeValidSeconds()) {
                     try {
                         $otpMethod->sendCode();
                         $session->set('tfa_login_last_send', time());
-
-                        $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage());
+                        $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage(), true);
                     } catch (\Gems\Exception $e) {
-                        $this->statusMessenger->addError($e->getMessage());
+                        $this->statusMessenger->addError($e->getMessage(), true);
                     }
-
-                    return new RedirectResponse($request->getUri());
                 }
             }
-
-            return $this->handlePost($request);
-        }
-
-        $otpMethod = $this->tfaService->getOtpMethod();
-        if ($otpMethod instanceof SendsOtpCodeInterface) {
-            $lastSend = $session->get('tfa_login_last_send');
-            if ($lastSend === null || time() - $lastSend > $otpMethod->getCodeValidSeconds()) {
-                try {
-                    $otpMethod->sendCode();
-                    $session->set('tfa_login_last_send', time());
-                    $this->statusMessenger->addInfo($otpMethod->getSentFeedbackMessage(), true);
-                } catch (\Gems\Exception $e) {
-                    $this->statusMessenger->addError($e->getMessage(), true);
-                }
-            }
+        } else {
+            $this->statusMessenger->addInfo($this->translator->trans('You must log in using TFA but no TFA method has been set. Contact your administrator to enable TFA.'));
         }
 
         $data = [
+            'tfaConfigured' => $tfaConfigured,
             'trans' => [
                 'code_input_label' => $this->translator->trans('Enter authenticator code'),
-                'code_input_description' => $otpMethod->getCodeInputDescription(),
+                'code_input_description' => $otpMethod?->getCodeInputDescription(),
                 'continue' => $this->translator->trans('Continue'),
                 'resend_code' => $this->translator->trans('Resend code'),
             ],
-            'code_min_length' => $otpMethod->getMinLength(),
-            'code_max_length' => $otpMethod->getMaxLength(),
+            'code_min_length' => $otpMethod?->getMinLength(),
+            'code_max_length' => $otpMethod?->getMaxLength(),
             'sendable' => $otpMethod instanceof SendsOtpCodeInterface,
         ];
 

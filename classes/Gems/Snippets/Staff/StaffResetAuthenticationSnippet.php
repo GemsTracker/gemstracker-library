@@ -20,6 +20,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -43,6 +44,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly RouteHelper $routeHelper,
         private readonly CommunicationRepository $communicationRepository,
+        private readonly StatusMessengerInterface $statusMessenger,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
     }
@@ -81,6 +83,10 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
                 ->setOrder($order++);
             if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
                 $resetElement->setAttrib('disabled', 'disabled');
+
+                if (empty($this->user->getPhonenumber())) {
+                    $this->statusMessenger->addWarning($this->_('TFA Method is set to SMS but no mobile number is configured'));
+                }
             }
             $form->addElement($resetElement);
         }
@@ -123,6 +129,8 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         } elseif (isset($this->formData['reset_tfa']) && $this->formData['reset_tfa']) {
             if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
                 $this->addMessage($this->_('This user already has SMS TFA enabled'));
+            } elseif (empty($this->user->getPhonenumber())) {
+                $this->statusMessenger->addError($this->_('Please first add a mobile telephone number before activating SMS TFA'));
             } else {
                 $templateId = $this->communicationRepository->getResetTfaTemplate($organization);
                 if (!$templateId) {

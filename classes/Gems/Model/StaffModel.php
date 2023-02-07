@@ -260,6 +260,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
+        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),

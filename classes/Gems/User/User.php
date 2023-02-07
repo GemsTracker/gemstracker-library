@@ -1571,13 +1571,14 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
     public function getTfaMethodClass(): string
     {
-        if ($this->_hasVar('user_two_factor_key')) {
+        if ($this->hasTfaConfigured()) {
             $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
                 $this->_getVar('user_two_factor_key'),
                 TwoFactorAuthenticatorInterface::SEPERATOR
             );
         } else {
-            $authClass = $this->defaultAuthenticatorClass;
+            //$authClass = $this->defaultAuthenticatorClass;
+            throw new \Exception('No TFA configured');
         }
 
         return match($authClass) {
