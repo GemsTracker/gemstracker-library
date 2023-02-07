@@ -63,12 +63,18 @@ class GemsUserLogins extends Phinx\Migration\AbstractMigration
                 'encoding' => 'utf8mb4',
                 'after' => 'gul_session_key',
             ])
+            ->addColumn('gul_enable_2factor', 'boolean', [
+                'null' => false,
+                'default' => '1',
+                'limit' => MysqlAdapter::INT_TINY,
+                'after' => 'gul_two_factor_key',
+            ])
             ->addColumn('gul_otp_count', 'integer', [
                 'null' => false,
                 'default' => '0',
                 'limit' => MysqlAdapter::INT_BIG,
                 'signed' => false,
-                'after' => 'gul_two_factor_key',
+                'after' => 'gul_enable_2factor',
             ])
             ->addColumn('gul_otp_requested', 'timestamp', [
                 'null' => true,
