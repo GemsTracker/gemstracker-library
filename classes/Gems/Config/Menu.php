@@ -1178,7 +1178,7 @@ class Menu
         return [
             'name' => 'track-builder',
             'label' => $this->translator->trans('Track Builder'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'track-builder.source.index',
