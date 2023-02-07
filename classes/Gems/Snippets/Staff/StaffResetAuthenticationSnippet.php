@@ -69,6 +69,12 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
                         ->setOrder($order++);
             $form->addElement($resetElement);
 
+            $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
+                'label' => $this->_('Current Two Factor method'),
+                'value' => $this->user->hasTfaConfigured() ? $this->user->getTfaMethodClass() : $this->_('None'),
+            ]);
+            $form->addElement($methodElement);
+
             $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
             $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
                 ->setAttrib('class', 'button')
