@@ -9,8 +9,6 @@ abstract class MenuNode
 
     abstract protected function getMenu(): Menu;
 
-    abstract public function renderContent(): string;
-
     public function add(MenuItem $menuItem): void
     {
         $menuItem->attachParent($this);

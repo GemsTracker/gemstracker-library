@@ -75,13 +75,12 @@ class Menu extends MenuNode
 
     public function renderMenu(): string
     {
-        $menu = '';
         foreach ($this->children as $child) {
             $child->open([]);
-            $menu .= $child->renderNode();
         }
+
         return $this->templateRenderer->render('menu::main-menu', [
-            'menu' => $menu,
+            'children' => $this->children,
         ]);
     }
 
