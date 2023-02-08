@@ -68,12 +68,7 @@ class Menu extends MenuNode
         $item->openPath($routeResult->getMatchedParams());
     }
 
-    public function renderContent(): string
-    {
-        return '';
-    }
-
-    public function renderMenu(): string
+    public function renderNode(): string
     {
         foreach ($this->children as $child) {
             $child->open([]);
@@ -82,6 +77,11 @@ class Menu extends MenuNode
         return $this->templateRenderer->render('menu::main-menu', [
             'children' => $this->children,
         ]);
+    }
+
+    public function renderMenu(): string
+    {
+        return $this->renderNode();
     }
 
     /**

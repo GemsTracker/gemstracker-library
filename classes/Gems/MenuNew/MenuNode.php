@@ -9,6 +9,8 @@ abstract class MenuNode
 
     abstract protected function getMenu(): Menu;
 
+    abstract public function renderNode(): string;
+
     public function add(MenuItem $menuItem): void
     {
         $menuItem->attachParent($this);
@@ -22,22 +24,5 @@ abstract class MenuNode
     public function getChildren(): array
     {
         return $this->children;
-    }
-
-    public function renderNode(): string
-    {
-        $renderedItem = $this->renderContent();
-
-        $children = [];
-        foreach ($this->children as $child) {
-            if ($child->isOpen()) {
-                $children[] = $child;
-            }
-        }
-
-        return $this->getMenu()->templateRenderer->render('menu::menu-node', [
-            'renderedItem' => $renderedItem,
-            'children' => $children,
-        ]);
     }
 }

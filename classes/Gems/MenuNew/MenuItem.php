@@ -69,15 +69,6 @@ abstract class MenuItem extends MenuNode
         return $this->open = $this->hasAccess();
     }
 
-    public function renderNode(): string
-    {
-        if (!$this->isOpen()) {
-            return '';
-        }
-
-        return parent::renderNode();
-    }
-
     /**
      * @param bool $active
      */

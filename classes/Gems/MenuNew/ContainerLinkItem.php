@@ -5,6 +5,7 @@ namespace Gems\MenuNew;
 class ContainerLinkItem extends RouteLinkItem
 {
     protected string $itemTemplate = 'menu::container-link-item';
+
     protected function hasAccess(): bool
     {
         foreach($this->children as $child) {
