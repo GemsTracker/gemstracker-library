@@ -6,6 +6,7 @@ use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Gems\AuthTfa\Adapter\TotpAdapter;
 use Gems\Cache\HelperAdapter;
+use Gems\Html;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -78,7 +79,7 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
 
         $params['alt']    = $this->translator->trans('QR Code');
         $params['class']  = 'floatLeft';
-        $params['src']    = \MUtil\Html::raw($this->_getQRCodeInline(
+        $params['src']    = Html::raw($this->_getQRCodeInline(
             $name,
             $formData['twoFactorKey'],
             $title,
@@ -88,7 +89,7 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
         $imgElement = $form->createElement('Html', 'image');
         $imgElement
             ->setLabel($this->translator->trans('Scan this QR Code'))
-            ->setDescription($this->translator->trans('Install the Google Authenticator app on your phone and scan this code.'))
+            ->setDescription($this->translator->trans('Install an authenticator app (Google Authenticator, Microsoft Authenticator, ...) on your phone and scan this code.'))
             ->img($params);
         $form->addElement($imgElement);
 

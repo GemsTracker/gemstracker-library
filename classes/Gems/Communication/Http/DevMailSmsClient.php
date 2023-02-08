@@ -9,9 +9,6 @@ class DevMailSmsClient implements SmsClientInterface
 {
     public function __construct(private readonly CommunicationRepository $communicationRepository)
     {
-        if ('development' !== APPLICATION_ENV) {
-            throw new \Exception();
-        }
     }
 
     public function sendMessage($number, $body, $originator=null)

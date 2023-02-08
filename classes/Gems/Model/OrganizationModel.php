@@ -165,6 +165,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $this->set('gor_signature', 'translate', true);
         $this->set('gor_create_account_template');
         $this->set('gor_reset_pass_template');
+        $this->set('gor_reset_tfa_template');
 
 
         $this->set('gor_has_login',             'label', $this->_('Login'),
@@ -265,6 +266,9 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $this->set('gor_reset_pass_template',       'label', $this->_('Reset Password template'),
                 'default', $commUtil->getCommTemplateForCode('passwordReset', 'staffPassword'),
                 'multiOptions', $staffTemplates);
+        $this->set('gor_reset_tfa_template',       'label', $this->_('Reset TFA template'),
+            'default', $commUtil->getCommTemplateForCode('tfaReset', 'staffPassword'),
+            'multiOptions', $staffTemplates);
 
         $this->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
             'description', $this->_('Separate with | examples: 10.0.0.0-10.0.0.255, 10.10.*.*, 10.10.151.1 or 10.10.151.1/25')
@@ -360,6 +364,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
         $this->set('gor_create_account_template');
         $this->set('gor_reset_pass_template');
+        $this->set('gor_reset_tfa_template');
 
         // ACCESS TAB
         $html = Html::create()->h4($this->_('Access'));

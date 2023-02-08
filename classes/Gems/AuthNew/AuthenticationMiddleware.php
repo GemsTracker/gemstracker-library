@@ -118,7 +118,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 /** @var StatusMessengerInterface $flash */
                 $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
                 $flash?->addInfos([
-                    $this->translator->trans('Please configure Softtoken TFA to continue.'),
+                    $this->translator->trans('Please configure Authenticator TFA to continue.'),
                 ]);
 
                 return $this->redirectWithIntended($user, $request, $this->router->generateUri('option.two-factor'));

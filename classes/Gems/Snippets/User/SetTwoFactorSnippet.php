@@ -121,7 +121,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         $registeredMethods = [
             'MailHotp' => $this->_('Mail'),
             'SmsHotp' => $this->_('SMS'),
-            'AppTotp' => $this->_('Google Authenticator'),
+            'AppTotp' => $this->_('Authenticator app'),
         ];
 
         return array_intersect_key($registeredMethods, array_flip($enabledMethods));
