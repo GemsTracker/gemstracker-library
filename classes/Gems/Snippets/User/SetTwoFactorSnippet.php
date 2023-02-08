@@ -14,6 +14,7 @@ namespace Gems\Snippets\User;
 use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\RouteHelper;
 use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
@@ -50,6 +51,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         private readonly array $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
         private readonly RouteHelper $routeHelper,
+        private readonly LayoutSettings $layoutSettings,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
@@ -57,6 +59,10 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
 
         if (!$this->sessionNamespace->has('keys')) {
             $this->sessionNamespace->set('keys', []);
+        }
+
+        if (LoginStatusTracker::make($this->session, $this->user)->isRequireAppTotpActive()) {
+            $this->layoutSettings->disableMenu();
         }
     }
 
@@ -296,6 +302,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
                 $newKey
             );
             LoginStatusTracker::make($this->session, $this->user)->setRequireAppTotpActive(false);
+            $this->layoutSettings->enableMenu();
 
             $this->addMessage($this->_('Two factor authentication setting saved.'));
             $this->generateNewKey();
