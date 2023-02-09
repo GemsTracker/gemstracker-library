@@ -21,11 +21,11 @@ class Menu extends MenuNode
     private function addFromConfig(MenuNode $node, array $items)
     {
         foreach ($items as $item) {
-            if ($item['type'] === 'route-link-item') {
-                $object = new RouteLinkItem($item['name'], $item['label']);
-            } else {
-                throw new \Exception('Invalid type: ' . $item['type']);
-            }
+            $object = match($item['type']) {
+                'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
+                'container' => new ContainerLinkItem($item['name'], $item['label']),
+                default => throw new \Exception('Invalid type: ' . $item['type']),
+            };
 
             if (isset($item['parent'])) {
                 $parent = $node->getMenu()->find($item['parent']);
@@ -68,16 +68,19 @@ class Menu extends MenuNode
         $item->openPath($routeResult->getMatchedParams());
     }
 
-    public function renderContent(): string
-    {
-        return '';
-    }
-
-    public function renderMenu(): string
+    public function renderNode(): string
     {
         foreach ($this->children as $child) {
             $child->open([]);
         }
+
+        return $this->templateRenderer->render('menu::main-menu', [
+            'children' => $this->children,
+        ]);
+    }
+
+    public function renderMenu(): string
+    {
         return $this->renderNode();
     }
 
