@@ -203,9 +203,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         if (! isset($values['user_two_factor_key'])) {
             $values['user_two_factor_key'] = null;
         }
-        if (! isset($values['user_enable_2factor'])) {
-            $values['user_enable_2factor'] = null;
-        }
 
 
         if ($defName) {

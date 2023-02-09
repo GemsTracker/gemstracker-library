@@ -1,8 +1,8 @@
 <div class="login-status">
     <div class="login">
-{% if current_identity is defined %}
-    {{ current_identity.getLoginName() }}
-    <a href="/logout">logout</a>
-{% endif %}
+        {% if current_identity is defined or current_identity_without_tfa is defined %}
+            {{ (current_identity ?? current_identity_without_tfa).getLoginName() }}
+            <a href="/logout">logout</a>
+        {% endif %}
     </div>
 </div>

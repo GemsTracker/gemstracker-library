@@ -81,7 +81,6 @@ class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
             'user_id'                => \Gems\User\UserLoader::SYSTEM_USER_ID,
             'user_login'             => $login,
             'user_two_factor_key'    => $twoFactor,
-            'user_enable_2factor'    => $twoFactor ? 1 : 0,
             'user_name'              => $login,
             'user_group'             => -1,
             'user_role'              => 'master',

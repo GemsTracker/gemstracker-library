@@ -14,6 +14,8 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
+use Gems\AuthTfa\Adapter\OtpAdapterInterface;
+use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
@@ -480,7 +482,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
         $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
-        $source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
+        //$source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
     }
 
     /**
@@ -1562,24 +1564,39 @@ class User extends \MUtil\Translate\TranslateableAbstract
         return $this->_getVar('surveyReturn', array());
     }
 
+    public function hasTfaConfigured(): bool
+    {
+        return $this->_hasVar('user_two_factor_key') && !empty($this->_getVar('user_two_factor_key'));
+    }
+
     public function getTfaMethodClass(): string
     {
-        if ($this->_hasVar('user_two_factor_key')) {
+        if ($this->hasTfaConfigured()) {
             $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
                 $this->_getVar('user_two_factor_key'),
                 TwoFactorAuthenticatorInterface::SEPERATOR
             );
         } else {
-            $authClass = $this->defaultAuthenticatorClass;
+            //$authClass = $this->defaultAuthenticatorClass;
+            throw new \Exception('No TFA configured');
         }
 
         return match($authClass) {
-            'GoogleAuthenticator' => 'AppTotp', // TODO: Legacy
-            'AppTotp' => 'AppTotp',
+            'GoogleAuthenticator' => 'AuthenticatorTotp', // TODO: Legacy
+            'AuthenticatorTotp' => 'AuthenticatorTotp',
             'MailHotp' => 'MailHotp',
             'SmsHotp' => 'SmsHotp',
             default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
         };
+    }
+
+    public function setTfa(string $className, string $secret): void
+    {
+        $newValue = $className . TwoFactorAuthenticatorInterface::SEPERATOR . $secret;
+
+        $this->_setVar('user_two_factor_key', $newValue);
+
+        $this->definition->setTwoFactorKey($this, $newValue);
     }
 
     /**
@@ -1616,7 +1633,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getTwoFactorKey()
     {
-        if ($this->_hasVar('user_two_factor_key')) {
+        if ($this->hasTfaConfigured()) {
             list($class, $key) = explode(
                     TwoFactorAuthenticatorInterface::SEPERATOR,
                     $this->_getVar('user_two_factor_key'),
@@ -1626,6 +1643,32 @@ class User extends \MUtil\Translate\TranslateableAbstract
             $key = null;
         }
         return $key;
+    }
+
+    /**
+     *
+     * @return string|null
+     */
+    public function getTwoFactorKeyForAdapter(string $adapter): ?string
+    {
+        $adapters = [
+            'Hotp' => ['MailHotp', 'SmsHotp'],
+            'Totp' => ['AuthenticatorTotp'],
+        ];
+
+        if ($this->hasTfaConfigured()) {
+            [$method, $key] = explode(
+                TwoFactorAuthenticatorInterface::SEPERATOR,
+                $this->_getVar('user_two_factor_key'),
+                2
+            );
+
+            if (in_array($method, $adapters[$adapter], true)) {
+                return $key;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -1963,7 +2006,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function isTwoFactorEnabled()
     {
-        return (boolean) $this->_getVar('user_enable_2factor') && $this->hasTwoFactor();
+        return (boolean) $this->hasTwoFactor();
     }
 
     /**
@@ -2519,7 +2562,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
      * @param boolean $enabled
      * @return $this
      */
-    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey, $enabled = null)
+    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey)
     {
         // Make sure the authclass is part of the data
         $authClass = get_class($authenticator);
@@ -2532,11 +2575,8 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $newValue = $authClass . TwoFactorAuthenticatorInterface::SEPERATOR . $newKey;
 
         $this->_setVar('user_two_factor_key', $newValue);
-        if (null !== $enabled) {
-            $this->_setVar('user_enable_2factor', $enabled ? 1 : 0);
-        }
 
-        $this->definition->setTwoFactorKey($this, $newValue, $enabled);
+        $this->definition->setTwoFactorKey($this, $newValue);
 
         return $this;
     }

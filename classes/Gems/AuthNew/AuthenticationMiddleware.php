@@ -23,6 +23,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
 {
     public const CURRENT_USER_ATTRIBUTE = 'current_user';
     public const CURRENT_IDENTITY_ATTRIBUTE = 'current_identity';
+    public const CURRENT_USER_WITHOUT_TFA_ATTRIBUTE = 'current_user_without_tfa';
+    public const CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE = 'current_identity_without_tfa';
 
 
     private const LOGIN_INTENDED_URL_SESSION_KEY = 'login_intended_url';
@@ -69,7 +71,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
             $request = $request->withAttribute(self::CURRENT_USER_ATTRIBUTE, $user);
             $request = $request->withAttribute(self::CURRENT_IDENTITY_ATTRIBUTE, $authenticationService->getIdentity());
         } else {
-            $request = $request->withAttribute('current_user_without_tfa', $user);
+            $request = $request->withAttribute(self::CURRENT_USER_WITHOUT_TFA_ATTRIBUTE, $user);
+            $request = $request->withAttribute(self::CURRENT_IDENTITY_WITHOUT_TFA_ATTRIBUTE, $authenticationService->getIdentity());
         }
 
         if (!$user->isAllowedIpForLogin($request->getServerParams()['REMOTE_ADDR'] ?? null)) {
@@ -87,7 +90,8 @@ class AuthenticationMiddleware implements MiddlewareInterface
             return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.login'));
         }
 
-        if (LoginStatusTracker::make($session, $user)->isPasswordResetActive()) {
+        $loginStatusTracker = LoginStatusTracker::make($session, $user);
+        if ($loginStatusTracker->isPasswordResetActive()) {
             /** @var RouteResult $routeResult */
             $routeResult = $request->getAttribute(RouteResult::class);
             if (!in_array($routeResult->getMatchedRouteName(), [
@@ -102,6 +106,22 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 ]);
 
                 return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.change-password'));
+            }
+        } elseif (static::CHECK_TFA && $loginStatusTracker->isRequireAuthenticatorTotpActive()) {
+            /** @var RouteResult $routeResult */
+            $routeResult = $request->getAttribute(RouteResult::class);
+            if (!in_array($routeResult->getMatchedRouteName(), [
+                'option.two-factor',
+                'tfa.login',
+                'auth.logout',
+            ])) {
+                /** @var StatusMessengerInterface $flash */
+                $flash = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+                $flash?->addInfos([
+                    $this->translator->trans('Please configure Authenticator TFA to continue.'),
+                ]);
+
+                return $this->redirectWithIntended($user, $request, $this->router->generateUri('option.two-factor'));
             }
         }
 

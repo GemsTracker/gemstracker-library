@@ -363,7 +363,7 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
     public function isTwoFactorRequired($ipAddress, $hasKey)
     {
         // \MUtil\EchoOut\EchoOut::track($ipAddress, $hasKey, $this->_get('ggp_2factor_set'), $this->_get('ggp_2factor_not_set'));
-        
+
         if ($hasKey) {
             switch ($this->_get('ggp_2factor_set')) {
                 case self::TWO_FACTOR_SET_REQUIRED:
@@ -371,13 +371,21 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
 
                 case self::TWO_FACTOR_SET_OUTSIDE_ONLY:
                     // Required when not in range
-                    return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+                    $noTwoFactorIpRanges = $this->_get('ggp_no_2factor_ip_ranges');
+                    if (empty($noTwoFactorIpRanges)) {
+                        return true;
+                    }
+                    return ! $this->util->isAllowedIP($ipAddress, $noTwoFactorIpRanges);
             }
         } else {
             switch ($this->_get('ggp_2factor_not_set')) {
                 case self::NO_TWO_FACTOR_INSIDE_ONLY:
                     // Required even when not set when not in range
-                    return ! $this->util->isAllowedIP($ipAddress, $this->_get('ggp_no_2factor_ip_ranges'));
+                    $noTwoFactorIpRanges = $this->_get('ggp_no_2factor_ip_ranges');
+                    if (empty($noTwoFactorIpRanges)) {
+                        return true;
+                    }
+                    return ! $this->util->isAllowedIP($ipAddress, $noTwoFactorIpRanges);
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace Gems\AuthTfa;
 
-use Gems\AuthTfa\Method\AppTotp;
+use Gems\AuthTfa\Method\AuthenticatorTotp;
 use Gems\AuthTfa\Method\MailHotp;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\Method\SmsHotp;
@@ -22,14 +22,12 @@ class OtpMethodBuilder
     ) {
     }
 
-    public function buildOtpMethod(User $user): OtpMethodInterface
+    public function buildSpecificOtpMethod(string $className, User $user): OtpMethodInterface
     {
-        $className = $user->getTfaMethodClass();
-
         $settings = $this->config['twofactor']['methods'][$className] ?? [];
 
         return match($className) {
-            'AppTotp' => new AppTotp($settings, $this->translator, $user, $this->throttleCache),
+            'AuthenticatorTotp' => new AuthenticatorTotp($settings, $this->translator, $user, $this->throttleCache, $this->config),
             'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache),
             'SmsHotp' => new SmsHotp(
                 $settings,
@@ -40,5 +38,20 @@ class OtpMethodBuilder
             ),
             default => throw new \Exception('Invalid TFA class value "' . $className . '"'),
         };
+    }
+
+    public function buildOtpMethod(User $user): OtpMethodInterface
+    {
+        return $this->buildSpecificOtpMethod($user->getTfaMethodClass(), $user);
+    }
+
+    public function setOtpMethod(User $user, string $className): void
+    {
+        $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret());
+    }
+
+    public function setOtpMethodAndSecret(User $user, string $className, string $secret): void
+    {
+        $user->setTfa($className, $secret);
     }
 }

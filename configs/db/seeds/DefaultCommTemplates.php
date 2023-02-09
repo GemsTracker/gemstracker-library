@@ -127,6 +127,16 @@ class DefaultCommTemplates extends AbstractSeed
                 'gct_created' => $now->format('Y-m-d H:i:s'),
                 'gct_created_by' => 1
             ],
+            [
+                'gct_id_template' => 22,
+                'gct_name' => 'Global TFA reset',
+                'gct_target' => 'staffPassword',
+                'gct_code' => 'tfaReset',
+                'gct_changed' => $now->format('Y-m-d H:i:s'),
+                'gct_changed_by' => 1,
+                'gct_created' => $now->format('Y-m-d H:i:s'),
+                'gct_created_by' => 1
+            ],
 
         ];
 
@@ -352,6 +362,18 @@ Om in te loggen met uw organisatie account {login_name} klikt u op onderstaande 
         'gctt_lang' => 'nl',
         'gctt_subject' => 'Er staan op dit moment geen vragenlijsten voor u klaar',
         'gctt_body' => 'Beste {greeting},\n\nEr staan op dit moment geen vragenlijsten voor u klaar.\nIndien u toch vragenlijsten verwacht had, reageer dan s.v.p. gewoon op deze mail.\n\n{organization_signature}',
+    ],
+    [
+        'gctt_id_template' => 22,
+        'gctt_lang' => 'en',
+        'gctt_subject' => 'Your TFA has been reset',
+        'gctt_body' => 'Your Authenticator TFA has been reset for the [b]{{organization}}[/b] site [b]{{project}}[/b]. Next time you log in, you will need to verify your login using SMS TFA, after which you can reactivate Authenticator TFA.',
+    ],
+    [
+        'gctt_id_template' => 22,
+        'gctt_lang' => 'nl',
+        'gctt_subject' => 'Je TFA is gereset',
+        'gctt_body' => 'Je Authenticator TFA voor [b]{{organization}}[/b] site [b]{{project}}[/b] is zojuist gewist. De volgende keer dat je inlogt zul je met SMS TFA inloggen, waarna je weer Authenticator TFA kunt instellen.',
     ],
         ];
 

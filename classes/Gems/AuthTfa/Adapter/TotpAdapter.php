@@ -5,12 +5,11 @@ namespace Gems\AuthTfa\Adapter;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\TOTP;
+use ParagonIE\ConstantTime\Base32;
 
 class TotpAdapter implements OtpAdapterInterface
 {
     use ThrottleVerifyTrait;
-
-    private readonly TOTP $otp;
 
     private readonly int $codeLength;
 
@@ -18,18 +17,10 @@ class TotpAdapter implements OtpAdapterInterface
 
     public function __construct(
         array $settings,
-        User $user,
         private readonly HelperAdapter $throttleCache,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
         $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
-
-        $this->otp = TOTP::create(
-            $user->getTwoFactorKey(),
-            $this->codeValidSeconds,
-            'sha1',
-            $this->codeLength,
-        );
 
         $this->initThrottleVerifyTrait(
             isset($settings['maxVerifyOtpAttempts']) ? (int)$settings['maxVerifyOtpAttempts'] : null,
@@ -41,14 +32,37 @@ class TotpAdapter implements OtpAdapterInterface
         return $this->throttleCache;
     }
 
-    public function generateCode(): string
+    public function generateSecret(): string
     {
-        return $this->otp->now();
+        return Base32::encodeUpper(random_bytes(40));
     }
 
-    public function verify(string $code): bool
+    private function createTotp(User $user): TOTP
     {
-        return $this->otp->verify($code, null, $this->otp->getPeriod() - 1);
+        return TOTP::create(
+            $user->getTwoFactorKeyForAdapter('Totp'),
+            $this->codeValidSeconds,
+            'sha1',
+            $this->codeLength,
+        );
+    }
+
+    public function generateCode(User $user): string
+    {
+        return $this->createTotp($user)->now();
+    }
+
+    public function verify(User $user, string $code): bool
+    {
+        $totp = $this->createTotp($user);
+        return $totp->verify($code, null, $totp->getPeriod() - 1);
+    }
+
+    public function verifyForSecret(string $secret, string $code): bool
+    {
+        $totp = TOTP::create($secret, $this->codeValidSeconds, 'sha1', $this->codeLength);
+
+        return $totp->verify($code, null, $totp->getPeriod() - 1);
     }
 
     public function getCodeValidSeconds(): int

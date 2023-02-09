@@ -10,12 +10,15 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -158,7 +161,7 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $resetSnippets = ['User\\AdminPasswordResetSnippet'];
+    protected array $resetSnippets = ['Staff\\StaffResetAuthenticationSnippet'];
 
     /**
      * The parameters used for the mail action.
@@ -189,6 +192,8 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
         protected UserLoader $userLoader,
         protected Model $modelLoader,
         CurrentUserRepository $currentUserRepository,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
+        private readonly RouteHelper $routeHelper,
     )
     {
         parent::__construct($responder, $translate);
@@ -397,22 +402,6 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
 
             $this->addSnippets($this->resetSnippets, $params);
         }
-    }
-
-    /**
-     * reset two factor authentication
-     */
-    public function reset2faAction()
-    {
-        $user = $this->getSelectedUser();
-        $user->clearTwoFactorKey();
-        $statusMessenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-        $statusMessenger->addMessage(
-            sprintf($this->_('Two factor key cleared for user %s'),
-                $user->getLoginName()),
-            'success');
-        $router = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-        $router->gotoRoute(['controller'=>'staff', 'action'=>'show'], null, false);
     }
 
     public function switchUserAction()

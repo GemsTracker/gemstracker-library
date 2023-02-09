@@ -21,7 +21,7 @@ class SmsHotp extends SmsOtp implements OtpMethodInterface
         parent::__construct(
             $settings,
             $translator,
-            new HotpAdapter($settings, $user, $throttleCache),
+            new HotpAdapter($settings, $throttleCache),
             $smsClient,
             $throttleCache,
             $user,
@@ -31,5 +31,9 @@ class SmsHotp extends SmsOtp implements OtpMethodInterface
     public function getCodeInputDescription(): string
     {
         return $this->translator->trans('From the sms we sent to your phonenumber.');
+    }
+
+    public function addSetupFormElements(\Zend_Form $form, array $formData)
+    {
     }
 }

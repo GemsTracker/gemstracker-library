@@ -36,7 +36,7 @@ class MailOtp extends AbstractOtpSendDecorator implements SendsOtpCodeInterface
         if ($this->canSendOtp($this->user)) {
             $subject = 'Authentication code';
 
-            $code = $this->otp->generateCode();
+            $code = $this->otp->generateCode($this->user);
 
             $body = 'Your code is ' . $code;
 

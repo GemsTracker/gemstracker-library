@@ -33,6 +33,7 @@ class Menu
             $this->getProjectMenu(),
             $this->getSetupMenu(),
             $this->getTrackBuilderMenu(),
+            $this->getOptionMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
@@ -766,7 +767,7 @@ class Menu
                                         ],
                                         [
                                             'name' => 'setup.access.staff.reset',
-                                            'label' => $this->translator->trans('Reset password'),
+                                            'label' => $this->translator->trans('Reset auth.'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -1472,6 +1473,39 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    public function getOptionMenu(): array
+    {
+        return [
+            'name' => 'option.edit',
+            'label' => $this->translator->trans('Your account'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'option.overview',
+                    'label' => $this->translator->trans('Activity overview'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'option.show-log',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'auth.change-password',
+                    'label' => $this->translator->trans('Change password'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'option.two-factor',
+                    'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
                 ],
             ],
         ];

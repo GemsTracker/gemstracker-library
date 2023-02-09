@@ -14,6 +14,8 @@ namespace Gems\Model;
 
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
+use MUtil\Validate\NoScript;
+use MUtil\Validate\SimpleEmail;
 use Zalt\Html\AElement;
 
 /**
@@ -176,7 +178,7 @@ class StaffModel extends \Gems\Model\JoinModel
      */
     public function applyOwnAccountEdit()
     {
-        $noscript = new \MUtil_Validate_NoScript();
+        $noscript = new NoScript();
 
         $this->set('gsf_id_user',        'elementClass', 'None');
         $this->set('gsf_login',          'label', $this->_('Login Name'),
@@ -184,7 +186,7 @@ class StaffModel extends \Gems\Model\JoinModel
         );
         $this->set('gsf_email',          'label', $this->_('E-Mail'),
             'size', 30,
-            'validator', new \MUtil_Validate_SimpleEmail()
+            'validator', new SimpleEmail()
         );
         $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),
@@ -258,6 +260,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
+        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
@@ -309,23 +312,10 @@ class StaffModel extends \Gems\Model\JoinModel
             'multiOptions', $yesNo
         );
 
-        $factorOptions = [
-            2 => $this->_('Enabled'),
-            1 => $this->_('Not set'),
-            0 => $this->_('Disabled'),
-            -1 => $this->_('Not possible'),
-        ];
-        $this->setIfExists('has_2factor', 'label', $this->_('Two factor'),
+        $this->setIfExists('has_authenticator_tfa', 'label', $this->_('Authenticator TFA'),
             'elementClass', 'Exhibitor',
-            'multiOptions', $factorOptions
+            'multiOptions', $yesNo
         );
-        if ($detailed) {
-            $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-            );
-        }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 

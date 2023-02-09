@@ -6,6 +6,7 @@ use DateInterval;
 use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use OTPHP\HOTP;
+use ParagonIE\ConstantTime\Base32;
 
 class HotpAdapter implements OtpAdapterInterface
 {
@@ -19,17 +20,9 @@ class HotpAdapter implements OtpAdapterInterface
 
     public function __construct(
         array $settings,
-        private readonly User $user,
         private readonly HelperAdapter $throttleCache,
     ) {
         $this->codeLength = (int)$settings['codeLength'];
-
-        $this->otp = HOTP::create(
-            $user->getTwoFactorKey(),
-            $user->getOtpCount(),
-            'sha1',
-            $this->codeLength,
-        );
 
         if (isset($settings['codeValidSeconds'])) {
             $this->codeValidSeconds = (int)$settings['codeValidSeconds'];
@@ -45,16 +38,31 @@ class HotpAdapter implements OtpAdapterInterface
         return $this->throttleCache;
     }
 
-    public function generateCode(): string
+    public function generateSecret(): string
     {
-        $this->user->incrementOtpCount();
-
-        return $this->otp->at($this->user->getOtpCount());
+        return Base32::encodeUpper(random_bytes(40));
     }
 
-    public function verify(string $code): bool
+    private function createHotp(User $user): HOTP
     {
-        $currentOtpRequested = $this->user->getOtpRequested();
+        return HOTP::create(
+            $user->getTwoFactorKeyForAdapter('Hotp'),
+            $user->getOtpCount(),
+            'sha1',
+            $this->codeLength,
+        );
+    }
+
+    public function generateCode(User $user): string
+    {
+        $user->incrementOtpCount();
+
+        return $this->createHotp($user)->at($user->getOtpCount());
+    }
+
+    public function verify(User $user, string $code): bool
+    {
+        $currentOtpRequested = $user->getOtpRequested();
 
         $otpValidUntil = $currentOtpRequested->add(new DateInterval('PT' . $this->codeValidSeconds . 'S'));
 
@@ -62,7 +70,7 @@ class HotpAdapter implements OtpAdapterInterface
             return false;
         }
 
-        return $this->otp->verify($code, $this->user->getOtpCount(), 0);
+        return $this->createHotp($user)->verify($code, $user->getOtpCount(), 0);
     }
 
     public function getCodeValidSeconds(): int

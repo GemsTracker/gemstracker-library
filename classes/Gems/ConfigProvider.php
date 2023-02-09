@@ -356,14 +356,17 @@ class ConfigProvider
             e-mail addresses. */
             'bounce' => false,
 
-            // Default Template code for a Reset password mail
+            // Default Template code for a Create account mail
             'createAccountTemplate' => 'accountCreate',
 
             // Have the mail depend on the user's language setting
             'multiLanguage' => true,
 
-            // Default Template code for a Create account mail
+            // Default Template code for a Reset password mail
             'resetPasswordTemplate' => 'passwordReset',
+
+            // Default Template code for a Reset tfa mail
+            'resetTfaTemplate' => 'tfaReset',
 
             // Supply a general site FROM address.
             'site' => null,
@@ -659,12 +662,13 @@ class ConfigProvider
                     'maxSendOtpAttemptsPerPeriod' => 3600,
                     'maxVerifyOtpAttempts' => 5,
                 ],
-                'AppTotp' => [
+                'AuthenticatorTotp' => [
                     'codeLength' => 6,
-                    'codeValidSeconds' => 300,
+                    'codeValidSeconds' => 30,
                     'maxVerifyOtpAttempts' => 5,
                 ],
             ],
+            'requireAuthenticatorTotp' => true, // TODO: Only `true` has been implemented
         ];
     }
 

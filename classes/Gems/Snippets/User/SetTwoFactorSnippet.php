@@ -11,8 +11,19 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Snippets\FormSnippetAbstract;
-use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
+use Gems\AuthNew\LoginStatusTracker;
+use Gems\AuthTfa\Method\OtpMethodInterface;
+use Gems\AuthTfa\OtpMethodBuilder;
+use Gems\Layout\LayoutSettings;
+use Gems\MenuNew\RouteHelper;
+use Gems\SessionNamespace;
+use Gems\Snippets\ZendFormSnippetAbstract;
+use Gems\User\User;
+use Mezzio\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,96 +33,67 @@ use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 29-Jun-2018 19:05:43
  */
-class SetTwoFactorSnippet extends FormSnippetAbstract
+class SetTwoFactorSnippet extends ZendFormSnippetAbstract
 {
-    /**
-     *
-     * @var TwoFactorAuthenticatorInterface
-     */
-    protected $authenticator;
+    protected User $user;
 
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected SessionInterface $session;
 
-    /**
-     * @var \Gems\Project\ProjectSettings
-     */
-    protected $project;
+    private readonly SessionNamespace $sessionNamespace;
 
-    /**
-     * @var \Zend_Session_Namespace
-     */
-    protected $_session;
+    private ?OtpMethodInterface $tfaMethod = null;
 
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $user;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        private readonly array $config,
+        private readonly OtpMethodBuilder $otpMethodBuilder,
+        private readonly RouteHelper $routeHelper,
+        private readonly LayoutSettings $layoutSettings,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
-    /**
-     *
-     * @var \Gems\User\UserLoader
-     */
-    protected $userLoader;
+        $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
+
+        if (!$this->sessionNamespace->has('keys')) {
+            $this->sessionNamespace->set('keys', []);
+        }
+
+        if (LoginStatusTracker::make($this->session, $this->user)->isRequireAuthenticatorTotpActive()) {
+            $this->layoutSettings->disableMenu();
+        }
+    }
 
     /**
      * Add the elements to the form
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
-        $this->saveLabel = $this->_('Save Two Factor Setup');
+        $this->saveLabel = $this->_('Save new Two Factor Setup');
 
         $methods = $this->getTwoFactorMethods();
 
-        if (count($methods) > 1) {
-            $options = [
+        if (count($methods) !== 1) {
+            $methodElement = $form->createElement('select', 'twoFactorMethod', [
                 'label' => $this->_('Two Factor method'),
                 'multiOptions' => $methods,
                 'onchange' => 'this.form.submit();',
-            ];
-            $methodElement = $form->createElement('select', 'twoFactorMethod', $options);
-            $form->addElement($methodElement);
+            ]);
         } else {
-            $firstValue = reset($methods);
-            $options = [
+            $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
                 'label' => $this->_('Two Factor method'),
-                'value' => $firstValue,
-                'onchange' => 'this.form.submit();',
-            ];
-            $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', $options);
-            $form->addElement($methodElement);
+                'value' => reset($methods),
+            ]);
         }
+        $form->addElement($methodElement);
 
-        $canEnableTwoFactor = true;
-
-        if ($this->authenticator) {
-            try {
-                $this->authenticator->addSetupFormElements($form, $this->user, $this->formData);
-            } catch (\Gems\Exception $e) {
-
-                $this->addMessage($e->getMessage());
-                $canEnableTwoFactor = false;
-            }
+        if ($this->tfaMethod) {
+            $this->tfaMethod->addSetupFormElements($form, $this->formData);
         }
-
-        if (!$this->user->canSaveTwoFactorKey()) {
-            $canEnableTwoFactor = false;
-        }
-
-        $options = [
-            'label' => $this->_('Enabled'),
-        ];
-        if (!$canEnableTwoFactor) {
-            $options['disabled'] = true;
-        }
-
-        $keyElement = $form->createElement('Checkbox', 'twoFactorEnabled', $options);
-        $form->addElement($keyElement);
     }
 
     /**
@@ -124,14 +106,6 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
     {
         parent::afterRegistry();
 
-        $this->userLoader = $this->loader->getUserLoader();
-
-        $this->_session = new \Zend_Session_Namespace(__CLASS__);
-        if (!isset($this->_session->keys)) {
-            $this->_session->keys = [];
-        }
-
-
         //$this->authenticator = $this->user->getTwoFactorAuthenticator();
     }
 
@@ -142,16 +116,18 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      */
     protected function getTwoFactorMethods()
     {
-        $enabledMethods = $this->project->getTwoFactorMethods();
+        $enabledMethods = array_keys($this->config['twofactor']['methods']);
+
+        if ($this->config['twofactor']['requireAuthenticatorTotp']) {
+            $enabledMethods = array_intersect($enabledMethods, ['AuthenticatorTotp']);
+        }
 
         // For now register labels here. Could be added as class method per authenticator at loading all authenticator classes cost
 
         $registeredMethods = [
-            'MailTotp' => $this->_('Mail'),
             'MailHotp' => $this->_('Mail'),
-            'GoogleAuthenticator' => $this->_('Google Authenticator'),
-            'SmsTotp' => $this->_('SMS'),
             'SmsHotp' => $this->_('SMS'),
+            'AuthenticatorTotp' => $this->_('Authenticator app'),
         ];
 
         return array_intersect_key($registeredMethods, array_flip($enabledMethods));
@@ -162,17 +138,10 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      *
      * @return array
      */
-    protected function getDefaultFormValues()
+    protected function getDefaultFormValues(): array
     {
         if ($this->formData) {
             return $this->formData;
-        }
-
-        if ($this->user->hasTwoFactor()) {
-            $authKey = $this->user->getTwoFactorKey();
-
-        } else {
-            $authKey   = null;
         }
 
         /*if (! $authKey) {
@@ -189,29 +158,10 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
             // Set on save
             $output['twoFactorEnabled'] = 1;
         } else {*/
-
-        $output['twoFactorEnabled'] = 0;
-        if ($this->user->getTwoFactorAuthenticator() && $this->user->isTwoFactorEnabled()) {
-            $output['twoFactorEnabled'] = 1;
-        }
-
-        if (! $output['twoFactorEnabled']) {
-            $this->addMessage($this->_('Two factor authentication not active!'));
-        }
         // }
-        $output['twoFactorKey']     = $authKey;
+        $output['twoFactorKey'] = null;
 
         return $output;
-    }
-
-    /**
-     * overrule to add your own buttons.
-     *
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList()
-    {
-        // Show nothing
     }
 
     /**
@@ -265,26 +215,27 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      */
     protected function loadAuthenticator()
     {
-        if (isset($this->formData['twoFactorMethod'])) {
-            $this->authenticator = $this->userLoader->getTwoFactorAuthenticator($this->formData['twoFactorMethod']);
+        $tfaMethods = $this->getTwoFactorMethods();
+
+        if (isset($this->formData['twoFactorMethod']) && isset($tfaMethods[$this->formData['twoFactorMethod']])) {
+            $this->tfaMethod = $this->otpMethodBuilder->buildSpecificOtpMethod($this->formData['twoFactorMethod'], $this->user);
             return;
         }
 
-        $authenticators = $this->getTwoFactorMethods();
-
-        if ($authenticator = $this->user->getTwoFactorAuthenticator()) {
-            $authenticatorName = (new \ReflectionClass($authenticator))->getShortName();
-            if (isset($authenticators[$authenticatorName])) {
-                $this->authenticator = $authenticator;
-                $this->formData['twoFactorMethod'] = $authenticatorName;
+        if ($this->user->hasTfaConfigured() && $tfaMethod = $this->otpMethodBuilder->buildOtpMethod($this->user)) {
+            $tfaMethodName = (new \ReflectionClass($tfaMethod))->getShortName();
+            if (isset($tfaMethods[$tfaMethodName])) {
+                $this->tfaMethod = $tfaMethod;
+                $this->formData['twoFactorMethod'] = count($tfaMethods) === 1 ? $tfaMethods[$tfaMethodName] : $tfaMethodName;
                 return;
             }
         }
 
-        // Get the first available authenticator
-        //$authenticators = $this->getTwoFactorMethods();
-        $firstAuthenticator = key($authenticators);
-        $this->authenticator = $this->userLoader->getTwoFactorAuthenticator($firstAuthenticator);
+        // Get the first available TFA method
+        $this->tfaMethod = $this->otpMethodBuilder->buildSpecificOtpMethod(
+            array_key_first($tfaMethods),
+            $this->user
+        );
     }
 
     /**
@@ -292,25 +243,37 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      */
     protected function loadFormKey()
     {
-        if ($this->authenticator instanceof TwoFactorAuthenticatorInterface) {
-            if ($this->authenticator == $this->user->getTwoFactorAuthenticator()) {
-                if ($key = $this->user->getTwoFactorKey()) {
-                    $this->formData['twoFactorKey'] = $key;
-                    return;
-                }
-            }
-
-            $authenticatorClassName = get_class($this->authenticator);
-            if (isset($this->_session->keys[$authenticatorClassName])) {
-                $this->formData['twoFactorKey'] = $this->_session->keys[$authenticatorClassName];
+        if ($this->tfaMethod) {
+            $key = $this->getKeyFromSession();
+            if ($key) {
+                $this->formData['twoFactorKey'] = $key;
                 return;
             }
 
-            // No key exists. Generate key
-            $authKey = $this->authenticator->createSecret();
-            $this->formData['twoFactorKey'] = $authKey;
-            $this->_session->keys[$authenticatorClassName] = $authKey;
+            $this->generateNewKey();
         }
+    }
+
+    private function getKeyFromSession(): ?string
+    {
+        $sessionKeys = $this->sessionNamespace->get('keys', []);
+        $authenticatorClassName = get_class($this->tfaMethod);
+        return $sessionKeys[$authenticatorClassName] ?? null;
+    }
+
+    private function generateNewKey(): void
+    {
+        if (!$this->tfaMethod) {
+            throw new \Exception();
+        }
+
+        $sessionKeys = $this->sessionNamespace->get('keys', []);
+        $authenticatorClassName = get_class($this->tfaMethod);
+
+        $authKey = $this->tfaMethod->generateSecret();
+        $this->formData['twoFactorKey'] = $authKey;
+        $sessionKeys[$authenticatorClassName] = $authKey;
+        $this->sessionNamespace->set('keys', $sessionKeys);
     }
 
     /**
@@ -320,20 +283,40 @@ class SetTwoFactorSnippet extends FormSnippetAbstract
      */
     protected function saveData(): int
     {
-        $newKey = $this->formData['twoFactorKey'];
+        $newKey = $this->getKeyFromSession();
+        $code = $this->formData['twoFactorCode'] ?? null;
+        $this->formData['twoFactorCode'] = '';
 
-        if ($newKey) {
-            if ($this->user->canSaveTwoFactorKey()) {
-                $enabled = $this->formData['twoFactorEnabled'] ? 1 : 0;
-            } else {
-                $enabled = null;
+        if ($newKey && !empty($code)) {
+            $className = (new \ReflectionClass($this->tfaMethod))->getShortName();
+            $otpMethod = $this->otpMethodBuilder->buildSpecificOtpMethod($className, $this->user);
+            if (!$otpMethod->verifyForSecret($newKey, $code)) {
+                $this->addMessage($this->_('Please enter the TFA passcode from the new TFA'));
+                return 0;
             }
 
-            $this->user->setTwoFactorKey($this->authenticator, $newKey, $enabled);
+            //$this->user->setTwoFactorKey($this->authenticator, $newKey, $enabled);
+            $this->otpMethodBuilder->setOtpMethodAndSecret(
+                $this->user,
+                $className,
+                $newKey
+            );
+            LoginStatusTracker::make($this->session, $this->user)->setRequireAuthenticatorTotpActive(false);
+            $this->layoutSettings->enableMenu();
 
             $this->addMessage($this->_('Two factor authentication setting saved.'));
+            $this->generateNewKey();
         }
 
         return 0;
+    }
+
+    protected function onFakeSubmit()
+    {
+        if (isset($this->formData['new_key']) && $this->formData['new_key']) {
+            $this->generateNewKey();
+        }
+
+        $this->redirectRoute = $this->routeHelper->getRouteUrl('option.two-factor');
     }
 }
