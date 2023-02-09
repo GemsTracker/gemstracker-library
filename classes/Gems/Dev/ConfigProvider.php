@@ -4,6 +4,7 @@ namespace Gems\Dev;
 
 use Gems\Communication\Http\DevMailSmsClient;
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Dev\Middleware\DebugDumperMiddleware;
 
 class ConfigProvider
 {
@@ -22,7 +23,10 @@ class ConfigProvider
                     'aliases' => [
                         SmsClientInterface::class => DevMailSmsClient::class,
                     ],
-                ]
+                ],
+                'pipeline' => [
+                    DebugDumperMiddleware::class,
+                ],
             ];
         }
 

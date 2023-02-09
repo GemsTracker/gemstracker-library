@@ -7,8 +7,10 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\Like;
 use Laminas\Db\Sql\Sql;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ManualMailerFactory
 {
@@ -16,7 +18,12 @@ class ManualMailerFactory
 
     protected string $defaultDsn = 'native://default';
 
-    public function __construct(protected ResultFetcher $resultFetcher, array $config)
+    public function __construct(
+        protected ResultFetcher $resultFetcher,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected MessageBusInterface $messageBus,
+        MailBouncer $mailBouncer,
+        array $config)
     {
         if (isset($config['mail'])) {
             $this->config = $config['mail'];
@@ -27,8 +34,8 @@ class ManualMailerFactory
     {
         $dsn = $this->getMailDsnFromFrom($from);
 
-        $transport = Transport::fromDsn($dsn);
-        return new Mailer($transport);
+        $transport = Transport::fromDsn($dsn, $this->eventDispatcher);
+        return new Mailer($transport, $this->messageBus, $this->eventDispatcher);
     }
 
     protected function getMailDsnFromFrom(?string $from): string

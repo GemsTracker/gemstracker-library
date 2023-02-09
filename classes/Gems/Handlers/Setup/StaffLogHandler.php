@@ -12,6 +12,7 @@
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\LogHandler;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -62,8 +63,10 @@ class StaffLogHandler extends LogHandler
         Model $modelLoader,
         Adapter $db,
         protected UserLoader $userLoader,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($responder, $translate, $modelLoader, $db);
+        $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 
     /**
@@ -119,7 +122,7 @@ class StaffLogHandler extends LogHandler
      * @staticvar \Gems\User\User $user
      * @return User or false when not available
      */
-    public function getSelectedUser(): User
+    public function getSelectedUser(): User|bool
     {
         static $user = null;
 
@@ -130,11 +133,9 @@ class StaffLogHandler extends LogHandler
         $staffId = $this->_getIdParam();
         if ($staffId) {
             $user   = $this->userLoader->getUserByStaffId($staffId);
-        } else {
-            $user = false;
+            return $user;
         }
-
-        return $user;
+        return false;
     }
 
     /**

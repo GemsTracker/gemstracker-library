@@ -11,7 +11,6 @@
 
 namespace Gems\Handlers;
 
-use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
 use Gems\MenuNew\RouteHelper;
@@ -20,9 +19,9 @@ use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
 use Gems\Tracker;
-use \Gems\Tracker\Form\AskTokenForm;
+use Gems\Tracker\Form\AskTokenForm;
 use Gems\Tracker\Token;
-use Gems\Util\MaintenanceLock;
+use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;

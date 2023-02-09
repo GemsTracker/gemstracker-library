@@ -13,7 +13,9 @@ namespace Gems\Model;
 
 use Gems\Model\Type\MaskedJsonData;
 use Gems\User\Group;
+use MUtil\Model;
 use MUtil\Model\Type\JsonData;
+use Zalt\Html\Html;
 
 /**
  *
@@ -44,11 +46,9 @@ class LogModel extends \Gems\Model\HiddenOrganizationModel
     public function __construct()
     {
         parent::__construct('Log', 'gems__log_activity', 'gla', true);
-        $this->addTable('gems__log_setup', array('gla_action' => 'gls_id_action'))
-                ->addLeftTable('gems__respondents', array('gla_respondent_id' => 'grs_id_user'))
-                ->addLeftTable('gems__staff', array('gla_by' => 'gsf_id_user'));
-
-        $this->setKeys(array(\Gems\Model::LOG_ITEM_ID => 'gla_id'));
+        $this->addTable('gems__log_setup', ['gla_action' => 'gls_id_action'])
+                ->addLeftTable('gems__respondents', ['gla_respondent_id' => 'grs_id_user'])
+                ->addLeftTable('gems__staff', ['gla_by' => 'gsf_id_user']);
     }
 
     /**
@@ -99,24 +99,45 @@ class LogModel extends \Gems\Model\HiddenOrganizationModel
         //Not only active, we want to be able to read the log for inactive organizations too
         $orgs = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations');
 
-        $this->set('gla_created', 'label', $this->_('Date'));
-        $this->set('gls_name', 'label', $this->_('Action'));
-        $this->set('gla_organization', 'label', $this->_('Organization'), 'multiOptions', $orgs);
-        $this->set('staff_name', 'label', $this->_('Staff'));
-        $this->set('gla_role', 'label', $this->_('Role'));
-        $this->set('respondent_name', 'label', $this->_('Respondent'));
+        $this->set('gla_created', [
+            'label' => $this->_('Date'),
+        ]);
+        $this->set('gls_name', [
+            'label' => $this->_('Action'),
+        ]);
+        $this->set('gla_organization', [
+            'label' => $this->_('Organization'),
+            'multiOptions' => $orgs,
+        ]);
+        $this->set('staff_name', [
+            'label' => $this->_('Staff'),
+        ]);
+        $this->set('gla_role', [
+            'label' => $this->_('Role'),
+        ]);
+        $this->set('respondent_name', [
+            'label' => $this->_('Respondent'),
+        ]);
 
         $jdType = new JsonData();
-        $this->set('gla_message', 'label', $this->_('Message'));
+        $this->set('gla_message', [
+            'label' => $this->_('Message')
+        ]);
         $jdType->apply($this, 'gla_message', $detailed);
 
         if ($detailed) {
             $mjdType = new MaskedJsonData($this->currentUser);
-            $this->set('gla_data', 'label', $this->_('Data'));
+            $this->set('gla_data', [
+                'label' => $this->_('Data'),
+            ]);
             $mjdType->apply($this, 'gla_data', $detailed);
 
-            $this->set('gla_method', 'label', $this->_('Method'));
-            $this->set('gla_remote_ip', 'label', $this->_('IP address'));
+            $this->set('gla_method', [
+                'label' => $this->_('Method'),
+            ]);
+            $this->set('gla_remote_ip', [
+                'label' => $this->_('IP address'),
+            ]);
         }
 
         $this->refreshGroupSettings();
