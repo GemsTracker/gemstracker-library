@@ -226,7 +226,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             $tfaMethodName = (new \ReflectionClass($tfaMethod))->getShortName();
             if (isset($tfaMethods[$tfaMethodName])) {
                 $this->tfaMethod = $tfaMethod;
-                $this->formData['twoFactorMethod'] = $tfaMethodName;
+                $this->formData['twoFactorMethod'] = count($tfaMethods) === 1 ? $tfaMethods[$tfaMethodName] : $tfaMethodName;
                 return;
             }
         }
