@@ -71,9 +71,9 @@ class StaffSearchSnippet extends AutosearchFormSnippet
             $elementA->setLabel($this->model->get('gsf_active', 'label'));
             $elements[] = $elementA;
 
-            $optionsT = $this->model->get('has_2factor', 'multiOptions');
-            $elementT = $this->_createSelectElement('has_2factor', $optionsT, $this->_('(all)'));
-            $elementT->setLabel($this->model->get('has_2factor', 'label'));
+            $optionsT = $this->model->get('has_authenticator_tfa', 'multiOptions');
+            $elementT = $this->_createSelectElement('has_authenticator_tfa', $optionsT, $this->_('(all)'));
+            $elementT->setLabel($this->model->get('has_authenticator_tfa', 'label'));
             $elements[] = $elementT;
         }
 

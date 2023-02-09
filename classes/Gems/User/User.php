@@ -482,7 +482,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
         $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
-        $source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
+        //$source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
     }
 
     /**
