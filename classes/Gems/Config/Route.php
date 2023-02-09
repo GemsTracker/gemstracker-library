@@ -775,19 +775,20 @@ class Route
                     'show',
                     'edit',
                     'reset',
-                    'deactivate',
+                    'active-toggle',
 
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'reset',
-                    'deactivate',
+                    'active-toggle',
                     'staff-log',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
+                    'active-toggle',
                     'reset',
-                ]
+                ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',
                 controllerClass: \Gems\Handlers\Setup\StaffLogHandler::class,
@@ -799,6 +800,28 @@ class Route
                 parameterRoutes: [
                     'show',
                 ]
+            ),
+            ...$this->createSnippetRoutes(baseName: 'setup.access.system-user',
+                controllerClass: \Gems\Handlers\Setup\SystemUserHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'create',
+                    'show',
+                    'edit',
+                    'active-toggle',
+                ],
+                parameterRoutes: [
+                    'show',
+                    'edit',
+                    'active-toggle',
+                ],
+                postRoutes: [
+                    'create',
+                    'edit',
+                    'index',
+                    'active-toggle',
+                ],
             ),
 
             [

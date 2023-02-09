@@ -175,7 +175,7 @@ class Loader extends LoaderAbstract
      */
     public function getEmbedDataObject($userId, \Zend_Db_Adapter_Abstract $db)
     {
-        return $this->_loadClass('User\\Embed\\EmbeddedUserData', true, [$userId, $db, $this]);
+        return $this->_loadClass('User\\Embed\\EmbeddedUserData', true, [$userId, $db, $this->getEmbedLoader()]);
     }
 
     /**
@@ -183,7 +183,7 @@ class Loader extends LoaderAbstract
      */
     public function getEmbedLoader()
     {
-        return $this->_getClass('User\\Embed\\EmbedLoader');
+        return $this->loadByDependency('User\\Embed\\EmbedLoader');
     }
 
     /**
@@ -511,7 +511,7 @@ class Loader extends LoaderAbstract
 
         $old = $this->_overLoader->getDependencyResolver();
         $this->_overLoader->setDependencyResolver($resolveByDependecy);
-        $output = $this->_overLoader->create('Gems\\Agenda\\Agenda');
+        $output = $this->_overLoader->create($class);
         $this->_overLoader->setDependencyResolver($old);
         return $output;
     }

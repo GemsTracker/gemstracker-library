@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\Handlers;
 
 use Gems\Html;
+use Gems\Snippets\ActiveToggleSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
@@ -145,6 +146,22 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'topicCallable' => 'getTopicCallable',
     );
 
+    protected array $activeToggleParameters = [
+        'deactivateConfirmQuestion' => 'getDeactivateQuestion',
+        'deactivateDisplayTitle'    => 'getDeactivateTitle',
+        'deactivateFormTitle'       => 'getDeactivateTitle',
+        'deactivateSaveData'        => ['gsf_active' => 0],
+        'reactivateConfirmQuestion' => 'getReactivateQuestion',
+        'reactivateDisplayTitle'    => 'getReactivateTitle',
+        'reactivateFormTitle'       => 'getReactivateTitle',
+        'reactivateSaveData'        => ['gsf_active' => 1],
+        'topicCallable'   => 'getTopicCallable',
+    ];
+
+    protected array $activeToggleSnippets = [
+        ActiveToggleSnippet::class,
+    ];
+
     /**
      * The snippets used for the autofilter action.
      *
@@ -265,6 +282,13 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     {
         parent::__construct($responder, $translate);
         Html::init();
+    }
+
+    public function activeToggleAction()
+    {
+        $params = $this->_processParameters($this->activeToggleParameters);
+
+        $this->addSnippets($this->activeToggleSnippets, $params);
     }
     
     /**

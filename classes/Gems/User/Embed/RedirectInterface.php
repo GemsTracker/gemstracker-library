@@ -11,6 +11,9 @@
 
 namespace Gems\User\Embed;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\User\User;
+
 /**
  *
  * @package    Gems
@@ -24,5 +27,11 @@ interface RedirectInterface extends HelperInterface
     /**
      * @return array redirect route
      */
-    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations);
+    public function getRedirectUrl(
+        RouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        string $patientId,
+        array $organizations,
+    ): ?string;
 }

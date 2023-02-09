@@ -771,8 +771,8 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff.deactivate',
-                                            'label' => $this->translator->trans('Deactivate'),
+                                            'name' => 'setup.access.staff.active-toggle',
+                                            'label' => $this->translator->trans('(De)activate'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -786,6 +786,35 @@ class Menu
                                                     'type' => 'route-link-item',
                                                 ],
                                             ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.access.system-user.index',
+                            'label' => $this->translator->trans('System users'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.system-user.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.system-user.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.system-user.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.system-user.active-toggle',
+                                            'label' => $this->translator->trans('(De)activate'),
+                                            'type' => 'route-link-item',
                                         ],
                                     ],
                                 ],

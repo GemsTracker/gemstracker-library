@@ -26,22 +26,22 @@ class DayKeySha256 extends HourKeySha256
      *
      * @var string
      */
-    protected $keyTimeFormat = 'Ymd';
+    protected string $keyTimeFormat = 'Ymd';
 
     /**
      * The number of time periods on either side of the current that is allowed
      *
      * @var int
      */
-    protected $keyTimeValidRange = 0;
+    protected int $keyTimeValidRange = 0;
 
     /**
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return sprintf($this->_('Less safe: Daily valid valid key with %s'), $this->encryptionAlgorithm);
+        return sprintf($this->translator->_('Less safe: Daily valid valid key with %s'), $this->encryptionAlgorithm);
     }
 
 }

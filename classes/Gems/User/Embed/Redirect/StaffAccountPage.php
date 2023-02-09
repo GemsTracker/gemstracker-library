@@ -11,7 +11,9 @@
 
 namespace Gems\User\Embed\Redirect;
 
+use Gems\MenuNew\RouteHelper;
 use Gems\User\Embed\RedirectAbstract;
+use Gems\User\User;
 
 /**
  *
@@ -27,19 +29,18 @@ class StaffAccountPage extends RedirectAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('Staff account setup page');
+        return $this->translator->_('Staff account setup page');
     }
 
-    /**
-     * @return array redirect route
-     */
-    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
-    {
-        return [
-            $this->request->getControllerKey()  => 'option',
-            $this->request->getActionKey()      => 'edit',
-        ];
+    public function getRedirectUrl(
+        RouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        string $patientId,
+        array $organizations,
+    ): ?string {
+        return $routeHelper->getRouteUrl('option.edit');
     }
 }

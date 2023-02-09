@@ -11,6 +11,10 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Snippets\ActiveToggleSnippet;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\ModelDetailTableSnippet;
+use Gems\Snippets\User\EmbeddedUserTestUrlForm;
 use Zalt\Html\Html;
 
 /**
@@ -91,10 +95,10 @@ class SystemUserHandler extends StaffHandler
      * @var mixed String or array of snippets name
      */
     protected array $showSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'ModelItemTableSnippet',
-        'User\\EmbeddedUserTestUrlForm',
-        ];
+        ContentTitleSnippet::class,
+        ModelDetailTableSnippet::class,
+        EmbeddedUserTestUrlForm::class,
+    ];
 
     /**
      * Snippets for mail

@@ -12,6 +12,7 @@
 namespace Gems\User\Embed\Auth;
 
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\User;
 use Laminas\Authentication\Result;
 
 /**
@@ -27,11 +28,11 @@ class PasswordVerify extends EmbeddedAuthAbstract
     /**
      * Authenticate embedded user
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(\Gems\User\User $user, $secretKey)
+    public function authenticate(User $user, string $secretKey): bool
     {
         $embeddedUserData = $user->getEmbedderData();
         if ($embeddedUserData) {
@@ -55,10 +56,10 @@ class PasswordVerify extends EmbeddedAuthAbstract
 
     /**
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems\User\User $user)
+    public function getExampleKey(User $user): string
     {
         return '{user_password}';
     }
@@ -67,8 +68,8 @@ class PasswordVerify extends EmbeddedAuthAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('NOT SAFE: Final user PHP Password verify');
+        return $this->translator->_('NOT SAFE: Final user PHP Password verify');
     }
 }

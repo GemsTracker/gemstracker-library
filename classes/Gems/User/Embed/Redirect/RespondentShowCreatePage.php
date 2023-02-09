@@ -11,6 +11,11 @@
 
 namespace Gems\User\Embed\Redirect;
 
+use Gems\MenuNew\RouteHelper;
+use Gems\Repository\RespondentRepository;
+use Gems\User\User;
+use MUtil\Translate\Translator;
+
 /**
  *
  * @package    Gems
@@ -20,49 +25,45 @@ namespace Gems\User\Embed\Redirect;
  */
 class RespondentShowCreatePage extends RespondentShowPage
 {
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
-    
+
+    public function __construct(
+        Translator $translator,
+        protected RespondentRepository $respondentRepository,
+    )
+    {
+        parent::__construct($translator);
+    }
+
     /**
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('Respondent show or create a new respondent');
+        return $this->translator->_('Respondent show or create a new respondent');
     }
 
-    /**
-     * @return array redirect route
-     */
-    public function getRedirectRoute(\Gems\User\User $embeddedUser, \Gems\User\User $deferredUser, $patientId, $organizations)
-    {
+    public function getRedirectUrl(
+        RouteHelper $routeHelper,
+        User $embeddedUser,
+        User $deferredUser,
+        $patientId,
+        $organizations,
+    ): ?string {
+
         $orgId = $deferredUser->getCurrentOrganizationId();
-        
-        $respondent = $this->loader->getRespondent($patientId, $orgId);
-        
+        $respondent = $this->respondentRepository->getRespondent($patientId, $orgId);
+
         if ($respondent->exists) {
-            return parent::getRedirectRoute($embeddedUser, $deferredUser, $patientId, $organizations);
+            return parent::getRedirectUrl($routeHelper, $embeddedUser, $deferredUser, $patientId, $organizations);
         }
 
-        $staticSession = \Gems\Escort::getInstance()->getStaticSession();
-        $staticSession->previousRequestParameters = [
-            'gr2o_patient_nr' => $patientId,
-            'gr2o_id_organization' => $orgId,
-            ];
-        $staticSession->previousRequestMode = "POST";
-        $staticSession->previousRequestMessage = sprintf(
+        // Add Message ?
+        /*sprintf(
             $this->_('Respondent %s does not yet exist, please enter the respondent data now!'),
             $patientId
-        );
+        );*/
 
-        $deferredUser->setSessionPatientNr($patientId, $orgId);
-
-        return [
-            $this->request->getControllerKey()  => 'respondent',
-            $this->request->getActionKey()      => 'create',
-        ];
+        return $routeHelper->getRouteUrl('respondent.create');
     }
 }
