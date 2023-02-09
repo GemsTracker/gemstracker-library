@@ -31,7 +31,7 @@ class ProjectOverloaderFactory implements FactoryInterface
         if (isset($config['overLoaderPaths']) && is_array($config['overLoaderPaths'])) {
             $overloaderPaths = $config['overLoaderPaths'];
         }
-        $overloader = new ProjectOverloader($container, $overloaderPaths);
+        $overloader = new $requestedName($container, $overloaderPaths);
         $overloader->legacyClasses = true;
         $overloader->legacyPrefix = 'Legacy';
         Model::setSource($overloader->createSubFolderOverloader('Model'));

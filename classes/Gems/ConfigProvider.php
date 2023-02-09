@@ -91,6 +91,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\ExtensionInterface;
 use Twig\Extension\StringLoaderExtension;
+use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
 use Zalt\Model\MetaModelLoader;
@@ -259,6 +260,7 @@ class ConfigProvider
             'factories'  => [
                 EventDispatcher::class => EventDispatcherFactory::class,
                 ProjectOverloader::class => ProjectOverloaderFactory::class,
+                ConstructorProjectOverloader::class => ProjectOverloaderFactory::class,
                 Acl::class => AclFactory::class,
                 Agenda::class => AgendaFactory::class,
 
@@ -305,10 +307,10 @@ class ConfigProvider
 
                 LaminasRunner::class => LaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,
-                
+
                 SnippetLoader::class => SnippetLoaderFactory::class,
                 SnippetMiddleware::class => SnippetMiddlewareFactory::class,
-                GemsSnippetResponder::class => GemsSnippetResponderFactory::class, 
+                GemsSnippetResponder::class => GemsSnippetResponderFactory::class,
             ],
             'abstract_factories' => [
                 ReflectionAbstractFactory::class,
@@ -335,12 +337,12 @@ class ConfigProvider
 
                 // Default lock storage
                 LockStorageAbstract::class => FileLock::class,
-                
+
                 // Translation
                 Translator::class => TranslatorInterface::class,
                 SnippetResponderInterface::class => GemsSnippetResponder::class,
                 \MUtil\Snippets\SnippetLoaderInterface::class => SnippetLoader::class,
-                
+
                 SqlRunnerInterface::class => LaminasRunner::class,
             ]
         ];
@@ -521,10 +523,10 @@ class ConfigProvider
     {
         $settings = MetaModelConfigProvider::getConfig();
         $settings['translateDatabaseFields'] = true;
-        
+
         return $settings;
     }
-    
+
     protected function getMonitorSettings(): array
     {
         /*

@@ -24,8 +24,7 @@ use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
 use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
 use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Util\Translated;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
-use Zalt\Loader\ProjectOverloader;
+use Zalt\Loader\ConstructorProjectOverloader;
 
 /**
  * Per project overruleable event processing engine
@@ -48,13 +47,15 @@ class TrackEvents
     const SURVEY_COMPLETION_EVENT       = 'Survey/Completed';
     const SURVEY_DISPLAY_EVENT          = 'Survey/Display';
 
-    public function __construct(protected Translated $translatedUtil, protected HelperAdapter $cache, array $config, ProjectOverloader $projectOverloader)
+    public function __construct(
+        protected Translated $translatedUtil,
+        protected HelperAdapter $cache,
+        protected ConstructorProjectOverloader $overloader,
+        array $config, )
     {
         if (isset($config['tracker'], $config['tracker']['trackEvents'])) {
             $this->config = $config['tracker']['trackEvents'];
         }
-        $this->eventLoader = clone $projectOverloader;
-        $this->eventLoader->setDependencyResolver(new ConstructorDependencyResolver());
     }
 
     /**
@@ -98,7 +99,7 @@ class TrackEvents
             /**
              * @var EventInterface
              */
-            return $this->eventLoader->create($eventName);
+            return $this->overloader->create($eventName);
         }
 
         throw new Coding("The event '$eventName' of type '$eventType' could not be loaded.");
