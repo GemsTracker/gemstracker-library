@@ -770,8 +770,8 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff.deactivate',
-                                            'label' => $this->translator->trans('Deactivate'),
+                                            'name' => 'setup.access.staff.active-toggle',
+                                            'label' => $this->translator->trans('(De)activate'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -811,8 +811,8 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.system-user.deactivate',
-                                            'label' => $this->translator->trans('Deactivate'),
+                                            'name' => 'setup.access.system-user.active-toggle',
+                                            'label' => $this->translator->trans('(De)activate'),
                                             'type' => 'route-link-item',
                                         ],
                                     ],

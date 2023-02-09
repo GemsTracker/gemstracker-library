@@ -11,10 +11,17 @@
 
 namespace Gems\Snippets;
 
+use Gems\Audit\AccesslogRepository;
+use Gems\MenuNew\MenuSnippetHelper;
+use Mezzio\Helper\UrlHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\Snippets\ModelConfirmDataChangeSnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -29,7 +36,7 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var AccesslogRepository
      */
     protected $accesslog;
 
@@ -48,58 +55,19 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     protected $displayTitle;
 
     /**
-     * Required
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
 
-    /**
-     * Adds rows from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @return void
-     */
-    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
-    {
-        if ($menuItem = $this->getEditMenuItem()) {
-            // Add click to edit
-            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
-        }
-
-        parent::addShowTableRows($bridge, $model);
-    }
-
-    /**
-     * Finds a specific active menu item
-     *
-     * @param string $controller
-     * @param string $action
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function findMenuItem($controller, $action = 'index')
-    {
-        return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
-    }
-
-    /**
-     * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @return \Gems\Menu\SubMenuItem
-     */
-    protected function getEditMenuItem()
-    {
-        return $this->findMenuItem($this->request->getControllerName(), 'edit');
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected MenuSnippetHelper $menuSnippetHelper,
+        protected UrlHelper $urlHelper,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
     /**
@@ -120,13 +88,13 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $table = parent::getHtmlOutput($view);
+        $table = parent::getHtmlOutput();
         $title = $this->getTitle();
 
         if ($title) {
-            $htmlDiv = \MUtil\Html::div();
+            $htmlDiv = Html::div();
 
             $htmlDiv->h3($title);
 
@@ -158,11 +126,12 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
     {
         parent::performAction();
 
-        $this->accesslog->logChange(
+        /*$this->accesslog->logChange(
                 $this->request,
                 $this->getTitle(),
                 $this->saveData + $this->getModel()->loadFirst()
                 );
+        */
     }
 
     /**
@@ -171,8 +140,8 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $model
      * @return void
      */
     protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
@@ -181,8 +150,18 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
 
         $footer[] = $this->getQuestion();
         $footer[] = ' ';
-        $footer->actionLink(array($this->confirmParameter => 1), $this->_('Yes'));
+
+        $currentRoute = $this->menuSnippetHelper->getCurrentRoute();
+        $currentRouteParameters = $this->requestInfo->getRequestMatchedParams();
+        $currentRouteParameters[$this->confirmParameter] = 1;
+
+        $confirmUrl = $this->urlHelper->generate($currentRoute, $currentRouteParameters, [$this->confirmParameter => 1]);
+
+        $footer->actionLink($confirmUrl, $this->_('Yes'));
         $footer[] = ' ';
-        $footer->actionLink(array($this->request->getActionKey() => $this->abortAction), $this->_('No'));
+
+        $cancelUrl = $this->menuSnippetHelper->getRelatedRouteUrl($this->abortAction);
+
+        $footer->actionLink($cancelUrl, $this->_('No'));
     }
 }
