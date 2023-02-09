@@ -71,6 +71,7 @@ class Route
                 ...$this->getProjectRoutes(),
                 ...$this->getSetupRoutes(),
                 ...$this->getTrackBuilderRoutes(),
+                ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
             ]),
         ];
@@ -113,6 +114,23 @@ class Route
                     HandlerCsrfMiddleware::class,
                     AuthenticationWithoutTfaMiddleware::class,
                     TfaLoginHandler::class,
+                ],
+            ],
+            [
+                'name' => 'auth.logout',
+                'path' => '/logout',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    LocaleMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    HandlerCsrfMiddleware::class,
+                    AuthenticationWithoutTfaMiddleware::class,
+                    AuditLogMiddleware::class,
+                    LogoutHandler::class,
                 ],
             ],
             [
@@ -210,16 +228,6 @@ class Route
     public function getGeneralRoutes(): array
     {
         return [
-            [
-                'name' => 'auth.logout',
-                'path' => '/logout',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    LocaleMiddleware::class,
-                    LogoutHandler::class,
-                ],
-            ],
             [
                 'name' => 'auth.change-password',
                 'path' => '/change-password',
@@ -779,6 +787,7 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'active-toggle',
+                    'reset',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',
@@ -1035,5 +1044,28 @@ class Route
             ),
 
         ];
+    }
+
+    public function getOptionRoutes(): array
+    {
+        return $this->createSnippetRoutes(baseName: 'option',
+            controllerClass: \Gems\Handlers\OptionHandler::class,
+            pages: [
+                'edit',
+                'overview',
+                'two-factor',
+                'show-log',
+            ],
+            parameterRoutes: [
+                'show-log',
+            ],
+            parameters: [
+                \Gems\Model::LOG_ITEM_ID => '\d+',
+            ],
+            postRoutes: [
+                'edit',
+                'two-factor',
+            ],
+        );
     }
 }

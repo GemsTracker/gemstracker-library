@@ -11,12 +11,16 @@
 
 namespace Gems\Snippets\Log;
 
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Gems\Snippets\ModelTableSnippetAbstract;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -39,15 +43,20 @@ class LogTableSnippet extends ModelTableSnippetAbstract
     protected $_fixedSort = ['gla_created' => SORT_DESC];
 
     /**
-     * @var Model
-     */
-    protected $modelLoader;
-
-    /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected Model $modelLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.

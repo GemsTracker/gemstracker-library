@@ -180,15 +180,13 @@ class Model
                 DatabaseModelAbstract::SAVE_MODE_DELETE
                 );
 
-        if ($model->has('gul_enable_2factor') && $model->has('gul_two_factor_key')) {
+        if ($model->has('gul_two_factor_key')) {
             $model->addColumn(
-                    new Zend_Db_Expr("CASE
-                        WHEN gul_enable_2factor IS NULL THEN -1
-                        WHEN gul_enable_2factor = 1 AND gul_two_factor_key IS NULL THEN 1
-                        WHEN gul_enable_2factor = 1 AND gul_two_factor_key IS NOT NULL THEN 2
+                new Zend_Db_Expr("CASE
+                        WHEN gul_two_factor_key LIKE 'AuthenticatorTotp%' THEN 1
                         ELSE 0 END"),
-                    'has_2factor'
-                    );
+                'has_authenticator_tfa'
+            );
         }
     }
 

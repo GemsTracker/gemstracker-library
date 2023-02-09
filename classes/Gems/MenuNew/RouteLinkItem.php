@@ -4,7 +4,9 @@ namespace Gems\MenuNew;
 
 class RouteLinkItem extends MenuItem
 {
-    private ?array $openParams = null;
+    protected ?array $openParams = null;
+
+    protected string $itemTemplate = 'menu::route-link-item';
 
     public function __construct(
         public readonly string $name,
@@ -48,16 +50,27 @@ class RouteLinkItem extends MenuItem
         return true;
     }
 
-    public function renderContent(): string
+    public function renderNode(): string
     {
-        $menu = $this->getMenu();
+        if (!$this->isOpen()) {
+            return '';
+        }
 
+        $menu = $this->getMenu();
         $url = $menu->routeHelper->getRouteUrl($this->name, $this->openParams);
 
-        return $menu->templateRenderer->render('menu::route-link-item', [
+        $children = [];
+        foreach ($this->children as $child) {
+            if ($child->isOpen()) {
+                $children[] = $child;
+            }
+        }
+
+        return $this->getMenu()->templateRenderer->render($this->itemTemplate, [
             'url' => $url,
             'label' => $this->label,
             'active' => $this->isActive(),
+            'children' => $children,
         ]);
     }
 }

@@ -143,6 +143,19 @@ class CommunicationRepository
         return null;
     }
 
+    public function getResetTfaTemplate(Organization $organization): ?int
+    {
+        $templateId = $organization->getResetTfaTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['resetTfaTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['resetTfaTemplate']);
+        }
+
+        return null;
+    }
+
     public function getRespondentMailFields(Respondent $respondent, string $language = null): array
     {
         $mailFieldCreator = new RespondentMailFields($respondent, $this->config);

@@ -38,7 +38,7 @@ class ResetPasswordChangeHandler implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+        $this->statusMessenger = $request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
         $this->validationMessenger = new ValidationMessenger($request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE));
         $user = $this->userLoader->getUserByResetKey($request->getAttribute('key'));
 

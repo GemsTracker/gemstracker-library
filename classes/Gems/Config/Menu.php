@@ -33,6 +33,7 @@ class Menu
             $this->getProjectMenu(),
             $this->getSetupMenu(),
             $this->getTrackBuilderMenu(),
+            $this->getOptionMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
@@ -329,7 +330,7 @@ class Menu
         return [
             'name' => 'overview',
             'label' => $this->translator->trans('Overview'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'overview.summary.index',
@@ -436,7 +437,7 @@ class Menu
         return [
             'name' => 'project',
             'label' => $this->translator->trans('Project'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'project.tracks.index',
@@ -471,7 +472,7 @@ class Menu
         return [
             'name' => 'setup',
             'label' => $this->translator->trans('Setup'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'setup.project-information.index',
@@ -531,7 +532,7 @@ class Menu
                 [
                     'name' => 'setup.codes',
                     'label' => $this->translator->trans('Codes'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.codes.reception.index',
@@ -625,7 +626,7 @@ class Menu
                 [
                     'name' => 'setup.access',
                     'label' => $this->translator->trans('Access'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.access.roles.index',
@@ -766,7 +767,7 @@ class Menu
                                         ],
                                         [
                                             'name' => 'setup.access.staff.reset',
-                                            'label' => $this->translator->trans('Reset password'),
+                                            'label' => $this->translator->trans('Reset auth.'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -824,7 +825,7 @@ class Menu
                 [
                     'name' => 'setup.agenda',
                     'label' => $this->translator->trans('Agenda'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.agenda.activity.index',
@@ -1035,7 +1036,7 @@ class Menu
                 [
                     'name' => 'setup.communication',
                     'label' => $this->translator->trans('Communication'),
-                    'type' => 'route-link-item',
+                    'type' => 'container',
                     'children' => [
                         [
                             'name' => 'setup.communication.job.index',
@@ -1207,7 +1208,7 @@ class Menu
         return [
             'name' => 'track-builder',
             'label' => $this->translator->trans('Track Builder'),
-            'type' => 'route-link-item',
+            'type' => 'container',
             'children' => [
                 [
                     'name' => 'track-builder.source.index',
@@ -1501,6 +1502,39 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                     ],
+                ],
+            ],
+        ];
+    }
+
+    public function getOptionMenu(): array
+    {
+        return [
+            'name' => 'option.edit',
+            'label' => $this->translator->trans('Your account'),
+            'type' => 'route-link-item',
+            'children' => [
+                [
+                    'name' => 'option.overview',
+                    'label' => $this->translator->trans('Activity overview'),
+                    'type' => 'route-link-item',
+                    'children' => [
+                        [
+                            'name' => 'option.show-log',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'auth.change-password',
+                    'label' => $this->translator->trans('Change password'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'option.two-factor',
+                    'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
                 ],
             ],
         ];

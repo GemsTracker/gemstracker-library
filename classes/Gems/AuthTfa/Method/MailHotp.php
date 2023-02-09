@@ -19,7 +19,7 @@ class MailHotp extends MailOtp implements OtpMethodInterface
         parent::__construct(
             $settings,
             $translator,
-            new HotpAdapter($settings, $user, $throttleCache),
+            new HotpAdapter($settings, $throttleCache),
             $throttleCache,
             $user,
         );
@@ -28,5 +28,9 @@ class MailHotp extends MailOtp implements OtpMethodInterface
     public function getCodeInputDescription(): string
     {
         return $this->translator->trans('From the E-mail we sent you');
+    }
+
+    public function addSetupFormElements(\Zend_Form $form, array $formData)
+    {
     }
 }

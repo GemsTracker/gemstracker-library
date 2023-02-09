@@ -273,6 +273,7 @@ class StaffModel extends JoinModel
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
+        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
@@ -324,23 +325,10 @@ class StaffModel extends JoinModel
             'multiOptions', $yesNo
         );
 
-        $factorOptions = [
-            2 => $this->_('Enabled'),
-            1 => $this->_('Not set'),
-            0 => $this->_('Disabled'),
-            -1 => $this->_('Not possible'),
-        ];
-        $this->setIfExists('has_2factor', 'label', $this->_('Two factor'),
+        $this->setIfExists('has_authenticator_tfa', 'label', $this->_('Authenticator TFA'),
             'elementClass', 'Exhibitor',
-            'multiOptions', $factorOptions
+            'multiOptions', $yesNo
         );
-        if ($detailed) {
-            $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-            );
-        }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
