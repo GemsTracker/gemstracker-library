@@ -1,7 +1,7 @@
 <li class="route-link-item container-link-item{% if active %} active{% endif %}">
     <a href="{{ url }}">{{ label }}</a>
     {% if children is not empty %}
-        <ul class="menu-children navigation nav nav-stacked flex-column closed">
+        <ul class="menu-children navigation nav nav-stacked flex-column{% if not active %} closed{% endif %}">
             {% for child in children %}
                 {{ child.renderNode()|raw }}
             {% endfor %}
