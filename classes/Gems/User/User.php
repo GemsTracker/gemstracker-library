@@ -1582,8 +1582,8 @@ class User extends \MUtil\Translate\TranslateableAbstract
         }
 
         return match($authClass) {
-            'GoogleAuthenticator' => 'AppTotp', // TODO: Legacy
-            'AppTotp' => 'AppTotp',
+            'GoogleAuthenticator' => 'AuthenticatorTotp', // TODO: Legacy
+            'AuthenticatorTotp' => 'AuthenticatorTotp',
             'MailHotp' => 'MailHotp',
             'SmsHotp' => 'SmsHotp',
             default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
@@ -1653,7 +1653,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     {
         $adapters = [
             'Hotp' => ['MailHotp', 'SmsHotp'],
-            'Totp' => ['AppTotp'],
+            'Totp' => ['AuthenticatorTotp'],
         ];
 
         if ($this->hasTfaConfigured()) {

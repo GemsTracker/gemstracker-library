@@ -107,7 +107,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
                 return $this->redirectWithIntended($user, $request, $this->router->generateUri('auth.change-password'));
             }
-        } elseif (static::CHECK_TFA && $loginStatusTracker->isRequireAppTotpActive()) {
+        } elseif (static::CHECK_TFA && $loginStatusTracker->isRequireAuthenticatorTotpActive()) {
             /** @var RouteResult $routeResult */
             $routeResult = $request->getAttribute(RouteResult::class);
             if (!in_array($routeResult->getMatchedRouteName(), [

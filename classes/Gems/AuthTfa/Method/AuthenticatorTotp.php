@@ -10,7 +10,7 @@ use Gems\Html;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class AppTotp extends TotpAdapter implements OtpMethodInterface
+class AuthenticatorTotp extends TotpAdapter implements OtpMethodInterface
 {
     public function __construct(
         array $settings,
@@ -24,7 +24,7 @@ class AppTotp extends TotpAdapter implements OtpMethodInterface
 
     public function getCodeInputDescription(): string
     {
-        return $this->translator->trans('From the TFA app on your phone.');
+        return $this->translator->trans('From the authenticator app on your phone.');
     }
 
     /**

@@ -56,13 +56,13 @@ class LoginStatusTracker
         $this->set('passwordResetting', $value);
     }
 
-    public function isRequireAppTotpActive(): bool
+    public function isRequireAuthenticatorTotpActive(): bool
     {
-        return $this->get('settingRequiredAppTotp', false);
+        return $this->get('settingRequiredAuthenticatorTotp', false);
     }
 
-    public function setRequireAppTotpActive(bool $value = true): void
+    public function setRequireAuthenticatorTotpActive(bool $value = true): void
     {
-        $this->set('settingRequiredAppTotp', $value);
+        $this->set('settingRequiredAuthenticatorTotp', $value);
     }
 }

@@ -662,13 +662,13 @@ class ConfigProvider
                     'maxSendOtpAttemptsPerPeriod' => 3600,
                     'maxVerifyOtpAttempts' => 5,
                 ],
-                'AppTotp' => [
+                'AuthenticatorTotp' => [
                     'codeLength' => 6,
                     'codeValidSeconds' => 30,
                     'maxVerifyOtpAttempts' => 5,
                 ],
             ],
-            'requireAppTotp' => true, // TODO: Only `true` has been implemented
+            'requireAuthenticatorTotp' => true, // TODO: Only `true` has been implemented
         ];
     }
 

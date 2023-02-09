@@ -2,7 +2,7 @@
 
 namespace Gems\AuthTfa;
 
-use Gems\AuthTfa\Method\AppTotp;
+use Gems\AuthTfa\Method\AuthenticatorTotp;
 use Gems\AuthTfa\Method\MailHotp;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\Method\SmsHotp;
@@ -27,7 +27,7 @@ class OtpMethodBuilder
         $settings = $this->config['twofactor']['methods'][$className] ?? [];
 
         return match($className) {
-            'AppTotp' => new AppTotp($settings, $this->translator, $user, $this->throttleCache, $this->config),
+            'AuthenticatorTotp' => new AuthenticatorTotp($settings, $this->translator, $user, $this->throttleCache, $this->config),
             'MailHotp' => new MailHotp($settings, $this->translator, $user, $this->throttleCache),
             'SmsHotp' => new SmsHotp(
                 $settings,

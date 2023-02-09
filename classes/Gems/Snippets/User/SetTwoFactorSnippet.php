@@ -61,7 +61,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             $this->sessionNamespace->set('keys', []);
         }
 
-        if (LoginStatusTracker::make($this->session, $this->user)->isRequireAppTotpActive()) {
+        if (LoginStatusTracker::make($this->session, $this->user)->isRequireAuthenticatorTotpActive()) {
             $this->layoutSettings->disableMenu();
         }
     }
@@ -118,8 +118,8 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
     {
         $enabledMethods = array_keys($this->config['twofactor']['methods']);
 
-        if ($this->config['twofactor']['requireAppTotp']) {
-            $enabledMethods = array_intersect($enabledMethods, ['AppTotp']);
+        if ($this->config['twofactor']['requireAuthenticatorTotp']) {
+            $enabledMethods = array_intersect($enabledMethods, ['AuthenticatorTotp']);
         }
 
         // For now register labels here. Could be added as class method per authenticator at loading all authenticator classes cost
@@ -127,7 +127,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         $registeredMethods = [
             'MailHotp' => $this->_('Mail'),
             'SmsHotp' => $this->_('SMS'),
-            'AppTotp' => $this->_('Authenticator app'),
+            'AuthenticatorTotp' => $this->_('Authenticator app'),
         ];
 
         return array_intersect_key($registeredMethods, array_flip($enabledMethods));
@@ -301,7 +301,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
                 $className,
                 $newKey
             );
-            LoginStatusTracker::make($this->session, $this->user)->setRequireAppTotpActive(false);
+            LoginStatusTracker::make($this->session, $this->user)->setRequireAuthenticatorTotpActive(false);
             $this->layoutSettings->enableMenu();
 
             $this->addMessage($this->_('Two factor authentication setting saved.'));

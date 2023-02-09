@@ -8,7 +8,7 @@ use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationService;
 use Gems\AuthNew\AuthenticationServiceBuilder;
 use Gems\AuthNew\LoginStatusTracker;
-use Gems\AuthTfa\Method\AppTotp;
+use Gems\AuthTfa\Method\AuthenticatorTotp;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\AuthTfa\SendDecorator\SendsOtpCodeInterface;
 use Gems\AuthTfa\TfaService;
@@ -143,8 +143,8 @@ class TfaLoginHandler implements RequestHandlerInterface
 
         $session->unset('tfa_login_last_send');
 
-        if ($this->config['twofactor']['requireAppTotp'] && ! ($otpMethod instanceof AppTotp)) {
-            LoginStatusTracker::make($session, $this->user)->setRequireAppTotpActive();
+        if ($this->config['twofactor']['requireAuthenticatorTotp'] && ! ($otpMethod instanceof AuthenticatorTotp)) {
+            LoginStatusTracker::make($session, $this->user)->setRequireAuthenticatorTotpActive();
         }
 
         return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
