@@ -11,6 +11,9 @@
 
 namespace Gems\User\Embed;
 
+use Gems\User\User;
+use MUtil\Translate\Translator;
+
 /**
  *
  * @package    Gems
@@ -19,25 +22,28 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:04:38
  */
-abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstract implements EmbeddedAuthInterface
+abstract class EmbeddedAuthAbstract implements EmbeddedAuthInterface
 {
     /**
      *
      * @var string User to defer to after authentication
      */
-    protected $deferredLogin;
+    protected string $deferredLogin;
 
     /**
      *
      * @var mixed Organization or organizations for the user to try to login with
      */
-    protected $organizations;
+    protected array $organizations;
 
     /**
      *
      * @var string Patient id to show afterwards
      */
-    protected $patientNumber;
+    protected string $patientNumber;
+
+    public function __construct(protected Translator $translator)
+    {}
 
     /**
      *
@@ -48,7 +54,7 @@ abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstra
     /**
      * Authenticate embedded user
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param $secretKey
      * @return bool
      */
@@ -58,7 +64,7 @@ abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @param string $value User to defer to after authentication
      */
-    public function setDeferredLogin($value)
+    public function setDeferredLogin(string $value): void
     {
         $this->deferredLogin = $value;
     }
@@ -67,7 +73,7 @@ abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @param mixed $value Organization or organizations for the user to try to login with
      */
-    public function setOrganizations($value)
+    public function setOrganizations(array $value): void
     {
         $this->organizations = $value;
     }
@@ -76,7 +82,7 @@ abstract class EmbeddedAuthAbstract extends \MUtil\Translate\TranslateableAbstra
      *
      * @param string $value Patient id to show afterwards
      */
-    public function setPatientNumber($value)
+    public function setPatientNumber(string $value): void
     {
         $this->patientNumber = $value;
     }

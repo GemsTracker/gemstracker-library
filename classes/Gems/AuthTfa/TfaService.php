@@ -38,7 +38,7 @@ class TfaService
 
             $otpMethod = $this->otpMethodBuilder->buildOtpMethod($user);
 
-            if($otpMethod->verify($code)) {
+            if($otpMethod->verify($user, $code)) {
                 $tfaLoggedInValue = $user->getUserId();
             }
         }

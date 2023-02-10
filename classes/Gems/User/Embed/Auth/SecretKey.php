@@ -12,6 +12,7 @@
 namespace Gems\User\Embed\Auth;
 
 use Gems\User\Embed\EmbeddedAuthAbstract;
+use Gems\User\User;
 
 /**
  *
@@ -26,11 +27,11 @@ class SecretKey extends EmbeddedAuthAbstract
     /**
      * Authenticate embedded user
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @param $secretKey
      * @return bool
      */
-    public function authenticate(\Gems\User\User $user, $secretKey)
+    public function authenticate(User $user, string $secretKey): bool
     {
         $savedKey = $user->getSecretKey();
 
@@ -42,10 +43,10 @@ class SecretKey extends EmbeddedAuthAbstract
 
     /**
      *
-     * @param \Gems\User\User $user
+     * @param User $user
      * @return string An optionally working login key
      */
-    public function getExampleKey(\Gems\User\User $user)
+    public function getExampleKey(User $user): string
     {
         return $user->getSecretKey();
     }
@@ -54,8 +55,8 @@ class SecretKey extends EmbeddedAuthAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('UNSAFE: Compare to secret key');
+        return $this->translator->_('UNSAFE: Compare to secret key');
     }
 }

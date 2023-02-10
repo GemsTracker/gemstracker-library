@@ -16,13 +16,10 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
-use Zalt\Loader\ProjectOverloader;
+use Zalt\Loader\ConstructorProjectOverloader;
 
 class CommFieldsHandler implements RequestHandlerInterface
 {
-    protected ProjectOverloader $overloader;
-
     public function __construct(
         protected CommunicationRepository $communicationRepository,
         protected RespondentRepository $respondentRepository,
@@ -30,11 +27,9 @@ class CommFieldsHandler implements RequestHandlerInterface
         protected MailRepository $mailRepository,
         protected Tracker $tracker,
         protected array $config,
-        ProjectOverloader $overloader
+        protected ConstructorProjectOverloader $overloader
     )
     {
-        $this->overloader = clone $overloader;
-        $this->overloader->setDependencyResolver(new ConstructorDependencyResolver());
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface

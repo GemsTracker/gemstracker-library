@@ -11,7 +11,9 @@
 
 namespace Gems\User\Embed;
 
-use MUtil\Translate\TranslateableTrait;
+use Gems\Exception\Coding;
+use MUtil\Translate\Translator;
+use Zalt\Loader\ConstructorProjectOverloader;
 
 /**
  *
@@ -21,10 +23,8 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 15:55:10
  */
-class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
+class EmbedLoader
 {
-    use TranslateableTrait;
-
     const AUTHENTICATE          = 'Auth';
     const DEFERRED_USER_LOADER  = 'DeferredUserLoader';
     const REDIRECT              = 'Redirect';
@@ -35,70 +35,39 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      * Each embed helper type must implement an embed helper class or interface derived
      * from EmbedHelperInterface specified in this array.
      *
-     * @see \Pulse\User\Embed\HelperInterface
+     * @see HelperInterface
      *
      * @var array containing helperType => helperInterface for all helper classes
      */
-    protected $_helperClasses = [
-        self::AUTHENTICATE              => 'Gems\\User\\Embed\\EmbeddedAuthInterface',
-        self::DEFERRED_USER_LOADER      => 'Gems\\User\\Embed\\DeferredUserLoaderInterface',
-        self::REDIRECT                  => 'Gems\\User\\Embed\\RedirectInterface',
+    protected array $helperClasses = [
+        self::AUTHENTICATE              => EmbeddedAuthInterface::class,
+        self::DEFERRED_USER_LOADER      => DeferredUserLoaderInterface::class,
+        self::REDIRECT                  => RedirectInterface::class,
     ];
 
-    /**
-     *
-     * @param string $type An screen subdirectory (may contain multiple levels split by '/'
-     * @return array An array of type prefix => classname
-     */
-    protected function _getDirs($type)
-    {
-        $paths = [];
-        if (DIRECTORY_SEPARATOR == '/') {
-            $typeDir = str_replace('\\', DIRECTORY_SEPARATOR, $type);
-        } else {
-            $typeDir = $type;
-        }
-        foreach ($this->_dirs as $name => $dir) {
-            $prefix = $name . '\\' . self::SUB_NAMESPACE . '\\'. $type . '\\';
-            $subDir = str_replace('\\', DIRECTORY_SEPARATOR, self::SUB_NAMESPACE);
-            $fullPath = $dir . DIRECTORY_SEPARATOR . $subDir . DIRECTORY_SEPARATOR . $typeDir;
-            if (file_exists($fullPath)) {
-                $paths[$prefix] = $fullPath;
-            }
-        }
-
-        return $paths;
-    }
+    public function __construct(
+        protected ConstructorProjectOverloader $overloader,
+        protected Translator $translator,
+        protected array $config,
+    )
+    {}
 
     /**
      * Lookup class for an embedded helper type. This class or interface should at the very least
      * implement the HelperInterface.
      *
-     * @see \Pulse\User\Embed\HelperInterface
+     * @see HelperInterface
      *
      * @param string $screenType The type (i.e. lookup directory) to find the associated class for
      * @return string Class/interface name associated with the type
      */
-    protected function _getInterface($helperType)
+    protected function getInterface(string $helperType): string
     {
-        if (isset($this->_helperClasses[$helperType])) {
-            return $this->_helperClasses[$helperType];
+        if (isset($this->helperClasses[$helperType])) {
+            return $this->helperClasses[$helperType];
         } else {
-            throw new \Gems\Exception\Coding("No embedded helper class exists for helper type '$helperType'.");
+            throw new Coding("No embedded helper class exists for helper type '$helperType'.");
         }
-    }
-
-    /**
-     *
-     * @return type => dir
-     */
-    protected function _getLayoutDirs()
-    {
-        // Do NOT use $this->_dirs as that points to the class paths
-        return [
-            'Gems' => GEMS_LIBRARY_DIR . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
-            GEMS_PROJECT_NAME_UC => APPLICATION_PATH . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'scripts',
-        ];
     }
 
     /**
@@ -108,15 +77,15 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param string $helperType The type (i.e. lookup directory with an associated class) of the helper
      * @return object The helper class
      */
-    protected function _loadClassOfType($helperName, $helperType)
+    protected function loadClassOfType(string $helperName, string $helperType): object
     {
-        $helperClass = $this->_getInterface($helperType);
+        $helperClass = $this->getInterface($helperType);
 
         //$helper = new $helperName();
-        $helper = $this->_loadClass($helperName, true);
+        $helper = $this->overloader->create($helperName);
 
         if (! $helper instanceof $helperClass) {
-            throw new \Gems\Exception\Coding("The class '$helperName' of type '$helperType' is not an instance of '$helperClass'.");
+            throw new Coding("The class '$helperName' of type '$helperType' is not an instance of '$helperClass'.");
         }
 
         /*if ($helper instanceof \MUtil\Registry\TargetInterface) {
@@ -126,49 +95,57 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
         return $helper;
     }
 
-    /**
-     * Returns a list of selectable screens with an empty element as the first option.
-     *
-     * @param string $helperType The type (i.e. lookup directory with an associated class) of the helper to list
-     * @return HelperInterface or more specific a helperclass type object
-     */
-    protected function _listClasses($helperType)
+    protected function getEmbedClassLabelPairs(array $classNames, string $nameMethod = 'getLabel'): array
     {
-        $classType = $this->_getInterface($helperType);
-        $paths       = $this->_getDirs($helperType);
-
-        return $this->listClasses($classType, $paths, 'getLabel');
+        $loader = $this->overloader;
+        $labels = array_map(function ($className) use ($loader, $nameMethod) {
+            if (class_exists($className)) {
+                $object = $loader->create($className);
+                return $object->$nameMethod();
+            }
+            return null;
+        }, $classNames);
+        return array_combine($classNames, $labels);
     }
 
     /**
      *
      * @return array helpername => string
      */
-    public function listAuthenticators()
+    public function listAuthenticators(): array
     {
-        return $this->_listClasses(self::AUTHENTICATE);
+        if (isset($this->config['embed']['auth'])) {
+            $authenticators = $this->config['embed']['auth'];
+
+            return $this->getEmbedClassLabelPairs($authenticators);
+        }
+        return [];
     }
 
     /**
      *
      * @return array
      */
-    public function listCrumbOptions()
+    public function listCrumbOptions(): array
     {
         return [
-            '' => $this->_('(use project settings)'),
-            'no_display' => $this->_('Hide crumbs'),
-            'no_top' => $this->_('Hide topmost crumb'),
-            ];
+            '' => $this->translator->_('(use project settings)'),
+            'no_display' => $this->translator->_('Hide crumbs'),
+            'no_top' => $this->translator->_('Hide topmost crumb'),
+        ];
     }
 
     /**
      *
      * @return array helpername => string
      */
-    public function listDeferredUserLoaders()
+    public function listDeferredUserLoaders(): array
     {
-        return $this->_listClasses(self::DEFERRED_USER_LOADER);
+        if (isset($this->config['embed']['deferredUserLoader'])) {
+            $deferredUserLoaders =  $this->config['embed']['deferredUserLoader'];
+            return $this->getEmbedClassLabelPairs($deferredUserLoaders);
+        }
+        return [];
     }
 
     /**
@@ -176,21 +153,11 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array
      */
-    public function listLayouts()
+    public function listLayouts(): array
     {
-        $paths = $this->_getLayoutDirs();
-
-        $layouts = ['' => $this->_('Do not change layout')];
-        $extension = '.phtml';
-        foreach($paths as $type => $path) {
-            $globIter = new \GlobIterator($path . DIRECTORY_SEPARATOR . '*'.$extension);
-
-            foreach($globIter as $fileInfo) {
-                $name = $fileInfo->getFilename();
-                $baseName = str_replace($extension, '', $name);
-                $layouts[$type][$baseName] = $baseName;
-            }
-        }
+        $layouts = [
+            '' => $this->translator->_('Do not change layout'),
+        ];
 
         return $layouts;
     }
@@ -199,9 +166,13 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return array helpername => string
      */
-    public function listRedirects()
+    public function listRedirects(): array
     {
-        return $this->_listClasses(self::REDIRECT);
+        if (isset($this->config['embed']['redirect'])) {
+            $redirects = $this->config['embed']['redirect'];
+            return $this->getEmbedClassLabelPairs($redirects);
+        }
+        return [];
     }
 
     /**
@@ -211,44 +182,39 @@ class EmbedLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function listStyles()
     {
-        $escort = \Gems\Escort::getInstance();
+        // TODO: reimplement multi styles
+        $styles = [];
 
-        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
-            $styles[GEMS_PROJECT_NAME_UC] = $escort->getStyles();
-        } else {
-            $styles = [];
-        }
-
-        return ['' => $this->_('Use organization style')] + $styles;
+        return ['' => $this->translator->_('Use organization style')] + $styles;
     }
 
     /**
      *
      * @param string $helperName Name of the helper class
-     * @return \Gems\User\Embed\EmbeddedAuthInterface
+     * @return EmbeddedAuthInterface
      */
-    public function loadAuthenticator($helperName)
+    public function loadAuthenticator(string $helperName): EmbeddedAuthInterface
     {
-        return $this->_loadClassOfType($helperName, self::AUTHENTICATE);
+        return $this->loadClassOfType($helperName, self::AUTHENTICATE);
     }
 
     /**
      *
      * @param string $helperName Name of the helper class
-     * @return \Gems\User\Embed\DeferredUserLoaderInterface
+     * @return DeferredUserLoaderInterface
      */
-    public function loadDeferredUserLoader($helperName)
+    public function loadDeferredUserLoader(string $helperName): DeferredUserLoaderInterface
     {
-        return $this->_loadClassOfType($helperName, self::DEFERRED_USER_LOADER);
+        return $this->loadClassOfType($helperName, self::DEFERRED_USER_LOADER);
     }
 
     /**
      *
      * @param string $helperName Name of the helper class
-     * @return \Gems\User\Embed\RedirectInterface
+     * @return RedirectInterface
      */
-    public function loadRedirect($helperName)
+    public function loadRedirect(string $helperName): RedirectInterface
     {
-        return $this->_loadClassOfType($helperName, self::REDIRECT);
+        return $this->loadClassOfType($helperName, self::REDIRECT);
     }
 }

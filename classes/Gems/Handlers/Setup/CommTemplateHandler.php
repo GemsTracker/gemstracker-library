@@ -17,8 +17,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Vue\CreateEditSnippet;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
-use Zalt\Loader\ProjectOverloader;
+use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -56,8 +55,6 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
      */
     //protected array $createEditSnippets = ['Mail\\MailModelFormSnippet'];
 
-    protected ProjectOverloader $overloader;
-
     /**
      * The snippets used for the show action
      *
@@ -68,12 +65,10 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
-        ProjectOverloader $projectOverloader,
+        protected ConstructorProjectOverloader $overloader,
     )
     {
         parent::__construct($responder, $translate);
-        $this->overloader = clone $projectOverloader;
-        $this->overloader->setDependencyResolver(new ConstructorDependencyResolver());
     }
 
     /**

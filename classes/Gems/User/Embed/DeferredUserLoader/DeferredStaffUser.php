@@ -11,8 +11,13 @@
 
 namespace Gems\User\Embed\DeferredUserLoader;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
 use Gems\User\Embed\DeferredUserLoaderAbstract;
 use Gems\User\Embed\EmbeddedUserData;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use MUtil\Translate\Translator;
 
 /**
  *
@@ -24,14 +29,24 @@ use Gems\User\Embed\EmbeddedUserData;
  */
 class DeferredStaffUser extends DeferredUserLoaderAbstract
 {
+    public function __construct(
+        Translator $translator,
+        UserLoader $userLoader,
+        CurrentUserRepository $currentUserRepository,
+        protected Model $modelLoader,
+
+    ) {
+        parent::__construct($translator, $userLoader, $currentUserRepository);
+    }
+
     /**
      * Get the deferred user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @param string $deferredLogin name of the user to log in
-     * @return \Gems_User_user|null
+     * @return User|null
      */
-    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin)
+    public function getDeferredUser(User $embeddedUser, string $deferredLogin): ?User
     {
         $embeddedUserData = $embeddedUser->getEmbedderData();
         if (! ($embeddedUserData instanceof EmbeddedUserData && $embeddedUser->isActive())) {
@@ -53,7 +68,7 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
             return null;
         }
 
-        $model = $this->loader->getModels()->getStaffModel();
+        $model = $this->modelLoader->getStaffModel();
         $data  = $model->loadNew();
 
         $data['gsf_login']            = $deferredLogin;
@@ -63,11 +78,10 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
         $data['gsf_iso_lang']         = $embeddedUser->getLocale();
         $data['gul_user_class']       = 'StaffUser';
         $data['gul_can_login']        = 1;
-        // \MUtil\EchoOut\EchoOut::track($data);
 
         $model->save($data);
 
-        $user = $this->loader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
+        $user = $this->userLoader->getUser($deferredLogin, $embeddedUser->getBaseOrganizationId());
 
         if ($user->isActive()) {
             $this->checkCurrentSettings($embeddedUser, $embeddedUserData, $user);
@@ -80,8 +94,8 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
      *
      * @return mixed Something to display as label. Can be an \MUtil\Html\HtmlElement
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->_('Load a staff user');
+        return $this->translator->_('Load a staff user');
     }
 }

@@ -84,7 +84,7 @@ class StaffTableSnippet extends ModelTableSnippetAbstract
                 10 => array('gsf_login', $br, 'gsf_id_primary_group'),
                 20 => array('name', $br, 'gsf_email'),
                 30 => array('gsf_id_organization', $br, 'gsf_gender'),
-                40 => array('gsf_active', $br, 'has_2factor'),
+                40 => array('gsf_active', $br, 'has_authenticator_tfa'),
             );
         }
 

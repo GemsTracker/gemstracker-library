@@ -11,6 +11,13 @@
 
 namespace Gems\User\Embed;
 
+use Gems\Exception;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\User\Organization;
+use Gems\User\User;
+use Gems\User\UserLoader;
+use MUtil\Translate\Translator;
+
 /**
  *
  * @package    Gems
@@ -19,26 +26,27 @@ namespace Gems\User\Embed;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 01-Apr-2020 16:07:27
  */
-abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\TranslateableAbstract
+abstract class DeferredUserLoaderAbstract
         implements DeferredUserLoaderInterface
 {
-    /**
-     * @var \Gems\User\Organization
-     */
-    protected $currentOrganization;
 
-    /**
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected int $currentOrganizationId;
+    public function __construct(
+        protected Translator $translator,
+        protected UserLoader $userLoader,
+        CurrentUserRepository $currentUserRepository,
+    )
+    {
+        $this->currentOrganization = $currentUserRepository->getCurrentUser()->getCurrentOrganizationId();
+    }
 
     /**
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @param \Gems\User\Embed\EmbeddedUserData $embeddedUserData
-     * @param \Gems\User\User $user
+     * @param User $user
      */
-    protected function checkCurrentSettings(\Gems\User\User $embeddedUser, EmbeddedUserData $embeddedUserData, \Gems\User\User $user)
+    protected function checkCurrentSettings(User $embeddedUser, EmbeddedUserData $embeddedUserData, User $user)
     {
         if ($user->getCurrentOrganizationId() !== $embeddedUser->getCurrentOrganizationId()) {
             $user->setCurrentOrganization($embeddedUser->getCurrentOrganizationId());
@@ -64,42 +72,37 @@ abstract class DeferredUserLoaderAbstract extends \MUtil\Translate\Translateable
     /**
      * Get the deferred user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @param string $deferredLogin name of the user to log in
-     * @return \Gems_User_user|null
+     * @return User|null
      */
-    // abstract public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin);
+    // abstract public function getDeferredUser(User $embeddedUser, $deferredLogin);
 
     /**
      * Try to find / load an active user with this data
      *
      * @param string $userLogin
      * @param mixed $organisations (Array of) organization id's or objects
-     * @return \Gems\User\User
+     * @return User
      */
     public function getUser($userLogin, $organisations = null)
     {
-        // \MUtil\EchoOut\EchoOut::track($userLogin, $organisations );
-
-        //$user       = $this->currentUser;
-        $userLoader = $this->loader->getUserLoader();
-
         // Set to current organization if not passed and no organization is allowed
-        if ((null === $organisations) && (! $userLoader->allowLoginOnWithoutOrganization)) {
-            $organisations = [$this->currentOrganization];
+        if ((null === $organisations) && (! $this->userLoader->allowLoginOnWithoutOrganization)) {
+            $organisations = [$this->currentOrganizationId];
         }
         foreach ((array) $organisations as $currentOrg) {
-            if ($currentOrg instanceof \Gems\User\Organization) {
-                $user = $userLoader->getUser($userLogin, $currentOrg->getId());
+            if ($currentOrg instanceof Organization) {
+                $user = $this->userLoader->getUser($userLogin, $currentOrg->getId());
             } else {
-                $user = $userLoader->getUser($userLogin, $currentOrg);
+                $user = $this->userLoader->getUser($userLogin, $currentOrg);
             }
             if ($user->isActive()) {
                 return $user;
             }
         }
 
-        throw new \Exception(); // TODO: Better name
+        throw new Exception(); // TODO: Better name
         //return $user;
     }
 }

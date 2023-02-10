@@ -33,7 +33,7 @@ use Gems\Model\ConditionModel;
 use Gems\Util\Translated;
 use MUtil\Translate\TranslateableTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
+use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\Exception\LoadException;
 use Zalt\Loader\ProjectOverloader;
 
@@ -76,8 +76,6 @@ class ConditionLoader
         self::TRACK_CONDITION      => TrackConditionInterface::class,
     ];
 
-    protected ProjectOverloader $conditionLoader;
-
     protected array $config = [];
 
     /**
@@ -88,13 +86,12 @@ class ConditionLoader
 
     public function __construct(
         protected ProjectOverloader $overloader,
+        protected ConstructorProjectOverloader $conditionLoader,
         TranslatorInterface $translator,
         protected Translated $translatedUtil,
         protected HelperAdapter $cache,
         array $config,
     ) {
-        $this->conditionLoader = clone $this->overloader;
-        $this->conditionLoader->setDependencyResolver(new ConstructorDependencyResolver());
         $this->translate = $translator;
         if (isset($config['tracker'], $config['tracker']['conditions'])) {
             $this->config = $config['tracker']['conditions'];

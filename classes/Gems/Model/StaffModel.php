@@ -12,8 +12,14 @@
 
 namespace Gems\Model;
 
+use Gems\Encryption\ValueEncryptor;
+use Gems\Model\Type\EncryptedField;
+use Gems\User\Embed\EmbedLoader;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
+use MUtil\Validate\NoScript;
+use MUtil\Validate\SimpleEmail;
 use Zalt\Html\AElement;
 
 /**
@@ -27,7 +33,7 @@ use Zalt\Html\AElement;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class StaffModel extends \Gems\Model\JoinModel
+class StaffModel extends JoinModel
 {
     /**
      *
@@ -40,13 +46,12 @@ class StaffModel extends \Gems\Model\JoinModel
      *
      * @var string
      */
-    protected $defaultStaffDefinition = \Gems\User\UserLoader::USER_STAFF;
+    protected $defaultStaffDefinition = UserLoader::USER_STAFF;
 
     /**
-     *
-     * @var \Gems\Loader
+     * @var EmbedLoader
      */
-    protected $loader;
+    protected $embedLoader;
 
     /**
      *
@@ -60,10 +65,20 @@ class StaffModel extends \Gems\Model\JoinModel
     protected $translatedUtil;
 
     /**
+     * @var UserLoader
+     */
+    protected $userLoader;
+
+    /**
      *
      * @var \Gems\Util
      */
     protected $util;
+
+    /**
+     * @var ValueEncryptor
+     */
+    protected $valueEncryptor;
 
     /**
      * Create a model that joins two or more tables
@@ -109,7 +124,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'required', true
         );
 
-        $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+        $defaultStaffDefinitions = $this->userLoader->getAvailableStaffDefinitions();
         if (1 == count($defaultStaffDefinitions)) {
             reset($defaultStaffDefinitions);
             $this->set('gul_user_class',
@@ -176,7 +191,7 @@ class StaffModel extends \Gems\Model\JoinModel
      */
     public function applyOwnAccountEdit()
     {
-        $noscript = new \MUtil_Validate_NoScript();
+        $noscript = new NoScript();
 
         $this->set('gsf_id_user',        'elementClass', 'None');
         $this->set('gsf_login',          'label', $this->_('Login Name'),
@@ -184,7 +199,7 @@ class StaffModel extends \Gems\Model\JoinModel
         );
         $this->set('gsf_email',          'label', $this->_('E-Mail'),
             'size', 30,
-            'validator', new \MUtil_Validate_SimpleEmail()
+            'validator', new SimpleEmail(),
         );
         $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),
@@ -206,7 +221,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'multiOptions', $this->util->getLocalized()->getLanguages()
         );
 
-        $this->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
+        $this->setFilter(array('gsf_id_user' => $this->currentUser->getUserId()));
 
         return $this;
     }
@@ -258,6 +273,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
+        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
@@ -269,7 +285,7 @@ class StaffModel extends \Gems\Model\JoinModel
         if ($detailed) {
             $this->set('gsf_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
 
-            $defaultStaffDefinitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+            $defaultStaffDefinitions = $this->userLoader->getAvailableStaffDefinitions();
             if (1 == count($defaultStaffDefinitions)) {
                 reset($defaultStaffDefinitions);
                 $this->set('gul_user_class',
@@ -309,23 +325,10 @@ class StaffModel extends \Gems\Model\JoinModel
             'multiOptions', $yesNo
         );
 
-        $factorOptions = [
-            2 => $this->_('Enabled'),
-            1 => $this->_('Not set'),
-            0 => $this->_('Disabled'),
-            -1 => $this->_('Not possible'),
-        ];
-        $this->setIfExists('has_2factor', 'label', $this->_('Two factor'),
+        $this->setIfExists('has_authenticator_tfa', 'label', $this->_('Authenticator TFA'),
             'elementClass', 'Exhibitor',
-            'multiOptions', $factorOptions
+            'multiOptions', $yesNo
         );
-        if ($detailed) {
-            $this->setIfExists('gul_enable_2factor', 'label', $this->_('Two factor enabled'),
-                'description', $this->_('You can only enable/disable two factor authentication, not install a key.'),
-                'elementClass', 'Checkbox',
-                'multiOptions', $yesNo
-            );
-        }
 
         $this->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
@@ -349,7 +352,6 @@ class StaffModel extends \Gems\Model\JoinModel
 
         $dbLookup       = $this->util->getDbLookup();
         $editing        = ($action == 'edit') || ($action == 'create');
-        $embeddedLoader = $this->loader->getEmbedLoader();
         $yesNo          = $this->translatedUtil->getYesNo();
 
         $this->_addLoginSettings($editing);
@@ -421,40 +423,40 @@ class StaffModel extends \Gems\Model\JoinModel
             'label', $this->_('Authentication'),
             'default', 'Gems\\User\\Embed\\Auth\\HourKeySha256',
             'description', $this->_('The authentication method used to authenticate the embedded user.'),
-            'multiOptions', $embeddedLoader->listAuthenticators()
+            'multiOptions', $this->embedLoader->listAuthenticators()
         );
 
         $this->set('gsus_deferred_user_loader',
             'label', $this->_('Deferred user loader'),
             'default', 'Gems\\User\\Embed\\DeferredUserLoader\\DeferredStaffUser',
             'description', $this->_('The method used to load an embedded user.'),
-            'multiOptions', $embeddedLoader->listDeferredUserLoaders()
+            'multiOptions', $this->embedLoader->listDeferredUserLoaders()
         );
 
         $this->set('gsus_redirect',
             'label', $this->_('Redirect method'),
             'default', 'Gems\\User\\Embed\\Redirect\\RespondentShowPage',
             'description', $this->_('The page the user is redirected to after successful login.'),
-            'multiOptions', $embeddedLoader->listRedirects()
+            'multiOptions', $this->embedLoader->listRedirects()
         );
 
         $this->set('gsus_deferred_mvc_layout',
             'label', $this->_('Layout'),
             'description', $this->_('The layout frame used.'),
-            'multiOptions', $embeddedLoader->listLayouts()
+            'multiOptions', $this->embedLoader->listLayouts()
         );
 
         $this->set('gsus_deferred_user_layout',
             'label', $this->_('Style'),
             'description', $this->_('The display style used.'),
-            'multiOptions', $embeddedLoader->listStyles()
+            'multiOptions', $this->embedLoader->listStyles()
         );
         $this->set('gsus_hide_breadcrumbs',
             'label', $this->_('Crumbs display'),
             'default', '',
             'description', $this->_('The display style used.'),
             'elementClass', 'Radio',
-            'multiOptions', $embeddedLoader->listCrumbOptions(),
+            'multiOptions', $this->embedLoader->listCrumbOptions(),
             'separator', ' '
         );
 
@@ -468,7 +470,7 @@ class StaffModel extends \Gems\Model\JoinModel
             'rows', 3
         );
         $seeKey = ! ($this->currentUser->hasPrivilege('pr.systemuser.seepwd') || $editing);
-        $type   = new \Gems\Model\Type\EncryptedField($this->project, $seeKey);
+        $type   = new EncryptedField($this->valueEncryptor, $seeKey);
         $type->apply($this, 'gsus_secret_key');
 
         $this->set('gsf_active', 'label', $this->_('Active'),
@@ -547,7 +549,7 @@ class StaffModel extends \Gems\Model\JoinModel
 
             //Now load the userclass and save the password use the $savedValues as for a new
             //user we might not have the id in the $newValues
-            $user = $this->loader->getUserLoader()->getUserByStaffId($savedValues['gsf_id_user']);
+            $user = $this->userLoader->getUserByStaffId($savedValues['gsf_id_user']);
             if ($user->canSetPassword()) {
                 $user->setPassword($newValues['fld_password']);
             }

@@ -27,6 +27,7 @@ use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ScreenLoader;
 use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
+use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskStore;
 use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
@@ -56,7 +57,7 @@ class LegacyConfigProvider
     public function getDependencies(): array
     {
         \MUtil\Model::addNameSpace('Gems');
-        
+
         return [
             'factories'  => [
                 \Gems\Loader::class => LegacyFactory::class,
@@ -86,6 +87,7 @@ class LegacyConfigProvider
                 'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyConsentUtil' => ConsentUtil::class,
+                'LegacyEmbedLoader' => EmbedLoader::class,
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyLoader' => \Gems\Loader::class,
                 'LegacyLocale' => Locale::class,

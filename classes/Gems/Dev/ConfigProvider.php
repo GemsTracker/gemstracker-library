@@ -2,6 +2,8 @@
 
 namespace Gems\Dev;
 
+use Gems\Communication\Http\DevMailSmsClient;
+use Gems\Communication\Http\SmsClientInterface;
 use Gems\Dev\Middleware\DebugDumperMiddleware;
 
 class ConfigProvider
@@ -17,6 +19,11 @@ class ConfigProvider
                     'dsn' => 'smtp://mailhog:1025',
                 ],
                 'password' => null,
+                'dependencies' => [
+                    'aliases' => [
+                        SmsClientInterface::class => DevMailSmsClient::class,
+                    ],
+                ],
                 'pipeline' => [
                     DebugDumperMiddleware::class,
                 ],
