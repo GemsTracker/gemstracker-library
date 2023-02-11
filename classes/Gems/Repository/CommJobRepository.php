@@ -278,7 +278,7 @@ class CommJobRepository
 
         $sql = $sql . " ORDER BY ggp_name";
 
-        return $this->cachedResultFetcher->fetchPairs($cacheId, $sql, $params, ['tracks']);
+        return $this->cachedResultFetcher->fetchPairs($cacheId, $sql, $params, ['tracks']) ?? [];
     }
 
     /**

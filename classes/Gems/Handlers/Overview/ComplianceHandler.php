@@ -4,6 +4,7 @@ namespace Gems\Handlers\Overview;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
@@ -91,6 +92,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         protected Adapter $laminasDb,
         CurrentUserRepository $currentUserRepository,
         protected MetaModelLoader $metaModelLoader,
+        protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
         protected TokenRepository $tokenRepository,
         protected TrackDataRepository $trackDataRepository,
@@ -146,7 +148,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         }
 
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
+        if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
             $model->addFilter(array($where));
         }
 

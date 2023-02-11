@@ -14,8 +14,10 @@ namespace Gems\Snippets\Agenda;
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Gems\Snippets\AutosearchPeriodFormSnippet;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -27,7 +29,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class CalendarSearchSnippet extends AutosearchFormSnippet
+class CalendarSearchSnippet extends AutosearchPeriodFormSnippet
 {
     /**
      *
@@ -37,14 +39,15 @@ class CalendarSearchSnippet extends AutosearchFormSnippet
 
     public function __construct(
         SnippetOptions $snippetOptions,
-        protected RequestInfo $requestInfo,
+        RequestInfo $requestInfo,
         TranslatorInterface $translate,
-        protected ResultFetcher $resultFetcher,
+        ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
     )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $translate, $this->resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
@@ -74,7 +77,7 @@ class CalendarSearchSnippet extends AutosearchFormSnippet
 
         $elements[] = null;
 
-        $this->_addPeriodSelectors($elements, 'gap_admission_time');
+        $this->addPeriodSelectors($elements, 'gap_admission_time');
 
         return $elements;
     }

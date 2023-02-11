@@ -168,7 +168,7 @@ class MenuSnippetHelper
      * @param array  $paramLateMappings
      * @return array[] [label, Late::url]
      */
-    public function getLateRouteUrl(string $route, array $paramLateMappings = [], BridgeInterface $bridge = null): ?array
+    public function getLateRouteUrl(string $route, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false): ?array
     {
         try {
             $menuItem = $this->menu->find($route);
@@ -177,7 +177,7 @@ class MenuSnippetHelper
         }
 
         if ($this->routeHelper->hasAccessToRoute($route)) {
-            $url = $this->routeHelper->getLateRouteUrl($route, $paramLateMappings, $bridge);
+            $url = $this->routeHelper->getLateRouteUrl($route, $paramLateMappings, $bridge, $ignoreErrors);
             return [
                 'label' => $menuItem->label,
                 'url'   => $url,

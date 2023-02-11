@@ -11,9 +11,12 @@
 
 namespace Gems\Handlers\Overview;
 
-use Gems\Db\ResultFetcher;
 use Gems\MenuNew\RouteHelper;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Selector\TokenDateSelector;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\Token\PlanRespondentSnippet;
+use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -34,7 +37,9 @@ class RespondentPlanHandler extends TokenSearchHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Token\\PlanRespondentSnippet'];
+    protected array $autofilterSnippets = [
+        PlanRespondentSnippet::class,
+        ];
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -42,19 +47,19 @@ class RespondentPlanHandler extends TokenSearchHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $indexStopSnippets = [
-        'Tracker\\TokenStatusLegenda',
-        'Generic\\CurrentSiblingsButtonRowSnippet',
+        TokenStatusLegenda::class,
+        CurrentSiblingsButtonRowSnippet::class,
         ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        PeriodSelectRepository $periodSelectRepository,
         Tracker $tracker,
-        ResultFetcher $resultFetcher,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $tracker, $resultFetcher);
+        parent::__construct($responder, $translate, $periodSelectRepository, $tracker);
     }
 
     /**

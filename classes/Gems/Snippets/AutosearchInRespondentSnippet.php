@@ -20,7 +20,7 @@ namespace Gems\Snippets;
  * @license    New BSD License
  * @since      Class available since version 1.7.1 21-apr-2015 13:28:39
  */
-class AutosearchInRespondentSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class AutosearchInRespondentSnippet extends \Gems\Snippets\AutosearchPeriodFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.

@@ -13,10 +13,14 @@ namespace Gems\Handlers\Overview;
 
 use DateTimeImmutable;
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\FlashMessageMiddleware;
-use Gems\Snippets\AutosearchFormSnippet;
+use Gems\Repository\PeriodSelectRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\Token\PlanSearchSnippet;
+use Gems\Snippets\Token\PlanTokenSnippet;
+use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
 use Mezzio\Session\SessionInterface;
@@ -55,7 +59,9 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Token\\PlanTokenSnippet'];
+    protected array $autofilterSnippets = [
+        PlanTokenSnippet::class
+    ];
 
     /**
      * En/disable the checking for answers on load.
@@ -69,7 +75,10 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\PlanSearchSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        PlanSearchSnippet::class,
+        ];
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -77,15 +86,15 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
      * @var mixed String or array of snippets name
      */
     protected array $indexStopSnippets = [
-        'Tracker\\TokenStatusLegenda',
-        'Generic\\CurrentSiblingsButtonRowSnippet',
-    ];
+        TokenStatusLegenda::class,
+        CurrentSiblingsButtonRowSnippet::class,
+        ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        protected PeriodSelectRepository $periodSelectRepository,
         protected Tracker $tracker,
-        protected ResultFetcher $resultFetcher,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -203,7 +212,7 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
 
         unset($filter['AUTO_SEARCH_TEXT_BUTTON']);
 
-        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform(), null, 'Y-m-d H:i:s');
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, null, 'Y-m-d H:i:s');
         if ($where) {
             $filter[] = $where;
         }

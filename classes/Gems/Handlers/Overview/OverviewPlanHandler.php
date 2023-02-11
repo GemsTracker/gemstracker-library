@@ -11,12 +11,15 @@
 
 namespace Gems\Handlers\Overview;
 
-use Gems\Db\ResultFetcher;
 use Gems\MenuNew\RouteHelper;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Selector\TokenDateSelector;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Token\OverviewSearchSnippet;
+use Gems\Snippets\Token\PlanTokenSnippet;
+use Gems\Snippets\Token\TokenDateSelectorSnippet;
 use Gems\Tracker;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\RequestInfo;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -49,24 +52,30 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Token\\TokenDateSelectorSnippet', 'Token\\PlanTokenSnippet'];
+    protected array $autofilterSnippets = [
+        TokenDateSelectorSnippet::class, 
+        PlanTokenSnippet::class,
+        ];
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Token\\OverviewSearchSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class, 
+        OverviewSearchSnippet::class,
+        ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
-        ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         protected RouteHelper $routeHelper,
         protected TokenDateSelector $dateSelector,
     ) {
-        parent::__construct($responder, $translate, $tracker, $resultFetcher);
+        parent::__construct($responder, $translate, $periodSelectRepository, $tracker);
     }
 
     /**

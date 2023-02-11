@@ -13,8 +13,10 @@ namespace Gems\Handlers;
 
 use DateTimeImmutable;
 use Gems\Model;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchFormSnippet;
-use Laminas\Db\Adapter\Adapter;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Log\LogSearchSnippet;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -42,7 +44,10 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Log\\LogSearchSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        LogSearchSnippet::class,
+        ];
 
     /**
      * The snippets used for the show action
@@ -55,7 +60,7 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected Model $modelLoader,
-        protected Adapter $db,
+        protected PeriodSelectRepository $periodSelectRepository
     )
     {
         parent::__construct($responder, $translate);
@@ -128,7 +133,7 @@ class LogHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db->getPlatform());
+        $where = $this->periodSelectRepository->createPeriodFilter($filter);
         
         if ($where) {
             $filter[] = $where;

@@ -81,7 +81,7 @@ class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
 
     public function __construct()
     {
-        $this->upgradeFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades_' . APPLICATION_ENV . '.ini');
+        $this->upgradeFile = getcwd() . str_replace('/', DIRECTORY_SEPARATOR , '/data/upgrades_' . APPLICATION_ENV . '.ini');
     }
 
     /**

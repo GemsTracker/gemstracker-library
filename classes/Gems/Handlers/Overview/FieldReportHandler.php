@@ -13,6 +13,7 @@ namespace Gems\Handlers\Overview;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Tracker\Fields\FieldReportSearchSnippet;
@@ -110,6 +111,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
         protected TrackDataRepository $trackDataRepository,
         protected Tracker $tracker,
@@ -160,7 +162,7 @@ class FieldReportHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstrac
             WHERE gr2t_id_track = ? AND grc_success = 1" . $this->orgWhere;
         
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
+        if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
             $sql .= ' AND ' . $where;
         }
         $this->dateWhere = $where; 

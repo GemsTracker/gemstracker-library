@@ -13,8 +13,9 @@ namespace Gems\Snippets\Mail\Log;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
-use Gems\Snippets\AutosearchFormSnippet;
+use Gems\Snippets\AutosearchInRespondentSnippet;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -29,7 +30,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class MailLogSearchSnippet extends AutosearchFormSnippet
+class MailLogSearchSnippet extends AutosearchInRespondentSnippet
 {
 
     protected User $currentUser;
@@ -38,10 +39,11 @@ class MailLogSearchSnippet extends AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

@@ -13,14 +13,15 @@ namespace Gems\Snippets;
 
 use Gems\Db\ResultFetcher;
 use Gems\Form;
-use Gems\JQuery\Form\Element\DatePicker;
+use Gems\Form\Element\DateTimeInput;
+use Gems\Html;
 use Laminas\Db\Adapter\Platform\PlatformInterface;
 use Laminas\Db\Sql\Select;
 use MUtil\Model;
-use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\Html;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -70,13 +71,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
     /**
      *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
+     * @var \Zalt\Model\Data\DataReaderInterface;
      */
     protected $model;
 
@@ -118,6 +113,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
+        
         if (! $this->searchLabel) {
             $this->searchLabel = $this->_('Free search text');
         }
@@ -132,6 +128,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * @param mixed $dates A string fieldName to use or an array of fieldName => Label
      * @param string $defaultDate Optional element, otherwise first is used.
      * @param int $switchToSelect The number of dates where this function should switch to select display
+     * @deprecated Inherit from AutosearchPeriodFormSnippet
      */
     protected function _addPeriodSelectors(array &$elements, $dates, $defaultDate = null, $switchToSelect = 4)
     {
@@ -167,6 +164,9 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         }
         $elements[self::PERIOD_DATE_USED] = $element;
 
+        // $config = $this->metaModelLoader->getModelConfig();
+        $options = ['dateFormat' => 'd-m-Y', 'datePickerSettings' => [], 'size' => 10, 'storageFormat' => 'Y-m-d'];
+        /**
         $type = \MUtil\Model::TYPE_DATE;
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
@@ -186,14 +186,14 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             if (isset($typeInfo[$key]) && (! isset($options[$key]))) {
                 $options[$key] = $typeInfo[$key];
             }
-        }
+        } // */
     
         // \MUtil\Model\Bridge\FormBridge::applyFixedOptions($type, $options);
 
-        $elements['datefrom'] = new DatePicker('datefrom', $options);
+        $elements['datefrom'] = new DateTimeInput('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new DatePicker('dateuntil', $options);
+        $elements['dateuntil'] = new DateTimeInput('dateuntil', $options);
     }
 
     /**
@@ -252,7 +252,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         }
 
         if ($breakBeforeToggle) {
-            $elements['break_' . $name] = \MUtil\Html::create('br');
+            $elements['break_' . $name] = Html::create('br');
         }
 
         $tName = 'toggle_' . $name;
@@ -278,7 +278,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof ModelAbstract) {
+        if ($options instanceof MetaModelInterface) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options) || $options instanceof Select) {
             $options = $this->resultFetcher->fetchPairs($options);
@@ -379,10 +379,10 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             $data = $this->getSearchData();
 
             // Assign a name so autosubmit will only work on this form (when there are others)
-            $form->setHtml('div');
-            $div = $form->getHtml();
+            $div = Html::div();
             $div->class = 'search';
-
+            $form->setHtml($div);
+            
             $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
             $elements[] = $this->getAutoSearchSubmit();
@@ -392,7 +392,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             }
 
             $prev = null;
-            foreach (\MUtil\Ra::flatten($elements) as $element) {
+            foreach (Ra::flatten($elements) as $element) {
                 if ($element instanceof \Zend_Form_Element) {
                     $appendLabel = false;
                     if ($element->getLabel()) {
@@ -410,7 +410,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
                     if ($appendLabel) {
                         $span->label($element);
                     }
-                    // TODO: Elementen automatisch toevoegen in \MUtil\Form
+                    // TODO: Elementen automatisch toevoegen in Form
                     $form->addElement($element);
                 } elseif (null === $element && $prev !== null) {
                     $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
@@ -506,7 +506,10 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
-        return $this->getAutoSearchForm();
+        $div = Html::div();
+        $div->append($this->getAutoSearchForm());
+        
+        return $div;
     }
 
     /**
@@ -517,6 +520,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * @param $inFormat Optional format to use for date when reading
      * @param $outFormat Optional format to use for date in query
      * @return string
+     * @deprecated use PeriodSelectRepository
      */
     public static function getPeriodFilter(array &$filter, PlatformInterface $dbPlatform, $inFormat = null, $outFormat = null)
     {

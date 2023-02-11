@@ -15,12 +15,15 @@ namespace Gems\Handlers\Setup;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Middleware\CurrentOrganizationMiddleware;
 use Gems\Model\CommLogModel;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchFormSnippet;
-use Laminas\Db\Adapter\Adapter;
-use MUtil\Model\ModelAbstract;
 use DateTimeImmutable;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Mail\Log\MailLogBrowseSnippet;
+use Gems\Snippets\Mail\Log\MailLogSearchSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -55,7 +58,9 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Mail\\Log\\MailLogBrowseSnippet'];
+    protected array $autofilterSnippets = [
+        MailLogBrowseSnippet::class,
+        ];
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -63,15 +68,15 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $indexStartSnippets = [
-        'Generic\\ContentTitleSnippet',
-        'Mail\\Log\\MailLogSearchSnippet'
-    ];
+        ContentTitleSnippet::class,
+        MailLogSearchSnippet::class,
+        ];
 
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         protected ProjectOverloader $overloader,
-        protected Adapter $db
+        protected PeriodSelectRepository $periodSelectRepository,
     )
     {
         parent::__construct($responder, $translate);
@@ -86,9 +91,9 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return ModelAbstract
+     * @return DataReaderInterface
      */
-    public function createModel(bool $detailed, string $action): ModelAbstract
+    public function createModel(bool $detailed, string $action): DataReaderInterface
     {
         /**
          * @var $model CommLogModel
@@ -155,7 +160,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = AutosearchFormSnippet::getPeriodFilter($filter, $this->db->getPlatform());
+        $where = $this->periodSelectRepository->createPeriodFilter($filter);
         if ($where) {
             $filter[] = $where;
         }

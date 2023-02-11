@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker\Fields;
 
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchFormSnippet;
@@ -62,11 +63,11 @@ class FilterSearchFormSnippet extends AutosearchFormSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $elements['gaf_class']  = $this->_createSelectElement('gaf_class',  $this->model, $this->_('(all types)'));
-        $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model, $this->_('(any active)'));
+        $elements['gaf_class']  = $this->_createSelectElement('gaf_class',  $this->model->getMetaModel(), $this->_('(all types)'));
+        $elements['gaf_active'] = $this->_createSelectElement('gaf_active', $this->model->getMetaModel(), $this->_('(any active)'));
 
-        $elements[] = \Zalt\Html\Html::create('br');
-        $elements[] = \Zalt\Html\Html::create('strong', $this->_('Usage'));
+        $elements[] = Html::create('br');
+        $elements[] = Html::create('strong', $this->_('Usage'));
 
         $tracks = [
             -1 => $this->_('(not used in any track)'),

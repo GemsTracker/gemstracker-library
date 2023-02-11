@@ -76,7 +76,6 @@ use Mezzio\Session\Ext\PhpSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
-use MUtil\Model;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LogLevel;
@@ -94,6 +93,7 @@ use Twig\Extension\StringLoaderExtension;
 use Zalt\Loader\ConstructorProjectOverloader;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\MetaModelConfigProvider;
+use Zalt\Model\MetaModelInterface;
 use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\Laminas\LaminasRunner;
 use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
@@ -437,24 +437,24 @@ class ConfigProvider
             ],
             'default' => 'en',
             'defaultTypes' => [
-                Model::TYPE_DATE     => $dateFormat,
-                Model::TYPE_DATETIME => $dateTimeFormat,
-                Model::TYPE_TIME     => $timeFormat,
+                MetaModelInterface::TYPE_DATE     => $dateFormat,
+                MetaModelInterface::TYPE_DATETIME => $dateTimeFormat,
+                MetaModelInterface::TYPE_TIME     => $timeFormat,
             ],
             'localeTypes' => [
                 'nl' => [
-                    Model::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
-                    Model::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
-                    Model::TYPE_TIME     => ['description' => 'uu:mm'],
+                    MetaModelInterface::TYPE_DATE     => ['description' => 'tt-mm-jjjj'],
+                    MetaModelInterface::TYPE_DATETIME => ['description' => 'tt-mm-jjjj uu:mm'],
+                    MetaModelInterface::TYPE_TIME     => ['description' => 'uu:mm'],
                 ],
                 'de' => [
-                    Model::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
-                    Model::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
-                    Model::TYPE_TIME     => ['description' => 'ss:mm'],
+                    MetaModelInterface::TYPE_DATE     => ['description' => 'dd-mm-jjjj'],
+                    MetaModelInterface::TYPE_DATETIME => ['description' => 'dd-mm-jjjj ss:mm'],
+                    MetaModelInterface::TYPE_TIME     => ['description' => 'ss:mm'],
                 ],
                 'fr' => [
-                    Model::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
-                    Model::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
+                    MetaModelInterface::TYPE_DATE     => ['description' => 'jj-mm-aaaa'],
+                    MetaModelInterface::TYPE_DATETIME => ['description' => 'jj-mm-aaaa hh:mm'],
                 ],
             ],
         ];

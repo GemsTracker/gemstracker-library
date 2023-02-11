@@ -53,7 +53,7 @@ class RouteHelper
         return $links;
     }
 
-    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null): ?LateCall
+    public function getLateRouteUrl(string $name, array $paramLateMappings = [], BridgeInterface $bridge = null, $ignoreErrors = false): ?LateCall
     {
         $route = $this->getRoute($name);
         if (null === $route) {
@@ -87,7 +87,11 @@ class RouteHelper
         } else {
             $params = Late::getRa($routeParams);
         }
-        return Late::method($this->urlHelper, 'generate', $name, $params);
+        IF ($ignoreErrors) {
+            return Late::method($this, 'tryGeneration', $name, $params);
+        } else {
+            return Late::method($this->urlHelper, 'generate', $name, $params);
+        }
     }
 
     /**
@@ -262,5 +266,15 @@ class RouteHelper
     public function hasPrivilege(string $resource): bool
     {
         return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->config['temp_config']['disable_privileges'];
+    }
+    
+    public function tryGeneration(string $name, array $params): string
+    {
+        try {
+            return $this->urlHelper->generate($name, $params);
+        } catch (RuntimeException $re) {
+            error_log($re->getMessage());
+            return $re->getMessage();
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace Gems\Snippets\Respondent;
 
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -98,7 +99,7 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
             if ($lineBreak) {
                 $element->setLabel($this->_('Organization'))
                         ->setAttrib('onchange', 'this.form.submit();');
-                $elements[] = \MUtil\Html::create('br');
+                $elements[] = Html::create('br');
             }
             $elements[\MUtil\Model::REQUEST_ID2] = $element;
         }

@@ -75,8 +75,8 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
 
         // Remove nulls
         $actionLinks = array_filter($actionLinks);
-        if ($actionLinks) {
-            $bridge->addColumns($actionLinks);
+        foreach ($actionLinks as $actionLink) {
+            $bridge->add($actionLink);
         }
     }
 

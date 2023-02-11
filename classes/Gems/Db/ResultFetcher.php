@@ -22,7 +22,7 @@ class ResultFetcher
     {
         $resultArray = $this->fetchAllAssociative($select, $params);
         if (count($resultArray) === 0) {
-            return null;
+            return [];
         }
         $firstRow = reset($resultArray);
 

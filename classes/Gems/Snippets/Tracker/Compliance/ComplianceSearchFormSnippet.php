@@ -24,7 +24,6 @@ use Gems\Snippets\Tracker\TrackSearchFormSnippetAbstract;
  */
 class ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
 {
-
     /**
      * Should the filler be shown?
      *

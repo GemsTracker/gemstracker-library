@@ -13,15 +13,18 @@ namespace Gems\Snippets\Token;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\SurveyRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
+use Gems\Tracker;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
 use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
  *
@@ -52,13 +55,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         protected SurveyRepository $surveyRepository,
         protected TokenRepository $tokenRepository,
         protected TrackDataRepository $trackDataRepository,
         CurrentUserRepository $currentUserRepository,
 
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

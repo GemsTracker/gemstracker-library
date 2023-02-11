@@ -13,6 +13,7 @@ namespace Gems\Snippets\Log;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchInRespondentSnippet;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -37,9 +38,10 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 
@@ -56,7 +58,7 @@ class LogSearchSnippet extends AutosearchInRespondentSnippet
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $this->_addPeriodSelectors($elements, 'gla_created');
+        $this->addPeriodSelectors($elements, 'gla_created');
 
         $elements[] = null;
 

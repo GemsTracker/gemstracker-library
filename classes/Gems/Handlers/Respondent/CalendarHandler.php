@@ -14,11 +14,13 @@ use Gems\Agenda\Agenda;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Snippets\AutosearchFormSnippet;
 use Gems\User\User;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 use function Gems\Actions\count;
 
@@ -81,12 +83,12 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $indexStartSnippets = array('Generic\\ContentTitleSnippet', 'Agenda\\CalendarSearchSnippet');
 
     public function __construct(
-        SnippetResponderInterface $responder,
-        TranslatorInterface       $translator,
-        protected Agenda          $agenda,
-        CurrentUserRepository     $currentUserRepository,
-        protected Adapter $db,
-        protected Model           $modelLoader,
+        SnippetResponderInterface        $responder,
+        TranslatorInterface              $translator,
+        protected Agenda                 $agenda,
+        CurrentUserRepository            $currentUserRepository,
+        protected Model                  $modelLoader,
+        protected PeriodSelectRepository $periodSelectRepository,
     ) {
         parent::__construct($responder, $translator);
         
@@ -120,9 +122,9 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $model = $this->getModel();
 
-        $format = $model->get('gap_admission_time', 'dateFormat');
+        $format = $model->getMetaModel()->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = \MUtil\Model::getTypeDefault(\MUtil\Model::TYPE_DATE, 'dateFormat');
+            $format = $model->getMetaModel()->getMetaModelLoader()->getModelLinkedDefaults('type', MetaModelInterface::TYPE_DATE, 'dateFormat');
         }
 
         return $format;
@@ -143,7 +145,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
             $this->defaultSearchData = [
                 'gap_id_organization' => $org->canHaveRespondents() ? $org->getId() : null,
                 'dateused'            => 'gap_admission_time',
-                'datefrom'            => $today->format('d-m-Y'),
+                'datefrom'            => $today->format($this->getDateFormat()),
             ];
         }
 
@@ -160,11 +162,7 @@ class CalendarHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $filter = parent::getSearchFilter($useRequest);
 
-        $where = AutosearchFormSnippet::getPeriodFilter(
-            $filter,
-            $this->db->getPlatform(),
-            $this->getDateFormat(),
-            'Y-m-d H:i:s');
+        $where = $this->periodSelectRepository->createPeriodFilter($filter, $this->getDateFormat(),'Y-m-d H:i:s');
 
         if ($where) {
             $filter[] = $where;

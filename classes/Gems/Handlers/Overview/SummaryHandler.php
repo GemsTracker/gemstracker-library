@@ -13,6 +13,7 @@ namespace Gems\Handlers\Overview;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model\MetaModelLoader;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
@@ -95,6 +96,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         CurrentUserRepository $currentUserRepository,
         protected Adapter $laminasDb,
         protected MetaModelLoader $metaModelLoader,
+        protected PeriodSelectRepository $periodSelectRepository,
         protected TrackDataRepository $trackDataRepository,
     )
     {
@@ -151,10 +153,10 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
             // Add the period filter
-            if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->laminasDb->getPlatform())) {
-                $select->join('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', [], Select::JOIN_LEFT);
-                $this->autofilterParameters['extraFilter'][] = $where;
-            }
+//            if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
+//                $select->join('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', [], Select::JOIN_LEFT);
+//                $this->autofilterParameters['extraFilter'][] = $where;
+//            }
         } else {
             $this->autofilterParameters['extraFilter'][1] = 0;
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');

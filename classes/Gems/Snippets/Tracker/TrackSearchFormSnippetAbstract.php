@@ -13,6 +13,7 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -27,7 +28,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.5
  */
-class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippet
+class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodFormSnippet
 {
     /**
      *
@@ -52,11 +53,12 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippe
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackData,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
@@ -117,7 +119,7 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchFormSnippe
             'gto_valid_until' => $this->_('Valid until'),
         );
         // $dates = 'gto_valid_from';
-        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+        $this->periodSelectRepository->addZendPeriodSelectors($elements, $dates, 'gto_valid_from');
     }
 
     /**

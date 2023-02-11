@@ -8,9 +8,12 @@ namespace Gems\Handlers\Overview;
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-use Gems\Db\ResultFetcher;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
+use Gems\Snippets\Tracker\Fields\FieldOverviewTableSnippet;
 use Gems\Tracker;
 use Gems\User\Group;
 use MUtil\Model\DatabaseModelAbstract;
@@ -45,7 +48,9 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Tracker\\Fields\\FieldOverviewTableSnippet'];
+    protected array $autofilterSnippets = [ 
+        FieldOverviewTableSnippet::class,
+        ];
 
     /**
      *
@@ -59,8 +64,8 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      * @var mixed String or array of snippets name
      */
     protected array $indexStartSnippets = array(
-        'Generic\\ContentTitleSnippet',
-        'Tracker\\Compliance\\ComplianceSearchFormSnippet'
+        ContentTitleSnippet::class,
+        ComplianceSearchFormSnippet::class,
         );
 
     /**
@@ -74,7 +79,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
-        protected ResultFetcher $resultFetcher,
+        protected PeriodSelectRepository $periodSelectRepository,
         protected TrackDataRepository $trackDataRepository,
         protected Tracker $tracker,
     )
@@ -129,7 +134,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         }
 
         // Add the period filter - if any
-        if ($where = \Gems\Snippets\AutosearchFormSnippet::getPeriodFilter($filter, $this->resultFetcher->getPlatform())) {
+        if ($where = $this->periodSelectRepository->createPeriodFilter($filter)) {
             $this->autofilterParameters['extraFilter'][] = $where;
         }
 

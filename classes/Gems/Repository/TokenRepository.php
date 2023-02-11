@@ -8,12 +8,14 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;
+use Mezzio\Router\Exception\RuntimeException;
 use MUtil\Model;
 use MUtil\Translate\Translator;
 use Zalt\Html\AElement;
 use Zalt\Html\HtmlElement;
 use Zalt\Late\Late;
 use Zalt\Late\LateCall;
+use Zalt\Late\LateInterface;
 use Zalt\Snippets\ModelBridge\TableBridgeAbstract;
 
 class TokenRepository
@@ -247,6 +249,13 @@ class TokenRepository
      */
     public function getTokenAnswerLink($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps = true, $showAnswers = true): ?AElement
     {
+        if ($url instanceof LateInterface) {
+            try {
+                $url = Late::rise($url);
+            } catch (RuntimeException $re) {
+                return null;
+            }
+        }
         if ('A' == $tokenStatus || 'P' == $tokenStatus || 'I' == $tokenStatus) {
             $label = $this->translator->_('Answers');
 
@@ -276,10 +285,10 @@ class TokenRepository
         }
 
         $url = $helper->getLateRouteUrl('respondent.tracks.answer', [
-            Model::REQUEST_ID  => $bridge->getLate('gto_id_token'),
-            Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
-            Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
-        ]);
+            Model::REQUEST_ID  => 'gto_id_token',
+            Model::REQUEST_ID1 => 'gr2o_patient_nr',
+            Model::REQUEST_ID2 => 'gto_id_organization',
+        ], $bridge);
 
         return Late::method($this, 'getTokenAnswerLink',
             $url,
