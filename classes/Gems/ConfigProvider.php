@@ -27,6 +27,7 @@ use Gems\Error\ErrorLogEventListenerDelegatorFactory;
 use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
+use Gems\Factory\LaminasDbAdapterFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
@@ -56,6 +57,7 @@ use Gems\Twig\Vite;
 use Gems\User\Embed\DeferredUserLoaderInterface;
 use Gems\User\Embed\EmbeddedAuthInterface;
 use Gems\User\Embed\RedirectInterface;
+use Gems\Util\Lock\CommJobLock;
 use Gems\Util\Lock\LockFactory;
 use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
@@ -194,8 +196,8 @@ class ConfigProvider
     public function getCacheSettings(): array
     {
         $cacheAdapter = null;
-        if ($envAdapter = getenv('CACHE_ADAPTER')) {
-            $cacheAdapter = $envAdapter;
+        if (isset($_ENV['CACHE_ADAPTER'])) {
+            $cacheAdapter = $_ENV['CACHE_ADAPTER'];
         }
 
         return [
@@ -238,10 +240,10 @@ class ConfigProvider
     {
         return [
             'driver'    => 'pdo_mysql',
-            'host'      => getenv('DB_HOST'),
-            'username'  => getenv('DB_USER'),
-            'password'  => getenv('DB_PASS'),
-            'database'  => getenv('DB_NAME'),
+            'host'      => $_ENV['DB_HOST'] ?? null,
+            'username'  => $_ENV['DB_USER'] ?? null,
+            'password'  => $_ENV['DB_PASS'] ?? null,
+            'database'  => $_ENV['DB_NAME'] ?? null,
         ];
     }
 
@@ -276,7 +278,7 @@ class ConfigProvider
                 \PDO::class => PdoFactory::class,
 
                 // Laminas DB
-                Adapter::class => AdapterServiceFactory::class,
+                Adapter::class => LaminasDbAdapterFactory::class,
 
                 // Doctrine
                 Connection::class => DoctrineDbalFactory::class,
@@ -304,6 +306,7 @@ class ConfigProvider
 
                 // Locks
                 MaintenanceLock::class => [LockFactory::class, FileLock::class],
+                CommJobLock::class => [LockFactory::class, FileLock::class],
 
                 LaminasRunner::class => LaminasRunnerFactory::class,
                 GemsMetaModelLoader::class => MetaModelLoaderFactory::class,

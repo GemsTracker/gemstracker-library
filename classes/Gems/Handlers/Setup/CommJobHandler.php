@@ -14,16 +14,19 @@ namespace Gems\Handlers\Setup;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\CommJobModel;
 use Gems\Repository\CommJobRepository;
 use Gems\Snippets\Communication\CommJobButtonRowSnippet;
+use Gems\Snippets\Communication\CommJobIndexButtonRowSnippet;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
 use Gems\Util\Lock\CommJobLock;
 use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
@@ -31,6 +34,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyResolver;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -79,6 +83,8 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet', 'Agenda\\AutosearchFormSnippet'];
 
+    protected array $indexStopSnippets = [CommJobIndexButtonRowSnippet::class];
+
     protected $monitorParameters = [
         'monitorJob' => 'getMailMonitorJob'
     ];
@@ -111,6 +117,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         protected BatchRunnerLoader $batchRunnerLoader,
         protected CommJobRepository $commJobRepository,
         protected CommJobLock $communicationJobLock,
+        protected RouteHelper $routeHelper,
     )
     {
         parent::__construct($responder, $translate);
@@ -167,6 +174,25 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         return $model;
+    }
+
+    public function lockAction()
+    {
+        if ($this->communicationJobLock->isLocked()) {
+            $this->communicationJobLock->unlock();
+
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->clearMessages();
+            $messenger->addSuccess($this->_('Cron jobs are active'));
+        } else {
+            $this->communicationJobLock->lock();
+        }
+
+        // Redirect
+        return new RedirectResponse($this->routeHelper->getRouteUrl('setup.communication.job.index'));
     }
 
     /**
@@ -288,8 +314,11 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
     public function indexAction()
     {
         if ($this->communicationJobLock->isLocked()) {
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
-            $messenger->addMessage(
+            $messenger->addError(
                 sprintf(
                     $this->_('Automatic messaging have been turned off since %s.'),
                     $this->communicationJobLock->getLockTime()->format('H:i d-m-Y')

@@ -10,17 +10,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'app:maintenance', description: 'Enable or disable maintenance mode')]
-class MaintenanceMode extends Command
+#[AsCommand(name: 'app:communication-lock', description: 'Enable or disable automatic messaging')]
+class CommJobLock extends Command
 {
-    public function __construct(protected MaintenanceLock $maintenanceLock)
+    public function __construct(protected \Gems\Util\Lock\CommJobLock $commJobLock)
     {
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this->addArgument('value', InputArgument::OPTIONAL, 'set Maintenance mode 1 for on, 0 for off');
+        $this->addArgument('value', InputArgument::OPTIONAL, 'set automatic messaging 1 for on, 0 for off');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -28,30 +28,30 @@ class MaintenanceMode extends Command
         $io = new SymfonyStyle($input, $output);
         $value = $input->getArgument('value');
         if ($value === null) {
-            if ($this->maintenanceLock->isLocked()) {
-                $io->warning('Maintenance mode is currently ON');
+            if ($this->commJobLock->isLocked()) {
+                $io->warning('Automatic messaging is currently ON');
                 return static::SUCCESS;
             }
-            $io->info('Maintenance mode is currently OFF');
+            $io->info('Automatic messaging is currently OFF');
             return static::SUCCESS;
         }
 
         if ($value === '1' || strtolower($value) == 'on') {
-            if ($this->maintenanceLock->isLocked()) {
-                $io->warning('Maintenance mode is already ON</error>');
+            if ($this->commJobLock->isLocked()) {
+                $io->warning('Automatic messaging is already ON</error>');
                 return static::SUCCESS;
             }
-            $this->maintenanceLock->lock();
-            $io->warning('Maintenance mode has been turned ON</error>');
+            $this->commJobLock->lock();
+            $io->warning('Automatic messaging has been turned ON</error>');
             return static::SUCCESS;
         }
         if ($value === '0' || strtolower($value) == 'off') {
-            if (!$this->maintenanceLock->isLocked()) {
-                $io->info('Maintenance mode is already OFF</info>');
+            if (!$this->commJobLock->isLocked()) {
+                $io->info('Automatic messaging is already OFF</info>');
                 return static::SUCCESS;
             }
-            $this->maintenanceLock->unlock();
-            $io->info('Maintenance mode has been turned OFF</info>');
+            $this->commJobLock->unlock();
+            $io->info('Automatic messaging has been turned OFF</info>');
             return static::SUCCESS;
         }
 
