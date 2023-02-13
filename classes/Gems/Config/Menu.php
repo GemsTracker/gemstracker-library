@@ -776,12 +776,12 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'setup.access.staff-log.index',
+                                            'name' => 'setup.access.staff.log.index',
                                             'label' => $this->translator->trans('Staff log'),
                                             'type' => 'route-link-item',
                                             'children' => [
                                                 [
-                                                    'name' => 'setup.access.staff-log.show',
+                                                    'name' => 'setup.access.staff.log.show',
                                                     'label' => $this->translator->trans('Show'),
                                                     'type' => 'route-link-item',
                                                 ],

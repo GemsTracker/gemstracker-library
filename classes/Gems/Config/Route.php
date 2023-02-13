@@ -790,8 +790,12 @@ class Route
                     'reset',
                 ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'setup.access.staff-log',
+            ...$this->createSnippetRoutes(baseName: 'setup.access.staff.log',
                 controllerClass: \Gems\Handlers\Setup\StaffLogHandler::class,
+                basePath: '/setup/access/staff/{id:\d+}/log',
+                parentParameters:                  [
+                    'id',
+                ],
                 pages: [
                     'index',
                     'autofilter',
@@ -799,7 +803,10 @@ class Route
                 ],
                 parameterRoutes: [
                     'show',
-                ]
+                ],
+                parameters: [
+                    'logId' => '\d+',
+                ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.system-user',
                 controllerClass: \Gems\Handlers\Setup\SystemUserHandler::class,
