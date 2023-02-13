@@ -11,11 +11,19 @@
 
 namespace Gems\Handlers\Setup;
 
+use Gems\Batch\BatchRunnerLoader;
+use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
+use Gems\Task\TaskRunnerBatch;
 use Gems\User\UserLoader;
+use Laminas\Db\Sql\Select;
+use Mezzio\Session\SessionInterface;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -57,18 +65,6 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $createEditSnippets = ['Organization\\OrganizationEditSnippet'];
 
     /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
@@ -83,6 +79,9 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         protected UserLoader $userLoader,
         protected Model $modelLoader,
+        protected BatchRunnerLoader $batchRunnerLoader,
+        protected ProjectOverloader $overLoader,
+        protected ResultFetcher $resultFetcher,
     )
     {
         parent::__construct($responder, $translate);
@@ -93,27 +92,30 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTaskRunnerBatch('orgCheckAll');
+        $session = $this->request->getAttribute(SessionInterface::class);
+        $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
+
         if (! $batch->isLoaded()) {
 
-            $sql = "SELECT gr2o_id_user, gr2o_id_organization
-                        FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
-                        WHERE grc_success = 1
-                        ORDER BY gr2o_id_organization, gr2o_created";
+            $select = $this->getCheckOrgSelect();
 
-            // \MUtil\EchoOut\EchoOut::track($sql);
-
-            $rows = $this->db->fetchAll($sql);
+            $rows = $this->resultFetcher->fetchAll($select);
 
             foreach ($rows as $row) {
                 $batch->addTask('Respondent\\UpdateRespondentTask', $row['gr2o_id_user'], $row['gr2o_id_organization']);
             }
         }
 
-        $title = $this->_("Checking all respondents.");
-        $this->_helper->BatchRunner($batch, $title, $this->accesslog);
+        $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+        $batchRunner->setTitle($this->_('Checking all respondents.'));
+        $batchRunner->setJobInfo([
+            $this->_('Executes respondent change event for all active respondents.'),
+            $this->_(
+                'Run this code when the respondent change event was changed or e.g. when a new "default" track was created.'
+            )
+        ]);
 
-        $this->addSnippet('Organization\\CheckOrganizationInformation');
+        return $batchRunner->getResponse($this->request);
     }
 
     /**
@@ -124,34 +126,35 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         $go    = true;
         $orgId = $this->_getIdParam();
         $org   = $this->userLoader->getOrganization($orgId);
+        /**
+         * @var $messenger StatusMessengerInterface
+         */
+        $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
 
         if (! $org->getRespondentChangeEventClass()) {
             $go = false;
-            $this->addMessage(sprintf(
+            $messenger->addInfo(sprintf(
                    $this->_('Nothing to do: respondent change event for %s not set.'),
                    $org->getName()
                    ));
         }
         if (! $org->canHaveRespondents()) {
             $go = false;
-            $this->addMessage(sprintf(
+            $messenger->addInfo(sprintf(
                    $this->_('Nothing to do: %s has no respondents.'),
                    $org->getName()
                    ));
         }
 
         if ($go) {
-            $batch = $this->loader->getTaskRunnerBatch('orgCheck' . $orgId);
+            $session = $this->request->getAttribute(SessionInterface::class);
+            $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
             if (! $batch->isLoaded()) {
 
-                $sql = "SELECT gr2o_id_user
-                            FROM gems__respondent2org INNER JOIN gems__reception_codes ON gr2o_reception_code = grc_id_reception_code
-                            WHERE gr2o_id_organization = ? AND grc_success = 1
-                            ORDER BY gr2o_created";
+                $select = $this->getCheckOrgSelect();
+                $select->where(['gr2o_id_organization' => $orgId]);
 
-                // \MUtil\EchoOut\EchoOut::track($sql);
-
-                $respIds = $this->db->fetchCol($sql, $orgId);
+                $respIds = $this->resultFetcher->fetchCol($select, $orgId);
 
                 foreach ($respIds as $respId) {
                     $batch->addTask('Respondent\\UpdateRespondentTask', $respId, $orgId);
@@ -159,10 +162,18 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
             }
 
             $title = sprintf($this->_("Checking respondents for '%s'."), $org->getName());
-            $this->_helper->BatchRunner($batch, $title, $this->accesslog);
-       }
 
-        $this->addSnippet('Organization\\CheckOrganizationInformation');
+            $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+            $batchRunner->setTitle($title);
+            $batchRunner->setJobInfo([
+                $this->_('Executes respondent change event for all active respondents.'),
+                $this->_(
+                    'Run this code when the respondent change event was changed or e.g. when a new "default" track was created.'
+                )
+            ]);
+
+            return $batchRunner->getResponse($this->request);
+       }
     }
 
     /**
@@ -194,6 +205,23 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
 
         return $model;
     }
+
+    protected function getCheckOrgSelect(): Select
+    {
+        $select = $this->resultFetcher->getSelect('gems__respondent2org');
+        $select->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code')
+            ->columns(['gr2o_id_user', 'gr2o_id_organization'])
+            ->where([
+                'grc_success' => 1,
+            ])
+            ->order([
+                'gr2o_id_organization',
+                'gr2o_created'
+            ]);
+
+        return $select;
+    }
+
 
     public function getEditTitle(): string
     {

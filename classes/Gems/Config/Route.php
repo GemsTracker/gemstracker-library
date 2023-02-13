@@ -696,8 +696,9 @@ class Route
             ],
             ...$this->createSnippetRoutes(baseName: 'setup.communication.job',
                 controllerClass: \Gems\Handlers\Setup\CommJobHandler::class,
-                parameters: [
-                    'id' => '[a-zA-Z0-9-_]+',
+                pages: [
+                    ...$this->defaultPages,
+                    'lock',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.communication.messenger',
@@ -765,6 +766,15 @@ class Route
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.organizations',
                 controllerClass: \Gems\Handlers\Setup\OrganizationHandler::class,
+                pages: [
+                    ...$this->defaultPages,
+                    'check-all',
+                    'check-org',
+                ],
+                parameterRoutes: [
+                    ...$this->defaultParameterRoutes,
+                    'check-org',
+                ]
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.access.staff',
                 controllerClass: \Gems\Handlers\Setup\StaffHandler::class,

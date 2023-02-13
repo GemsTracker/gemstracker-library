@@ -741,7 +741,17 @@ class Menu
                                             'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
+                                        [
+                                            'name' => 'setup.access.organizations.check-org',
+                                            'label' => $this->translator->trans('Check patients'),
+                                            'type' => 'route-link-item',
+                                        ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'setup.access.organizations.check-all',
+                                    'label' => $this->translator->trans('Check all patients'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],

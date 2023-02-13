@@ -17,7 +17,7 @@ class LockFactory implements FactoryInterface
     {
         $storageType = $options['type'] ?? $this->defaultLockStorage;
         $lockStorageClass = $this->getLockStorageClass($storageType);
-        $lockStorage = $container->get($lockStorageClass);
+        $lockStorage = $container->build($lockStorageClass);
 
         $config = $container->get('config');
         $rootDir = $config['rootDir'];
