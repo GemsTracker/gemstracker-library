@@ -102,7 +102,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         //$data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
         //$data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = \MUtil\Version::get();
-        $data[$this->_('Application environment')] = getenv('APP_ENV');
+        $data[$this->_('Application environment')] = $_ENV['APP_ENV'] ?? null;
         $data[$this->_('Application baseuri')]     = $this->urlHelper->getBasePath();
         //$data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
         //$data[$this->_('Application encoding')]    = APPLICATION_ENCODING;

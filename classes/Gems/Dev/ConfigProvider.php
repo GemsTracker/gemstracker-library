@@ -10,7 +10,7 @@ class ConfigProvider
 {
     public function __invoke(): array
     {
-        if (getenv('APP_ENV') === 'development') {
+        if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') {
             return [
                 'dev' => $this->getDevSettings(),
                 'migrations'   => $this->getMigrations(),

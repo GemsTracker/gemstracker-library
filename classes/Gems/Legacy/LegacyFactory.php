@@ -120,8 +120,8 @@ class LegacyFactory implements FactoryInterface
             return APPLICATION_ENV;
         } elseif ($config = $this->container->get('config') && isset($config['project'], $config['project']['environment'])) {
             return $config['project']['environment'];
-        } elseif ($env = getenv('APPLICATION_ENV')) {
-            return $env;
+        } elseif (isset($_ENV['APP_ENV'])) {
+            return $_ENV['APP_ENV'];
         }
 
         return 'development';
