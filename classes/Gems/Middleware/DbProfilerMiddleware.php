@@ -2,10 +2,8 @@
 
 namespace Gems\Middleware;
 
-use Gems\Db\Db;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Profiler\Profiler;
-use Laminas\Db\Sql\Sql;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,9 +31,32 @@ class DbProfilerMiddleware implements MiddlewareInterface
             if ($profiler instanceof Profiler) {
                 $profiles = $profiler->getProfiles();
                 foreach($profiles as $profile) {
+                    $profile = ['type' => $dbAdapter::class] + $profile;
                     dump($profile);
                 }
             }
+
+            /**
+             * @var $legacyAdapter \Zend_Db_Adapter_Abstract
+             */
+            $legacyAdapter = $this->container->get(\Zend_Db_Adapter_Abstract::class);
+            $profiler = $legacyAdapter->getProfiler();
+            $profiles = $profiler->getQueryProfiles();
+            if ($profiles) {
+                foreach ($profiles as $profile) {
+                    if ($profile instanceof \Zend_Db_Profiler_Query) {
+                        $profileInfo = [
+                            'type' => $legacyAdapter::class,
+                            'sql' => str_replace('\n', '', $profile->getQuery()),
+                            'parameters' => $profile->getQueryParams(),
+                            'start' => $profile->getStartedMicrotime(),
+                            'elapse' => $profile->getElapsedSecs(),
+                        ];
+                        dump($profileInfo);
+                    }
+                }
+            }
+
         }
 
         return $response;

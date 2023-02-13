@@ -75,6 +75,10 @@ class LegacyZendDatabaseFactory implements FactoryInterface
             $adapter = \Zend_Db::factory($databaseConfig['adapter'], $databaseConfig);
         }
 
+        if (isset($_ENV['DB_PROFILE']) && $_ENV['DB_PROFILE'] === '1') {
+            $adapter->getProfiler()->setEnabled(true);
+        }
+
         \Zend_Db_Table::setDefaultAdapter($adapter);
         \Zend_Registry::set('db', $adapter);
 
