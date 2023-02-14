@@ -243,6 +243,9 @@ abstract class TokenSearchHandlerAbstract extends ModelSnippetLegacyHandlerAbstr
 
         if (isset($filter['main_filter'])) {
             switch ($filter['main_filter']) {
+                case 'answered':
+                    $filter[] = 'gto_completion_time IS NOT NULL';
+
                 case 'hasnomail':
                     $filter[] =
                         "((gr2o_email IS NULL OR gr2o_email = '') AND

@@ -47,6 +47,12 @@ class SummarySearchFormSnippet extends TrackSearchFormSnippetAbstract
 
         $elements[] = null;
 
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+        );
+        $this->addPeriodSelectors($elements, $dates, 'gr2t_start_date');
+
         $this->addFillerSelect($elements, $data);
 
         return $elements;

@@ -14,14 +14,9 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
-use Gems\AuthTfa\Adapter\OtpAdapterInterface;
-use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
-use Gems\User\Group;
-use Gems\User\Embed\EmbeddedAuthInterface;
-use Gems\User\Embed\EmbeddedUserData;
 use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Gems\Util\Translated;
 use MUtil\Model;

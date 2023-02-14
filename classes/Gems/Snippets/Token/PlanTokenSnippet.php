@@ -77,7 +77,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
         if ($respondentRoute) {
             $menu = $this->menuHelper->getLateRouteUrl($respondentRoute, [Model::REQUEST_ID1 => 'gr2o_patient_nr', Model::REQUEST_ID2 => 'gr2o_id_organization'], $bridge);
-            $aElem = new AElement($menu['url'], ['class' => 'actionlink btn']);
+            $aElem = new AElement($menu['url'], ['class' => '']);
             $aElem->setOnEmpty('');
 
             // Make sure org is known

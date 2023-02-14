@@ -15,6 +15,8 @@ use Gems\Html;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Generic\ContentTitleSnippet;
+use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
 use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -56,7 +58,9 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $indexStartSnippets = ['Generic\\ContentTitleSnippet'];
+    protected array $indexStartSnippets = [
+        ContentTitleSnippet::class,
+        ];
 
     /**
      * The parameters used for the show action
@@ -82,8 +86,8 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $showSnippets = [
-        'ModelTableSnippet',
-        'Generic\\CurrentSiblingsButtonRowSnippet'
+        ModelTableSnippet::class,
+        CurrentSiblingsButtonRowSnippet::class,
         ];
 
     public function __construct(

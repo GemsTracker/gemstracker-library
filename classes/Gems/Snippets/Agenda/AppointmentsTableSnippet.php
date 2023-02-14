@@ -256,6 +256,11 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         $filter = parent::getFilter($metaModel);
         
+        if ($this->respondent instanceof Respondent) {
+            $filter['gap_id_user'] = $this->respondent->getId();
+            $filter['gap_id_organization'] = $this->respondent->getOrganizationId(); 
+        }
+        
         $episodeId = $this->requestInfo->getParam(Model::EPISODE_ID);
         if ($episodeId) {
             $this->caption = $this->_('Linked appointments');

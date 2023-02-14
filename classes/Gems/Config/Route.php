@@ -368,6 +368,7 @@ class Route
                     'index',
                     'autofilter',
                     'export',
+                    'show',
                 ],
             ),
         ];

@@ -41,7 +41,13 @@ class FieldReportSearchSnippet extends \Gems\Snippets\Tracker\Compliance\Complia
         
         $elements[] = null;
 
-        $this->addPeriodSelect($elements, $data);
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+            'gto_valid_from'  => $this->_('Valid from'),
+            'gto_valid_until' => $this->_('Valid until'),
+        );
+        $this->addPeriodSelectors($elements, $dates, 'gto_valid_from');
         
         $elements[] = null;
         

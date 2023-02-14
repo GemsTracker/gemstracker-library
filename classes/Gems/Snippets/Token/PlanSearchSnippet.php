@@ -386,6 +386,7 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
     protected function getEveryOption()
     {
         return [
+            'answered'      => $this->_('Answered'),
             'notmailed'     => $this->_('Not emailed'),
             'tomail'        => $this->_('To email'),
             'toremind'      => $this->_('Needs reminder'),

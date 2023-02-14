@@ -105,24 +105,6 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodForm
     }
 
     /**
-     * Add period select to the elements array
-     *
-     * @param array $elements
-     * @param array $data
-     */
-    protected function addPeriodSelect(array &$elements, $data)
-    {
-        $dates = array(
-            'gr2t_start_date' => $this->_('Track start'),
-            'gr2t_end_date'   => $this->_('Track end'),
-            'gto_valid_from'  => $this->_('Valid from'),
-            'gto_valid_until' => $this->_('Valid until'),
-        );
-        // $dates = 'gto_valid_from';
-        $this->periodSelectRepository->addZendPeriodSelectors($elements, $dates, 'gto_valid_from');
-    }
-
-    /**
      * Add track select to the elements array
      *
      * @param array $elements

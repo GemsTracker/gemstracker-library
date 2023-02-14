@@ -53,7 +53,11 @@ class ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
 
         $elements[] = null;
 
-        $this->addPeriodSelect($elements, $data);
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+        );
+        $this->addPeriodSelectors($elements, $dates, 'gr2t_start_date');
 
         $elements[] = null;
 
@@ -63,15 +67,4 @@ class ComplianceSearchFormSnippet extends TrackSearchFormSnippetAbstract
 
         return $elements;
     }
-
-    protected function addPeriodSelect(array &$elements, $data)
-    {
-        $dates = array(
-            'gr2t_start_date' => $this->_('Track start'),
-            'gr2t_end_date'   => $this->_('Track end'),
-        );
-        // $dates = 'gto_valid_from';
-        $this->_addPeriodSelectors($elements, $dates);
-    }
-
 }
