@@ -11,6 +11,8 @@ use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Exception;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Messenger\Message\SendCommJobMessage;
+use Gems\Messenger\Message\SetCommJobTokenAsSent;
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker;
 use Laminas\Db\Sql\Expression;
@@ -18,6 +20,7 @@ use Mezzio\Session\SessionInterface;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Translate\Translator;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class CommJobRepository
@@ -36,12 +39,13 @@ class CommJobRepository
         protected MailJobMessenger $mailJobMessenger,
         protected SmsJobMessenger $smsJobMessenger,
         protected CommunicationRepository $communicationRepository,
+        protected MessageBusInterface $messageBus,
         CurrentUserRepository $currentUserRepository,
 
     )
     {
         $this->resultFetcher = $this->cachedResultFetcher->getResultFetcher();
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     public function getActiveJobs(): array
@@ -617,7 +621,7 @@ class CommJobRepository
      * @throws Exception
      * @throws Exception\Coding
      */
-    public function getSendableTokens(int $commJobId): array
+    public function getSendableTokens(int $commJobId, ?int $respondentId = null, ?int $organizationId = null): array
     {
         $jobData = $this->getJob($commJobId);
 
@@ -625,7 +629,7 @@ class CommJobRepository
             throw new Exception('Mail job not found!');
         }
 
-        $tokenIds = $this->getTokenData($jobData);
+        $tokenIds = $this->getTokenData($jobData, $respondentId, $organizationId);
 
         $sendTokenList = [];
         $incrementWithoutSendingList = [];
@@ -676,6 +680,33 @@ class CommJobRepository
             return true;
         }
         return false;
+    }
+
+    public function sendAllCommunications(?int $respondentId = null, ?int $organizationId = null)
+    {
+        $jobs = $this->getActiveJobs();
+        $processedTokens = [];
+        foreach($jobs as $job) {
+            $sendableTokens = $this->getSendableTokens($job['gcj_id_job'], $respondentId, $organizationId);
+
+            foreach ($sendableTokens['send'] as $sendableTokenId) {
+                if (!in_array($sendableTokenId, $processedTokens)) {
+                    $message = new SendCommJobMessage($job['gcj_id_job'], $sendableTokenId);
+                    $processedTokens[] = $sendableTokenId;
+                    $this->messageBus->dispatch($message);
+                }
+            }
+
+            foreach ($sendableTokens['markSent'] as $sendableTokenId) {
+                if (!in_array($sendableTokenId, $processedTokens)) {
+                    $message = new SetCommJobTokenAsSent($job['gcj_id_job'], $sendableTokenId);
+                    $processedTokens[] = $sendableTokenId;
+                    $this->messageBus->dispatch($message);
+                }
+            }
+        }
+
+        return $processedTokens;
     }
 
     public function setTokenIsDoneInQueue(string $tokenId): void

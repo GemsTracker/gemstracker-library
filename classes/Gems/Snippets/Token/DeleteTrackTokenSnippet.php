@@ -15,7 +15,6 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
-use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker\Token;
 use Gems\Util\ReceptionCodeLibrary;

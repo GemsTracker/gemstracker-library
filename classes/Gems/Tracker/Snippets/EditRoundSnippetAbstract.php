@@ -72,7 +72,7 @@ class EditRoundSnippetAbstract extends ModelFormSnippetAbstract
         CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     protected function beforeSave()

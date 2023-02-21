@@ -42,7 +42,7 @@ class TokenAttemptsRepository
 
         $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
 
-        if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
+        if ($attemptData['attempts'] > $throttleSettings['maxAttempts'] && $remainingDelay > 0) {
             return true;
         }
         return false;
@@ -56,7 +56,7 @@ class TokenAttemptsRepository
         ];
 
         $sql = new Sql($this->adapter);
-        $insert = $sql->insert('gems__user_login_attempts')->values($data);
+        $insert = $sql->insert('gems__token_attempts')->values($data);
         $sql->prepareStatementForSqlObject($insert)->execute();
     }
 

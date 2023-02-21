@@ -256,7 +256,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
         // 'model'        => 'getModel',
         'routeAction'  => 'show',
         'templateOnly' => 'isTemplateOnly',
-        'view'         => 'getView',
     ];
 
     /**
@@ -1123,16 +1122,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
                 $respondent->getName()
             );
         }
-    }
-
-    /**
-     * Get the view
-     *
-     * @return \Zend_View_Interface
-     */
-    protected function getView()
-    {
-        return $this->view;
     }
 
     /**

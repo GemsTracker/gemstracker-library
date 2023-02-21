@@ -2,6 +2,7 @@
 
 namespace Gems\Command;
 
+use Gems\Console\ConsoleSettings;
 use Gems\Messenger\Message\CommJob;
 use Gems\Repository\CommJobRepository;
 use Gems\Util\Lock\CommJobLock;
@@ -20,6 +21,7 @@ class RunCommJob extends Command
         protected MaintenanceLock $maintenanceLock,
         protected MessageBusInterface $messageBus,
         protected CommJobRepository $commJobRepository,
+        protected ConsoleSettings $consoleSettings,
         protected array $config,
     )
     {
@@ -36,6 +38,8 @@ class RunCommJob extends Command
             $output->writeln('<error>Cron jobs turned off.</error>');
             return static::FAILURE;
         }
+
+        $this->consoleSettings->setConsoleUser();
 
         $jobs = $this->commJobRepository->getActiveJobs();
 

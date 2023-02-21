@@ -12,6 +12,8 @@
 
 namespace Gems\Model;
 
+use Gems\Communication\CommunicationRepository;
+use Gems\Repository\RespondentRepository;
 use Gems\Util\Translated;
 
 /**
@@ -22,7 +24,13 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class RespondentRelationModel extends \Gems\Model\JoinModel {
+class RespondentRelationModel extends JoinModel
+{
+
+    /**
+     * @var CommunicationRepository
+     */
+    protected $communicationRepository;
 
     /**
      * @var \Gems\Loader
@@ -30,19 +38,19 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
     protected $loader;
 
     /**
+     * @var RespondentRepository
+     */
+    protected $respondentRepository;
+
+    /**
      * @var Translated
      */
     protected $translatedUtil;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
-
-    public function __construct($name = null, $startTable = null, $fieldPrefix = null, $saveable = null) {
+    public function __construct() {
         parent::__construct('respondent_relation', 'gems__respondent_relations', 'grr');
 
-        $this->addTable('gems__respondent2org', array('gr2o_id_user' => 'grr_id_respondent'), null, false);
+        $this->addTable('gems__respondent2org', ['gr2o_id_user' => 'grr_id_respondent'], null, false);
 
         $keys = $this->_getKeysFor('gems__respondent2org');
         $keys['rid'] = 'grr_id';
@@ -50,26 +58,32 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
 
         // Do not really delete but make inactive so we can always display old relations
         $this->setDeleteValues('grr_active', 0);
+
+        $this->addColumn(
+            new \Zend_Db_Expr("CASE WHEN grr_active = 1 THEN '' ELSE 'deleted' END"),
+            'row_class'
+        );
     }
 
     public function applyBrowseSettings()
     {
-        $this->addFilter(array('grr_active'=>1));
+        $this->addFilter(['grr_active'=>1]);
         $this->set('grr_type',
                 'label', $this->_('Relation type'), 'description', $this->_('Father, mother, etc.'));
         $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $this->translatedUtil->getGenders());
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
-        $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', 'j M Y', 'elementClass', 'Date');
+        $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', 'd-m-Y', 'elementClass', 'Date');
         $this->set('grr_email', 'label', $this->_('E-Mail'));
-        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->util->getDbLookup()->getRespondentMailCodes());
+        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->communicationRepository->getRespondentMailCodes());
     }
 
     public function applyDetailSettings()
     {
         $this->applyBrowseSettings();
         $this->set('grr_comments', 'label', $this->_('Comments'), 'elementClass', 'TextArea', 'rows', 4, 'cols', 60);
-        $this->set('grr_birthdate', 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'));
+        $this->set('grr_birthdate', 'jQueryParams', ['defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0']
+        );
         $this->set('grr_mailable', 'elementClass', 'radio', 'separator', '');
     }
 
@@ -82,15 +96,15 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
      */
     public function getRelation($respondentId, $relationId)
     {
-        $filter = array(
+        $filter = [
             'grr_id_respondent' => $respondentId,        // Just a safeguard to make sure we get only relations for this patient
             'grr_id'            => $relationId
-        );
+        ];
 
         $data = $this->loadFirst($filter);
 
         if (!$data) {
-            $data = array();
+            $data = [];
         }
 
         $relationObject = $this->loader->getInstance('Model\\RespondentRelationInstance', $this, $data);
@@ -101,17 +115,17 @@ class RespondentRelationModel extends \Gems\Model\JoinModel {
     /**
      * Get the relations for a given respondentId or patientNr + organizationId combination
      *
-     * @param type $respondentId
-     * @param type $patientNr
-     * @param type $organizationId
+     * @param int $respondentId
+     * @param string $patientNr
+     * @param int $organizationId
      * @return array
      */
-    public function getRelationsFor($respondentId, $patientNr = null, $organizationId = null, $onlyActive = true)
+    public function getRelationsFor(int $respondentId, ?string $patientNr = null, int $organizationId = null, bool $onlyActive = true)
     {
         static $relationsCache = array();
 
         if (is_null($respondentId)) {
-            $respondentId = $this->loader->getUtil()->getDbLookup()->getRespondentId($patientNr, $organizationId);
+            $respondentId = $this->respondentRepository->getRespondentId($patientNr, $organizationId);
         }
 
         if (!array_key_exists($respondentId, $relationsCache)) {

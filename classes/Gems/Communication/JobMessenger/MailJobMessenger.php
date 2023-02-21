@@ -16,17 +16,15 @@ use Symfony\Component\Mime\Address;
 
 class MailJobMessenger implements JobMessengerInterface
 {
-    protected int $currentUserId;
     public function __construct(
         protected Tracker $tracker,
         protected EventDispatcherInterface $event,
         protected CommunicationRepository $communicationRepository,
         protected UserRepository $userRepository,
         protected readonly array $config,
-        CurrentUserRepository $currentUserRepository,
+        protected CurrentUserRepository $currentUserRepository,
     )
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
     }
 
     public function sendCommunication(array $job, Token $token, bool $preview): ?bool
@@ -58,6 +56,8 @@ class MailJobMessenger implements JobMessengerInterface
 
         $mailer = $this->communicationRepository->getMailer($from);
 
+        $currentUserId = $this->currentUserRepository->getCurrentUserId();
+
         try {
             $email->addFrom(new Address($from, $fromName));
             $email->addTo(new Address($to, $token->getRespondentName()));
@@ -65,12 +65,12 @@ class MailJobMessenger implements JobMessengerInterface
             $email->htmlTemplate($this->communicationRepository->getTemplate($token->getOrganization()), $mailTexts['body'], $mailFields);
             $mailer->send($email);
 
-            $event = new TokenEventMailSent($email, $token, $this->currentUserId, $job);
+            $event = new TokenEventMailSent($email, $token, $currentUserId, $job);
             $this->event->dispatch($event, $event::NAME);
 
         } catch (TransportExceptionInterface  $exception) {
 
-            $event = new TokenEventMailFailed($exception, $email, $token, $this->currentUserId, $job);
+            $event = new TokenEventMailFailed($exception, $email, $token, $currentUserId, $job);
             $this->event->dispatch($event, $event::NAME);
 
             return false;

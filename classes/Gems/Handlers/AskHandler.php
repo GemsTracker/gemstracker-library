@@ -18,14 +18,26 @@ use Gems\MenuNew\RouteNotFoundException;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
+use Gems\Snippets\Ask\MaintenanceModeAskSnippet;
+use Gems\Snippets\Ask\RedirectUntilGoodbyeSnippet;
+use Gems\Snippets\Ask\ResumeLaterSnippet;
+use Gems\Snippets\Ask\ShowAllOpenSnippet;
+use Gems\Snippets\Ask\ShowFirstOpenSnippet;
+use Gems\Snippets\Token\TokenForgottenSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Form\AskTokenForm;
+use Gems\Tracker\Source\SurveyNotFoundException;
 use Gems\Tracker\Token;
+use Gems\Tracker\Token\TokenHelpers;
+use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Model;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Base\RequestInfoFactory;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 
@@ -40,35 +52,24 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 class AskHandler extends SnippetLegacyHandlerAbstract
 {
     /**
-     * @var \Gems\User\Organization
-     */
-    public $currentOrganization;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    public $currentUser;
-
-    /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
      * Ask_ShowAllOpenSnippet or Ask_ShowFirstOpenSnippet or
      * a project specific one.
      *
-     * @var array Or string of snippet names, presumably \Gems\Tracker\Snippets\ShowTokenLoopAbstract snippets
+     * @var array of snippet names, presumably \Gems\Tracker\Snippets\ShowTokenLoopAbstract snippets
      */
     // protected $forwardSnippets = 'Ask\\ShowAllOpenSnippet';
     // protected $forwardSnippets = 'Ask\\RedirectUntilGoodbyeSnippet';
-    protected $forwardSnippets = 'Ask\\ShowFirstOpenSnippet';
+    protected array $forwardSnippets = [
+        ShowAllOpenSnippet::class
+    ];
 
     /**
      * The width factor for the label elements.
      *
      * Width = (max(characters in labels) * labelWidthFactor) . 'em'
-     *
-     * @var float
      */
-    protected $labelWidthFactor = 0.8;
+    protected float $labelWidthFactor = 0.8;
 
     /**
      * The parameters used for the lost action.
@@ -80,21 +81,27 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $lostParameters = [];
+    protected $lostParameters = [
+        'clientIp' => 'getClientIpAddress',
+    ];
 
     /**
      * The snippets used for the lost action.
      *
-     * @var mixed String or array of snippets name
+     * @var array of snippets name
      */
-    protected $lostSnippets = 'Token\\TokenForgottenSnippet';
+    protected array $lostSnippets = [
+        TokenForgottenSnippet::class
+    ];
 
     /**
      * Snippets displayed when maintenance mode is on
      *
      * @var array
      */
-    protected $maintenanceModeSnippets = ['Ask\\MaintenanceModeAskSnippet'];
+    protected array $maintenanceModeSnippets = [
+        MaintenanceModeAskSnippet::class,
+    ];
 
     /**
      * The parameters used for the lost action.
@@ -106,7 +113,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $resumeLaterParameters = [];
+    protected array $resumeLaterParameters = [];
 
     /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
@@ -115,7 +122,9 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      *
      * @var array Or string of snippet names, presumably \Gems\Tracker\Snippets\ShowTokenLoopAbstract snippets
      */
-    protected $resumeLaterSnippets = 'Ask\\ResumeLaterSnippet';
+    protected array $resumeLaterSnippets = [
+        ResumeLaterSnippet::class
+    ];
 
     protected ?string $tokenId = null;
 
@@ -123,22 +132,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      * The current token
      *
      * set by _initToken()
-     *
-     * @var \Gems\Tracker\Token
      */
-    protected $token;
-
-    /**
-     * Set to true in child class for automatic creation of $this->html.
-     *
-     * To initiate the use of $this->html from the code call $this->initHtml()
-     *
-     * Overrules $useRawOutput.
-     *
-     * @see $useRawOutput
-     * @var boolean $useHtmlView
-     */
-    public bool $useHtmlView = true;
+    protected ?Token $token = null;
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -149,6 +144,8 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         protected ProjectSettings $project,
         protected RouteHelper $routeHelper,
         protected MaintenanceLock $maintenanceLock,
+        protected TokenHelpers $tokenHelpers,
+        protected array $config,
     ) {
         parent::__construct($responder, $translate);
         $this->currentUser = $currentUserRepository->getCurrentUser();
@@ -160,7 +157,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      *
      * @return boolean True if there is a real token specified in the request
      */
-    protected function _initToken()
+    protected function _initToken(): bool
     {
         if ($this->tracker && $this->token instanceof Token) {
             return $this->token && $this->token->exists;
@@ -192,24 +189,23 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return false;
         }
 
-        //if (! \Gems\Cookies::getLocale($this->getRequest())) {
-        if (! ($this->currentUser->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
+        if (! (($this->currentUser instanceof User && $this->currentUser->isActive()) || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
-            $tokenOrg = $this->token->getOrganization();
+            $tokenOrganizationId = $this->token->getOrganizationId();
 
-            if ($tokenOrg->getId() != $this->currentOrganization->getId()) {
-                $this->currentUser->setCurrentOrganization($tokenOrg);
-            }
-            // \MUtil\EchoOut\EchoOut::track($tokenLang, $this->locale->getLanguage());
-            if ($tokenLang != $this->locale->getLanguage()) {
-                if ($this->currentUser->switchLocale($tokenLang)) {
-                    // Reload url as the menu has already been loaded in the previous language
-                    $url = $tokenOrg->getLoginUrl() . '/ask/forward/' . $this->tokenId;
-                    $this->redirectUrl = $url;
+            if ($this->currentUser instanceof User) {
+                if ($tokenOrganizationId !== $this->currentUser->getCurrentOrganizationId()) {
+                    $this->currentUser->setCurrentOrganization($this->token->getOrganization());
+                }
+                if ($tokenLang != $this->locale->getLanguage()) {
+                    if ($this->currentUser->switchLocale($tokenLang)) {
+                        // Reload url as the menu has already been loaded in the previous language
+                        $url = $this->token->getOrganization()->getLoginUrl() . '/ask/forward/' . $this->tokenId;
+                        $this->redirectUrl = $url;
+                    }
                 }
             }
         }
-        //}
 
         return true;
     }
@@ -219,7 +215,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      * @param array $input
      * @return array
      */
-    protected function _processAskParameters(array $input)
+    protected function _processAskParameters(array $input): array
     {
         $output = [];
 
@@ -258,7 +254,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $this->html->pInfo(
             $this->_('Tokens identify a survey that was assigned to you personally.') . ' AskHandler.php' . $this->_('Entering the token and pressing OK will open that survey.'));
 
-        if ($this->currentUser->isActive()) {
+        if ($this->currentUser !== null && $this->currentUser->isActive()) {
             if ($this->currentUser->isLogoutOnSurvey()) {
                 $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'));
             }
@@ -286,7 +282,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
     /**
      * Show the user a screen with token information and a button to take at least one survey
      *
-     * @return void
+     * @return mixed
      */
     public function forwardAction()
     {
@@ -305,7 +301,6 @@ class AskHandler extends SnippetLegacyHandlerAbstract
                 ));
             }
             return $this->forward('index');
-            return;
         }
 
         if ($this->maintenanceLock->isLocked()) {
@@ -335,6 +330,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             }
         }
         $params['token'] = $this->token;
+        $params['clientIp'] = $this->getClientIpAddress();
 
         $params['requestInfo'] = $this->getRequestInfo();
 
@@ -364,22 +360,21 @@ class AskHandler extends SnippetLegacyHandlerAbstract
 
     protected function getActionUrl(string $action): string
     {
-        $currentRouteName = $this->requestInfo->getRouteName();
-        $routeParts = explode('.', $currentRouteName);
-        array_pop($routeParts);
-        $routeParts[] = $action;
 
-        $newRouteName = join('.', $routeParts);
-        $newRouteInfo = $this->routeHelper->getRoute($newRouteName);
-        $newRouteParams = $this->routeHelper->getRouteParamsFromKnownParams($newRouteInfo, $this->requestInfo->getRequestMatchedParams());
+        $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), $action);
+        $newRouteParams = $this->routeHelper->getRouteParamsFromKnownParams($route, $this->requestInfo->getRequestMatchedParams());
 
-        return $this->routeHelper->getRouteUrl($newRouteName, $newRouteParams);
+        return $this->routeHelper->getRouteUrl($route['name'], $newRouteParams);
     }
 
-    public function getRequestInfo(): \MUtil\Request\RequestInfo
+    public function getClientIpAddress(): ?string
     {
-        $factory = new \MUtil\Request\RequestInfoFactory($this->request);
-        return $factory->getRequestInfo();
+        return $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE);
+    }
+
+    public function getRequestInfo(): RequestInfo
+    {
+        return RequestInfoFactory::getMezzioRequestInfo($this->request);
     }
 
     /**
@@ -394,10 +389,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return;
         }
 
-        // Make sure to return to the forward screen
-        $this->currentUser->setSurveyReturn();
-
-        $form    = $this->tracker->getAskTokenForm([
+        $form = $this->tracker->getAskTokenForm([
             'displayOrder' => [
                 'element',
                 'description',
@@ -407,9 +399,16 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             'clientIp' => $this->request->getAttribute(ClientIpMiddleware::CLIENT_IP_ATTRIBUTE),
         ]);
 
-        if ($this->requestInfo->isPost() && $form->isValid($this->request->getParsedBody(), false)) {
-            $this->forwardAction();
-            return;
+        if ($this->requestInfo->isPost() && $form->isValid($this->requestInfo->getRequestPostParams(), false)) {
+
+            $params = $this->requestInfo->getRequestPostParams();
+            if (isset($params['id'])) {
+                $route = $this->routeHelper->getRouteSibling($this->requestInfo->getRouteName(), 'forward');
+                $routeUrl = $this->routeHelper->getRouteUrl($route['name'], [
+                    Model::REQUEST_ID => $params['id'],
+                ]);
+                return new RedirectResponse($routeUrl);
+            }
         }
 
         $form->populate($this->request->getParsedBody());
@@ -421,7 +420,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function lostAction()
     {
-        $this->addSnippet($this->lostSnippets, $this->_processAskParameters($this->lostParameters));
+        $this->addSnippets($this->lostSnippets, $this->_processAskParameters($this->lostParameters));
     }
 
     /**
@@ -429,7 +428,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
      */
     public function resumeLaterAction()
     {
-        $this->addSnippet($this->resumeLaterSnippets, $this->_processAskParameters($this->resumeLaterParameters));
+        $this->addSnippets($this->resumeLaterSnippets, $this->_processAskParameters($this->resumeLaterParameters));
     }
 
     /**
@@ -442,7 +441,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
             return $this->forward('forward');
         }
 
-        if ((! $this->currentUser->isActive()) && $this->requestInfo->getParam('resumeLater', 0)) {
+        if ((! ($this->currentUser instanceof User && $this->currentUser->isActive())) && $this->requestInfo->getParam('resumeLater', 0)) {
             return $this->forward('resume-later');
         }
 
@@ -465,7 +464,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         }
 
         // No return? Check for old style user based return
-        if (! $this->currentUser->isActive()) {
+        if (!$this->currentUser instanceof User || !$this->currentUser->isActive()) {
             return $this->forward('forward');
         }
 
@@ -473,7 +472,7 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $this->tracker->processCompletedTokens($session, $this->token->getRespondentId(), $this->currentUser->getUserId());
 
         // Get return route parameters
-        $url = $this->currentUser->getSurveyReturn();
+        $url = $this->tokenHelpers->getReturnUrl($this->request, $this->token);
         if ($url) {
             // Default fallback for the fallback
             return new RedirectResponse($url);
@@ -502,13 +501,28 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         return $this->forward('index');
     }
 
+    protected function checkReturnUrl(string $url): string
+    {
+        // Fix for ask index redirect to forward not set in HTTP_REFERER in RedirectLoop
+        $urlWithoutQueryParams = strstr($url, '?', true);
+        $askIndexUrl = $this->routeHelper->getRouteUrl('ask.index');
+        if ($this->token instanceof Token && str_ends_with($urlWithoutQueryParams, $askIndexUrl)) {
+            $forwardUrl = $this->routeHelper->getRouteUrl('ask.forward', [
+                Model::REQUEST_ID => $this->token->getTokenId(),
+            ]);
+            // Add the supplied query params
+            //$forwardUrl .= strstr($url, '?');
+            return $forwardUrl;
+        }
+
+        return $url;
+    }
+
     /**
      * Go directly to url
      */
     public function toSurveyAction()
     {
-
-
         if (! $this->_initToken()) {
             // Default option
             return $this->forward('index');
@@ -517,23 +531,25 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $language = $this->locale->getLanguage();
 
         try {
+            $returnUrl = $this->checkReturnUrl($this->tokenHelpers->getReturnUrl($this->request, $this->token));
+
             $url  = $this->token->getUrl(
                 $language,
-                $this->currentUser->getUserId() ? $this->currentUser->getUserId() : $this->token->getRespondentId()
+                $this->currentUser instanceof User ? $this->currentUser->getUserId() : $this->token->getRespondentId(),
+                $returnUrl
             );
 
             /************************
              * Optional user logout *
              ************************/
-            if ($this->currentUser->isLogoutOnSurvey()) {
+            if ($this->currentUser instanceof User && $this->currentUser->isLogoutOnSurvey()) {
                 $this->currentUser->unsetAsCurrentUser();
             }
 
             // Redirect at once
-            header('Location: ' . $url);
-            exit();
+            return new RedirectResponse($url);
 
-        } catch (\Gems\Tracker\Source\SurveyNotFoundException $e) {
+        } catch (SurveyNotFoundException $e) {
             $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
             $messenger->addMessage(sprintf(
                 $this->_('The survey for token %s is no longer active.'),

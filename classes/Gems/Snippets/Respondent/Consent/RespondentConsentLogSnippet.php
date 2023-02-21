@@ -37,6 +37,10 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
      */
     protected $class = 'browser table';
 
+    protected array $menuEditRoutes = [];
+
+    protected array $menuShowRoutes = [];
+
     /**
      *
      * @var \Gems\Model\RespondentModel

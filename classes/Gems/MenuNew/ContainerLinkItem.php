@@ -9,7 +9,7 @@ class ContainerLinkItem extends RouteLinkItem
     protected function hasAccess(): bool
     {
         foreach($this->children as $child) {
-            $access = $this->getMenu()->routeHelper->hasAccessToRoute($child->name);
+            $access = $child->hasAccess();
             if ($access) {
                 return true;
             }

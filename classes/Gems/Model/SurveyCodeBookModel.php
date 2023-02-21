@@ -14,6 +14,7 @@ namespace Gems\Model;
 
 use Gems\Locale\Locale;
 use MUtil\Translate\TranslateableTrait;
+use OpenSpout\Writer\XLSX\Manager\WorksheetManager;
 
 /**
  *
@@ -149,10 +150,18 @@ class SurveyCodeBookModel extends \Gems\Model\PlaceholderModel
                 'id'           => $this->surveyId,
                 'title'        => $questionTitle,
                 'question'     => $information['question'],
-                'answers'      => $answers,
+                'answers'      => $this->limitCharacters($answers),
                 'answer_codes' => $answerCodes
             ];
         }
         return $data;
+    }
+
+    protected function limitCharacters(string $value): string
+    {
+        if (strlen($value > WorksheetManager::MAX_CHARACTERS_PER_CELL)) {
+            $value = substr($value, 0, WorksheetManager::MAX_CHARACTERS_PER_CELL - 4) . '...';
+        }
+        return $value;
     }
 }

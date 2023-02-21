@@ -4,8 +4,11 @@ namespace Gems\Middleware;
 
 use Gems\AuthNew\Adapter\AuthenticationIdentityInterface;
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Site\SiteUrl;
 use Gems\User\User;
+use Gems\User\UserLoader;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,7 +18,10 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
 {
     public const CURRENT_ORGANIZATION_ATTRIBUTE = 'current_organization';
 
-    public function __construct(protected OrganizationRepository $organizationRepository)
+    public function __construct(
+        protected OrganizationRepository $organizationRepository,
+        protected CurrentUserRepository $currentUserRepository,
+    )
     {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -28,19 +34,17 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
          * @var $user User
          */
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        $user->setCurrentOrganization($currentOrganizationId);
+        if ($user instanceof User) {
+            $user->setCurrentOrganization($currentOrganizationId);
+        }
+
+        $this->currentUserRepository->setCurrentOrganizationId($currentOrganizationId);
 
         return $handler->handle($request);
     }
 
     protected function getCurrentOrganizationId(ServerRequestInterface $request): int
     {
-        /**
-         * @var $identity AuthenticationIdentityInterface
-         */
-        $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
-        $baseOrganizationId = $identity->getOrganizationId();
-
         // First check cookie
         $cookies = $request->getCookieParams();
         if (isset($cookies[static::CURRENT_ORGANIZATION_ATTRIBUTE])) {
@@ -51,6 +55,17 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
             }
         }
 
-        return $baseOrganizationId;
+        $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
+        if ($identity instanceof AuthenticationIdentityInterface) {
+            $baseOrganizationId = $identity->getOrganizationId();
+            return $baseOrganizationId;
+        }
+
+        $siteUrl = $request->getAttribute(SiteGateMiddleware::SITE_URL_ATTRIBUTE);
+        if ($siteUrl instanceof SiteUrl && $siteUrl->getFirstOrganizationId()) {
+            return $siteUrl->getFirstOrganizationId();
+        }
+
+        return UserLoader::SYSTEM_NO_ORG;
     }
 }

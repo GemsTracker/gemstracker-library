@@ -13,7 +13,9 @@ namespace Gems\Handlers\Respondent;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model;
+use Gems\Model\RespondentRelationModel;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Tracker\Respondent;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,13 +40,6 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $autofilterSnippets = ['Respondent\\Relation\\TableSnippet'];
-
-    protected array $createEditSnippets = ['Respondent\\Relation\\ModelFormSnippet'];
-
-    protected array $deleteSnippets = ['Respondent\\Relation\\YesNoDeleteSnippet'];
-
-    protected array $indexStopSnippets = ['Generic\\CurrentSiblingsButtonRowSnippet'];
 
     public function __construct(
         SnippetResponderInterface $responder,
@@ -60,12 +55,12 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $respondent = $this->getRespondent();
 
+        /* @var $relationModel RespondentRelationModel */
         $relationModel = $this->modelLoader->getRespondentRelationModel();
-        /* @var $relationModel \Gems\Model\RespondentRelationModel */
 
         $respondentId = $respondent->getId();
         $relationModel->set('grr_id_respondent', 'default', $respondentId);
-        $relationModel->set('gr2o_patient_nr', 'default', $respondent->getPatientId());
+        $relationModel->set('gr2o_patient_nr', 'default', $respondent->getPatientNumber());
         $relationModel->set('gr2o_id_organization', 'default', $respondent->getOrganizationId());
 
         if ($detailed) {
@@ -80,10 +75,9 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
     public function getRespondent()
     {
         if (is_null($this->_respondent)) {
-            $model = $this->modelLoader->getRespondentModel(true);
-            $model->applyParameters($this->request->getQueryParams() + $this->request->getParsedBody());
-            $respondent = $model->loadFirst();
-            $respondent = $this->respondentRepository->getRespondent($respondent['gr2o_patient_nr'], $respondent['gr2o_id_organization']);
+            $patientNr = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
+            $organizationId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);
+            $respondent = $this->respondentRepository->getRespondent($patientNr, $organizationId);
 
             $this->_respondent = $respondent;
         }

@@ -31,6 +31,7 @@ use Gems\Model\StaffModel;
 use Gems\Model\SurveyCodeBookModel;
 use Gems\Model\SurveyMaintenanceModel;
 use Gems\Project\ProjectSettings;
+use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\ResultInterface;
@@ -109,7 +110,7 @@ class Model
     /**
      * @var int Current user ID
      */
-    protected static int $currentUserId;
+    protected static int $currentUserId = UserLoader::UNKNOWN_USER_ID;
 
     protected ProjectOverloader $overloader;
 

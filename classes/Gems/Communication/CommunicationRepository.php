@@ -3,6 +3,7 @@
 namespace Gems\Communication;
 
 use Gems\Communication\Http\SmsClientInterface;
+use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\OrganizationMailFields;
@@ -28,6 +29,7 @@ class CommunicationRepository
 {
     public function __construct(
         protected ResultFetcher $resultFetcher,
+        protected CachedResultFetcher $cachedResultFetcher,
         protected TemplateRendererInterface $template,
         protected Translator $translator,
         protected TokenSelect $tokenSelect,
@@ -160,6 +162,30 @@ class CommunicationRepository
     {
         $mailFieldCreator = new RespondentMailFields($respondent, $this->config);
         return $mailFieldCreator->getMailFields($language);
+    }
+
+    public function getRespondentMailCodes(): array
+    {
+        $select = $this->cachedResultFetcher->getSelect('gems__mail_codes');
+        $select->columns([
+            'gmc_id',
+            'gmc_mail_to_target',
+        ])->where([
+            'gmc_for_respondents' => 1,
+            'gmc_active' => 1,
+        ]);
+
+        $result = $this->cachedResultFetcher->fetchPairs(
+            'respondentMailCodes',
+            $select,
+            null,
+            ['mailcodes'],
+        );
+        if ($result) {
+            ksort($result);
+            return $result;
+        }
+        return [];
     }
 
     /**

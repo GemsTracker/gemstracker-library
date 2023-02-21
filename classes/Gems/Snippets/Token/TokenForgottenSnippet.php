@@ -12,7 +12,18 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Communication\CommunicationRepository;
+use Gems\Db\ResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Repository\CommJobRepository;
+use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
+use Gems\Snippets\ZendFormSnippetAbstract;
+use Gems\Tracker;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -21,41 +32,9 @@ use Symfony\Component\Mime\Address;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8
  */
-class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
+class TokenForgottenSnippet extends ZendFormSnippetAbstract
 {
-    /**
-     * @var CommunicationRepository
-     */
-    protected $communicationRepository;
-    /**
-     *
-     * @var \Gems\User\Organization
-     */
-    protected $currentOrganization;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
+    protected ?string $clientIp = null;
 
     /**
      * The field name for the organization element.
@@ -77,18 +56,28 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
      */
     protected $routeAction = 'index';
 
-    /**
-     *
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected CurrentUserRepository $currentUserRepository,
+        protected Tracker $tracker,
+        protected OrganizationRepository $organizationRepository,
+        protected ResultFetcher $resultFetcher,
+        protected RespondentRepository $respondentRepository,
+        protected CommunicationRepository $communicationRepository,
+        protected CommJobRepository $commJobRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+    }
 
     /**
      * Add the elements to the form
      *
      * @param \Zend_Form $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
         $form->addElement($this->getOrganizationElement($form));
         $form->addElement($this->getEmailElement($form));
@@ -99,34 +88,20 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        // This is overridden by parent function when set elsewhere
-        $this->useCsrf = false;
-    }
-
-    /**
      * Returns the organization id that should currently be used for this form.
      *
      * @return int Returns the current organization id, if any
      */
     public function getCurrentOrganizationId()
     {
-        if ($this->request->isPost()) {
-            $orgId = $this->request->getParam($this->organizationFieldName);
+        if ($this->requestInfo->isPost()) {
+            $orgId = $this->requestInfo->getParam($this->organizationFieldName);
 
             if ($orgId) {
                 return $orgId;
             }
         }
-        return $this->currentOrganization->getId();
+        return $this->currentUserRepository->getCurrentOrganizationId();
     }
 
     /**
@@ -134,9 +109,9 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
      *
      * @return array
      */
-    protected function getDefaultFormValues()
+    protected function getDefaultFormValues(): array
     {
-        return [$this->organizationFieldName => $this->currentOrganization->getId()];
+        return [$this->organizationFieldName => $this->currentUserRepository->getCurrentOrganizationId()];
     }
 
     /**
@@ -160,8 +135,8 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
                 ->setDescription($this->getEmailDescription())
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail')
-                ->addValidator($this->loader->getSubscriptionThrottleValidator());
+                ->addValidator('SimpleEmail');
+                //->addValidator($this->tracker->getTokenValidator($this->clientIp));
 
         return $element;
     }
@@ -201,7 +176,7 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
      */
     public function getRespondentOrganizations()
     {
-        return $this->util->getDbLookup()->getOrganizationsWithRespondents();
+        return $this->organizationRepository->getOrganizationsWithRespondents();
     }
 
     /**
@@ -248,25 +223,21 @@ class TokenForgottenSnippet extends \Gems\Snippets\FormSnippetAbstract
             $sql      = "SELECT gr2o_id_user, gr2o_patient_nr FROM gems__respondent2org
                             WHERE (gr2o_email = ? OR gr2o_id_user in (SELECT grr_id_respondent FROM gems__respondent_relations WHERE grr_email = ?)) 
                                  AND gr2o_id_organization = ?";
-            $userData = $this->db->fetchRow($sql, [$this->formData['email'], $this->formData['email'], $orgId]);
+            $userData = $this->resultFetcher->fetchRow($sql, [$this->formData['email'], $this->formData['email'], $orgId]);
 
             if ($userData) {
                 $sent       = 0;
-                $respondent = $this->loader->getRespondent($userData['gr2o_patient_nr'], $orgId, $userData['gr2o_id_user']);
+                $respondent = $this->respondentRepository->getRespondent($userData['gr2o_patient_nr'], $orgId, $userData['gr2o_id_user']);
 
                 if ($respondent->exists && $respondent->canBeMailed()) {
-                    $batch = $this->loader->getTaskRunnerBatch('startupmail');
-                    $batch->autoStart = true;
 
-                    $batch->addTask('Mail\\AddAllMailJobsTask', $respondent->getId(), $respondent->getOrganizationId(), true);
-                    $batch->runAll();
-
-                    $sent = $batch->getCounter('communications_sent');
+                    $sentTokens = $this->commJobRepository->sendAllCommunications($respondent->getId(), $respondent->getOrganizationId());
+                    $sent = count($sentTokens);
                     // \MUtil\EchoOut\EchoOut::track($sent, $batch->getCounter('jobs_started'), $userData);
                 }
                 if (0 === $sent) {
                     // Try to sent a "nothingToSend" mail
-                    $templateId = $this->db->fetchOne(
+                    $templateId = $this->resultFetcher->fetchOne(
                         "SELECT gct_id_template
                                 FROM gems__comm_templates
                                 WHERE gct_target = 'respondent' AND gct_code = 'nothingToSend'"

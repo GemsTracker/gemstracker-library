@@ -20,7 +20,7 @@ class CommJobLock extends Command
 
     protected function configure()
     {
-        $this->addArgument('value', InputArgument::OPTIONAL, 'set automatic messaging 1 for on, 0 for off');
+        $this->addArgument('value', InputArgument::OPTIONAL, 'set automatic messaging 1 to enable, 0 to disabled');
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -29,29 +29,29 @@ class CommJobLock extends Command
         $value = $input->getArgument('value');
         if ($value === null) {
             if ($this->commJobLock->isLocked()) {
-                $io->warning('Automatic messaging is currently ON');
+                $io->warning('Automatic messaging is currently turned DISABLED');
                 return static::SUCCESS;
             }
-            $io->info('Automatic messaging is currently OFF');
+            $io->info('Automatic messaging is currently ENABLED');
             return static::SUCCESS;
         }
 
-        if ($value === '1' || strtolower($value) == 'on') {
+        if ($value === '1' || strtolower($value) == 'disable') {
             if ($this->commJobLock->isLocked()) {
-                $io->warning('Automatic messaging is already ON</error>');
+                $io->warning('Automatic messaging is already turned DISABLED');
                 return static::SUCCESS;
             }
             $this->commJobLock->lock();
-            $io->warning('Automatic messaging has been turned ON</error>');
+            $io->warning('Automatic messaging has been turned DISABLED');
             return static::SUCCESS;
         }
-        if ($value === '0' || strtolower($value) == 'off') {
+        if ($value === '0' || strtolower($value) == 'enable') {
             if (!$this->commJobLock->isLocked()) {
-                $io->info('Automatic messaging is already OFF</info>');
+                $io->info('Automatic messaging is already ENABLED');
                 return static::SUCCESS;
             }
             $this->commJobLock->unlock();
-            $io->info('Automatic messaging has been turned OFF</info>');
+            $io->info('Automatic messaging has been ENABLED');
             return static::SUCCESS;
         }
 

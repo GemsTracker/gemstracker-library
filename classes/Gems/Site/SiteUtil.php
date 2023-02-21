@@ -139,11 +139,11 @@ class SiteUtil
      */
     protected function getSites(): array
     {
-        $hydrator = new ReflectionHydrator();
         $sitesArray = $this->getSitesArray();
         $sites = [];
-        foreach($sitesArray as $site) {
-            $sites[] = $hydrator->hydrate($site, new SiteUrl());
+        foreach($sitesArray as $siteArray) {
+            $site = new SiteUrl(...$siteArray);
+            $sites[] = $site;
         }
 
         return $sites;

@@ -14,7 +14,7 @@ class DatabaseLock extends LockStorageAbstract
 
     public function __construct(protected ResultFetcher $resultFetcher, CurrentUserRepository $currentUserRepository)
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     public function isLocked(): bool

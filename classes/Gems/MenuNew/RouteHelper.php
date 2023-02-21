@@ -228,20 +228,20 @@ class RouteHelper
         return $params;
     }
 
-    public function getRouteUrl(string $name, array $routeParams = []): ?string
+    public function getRouteUrl(string $name, array $routeParams = [], array $queryParams = []): ?string
     {
         $route = $this->getRoute($name);
 
-        return $route === null ? null : $this->urlHelper->generate($name, $routeParams);
+        return $route === null ? null : $this->urlHelper->generate($name, $routeParams, $queryParams);
     }
 
-    public function getRouteUrlOnMatch(string $name, array $routeParams = []): ?string
+    public function getRouteUrlOnMatch(string $name, array $routeParams = [], array $queryParams = []): ?string
     {
         $route = $this->getRoute($name);
 
         if (null !== $route) {
             if (! isset($route['params']) || $this->hasMatchingParameters($route['params'], array_keys($routeParams))) {
-                return $this->urlHelper->generate($name, $routeParams);
+                return $this->urlHelper->generate($name, $routeParams, $queryParams);
             }
         }
         return null;
