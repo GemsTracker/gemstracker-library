@@ -165,13 +165,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     /**
      * The snippets used for the autofilter action.
      *
-     * @var mixed String or array of snippets name
-     */
-    // protected $autofilterSnippets = 'ModelTableSnippet';
-
-    /**
-     * The snippets used for the autofilter action.
-     *
      * @var array snippets name
      */
     protected array $autofilterSnippets = [

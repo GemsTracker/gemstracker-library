@@ -439,6 +439,11 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
+                            'name' => 'overview.consent-plan.show',
+                            'label' => $this->translator->trans('Show'),
+                            'type' => 'route-link-item',
+                        ],
+                        [
                             'name' => 'overview.summary.export',
                             'label' => $this->translator->trans('export'),
                             'type' => 'route-link-item',
