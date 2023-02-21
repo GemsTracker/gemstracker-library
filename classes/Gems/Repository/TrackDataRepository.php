@@ -17,13 +17,11 @@ class TrackDataRepository
         $where = new Predicate();
 
         $whereNest = $where->equalTo('gtr_active', 1)->and->nest();
-
-        foreach($organizationIds as $key=>$organizationId) {
+        foreach($organizationIds as $key => $organizationId) {
             $whereNest->like('gtr_organizations', "%|$organizationId|%");
-            if ($key !== array_key_first($organizationIds) && $key !== array_key_last($organizationIds)) {
-                $whereNest = $whereNest->or;
-            }
+            $whereNest = $whereNest->or;
         }
+        $whereNest = $whereNest->and;
         $where = $whereNest->unnest();
 
         return $this->utilDbHelper->getTranslatedPairsCached(

@@ -269,7 +269,7 @@ class SummaryHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $filter = $this->getSearchFilter();
         if (array_key_exists('fillerfilter', $filter)) {
             $having = new Having();
-            $having->equalTo($fields['filler'], $filter['fillerfilter']);
+            $having->equalTo('filler', $filter['fillerfilter']);
             $select->having($having);
         }
 

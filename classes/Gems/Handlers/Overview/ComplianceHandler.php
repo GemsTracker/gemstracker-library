@@ -156,7 +156,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $select = $this->resultFetcher->getSelect();
         $select->from('gems__rounds')
-            ->columns(['gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file', $fields['filler']])
+            ->columns(['gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'] + $fields)
             ->join('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
             ->join('gems__track_fields', new Expression('gro_id_relationfield = gtf_id_field AND gtf_field_type = "relation"'), [], Select::JOIN_LEFT)
             ->join('gems__groups', 'gsu_id_primary_group =  ggp_id_group', [])
@@ -168,8 +168,8 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         if (array_key_exists('fillerfilter', $filter)) {
             $having = new Having();
-            $having->equalTo($fields['filler'], $filter['fillerfilter']);
-            // $select->having($having);
+            $having->equalTo('filler', $filter['fillerfilter']);
+            $select->having($having);
         }
         $data = $this->resultFetcher->fetchAll($select);
         
