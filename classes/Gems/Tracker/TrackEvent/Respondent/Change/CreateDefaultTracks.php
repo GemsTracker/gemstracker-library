@@ -40,7 +40,7 @@ class CreateDefaultTracks implements RespondentChangedEventInterface
 
     public function __construct(protected Tracker $tracker, protected ResultFetcher $resultFetcher, protected Translator $translator, CurrentUserRepository $currentUserRepository)
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**

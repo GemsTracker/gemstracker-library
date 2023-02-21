@@ -34,7 +34,7 @@ class RecalculateTracks implements RespondentChangedEventInterface
 
     public function __construct(protected Tracker $tracker, protected Translator $translator, CurrentUserRepository $currentUserRepository)
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**

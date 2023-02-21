@@ -28,35 +28,6 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  */
 class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
 {
-    public function render()
-    {
-        // \MUtil\EchoOut\EchoOut::r(sprintf('Rendering snippet %s.', get_class($this)));
-        //
-        // TODO: Change snippet workings.
-        // All forms are processed twice if hasHtmlOutput() is called here. This is
-        // a problem when downloading files.
-        // However: not being able to call hasHtmlOutput() twice is not part of the original plan
-        // so I gotta rework the forms. :(
-        //
-        if ((!$this->hasHtmlOutput()) && $this->getRedirectRoute()) {
-            $this->redirectRoute();
-
-        } else {
-            $html = $this->getHtmlOutput();
-
-            if ($html) {
-                if ($html instanceof HtmlInterface) {
-                    if ($html instanceof HtmlElement) {
-                        $this->applyHtmlAttributes($html);
-                    }
-                    return $html->render();
-                } else {
-                    return Html::renderAny($html);
-                }
-            }
-        }
-    }
-
     /**
      * Use findmenuitem for the abort action so we get the right id appended
      *

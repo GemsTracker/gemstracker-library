@@ -49,8 +49,8 @@ class SiteSetupCheckSnippet extends \MUtil\Snippets\SnippetAbstract
         
         $theOne = $siteUtil->getOneForAll();
         if ($theOne && $this->outputLevel) {
-            $html->pInfo()->bbcode(sprintf(
-                $this->_('The url [b]%s[/b] is used as fall-back for all organizations.'),
+            $html->pInfo()->raw(sprintf(
+                $this->_('The url <b>%s</b> is used as fall-back for all organizations.'),
                 $theOne->getUrl()
                 ));
         } else {

@@ -11,6 +11,8 @@
 
 namespace Gems\User;
 
+use Gems\Repository\OrganizationRepository;
+
 /**
  * The user used when GemsTracker is called form the console
  *
@@ -22,16 +24,17 @@ namespace Gems\User;
  */
 class ConsoleUserDefinition extends \Gems\User\UserDefinitionAbstract
 {
+
+    /**
+     * @var OrganizationRepository
+     */
+    protected $organizationRepository;
+
     /**
      *
      * @var \Gems\Project\ProjectSettings
      */
     protected $project;
-
-    /**
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      * Returns an initialized \Zend_Auth_Adapter_Interface
@@ -57,8 +60,7 @@ class ConsoleUserDefinition extends \Gems\User\UserDefinitionAbstract
         $orgs = null;
 
         try {
-            $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
-            natsort($orgs);
+            $orgs = $this->organizationRepository->getOrganizations();
         } catch (\Zend_Db_Exception $zde) {
         }
         if (! $organization) {
@@ -75,7 +77,7 @@ class ConsoleUserDefinition extends \Gems\User\UserDefinitionAbstract
         }
 
         return array(
-            'user_id'                => \Gems\User\UserLoader::SYSTEM_USER_ID,
+            'user_id'                => \Gems\User\UserLoader::CONSOLE_USER_ID,
             'user_login'             => $login_name,
             'user_name'              => $login_name,
             'user_group'             => 800,

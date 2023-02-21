@@ -15,7 +15,6 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\RespondentModel;
-use Gems\Repository\ReceptionCodeRepository;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
 use Gems\Tracker\Respondent;
 use Gems\Util\ReceptionCodeLibrary;

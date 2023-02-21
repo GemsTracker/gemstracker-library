@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\Exception;
 use Gems\Handlers\LogHandler;
 use Gems\Model;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Laminas\Db\Adapter\Adapter;
@@ -47,10 +48,10 @@ class RespondentLogHandler extends LogHandler
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Model $modelLoader,
-        Adapter $db,
+        PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
     ) {
-        parent::__construct($responder, $translate, $modelLoader, $db);
+        parent::__construct($responder, $translate, $modelLoader, $periodSelectRepository);
     }
 
     /**

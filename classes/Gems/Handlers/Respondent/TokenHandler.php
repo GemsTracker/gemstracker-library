@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\Overview\TokenSearchHandlerAbstract;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Respondent;
@@ -57,11 +58,11 @@ class TokenHandler extends TokenSearchHandlerAbstract
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         Tracker $tracker,
-        ResultFetcher $resultFetcher,
+        PeriodSelectRepository $periodSelectRepository,
         protected RespondentRepository $respondentRepository,
         protected OrganizationRepository $organizationRepository,
     ) {
-        parent::__construct($responder, $translate, $tracker, $resultFetcher);
+        parent::__construct($responder, $translate, $periodSelectRepository, $tracker);
     }
 
     /**

@@ -30,7 +30,7 @@ class RepeatRoundsEvent implements SurveyCompletedEventInterface
 
     public function __construct(protected Translator $translator, CurrentUserRepository $currentUserRepository)
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
     
     /**

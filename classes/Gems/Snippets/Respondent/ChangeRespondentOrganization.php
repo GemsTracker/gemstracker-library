@@ -459,13 +459,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         $this->routeAction = 'show';
 
         if ($this->requestInfo->getCurrentAction() !== $this->routeAction) {
-            $this->afterSaveRouteUrl = [
-                'controller' => $this->requestInfo->getCurrentController(),
-                'action' => $this->routeAction,
-            ];
-
-            $this->afterSaveRouteUrl[Model::REQUEST_ID1] = $this->formData['gr2o_patient_nr'];
-            $this->afterSaveRouteUrl[Model::REQUEST_ID2] = $this->formData['gr2o_id_organization'];
+            $this->afterSaveRouteUrl = $this->menuHelper->getRelatedRouteUrl('show');
         }
 
         return $this;

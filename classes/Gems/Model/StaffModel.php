@@ -104,6 +104,8 @@ class StaffModel extends JoinModel
             new \Zend_Db_Expr("CASE WHEN gsf_active = 1 THEN '' ELSE 'deleted' END"),
             'row_class'
         );
+
+        $this->setKeys($this->getKeys() + ['id2' => 'gul_id_user']);
     }
 
     /**
@@ -261,7 +263,6 @@ class StaffModel extends JoinModel
             $this->set('name',                 'label', $this->_('Name'));
         }
         $this->setIfExists('gsf_job_title', 'label', $this->_('Function'));
-
 
         $this->set('gsf_gender',               'label', $this->_('Gender'),
             'elementClass', 'Radio',

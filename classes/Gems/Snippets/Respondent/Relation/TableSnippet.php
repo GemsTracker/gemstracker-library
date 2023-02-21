@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Respondent\Relation;
 
 use Gems\Html;
+use Gems\Snippets\ModelTableSnippet;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
 
@@ -24,7 +25,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
+class TableSnippet extends ModelTableSnippet {
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -74,7 +75,7 @@ class TableSnippet extends \Gems\Snippets\ModelTableSnippet {
         }
 
         if ($this->showMenu) {
-            $deleteButtons = $this->menuHelper->getLateRelatedUrls(['delete'], $keys, $bridge);
+            $deleteButtons = $this->menuHelper->getLateRouteUrl('respondent.relations.delete', $keys, $bridge);
             foreach($deleteButtons as $deleteButton) {
                 $bridge->addItemLink(\Gems\Html::actionLink($deleteButton, $this->_('Delete')));
             }
