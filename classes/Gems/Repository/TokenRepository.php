@@ -291,7 +291,7 @@ class TokenRepository
         ], $bridge);
 
         return Late::method($this, 'getTokenAnswerLink',
-            $url,
+            $url['url'],
             $bridge->getLate('gr2o_patient_nr'),
             $bridge->getLate('gto_id_organization'),
             $bridge->getLate('gto_id_token'),

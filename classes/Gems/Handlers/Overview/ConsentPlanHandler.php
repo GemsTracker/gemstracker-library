@@ -17,6 +17,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentSiblingsButtonRowSnippet;
+use Gems\Snippets\ModelTableSnippet;
 use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -176,8 +177,7 @@ class ConsentPlanHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         if ($detailed) {
-            // TODO: show month description
-            // $model->set($month, 'formatFunction', );
+            // $model->set($month, 'formatFunction', []);
         }
 
         // Only show organizations the user is allowed to see
