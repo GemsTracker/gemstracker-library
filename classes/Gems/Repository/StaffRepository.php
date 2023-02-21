@@ -2,18 +2,70 @@
 
 namespace Gems\Repository;
 
+use Gems\Api\Model\Transformer\ValidateFieldsTransformer;
 use Gems\Db\CachedResultFetcher;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Model;
+use Gems\Model\StaffModel;
 use Gems\User\UserLoader;
+use Gems\User\UserRepository;
 use MUtil\Translate\Translator;
 use Zalt\Html\Html;
+use Zalt\Loader\ProjectOverloader;
 
 class StaffRepository
 {
     public function __construct(
         protected CachedResultFetcher $cachedResultFetcher,
         protected Translator $translator,
+        protected Model $modelLoader,
+        protected \Zend_Db_Adapter_Abstract $zendDb, // init to correctly set the model
+        protected ProjectOverloader $overloader,
+        protected CurrentUserRepository $currentUserRepository,
     )
     {}
+
+    public function getStaffModel(): StaffModel
+    {
+        return $this->modelLoader->getStaffModel();
+    }
+
+    public function createStaff(
+        string $username,
+        int $organizationId,
+        int $groupId,
+        string $lastName,
+        string $firstName = null,
+        string $surnamePrefix = null,
+        string $email = null,
+        string $phoneNumber = null,
+        string $jobTitle = null,
+        string $gender = 'U',
+    )
+    {
+        $newUserValues = [
+            'gsf_login' => $username,
+            'gsf_id_organization' => $organizationId,
+            'gsf_last_name' => $lastName,
+            'gsf_first_name' => $firstName,
+            'gsf_surname_prefix' => $surnamePrefix,
+            'gul_can_login' => 1,
+            'gsf_id_primary_group' => $groupId,
+            'gsf_email' => $email,
+            'gsf_gender' => $gender,
+            'gsf_phone_1' => $phoneNumber,
+            'gsf_job_title' => $jobTitle,
+        ];
+
+        $staffModel = $this->getStaffModel();
+
+        $staffModel->addTransformer(new ValidateFieldsTransformer($this->overloader, $this->currentUserRepository->getCurrentUserId()));
+        $result = $staffModel->save($newUserValues);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Return key/value pairs of all active staff members
