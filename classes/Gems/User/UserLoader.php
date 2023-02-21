@@ -32,10 +32,14 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     const SYSTEM_NO_ORG  = -1;
 
+    const CONSOLE_USER_ID = 2;
+
     /**
      * The user id used for the project user
      */
     const SYSTEM_USER_ID = 1;
+
+    const UNKNOWN_USER_ID = 0;
 
     /**
      * User class constants

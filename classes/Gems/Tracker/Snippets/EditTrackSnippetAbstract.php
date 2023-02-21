@@ -107,7 +107,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         protected Translated $translatedUtil,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**

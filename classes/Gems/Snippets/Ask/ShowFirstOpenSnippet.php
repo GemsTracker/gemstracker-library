@@ -11,7 +11,14 @@
 
 namespace Gems\Snippets\Ask;
 
+use Gems\Communication\CommunicationRepository;
+use Gems\Html;
+use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
+use Gems\Tracker\Token;
 use Gems\MenuNew\RouteHelper;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Show a single button for an unanswered survey or nothing.
@@ -24,28 +31,39 @@ use Gems\MenuNew\RouteHelper;
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
+class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
 {
-    protected $config;
-
-    /**
-     * @var RouteHelper
-     */
-    protected $routeHelper;
-
     /**
      * Show this snippet show a thank you screen when there are no more tokens to answer?
      *
      * @var boolean
      */
-    public $showEndScreen = true;
+    public bool $showEndScreen = true;
+
+    protected Token $showToken;
 
     /**
      * Switch for showing how long the token is valid.
      *
      * @var boolean
      */
-    protected $showUntil = false;
+    protected bool $showUntil = false;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        RouteHelper $routeHelper,
+        CommunicationRepository $communicationRepository,
+        Translator $translator,
+        protected array $config,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $communicationRepository, $translator);
+        if ($this->wasAnswered) {
+            $this->showToken = $this->token->getNextUnansweredToken();
+        } else {
+            $this->showToken = $this->token;
+        }
+    }
 
     protected function getAskDelay(): int
     {
@@ -72,10 +90,9 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         if ($this->checkContinueLinkClicked()) {
             // Continue later was clicked, handle the click
@@ -101,7 +118,7 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
             default:
                 // Let the page load after stated interval
-                $view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
+                //$view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
         }
 
         $count = $this->getOtherTokenCountUnanswered($this->showToken);
@@ -114,33 +131,34 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
         if ($this->wasAnswered) {
             $html->pInfo(sprintf(
-                $this->_('Thank you for answering the "%s" survey.'),
+                $this->translator->_('Thank you for answering the "%s" survey.'),
                 $this->getSurveyName($this->token)));
-            $html->pInfo($this->_('Please click the button below to answer the next survey.'));
+            $html->pInfo($this->translator->_('Please click the button below to answer the next survey.'));
         } else {
             if ($welcome = $org->getWelcome()) {
-                $html->pInfo()->bbcode($welcome);
+                $html->pInfo()->raw($welcome);
             }
             $html->pInfo(sprintf(
-                $this->_('Please click the button below to answer the survey for token %s.'),
+                $this->translator->_('Please click the button below to answer the survey for token %s.'),
                 strtoupper($this->showToken->getTokenId())));
         }
         if ($delay > 0) {
-            $html->pInfo(sprintf($this->plural(
+            $html->pInfo(sprintf($this->translator->plural(
                 'Wait one second to open the survey automatically or click on Cancel to stop.',
                 'Wait %d seconds to open the survey automatically or click on Cancel to stop.',
                 $delay), $delay));
         }
 
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
-        $buttonDiv->actionLink($url, $this->getSurveyName($this->showToken));
+        $button = Html::actionLink($url, $this->getSurveyName($this->showToken));
+        $buttonDiv->append($button);
 
         $buttonDiv->append(' ');
         $buttonDiv->append($this->formatDuration($this->showToken->getSurvey()->getDuration()));
         $buttonDiv->append($this->formatUntil($this->showToken->getValidUntil()));
 
         if ($delay > 0) {
-            $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->_('Cancel'));
+            $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->translator->_('Cancel'));
         }
 
         if ($this->wasAnswered) {
@@ -149,15 +167,15 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
         }
 
         if ($count) {
-            $html->pInfo(sprintf($this->plural(
+            $html->pInfo(sprintf($this->translator->plural(
                 'After this survey there is one other survey we would like you to answer.',
                 'After this survey there are another %d surveys we would like you to answer.',
                 $count), $count));
         } elseif ($this->wasAnswered) {
-            $html->pInfo($this->_('This survey is the last survey to answer.'));
+            $html->pInfo($this->translator->_('This survey is the last survey to answer.'));
         }
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->bbcode($sig);
+            $html->pInfo()->raw($sig);
         }
         return $html;
     }
@@ -165,10 +183,10 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
     /**
      * Count the number of other surveys not yet answered
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return int
      */
-    protected function getOtherTokenCountUnanswered(\Gems\Tracker\Token $token)
+    protected function getOtherTokenCountUnanswered(Token $token)
     {
         $count = $token->getTokenCountUnanswered();
 
@@ -179,34 +197,17 @@ class ShowFirstOpenSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
     /**
      * Allow for overruling
      *
-     * @param \Gems\Tracker\Token $token
+     * @param Token $token
      * @return string
      */
-    public function getSurveyName(\Gems\Tracker\Token $token)
+    public function getSurveyName(Token $token)
     {
         return $token->getSurvey()->getExternalName();
     }
 
-    /**
-     * The place to check if the data set in the snippet is valid
-     * to generate the snippet.
-     *
-     * When invalid data should result in an error, you can throw it
-     * here but you can also perform the check in the
-     * checkRegistryRequestsAnswers() function from the
-     * {@see \MUtil\Registry\TargetInterface}.
-     *
-     * @return boolean
-     */
     public function hasHtmlOutput(): bool
     {
-        if ($this->wasAnswered) {
-            $this->showToken = $this->token->getNextUnansweredToken();
-        } else {
-            $this->showToken = $this->token;
-        }
-
-        $validToken = ($this->showToken instanceof \Gems\Tracker\Token) && $this->showToken->exists;
+        $validToken = ($this->showToken instanceof Token) && $this->showToken->exists;
 
         if (!$validToken && $this->wasAnswered) {
             // The token was answered, but there are no more tokens to show

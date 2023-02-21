@@ -31,6 +31,7 @@ use Gems\Middleware\LocaleMiddleware;
 use Gems\Middleware\MaintenanceModeMiddleware;
 use Gems\Middleware\MenuMiddleware;
 use Gems\Middleware\SecurityHeadersMiddleware;
+use Gems\Middleware\SiteGateMiddleware;
 use Gems\Model;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\Util\RouteGroupTrait;
@@ -64,7 +65,6 @@ class Route
                 ],
             ], [
                 ...$this->getGeneralRoutes(),
-                ...$this->getAskRoutes(),
                 ...$this->getCalendarRoutes(),
                 ...$this->getRespondentRoutes(),
                 ...$this->getOverviewRoutes(),
@@ -97,10 +97,34 @@ class Route
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     HandlerCsrfMiddleware::class,
+                    SiteGateMiddleware::class,
                     NotAuthenticatedMiddleware::class,
+                    MenuMiddleware::class,
                     LoginHandler::class,
                 ],
             ],
+
+            ...$this->routeGroup([
+                'middleware' => [
+                    SecurityHeadersMiddleware::class,
+                    ClientIpMiddleware::class,
+                    SessionMiddleware::class,
+                    FlashMessageMiddleware::class,
+                    CsrfMiddleware::class,
+                    LocaleMiddleware::class,
+                    //AuthenticationMiddleware::class,
+                    MaintenanceModeMiddleware::class,
+                    AclMiddleware::class,
+                    CurrentOrganizationMiddleware::class,
+                    AuditLogMiddleware::class,
+                    MenuMiddleware::class,
+                ],
+            ],
+            [
+                ...$this->getAskRoutes(),
+            ]),
+
+
             [
                 'name' => 'tfa.login',
                 'path' => '/tfa',
@@ -263,12 +287,14 @@ class Route
         return [
             ...$this->createSnippetRoutes(baseName: 'ask',
                 controllerClass: \Gems\Handlers\AskHandler::class,
+                basePrivilege: false,
                 pages: [
                     'index',
                     'forward',
                     'take',
                     'to-survey',
                     'return',
+                    'lost',
                 ],
                 parameterRoutes: [
                     'forward',
@@ -279,6 +305,10 @@ class Route
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}[_-][a-zA-Z0-9]{4}',
                 ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'lost',
+                ]
             ),
         ];
     }

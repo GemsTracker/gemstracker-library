@@ -451,7 +451,7 @@ class SurveyMaintenanceModel extends JoinModel
         }
 
         $fields['cnt'] = 'COUNT(DISTINCT gto_id_token)';
-        $fields['avg'] = 'AVG(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
+        $fields['avg'] = 'ROUND(AVG(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END))';
         $fields['std'] = 'STDDEV_POP(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
         $fields['min'] = 'MIN(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
         $fields['max'] = 'MAX(CASE WHEN gto_duration_in_sec > 0 THEN gto_duration_in_sec ELSE NULL END)';
@@ -468,19 +468,19 @@ class SurveyMaintenanceModel extends JoinModel
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
                 $this->_('Average answer time: %s.'),
-                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['avg']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeFromSeconds($row['avg']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Standard deviation: %s.'),
-                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['std']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeFromSeconds($row['std']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Minimum time: %s.'),
-                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['min']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeFromSeconds($row['min']) : $this->_('n/a')
             );
             $seq->sprintf(
                 $this->_('Maximum time: %s.'),
-                $row['cnt'] ? $this->translatedUtil->formatTimeUnknown($row['max']) : $this->_('n/a')
+                $row['cnt'] ? $this->translatedUtil->formatTimeFromSeconds($row['max']) : $this->_('n/a')
             );
 
             if ($row['cnt']) {

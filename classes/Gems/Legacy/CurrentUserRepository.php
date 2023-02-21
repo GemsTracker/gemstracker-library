@@ -10,13 +10,15 @@ use Zalt\Loader\ProjectOverloader;
 
 class CurrentUserRepository
 {
-    protected ?User $currentUser;
+    protected ?User $currentUser = null;
+
+    protected ?int $currentUserId = null;
 
     protected ProjectOverloader $loader;
 
-    protected ?string $loginName;
+    protected ?string $loginName = null;
 
-    protected ?int $organizationId;
+    protected ?int $organizationId = null;
 
     protected ?UserLoader $userLoader;
 
@@ -28,9 +30,9 @@ class CurrentUserRepository
     public function getCurrentUser(): ?User
     {
         if (!$this->currentUser instanceof \Gems\User\User) {
-            /*if ($this->loginName === null || $this->organizationId === null) {
-                throw new \Exception('No user credentials set');
-            }*/
+            if ($this->loginName === null || $this->organizationId === null) {
+                return null;
+            }
 
             $userLoader = $this->getUserLoader();
             $user = $userLoader->getUser($this->loginName, $this->organizationId);
@@ -41,6 +43,32 @@ class CurrentUserRepository
         }
 
         return $this->currentUser;
+    }
+
+    public function getCurrentOrganizationId(): int
+    {
+        if ($this->organizationId !== null) {
+            return $this->organizationId;
+        }
+        if ($this->currentUser !== null) {
+            $this->organizationId = $this->currentUser->getCurrentOrganizationId();
+            return $this->organizationId;
+        }
+
+        return UserLoader::SYSTEM_NO_ORG;
+    }
+
+    public function getCurrentUserId(): int
+    {
+        if ($this->currentUserId !== null) {
+            return $this->currentUserId;
+        }
+        if ($this->currentUser !== null) {
+            $this->currentUserId = $this->currentUser->getUserId();
+            return $this->currentUserId;
+        }
+
+        return UserLoader::UNKNOWN_USER_ID;
     }
 
     protected function getUserLoader(): UserLoader
@@ -60,6 +88,22 @@ class CurrentUserRepository
     public function setCurrentUserCredentials(string $loginName, int $organizationId): void
     {
         $this->loginName = $loginName;
+        $this->organizationId = $organizationId;
+    }
+
+    /**
+     * @param int $currentUserId
+     */
+    public function setCurrentUserId(int $currentUserId): void
+    {
+        $this->currentUserId = $currentUserId;
+    }
+
+    /**
+     * @param int $organizationId
+     */
+    public function setCurrentOrganizationId(int $organizationId): void
+    {
         $this->organizationId = $organizationId;
     }
 }

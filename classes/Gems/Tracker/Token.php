@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
+use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
@@ -434,11 +435,11 @@ class Token extends \Gems\Registry\TargetAbstract
      */
     protected function calculateReturnUrl()
     {
-        if ($this->currentUser->isActive(false)) {
-            $currentUri = $this->util->getCurrentURI();
-        } else {
+        //if ($this->currentUser->isActive(false)) {
+        //    $currentUri = $this->util->getCurrentURI();
+        //} else {
             $currentUri = $this->getOrganization()->getPreferredSiteUrl();
-        }
+        //}
 
         /*
         // Referrer would be powerful when someone is usng multiple windows, but
@@ -467,7 +468,17 @@ class Token extends \Gems\Registry\TargetAbstract
         }
 
         // Ultimate backup solution for return
-        return $currentUri . '/ask/forward/' . \MUtil\Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
+        return $currentUri . '/ask/forward/' . urlencode($this->getTokenId());
+    }
+
+    public function canBeEmailed(): bool
+    {
+        //CASE WHEN grc_success = 1 AND "
+        //                . "((gr2o_email IS NOT NULL AND gr2o_email != '' AND (gto_id_relationfield IS NULL OR gto_id_relationfield < 1) AND gr2o_mailable >= gsu_mail_code) OR "
+        //                . "(grr_email IS NOT NULL AND grr_email != '' AND gto_id_relationfield > 0 AND grr_mailable >= gsu_mail_code))"
+        //                . " AND ggp_member_type = 'respondent' AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) AND gr2t_mailable >= gsu_mail_code THEN 1 ELSE 0 END
+
+        return (bool)$this->_gemsData['can_email'];
     }
 
     /**
@@ -1526,7 +1537,7 @@ class Token extends \Gems\Registry\TargetAbstract
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl($language, $userId)
+    public function getUrl($language, $userId, string $returnUrl = null)
     {
         $survey = $this->getSurvey();
 
@@ -1545,7 +1556,7 @@ class Token extends \Gems\Registry\TargetAbstract
             }
         }
         $values['gto_by']         = $userId;
-        $values['gto_return_url'] = $this->calculateReturnUrl();
+        $values['gto_return_url'] = $returnUrl;
 
         $this->_updateToken($values, $userId);
 
@@ -1911,12 +1922,14 @@ class Token extends \Gems\Registry\TargetAbstract
         } else {
             $tokenSelect = $this->tracker->getTokenSelect();
 
+            $groupId = $this->currentUser instanceof User ? $this->currentUser->getGroupId() : 0;
+
             $tokenSelect
                     ->andReceptionCodes()
                     ->andRespondents()
                     ->andRespondentOrganizations()
                     ->addStatus()
-                    ->addShowAnswers($this->currentUser->getGroupId(true))
+                    ->addShowAnswers($groupId)
                     ->forTokenId($this->_tokenId);
 
             $this->_gemsData = $tokenSelect->fetchRow();

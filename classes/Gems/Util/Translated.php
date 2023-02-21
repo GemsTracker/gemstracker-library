@@ -326,6 +326,25 @@ class Translated
         }
     }
 
+    public function formatTimeFromSeconds($totalSeconds)
+    {
+        $seconds = str_pad($totalSeconds % 60, 2, '0', STR_PAD_LEFT);
+        $rest    = intval($totalSeconds / 60);
+        $minutes = str_pad($rest % 60, 2, '0', STR_PAD_LEFT);
+        $hours   = intval($rest / 60);
+        $days    = intval($hours / 24);
+
+        if ($hours > 48) {
+            $hours = $hours % 24;
+
+            return sprintf($this->_('%d days %d:%s:%s'), $days, $hours, $minutes, $seconds);
+        } elseif ($hours) {
+            return sprintf($this->_('%d:%s:%s'), $hours, $minutes, $seconds);
+        } else {
+            return sprintf($this->_('%d:%s'), $minutes, $seconds);
+        }
+    }
+
     /**
      * Returns the time in seconds as a display string
      *

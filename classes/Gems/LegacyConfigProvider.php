@@ -19,6 +19,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Repository\RespondentRepository;
 use Gems\Repository\SourceRepository;
 use Gems\Repository\StaffRepository;
 use Gems\Repository\SurveyRepository;
@@ -96,6 +97,7 @@ class LegacyConfigProvider
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyOrganizationRepository' => OrganizationRepository::class,
                 'LegacyPasswordChecker' => PasswordChecker::class,
+                'LegacyRespondentRepository' => RespondentRepository::class,
                 'LegacyRouteHelper' => RouteHelper::class,
                 'LegacyResultFetcher' => ResultFetcher::class,
                 'LegacyPdf' => Pdf::class,

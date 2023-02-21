@@ -163,7 +163,7 @@ class TokenReadonly extends \Gems\Tracker\Token
      * @param int $userId The id of the gems user
      * @throws \Gems\Tracker\Source\SurveyNotFoundException
      */
-    public function getUrl($language, $userId)
+    public function getUrl($language, $userId, ?string $returnUrl = null)
     {
         $this->_changes[__FUNCTION__] = ['language' => $language, 'userId' => $userId];
         

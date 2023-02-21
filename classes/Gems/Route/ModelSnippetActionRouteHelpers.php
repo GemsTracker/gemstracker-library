@@ -43,7 +43,7 @@ trait ModelSnippetActionRouteHelpers
     public function createBrowseRoutes(string $baseName,
                                        string $controllerClass,
                                        ?string $basePath = null,
-                                       ?string $basePrivilege = null,
+                                       string|bool|null $basePrivilege = null,
                                        ?array $pages = null,
                                        ?array $customMiddleware = null,
                                        ?array $parameters = null,
@@ -97,9 +97,12 @@ trait ModelSnippetActionRouteHelpers
                 'options' => [
                     'controller' => $controllerClass,
                     'action' => $pageName,
-                    'privilege' => $basePrivilege . '.' . $pageName,
                 ],
             ];
+
+            if ($basePrivilege !== false) {
+                $route['options']['privilege'] = $basePrivilege . '.' . $pageName;
+            }
 
             if ($pageName === 'index' || $pageName === 'show') {
                 $route['path'] = $basePath;
@@ -131,7 +134,7 @@ trait ModelSnippetActionRouteHelpers
     public function createSnippetRoutes(string $baseName,
                                        string $controllerClass,
                                        ?string $basePath = null,
-                                       ?string $basePrivilege = null,
+                                       string|bool|null $basePrivilege = null,
                                        ?array $pages = null,
                                        ?array $customMiddleware = null,
                                        ?array $parameters = null,

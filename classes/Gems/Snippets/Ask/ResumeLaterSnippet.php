@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Ask;
 
+use Zalt\Html\HtmlInterface;
+
 /**
  *
  * @package    Gems
@@ -23,14 +25,14 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
     /**
      * @var string
      */
-    protected $action = 'resume-later';
+    protected string $action = 'resume-later';
     
     /**
-     * @param \MUtil\Html\HtmlInterface $html
+     * @param HtmlInterface $html
      */
-    protected function addContinueNowButton(\MUtil\Html\HtmlInterface $html)
+    protected function addContinueNowButton(HtmlInterface $html)
     {
-        $html->actionLink($this->getTokenHref($this->token), sprintf($this->_('Click here to resume %s now'), $this->token->getSurvey()->getExternalName()));           
+        $html->actionLink($this->getTokenHref($this->token), sprintf($this->translator->_('Click here to resume %s now'), $this->token->getSurvey()->getExternalName()));
     }
 
     /**
@@ -47,7 +49,7 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      * This is a stub function either override getHtmlOutput() or override render()
      *
      * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
@@ -60,8 +62,8 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
 
         $html->h3($this->getHeaderLabel());
 
-        $html->pInfo($this->_('You can resume later by clicking on the link in your current mail'));
-        $html->pInfo($this->_('or'));
+        $html->pInfo($this->translator->_('You can resume later by clicking on the link in your current mail'));
+        $html->pInfo($this->translator->_('or'));
         $this->addContinueNowButton($html);
         $this->addContinueLink($html);
         

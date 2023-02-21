@@ -11,12 +11,23 @@
 
 namespace Gems\Tracker\Snippets;
 
-use DateInterval;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use DateTimeInterface;
-use MUtil\Request\RequestInfo;
-use MUtil\Snippets\SnippetAbstract;
+use Gems\Communication\CommunicationRepository;
+use Gems\Mail\TokenMailer;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker\Token;
+use MUtil\Model;
+use MUtil\Translate\Translator;
 use Symfony\Component\Mime\Address;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\HrefArrayAttribute;
+use Zalt\Html\Html;
+use Zalt\Html\HtmlInterface;
+use Zalt\Snippets\SnippetAbstract;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Basic class for creating forward loop snippets
@@ -31,110 +42,78 @@ class ShowTokenLoopAbstract extends SnippetAbstract
 {
     const CONTINUE_LATER_PARAM = 'continueLater';
 
-    /**
-     * @var string
-     */
-    protected $action = 'forward';
-
-    /**
-     * @var \Gems\Communication\CommunicationRepository
-     */
-    protected $communicationRepository;
+    protected string $action = 'forward';
 
     /**
      * General date format
-     * @var string
      */
-    protected $dateFormat = 'j M Y';
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems\Menu
-     */
-    protected $menu;
-
-    /**
-     * Required
-     *
-     * @var RequestInfo
-     */
-    protected $requestInfo;
+    protected string $dateFormat = 'j M Y';
 
     /**
      * Switch for showing the duration.
      *
      * @var boolean
      */
-    protected $showDuration = true;
+    protected bool $showDuration = true;
 
     /**
      * @var bool Switch for showing the last name
      */
-    protected $showLastName = false;
+    protected bool $showLastName = false;
 
     /**
      * Switch for showing how long the token is valid.
      *
      * @var boolean
      */
-    protected $showUntil = true;
+    protected bool $showUntil = true;
 
     /**
      * Required, the current token, possibly already answered
-     *
-     * @var \Gems\Tracker\Token
      */
-    protected $token;
-
-    /**
-     *
-     * @var \Gems\Tracker
-     */
-    protected $tracker;
-
-    /**
-     * Required
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    protected Token $token;
 
     /**
      * Was this token already answered? Calculated from $token
      *
      * @var boolean
      */
-    protected $wasAnswered;
+    protected bool $wasAnswered;
 
-    /**
-     * @param \MUtil\Html\HtmlInterface $html
-     * @param \Gems\Tracker\Token|null  $token
-     */
-    public function addContinueLink(\MUtil\Html\HtmlInterface $html, \Gems\Tracker\Token $token = null)
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        protected RouteHelper $routeHelper,
+        protected CommunicationRepository $communicationRepository,
+        protected Translator $translator,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo);
+        $this->wasAnswered = $this->token->isCompleted();
+    }
+
+    public function addContinueLink(HtmlInterface $html, ?Token $token = null)
     {
         if (null == $token) {
             $token = $this->token;
         }
         if (! $token->isCompleted()) {
             $mailLoader = $this->loader->getMailLoader();
-            /** @var \Gems\Mail\TokenMailer $mailer */
+            /** @var TokenMailer $mailer */
             $mailer     = $mailLoader->getMailer('token', $token->getTokenId());
             $orgEmail   = $token->getOrganization()->getFrom();
             $respEmail  = $token->getEmail();
 
             // If there is no template, or no email for sender / receiver we show no link
             if ($mailer->setTemplateByCode('continue') && (!empty($orgEmail)) && $token->isMailable()) {
-                $html->pInfo($this->_('or'));
-                $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => $this->action));
-                $href     = $menuItem->toHRefAttribute($this->request);
-                $href->add([self::CONTINUE_LATER_PARAM => 1, 'id' => $token->getTokenId()]);
-                $html->actionLink($href, $this->_('Send me an email to continue later'));
+                $html->pInfo($this->translator->_('or'));
+                $url = $this->routeHelper->getRouteUrl("ask.$this->action", [
+                    'id' => $token->getTokenId()
+                ],
+                [
+                    self::CONTINUE_LATER_PARAM => 1
+                ]);
+                $html->actionLink($url, $this->translator->_('Send me an email to continue later'));
             }
         }
     }
@@ -154,7 +133,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
     /**
      * Handle the situation when the continue later link was clicked
      *
-     * @return \MUtil\Html\HtmlInterface
+     * @return HtmlInterface
      */
     public function continueClicked()
     {
@@ -196,42 +175,22 @@ class ShowTokenLoopAbstract extends SnippetAbstract
             }
 
             // Do not send multiple mails a day
-            if (! is_null($lastMailedDate) && $lastMailedDate->isToday()) {
-                $html->pInfo($this->_('An email with information to continue later was already sent to your registered email address today.'));
+
+            if ($lastMailedDate instanceof DateTimeInterface && CarbonImmutable::create($lastMailedDate)->isToday()) {
+                $html->pInfo($this->translator->_('An email with information to continue later was already sent to your registered email address today.'));
             } else {
                 $mailer->send($email);
-                $html->pInfo($this->_('An email with information to continue later was sent to your registered email address.'));
+                $html->pInfo($this->translator->_('An email with information to continue later was sent to your registered email address.'));
             }
 
-            $html->pInfo($this->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
+            $html->pInfo($this->translator->_('Delivery can take a while. If you do not receive an email please check your spam-box.'));
         }
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->bbcode($sig);
+            $html->pInfo()->raw($sig);
         }
 
         return $html;
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if(! $this->tracker) {
-            $this->tracker = $this->loader->getTracker();
-        }
-        if ($this->token instanceof \Gems\Tracker\Token) {
-
-            $this->wasAnswered = $this->token->isCompleted();
-
-            return ($this->requestInfo instanceof \MUtil\Request\RequestInfo);
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -246,19 +205,19 @@ class ShowTokenLoopAbstract extends SnippetAbstract
 
         switch ($days) {
             case 0:
-                return $this->_('We have received your answers today. Thank you!');
+                return $this->translator->_('We have received your answers today. Thank you!');
 
             case 1:
-                return $this->_('We have received your answers yesterday. Thank you!');
+                return $this->translator->_('We have received your answers yesterday. Thank you!');
 
             case 2:
-                return $this->_('We have received your answers 2 days ago. Thank you.');
+                return $this->translator->_('We have received your answers 2 days ago. Thank you.');
 
             default:
                 if ($days <= 14) {
-                    return sprintf($this->_('We have received your answers %d days ago. Thank you.'), $days);
+                    return sprintf($this->translator->_('We have received your answers %d days ago. Thank you.'), $days);
                 }
-                return sprintf($this->_('We have received your answers on %s. '), $dateTime->format($this->dateFormat));
+                return sprintf($this->translator->_('We have received your answers on %s. '), $dateTime->format($this->dateFormat));
         }
     }
 
@@ -271,33 +230,33 @@ class ShowTokenLoopAbstract extends SnippetAbstract
     public function formatDuration($duration)
     {
         if ($duration && $this->showDuration) {
-            return sprintf($this->_('Takes about %s to answer.'),  $duration) . ' ';
+            return sprintf($this->translator->_('Takes about %s to answer.'),  $duration) . ' ';
         }
     }
 
     /**
      * Return a no further questions statement (or nothing)
      *
-     * @return \MUtil\Html\HtmlElement
+     * @return HtmlElement
      */
     public function formatNoFurtherQuestions()
     {
-        return \MUtil\Html::create('pInfo', $this->_('At the moment we have no further surveys for you to take.'));
+        return Html::create('pInfo', $this->translator->_('At the moment we have no further surveys for you to take.'));
     }
 
     /**
      * Return a thanks greeting depending on showlastName switch
      *
-     * @return \MUtil\Html\HtmlElement
+     * @return HtmlElement
      */
     public function formatThanks()
     {
-        $output = \MUtil\Html::create('pInfo');
+        $output = Html::create('pInfo');
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
-            $output->sprintf($this->_('Thank you %s,'), $this->token->getRespondentName());
+            $output->sprintf($this->translator->_('Thank you %s,'), $this->token->getRespondentName());
         } else {
-            $output->append($this->_('Thank you for your answers,'));
+            $output->append($this->translator->_('Thank you for your answers,'));
         }
         return $output;
     }
@@ -313,7 +272,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         if (false === $this->showUntil) { return; }
 
         if (null === $dateTime) {
-            return $this->_('Survey has no time limit.');
+            return $this->translator->_('Survey has no time limit.');
         }
 
         $days = $dateTime->diff(new DateTimeImmutable())->days;
@@ -321,53 +280,53 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         switch ($days) {
             case 0:
                 return [
-                    \MUtil\Html::create('strong', $this->_('Warning!!!')),
+                    Html::create('strong', $this->translator->_('Warning!!!')),
                     ' ',
-                    $this->_('This survey must be answered today!')
+                    $this->translator->_('This survey must be answered today!')
                 ];
 
             case 1:
                 return [
-                    \MUtil\Html::create('strong', $this->_('Warning!!')),
+                    Html::create('strong', $this->translator->_('Warning!!')),
                     ' ',
-                    $this->_('This survey can only be answered until tomorrow!')
+                    $this->translator->_('This survey can only be answered until tomorrow!')
                 ];
 
             case 2:
-                return $this->_('Warning! This survey can only be answered for another 2 days!');
+                return $this->translator->_('Warning! This survey can only be answered for another 2 days!');
 
             default:
                 if ($days <= 14) {
-                    return sprintf($this->_('Please answer this survey within %d days.'), $days);
+                    return sprintf($this->translator->_('Please answer this survey within %d days.'), $days);
                 }
 
                 if ($days <= 0) {
-                    return $this->_('This survey can no longer be answered.');
+                    return $this->translator->_('This survey can no longer be answered.');
                 }
 
-                return sprintf($this->_('Please answer this survey before %s.'), $dateTime->format($this->dateFormat));
+                return sprintf($this->translator->_('Please answer this survey before %s.'), $dateTime->format($this->dateFormat));
         }
     }
 
     /**
      * Return a welcome greeting depending on showlastName switch
      *
-     * @return \MUtil\Html\HtmlElement
+     * @return HtmlElement
      */
     public function formatWelcome()
     {
-        $output = \MUtil\Html::create('pInfo');
+        $output = Html::create('pInfo');
         if ($this->showLastName) {
             // getRespondentName returns the relation name when the token has a relation
-            $output->sprintf($this->_('Welcome %s,'), $this->token->getRespondentName());
+            $output->sprintf($this->translator->_('Welcome %s,'), $this->token->getRespondentName());
         } else {
-            $output->append($this->_('Welcome,'));
+            $output->append($this->translator->_('Welcome,'));
         }
         if ($this->token->hasRelation() && $this->showLastName) {
             return [
                 $output,
-                \MUtil\Html::create('pInfo', sprintf(
-                    $this->_('We kindly ask you to answer a survey about %s.'),
+                Html::create('pInfo', sprintf(
+                    $this->translator->_('We kindly ask you to answer a survey about %s.'),
                     $this->token->getRespondent()->getName()
                 ))];
         }
@@ -379,33 +338,40 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      */
     protected function getHeaderLabel()
     {
-        return $this->_('Token');
+        return $this->translator->_('Token');
     }
 
     /**
      * Get the href for a token
      *
-     * @param \Gems\Tracker\Token $token
-     * @return \MUtil\Html\HrefArrayAttribute
+     * @param Token $token
+     * @return HrefArrayAttribute
      */
-    protected function getTokenHref(\Gems\Tracker\Token $token)
+    protected function getTokenHref(Token $token)
     {
         /***************
          * Get the url *
          ***************/
-        $params = array(
+        $params = [
             'action' => 'to-survey',
-            \MUtil\Model::REQUEST_ID        => $token->getTokenId(),
-            'RouteReset'                   => false,
-            );
+            Model::REQUEST_ID => $token->getTokenId(),
+            'RouteReset' => false,
+        ];
 
-        return new \MUtil\Html\HrefArrayAttribute($params);
+        return new HrefArrayAttribute($params);
+    }
+
+    protected function getTokenUrl(Token $token): string
+    {
+        return $this->routeHelper->getRouteUrl('ask.to-survey', [
+            Model::REQUEST_ID => $token->getTokenId(),
+        ]);
     }
 
     /**
      * The last token was answered, there are no more tokens to answer
      *
-     * @return \MUtil\Html\HtmlInterface
+     * @return HtmlInterface
      */
     public function lastCompleted()
     {
@@ -419,7 +385,7 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         $html->append($this->formatNoFurtherQuestions());
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->bbcode($sig);
+            $html->pInfo()->raw($sig);
         }
 
         return $html;

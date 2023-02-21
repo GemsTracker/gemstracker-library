@@ -4,19 +4,17 @@ namespace Gems\Site;
 
 class SiteUrl
 {
-    protected bool $active = true;
+    public function __construct(
+        protected string $url,
+        protected bool $active = true,
+        protected bool $blocked = false,
+        protected string $lang  = 'en',
+        protected array $organizations = [],
+        protected ?string $style = null,
+    )
+    {}
 
-    protected bool $blocked = false;
-
-    protected string $lang = 'en';
-
-    protected array $organizations = [];
-
-    protected ?string $style = null;
-
-    protected string $url;
-
-    public function getFirstOrganizationId(): int
+    public function getFirstOrganizationId(): ?int
     {
         return reset($this->organizations);
     }

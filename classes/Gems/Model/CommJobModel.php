@@ -24,7 +24,7 @@ class CommJobModel extends JoinModel
     )
     {
         parent::__construct('commJobs', 'gems__comm_jobs', 'gcj', true);
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
         $this->translate = $translator;
     }
 

@@ -29,7 +29,7 @@ class SmsJobMessenger implements JobMessengerInterface
         CurrentUserRepository $currentUserRepository,
     )
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     protected function getFallbackPhonenumber($job)

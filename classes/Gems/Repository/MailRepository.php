@@ -20,7 +20,7 @@ class MailRepository
         CurrentUserRepository $currentUserRepository
     )
     {
-        $this->currentUserId = $currentUserRepository->getCurrentUser()->getUserId();
+        $this->currentUserId = $currentUserRepository->getCurrentUserId();
     }
 
     /**

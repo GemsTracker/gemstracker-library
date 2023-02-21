@@ -11,6 +11,17 @@
 
 namespace Gems\Snippets\Ask;
 
+use Gems\Communication\CommunicationRepository;
+use Gems\MenuNew\RouteHelper;
+use Gems\Tracker;
+use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
+use Gems\Tracker\Token;
+use MUtil\Translate\Translator;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\HtmlInterface;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+
 /**
  * Loops through all open surveys and then shows an endmessage
  *
@@ -22,37 +33,42 @@ namespace Gems\Snippets\Ask;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class RedirectUntilGoodbyeSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
+class RedirectUntilGoodbyeSnippet extends ShowTokenLoopAbstract
 {
-    /**
-     * Optional, calculated from $token
-     *
-     * @var \Gems\Tracker\Token
-     */
-    protected $currentToken;
+    protected string $clientIp;
 
     /**
-     *
-     * @var \Gems\Loader
+     * Optional, calculated from $token
      */
-    protected $loader;
+    protected Token $currentToken;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        RouteHelper $routeHelper,
+        CommunicationRepository $communicationRepository,
+        Translator $translator,
+        protected Tracker $tracker,
+        protected MessengerInterface $messenger,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $routeHelper, $communicationRepository, $translator);
+    }
 
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
-     * @return \MUtil\Html\HtmlInterface Something that can be rendered
+     * @return HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $messages = false;
 
         if ($this->wasAnswered) {
             $this->currentToken = $this->token->getNextUnansweredToken();
         } else {
-            $validator = $this->tracker->getTokenValidator();
+            $validator = $this->tracker->getTokenValidator($this->clientIp);
 
             if ($validator->isValid($this->token->getTokenId())) {
                 $this->currentToken = $this->token;
@@ -66,9 +82,8 @@ class RedirectUntilGoodbyeSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAb
             // Continue later was clicked, handle the click
             return $this->continueClicked();
 
-        } elseif ($this->currentToken instanceof \Gems\Tracker\Token) {
-            $href = $this->getTokenHref($this->currentToken);
-            $url  = $href->render($this->view);
+        } elseif ($this->currentToken instanceof Token) {
+            $url = $this->getTokenUrl($this->currentToken);
 
             // Redirect at once
             header('Location: ' . $url);
@@ -77,7 +92,7 @@ class RedirectUntilGoodbyeSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAb
 
         // After the header() so that the patient does not see the messages after answering surveys
         if ($messages) {
-            $this->addMessage($messages);
+            $this->messenger->addMessages($messages);
         }
 
         $org  = $this->token->getOrganization();
@@ -86,26 +101,31 @@ class RedirectUntilGoodbyeSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAb
         $html->h3($this->getHeaderLabel());
         $html->append($this->formatThanks());
         if ($welcome = $org->getWelcome()) {
-            $html->pInfo()->bbcode($welcome);
+            $html->pInfo()->raw($welcome);
         }
 
         $p = $html->pInfo()->spaced();
         if ($this->wasAnswered) {
-            $p->append($this->_('Thanks for answering our questions.'));
+            $p->append($this->translator->_('Thanks for answering our questions.'));
         } elseif (! $this->token->isCurrentlyValid()) {
             if ($this->token->isExpired()) {
-                $this->addMessage($this->_('This survey has expired. You can no longer answer it.'));
+                $this->messenger->addMessage($this->translator->_('This survey has expired. You can no longer answer it.'));
             } else {
-                $this->addMessage($this->_('This survey is no longer valid.'));
+                $this->messenger->addMessage($this->translator->_('This survey is no longer valid.'));
             }
         }
-        $p->append($this->_('We have no further questions for you at the moment.'));
-        $p->append($this->_('We appreciate your cooperation very much.'));
+        $p->append($this->translator->_('We have no further questions for you at the moment.'));
+        $p->append($this->translator->_('We appreciate your cooperation very much.'));
 
         if ($sig = $org->getSignature()) {
-            $html->pInfo()->bbcode($sig);
+            $html->pInfo()->raw($sig);
         }
 
         return $html;
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        return parent::hasHtmlOutput(); // TODO: Change the autogenerated stub
     }
 }

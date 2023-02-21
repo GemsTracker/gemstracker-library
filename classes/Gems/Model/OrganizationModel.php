@@ -13,6 +13,7 @@
 namespace Gems\Model;
 
 use Gems\Model;
+use Gems\Model\Transform\HtmlSanitizeTransformer;
 use Gems\Screens\ScreenLoader;
 use Gems\Tracker\TrackEvents;
 use Gems\User\UserLoader;
@@ -449,6 +450,11 @@ class OrganizationModel extends \Gems\Model\JoinModel
         if ($this->_styles) {
             $this->setIfExists('gor_style');
         }
+
+        $this->addTransformer(new HtmlSanitizeTransformer([
+            'gor_welcome',
+            'gor_signature',
+        ]));
 
         if ($this->project->translateDatabaseFields()) {
             $this->modelLoader->addDatabaseTranslationEditFields($this);

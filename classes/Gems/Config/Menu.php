@@ -34,11 +34,28 @@ class Menu
             $this->getSetupMenu(),
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
+            $this->getAskMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
                 'type' => 'route-link-item',
             ],*/
+        ];
+    }
+
+    public function getAskMenu(): array
+    {
+        return [
+            'name' => 'ask.index',
+            'label' => $this->translator->trans('Token'),
+            'type' => 'route',
+            'children' => [
+                [
+                    'name' => 'ask.lost',
+                    'label' => $this->translator->trans('Token lost?'),
+                    'type' => 'route-link-item',
+                ],
+            ],
         ];
     }
 

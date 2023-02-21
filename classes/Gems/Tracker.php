@@ -686,7 +686,9 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
          * @var $tokenValidator TokenValidator
          */
         $tokenValidator = $this->containerLoad('Token\\TokenValidator');
-        $tokenValidator->setClientIp($clientIpAddress);
+        if ($clientIpAddress !== null) {
+            $tokenValidator->setClientIp($clientIpAddress);
+        }
         return $tokenValidator;
     }
 
@@ -858,7 +860,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
      * @return bool               Did we find new answers?
      */
-    public function loadCompletedTokensBatch(\Gems\Task\TaskRunnerBatch $batch, $respondentId = null, $userId = null, $orgId = null, $quickCheck = false)
+    public function loadCompletedTokensBatch(TaskRunnerBatch $batch, $respondentId = null, $userId = null, $orgId = null, $quickCheck = false)
     {
         $userId = $this->_checkUserId($userId);
 

@@ -51,7 +51,7 @@ class Survey
             Throttle by delaying each request by X seconds. */
             'askThrottle' => [
                 'period' => 900,
-                'threshold' => 300,
+                'maxAttempts' => 300,
                 'delay' => 10,
             ],
         ];

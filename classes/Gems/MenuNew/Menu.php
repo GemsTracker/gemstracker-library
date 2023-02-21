@@ -22,7 +22,7 @@ class Menu extends MenuNode
     {
         foreach ($items as $item) {
             $object = match($item['type']) {
-                'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
+                'route', 'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
                 'container' => new ContainerLinkItem($item['name'], $item['label']),
                 default => throw new \Exception('Invalid type: ' . $item['type']),
             };
