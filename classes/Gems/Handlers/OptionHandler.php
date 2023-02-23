@@ -15,6 +15,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Mezzio\Session\SessionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -49,8 +50,9 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $createEditParameters = [
         'menuShowChildren' => true,
         'onlyUsedElements' => true,
-        'routeAction'      => 'edit',
+        'afterSaveRoutePart' => 'edit',
         'currentUser'      => 'getCurrentUser',
+        'request' => 'getRequest',
     ];
 
     /**
@@ -167,6 +169,11 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getCurrentUser()
     {
         return $this->currentUserRepository->getCurrentUser();
+    }
+
+    public function getRequest(): ServerRequestInterface
+    {
+        return $this->request;
     }
 
     /**
