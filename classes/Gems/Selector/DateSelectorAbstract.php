@@ -104,7 +104,7 @@ abstract class DateSelectorAbstract
      *
      * @var integer
      */
-    protected ?int $dateGroup = null;
+    protected ?string $dateGroup = null;
 
     /**
      * The number of periods shown before and after the current period.
@@ -429,7 +429,6 @@ abstract class DateSelectorAbstract
      */
     public function getSelectorFilterPart($dateField = null)
     {
-        // \MUtil\EchoOut\EchoOut::track($filter);
         $newfilter = [];
 
         if ($this->dateCurrentStart && $this->dateCurrentEnd) {
@@ -496,7 +495,7 @@ abstract class DateSelectorAbstract
         $defaults = $this->getDefaultSearchData();
 
         $this->dateFactor = $this->processSelectorFilterName(self::DATE_FACTOR, $requestInfo, $filter, $defaults);
-        $this->dateGroup  = intval($this->processSelectorFilterName(self::DATE_GROUP, $requestInfo, $filter, $defaults));
+        $this->dateGroup  = $this->processSelectorFilterName(self::DATE_GROUP, $requestInfo, $filter, $defaults);
         $this->dateType   = $this->processSelectorFilterName(self::DATE_TYPE, $requestInfo, $filter, $defaults);
 
         unset($filter[self::DATE_FACTOR], $filter[self::DATE_GROUP], $filter[self::DATE_TYPE]);

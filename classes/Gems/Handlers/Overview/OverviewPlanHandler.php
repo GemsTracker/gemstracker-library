@@ -122,6 +122,12 @@ class OverviewPlanHandler extends TokenSearchHandlerAbstract
      */
     public function getSearchFilter(bool $useRequest = true): array
     {
+        static $output;
+        
+        if ($output) {
+            return $output;
+        }
+        
         $filter = parent::getSearchFilter($useRequest);
 
         // The processing of these filters is complicated because
