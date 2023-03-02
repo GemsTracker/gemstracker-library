@@ -356,7 +356,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -368,7 +368,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -380,7 +380,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -392,7 +392,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -404,7 +404,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -416,7 +416,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -428,7 +428,7 @@ class Menu
                     'children' => [
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -445,7 +445,7 @@ class Menu
                         ],
                         [
                             'name' => 'overview.summary.export',
-                            'label' => $this->translator->trans('export'),
+                            'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
                     ],
@@ -850,6 +850,40 @@ class Menu
                                         ],
                                     ],
                                 ],
+                            ],
+                        ],
+                        [
+                            'name' => 'setup.access.mask.index',
+                            'label' => $this->translator->trans('Masks'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'setup.access.mask.create',
+                                    'label' => $this->translator->trans('New'),
+                                    'type' => 'route-link-item',
+                                ],
+                                [
+                                    'name' => 'setup.access.mask.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                    'children' => [
+                                        [
+                                            'name' => 'setup.access.mask.edit',
+                                            'label' => $this->translator->trans('Edit'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                        [
+                                            'name' => 'setup.access.mask.delete',
+                                            'label' => $this->translator->trans('Delete'),
+                                            'type' => 'route-link-item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            [
+                                'name' => 'setup.access.mask.export',
+                                'label' => $this->translator->trans('Export'),
+                                'type' => 'route-link-item',
                             ],
                         ],
                     ],

@@ -709,7 +709,7 @@ class Route
             ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
                 parameters: [
-                    'gco_description' => '[a-zA-Z0-9-_]+',
+                    'gco_description' => '[a-zA-Z0-9-_\\s]+',
                 ],
             ),
 
@@ -871,7 +871,18 @@ class Route
                     'active-toggle',
                 ],
             ),
-
+            ...$this->createSnippetRoutes(baseName: 'setup.access.mask',
+                controllerClass: \Gems\Handlers\Setup\MaskHandler::class,
+                pages: [
+                    'index',
+                    'autofilter',
+                    'create',
+                    'show',
+                    'edit',
+                    'delete',
+                    'export',
+                ],
+            ),
             [
                 'name' => 'setup.agenda',
                 'path' => '/setup/agenda',

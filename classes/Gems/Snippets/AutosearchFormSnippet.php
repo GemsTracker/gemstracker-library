@@ -23,6 +23,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
+use Zalt\SnippetsHandler\SnippetHandler;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -464,7 +465,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
     {
         $routeName = $this->requestInfo->getRouteName();
         $params = $this->requestInfo->getRequestMatchedParams();
-        $url = [$this->requestInfo->getBasePath(), \MUtil\Model::AUTOSEARCH_RESET => 1];
+        $url = [$this->requestInfo->getBasePath(), SnippetHandler::SEARCH_RESET => 1];
 
         $link = Html::create()->actionLink($url, $this->_('Reset search'));
 

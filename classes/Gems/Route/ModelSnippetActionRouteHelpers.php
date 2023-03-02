@@ -130,6 +130,22 @@ trait ModelSnippetActionRouteHelpers
 
         return $routes;
     }
+    
+    public function createHandlerRoute(
+        string $baseName,
+        string $controllerClass,
+    )
+    {
+        return $this->createBrowseRoutes(
+            baseName: $baseName,
+            controllerClass: $controllerClass,
+            customMiddleware: [
+                LegacyCurrentUserMiddleware::class,
+                $controllerClass,
+            ],
+            pages: array_keys($controllerClass::$actions),
+        );
+    }
 
     public function createSnippetRoutes(string $baseName,
                                        string $controllerClass,
