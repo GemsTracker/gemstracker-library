@@ -63,6 +63,24 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $createEditSnippets = ['User\\OwnAccountEditSnippet'];
 
     /**
+     * The parameters used for the edit authentication action.
+     */
+    protected array $editAuthParameters = [
+        'menuShowChildren' => true,
+        'onlyUsedElements' => true,
+        'afterSaveRoutePart' => 'edit-auth',
+        'currentUser'      => 'getCurrentUser',
+        'request' => 'getRequest',
+    ];
+
+    /**
+     * The snippets used for the edit authentication action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected array $editAuthSnippets = ['User\\OwnAccountEditAuthSnippet'];
+
+    /**
      * The parameters used for the reset action.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -157,7 +175,9 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $model = $this->modelContainer->getStaffModel(false);
 
-        $model->applyOwnAccountEdit();
+        if ($action !== 'edit-auth') {
+            $model->applyOwnAccountEdit();
+        }
 
         return $model;
     }
@@ -253,6 +273,20 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->plural('your setup', 'your setup', $count);
+    }
+
+    /**
+     * Action for showing the edit authentication page
+     */
+    public function editAuthAction()
+    {
+        if ($this->editAuthSnippets) {
+            $params = $this->_processParameters($this->editAuthParameters);
+
+            $params['session'] = $this->request->getAttribute(SessionInterface::class);
+
+            $this->addSnippets($this->editAuthSnippets, $params);
+        }
     }
 
     /**

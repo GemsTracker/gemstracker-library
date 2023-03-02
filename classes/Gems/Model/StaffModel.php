@@ -230,6 +230,30 @@ class StaffModel extends JoinModel
 
     /**
      *
+     * @return \Gems\Model\StaffModel
+     */
+    public function applyOwnAccountEditAuth()
+    {
+        $this->set('gsf_email',
+            'label', $this->_('E-Mail'),
+            'size', 30,
+            'validator', new SimpleEmail(),
+        );
+        $this->set('gsf_phone_1', 'label', $this->_('Mobile phone')); // TODO required
+
+        $this->set('password',
+            'label', $this->_('Current password'),
+            'elementClass', 'Password',
+            'renderPassword', true,
+        );
+
+        $this->setFilter(['gsf_id_user' => $this->currentUser->getUserId()]);
+
+        return $this;
+    }
+
+    /**
+     *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @param int $defaultOrgId The default organization id or null if current organization
