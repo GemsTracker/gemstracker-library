@@ -6,7 +6,7 @@ CREATE TABLE if not exists gems__consents (
 
       gco_changed timestamp not null default current_timestamp on update current_timestamp,
       gco_changed_by bigint unsigned not null,
-      gco_created timestamp not null,
+      gco_created timestamp not null default current_timestamp,
       gco_created_by bigint unsigned not null,
 
       PRIMARY KEY (gco_description)
