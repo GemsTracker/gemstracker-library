@@ -871,17 +871,9 @@ class Route
                     'active-toggle',
                 ],
             ),
-            ...$this->createSnippetRoutes(baseName: 'setup.access.mask',
+            ...$this->createHandlerRoute(
+                baseName: 'setup.access.mask',
                 controllerClass: \Gems\Handlers\Setup\MaskHandler::class,
-                pages: [
-                    'index',
-                    'autofilter',
-                    'create',
-                    'show',
-                    'edit',
-                    'delete',
-                    'export',
-                ],
             ),
             [
                 'name' => 'setup.agenda',

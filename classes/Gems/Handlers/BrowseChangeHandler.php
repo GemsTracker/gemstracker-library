@@ -13,6 +13,8 @@ namespace Gems\Handlers;
 
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Delete\DeleteAction;
+use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
 use Gems\SnippetsActions\Show\ShowAction;
 
@@ -30,8 +32,9 @@ abstract class BrowseChangeHandler extends GemsHandler
     public static $actions = [
         'autofilter' => BrowseFilteredAction::class,
         'index'      => BrowseSearchAction::class,
-        'create'     => EditAction::class,
+        'create'     => CreateAction::class,
         'show'       => ShowAction::class,
         'edit'       => EditAction::class,
+        'delete'     => DeleteAction::class,
         ];
 }

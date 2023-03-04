@@ -5,6 +5,8 @@ namespace Gems\Route;
 use Gems\Legacy\LegacyController;
 use Gems\Middleware\LegacyCurrentUserMiddleware;
 use Gems\SnippetsLoader\SnippetMiddleware;
+use Zalt\SnippetsActions\ParameterActionInterface;
+use Zalt\SnippetsActions\PostActionInterface;
 
 trait ModelSnippetActionRouteHelpers
 {
@@ -134,17 +136,58 @@ trait ModelSnippetActionRouteHelpers
     public function createHandlerRoute(
         string $baseName,
         string $controllerClass,
-    )
+        array $parentParameters = []): array
     {
-        return $this->createBrowseRoutes(
-            baseName: $baseName,
-            controllerClass: $controllerClass,
-            customMiddleware: [
-                LegacyCurrentUserMiddleware::class,
-                $controllerClass,
-            ],
-            pages: array_keys($controllerClass::$actions),
-        );
+        // Set basic variables for all routes
+        $basePath = '/' . str_replace('.', '/', $baseName);
+        $basePrivilege = 'pr.' . $baseName;
+
+        $middleware = [
+            SnippetMiddleware::class,
+            LegacyCurrentUserMiddleware::class,
+            $controllerClass,
+        ];
+
+        $parameters = $controllerClass::$parameters;
+        $combinedParameters = [];
+        foreach ($parameters as $parameterName => $parameterRegex) {
+            $combinedParameters[] = '{' . $parameterName . ':'. $parameterRegex . '}';
+        }
+        $parameterString = join('/', $combinedParameters);
+
+        // Create the sub routes
+        $routes = [];
+        foreach ($controllerClass::$actions as $pageName => $actionClass) {
+            $interfaces = class_implements($actionClass) ?? [];
+
+            $route = [
+                'allowed_methods' => ['GET'],
+                'middleware'      => $middleware,
+                'name'            => $baseName . '.' . $pageName,
+                'options' => [
+                    'action'      => $pageName,
+                    'controller'  => $controllerClass,
+                    'privilege'   => $basePrivilege . '.' . $pageName,
+                ],
+                'params'          => $parentParameters,
+                'path'            => $basePath . '/' . $pageName,
+            ];
+
+            if ($pageName === 'index' || $pageName === 'show') {
+                $route['path'] = $basePath;
+            }
+            if (isset($interfaces[ParameterActionInterface::class])) {
+                $route['path'] .= '/' . $parameterString;
+                $route['params'] = array_merge($route['params'], array_keys($parameters));
+            }
+            if (isset($interfaces[PostActionInterface::class])) {
+                $route['allowed_methods'][] = 'POST';
+            }
+
+            $routes[$baseName . '.' . $pageName] = $route;
+        }
+
+        return $routes;
     }
 
     public function createSnippetRoutes(string $baseName,

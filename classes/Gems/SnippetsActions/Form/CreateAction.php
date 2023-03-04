@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Form;
 
-use Zalt\SnippetsActions\ParameterActionInterface;
+use Gems\Snippets\ModelFormSnippet;
+use Zalt\Model\MetaModellerInterface;
 
 /**
  *
@@ -19,11 +20,20 @@ use Zalt\SnippetsActions\ParameterActionInterface;
  * @subpackage SnippetsActions\Form
  * @since      Class available since version 1.9.2
  */
-class EditAction extends CreateAction implements ParameterActionInterface
+class CreateAction extends \Zalt\SnippetsActions\Form\ZendEditAction
 {
+    /**
+     * @var array Of snippet class names
+     */
+    protected array $_snippets = [
+        ModelFormSnippet::class,
+    ];
+
     /**
      * True when the form should edit a new model item.
      * @var boolean
      */
-    public bool $createData = false;
+    public bool $createData = true;
+    
+    public MetaModellerInterface $model;
 }
