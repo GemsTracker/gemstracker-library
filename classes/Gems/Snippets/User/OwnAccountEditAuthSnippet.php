@@ -14,19 +14,20 @@ namespace Gems\Snippets\User;
 use Gems\Audit\AccesslogRepository;
 use Gems\Cache\HelperAdapter;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use Gems\SessionNamespace;
-use Gems\Snippets\ModelFormSnippetAbstract;
+use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Validator\Digits;
+use Laminas\Validator\StringLength;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\ModelAbstract;
+use MUtil\Validate\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
-use Zalt\Model\Data\FullDataInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -38,8 +39,10 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 15:15:07
  */
-class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
+class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 {
+    private const MAX_ATTEMPTS = 10;
+
     /**
      *
      * @var \Gems\Util\BasePath
@@ -47,8 +50,6 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
     protected $basepath;
 
     protected User $currentUser;
-
-    protected ModelAbstract $model;
 
     protected ServerRequestInterface $request;
 
@@ -63,13 +64,13 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
-        MenuSnippetHelper $menuHelper,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
+        private readonly RouteHelper $routeHelper,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 
@@ -105,28 +106,103 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
 
     protected function saveData(): int
     {
-        $newEmail = trim($this->formData['gsf_email'] ?: '');
-        $newPhone = trim($this->formData['gsf_phone_1'] ?: '');
+        if (!$this->verify) {
+            $newEmail = trim($this->formData['gsf_email'] ?: '');
+            $newPhone = trim($this->formData['gsf_phone_1'] ?: '');
 
-        if ($newEmail !== $this->currentUser->getEmailAddress()) {
-            $this->sessionNamespace->set('new_email', [
-                'email' => $newEmail,
-                'secret' => random_int(100000, 999999),
-                'attempts' => 0,
-            ]);
+            if ($newEmail !== $this->currentUser->getEmailAddress()) {
+                $this->sessionNamespace->set('new_email', [
+                    'email' => $newEmail,
+                    'secret' => random_int(100000, 999999),
+                    'attempts' => 0,
+                ]);
+            }
+
+            if ($newPhone === '') {
+                // TODO
+            } elseif ($newPhone !== $this->currentUser->getPhonenumber()) {
+                $this->sessionNamespace->set('new_phone', [
+                    'phone' => $newPhone,
+                    'secret' => random_int(100000, 999999),
+                    'attempts' => 0,
+                ]);
+            }
+
+            // TODO: check password + throttle
+
+            return 0;
         }
 
-        if ($newPhone === '') {
-            // TODO
-        } elseif ($newPhone !== $this->currentUser->getPhonenumber()) {
-            $this->sessionNamespace->set('new_phone', [
-                'phone' => $newPhone,
-                'secret' => random_int(100000, 999999),
-                'attempts' => 0,
-            ]);
+        $newEmail = null;
+        if ($this->sessionNamespace->has('new_email')) {
+            $emailSession = $this->sessionNamespace->get('new_email');
+
+            $newEmailSecret = $this->formData['new_email_secret'] ?: '';
+            if ($newEmailSecret !== $emailSession['secret']) {
+                $emailSession['attempts']++;
+                if ($emailSession['attempts'] > self::MAX_ATTEMPTS) {
+                    $this->sessionNamespace->unset('new_email');
+                    $this->sessionNamespace->unset('new_phone');
+
+                    $this->addMessage($this->_('Too many failed attempts, please try again.'));
+                    return 0;
+                }
+
+                $this->sessionNamespace->set('new_email', $emailSession);
+
+                $this->addMessage($this->_('Please enter the 6-digit code we e-mailed to you.'));
+                return 0;
+            }
+
+            $newEmail = $emailSession['email'];
         }
 
-        return 0;
+        $newPhone = null;
+        if ($this->sessionNamespace->has('new_phone')) {
+            $phoneSession = $this->sessionNamespace->get('new_phone');
+
+            $newPhoneSecret = $this->formData['new_phone_secret'] ?: '';
+            if ($newPhoneSecret !== $phoneSession['secret']) {
+                $phoneSession['attempts']++;
+                if ($phoneSession['attempts'] > self::MAX_ATTEMPTS) {
+                    $this->sessionNamespace->unset('new_email');
+                    $this->sessionNamespace->unset('new_phone');
+
+                    $this->addMessage($this->_('Too many failed attempts, please try again.'));
+                    return 0;
+                }
+
+                $this->sessionNamespace->set('new_phone', $phoneSession);
+
+                $this->addMessage($this->_('Please enter the 6-digit code we sent to you by SMS.'));
+                return 0;
+            }
+
+            $newPhone = $phoneSession['phone'];
+        }
+
+        $staffModel = $this->modelContainer->getStaffModel();
+        /*$user = $staffModel->loadFirst([
+            'gsf_id_user' => $this->currentUser->getUserId(),
+        ]);*/
+
+        $newValues = [];
+        if ($newEmail) {
+            $newValues['gsf_email'] = $newEmail;
+        }
+
+        if ($newPhone) {
+            $newValues['gsf_phone_1'] = $newPhone;
+        }
+
+        $staffModel->save($newValues, [
+            'gsf_id_user' => $this->currentUser->getUserId(),
+        ]);
+
+        $this->sessionNamespace->unset('email');
+        $this->sessionNamespace->unset('phone');
+
+        return $staffModel->getChanged();
     }
 
     /**
@@ -142,36 +218,33 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
         $this->formData['gsf_id_user'] = $this->currentUser->getUserId();
     }
 
-    /**
-     * Creates the model
-     *
-     * @return \MUtil\Model\ModelAbstract
-     */
-    protected function createModel(): FullDataInterface
+    protected function addFormElements(mixed $form): void
     {
-        $this->extraFilter['gsf_id_user'] = $this->currentUser->getUserId();
-
-        if (! $this->model instanceof \Gems\Model\StaffModel) {
-            $this->model = $this->modelContainer->getStaffModel(false);
-        }
-
         if (!$this->verify) {
-            $this->model->applyOwnAccountEditAuth();
-        }
+            $element = new \MUtil\Form\Element\Text('gsf_email');
+            $element
+                ->setLabel($this->_('E-Mail'))
+                ->setAttrib('size', 30)
+                ->addValidator(new SimpleEmail())
+                ->setValue($this->currentUser->getEmailAddress())
+            ;
+            $form->addElement($element);
 
-        return $this->model;
-    }
+            $element = new \MUtil\Form\Element\Text('gsf_phone_1');
+            $element
+                ->setLabel($this->_('Mobile phone'))// TODO required
+                ->setValue($this->currentUser->getPhonenumber())
+            ;
+            $form->addElement($element);
 
-    protected function addFormElements(mixed $form)
-    {
-    }
+            $element = new \MUtil\Form\Element\Password('password');
+            $element
+                ->setLabel($this->_('Current password'))
+                ->setAttrib('renderPassword', true)
+            ;
+            $form->addElement($element);
 
-    protected function createForm($options = null)
-    {
-        $form = parent::createForm($options);
-
-        if (!$this->verify) {
-            return $form;
+            return;
         }
 
         if ($this->sessionNamespace->has('new_email')) {
@@ -182,10 +255,14 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
             ));
             $form->addElement($element);
 
-            $this->model->set('new_email_secret', [
-                'label' => $this->_('E-mail code'),
-                'size' => 6,
-            ]);
+            $element = new \MUtil\Form\Element\Text('new_email_secret');
+            $element
+                ->setLabel($this->_('E-mail code'))
+                ->setAttrib('size', 6)
+                ->addValidator(new Digits())
+                ->addValidator(new StringLength(6, 6))
+            ;
+            $form->addElement($element);
         }
 
         if ($this->sessionNamespace->has('new_phone')) {
@@ -196,13 +273,15 @@ class OwnAccountEditAuthSnippet extends ModelFormSnippetAbstract
             ));
             $form->addElement($element);
 
-            $this->model->set('new_phone_secret', [
-                'label' => $this->_('Phone code'),
-                'size' => 6,
-            ]);
+            $element = new \MUtil\Form\Element\Text('new_phone_secret');
+            $element
+                ->setLabel($this->_('Phone code'))
+                ->setAttrib('size', 6)
+                ->addValidator(new Digits())
+                ->addValidator(new StringLength(6, 6))
+            ;
+            $form->addElement($element);
         }
-
-        return $form;
     }
 
     /**
