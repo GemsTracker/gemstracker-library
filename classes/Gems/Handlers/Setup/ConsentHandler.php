@@ -12,13 +12,10 @@ declare(strict_types=1);
 namespace Gems\Handlers\Setup;
 
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\Model;
+use Gems\Model\MetaModelLoader;
 use Gems\Util\ConsentUtil;
-use MUtil\Model\ModelAbstract;
-use MUtil\Model\TableModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
-use Zalt\Model\MetaModelLoader;
 use Zalt\Model\Sql\SqlTableModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -71,7 +68,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
         $model = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__consents');
         
         $metaModel = $model->getMetaModel();
-        // $metaModel->setKeys(['gco_description' => 'gco_description']);
+        $metaModel->setKeys(['gco_description' => 'gco_description']);
         $metaModel->set('gco_description', 'label', $this->_('Description'), 'size', '10', 'translate', true);
 
         $metaModel->set('gco_order',       'label', $this->_('Order'), 'size', '10',
@@ -91,7 +88,7 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
             // $this->metaModelLoader->addDatabaseTranslations($metaModel);
         }
 
-        // \Gems\Model::setChangeFieldsByPrefix($model, 'gco', $this->currentUserId);
+        $this->metaModelLoader->setChangeFields($metaModel, 'gco');
 
         return $model;
     }

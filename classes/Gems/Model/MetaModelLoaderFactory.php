@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Model;
 
-use Gems\Model\MetaModelLoader;
+use Gems\Legacy\CurrentUserRepository;
 use Psr\Container\ContainerInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -27,11 +27,12 @@ class MetaModelLoaderFactory extends \Zalt\Model\MetaModelLoaderFactory
     {
         $config     = $this->checkConfig($container->get('config'));
         $overloader = $container->get(ProjectOverloader::class);
+        $userRepos  = $container->get(CurrentUserRepository::class); 
 
         if (! isset($config['model']['translateDatabaseFields'])) {
             $config['model']['translateDatabaseFields'] = false;
         }
-        return new MetaModelLoader($overloader->createSubFolderOverloader('Model'), $config['model']);
+        return new MetaModelLoader($overloader->createSubFolderOverloader('Model'), $config['model'], $userRepos);
     }
 
 }

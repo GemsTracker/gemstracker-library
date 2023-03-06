@@ -57,7 +57,7 @@ class SelectorField
     {
         $url[\Gems\Selector\DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
         $url[\Gems\Selector\DateSelectorAbstract::DATE_GROUP]  = $this->name;
-//        $url[\MUtil\Model::AUTOSEARCH_RESET]                   = null;
+
         return new HrefArrayAttribute($url);
     }
 
