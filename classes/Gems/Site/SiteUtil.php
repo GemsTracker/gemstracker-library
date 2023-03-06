@@ -114,6 +114,19 @@ class SiteUtil
         return array_intersect_key($namedSites, array_flip($siteOrganizations));
     }
 
+    public function getProtocol(ServerRequestInterface $request):string
+    {
+        $serverParams = $request->getServerParams();
+        if (isset($serverParams['HTTP_X_FORWARDED_SCHEME'])) {
+            return $serverParams['HTTP_X_FORWARDED_SCHEME'];
+        }
+        if (isset($serverParams['REQUEST_SCHEME'])) {
+            return $serverParams['REQUEST_SCHEME'];
+        }
+
+        return 'https';
+    }
+
     public function getSiteFromUrl(string $url): ?SiteUrl
     {
         foreach($this->sites as $site) {
@@ -173,11 +186,7 @@ class SiteUtil
 
     protected function getUrlFromHost(ServerRequestInterface $request, string $host): string
     {
-        $serverParams = $request->getServerParams();
-        $protocol = 'https';
-        if (isset($serverParams['REQUEST_SCHEME'])) {
-            $protocol = $serverParams['REQUEST_SCHEME'];
-        }
+        $protocol = $this->getProtocol($request);
         return $protocol . '://' . $host;
     }
 
