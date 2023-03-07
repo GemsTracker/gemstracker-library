@@ -12,6 +12,8 @@
 namespace Gems\Snippets\User;
 
 use Gems\Audit\AccesslogRepository;
+use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
+use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Cache\HelperAdapter;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\RouteHelper;
@@ -20,6 +22,7 @@ use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
 use Mezzio\Session\SessionInterface;
@@ -64,8 +67,11 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        private readonly Adapter $db,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
+        private readonly TranslatorInterface $translator,
+        private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly RouteHelper $routeHelper,
@@ -111,8 +117,12 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         }
 
         if (!$this->verify) {
-            $newEmail = trim($this->formData['gsf_email'] ?: '');
-            $newPhone = trim($this->formData['gsf_phone_1'] ?: '');
+            if ($this->checkPassword($formData['password']) === false) {
+                return false;
+            }
+
+            $newEmail = trim($formData['gsf_email'] ?: '');
+            $newPhone = trim($formData['gsf_phone_1'] ?: '');
 
             if ($newEmail !== $this->currentUser->getEmailAddress()) {
                 $this->sessionNamespace->set('new_email', [
@@ -131,8 +141,6 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
                     'attempts' => 0,
                 ]);
             }
-
-            // TODO: check password + throttle
 
             return false;
         } else {
@@ -182,6 +190,43 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         return true;
     }
 
+    private function checkPassword(string $password): bool
+    {
+        $loginThrottle = $this->loginThrottleBuilder->buildLoginThrottle(
+            $this->currentUser->getLoginName(),
+            $this->currentUser->getBaseOrganizationId(),
+        );
+
+        $blockMinutes = $loginThrottle->checkBlock();
+        if ($blockMinutes > 0) {
+            $this->addMessage($this->blockMessage($blockMinutes));
+            return false;
+        }
+
+        $result = GemsTrackerAuthentication::fromUser($this->db, $this->currentUser, $password)->authenticate();
+
+        $blockMinutes = $loginThrottle->processAuthenticationResult($result);
+
+        if (!$result->isValid()) {
+            $this->addMessage($this->_('Please provide your current password.'));
+            if ($blockMinutes > 0) {
+                $this->addMessage($this->blockMessage($blockMinutes));
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    private function blockMessage(int $minutes)
+    {
+        return $this->translator->plural(
+            'Too many failed attempts, please wait a minute.',
+            'Too many failed attempts, please wait %count% minutes.',
+            $minutes
+        );
+    }
+
     protected function onInValid()
     {
         $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
@@ -217,8 +262,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             'gsf_id_user' => $this->currentUser->getUserId(),
         ]);
 
-        $this->sessionNamespace->unset('email');
-        $this->sessionNamespace->unset('phone');
+        $this->sessionNamespace->unset('new_email');
+        $this->sessionNamespace->unset('new_phone');
 
         return $staffModel->getChanged();
     }
@@ -236,6 +281,9 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         $this->formData['gsf_id_user'] = $this->currentUser->getUserId();
     }
 
+    /**
+     * @param \Gems\Form $form
+     */
     protected function addFormElements(mixed $form): void
     {
         if (!$this->verify) {
@@ -244,13 +292,15 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
                 ->setLabel($this->_('E-Mail'))
                 ->setAttrib('size', 30)
                 ->addValidator(new SimpleEmail())
+                ->addValidator(new StringLength(1))
                 ->setValue($this->currentUser->getEmailAddress())
             ;
             $form->addElement($element);
 
             $element = new \MUtil\Form\Element\Text('gsf_phone_1');
             $element
-                ->setLabel($this->_('Mobile phone'))// TODO required
+                ->setLabel($this->_('Mobile phone'))
+                ->addValidator(new StringLength(1))
                 ->setValue($this->currentUser->getPhonenumber())
             ;
             $form->addElement($element);
@@ -259,6 +309,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $element
                 ->setLabel($this->_('Current password'))
                 ->setAttrib('renderPassword', true)
+                ->addValidator(new StringLength(1))
             ;
             $form->addElement($element);
 
@@ -299,6 +350,23 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
                 ->addValidator(new StringLength(6, 6))
             ;
             $form->addElement($element);
+        }
+
+        $element = new \MUtil\Form\Element\FakeSubmit('cancel');
+        $element
+            ->setLabel($this->_('Cancel'))
+            ->setAttrib('class', 'button btn btn-primary')
+        ;
+        $form->addElement($element);
+    }
+
+    protected function onFakeSubmit()
+    {
+        if (isset($this->formData['cancel']) && $this->formData['cancel']) {
+            $this->sessionNamespace->unset('new_email');
+            $this->sessionNamespace->unset('new_phone');
+
+            $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
         }
     }
 
