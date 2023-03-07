@@ -15,11 +15,14 @@ use Gems\Audit\AccesslogRepository;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Cache\HelperAdapter;
+use Gems\Communication\CommunicationRepository;
+use Gems\Communication\Http\SmsClientInterface;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\RouteHelper;
 use Gems\Model;
 use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
+use Gems\User\Filter\DutchPhonenumberFilter;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
@@ -28,7 +31,10 @@ use Laminas\Validator\StringLength;
 use Mezzio\Session\SessionInterface;
 use MUtil\Validate\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -75,6 +81,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly RouteHelper $routeHelper,
+        private readonly CommunicationRepository $communicationRepository,
+        private readonly SmsClientInterface $smsClient,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
@@ -125,21 +133,29 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $newPhone = trim($formData['gsf_phone_1'] ?: '');
 
             if ($newEmail !== $this->currentUser->getEmailAddress()) {
+                $code = (string)random_int(100000, 999999);
+
                 $this->sessionNamespace->set('new_email', [
                     'email' => $newEmail,
-                    'secret' => random_int(100000, 999999),
+                    'secret' => $code,
                     'attempts' => 0,
                 ]);
+
+                $this->sendMailCode($newEmail, $code);
             }
 
             if ($newPhone === '') {
                 // TODO
             } elseif ($newPhone !== $this->currentUser->getPhonenumber()) {
+                $code = (string)random_int(100000, 999999);
+
                 $this->sessionNamespace->set('new_phone', [
                     'phone' => $newPhone,
-                    'secret' => random_int(100000, 999999),
+                    'secret' => $code,
                     'attempts' => 0,
                 ]);
+
+                $this->sendPhoneCode($newPhone, $code);
             }
 
             return false;
@@ -225,6 +241,60 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             'Too many failed attempts, please wait %count% minutes.',
             $minutes
         );
+    }
+
+    private function sendMailCode(string $mailAddress, string $code)
+    {
+        $organization = $this->currentUser->getBaseOrganization();
+        $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
+        $templateId = $this->communicationRepository->getConfirmChangePasswordTemplate($organization);
+
+        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables += [
+            'change_password_code' => $code,
+        ];
+
+        $email = $this->communicationRepository->getNewEmail();
+        $email->addTo(new Address($mailAddress, $this->currentUser->getFullName()));
+        $email->addFrom(new Address($organization->getEmail()));
+
+        $template = $this->communicationRepository->getTemplate($organization);
+        $mailer = $this->communicationRepository->getMailer($organization->getEmail());
+
+        $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+        $email->subject($mailTexts['subject'], $variables);
+        $email->htmlTemplate($template, $mailTexts['body'], $variables);
+
+        $mailer->send($email);
+    }
+
+    private function sendPhoneCode(string $phoneNumber, string $code)
+    {
+        $organization = $this->currentUser->getBaseOrganization();
+        $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
+        $templateId = $this->communicationRepository->getConfirmChangePhoneTemplate($organization);
+
+        $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
+        $variables += [
+            'change_password_code' => $code,
+        ];
+
+        $texts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
+
+        $twigLoader = new ArrayLoader([
+            'message' => trim($texts['subject'] . PHP_EOL . PHP_EOL . $texts['body']),
+        ]);
+        $twig = new Environment($twigLoader, [
+            'autoescape' => false,
+        ]);
+        $message = $twig->render('message', $variables);
+
+        $filter = new DutchPhonenumberFilter();
+        try {
+            $this->smsClient->sendMessage($filter->filter($phoneNumber), $message);
+        } catch (\Throwable) {
+            $this->addMessage($this->_('An error occurred while sending the verification code to your mobile number'));
+        }
     }
 
     protected function onInValid()
