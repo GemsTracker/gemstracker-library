@@ -104,8 +104,12 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         }
     }
 
-    protected function saveData(): int
+    protected function validateForm(array $formData): bool
     {
+        if (!parent::validateForm($formData)) {
+            return false;
+        }
+
         if (!$this->verify) {
             $newEmail = trim($this->formData['gsf_email'] ?: '');
             $newPhone = trim($this->formData['gsf_phone_1'] ?: '');
@@ -130,55 +134,69 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
             // TODO: check password + throttle
 
-            return 0;
-        }
+            return false;
+        } else {
+            if ($this->sessionNamespace->has('new_email')) {
+                $emailSession = $this->sessionNamespace->get('new_email');
 
-        $newEmail = null;
-        if ($this->sessionNamespace->has('new_email')) {
-            $emailSession = $this->sessionNamespace->get('new_email');
+                $newEmailSecret = $formData['new_email_secret'] ?: '';
+                if ($newEmailSecret !== $emailSession['secret']) {
+                    $emailSession['attempts']++;
+                    if ($emailSession['attempts'] >= self::MAX_ATTEMPTS) {
+                        $this->sessionNamespace->unset('new_email');
+                        $this->sessionNamespace->unset('new_phone');
 
-            $newEmailSecret = $this->formData['new_email_secret'] ?: '';
-            if ($newEmailSecret !== $emailSession['secret']) {
-                $emailSession['attempts']++;
-                if ($emailSession['attempts'] > self::MAX_ATTEMPTS) {
-                    $this->sessionNamespace->unset('new_email');
-                    $this->sessionNamespace->unset('new_phone');
+                        $this->addMessage($this->_('Too many failed attempts, please try again.'));
+                        return false;
+                    }
 
-                    $this->addMessage($this->_('Too many failed attempts, please try again.'));
-                    return 0;
+                    $this->sessionNamespace->set('new_email', $emailSession);
+
+                    $this->addMessage($this->_('Please enter the 6-digit code we e-mailed to you.'));
+                    return false;
                 }
-
-                $this->sessionNamespace->set('new_email', $emailSession);
-
-                $this->addMessage($this->_('Please enter the 6-digit code we e-mailed to you.'));
-                return 0;
             }
 
-            $newEmail = $emailSession['email'];
+            if ($this->sessionNamespace->has('new_phone')) {
+                $phoneSession = $this->sessionNamespace->get('new_phone');
+
+                $newPhoneSecret = $formData['new_phone_secret'] ?: '';
+                if ($newPhoneSecret !== $phoneSession['secret']) {
+                    $phoneSession['attempts']++;
+                    if ($phoneSession['attempts'] >= self::MAX_ATTEMPTS) {
+                        $this->sessionNamespace->unset('new_email');
+                        $this->sessionNamespace->unset('new_phone');
+
+                        $this->addMessage($this->_('Too many failed attempts, please try again.'));
+                        return false;
+                    }
+
+                    $this->sessionNamespace->set('new_phone', $phoneSession);
+
+                    $this->addMessage($this->_('Please enter the 6-digit code we sent to you by SMS.'));
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected function onInValid()
+    {
+        $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
+    }
+
+    protected function saveData(): int
+    {
+        $newEmail = null;
+        if ($this->sessionNamespace->has('new_email')) {
+            $newEmail = $this->sessionNamespace->get('new_email')['email'];
         }
 
         $newPhone = null;
         if ($this->sessionNamespace->has('new_phone')) {
-            $phoneSession = $this->sessionNamespace->get('new_phone');
-
-            $newPhoneSecret = $this->formData['new_phone_secret'] ?: '';
-            if ($newPhoneSecret !== $phoneSession['secret']) {
-                $phoneSession['attempts']++;
-                if ($phoneSession['attempts'] > self::MAX_ATTEMPTS) {
-                    $this->sessionNamespace->unset('new_email');
-                    $this->sessionNamespace->unset('new_phone');
-
-                    $this->addMessage($this->_('Too many failed attempts, please try again.'));
-                    return 0;
-                }
-
-                $this->sessionNamespace->set('new_phone', $phoneSession);
-
-                $this->addMessage($this->_('Please enter the 6-digit code we sent to you by SMS.'));
-                return 0;
-            }
-
-            $newPhone = $phoneSession['phone'];
+            $newPhone = $this->sessionNamespace->get('new_phone')['phone'];
         }
 
         $staffModel = $this->modelContainer->getStaffModel();
