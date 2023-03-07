@@ -131,6 +131,7 @@ class ConfigProvider
             'temp_config' => [ // TODO: Temporary
                 'disable_privileges' => true,
             ],
+            'account'       => $this->getAccountSettings(),
             'app'           => $appSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
@@ -159,6 +160,22 @@ class ConfigProvider
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
+        ];
+    }
+
+    public function getAccountSettings(): array
+    {
+        return [
+            'edit-auth' => [
+                'throttle-sms' => [
+                    'maxAttempts' => 3,
+                    'maxAttemptsPerPeriod' => 86400,
+                ],
+                'throttle-email' => [
+                    'maxAttempts' => 3,
+                    'maxAttemptsPerPeriod' => 86400,
+                ],
+            ],
         ];
     }
 

@@ -15,6 +15,7 @@ use Gems\Audit\AccesslogRepository;
 use Gems\AuthNew\Adapter\GemsTrackerAuthentication;
 use Gems\AuthNew\LoginThrottleBuilder;
 use Gems\Cache\HelperAdapter;
+use Gems\Cache\RateLimiter;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Legacy\CurrentUserRepository;
@@ -73,6 +74,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        private readonly array $config,
         private readonly Adapter $db,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
@@ -83,6 +85,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         private readonly RouteHelper $routeHelper,
         private readonly CommunicationRepository $communicationRepository,
         private readonly SmsClientInterface $smsClient,
+        private readonly HelperAdapter $throttleCache,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
@@ -135,13 +138,15 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             if ($newEmail !== $this->currentUser->getEmailAddress()) {
                 $code = (string)random_int(100000, 999999);
 
+                if (!$this->sendMailCode($newEmail, $code)) {
+                    return false;
+                }
+
                 $this->sessionNamespace->set('new_email', [
                     'email' => $newEmail,
                     'secret' => $code,
                     'attempts' => 0,
                 ]);
-
-                $this->sendMailCode($newEmail, $code);
             }
 
             if ($newPhone === '') {
@@ -149,13 +154,16 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             } elseif ($newPhone !== $this->currentUser->getPhonenumber()) {
                 $code = (string)random_int(100000, 999999);
 
+                if (!$this->sendPhoneCode($newPhone, $code)) {
+                    $this->sessionNamespace->unset('new_email'); // Might have been set above
+                    return false;
+                }
+
                 $this->sessionNamespace->set('new_phone', [
                     'phone' => $newPhone,
                     'secret' => $code,
                     'attempts' => 0,
                 ]);
-
-                $this->sendPhoneCode($newPhone, $code);
             }
 
             return false;
@@ -243,8 +251,17 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         );
     }
 
-    private function sendMailCode(string $mailAddress, string $code)
+    private function sendMailCode(string $mailAddress, string $code): bool
     {
+        $rateLimiter = new RateLimiter($this->throttleCache);
+        $rateLimitKey = sha1($this->currentUser->getUserId()) . '_email_change_confirm_max';
+        $config = $this->config['account']['edit-auth']['throttle-email'];
+
+        if ($rateLimiter->tooManyAttempts($rateLimitKey, $config['maxAttempts'])) {
+            $this->addMessage($this->_('Too many attempts, please try again later'));
+            return false;
+        }
+
         $organization = $this->currentUser->getBaseOrganization();
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangePasswordTemplate($organization);
@@ -266,10 +283,23 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         $email->htmlTemplate($template, $mailTexts['body'], $variables);
 
         $mailer->send($email);
+
+        $rateLimiter->hit($rateLimitKey, $config['maxAttemptsPerPeriod']);
+
+        return true;
     }
 
-    private function sendPhoneCode(string $phoneNumber, string $code)
+    private function sendPhoneCode(string $phoneNumber, string $code): bool
     {
+        $rateLimiter = new RateLimiter($this->throttleCache);
+        $rateLimitKey = sha1($this->currentUser->getUserId()) . '_phone_change_confirm_max';
+        $config = $this->config['account']['edit-auth']['throttle-sms'];
+
+        if ($rateLimiter->tooManyAttempts($rateLimitKey, $config['maxAttempts'])) {
+            $this->addMessage($this->_('Too many attempts, please try again later'));
+            return false;
+        }
+
         $organization = $this->currentUser->getBaseOrganization();
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
         $templateId = $this->communicationRepository->getConfirmChangePhoneTemplate($organization);
@@ -294,7 +324,12 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $this->smsClient->sendMessage($filter->filter($phoneNumber), $message);
         } catch (\Throwable) {
             $this->addMessage($this->_('An error occurred while sending the verification code to your mobile number'));
+            return false;
         }
+
+        $rateLimiter->hit($rateLimitKey, $config['maxAttemptsPerPeriod']);
+
+        return true;
     }
 
     protected function onInValid()
