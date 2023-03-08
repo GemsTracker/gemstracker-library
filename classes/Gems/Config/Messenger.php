@@ -5,6 +5,8 @@ namespace Gems\Config;
 use Gems\Messenger\Message\CommJob;
 use Gems\Messenger\Message\SendCommJobMessage;
 use Gems\Messenger\Message\SetCommJobTokenAsSent;
+use Symfony\Component\Mailer\Messenger\MessageHandler;
+use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 
 class Messenger
 {
@@ -19,7 +21,9 @@ class Messenger
                         SendCommJobMessage::class => 'messenger.transport.default',
                         SetCommJobTokenAsSent::class => 'messenger.transport.default',
                     ],
-                    'handlers' => [],
+                    'handlers' => [
+                        SendEmailMessage::class => MessageHandler::class,
+                    ],
                 ],
                 'event.bus' => [
                     'allows_zero_handlers' => true,
