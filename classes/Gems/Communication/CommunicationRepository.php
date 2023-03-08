@@ -33,6 +33,7 @@ class CommunicationRepository
         protected TemplateRendererInterface $template,
         protected Translator $translator,
         protected TokenSelect $tokenSelect,
+        protected ManualMailerFactory $mailerFactory,
         protected array $config)
     {}
 
@@ -111,8 +112,7 @@ class CommunicationRepository
 
     public function getMailer(string $from): Mailer
     {
-        $factory = new ManualMailerFactory($this->resultFetcher, $this->config);
-        return $factory->getMailer($from);
+        return $this->mailerFactory->getMailer($from);
     }
 
     public function getNewEmail(): TemplatedEmail
