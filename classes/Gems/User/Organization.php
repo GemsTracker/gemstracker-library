@@ -457,6 +457,26 @@ class Organization extends CachedArrayTargetAbstract
     }
 
     /**
+     * Get the template id for the confirm change password mail
+     *
+     * @return  integer Template ID
+     */
+    public function getConfirmChangeEmailTemplate()
+    {
+        return $this->_get('gor_confirm_change_email_template');
+    }
+
+    /**
+     * Get the template id for the confirm change phone sms
+     *
+     * @return  integer Template ID
+     */
+    public function getConfirmChangePhoneTemplate()
+    {
+        return $this->_get('gor_confirm_change_phone_template');
+    }
+
+    /**
      * Get the Sms from name
      *
      * @return string SMS from

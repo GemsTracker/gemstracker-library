@@ -166,6 +166,10 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
                 ]);
             }
 
+            if (!$this->sessionNamespace->has('new_email') && !$this->sessionNamespace->has('new_phone')) {
+                $this->addMessage($this->_('No changes to save!'));
+            }
+
             return false;
         } else {
             if ($this->sessionNamespace->has('new_email')) {
@@ -264,11 +268,11 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
         $organization = $this->currentUser->getBaseOrganization();
         $language = $this->communicationRepository->getCommunicationLanguage($this->currentUser->getLocale());
-        $templateId = $this->communicationRepository->getConfirmChangePasswordTemplate($organization);
+        $templateId = $this->communicationRepository->getConfirmChangeEmailTemplate($organization);
 
         $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
         $variables += [
-            'change_password_code' => $code,
+            'confirmation_code' => $code,
         ];
 
         $email = $this->communicationRepository->getNewEmail();
@@ -306,7 +310,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
         $variables = $this->communicationRepository->getUserMailFields($this->currentUser, $language);
         $variables += [
-            'change_password_code' => $code,
+            'confirmation_code' => $code,
         ];
 
         $texts = $this->communicationRepository->getCommunicationTexts($templateId, $language);

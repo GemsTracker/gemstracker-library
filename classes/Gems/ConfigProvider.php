@@ -400,6 +400,12 @@ class ConfigProvider
             // Default Template code for a Reset tfa mail
             'resetTfaTemplate' => 'tfaReset',
 
+            // Default Template code for a change email confirmation mail
+            'confirmChangeEmailTemplate' => 'confirmChangeEmail',
+
+            // Default Template code for a change phone confirmation sms
+            'confirmChangePhoneTemplate' => 'confirmChangePhone',
+
             // Supply a general site FROM address.
             'site' => null,
 

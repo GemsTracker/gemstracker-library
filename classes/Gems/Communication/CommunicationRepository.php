@@ -189,6 +189,32 @@ class CommunicationRepository
         return null;
     }
 
+    public function getConfirmChangeEmailTemplate(Organization $organization): ?int
+    {
+        $templateId = $organization->getConfirmChangeEmailTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['confirmChangeEmailTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['confirmChangeEmailTemplate']);
+        }
+
+        return null;
+    }
+
+    public function getConfirmChangePhoneTemplate(Organization $organization): ?int
+    {
+        $templateId = $organization->getConfirmChangePhoneTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['confirmChangePhoneTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['confirmChangePhoneTemplate']);
+        }
+
+        return null;
+    }
+
     public function getRespondentMailFields(Respondent $respondent, string $language = null): array
     {
         $mailFieldCreator = new RespondentMailFields($respondent, $this->config);
