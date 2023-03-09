@@ -12,6 +12,7 @@
 
 namespace Gems\Model;
 
+use Box\Spout\Writer\XLSX\Internal\Worksheet;
 use MUtil\Translate\TranslateableTrait;
 
 /**
@@ -150,10 +151,18 @@ class SurveyCodeBookModel extends \Gems_Model_PlaceholderModel
                 'id'           => $this->surveyId,
                 'title'        => $questionTitle,
                 'question'     => $information['question'],
-                'answers'      => $answers,
+                'answers'      => $this->limitCharacters($answers),
                 'answer_codes' => $answerCodes
             ];
         }
         return $data;
+    }
+
+    protected function limitCharacters($value)
+    {
+        if (strlen($value > Worksheet::MAX_CHARACTERS_PER_CELL)) {
+            $value = substr($value, 0, Worksheet::MAX_CHARACTERS_PER_CELL - 4) . '...';
+        }
+        return $value;
     }
 }
