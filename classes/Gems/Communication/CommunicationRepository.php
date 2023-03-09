@@ -19,15 +19,21 @@ use Gems\Tracker\Token;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\User\Organization;
 use Gems\User\User;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Like;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mailer\Mailer;
 use GuzzleHttp\Client;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mailer\Transport\Transports;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 class CommunicationRepository
 {
@@ -42,7 +48,29 @@ class CommunicationRepository
         protected MessageBusInterface $messageBus,
         MailBouncer $mailBouncer,
         protected array $config)
-    {}
+    {
+        if ($this->eventDispatcher instanceof EventDispatcher) {
+            $this->eventDispatcher->addListener(MessageEvent::class, [$this, 'addTransportHeaderToMail']);
+        }
+    }
+
+    public function addTransportHeaderToMail(MessageEvent $event)
+    {
+        $mail = $event->getMessage();
+        if (!$mail instanceof Email) {
+            return;
+        }
+        $from = $mail->getFrom();
+        $firstFrom = reset($from);
+        if ($firstFrom instanceof Address) {
+            $firstFrom = $firstFrom->getAddress();
+        }
+        $transportId = $this->getTransportIdFromFrom($firstFrom);
+        if (isset($transportId)) {
+            $headers = $mail->getHeaders();
+            $headers->addHeader('X-Transport', $transportId);
+        }
+    }
 
     public function getCreateAccountTemplate(Organization $organization): ?int
     {
@@ -264,6 +292,21 @@ class CommunicationRepository
     {
         $mailFieldCreator = new TokenMailFields($token, $this->config, $this->translator, $this->tokenSelect);
         return $mailFieldCreator->getMailFields($language);
+    }
+
+    protected function getTransportIdFromFrom(string $from): int|null
+    {
+        $select = $this->resultFetcher->getSelect('gems__mail_servers');
+        $platform = $this->resultFetcher->getPlatform();
+        $select
+            ->columns(['gms_id_server'])
+            ->where([
+                $platform->quoteValue($from) . ' LIKE gms_from',
+            ])
+            ->order(new Expression('LENGTH(gms_from) DESC'))
+            ->limit(1);
+
+        return $this->resultFetcher->fetchOne($select);
     }
 
     /**
