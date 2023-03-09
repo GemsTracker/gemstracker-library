@@ -28,6 +28,7 @@ use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\LaminasDbAdapterFactory;
+use Gems\Factory\MailTransportFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
@@ -84,6 +85,7 @@ use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
@@ -300,6 +302,8 @@ class ConfigProvider
 
                 'messenger.transport.default' => TransportFactory::class,
                 // messenger.transport.name => TransportFactory::class,
+
+                \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
 
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,

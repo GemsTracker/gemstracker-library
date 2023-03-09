@@ -5,6 +5,7 @@ namespace Gems\Communication;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
+use Gems\Mail\MailBouncer;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\OrganizationMailFields;
 use Gems\Mail\ProjectMailFields;
@@ -18,12 +19,15 @@ use Gems\Tracker\Token;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\User\Organization;
 use Gems\User\User;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Mailer\Mailer;
 use GuzzleHttp\Client;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mailer\Transport\Transports;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class CommunicationRepository
 {
@@ -34,6 +38,9 @@ class CommunicationRepository
         protected Translator $translator,
         protected TokenSelect $tokenSelect,
         protected ManualMailerFactory $mailerFactory,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected MessageBusInterface $messageBus,
+        MailBouncer $mailBouncer,
         protected array $config)
     {}
 
@@ -48,6 +55,12 @@ class CommunicationRepository
         }
 
         return null;
+    }
+
+    public function getCombinedTransport(): TransportInterface
+    {
+        $allTransports = $this->getTransports();
+        return new Transports($allTransports);
     }
 
     /**
@@ -110,14 +123,32 @@ class CommunicationRepository
         return new Client($clientConfig);
     }
 
-    public function getMailer(string $from): Mailer
+    protected function getMailDsnFromDbServerInfo(array $serverInfo): string
     {
-        return $this->mailerFactory->getMailer($from);
+        $dsn = sprintf('smtp://%s:%s', $serverInfo['gms_server'], $serverInfo['gms_port']);
+        if (isset($serverInfo['gms_user'], $serverInfo['gsm_password'])) {
+            $dsn = sprintf('smtp://%s:%s@%s:%s', $serverInfo['gms_user'], $serverInfo['gms_password'], $serverInfo['gms_server'], $serverInfo['gms_port']);
+        }
+        return $dsn;
+    }
+
+    public function getMailer(): Mailer
+    {
+        $combinedTransport = $this->getCombinedTransport();
+        return new Mailer($combinedTransport, $this->messageBus, $this->eventDispatcher);
+    }
+
+    protected function getMailServers(): ?array
+    {
+        $select = $this->resultFetcher->getSelect('gems__mail_servers');
+        $select->columns(['gms_id_server', 'gms_server', 'gms_port', 'gms_user', 'gms_password']);
+        return $this->resultFetcher->fetchAll($select);
     }
 
     public function getNewEmail(): TemplatedEmail
     {
-        return new TemplatedEmail($this->template);
+        $email = new TemplatedEmail($this->template);
+        return $email;
     }
 
     public function getOrganizationMailFields(Organization $organization): array
@@ -233,6 +264,27 @@ class CommunicationRepository
     {
         $mailFieldCreator = new TokenMailFields($token, $this->config, $this->translator, $this->tokenSelect);
         return $mailFieldCreator->getMailFields($language);
+    }
+
+    /**
+     * @return TransportInterface[]
+     */
+    public function getTransports(): array
+    {
+        $transports = [];
+        if (isset($this->config['email']['dsn'])) {
+            $transports['config'] = Transport::fromDsn($this->config['email']['dsn'], $this->eventDispatcher);
+        }
+
+        $mailservers = $this->getMailServers();
+        if ($mailservers) {
+            foreach($mailservers as $mailserver) {
+                $dsn = $this->getMailDsnFromDbServerInfo($mailserver);
+                $transports[$mailserver['gms_id_server']] = Transport::fromDsn($dsn, $this->eventDispatcher);
+            }
+        }
+
+        return $transports;
     }
 
     public function getUserMailFields(User $user, string $language = null): array
