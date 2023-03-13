@@ -154,6 +154,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        private readonly array $config,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
     ) {
@@ -176,7 +177,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         $model = $this->modelContainer->getStaffModel(false);
 
         if ($action !== 'edit-auth') {
-            $model->applyOwnAccountEdit();
+            $model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
         }
 
         return $model;

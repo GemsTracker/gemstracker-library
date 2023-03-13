@@ -181,9 +181,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
                 ]);
             }
 
-            if ($newPhone === '') {
-                // TODO
-            } elseif ($newPhone !== $this->currentUser->getPhonenumber()) {
+            if ($newPhone !== $this->currentUser->getPhonenumber()) {
                 $code = (string)random_int(100000, 999999);
 
                 if (!$this->sendPhoneCode($newPhone, $code)) {

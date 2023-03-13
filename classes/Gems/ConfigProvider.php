@@ -15,6 +15,7 @@ use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
+use Gems\Command\GenerateApplicationKey;
 use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
@@ -32,13 +33,13 @@ use Gems\Factory\MailTransportFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
-use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Log\ErrorLogger;
 use Gems\Messenger\MessengerFactory;
+use Gems\Messenger\TransportFactory;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
-use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
@@ -64,14 +65,12 @@ use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
 use Gems\Util\Lock\Storage\LockStorageAbstract;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
 use Mezzio\Csrf\FlashCsrfGuardFactory;
-use Gems\Middleware\FlashMessageMiddleware;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;
@@ -85,7 +84,6 @@ use Psr\Log\LogLevel;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Command\ConsumeMessagesCommand;
 use Symfony\Component\Messenger\Command\DebugCommand;
@@ -104,9 +102,9 @@ use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
-use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\SnippetsLoader\SnippetMiddleware;
 use Zalt\SnippetsLoader\SnippetMiddlewareFactory;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class ConfigProvider
 {
@@ -167,6 +165,7 @@ class ConfigProvider
     {
         return [
             'edit-auth' => [
+                'enabled' => true,
                 'throttle-sms' => [
                     'maxAttempts' => 3,
                     'maxAttemptsPerPeriod' => 86400,
@@ -422,7 +421,9 @@ class ConfigProvider
     protected function getEventSubscribers(): array
     {
         return [
-            'subscribers' => [],
+            'subscribers' => [
+                Auth\Acl\EventSubscriber::class,
+            ],
             'listeners' => [],
         ];
     }

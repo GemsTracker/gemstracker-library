@@ -61,6 +61,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        private readonly array $config,
         private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
@@ -134,7 +135,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
         if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->modelContainer->getStaffModel(false);
-            $this->model->applyOwnAccountEdit();
+            $this->model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
         }
 
         return $this->model;
