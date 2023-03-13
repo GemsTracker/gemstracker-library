@@ -421,9 +421,7 @@ class ConfigProvider
     protected function getEventSubscribers(): array
     {
         return [
-            'subscribers' => [
-                Auth\Acl\EventSubscriber::class,
-            ],
+            'subscribers' => [],
             'listeners' => [],
         ];
     }
