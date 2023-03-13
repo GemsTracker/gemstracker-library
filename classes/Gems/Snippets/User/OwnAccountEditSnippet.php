@@ -14,12 +14,15 @@ namespace Gems\Snippets\User;
 use Gems\Audit\AccesslogRepository;
 use Gems\Cache\HelperAdapter;
 use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\LocaleCookie;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;
 use Gems\User\UserLoader;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model\ModelAbstract;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -50,6 +53,8 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 
     protected ServerRequestInterface $request;
 
+    private ?ResponseInterface $response = null;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -62,6 +67,11 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         private readonly CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
     }
 
     /**
@@ -85,7 +95,10 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
             $user->setCurrentOrganization($currentOrg);
 
             // In case locale has changed, set it in a cookie
-            \Gems\Cookies::setLocale($this->formData['gsf_iso_lang'], $this->basepath);
+            $this->response = (new LocaleCookie())->addLocaleCookieToResponse(
+                new RedirectResponse($this->request->getUri()),
+                $this->formData['gsf_iso_lang'],
+            );
 
             $this->addMessage($this->_('Saved your setup data', locale: $this->formData['gsf_iso_lang']));
         } else {
