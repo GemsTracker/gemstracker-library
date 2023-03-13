@@ -20,7 +20,7 @@ use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\RouteHelper;
-use Gems\Model;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\Filter\DutchPhonenumberFilter;
@@ -29,8 +29,10 @@ use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
+use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\TableModel;
+use MUtil\Ra;
 use MUtil\Validate\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Mime\Address;
@@ -68,6 +70,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
     private readonly SessionNamespace $sessionNamespace;
 
+    private readonly FlashMessagesInterface $flash;
+
     private readonly bool $verify;
 
     public function __construct(
@@ -77,7 +81,6 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         MessengerInterface $messenger,
         private readonly array $config,
         private readonly Adapter $db,
-        private readonly Model $modelContainer,
         private readonly UserLoader $userLoader,
         private readonly TranslatorInterface $translator,
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
@@ -93,6 +96,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 
         $this->verify = $this->sessionNamespace->has('new_email') || $this->sessionNamespace->has('new_phone');
+
+        $this->flash = $this->request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
     }
 
     /**
@@ -342,6 +347,15 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
     protected function onInValid()
     {
         $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
+
+        $this->flash->flash('own_account_edit_auth_input', Ra::filterKeys($this->formData, [
+            'gsf_email',
+            'gsf_phone_1',
+        ]));
+
+        foreach (Ra::flatten($this->_form->getMessages()) as $message) {
+            $this->addMessage($message);
+        }
     }
 
     protected function saveData(): int
@@ -378,39 +392,28 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
     }
 
     /**
-     * After validation we clean the form data to remove all
-     * entries that do not have elements in the form (and
-     * this filters the data as well).
-     */
-    public function cleanFormData()
-    {
-        parent::cleanFormData();
-
-        // You can only save data for the current user
-        $this->formData['gsf_id_user'] = $this->currentUser->getUserId();
-    }
-
-    /**
      * @param \Gems\Form $form
      */
     protected function addFormElements(mixed $form): void
     {
         if (!$this->verify) {
+            $flashValues = $this->flash->getFlash('own_account_edit_auth_input');
+
             $element = new \MUtil\Form\Element\Text('gsf_email');
             $element
                 ->setLabel($this->_('E-Mail'))
                 ->setAttrib('size', 30)
                 ->addValidator(new SimpleEmail())
-                ->addValidator(new StringLength(1))
-                ->setValue($this->currentUser->getEmailAddress())
+                ->setRequired()
+                ->setValue($flashValues['gsf_email'] ?? $this->currentUser->getEmailAddress())
             ;
             $form->addElement($element);
 
             $element = new \MUtil\Form\Element\Text('gsf_phone_1');
             $element
                 ->setLabel($this->_('Mobile phone'))
-                ->addValidator(new StringLength(1))
-                ->setValue($this->currentUser->getPhonenumber())
+                ->setRequired()
+                ->setValue($flashValues['gsf_phone_1'] ?? $this->currentUser->getPhonenumber() ?? '+316')
             ;
             $form->addElement($element);
 
@@ -418,7 +421,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $element
                 ->setLabel($this->_('Current password'))
                 ->setAttrib('renderPassword', true)
-                ->addValidator(new StringLength(1))
+                ->setRequired()
             ;
             $form->addElement($element);
 
