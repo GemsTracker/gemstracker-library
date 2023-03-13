@@ -175,6 +175,7 @@ class ConfigProvider
                     'maxAttempts' => 3,
                     'maxAttemptsPerPeriod' => 86400,
                 ],
+                'defaultRegion' => 'NL',
             ],
         ];
     }

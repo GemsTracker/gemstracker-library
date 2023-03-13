@@ -29,6 +29,8 @@ use Gems\User\UserLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\TableModel;
@@ -74,6 +76,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
     private readonly bool $verify;
 
+    private readonly string $defaultCountryCode;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -98,6 +102,9 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         $this->verify = $this->sessionNamespace->has('new_email') || $this->sessionNamespace->has('new_phone');
 
         $this->flash = $this->request->getAttribute(FlashMessageMiddleware::FLASH_ATTRIBUTE);
+
+        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        $this->defaultCountryCode = '+' . $phoneUtil->getMetadataForRegion($this->config['account']['edit-auth']['defaultRegion'])->getCountryCode();
     }
 
     /**
@@ -142,6 +149,23 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
             $newEmail = trim($formData['gsf_email'] ?: '');
             $newPhone = trim($formData['gsf_phone_1'] ?: '');
+
+            if ($newPhone !== $this->currentUser->getPhonenumber()) {
+                $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+                try {
+                    $parsedPhone = $phoneUtil->parse($newPhone, $this->config['account']['edit-auth']['defaultRegion']);
+                    $valid = $phoneUtil->isValidNumber($parsedPhone);
+                } catch (NumberParseException) {
+                    $valid = false;
+                }
+
+                if (!$valid) {
+                    $this->addMessage($this->_('Please provide a valid telephone number'));
+                    return false;
+                }
+
+                $newPhone = $phoneUtil->format($parsedPhone, PhoneNumberFormat::E164);
+            }
 
             if ($newEmail !== $this->currentUser->getEmailAddress()) {
                 $code = (string)random_int(100000, 999999);
@@ -413,7 +437,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $element
                 ->setLabel($this->_('Mobile phone'))
                 ->setRequired()
-                ->setValue($flashValues['gsf_phone_1'] ?? $this->currentUser->getPhonenumber() ?? '+316')
+                ->setValue($flashValues['gsf_phone_1'] ?? $this->currentUser->getPhonenumber() ?? $this->defaultCountryCode)
             ;
             $form->addElement($element);
 
