@@ -30,6 +30,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
 use Mezzio\Session\SessionInterface;
+use MUtil\Model\TableModel;
 use MUtil\Validate\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Mime\Address;
@@ -111,7 +112,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $this->currentUserRepository->setCurrentUser($user);
 
 
-            $this->addMessage($this->_('Saved your setup data', locale: $this->formData['gsf_iso_lang']));
+            $this->addMessage($this->_('Saved your setup data'));
         } else {
             $this->addMessage($this->_('No changes to save!'));
         }
@@ -119,6 +120,8 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         if ($this->cacheTags && ($this->cache instanceof HelperAdapter)) {
             $this->cache->invalidateTags([$this->cacheTags]);
         }
+
+        $this->afterSaveRouteUrl = $this->request->getUri();
     }
 
     protected function validateForm(array $formData): bool
@@ -353,10 +356,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $newPhone = $this->sessionNamespace->get('new_phone')['phone'];
         }
 
-        $staffModel = $this->modelContainer->getStaffModel();
-        /*$user = $staffModel->loadFirst([
-            'gsf_id_user' => $this->currentUser->getUserId(),
-        ]);*/
+        $model = new TableModel('gems__staff', 'staffModel');
 
         $newValues = [];
         if ($newEmail) {
@@ -367,14 +367,14 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $newValues['gsf_phone_1'] = $newPhone;
         }
 
-        $staffModel->save($newValues, [
+        $model->save($newValues, [
             'gsf_id_user' => $this->currentUser->getUserId(),
         ]);
 
         $this->sessionNamespace->unset('new_email');
         $this->sessionNamespace->unset('new_phone');
 
-        return $staffModel->getChanged();
+        return $model->getChanged();
     }
 
     /**
