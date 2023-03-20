@@ -81,11 +81,11 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
             $this->useCount = $model->getStartCount($this->trackId);
 
             if ($this->useCount) {
-                $this->addMessage(sprintf($this->plural(
+                $this->messenger->addMessage(sprintf($this->plural(
                         'This track has been started %s time.', 'This track has been started %s times.',
                         $this->useCount
                         ), $this->useCount));
-                $this->addMessage($this->_('This track cannot be deleted, only deactivated.'));
+                $this->messenger->addMessage($this->_('This track cannot be deleted, only deactivated.'));
 
                 $this->deleteQuestion = $this->_('Do you want to deactivate this track?');
                 $this->displayTitle   = $this->_('Deactivate track');
