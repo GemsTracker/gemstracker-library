@@ -2,6 +2,9 @@
 
 namespace Gems\Auth\Acl;
 
+use Gems\Event\Application\RoleGatherPrivilegeDropsEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
 class ConfigRoleAdapter implements RoleAdapterInterface
 {
     use RoleTrait;
@@ -20,11 +23,21 @@ class ConfigRoleAdapter implements RoleAdapterInterface
 
     private readonly array $roles;
 
-    public function __construct(private readonly array $config)
-    {
+    public function __construct(
+        private readonly array $config,
+        EventDispatcher $dispatcher,
+    ) {
         $roles = $config['roles']['roles'] ?? [];
+
+        $dropPrivilegesEvent = new RoleGatherPrivilegeDropsEvent();
+        $dispatcher->dispatch($dropPrivilegesEvent);
+
         foreach ($roles as $roleName => $role) {
-            $roles[$roleName]['grl_privileges'] = array_diff($role['grl_privileges'], self::DROP_PRIVILEGES);
+            $roles[$roleName]['grl_privileges'] = array_diff(
+                $role['grl_privileges'],
+                self::DROP_PRIVILEGES,
+                $dropPrivilegesEvent->getDroppedPrivileges(),
+            );
         }
         $this->roles = $roles;
     }

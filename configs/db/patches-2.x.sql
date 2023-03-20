@@ -30,3 +30,18 @@ VALUES ('Global TFA reset', 'staffPassword', 'tfaReset', now(), '0', now(), '0')
 INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`, `gctt_subject`, `gctt_body`) VALUES
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'en', 'Your TFA has been reset', 'Your Authenticator TFA has been reset for the [b]{{organization}}[/b] site [b]{{project}}[/b]. Next time you log in, you will need to verify your login using SMS TFA, after which you can reactivate Authenticator TFA.'),
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'tfaReset'), 'nl', 'Je TFA is gereset', 'Je Authenticator TFA voor [b]{{organization}}[/b] site [b]{{project}}[/b] is zojuist gewist. De volgende keer dat je inlogt zul je met SMS TFA inloggen, waarna je weer Authenticator TFA kunt instellen.');
+
+ALTER TABLE `gems__organizations`
+    ADD `gor_confirm_change_email_template` bigint unsigned NULL AFTER `gor_reset_tfa_template`,
+    ADD `gor_confirm_change_phone_template` bigint unsigned NULL AFTER `gor_confirm_change_email_template`;
+
+INSERT INTO `gems__comm_templates` (`gct_name`, `gct_target`, `gct_code`, `gct_changed`, `gct_changed_by`, `gct_created`, `gct_created_by`)
+VALUES
+    ('Staff change email confirmation', 'staffPassword', 'confirmChangeEmail', now(), '0', now(), '0'),
+    ('Staff change phone confirmation', 'staffPassword', 'confirmChangePhone', now(), '0', now(), '0');
+
+INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`, `gctt_subject`, `gctt_body`) VALUES
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangeEmail'), 'en', 'The confirmation code for your e-mail change', 'Please use the following code to confirm your e-mail change for {{organization}} site {{project}}: {{confirmation_code}}'),
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangeEmail'), 'nl', 'De bevestigingscode voor je email wijziging', 'Gebruik de volgende code om de email wijziging voor de {{organization}} site {{project}} te bevestigen: {{confirmation_code}}'),
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangePhone'), 'en', 'Your confirmation code', 'Verify your new phone number using this code: {{confirmation_code}}'),
+    ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangePhone'), 'nl', 'Je bevestigingscode', 'Bevestig je nieuwe telefoonnummer met deze code: {{confirmation_code}}');
