@@ -286,7 +286,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             // Add for sorting
             $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
 
-            $this->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
+            /*$this->setIfExists('gor_name', 'label', $this->translate->_('Organization'));*/
 
             $this->set('gr2o_id_organization',
                     'label', $this->_('Organization'),
