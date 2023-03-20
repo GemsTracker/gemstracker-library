@@ -15,6 +15,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Mezzio\Session\SessionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -49,8 +50,9 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $createEditParameters = [
         'menuShowChildren' => true,
         'onlyUsedElements' => true,
-        'routeAction'      => 'edit',
+        'afterSaveRoutePart' => 'edit',
         'currentUser'      => 'getCurrentUser',
+        'request' => 'getRequest',
     ];
 
     /**
@@ -59,6 +61,24 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var mixed String or array of snippets name
      */
     protected array $createEditSnippets = ['User\\OwnAccountEditSnippet'];
+
+    /**
+     * The parameters used for the edit authentication action.
+     */
+    protected array $editAuthParameters = [
+        'menuShowChildren' => true,
+        'onlyUsedElements' => true,
+        'afterSaveRoutePart' => 'edit-auth',
+        'currentUser'      => 'getCurrentUser',
+        'request' => 'getRequest',
+    ];
+
+    /**
+     * The snippets used for the edit authentication action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected array $editAuthSnippets = ['User\\OwnAccountEditAuthSnippet'];
 
     /**
      * The parameters used for the reset action.
@@ -134,6 +154,7 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        private readonly array $config,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly Model $modelContainer,
     ) {
@@ -155,7 +176,9 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $model = $this->modelContainer->getStaffModel(false);
 
-        $model->applyOwnAccountEdit();
+        if ($action !== 'edit-auth') {
+            $model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
+        }
 
         return $model;
     }
@@ -167,6 +190,11 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getCurrentUser()
     {
         return $this->currentUserRepository->getCurrentUser();
+    }
+
+    public function getRequest(): ServerRequestInterface
+    {
+        return $this->request;
     }
 
     /**
@@ -246,6 +274,20 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->plural('your setup', 'your setup', $count);
+    }
+
+    /**
+     * Action for showing the edit authentication page
+     */
+    public function editAuthAction()
+    {
+        if ($this->editAuthSnippets) {
+            $params = $this->_processParameters($this->editAuthParameters);
+
+            $params['session'] = $this->request->getAttribute(SessionInterface::class);
+
+            $this->addSnippets($this->editAuthSnippets, $params);
+        }
     }
 
     /**

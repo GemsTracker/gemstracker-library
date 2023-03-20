@@ -13,15 +13,21 @@ namespace Gems\Snippets\User;
 
 use Gems\Audit\AccesslogRepository;
 use Gems\Cache\HelperAdapter;
-use Gems\Loader;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Locale\LocaleCookie;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
+use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;
+use Gems\User\UserLoader;
+use Laminas\Diactoros\Response\RedirectResponse;
 use MUtil\Model\ModelAbstract;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
-use Zalt\Snippets\Zend\ZendModelFormSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -33,7 +39,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 15:15:07
  */
-class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
+class OwnAccountEditSnippet extends ModelFormSnippetAbstract
 {
     /**
      *
@@ -45,16 +51,28 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
 
     protected ModelAbstract $model;
 
+    protected ServerRequestInterface $request;
+
+    private ?ResponseInterface $response = null;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        private readonly array $config,
         private readonly Model $modelContainer,
-        private readonly Loader $loader,
+        private readonly UserLoader $userLoader,
         private readonly AccesslogRepository $accesslogRepository,
+        private readonly CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
     }
 
     /**
@@ -73,14 +91,17 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
             $user       = $this->currentUser;
             $currentOrg = $user->getCurrentOrganizationId();
 
-            $this->loader->getUserLoader()->unsetCurrentUser();
-            $user = $this->loader->getUser($user->getLoginName(), $user->getBaseOrganizationId())->setAsCurrentUser();
+            $user = $this->userLoader->getUser($user->getLoginName(), $user->getBaseOrganizationId());
+            $this->currentUserRepository->setCurrentUser($user);
             $user->setCurrentOrganization($currentOrg);
 
             // In case locale has changed, set it in a cookie
-            \Gems\Cookies::setLocale($this->formData['gsf_iso_lang'], $this->basepath);
+            $this->response = (new LocaleCookie())->addLocaleCookieToResponse(
+                new RedirectResponse($this->request->getUri()),
+                $this->formData['gsf_iso_lang'],
+            );
 
-            $this->addMessage($this->_('Saved your setup data', $this->formData['gsf_iso_lang']));
+            $this->addMessage($this->_('Saved your setup data', locale: $this->formData['gsf_iso_lang']));
         } else {
             $this->addMessage($this->_('No changes to save!'));
         }
@@ -114,7 +135,7 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
 
         if (! $this->model instanceof \Gems\Model\StaffModel) {
             $this->model = $this->modelContainer->getStaffModel(false);
-            $this->model->applyOwnAccountEdit();
+            $this->model->applyOwnAccountEdit(!$this->config['account']['edit-auth']['enabled']);
         }
 
         return $this->model;
@@ -143,19 +164,5 @@ class OwnAccountEditSnippet extends ZendModelFormSnippetAbstract
         }
 
         return parent::hasHtmlOutput();
-    }
-
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return \MUtil\Snippets\ModelFormSnippetAbstract (continuation pattern)
-     */
-    protected function setAfterSaveRoute()
-    {
-        // Default is just go to the index
-        if ($this->routeAction) {
-            $this->afterSaveRouteUrl[$this->request->getActionKey()] = $this->routeAction;
-        }
-        $this->afterSaveRouteUrl['controller'] = $this->request->getControllerName();
     }
 }

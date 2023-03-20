@@ -1100,6 +1100,7 @@ class Route
             controllerClass: \Gems\Handlers\OptionHandler::class,
             pages: [
                 'edit',
+                'edit-auth',
                 'overview',
                 'two-factor',
                 'show-log',
@@ -1112,6 +1113,7 @@ class Route
             ],
             postRoutes: [
                 'edit',
+                'edit-auth',
                 'two-factor',
             ],
         );
