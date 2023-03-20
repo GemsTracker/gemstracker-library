@@ -50,6 +50,9 @@ class TokenAttemptsRepository
 
     public function addAttempt(string $tokenId, string $clientIp): void
     {
+        if (strlen($tokenId) > 9) {
+            $tokenId = substr($tokenId, 0, 9);
+        }
         $data = [
             'gta_id_token'   => $tokenId,
             'gta_ip_address' => $clientIp,
