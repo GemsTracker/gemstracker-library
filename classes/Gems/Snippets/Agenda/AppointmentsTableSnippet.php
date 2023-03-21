@@ -129,7 +129,7 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         $keys = $this->getRouteMaps($model->getMetaModel());
         
-        $episode = $this->currentUser->hasPrivilege('pr.episodes');
+        $episode = $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index');
 
         $br      = Html::create('br');
 

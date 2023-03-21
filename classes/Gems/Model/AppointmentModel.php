@@ -177,7 +177,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
             'multiOptions', $this->agenda->getStatusCodes());
 
-        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
                 'formatFunction', [$this, 'showEpisode']);
         }
@@ -226,7 +226,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
             'multiOptions', $this->agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $this->_('Status'),
             'multiOptions', $this->agenda->getStatusCodes());
-        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->setIfExists('gap_id_episode',        'label', $this->_('Episode'),
                 'required', false);
         }
@@ -277,7 +277,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $this->agenda->getProcedures($orgId));
         $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations($orgId));
 
-        if ($this->currentUser->hasPrivilege('pr.episodes')) {
+        if ($this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index')) {
             $this->setIfExists('gap_id_episode', 'multiOptions', $empty);
             $this->addDependency(['AppointmentCareEpisodeDependency', $this->agenda, $this->translatedUtil]);
         }
