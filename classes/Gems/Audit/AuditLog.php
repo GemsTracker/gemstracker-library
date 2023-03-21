@@ -120,7 +120,7 @@ class AuditLog
                 break;
             case 'PATCH':
             case 'POST':
-                $data = $request->getBody()->getContents();
+                $data = $request->getParsedBody();
                 break;
             default:
                 $data = [];
