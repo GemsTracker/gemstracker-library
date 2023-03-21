@@ -12,6 +12,8 @@
 namespace Gems\Snippets;
 
 use Gems\MenuNew\MenuSnippetHelper;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
@@ -46,6 +48,8 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
      */
     protected $class = 'displayer';
 
+    protected array $cacheTags = [];
+
     /**
      * Optional title to display at the head of this page.
      *
@@ -58,6 +62,7 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
                                 protected MenuSnippetHelper $menuHelper,
                                 TranslatorInterface $translate,
                                 protected MessengerInterface $messenger,
+                                protected CacheItemPoolInterface $cache,
     )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
@@ -103,16 +108,15 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
 
         return parent::hasHtmlOutput();
     }
-
-    /**
-     * Overrule this function if you want to perform a different
-     * action than deleting when the user choose 'yes'.
-     * /
     protected function performAction()
     {
         // $data = $this->getModel()->loadFirst();
 
         parent::performAction();
+
+        if ($this->cacheTags && ($this->cache instanceof TagAwareCacheInterface)) {
+            $this->cache->invalidateTags($this->cacheTags);
+        }
 
         // $this->accesslog->logChange($this->request, $this->getTitle(), $data);
     }
