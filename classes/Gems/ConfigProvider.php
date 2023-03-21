@@ -126,9 +126,6 @@ class ConfigProvider
         $surveySettings = new Survey();
 
         return [
-            'temp_config' => [ // TODO: Temporary
-                'disable_privileges' => true,
-            ],
             'account'       => $this->getAccountSettings(),
             'app'           => $appSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
@@ -770,7 +767,8 @@ class ConfigProvider
             'pr.token.mail.freetext' => new UntranslatedString('Grant right to send free text (i.e. non-template) email messages.'),
             'pr.systemuser.seepwd' => new UntranslatedString('Grant right to see password of system users (without editing right).'),
             'pr.embed.login' => new UntranslatedString('Grant right for access to embedded login page.'),
-            'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.')
+            'pr.survey-maintenance.answer-groups' => new UntranslatedString('Grant right to set answer access to surveys.'),
+            'pr.maintenance.maintenance-mode' => new UntranslatedString('Enable, disable and stay online during maintenance mode'),
         ];
     }
 }

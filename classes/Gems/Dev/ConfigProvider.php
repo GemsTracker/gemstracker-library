@@ -13,10 +13,14 @@ class ConfigProvider
         if (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'development') {
             return [
                 'dev' => $this->getDevSettings(),
+                'temp_config' => [
+                    'disable_privileges' => true,
+                ],
                 'migrations'   => $this->getMigrations(),
                 'sites' => $this->getSitesSettings(),
                 'email' => [
                     'dsn' => 'smtp://mailhog:1025',
+                    'site' => 'test@gemstracker.test',
                 ],
                 'password' => null,
                 'dependencies' => [

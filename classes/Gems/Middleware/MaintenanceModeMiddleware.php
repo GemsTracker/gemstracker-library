@@ -7,6 +7,7 @@ use Gems\User\User;
 use Gems\Util\Lock\MaintenanceLock;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\RouteResult;
 use MUtil\Translate\Translator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,9 +26,8 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = $handler->handle($request);
         if (!$this->maintenanceLock->isLocked()) {
-            return $response;
+            return $handler->handle($request);
         }
 
         /**
@@ -37,10 +37,19 @@ class MaintenanceModeMiddleware implements MiddlewareInterface
         $messenger->addDanger($this->translator->_('System is in maintenance mode'));
 
         $user = $request->getAttribute(AuthenticationMiddleware::CURRENT_USER_ATTRIBUTE);
-        if ($user instanceof User && $user->hasPrivilege('pr.maintenance.maintenance-mode', false)) {
-            return $response;
+        if ($user instanceof User) {
+            if ($user->hasPrivilege('pr.maintenance.maintenance-mode', false)) {
+                return $handler->handle($request);
+            }
+            return new RedirectResponse($this->urlHelper->generate('auth.logout'));
         }
 
-        return new RedirectResponse($this->urlHelper->generate('auth.logout'));
+        $routeResult = $request->getAttribute(RouteResult::class);
+        if ($routeResult instanceof RouteResult && $routeResult->getMatchedRouteName() === 'auth.login') {
+            return $handler->handle($request);
+        }
+
+        $handler->handle($request);
+        return new RedirectResponse($this->urlHelper->generate('auth.login'));
     }
 }

@@ -310,7 +310,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             ->addByController($request->getControllerName(), 'cacheclean');*/
 
         $buttonList = [
-            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance'), $maintenanceLockLabel),
+            \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.maintenance-mode'), $maintenanceLockLabel),
             \Gems\Html::actionLink($this->routeHelper->getRouteUrl('setup.project-information.cacheclean'), $this->_('Clear cache')),
         ];
 
@@ -324,7 +324,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
     /**
      * Action that switches the maintenance lock on or off.
      */
-    public function maintenanceAction()
+    public function maintenanceModeAction()
     {
         if ($this->maintenanceLock->isLocked()) {
             $this->maintenanceLock->unlock();
