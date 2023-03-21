@@ -45,24 +45,35 @@ class CurrentOrganizationMiddleware implements MiddlewareInterface
 
     protected function getCurrentOrganizationId(ServerRequestInterface $request): int
     {
+        $currentOrganizationId = null;
+
         // First check cookie
         $cookies = $request->getCookieParams();
         if (isset($cookies[static::CURRENT_ORGANIZATION_ATTRIBUTE])) {
             $currentOrganizationId = $cookies[static::CURRENT_ORGANIZATION_ATTRIBUTE];
-            $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor($baseOrganizationId);
-            if (isset($allowedOrganizations[$currentOrganizationId])) {
-                return $currentOrganizationId;
-            }
         }
 
         $identity = $request->getAttribute(AuthenticationMiddleware::CURRENT_IDENTITY_ATTRIBUTE);
         if ($identity instanceof AuthenticationIdentityInterface) {
             $baseOrganizationId = $identity->getOrganizationId();
+
+            if ($currentOrganizationId) {
+                $allowedOrganizations = $this->organizationRepository->getAllowedOrganizationsFor(
+                    $baseOrganizationId
+                );
+                if (isset($allowedOrganizations[$currentOrganizationId])) {
+                    return $currentOrganizationId;
+                }
+            }
+
             return $baseOrganizationId;
         }
 
         $siteUrl = $request->getAttribute(SiteGateMiddleware::SITE_URL_ATTRIBUTE);
         if ($siteUrl instanceof SiteUrl && $siteUrl->getFirstOrganizationId()) {
+            if ($currentOrganizationId && in_array($currentOrganizationId, $siteUrl->getOrganizations())) {
+                return $currentOrganizationId;
+            }
             return $siteUrl->getFirstOrganizationId();
         }
 
