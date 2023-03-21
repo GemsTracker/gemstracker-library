@@ -208,6 +208,9 @@ class ShowRoundSnippetAbstract extends ModelDetailTableSnippetAbstract
             }
             $routeName = $routePrefix . '.' . $action['action'];
             $route = $this->routeHelper->getRoute($routeName);
+            if ($route === null) {
+                continue;
+            }
             $knownParameters = $routeParameters;
             if (isset($action['parameters'])) {
                 $knownParameters = $action['parameters'] + $routeParameters;
