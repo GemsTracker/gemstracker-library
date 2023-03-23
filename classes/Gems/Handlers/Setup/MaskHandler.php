@@ -18,10 +18,14 @@ use Gems\Repository\OrganizationRepository;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
+use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
+use MUtil\Bootstrap\Form\Element\MultiCheckbox;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\Sql\SqlTableModel;
+use Zalt\Model\Type\ConcatenatedType;
+use Zalt\Model\Type\YesNoType;
 use Zalt\SnippetsActions\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -41,6 +45,7 @@ class MaskHandler extends BrowseChangeHandler
         MetaModelLoader $metaModelLoader, 
         TranslatorInterface $translate,
         protected AccessRepository $accessRepository,
+        protected MaskRepository $maskRepository,
         protected OrganizationRepository $organizationRepository,
         protected Translated $translatedUtil,
     )
@@ -65,16 +70,33 @@ class MaskHandler extends BrowseChangeHandler
         $metaModel->set('gm_id_order', [
             'label' => $this->_('Order'),
         ]);
-        $metaModel->set('gm_group', [
-            'label' => $this->_('Group'),
-            'multiOptions' => $this->accessRepository->getGroups(),
+        $metaModel->set('gm_groups', [
+            'label' => $this->_('Groups'),
+            'elementClass' => 'MultiCheckbox',
+            'multiOptions' => $this->accessRepository->getGroups(false),
+            'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
-        $metaModel->set('gm_id_organization', [
+        $metaModel->set('gm_organizations', [
             'label' => $this->_('Organization'),
-            'multiOptions' => $this->translatedUtil->getEmptyDropdownArray() + $this->organizationRepository->getOrganizations(),
+            'elementClass' => 'MultiCheckbox',
+            'multiOptions' => $this->organizationRepository->getOrganizations(),
+            'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
-        // gm_mask_settings
-        
+        $metaModel->set('gm_mask_sticky', [
+            'label' => $this->_('Enforce'),
+            'description' => $this->_('Enforce mask when switching group or user!'),
+            'type' => new YesNoType($this->translatedUtil->getYesNo()),
+        ]);
+        $metaModel->set('gm_mask_active', [
+            'label' => $this->_('Active'),
+            'description' => $this->_('Only active masks are used.'),
+            'type' => new YesNoType($this->translatedUtil->getYesNo(), 'row_class'),
+        ]);
+
+        if ($action->isDetailed()) {
+            $this->maskRepository->addMaskStorageTo($metaModel, 'gm_mask_settings', $action->isDetailed());
+        }
+
         $this->metaModelLoader->setChangeFields($metaModel, 'gm');
         
         return $model;   

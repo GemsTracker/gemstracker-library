@@ -15,6 +15,7 @@ use DateTimeInterface;
 use Gems\Html;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Form\CreateAction;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelLoader;
@@ -225,6 +226,9 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             if ($action instanceof BrowseSearchAction) {
                 $action->searchData = $this->getSearchData(true);
             }
+        }
+        if ($action instanceof CreateAction) {
+            $action->class = "formTable";
         }
     }
 }

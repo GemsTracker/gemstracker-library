@@ -36,9 +36,9 @@ class AccessRepository
      *
      * @return array
      */
-    public function getGroups()
+    public function getGroups($addEmpty = true)
     {
-        return $this->translatedUtil->getEmptyDropdownArray() +
+        return ($addEmpty ? $this->translatedUtil->getEmptyDropdownArray() : []) +
             $this->utilDbHelper->getTranslatedPairsCached(
                 'gems__groups',
                 'ggp_id_group',

@@ -11,6 +11,8 @@
 
 namespace Gems\User\Mask;
 
+use Zalt\Model\Sql\SqlRunnerInterface;
+
 /**
  *
  * @package    Gems
@@ -31,7 +33,7 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
      *
      * @var array of [fieldname => class dependent setting]
      */
-    protected $_maskFields;
+    protected array $_maskFields;
 
     /**
      *
@@ -128,6 +130,7 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
         return [
             'default'      => $this->getSettingsDefault(),
             'multiOptions' => $this->getSettingsMultiOptions(),
+            SqlRunnerInterface::NO_SQL => true,
         ];
     }
 

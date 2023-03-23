@@ -20,6 +20,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -279,6 +280,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
         protected Model $modelLoader,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
@@ -450,6 +452,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                     break;
             }
         }
+        $this->maskRepository->applyMaskToDataModel($model->getMetaModel());
 
         return $model;
     }
