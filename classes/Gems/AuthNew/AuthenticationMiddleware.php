@@ -64,7 +64,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
                 $allowedGroups = $user->getAllowedStaffGroups(false);
 
                 if (isset($allowedGroups[$currentGroupId])) {
-                    $user->setCurrentGroupId($currentGroupId);
+                    $user->setGroupSession($currentGroupId);
                 }
             }
 
