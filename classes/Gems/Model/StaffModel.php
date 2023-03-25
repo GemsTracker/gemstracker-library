@@ -191,7 +191,7 @@ class StaffModel extends JoinModel
      *
      * @return \Gems\Model\StaffModel
      */
-    public function applyOwnAccountEdit()
+    public function applyOwnAccountEdit(bool $includeAuth)
     {
         $noscript = new NoScript();
 
@@ -199,10 +199,12 @@ class StaffModel extends JoinModel
         $this->set('gsf_login',          'label', $this->_('Login Name'),
             'elementClass', 'Exhibitor'
         );
-        $this->set('gsf_email',          'label', $this->_('E-Mail'),
-            'size', 30,
-            'validator', new SimpleEmail(),
-        );
+        if ($includeAuth) {
+            $this->set('gsf_email',          'label', $this->_('E-Mail'),
+                'size', 30,
+                'validator', new SimpleEmail(),
+            );
+        }
         $this->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
         $this->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'),
             'description', 'de, van der, \'t, etc...',
@@ -217,7 +219,9 @@ class StaffModel extends JoinModel
             'elementClass', 'Radio',
             'separator', ''
         );
-        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
+        if ($includeAuth) {
+            $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
+        }
 
         $this->set('gsf_iso_lang',       'label', $this->_('Language'),
             'multiOptions', $this->util->getLocalized()->getLanguages()

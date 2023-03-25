@@ -3,6 +3,8 @@
 namespace Gems\Auth\Acl;
 
 use Gems\Db\ResultFetcher;
+use Gems\Event\Application\RoleGatherPrivilegeDropsEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class DbRoleAdapter implements RoleAdapterInterface
 {
@@ -15,12 +17,16 @@ class DbRoleAdapter implements RoleAdapterInterface
     public function __construct(
         private readonly ResultFetcher $resultFetcher,
         private readonly array $config,
+        private readonly EventDispatcher $dispatcher,
     ) {
     }
 
     private function fetchRoles(): array
     {
         if ($this->roles === null) {
+            $dropPrivilegesEvent = new RoleGatherPrivilegeDropsEvent();
+            $this->dispatcher->dispatch($dropPrivilegesEvent);
+
             $select = $this->resultFetcher->getSelect();
             $select->from('gems__roles');
 
@@ -40,6 +46,8 @@ class DbRoleAdapter implements RoleAdapterInterface
                     explode(',', $dbRole['grl_privileges']),
                     fn (string $privilege) => !empty(trim($privilege)),
                 );
+
+                $privileges = array_diff($privileges, $dropPrivilegesEvent->getDroppedPrivileges());
 
                 if (empty($this->config['roles']) && empty($this->config['groups'])) {
                     $privileges = array_diff($privileges, [

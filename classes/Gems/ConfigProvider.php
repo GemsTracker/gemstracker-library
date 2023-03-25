@@ -15,6 +15,7 @@ use Gems\Cache\CacheFactory;
 use Gems\Command\ClearConfigCache;
 use Gems\Command\ConsumeMessageCommandFactory;
 use Gems\Command\DebugMessageCommandFactory;
+use Gems\Command\GenerateApplicationKey;
 use Gems\Condition\Comparator\ComparatorAbstract;
 use Gems\Condition\RoundConditionInterface;
 use Gems\Condition\TrackConditionInterface;
@@ -28,16 +29,17 @@ use Gems\Factory\DoctrineDbalFactory;
 use Gems\Factory\DoctrineOrmFactory;
 use Gems\Factory\EventDispatcherFactory;
 use Gems\Factory\LaminasDbAdapterFactory;
+use Gems\Factory\MailTransportFactory;
 use Gems\Factory\MonologFactory;
 use Gems\Factory\PdoFactory;
 use Gems\Factory\ProjectOverloaderFactory;
-use Gems\Command\GenerateApplicationKey;
 use Gems\Factory\ReflectionAbstractFactory;
 use Gems\Log\ErrorLogger;
 use Gems\Messenger\MessengerFactory;
+use Gems\Messenger\TransportFactory;
+use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
-use Gems\Messenger\TransportFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
@@ -63,14 +65,12 @@ use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
 use Gems\Util\Lock\Storage\LockStorageAbstract;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterServiceFactory;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Csrf\CsrfMiddlewareFactory;
 use Mezzio\Csrf\FlashCsrfGuardFactory;
-use Gems\Middleware\FlashMessageMiddleware;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;
@@ -102,9 +102,9 @@ use Zalt\Model\Sql\Laminas\LaminasRunnerFactory;
 use Zalt\Model\Sql\SqlRunnerInterface;
 use Zalt\SnippetsLoader\SnippetLoader;
 use Zalt\SnippetsLoader\SnippetLoaderFactory;
-use Zalt\SnippetsLoader\SnippetResponderInterface;
 use Zalt\SnippetsLoader\SnippetMiddleware;
 use Zalt\SnippetsLoader\SnippetMiddlewareFactory;
+use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class ConfigProvider
 {
@@ -129,6 +129,7 @@ class ConfigProvider
             'temp_config' => [ // TODO: Temporary
                 'disable_privileges' => true,
             ],
+            'account'       => $this->getAccountSettings(),
             'app'           => $appSettings(),
             'autoconfig'    => $this->getAutoConfigSettings(),
             'cache'         => $this->getCacheSettings(),
@@ -157,6 +158,24 @@ class ConfigProvider
             'twofactor'     => $this->getTwoFactor(),
             'tokens'        => $this->getTokenSettings(),
             'translations'  => $this->getTranslationSettings(),
+        ];
+    }
+
+    public function getAccountSettings(): array
+    {
+        return [
+            'edit-auth' => [
+                'enabled' => true,
+                'throttle-sms' => [
+                    'maxAttempts' => 3,
+                    'maxAttemptsPerPeriod' => 86400,
+                ],
+                'throttle-email' => [
+                    'maxAttempts' => 3,
+                    'maxAttemptsPerPeriod' => 86400,
+                ],
+                'defaultRegion' => 'NL',
+            ],
         ];
     }
 
@@ -301,6 +320,8 @@ class ConfigProvider
                 'messenger.transport.default' => TransportFactory::class,
                 // messenger.transport.name => TransportFactory::class,
 
+                \Symfony\Component\Mailer\Transport\TransportInterface::class => MailTransportFactory::class,
+
                 ConsumeMessagesCommand::class => ConsumeMessageCommandFactory::class,
                 DebugCommand::class => DebugMessageCommandFactory::class,
 
@@ -378,6 +399,12 @@ class ConfigProvider
 
             // Default Template code for a Reset tfa mail
             'resetTfaTemplate' => 'tfaReset',
+
+            // Default Template code for a change email confirmation mail
+            'confirmChangeEmailTemplate' => 'confirmChangeEmail',
+
+            // Default Template code for a change phone confirmation sms
+            'confirmChangePhoneTemplate' => 'confirmChangePhone',
 
             // Supply a general site FROM address.
             'site' => null,

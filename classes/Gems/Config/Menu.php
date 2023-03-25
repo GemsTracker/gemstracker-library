@@ -1581,6 +1581,11 @@ class Menu
             'type' => 'route-link-item',
             'children' => [
                 [
+                    'name' => 'option.edit-auth',
+                    'label' => $this->translator->trans('Authentication setup'),
+                    'type' => 'route-link-item',
+                ],
+                [
                     'name' => 'option.overview',
                     'label' => $this->translator->trans('Activity overview'),
                     'type' => 'route-link-item',

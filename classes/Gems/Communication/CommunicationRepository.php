@@ -5,6 +5,7 @@ namespace Gems\Communication;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Db\CachedResultFetcher;
 use Gems\Db\ResultFetcher;
+use Gems\Mail\MailBouncer;
 use Gems\Mail\ManualMailerFactory;
 use Gems\Mail\OrganizationMailFields;
 use Gems\Mail\ProjectMailFields;
@@ -18,12 +19,21 @@ use Gems\Tracker\Token;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\User\Organization;
 use Gems\User\User;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Like;
 use Mezzio\Template\TemplateRendererInterface;
 use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mailer\Event\MessageEvent;
 use Symfony\Component\Mailer\Mailer;
 use GuzzleHttp\Client;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mailer\Transport\Transports;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 class CommunicationRepository
 {
@@ -33,8 +43,34 @@ class CommunicationRepository
         protected TemplateRendererInterface $template,
         protected Translator $translator,
         protected TokenSelect $tokenSelect,
+        protected ManualMailerFactory $mailerFactory,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected MessageBusInterface $messageBus,
+        MailBouncer $mailBouncer,
         protected array $config)
-    {}
+    {
+        if ($this->eventDispatcher instanceof EventDispatcher) {
+            $this->eventDispatcher->addListener(MessageEvent::class, [$this, 'addTransportHeaderToMail']);
+        }
+    }
+
+    public function addTransportHeaderToMail(MessageEvent $event)
+    {
+        $mail = $event->getMessage();
+        if (!$mail instanceof Email) {
+            return;
+        }
+        $from = $mail->getFrom();
+        $firstFrom = reset($from);
+        if ($firstFrom instanceof Address) {
+            $firstFrom = $firstFrom->getAddress();
+        }
+        $transportId = $this->getTransportIdFromFrom($firstFrom);
+        if (isset($transportId)) {
+            $headers = $mail->getHeaders();
+            $headers->addHeader('X-Transport', $transportId);
+        }
+    }
 
     public function getCreateAccountTemplate(Organization $organization): ?int
     {
@@ -47,6 +83,12 @@ class CommunicationRepository
         }
 
         return null;
+    }
+
+    public function getCombinedTransport(): TransportInterface
+    {
+        $allTransports = $this->getTransports();
+        return new Transports($allTransports);
     }
 
     /**
@@ -109,15 +151,32 @@ class CommunicationRepository
         return new Client($clientConfig);
     }
 
-    public function getMailer(string $from): Mailer
+    protected function getMailDsnFromDbServerInfo(array $serverInfo): string
     {
-        $factory = new ManualMailerFactory($this->resultFetcher, $this->config);
-        return $factory->getMailer($from);
+        $dsn = sprintf('smtp://%s:%s', $serverInfo['gms_server'], $serverInfo['gms_port']);
+        if (isset($serverInfo['gms_user'], $serverInfo['gsm_password'])) {
+            $dsn = sprintf('smtp://%s:%s@%s:%s', $serverInfo['gms_user'], $serverInfo['gms_password'], $serverInfo['gms_server'], $serverInfo['gms_port']);
+        }
+        return $dsn;
+    }
+
+    public function getMailer(): Mailer
+    {
+        $combinedTransport = $this->getCombinedTransport();
+        return new Mailer($combinedTransport, $this->messageBus, $this->eventDispatcher);
+    }
+
+    protected function getMailServers(): ?array
+    {
+        $select = $this->resultFetcher->getSelect('gems__mail_servers');
+        $select->columns(['gms_id_server', 'gms_server', 'gms_port', 'gms_user', 'gms_password']);
+        return $this->resultFetcher->fetchAll($select);
     }
 
     public function getNewEmail(): TemplatedEmail
     {
-        return new TemplatedEmail($this->template);
+        $email = new TemplatedEmail($this->template);
+        return $email;
     }
 
     public function getOrganizationMailFields(Organization $organization): array
@@ -153,6 +212,32 @@ class CommunicationRepository
 
         } elseif ($this->config['email']['resetTfaTemplate']) {
             return (int)$this->getTemplateIdFromCode($this->config['email']['resetTfaTemplate']);
+        }
+
+        return null;
+    }
+
+    public function getConfirmChangeEmailTemplate(Organization $organization): ?int
+    {
+        $templateId = $organization->getConfirmChangeEmailTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['confirmChangeEmailTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['confirmChangeEmailTemplate']);
+        }
+
+        return null;
+    }
+
+    public function getConfirmChangePhoneTemplate(Organization $organization): ?int
+    {
+        $templateId = $organization->getConfirmChangePhoneTemplate();
+        if ($templateId) {
+            return (int)$templateId;
+
+        } elseif ($this->config['email']['confirmChangePhoneTemplate']) {
+            return (int)$this->getTemplateIdFromCode($this->config['email']['confirmChangePhoneTemplate']);
         }
 
         return null;
@@ -233,6 +318,42 @@ class CommunicationRepository
     {
         $mailFieldCreator = new TokenMailFields($token, $this->config, $this->translator, $this->tokenSelect);
         return $mailFieldCreator->getMailFields($language);
+    }
+
+    protected function getTransportIdFromFrom(string $from): int|null
+    {
+        $select = $this->resultFetcher->getSelect('gems__mail_servers');
+        $platform = $this->resultFetcher->getPlatform();
+        $select
+            ->columns(['gms_id_server'])
+            ->where([
+                $platform->quoteValue($from) . ' LIKE gms_from',
+            ])
+            ->order(new Expression('LENGTH(gms_from) DESC'))
+            ->limit(1);
+
+        return $this->resultFetcher->fetchOne($select);
+    }
+
+    /**
+     * @return TransportInterface[]
+     */
+    public function getTransports(): array
+    {
+        $transports = [];
+        if (isset($this->config['email']['dsn'])) {
+            $transports['config'] = Transport::fromDsn($this->config['email']['dsn'], $this->eventDispatcher);
+        }
+
+        $mailservers = $this->getMailServers();
+        if ($mailservers) {
+            foreach($mailservers as $mailserver) {
+                $dsn = $this->getMailDsnFromDbServerInfo($mailserver);
+                $transports[$mailserver['gms_id_server']] = Transport::fromDsn($dsn, $this->eventDispatcher);
+            }
+        }
+
+        return $transports;
     }
 
     public function getUserMailFields(User $user, string $language = null): array
