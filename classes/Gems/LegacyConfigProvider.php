@@ -29,7 +29,6 @@ use Gems\Screens\ScreenLoader;
 use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
-use Gems\User\Mask\MaskStore;
 use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
 use Gems\Util\ConsentUtil;
@@ -115,7 +114,6 @@ class LegacyConfigProvider
                 'LegacyTranslatedUtil' => \Gems\Util\Translated::class,
                 'LegacyUrlHelper' => UrlHelper::class,
                 'LegacyUserLoader' => UserLoader::class,
-                'LegacyMaskStore' => MaskStore::class,
                 'LegacyUtil' => \Gems\Util::class,
                 'LegacyView' => \Zend_View::class,
                 'db' => Adapter::class,

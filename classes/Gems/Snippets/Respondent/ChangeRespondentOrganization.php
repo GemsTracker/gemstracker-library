@@ -19,6 +19,7 @@ use Gems\Model\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Db\TableGateway\TableGateway;
@@ -77,11 +78,12 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
-        protected ResultFetcher $resultFetcher,
+        protected CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
+        protected \Gems\Model $modelLoader,
         protected OrganizationRepository $organizationRepository,
         protected UserLoader $userLoader,
-        protected \Gems\Model $modelLoader,
-        protected CurrentUserRepository $currentUserRepository,
+        protected ResultFetcher $resultFetcher,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
@@ -237,7 +239,7 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
     protected function getTitle()
     {
         if ($this->respondent instanceof Respondent) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf(
                         $this->_('Change organization of respondent nr %s'),
                         $this->respondent->getPatientNumber()

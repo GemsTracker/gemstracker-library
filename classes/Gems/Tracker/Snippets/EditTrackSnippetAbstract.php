@@ -18,6 +18,7 @@ use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -102,6 +103,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         MenuSnippetHelper $menuHelper,
+        protected MaskRepository $maskRepository,
         protected Tracker $tracker,
         CurrentUserRepository $currentUserRepository,
         protected Translated $translatedUtil,
@@ -125,6 +127,7 @@ class EditTrackSnippetAbstract extends ModelFormSnippetAbstract
             }
             $this->trackEngine = $this->respondentTrack->getTrackEngine();
         }
+        $model->setMaskRepository($this->maskRepository);
         $model->applyEditSettings($this->trackEngine);
 
         return $model;

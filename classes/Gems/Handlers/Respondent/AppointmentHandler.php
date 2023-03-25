@@ -26,6 +26,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Track\TracksForAppointment;
 use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\UserLoader;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -161,6 +162,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
         protected Agenda $agenda,
+        protected MaskRepository $maskRepository,
         protected Model $modelLoader,
         protected ResultFetcher $resultFetcher,
         protected UserLoader $userLoader,
@@ -260,7 +262,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
     {
         $patientId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID1);
         if ($patientId) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Appointments for respondent number %s'), $patientId);
             }
             $orgId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID2);

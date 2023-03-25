@@ -15,6 +15,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -41,6 +42,7 @@ class MailLogBrowseSnippet extends ModelTableSnippet
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
         protected TokenRepository $tokenRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
@@ -80,7 +82,7 @@ class MailLogBrowseSnippet extends ModelTableSnippet
         $by = Html::raw($this->_(' / '));
         $sp = Html::raw('&nbsp;');
 
-        if ($this->currentUser->areAllFieldsMaskedWhole('respondent_name', 'grs_surname_prefix', 'grco_address')) {
+        if ($this->maskRepository->areAllFieldsMaskedWhole('respondent_name', 'grs_surname_prefix', 'grco_address')) {
             $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $br, 'gtr_track_name');
         } else {
             $bridge->addMultiSort('grco_created',  $br, 'gr2o_patient_nr', $sp, 'respondent_name', $br, 'grco_address', $br, 'gtr_track_name');

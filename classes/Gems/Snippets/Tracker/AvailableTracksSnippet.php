@@ -64,12 +64,6 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
     public $browse = false;
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * The respondent
      *
      * @var \Gems\Tracker\Respondent
@@ -85,14 +79,16 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
         protected Model $modelLoader,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+
+        // $this->respondent loaded as SnippetOption!
         $orgId = $this->respondent->getOrganizationId();
 
         // These values are set for the generic table snippet and
         // should be reset for this snippet
         $this->browse          = false;
         $this->extraFilter     = ["gtr_organizations LIKE '%|$orgId|%'"];
-        $this->menuEditRoutes = [$this->_('View') => 'view'];
-        $this->menuShowRoutes = [$this->_('Create') => 'create'];
+//        $this->menuEditRoutes = [$this->_('View') => 'view'];
+//        $this->menuShowRoutes = [$this->_('Create') => 'create'];
     }
 
     /**
@@ -124,11 +120,16 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
         return $model;
     }
 
+    protected function getEditUrls(TableBridge $bridge, array $keys): array
+    {
+        $params[\MUtil\Model::REQUEST_ID] = $bridge->gtr_id_track;
+
+        return $this->menuHelper->getLateRelatedUrls(['project.tracks.show'], $params);
+    }
+
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
         $output = parent::getRouteMaps($metaModel);
-        //$output[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
-        //$output[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
         $output[Model::TRACK_ID] = 'gtr_id_track';
         return $output;
     }
@@ -138,9 +139,10 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
      */
     protected function getShowUrls(TableBridge $bridge, array $keys): array
     {
-        $params = $this->requestInfo->getRequestMatchedParams();
-        $params[Model::TRACK_ID] = $bridge->getLate('gtr_id_track');
+        $params[\MUtil\Model::REQUEST_ID1] = \MUtil\Model::REQUEST_ID1;
+        $params[\MUtil\Model::REQUEST_ID2] = \MUtil\Model::REQUEST_ID2;
+        $params[Model::TRACK_ID] = $bridge->gtr_id_track;
 
-        return $this->menuHelper->getRouteUrls(['respondent.tracks.create'], $params);
+        return $this->menuHelper->getLateRelatedUrls(['respondent.tracks.create'], $params);
     }
 }

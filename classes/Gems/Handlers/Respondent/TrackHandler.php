@@ -18,9 +18,11 @@ use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
+use Gems\User\Mask\MaskRepository;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -69,6 +71,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $autofilterParameters = [
+        'bridgeMode'      => BridgeInterface::MODE_ROWS,
         'extraFilter'     => 'getRespondentFilter',
         'extraSort'       => ['gr2t_start_date' => SORT_DESC],
         'menuEditRoutes' => ['edit-track'],
@@ -423,10 +426,11 @@ class TrackHandler extends RespondentChildHandlerAbstract
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
-        protected Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
+        protected MaskRepository $maskRepository,
         protected ProjectSettings $projectSettings,
         protected Pdf $pdf,
+        protected Tracker $tracker,
     ) {
         parent::__construct($responder, $translate, $respondentRepository, $currentUserRepository);
     }
@@ -1105,7 +1109,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         if ($respTrack) {
             $trackEngine = $respTrack->getTrackEngine();
 
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 // Set params
                 return sprintf(
                     $this->_('%s track for respondent nr %s'),

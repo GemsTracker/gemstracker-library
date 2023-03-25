@@ -61,7 +61,8 @@ class ExecuteCommJobTask extends \MUtil\Task\TaskAbstract
      */
     public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false, $forceSent = false)
     {
-        $this->currentUser->disableMask();
+        $maskRepository = $this->loader->getMaskRepository();
+        $maskRepository->disableMaskRepository();
 
         $this->getBatch()->addToCounter('jobs_started', 1);
         
@@ -175,7 +176,7 @@ class ExecuteCommJobTask extends \MUtil\Task\TaskAbstract
             ));
         }
 
-        $this->currentUser->enableMask();
+        $maskRepository->enableMaskRepository();
     }
 
     /**

@@ -15,6 +15,7 @@ use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\Tracker\Token\TokenValidator;
+use Gems\User\Mask\MaskRepository;
 use Mezzio\Session\SessionInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -130,6 +131,8 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      */
     protected $overLoader;
 
+    protected MaskRepository $maskRepository;
+
     /**
      *
      * @var \Zend_Translate
@@ -164,6 +167,19 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
             }
         }
         return $userId;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        // Load version 2 variables here
+        $container = $this->_overLoader->getContainer();
+        $this->maskRepository = $container->get(MaskRepository::class);
     }
 
     /**
@@ -437,7 +453,11 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      */
     public function getRespondentTrackModel()
     {
-        return $this->_loadClass('Model\\RespondentTrackModel', true);
+        $model = $this->_loadClass('Model\\RespondentTrackModel', true);
+
+        $model->setMaskRepository($this->loader->getMaskRepository());
+
+        return $model;
     }
 
     /**
@@ -653,6 +673,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
     {
         if (! isset($this->_tokenModels[$modelClass])) {
             $this->_tokenModels[$modelClass] = $this->_loadClass('Model_' . $modelClass, true);
+            $this->_tokenModels[$modelClass]->setMaskRepository($this->loader->getMaskRepository());
             $this->_tokenModels[$modelClass]->applyFormatting();
             $this->loader->getModels()->addDatabaseTranslations($this->_tokenModels[$modelClass]);
         }

@@ -124,7 +124,7 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
 
         // If we are allowed to see the result of the survey, show them
 //        if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
-//                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
+//                (! $this->maskRepository->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
 //        }
 

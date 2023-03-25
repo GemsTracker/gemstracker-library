@@ -22,6 +22,7 @@ use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Tracker\Respondent;
+use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -101,6 +102,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
         RespondentRepository $respondentRepository, 
         CurrentUserRepository $currentUserRepository,
         protected Agenda $agenda,
+        protected MaskRepository $maskRepository,
         protected Model $modelLoader,
     )
     {
@@ -158,7 +160,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $patientId  = $respondent->getPatientNumber();
         if ($patientId) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 return sprintf($this->_('Episodes of care for respondent number %s'), $patientId);
             }
             return sprintf($this->_('Episodes of care for respondent number %s: %s'), $patientId, $respondent->getName());
@@ -215,7 +217,7 @@ class CareEpisodeHandler extends RespondentChildHandlerAbstract
         $respondent = $this->getRespondent();
         $patientId  = $respondent->getPatientNumber();
         if ($patientId) {
-            if (false && $this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
+            if (false && $this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_surname_prefix', 'grs_last_name')) {
                 $for = sprintf($this->_('for respondent number %s'), $patientId);
             } else {
                 $for = sprintf($this->_('for respondent number %s'), $patientId);

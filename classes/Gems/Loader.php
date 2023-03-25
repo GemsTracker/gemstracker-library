@@ -13,6 +13,7 @@ namespace Gems;
 
 use Gems\Loader\LoaderAbstract;
 use Gems\Tracker\TrackEvents;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
 
@@ -288,6 +289,11 @@ class Loader extends LoaderAbstract
         return $this->_getClass('flashMessenger', 'Controller\\Action\\Helper\\FlashMessenger');
     }
 
+    public function getMaskRepository(): MaskRepository
+    {
+        return $this->_overLoader->getContainer()->get(MaskRepository::class);
+    }
+
     /**
      *
      * @return Model
@@ -476,15 +482,6 @@ class Loader extends LoaderAbstract
     public function getUserLoader()
     {
         return $this->_getClass('userLoader', 'User\\UserLoader');
-    }
-
-    /**
-     *
-     * @return \Gems\User\Mask\MaskStore
-     */
-    public function getUserMaskStore()
-    {
-        return $this->_getClass('maskStore', 'User\\Mask\\MaskStore');
     }
 
     /**

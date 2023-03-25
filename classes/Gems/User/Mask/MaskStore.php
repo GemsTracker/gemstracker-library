@@ -20,6 +20,7 @@ use Zalt\Loader\ProjectOverloader;
  * @package    Gems
  * @subpackage User\Mask
  * @copyright  Copyright (c) 2016, Erasmus MC and MagnaFacta B.V.
+ * @deprecated replaced by MaskRepository
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Dec 25, 2016 4:36:18 PM
  */

@@ -13,6 +13,7 @@ namespace Gems\Agenda;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\User\Mask\MaskRepository;
 
 /**
  *
@@ -73,6 +74,8 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      */
     protected $loader;
 
+    protected MaskRepository $maskRepository;
+
     /**
      * Creates the appointments object
      *
@@ -83,9 +86,6 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         if (is_array($appointmentData)) {
             $this->_gemsData      = $appointmentData;
             $this->_appointmentId = $appointmentData['gap_id_appointment'];
-            if ($this->currentUser instanceof \Gems\User\User) {
-                $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-            }
         } else {
             $this->_appointmentId = $appointmentData;
             // loading occurs in checkRegistryRequestAnswers
@@ -210,8 +210,12 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
+        $this->maskRepository = $this->loader->getMaskRepository();
+
         if ($this->db && (! $this->_gemsData)) {
             $this->refresh();
+        } else {
+            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
         }
 
         return $this->exists;
@@ -781,9 +785,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         }
         $this->exists = isset($this->_gemsData['gap_id_appointment']);
 
-        if ($this->currentUser instanceof \Gems\User\User) {
-            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-        }
+        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
 
         return $this;
     }

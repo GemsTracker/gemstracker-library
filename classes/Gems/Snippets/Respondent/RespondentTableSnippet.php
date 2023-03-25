@@ -75,7 +75,7 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($this->currentUser->isFieldMaskedWhole('name') && $this->currentUser->isFieldMaskedWhole('gr2o_email')) {
+        if ($this->maskRepository->isFieldMaskedWhole('name') && $this->maskRepository->isFieldMaskedWhole('gr2o_email')) {
             return;
         }
 
@@ -134,9 +134,9 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
 
             $bridge->addMultiSort($track, $br, 'gr2t_track_info');
         } else {
-            $maskAddress = $this->currentUser->isFieldMaskedWhole('grs_address_1');
-            $maskZip     = $this->currentUser->isFieldMaskedWhole('grs_zipcode');
-            $maskCity    = $this->currentUser->isFieldMaskedWhole('grs_city');
+            $maskAddress = $this->maskRepository->isFieldMaskedWhole('grs_address_1');
+            $maskZip     = $this->maskRepository->isFieldMaskedWhole('grs_zipcode');
+            $maskCity    = $this->maskRepository->isFieldMaskedWhole('grs_city');
 
             if ($maskAddress && $maskZip && $maskCity) {
                 return;
@@ -177,8 +177,8 @@ class RespondentTableSnippet extends RespondentTableSnippetAbstract
      */
     protected function addBrowseColumn4(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $maskBirthday = $this->currentUser->isFieldMaskedWhole('grs_birthday');
-        $maskPhone    = $this->currentUser->isFieldMaskedWhole('grs_phone_1');
+        $maskBirthday = $this->maskRepository->isFieldMaskedWhole('grs_birthday');
+        $maskPhone    = $this->maskRepository->isFieldMaskedWhole('grs_phone_1');
 
         if ($maskBirthday && $maskPhone) {
             return;

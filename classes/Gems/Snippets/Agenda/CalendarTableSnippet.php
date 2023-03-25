@@ -158,7 +158,7 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
 
         \Gems\Model\RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
-        $this->model->refreshGroupSettings();
+        $this->model->applyMask();
         
         // \MUtil\Model::$verbose = true;
         return $this->model;

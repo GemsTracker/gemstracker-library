@@ -452,7 +452,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                     break;
             }
         }
-        $this->maskRepository->applyMaskToDataModel($model->getMetaModel());
 
         return $model;
     }
@@ -583,7 +582,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $respondent = $this->getRespondent();
         if ($respondent->exists) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
                 return sprintf($this->_('Edit respondent nr %s'), $respondent->getPatientNumber());
             }
             return sprintf(

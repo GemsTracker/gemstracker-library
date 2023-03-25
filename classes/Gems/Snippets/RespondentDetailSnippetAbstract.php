@@ -12,8 +12,12 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
+use Gems\User\Mask\MaskRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Html\AElement;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Prepares displays of respondent information
@@ -127,6 +131,16 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
      * @var \Zend_View
      */
     protected $view;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+    }
 
     /**
      *

@@ -130,7 +130,7 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
 
         // Rights depended score column
         if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
-                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
+                (! $this->maskRepository->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
 

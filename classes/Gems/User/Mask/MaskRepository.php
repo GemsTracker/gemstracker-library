@@ -38,6 +38,12 @@ class MaskRepository
 
     /**
      *
+     * @var boolean When true mask settings are used
+     */
+    protected bool $enableMasks = true;
+
+    /**
+     *
      * @var string Name separator for creating unique field names
      */
     protected $keySeparator = '___';
@@ -281,6 +287,20 @@ class MaskRepository
         return $this;
     }
 
+    public function areAllFieldsMaskedWhole(...$fieldNames): bool
+    {
+        if (! $this->enableMasks) {
+            return false;
+        }
+
+        foreach ($fieldNames as $fieldName) {
+            if (! $this->isFieldMaskedWhole($fieldName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      *
      * @param MetaModelInterface $model
@@ -289,6 +309,10 @@ class MaskRepository
      */
     public function applyMaskToDataModel(MetaModelInterface $model, $hideWhollyMasked = false)
     {
+        if (! $this->enableMasks) {
+            return $this;
+        }
+
         $this->_ensureFieldList();
 
         $user = $this->currentUserRepository->getCurrentUser();
@@ -338,7 +362,7 @@ class MaskRepository
         $maskRow = $this->resultFetcher->fetchOne($select);
         if ($maskRow) {
             $maskData = $this->decodeSettings($maskRow);
-            dump($maskRow, $maskData);
+            // dump($maskRow, $maskData);
         } else {
             return $this;
         }
@@ -371,6 +395,30 @@ class MaskRepository
         return $this;
     }
 
+    /**
+     *
+     * @param array $row A row of data to mask
+     * @return array A row with all data masked
+     */
+    public function applyMaskToRow(array $row): array
+    {
+        if (! $this->enableMasks) {
+            return $row;
+        }
+
+        $this->_ensureFieldList();
+
+        foreach ($this->_settings as $name => $setting) {
+            if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
+                if (array_intersect(array_keys($row), $setting['masker']->getMaskFields())) {
+                    $setting['masker']->maskRow($row);
+                }
+            }
+        }
+
+        return $row;
+    }
+
 
     /**
      * @param mixed $value
@@ -385,6 +433,32 @@ class MaskRepository
             return \json_decode($value, true);
         }
         return $this->defaultData;
+    }
+
+    /**
+     * Disable mask usage
+     * calls: doesn't work retroactively
+     *
+     * @return $this
+     */
+    public function disableMaskRepository(): MaskRepository
+    {
+        $this->enableMasks = false;
+
+        return $this;
+    }
+
+    /**
+     * Enable mask usag
+     * calls: doesn't work retroactively
+     *
+     * @return $this
+     */
+    public function enableMaskRepository(): MaskRepository
+    {
+        $this->enableMasks = true;
+
+        return $this;
     }
 
     /**
@@ -419,6 +493,76 @@ class MaskRepository
         }
 
         return null;
+    }
+
+    /**
+     * NOT IN USE!
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is invisible
+     */
+    public function isFieldInvisible($fieldName)
+    {
+        if (! $this->enableMasks) {
+            return false;
+        }
+
+        if (isset($this->_fieldList[$fieldName])) {
+            $group = $this->_fieldList[$fieldName];
+
+            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+                $this->_settings[$group]['masker'] instanceof MaskerInterface) {
+                return $this->_settings[$group]['masker']->isFieldInvisible($fieldName);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is partially (or wholly) masked (or invisible)
+     */
+    public function isFieldMaskedPartial($fieldName)
+    {
+        if (! $this->enableMasks) {
+            return false;
+        }
+
+        if (isset($this->_fieldList[$fieldName])) {
+            $group = $this->_fieldList[$fieldName];
+
+            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+                $this->_settings[$group]['masker'] instanceof MaskerInterface) {
+                return $this->_settings[$group]['masker']->isFieldMaskedPartial($fieldName);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     * @param string $fieldName
+     * @return boolean True if this field is wholly masked (or invisible)
+     */
+    public function isFieldMaskedWhole($fieldName)
+    {
+        if (! $this->enableMasks) {
+            return false;
+        }
+
+        if (isset($this->_fieldList[$fieldName])) {
+            $group = $this->_fieldList[$fieldName];
+
+            if (isset($this->_settings[$group], $this->_settings[$group]['masker']) &&
+                $this->_settings[$group]['masker'] instanceof MaskerInterface) {
+                return $this->_settings[$group]['masker']->isFieldMaskedWhole($fieldName);
+            }
+        }
+
+        return false;
     }
 
     /**

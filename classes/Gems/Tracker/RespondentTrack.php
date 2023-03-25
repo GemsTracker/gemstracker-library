@@ -21,6 +21,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Translate\DbTranslateUtilTrait;
 
+use Gems\User\Mask\MaskRepository;
 use MUtil\Model;
 
 /**
@@ -115,6 +116,8 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
      * @var \Gems\Loader
      */
     protected $loader;
+
+    protected MaskRepository $maskRepository;
 
     /**
      *
@@ -595,15 +598,13 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     {
         $this->initDbTranslations();
 
+        $this->maskRepository = $this->loader->getMaskRepository();
+
         if ($this->_respTrackData) {
             $this->_respTrackData = $this->translateTables($this->_tablesForTranslations, $this->_respTrackData);
-            if ($this->currentUser instanceof \Gems\User\User) {
-                $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
-            }
+            $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
         } else {
-            if ($this->db instanceof \Zend_Db_Adapter_Abstract) {
-                $this->refresh();
-            }
+            $this->refresh();
         }
 
         return (boolean) $this->_respTrackData;
@@ -1502,8 +1503,9 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         } else {
             $this->_respTrackData = $this->fetchTranslatedRow('gems__respondent2track', 'gr2t_id_respondent_track', $this->_respTrackId);
         }
-        if ($this->_respTrackData && $this->currentUser instanceof \Gems\User\User) {
-            $this->_respTrackData = $this->currentUser->applyGroupMask($this->_respTrackData);
+
+        if ($this->_respTrackData) {
+            $this->_respTrackData = $this->maskRepository->applyMaskToRow($this->_respTrackData);
         }
 
         $this->_ensureFieldData(true);

@@ -23,7 +23,7 @@ use MUtil\Model\Type\JsonData;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 16-May-2018 17:05:54
  */
-class EpisodeOfCareModel extends \Gems\Model\JoinModel
+class EpisodeOfCareModel extends MaskedModel
 {
     /**
      *
@@ -152,7 +152,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
         $jsonType->apply($this, 'gec_diagnosis_data', false);
         $jsonType->apply($this, 'gec_extra_data',     false);
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }
@@ -198,7 +198,7 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
             $this->setIfExists('gec_extra_data',     'label', $this->_('Extra data'));
         }
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }
@@ -240,18 +240,5 @@ class EpisodeOfCareModel extends \Gems\Model\JoinModel
         }
 
         return $this;
-    }
-
-    /**
-     * Function to re-apply all the masks and settings for the current group
-     *
-     * @return void
-     */
-    public function refreshGroupSettings()
-    {
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($this, false);
-        }
     }
 }

@@ -16,6 +16,7 @@ use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Fields\FieldOverviewTableSnippet;
 use Gems\Tracker;
 use Gems\User\Group;
+use Gems\User\Mask\MaskRepository;
 use MUtil\Model\DatabaseModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -79,6 +80,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
         CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
         protected PeriodSelectRepository $periodSelectRepository,
         protected TrackDataRepository $trackDataRepository,
         protected Tracker $tracker,
@@ -102,7 +104,9 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      */
     public function createModel($detailed, $action): DataReaderInterface
     {
-        $model = new \Gems\Model\JoinModel('resptrack' , 'gems__respondent2track');
+        $model = new \Gems\Model\MaskedModel('resptrack' , 'gems__respondent2track');
+        $model->setMaskRepository($this->maskRepository);
+
         $model->addTable('gems__respondent2org', array(
             'gr2t_id_user' => 'gr2o_id_user',
             'gr2t_id_organization' => 'gr2o_id_organization'
@@ -117,7 +121,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
-        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
+        if (! $this->maskRepository->isFieldMaskedPartial('respondent_name')) {
             $model->set('respondent_name', 'label', $this->_('Name'));
         }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'));
@@ -143,11 +147,8 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
         $engine->addFieldsToModel($model, false);
 
         // Add masking if needed
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($model, false);
-        }
-        
+        $model->applyMask();
+
         return $model;
     }
 
