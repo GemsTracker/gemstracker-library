@@ -159,6 +159,7 @@ class MaskRepository
     protected function _getBirthdayFields()
     {
         return [
+            'birthday'      => 'mask',
             'grs_birthday'  => 'mask',
             'grr_birthdate' => 'mask',
         ];
@@ -172,6 +173,7 @@ class MaskRepository
     protected function _getGenderFields()
     {
         return [
+            'gender'     => 'mask',
             'grs_gender' => 'hide',
             'grr_gender' => 'hide',
         ];

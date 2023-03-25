@@ -12,16 +12,10 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
-use Gems\Repository\TokenRepository;
-use Gems\Tracker;
 use MUtil\Model;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\RequestInfo;
 use Zalt\Html\AElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
-use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -49,17 +43,6 @@ class PlanRespondentSnippet extends PlanTokenSnippet
         'gr2t_track_info'       => SORT_ASC,
         'gto_round_description' => SORT_ASC,
         );
-
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate,
-        Tracker $tracker,
-        TokenRepository $tokenRepository,
-    ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
-    }
 
     protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
     {
