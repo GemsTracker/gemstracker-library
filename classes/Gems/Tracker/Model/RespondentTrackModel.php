@@ -241,6 +241,8 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('respondent_name',     'elementClass', 'Exhibitor');
         $this->set('gtr_track_name',      'elementClass', 'Exhibitor');
 
+        $this->set('gr2t_id_user',        'elementClass', 'Hidden');
+        $this->set('gr2t_id_track',       'elementClass', 'Hidden');
         // Fields set in details
 
         $this->set('gr2t_track_info',     'elementClass', 'None');

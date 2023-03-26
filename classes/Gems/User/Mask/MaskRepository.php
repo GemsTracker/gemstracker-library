@@ -25,6 +25,8 @@ class MaskRepository
      */
     protected array $_fieldList = [];
 
+    protected string $_lastLoadId = '';
+
     /**
      * Loaded in _ensureSettings in the constructor     *
      * @var array of [groupname => [label, description, class, maskFields, masker]
@@ -315,71 +317,16 @@ class MaskRepository
             return $this;
         }
 
-        $this->_ensureFieldList();
-
-        $user = $this->currentUserRepository->getCurrentUser();
-        $currentGroup        = $user->getGroupId(true);
-        $currentOrganization = $user->getCurrentOrganizationId();
-
-        $groupLike = new Like('gm_groups', '%:' . $currentGroup . ':%');
-        $groupNull = new Operator('gm_groups', Operator::OPERATOR_EQUAL_TO, '::');
-        $orgLike = new Like('gm_organizations', '%:' . $currentOrganization . ':%');
-        $orgNull = new Operator('gm_organizations', Operator::OPERATOR_EQUAL_TO, '::');
-
-        $whereOr = new Predicate(
-            [
-                new Predicate([$groupLike, $orgNull], Predicate::COMBINED_BY_AND),
-                new Predicate([$groupLike, $orgLike], Predicate::COMBINED_BY_AND),
-                new Predicate([$groupNull, $orgLike], Predicate::COMBINED_BY_AND),
-            ],
-            Predicate::COMBINED_BY_OR);
-
-        $baseGroup        = $user->getGroupId(false);
-        $baseOrganization = $user->getBaseOrganizationId();
-        if (($baseGroup != $currentGroup) || ($baseOrganization != $currentOrganization)) {
-            $baseGroupLike = new Like('gm_groups', '%:' . $baseGroup . ':%');
-            $baseGroupNull = new Operator('gm_groups', Operator::OPERATOR_EQUAL_TO, '::');
-            $baseOrgLike   = new Like('gm_organizations', '%:' . $baseOrganization . ':%');
-            $baseOrgNull   = new Operator('gm_organizations', Operator::OPERATOR_EQUAL_TO, '::');
-            $sticky        = new Operator('gm_mask_sticky', Operator::OPERATOR_EQUAL_TO, 1);
-
-            $whereOr->addPredicate(
-                new Predicate([$baseGroupLike, $baseOrgNull, $sticky], Predicate::COMBINED_BY_AND)
-            );
-            $whereOr->addPredicate(
-                new Predicate([$baseGroupLike, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
-            );
-            $whereOr->addPredicate(
-                new Predicate([$baseGroupNull, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
-            );
-        }
-
-        $select = $this->resultFetcher->getSelect('gems__masks');
-        $select->columns(['gm_mask_settings'])
-            ->where(['gm_mask_active' => 1])
-            ->where($whereOr)
-            ->order('gm_id_order');
-
-
-        $maskRow = $this->resultFetcher->fetchOne($select);
-        if ($maskRow) {
-            $maskData = $this->decodeSettings($maskRow);
-            // dump($maskRow, $maskData);
-        } else {
-            return $this;
-        }
+        $this->loadUserMaskData();
 
         // \MUtil\EchoOut\EchoOut::track($hideWhollyMasked, (boolean) $compiled);
         $compiled = [];
         foreach ($this->_settings as $name => $setting) {
             if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
-                if (isset($maskData[$name])) {
-                    $setting['masker']->setChoice($maskData[$name]);
-                }
                 if ($model->hasAnyOf($setting['masker']->getMaskFields())) {
                     $dataOptions = $setting['masker']->getDataModelOptions($hideWhollyMasked);
 
-                    // \MUtil\EchoOut\EchoOut::track($name, count($dataOptions));
+                    // dump($name, count($dataOptions));
                     if ($dataOptions) {
                         foreach ($dataOptions as $field => $options) {
                             $compiled[$field] = $options;
@@ -388,6 +335,8 @@ class MaskRepository
                 }
             }
         }
+        // dump($compiled);
+
         foreach ($compiled as $field => $options) {
             if ($model->has($field)) {
                 $model->set($field, $options);
@@ -408,7 +357,7 @@ class MaskRepository
             return $row;
         }
 
-        $this->_ensureFieldList();
+        $this->loadUserMaskData();
 
         foreach ($this->_settings as $name => $setting) {
             if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
@@ -420,7 +369,6 @@ class MaskRepository
 
         return $row;
     }
-
 
     /**
      * @param mixed $value
@@ -509,6 +457,8 @@ class MaskRepository
             return false;
         }
 
+        $this->loadUserMaskData();
+
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
 
@@ -531,6 +481,8 @@ class MaskRepository
         if (! $this->enableMasks) {
             return false;
         }
+
+        $this->loadUserMaskData();
 
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
@@ -555,6 +507,8 @@ class MaskRepository
             return false;
         }
 
+        $this->loadUserMaskData();
+        
         if (isset($this->_fieldList[$fieldName])) {
             $group = $this->_fieldList[$fieldName];
 
@@ -565,6 +519,78 @@ class MaskRepository
         }
 
         return false;
+    }
+
+    protected function loadUserMaskData(): void
+    {
+        $user = $this->currentUserRepository->getCurrentUser();
+        $currentGroup        = $user->getGroupId(true);
+        $currentOrganization = $user->getCurrentOrganizationId();
+        $baseGroup           = $user->getGroupId(false);
+        $baseOrganization    = $user->getBaseOrganizationId();
+
+        $id = implode('--', [$currentGroup, $currentOrganization, $baseGroup, $baseOrganization]);
+        if ($id === $this->_lastLoadId) {
+            return;
+        }
+        $this->_lastLoadId = $id;
+        $this->_ensureFieldList();
+
+        $groupLike = new Like('gm_groups', '%:' . $currentGroup . ':%');
+        $groupNull = new Operator('gm_groups', Operator::OPERATOR_EQUAL_TO, '::');
+        $orgLike = new Like('gm_organizations', '%:' . $currentOrganization . ':%');
+        $orgNull = new Operator('gm_organizations', Operator::OPERATOR_EQUAL_TO, '::');
+
+        $whereOr = new Predicate(
+            [
+                new Predicate([$groupLike, $orgNull], Predicate::COMBINED_BY_AND),
+                new Predicate([$groupLike, $orgLike], Predicate::COMBINED_BY_AND),
+                new Predicate([$groupNull, $orgLike], Predicate::COMBINED_BY_AND),
+            ],
+            Predicate::COMBINED_BY_OR);
+
+        $baseGroup        = $user->getGroupId(false);
+        $baseOrganization = $user->getBaseOrganizationId();
+        if (($baseGroup != $currentGroup) || ($baseOrganization != $currentOrganization)) {
+            $baseGroupLike = new Like('gm_groups', '%:' . $baseGroup . ':%');
+            $baseGroupNull = new Operator('gm_groups', Operator::OPERATOR_EQUAL_TO, '::');
+            $baseOrgLike   = new Like('gm_organizations', '%:' . $baseOrganization . ':%');
+            $baseOrgNull   = new Operator('gm_organizations', Operator::OPERATOR_EQUAL_TO, '::');
+            $sticky        = new Operator('gm_mask_sticky', Operator::OPERATOR_EQUAL_TO, 1);
+
+            $whereOr->addPredicate(
+                new Predicate([$baseGroupLike, $baseOrgNull, $sticky], Predicate::COMBINED_BY_AND)
+            );
+            $whereOr->addPredicate(
+                new Predicate([$baseGroupLike, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
+            );
+            $whereOr->addPredicate(
+                new Predicate([$baseGroupNull, $baseOrgLike, $sticky], Predicate::COMBINED_BY_AND)
+            );
+        }
+
+        $select = $this->resultFetcher->getSelect('gems__masks');
+        $select->columns(['gm_mask_settings'])
+            ->where(['gm_mask_active' => 1])
+            ->where($whereOr)
+            ->order('gm_id_order');
+
+
+        $maskRow = $this->resultFetcher->fetchOne($select);
+        if ($maskRow) {
+            $maskData = $this->decodeSettings($maskRow);
+            // dump($maskData);
+        } else {
+            $maskData = $this->defaultData;
+        }
+
+        foreach ($this->_settings as $name => $setting) {
+            if (isset($setting['masker']) && $setting['masker'] instanceof MaskerInterface) {
+                if (isset($maskData[$name])) {
+                    $setting['masker']->setChoice($maskData[$name]);
+                }
+            }
+        }
     }
 
     /**
