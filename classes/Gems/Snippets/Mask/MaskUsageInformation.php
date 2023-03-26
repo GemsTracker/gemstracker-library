@@ -50,7 +50,7 @@ class MaskUsageInformation extends TranslatableSnippetAbstract
         $ul->li($this->_('Any user switched to Organization 1 can see all.'));
         $ul->li($this->_('Any Super admin sees nothing, unless switched to Organization 1.'));
         $ul->li($this->_('Any Local admin sees something but not all, except when switched to Organization 1 or to a different group.'));
-        $ul->li($this->_('Anyone from Organization 2 sees nothing, except for Local admins or the user switched to Organization 1.'));
+        $ul->li($this->_('Anyone from Organization 2 sees nothing, except for Local admins or when switched to Organization 1.'));
 
         return $seq;
     }
