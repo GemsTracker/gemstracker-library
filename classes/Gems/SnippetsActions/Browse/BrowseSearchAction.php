@@ -37,6 +37,11 @@ class BrowseSearchAction extends BrowseFilteredAction
         CurrentButtonRowSnippet::class,
     ];
 
+    public function appendStopSnippet(string $snippetClass)
+    {
+        $this->_stopSnippets[] = $snippetClass;
+    }
+
     public function getSnippetClasses() : array
     {
         return array_merge(

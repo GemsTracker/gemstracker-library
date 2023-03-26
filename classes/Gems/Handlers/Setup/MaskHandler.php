@@ -15,17 +15,18 @@ use Gems\Handlers\BrowseChangeHandler;
 use Gems\Model\MetaModelLoader;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\OrganizationRepository;
+use Gems\Snippets\Mask\MaskUsageInformation;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Show\ShowAction;
 use Gems\User\Mask\MaskRepository;
 use Gems\Util\Translated;
-use MUtil\Bootstrap\Form\Element\MultiCheckbox;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModellerInterface;
 use Zalt\Model\Sql\SqlTableModel;
 use Zalt\Model\Type\ConcatenatedType;
 use Zalt\Model\Type\YesNoType;
+use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -66,18 +67,21 @@ class MaskHandler extends BrowseChangeHandler
         
         $metaModel->set('gm_description', [
             'label' => $this->_('Description'),
+            'required' => true,
         ]);
         $metaModel->set('gm_id_order', [
             'label' => $this->_('Order'),
         ]);
         $metaModel->set('gm_groups', [
             'label' => $this->_('Groups'),
+            'descriptions' => $this->_('No groups is the same as all groups.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->accessRepository->getGroups(false),
             'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
         $metaModel->set('gm_organizations', [
             'label' => $this->_('Organization'),
+            'descriptions' => $this->_('No organizations is the same as all groups.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->organizationRepository->getOrganizations(),
             'type' => new ConcatenatedType(':', $this->_(', '), true),
@@ -112,12 +116,16 @@ class MaskHandler extends BrowseChangeHandler
         parent::prepareAction($action);
 
         if ($action instanceof BrowseFilteredAction) {
+            $action->extraSort['gm_id_order'] = SORT_ASC;
             $action->onEmpty = $this->_('No masks found!');
             
             if ($action instanceof BrowseSearchAction) {
+                $action->appendStopSnippet(MaskUsageInformation::class);
                 $action->contentTitle = $this->_('Masks');
                 $action->addCurrentParent = false;
             }
+        } elseif ($action instanceof AbstractAction) {
+            $action->appendSnippet(MaskUsageInformation::class);
         }
         
         if ($action instanceof ShowAction) {
