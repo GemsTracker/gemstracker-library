@@ -13,7 +13,7 @@ namespace Gems\Snippets\Staff;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Communication\CommunicationRepository;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Symfony\Component\Mime\Address;
@@ -42,7 +42,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly RouteHelper $routeHelper,
+        private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly CommunicationRepository $communicationRepository,
         private readonly StatusMessengerInterface $statusMessenger,
     ) {
@@ -169,7 +169,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
             $this->addMessage($successMessage);
         }
 
-        $this->redirectRoute = $this->routeHelper->getRouteUrl('setup.access.staff.reset', [
+        $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('setup.access.staff.reset', [
             \MUtil\Model::REQUEST_ID => intval($this->user->getUserId()),
         ]);
     }

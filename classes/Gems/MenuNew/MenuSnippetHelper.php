@@ -276,7 +276,7 @@ class MenuSnippetHelper
         return $this->getRouteUrl($this->getRelatedRoute($routePart), $this->requestInfo->getParams());
     }
 
-    public function getRouteUrl(?string $route, array $params): ?string
+    public function getRouteUrl(?string $route, array $params = []): ?string
     {
         if ($route) {
             try {

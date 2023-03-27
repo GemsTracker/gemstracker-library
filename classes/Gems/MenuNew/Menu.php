@@ -100,7 +100,7 @@ class Menu extends MenuNode
     private function gatherRouteLabelsByPrivilege(?string $prefix, array $children): array
     {
         return array_reduce($children, function (array $carry, MenuItem $child) use ($prefix) {
-            $route = $this->routeHelper->getRoute($child->name);
+            $route = $this->routeHelper->getUncheckedRoute($child->name);
 
             $newPrefix = ($prefix ? $prefix . ' -> ' : '') . $child->getLabel();
 

@@ -185,6 +185,15 @@ class RouteHelper
         return $this->routes[$name];
     }
 
+    public function getUncheckedRoute(string $name): array
+    {
+        if (!isset($this->routes[$name])) {
+            throw new RouteNotFoundException($name);
+        }
+
+        return $this->routes[$name];
+    }
+
     public function getRouteParent(string $name, string $parentName = 'index'): ?array
     {
         return $this->getRouteSibling($name, $parentName);
