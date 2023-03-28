@@ -101,9 +101,9 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return \Gems\Export\ExportInterface
      */
-    public function getExport(string $type, ?SessionInterface $session)
+    public function getExport(string $type, ?SessionInterface $session, ?\Gems\Task\TaskRunnerBatch $batch = null)
     {
-        return $this->_getClass($type, null, [$session]);
+        return $this->_getClass($type, null, [$session, $batch]);
     }
 
     /**

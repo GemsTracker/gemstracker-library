@@ -78,39 +78,41 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
-        if (!$batch->count()) {
-            $batch->minimalStepDurationMs = 2000;
-            $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
 
-            $batch->setSessionVariable('files', []);
+        $post = $this->requestInfo->getRequestPostParams();
+        $jobInfo = [];
 
-            if (! isset($post['type'])) {
-                // Export type is needed, use most basic type
-                $post['type'] = 'CsvExport';
-            }
-            $batch->addTask('Export\\ExportCommand', $post['type'], 'addExport', $post);
-            $batch->addTask('addTask', 'Export\\ExportCommand', $post['type'], 'finalizeFiles', $post);
+        if ($batch->hasVariable('export_type')) {
+            $type = $batch->getVariable('export_type');
+        } else {
+            $type = $post['type'] ?? 'CsvExport'; // Export type is needed, use most basic type as default
+            $batch->setVariable('export_type', $type);
 
-            $export = $this->loader->getExport()->getExport($post['type'], $this->session);
-            if ($snippet = $export->getHelpSnippet()) {
-                $this->addSnippet($snippet);
-            }
+            //if (!$batch->count()) {
+                $batch->minimalStepDurationMs = 2000;
+                $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
 
-            $batch->autoStart = true;
+                $batch->setSessionVariable('files', []);
+
+                $batch->addTask('Export\\ExportCommand', $type, 'addExport', $post);
+                $batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
+
+                $batch->autoStart = true;
+            //}
+        }
+
+        $export = $this->loader->getExport()->getExport($type, null, $batch);
+
+        if ($helpLines = $export->getHelpInfo()) {
+            $jobInfo = [...$jobInfo, $helpLines];
         }
 
         $title = $this->_('Export');
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($title);
-        $batchRunner->setJobInfo([
-            $this->_(
-                'Regel 1...'
-            ),
-            $this->_(
-                'Regel 2...'
-            ),
-        ]);
+        $batchRunner->setJobInfo($jobInfo);
+
         return $batchRunner->getResponse($this->request);
     }
 

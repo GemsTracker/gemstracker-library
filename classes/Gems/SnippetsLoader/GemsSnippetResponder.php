@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsLoader;
 
+use Gems\FullHtmlResponse;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\MenuSnippetHelper;
@@ -46,7 +47,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
     {
         $output = parent::getSnippetsResponse($snippetNames, $snippetOptions, $request);
 
-        if (! $output instanceof HtmlResponse) {
+        if (! $output instanceof HtmlResponse || $output instanceof FullHtmlResponse) {
             return $output;
         }
 

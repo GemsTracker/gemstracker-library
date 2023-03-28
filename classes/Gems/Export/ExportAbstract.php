@@ -30,7 +30,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     /**
      * @var \Gems\Task\TaskRunnerBatch   The batch object if one is set
      */
-    protected $batch;
+//    protected $batch;
 
     /**
      * @var array   Data submitted by export form
@@ -117,16 +117,17 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     public function getFormElements(&$form, &$data) {}
 
     public function __construct(
-        private readonly ?SessionInterface $session
+        private readonly ?SessionInterface $session,
+        protected readonly ?\Gems\Task\TaskRunnerBatch $batch,
     ) {
     }
 
     /**
-     * @return string|null Optional snippet containing help text
+     * @return string[] Optional snippet containing help text
      */
-    public function getHelpSnippet()
+    public function getHelpInfo(): array
     {
-        return null;
+        return [];
     }
 
     /**
@@ -680,7 +681,8 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
      */
     public function setBatch(\Gems\Task\TaskRunnerBatch $batch)
     {
-        $this->batch = $batch;
+        throw new \Exception();
+        //$this->batch = $batch;
     }
 
     /**

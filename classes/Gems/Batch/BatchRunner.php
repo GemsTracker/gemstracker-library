@@ -2,9 +2,9 @@
 
 namespace Gems\Batch;
 
+use Gems\FullHtmlResponse;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
-use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use MUtil\Batch\BatchAbstract;
 use MUtil\Batch\Progress;
@@ -71,7 +71,7 @@ class BatchRunner
             ],
         ];
 
-        return new HtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data));
+        return new FullHtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data));
     }
 
     protected function getTitle(): ?string

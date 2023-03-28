@@ -56,11 +56,18 @@ class SpssExport extends ExportAbstract
     /**
      * Add the help snippet
      * 
-     * @return string
+     * @return string[]
      */
-    public function getHelpSnippet()
+    public function getHelpInfo(): array
     {
-        return 'Export\\ExportInformationSpss';
+        return [
+            $this->_('Export to SPSS'),
+            $this->_("Extract all files from the downloaded zip and open the .sps file.\n" .
+                "Change line number 8 to include the full path to the .dat file:\n" .
+                "    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n" .
+                "Choose Run/All and all your data should be visible."
+            )
+        ];
     }
     /**
      * @return string name of the specific export
