@@ -284,7 +284,11 @@ class SpssExport extends ExportAbstract
         if (!preg_match("/^([a-z]|[A-Z])+.*$/", $input)) {
             $input = "q_" . $input;
         }
-        $input = str_replace(array(" ", "-", ":", ";", "!", "/", "\\", "'"), array("_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'), $input);
+        $input = str_replace(
+            [" ", "-", ":", ";", "!", "/", "\\", "'"],
+            ["_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'],
+            $input ?? ''
+        );
         return $input;
     }
 
@@ -305,7 +309,7 @@ class SpssExport extends ExportAbstract
         if (is_array($input)) {
             $input = join(', ', $input);
         }
-        $output = strip_tags($input);
+        $output = strip_tags($input ?? '');
         $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
         //$output = "'" . $output . "'";
         return $output;

@@ -82,11 +82,11 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
-        if ($batch->hasVariable('export_type')) {
-            $type = $batch->getVariable('export_type');
+        if ($batch->hasSessionVariable('export_type')) {
+            $type = $batch->getSessionVariable('export_type');
         } else {
             $type = $post['type'] ?? 'CsvExport'; // Export type is needed, use most basic type as default
-            $batch->setVariable('export_type', $type);
+            $batch->setSessionVariable('export_type', $type);
 
             //if (!$batch->count()) {
                 $batch->minimalStepDurationMs = 2000;
@@ -104,7 +104,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $export = $this->loader->getExport()->getExport($type, null, $batch);
 
         if ($helpLines = $export->getHelpInfo()) {
-            $jobInfo = [...$jobInfo, $helpLines];
+            $jobInfo = [...$jobInfo, ...$helpLines];
         }
 
         $title = $this->_('Export');
