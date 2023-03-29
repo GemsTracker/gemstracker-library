@@ -176,5 +176,8 @@ class Form extends \MUtil\Form
         $this->_autosubmit = $args;
         $this->_enableAutoSubmitElement($this);
         $this->activateJQuery();
+
+        $class = $selective ? 'selected-autosubmit' : 'autosubmit';
+        $this->setAttrib('class', $this->getAttrib('class') . ' ' . $class);
     }
 }

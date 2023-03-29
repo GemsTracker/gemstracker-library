@@ -94,7 +94,7 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
 
         $container = \Gems\Html::div(array('id' => 'export-form'));
         $container->append($form);
-        $form->setAttrib('id', 'autosubmit');
+        //$form->setAttrib('id', 'autosubmit');
         $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
 
         return $container;
