@@ -13,7 +13,7 @@ namespace Gems\Snippets\Staff;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Communication\CommunicationRepository;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Symfony\Component\Mime\Address;
@@ -42,7 +42,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         TranslatorInterface $translate,
         MessengerInterface $messenger,
         private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly RouteHelper $routeHelper,
+        private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly CommunicationRepository $communicationRepository,
         private readonly StatusMessengerInterface $statusMessenger,
     ) {
@@ -56,40 +56,43 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
      */
     protected function addFormElements(mixed $form)
     {
-        if ($this->user->hasEmailAddress()) {
-            $order = count($form->getElements())-1;
-            $createElement = new \MUtil\Form\Element\FakeSubmit('create_account');
-            $createElement->setLabel($this->_('Create account mail'))
-                        ->setAttrib('class', 'button btn btn-primary')
-                        ->setOrder($order++);
-
-            $form->addElement($createElement);
-
-            $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_password');
-            $resetElement->setLabel($this->_('Reset password mail'))
-                        ->setAttrib('class', 'button btn btn-primary')
-                        ->setOrder($order++);
-            $form->addElement($resetElement);
-
-            $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
-                'label' => $this->_('Current Two Factor method'),
-                'value' => $this->user->hasTfaConfigured() ? $this->user->getTfaMethodClass() : $this->_('None'),
-            ]);
-            $form->addElement($methodElement);
-
-            $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
-            $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
-                ->setAttrib('class', 'button btn btn-primary')
-                ->setOrder($order++);
-            if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
-                $resetElement->setAttrib('disabled', 'disabled');
-
-                if (empty($this->user->getPhonenumber())) {
-                    $this->statusMessenger->addWarning($this->_('TFA Method is set to SMS but no mobile number is configured'));
-                }
-            }
-            $form->addElement($resetElement);
+        if (!$this->user->hasEmailAddress()) {
+            $this->messenger->addInfo($this->_('This account has no e-mail address configured. An e-mail address is required to reset authentication.'));
+            return;
         }
+
+        $order = count($form->getElements())-1;
+        $createElement = new \MUtil\Form\Element\FakeSubmit('create_account');
+        $createElement->setLabel($this->_('Create account mail'))
+                    ->setAttrib('class', 'button btn btn-primary')
+                    ->setOrder($order++);
+
+        $form->addElement($createElement);
+
+        $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_password');
+        $resetElement->setLabel($this->_('Reset password mail'))
+                    ->setAttrib('class', 'button btn btn-primary')
+                    ->setOrder($order++);
+        $form->addElement($resetElement);
+
+        $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
+            'label' => $this->_('Current Two Factor method'),
+            'value' => $this->user->hasTfaConfigured() ? $this->user->getTfaMethodClass() : $this->_('None'),
+        ]);
+        $form->addElement($methodElement);
+
+        $resetElement = new \MUtil\Form\Element\FakeSubmit('reset_tfa');
+        $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
+            ->setAttrib('class', 'button btn btn-primary')
+            ->setOrder($order++);
+        if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
+            $resetElement->setAttrib('disabled', 'disabled');
+
+            if (empty($this->user->getPhonenumber())) {
+                $this->statusMessenger->addWarning($this->_('TFA Method is set to SMS but no mobile number is configured'));
+            }
+        }
+        $form->addElement($resetElement);
     }
 
     protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
@@ -166,7 +169,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
             $this->addMessage($successMessage);
         }
 
-        $this->redirectRoute = $this->routeHelper->getRouteUrl('setup.access.staff.reset', [
+        $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('setup.access.staff.reset', [
             \MUtil\Model::REQUEST_ID => intval($this->user->getUserId()),
         ]);
     }

@@ -15,7 +15,7 @@ use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Layout\LayoutSettings;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
@@ -50,7 +50,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         MessengerInterface $messenger,
         private readonly array $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly RouteHelper $routeHelper,
+        private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly LayoutSettings $layoutSettings,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
@@ -317,6 +317,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             $this->generateNewKey();
         }
 
-        $this->redirectRoute = $this->routeHelper->getRouteUrl('option.two-factor');
+        $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('option.two-factor');
     }
 }

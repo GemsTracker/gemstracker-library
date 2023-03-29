@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\User\User;
 use Gems\User\UserLoader;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -84,7 +85,10 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $createEditSnippets = ['Staff\\StaffCreateEditSnippet'];
+    protected array $createEditSnippets = [
+        'Staff\\StaffCreateEditSnippet',
+        CurrentButtonRowSnippet::class,
+    ];
 
     /**
      *
@@ -161,7 +165,10 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $resetSnippets = ['Staff\\StaffResetAuthenticationSnippet'];
+    protected array $resetSnippets = [
+        'Staff\\StaffResetAuthenticationSnippet',
+        CurrentButtonRowSnippet::class,
+    ];
 
     /**
      * The parameters used for the mail action.

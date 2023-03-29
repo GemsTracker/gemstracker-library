@@ -19,7 +19,7 @@ use Gems\Cache\RateLimiter;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\SessionNamespace;
 use Gems\Snippets\ZendFormSnippetAbstract;
@@ -90,7 +90,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         private readonly LoginThrottleBuilder $loginThrottleBuilder,
         private readonly AccesslogRepository $accesslogRepository,
         private readonly CurrentUserRepository $currentUserRepository,
-        private readonly RouteHelper $routeHelper,
+        private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly CommunicationRepository $communicationRepository,
         private readonly SmsClientInterface $smsClient,
         private readonly HelperAdapter $throttleCache,
@@ -368,7 +368,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
 
     protected function onInValid()
     {
-        $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
+        $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('option.edit-auth');
 
         $this->flash->flash('own_account_edit_auth_input', Ra::filterKeys($this->formData, [
             'gsf_email',
@@ -500,7 +500,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             $this->sessionNamespace->unset('new_email');
             $this->sessionNamespace->unset('new_phone');
 
-            $this->redirectRoute = $this->routeHelper->getRouteUrl('option.edit-auth');
+            $this->redirectRoute = $this->menuSnippetHelper->getRouteUrl('option.edit-auth');
         }
     }
 
