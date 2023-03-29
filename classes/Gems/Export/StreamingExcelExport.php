@@ -14,10 +14,11 @@ namespace Gems\Export;
 use Gems\Export\ExportAbstract;
 use MUtil\Model;
 
-use Box\Spout\Reader\ReaderFactory;
-use Box\Spout\Writer\WriterFactory;
-use Box\Spout\Writer\Style\StyleBuilder;
-use Box\Spout\Common\Type;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Reader\XLSX\Options;
+use OpenSpout\Reader\XLSX\Reader;
+use OpenSpout\Writer\XLSX\Writer;
 
 /**
  *
@@ -89,16 +90,16 @@ class StreamingExcelExport extends ExportAbstract
 
         $exportName = $this->getName();
 
-        $writer = WriterFactory::create(Type::XLSX);
+        $writer = new Writer();
         $writer->openToFile($headerFilename);
 
         $header = $this->getColumnHeaders();
         if (isset($this->data[$exportName]) &&
                 isset($this->data[$exportName]['format']) &&
                 in_array('formatVariable', (array) $this->data[$exportName]['format'])) {
-            $writer->addRow($header);
+            $writer->addRow(Row::fromValues($header));
         } else {
-            $writer->addRow(array_keys($header));
+            $writer->addRow(Row::fromValues(array_keys($header)));
         }
 
         $writer->close();
@@ -162,7 +163,7 @@ class StreamingExcelExport extends ExportAbstract
                $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
             }
 
-            $writer = WriterFactory::create(Type::XLSX);
+            $writer = new Writer();
             $writer->openToFile($filename);
 
             foreach($rows as $row) {
@@ -187,12 +188,12 @@ class StreamingExcelExport extends ExportAbstract
      * @param array $row a row in the model
      * @param file $file The already opened file
      */
-    public function addRowWithCount($row, $writer, $rowNumber)
+    public function addRowWithCount(array $row, Writer $writer, $rowNumber)
     {
         $exportRow   = $this->filterRow($row);
         $labeledCols = $this->getLabeledColumns();
         $exportRow   = array_replace(array_flip($labeledCols), $exportRow);
-        $writer->addRow($exportRow);
+        $writer->addRow(Row::fromValues($exportRow));
     }
 
     /**
@@ -219,16 +220,15 @@ class StreamingExcelExport extends ExportAbstract
 
         $headerFilename = $tempFilename . '_header' . $this->fileExtension;
 
-        $reader = ReaderFactory::create(Type::XLSX);
+        $reader = new Reader();
         $reader->open($headerFilename);
 
-        $rowStyle = (new StyleBuilder())
-           ->setFontBold()
-           ->build();
+        $rowStyle = (new Style())->setFontBold();
 
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $writer->addRowWithStyle($row, $rowStyle);
+                $row->setStyle($rowStyle);
+                $writer->addRow($row);
             }
         }
         $reader->close();
@@ -243,9 +243,11 @@ class StreamingExcelExport extends ExportAbstract
         for($i=0;$i<$iteration;$i++) {
             $partFilename = $tempFilename . '_' . $i . $this->fileExtension;
 
-            $reader = ReaderFactory::create(Type::XLSX);
+            $options = new Options();
+            $options->SHOULD_FORMAT_DATES = true;
+
+            $reader = new Reader($options);
             $reader->open($partFilename);
-            $reader->setShouldFormatDates(true);
             foreach($reader->getSheetIterator() as $sheetIndex=>$sheet) {
                 if ($sheetIndex !== 1) {
                     $writer->addNewSheetAndMakeItCurrent();
@@ -288,7 +290,7 @@ class StreamingExcelExport extends ExportAbstract
 
     protected function getWriter($filename, $data)
     {
-        $writer = WriterFactory::create(Type::XLSX);
+        $writer = new Writer();
         $writer->openToFile($filename);
         return $writer;
     }
@@ -324,9 +326,7 @@ class StreamingExcelExport extends ExportAbstract
 
             $writer = $this->getWriter($combinedTempFilename, []);
 
-            $headerRowStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->build();
+            $headerRowStyle = (new Style())->setFontBold();
 
             $new = true;
 
@@ -343,18 +343,20 @@ class StreamingExcelExport extends ExportAbstract
                 }
                 $sheet->setName($baseNewName);
 
-                $reader = ReaderFactory::create(Type::XLSX);
+                $options = new Options();
+                $options->SHOULD_FORMAT_DATES = true;
+
+                $reader = new Reader($options);
                 $reader->open($tempFilename);
-                $reader->setShouldFormatDates(true);
                 foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
                     if ($sheetIndex !== 1) {
                         $writer->addNewSheetAndMakeItCurrent();
                     }
 
+                    /** @var Row $row */
                     foreach ($sheet->getRowIterator() as $rowIndex => $row) {
                         if ($rowIndex === 1) {
-                            $writer->addRowWithStyle($row, $headerRowStyle);
-                            continue;
+                            $row->setStyle($headerRowStyle);
                         }
                         $writer->addRow($row);
                     }

@@ -72,7 +72,7 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
 
         $form->addElements($elements);
 
-        $exportClass        = $this->export->getExport($currentType, $this->session);
+        $exportClass        = $this->export->getExport($currentType, null, $batch);
         $exportName         = $exportClass->getName();
         $exportFormElements = $exportClass->getFormElements($form, $data);
 

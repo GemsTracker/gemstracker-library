@@ -312,7 +312,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         $dangers = ['=', '+', '-', '@'];
 
         // Trim leading spaces for our test
-        $trimmed = trim($input);
+        $trimmed = trim($input ?? '');
 
         if (strlen($trimmed)>1 && in_array($trimmed[0], $dangers)) {
             return "'" . $input;

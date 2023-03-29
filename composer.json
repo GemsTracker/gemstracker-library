@@ -88,7 +88,7 @@
         "mezzio/mezzio-twigrenderer": "^2.9",
         "mlocati/ip-lib": "1.*",
         "monolog/monolog": "^3.0.0",
-        "openspout/openspout": "^3.7.4",
+        "openspout/openspout": "^4.0",
         "psr/http-message": "^1.0.1",
         "psr/http-server-handler": "^1.0.1",
         "psr/http-server-middleware": "^1.0.1",
