@@ -74,14 +74,14 @@ class MaskHandler extends BrowseChangeHandler
         ]);
         $metaModel->set('gm_groups', [
             'label' => $this->_('Groups'),
-            'descriptions' => $this->_('No groups is the same as all groups.'),
+            'description' => $this->_('No groups is the same as all groups.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->accessRepository->getGroups(false),
             'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
         $metaModel->set('gm_organizations', [
             'label' => $this->_('Organization'),
-            'descriptions' => $this->_('No organizations is the same as all groups.'),
+            'description' => $this->_('No organizations is the same as all groups.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->organizationRepository->getOrganizations(),
             'type' => new ConcatenatedType(':', $this->_(', '), true),

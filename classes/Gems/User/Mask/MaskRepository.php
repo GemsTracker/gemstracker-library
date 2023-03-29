@@ -646,9 +646,6 @@ class MaskRepository
     {
         $output = [];
 
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true) . "\n", FILE_APPEND);
-
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($context, true) . "\n", FILE_APPEND);
         foreach ($context as $key => $value) {
             $setting = $this->getSettingsField($key);
             if ($setting) {
@@ -656,7 +653,6 @@ class MaskRepository
                 $output[$setting] = $value;
             }
         }
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($output, true) . "\n", FILE_APPEND);
 
         return json_encode($output);
     }
