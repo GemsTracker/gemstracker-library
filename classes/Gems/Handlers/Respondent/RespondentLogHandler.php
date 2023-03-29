@@ -18,6 +18,7 @@ use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
 use Laminas\Db\Adapter\Adapter;
+use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -52,6 +53,21 @@ class RespondentLogHandler extends LogHandler
         protected RespondentRepository $respondentRepository,
     ) {
         parent::__construct($responder, $translate, $modelLoader, $periodSelectRepository);
+    }
+
+    protected function createModel(bool $detailed, string $action): ModelAbstract
+    {
+        /**
+         * @var Model\JoinModel $model
+         */
+        $model = parent::createModel($detailed, $action);
+        $model->addTable('gems__respondent2org', ['gla_respondent_id' => 'gr2o_id_user', 'gla_organization' => 'gr2o_id_organization']);
+        $model->setKeys([Model::LOG_ITEM_ID => 'gla_id']);
+
+        $model->addMap(\MUtil\Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $model->addMap(\MUtil\Model::REQUEST_ID2, 'gr2o_id_organization');
+
+        return $model;
     }
 
     /**
