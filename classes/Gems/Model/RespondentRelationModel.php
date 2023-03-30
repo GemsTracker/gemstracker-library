@@ -81,6 +81,11 @@ class RespondentRelationModel extends JoinModel
     public function applyDetailSettings()
     {
         $this->applyBrowseSettings();
+
+        $this->set('grr_id_user', [
+            'elementClass' => 'Hidden',
+        ]);
+
         $this->set('grr_comments', 'label', $this->_('Comments'), 'elementClass', 'TextArea', 'rows', 4, 'cols', 60);
         $this->set('grr_birthdate', 'jQueryParams', ['defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0']
         );

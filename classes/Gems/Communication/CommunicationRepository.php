@@ -191,6 +191,14 @@ class CommunicationRepository
         return $mailFieldCreator->getMailFields();
     }
 
+    public function getProjectEmailAddress(): ?string
+    {
+        if ($this->config['email']['site']) {
+            return $this->config['email']['site'];
+        }
+        return null;
+    }
+
     public function getResetPasswordTemplate(Organization $organization): ?int
     {
         $templateId = $organization->getResetPasswordTemplate();

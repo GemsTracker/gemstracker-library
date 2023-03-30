@@ -135,12 +135,20 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
 
         $this->addAppointmentsToModel();
 
-        $this->setKeys(array(
+        $this->setKeys([
             \Gems\Model::FIELD_ID => 'gtf_id_field',
             \MUtil\Model::REQUEST_ID => 'gtf_id_track',
-            ));
-        $this->setClearableKeys(array(\Gems\Model::FIELD_ID => 'gtf_id_field'));
-        $this->setSort(array('gtf_id_order' => SORT_ASC));
+        ]);
+        $this->setClearableKeys([\Gems\Model::FIELD_ID => 'gtf_id_field']);
+        $this->setSort(['gtf_id_order' => SORT_ASC]);
+    }
+
+    public function getMaps(): array
+    {
+        return [
+            \Gems\Model::FIELD_ID => 'gtf_id_field',
+            \MUtil\Model::REQUEST_ID => 'gtf_id_track',
+        ];
     }
 
     /**

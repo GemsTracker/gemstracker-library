@@ -64,12 +64,6 @@ class AvailableTracksSnippet extends ModelTableSnippetAbstract
     public $browse = false;
 
     /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
      * The respondent
      *
      * @var \Gems\Tracker\Respondent

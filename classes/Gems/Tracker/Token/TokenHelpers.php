@@ -36,11 +36,7 @@ class TokenHelpers
 
     public function isValidReturnUrl($url): bool
     {
-        if (isset(
-                $this->config['survey'],
-                $this->config['survey']['ask'],
-                $this->config['survey']['ask']['allowedReturnUrls']
-            ) && filter_var($url, FILTER_VALIDATE_URL)) {
+        if (isset($this->config['survey']['ask']['allowedReturnUrls']) && filter_var($url, FILTER_VALIDATE_URL)) {
             foreach($this->config['survey']['ask']['allowedReturnUrls'] as $allowedReturnUrl) {
                 if (str_starts_with($url, $allowedReturnUrl)) {
                     return true;

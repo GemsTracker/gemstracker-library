@@ -66,6 +66,7 @@ class CommTemplateModel extends JoinModel
         $subModel->set('gctt_subject', [
             'label' => $translator->_('Subject'),
             'apiName' => 'subject',
+            'size' => 50,
             'formatFunction' => [$this->translatedUtil, 'markEmpty'],
         ]);
         $subModel->set('gctt_body', [

@@ -86,6 +86,8 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'), 'grc', false);
         $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));
 
+
+
         // No need to send all this information to the user
         $this->setCol($this->getItemsFor('table', 'gems__staff'), 'elementClass', 'None');
 
@@ -235,6 +237,10 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     {
         $this->applyDetailSettings($trackEngine, true);
         $this->addEditTracking();
+
+        $this->set('gr2t_id_user', [
+            'elementClass' => 'Hidden',
+        ]);
 
         $this->set('gr2o_patient_nr',     'elementClass', 'Exhibitor');
         $this->set('respondent_name',     'elementClass', 'Exhibitor');

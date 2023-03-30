@@ -18,7 +18,7 @@ class MailBouncer
         protected CurrentUserRepository $currentUserRepository,
         array $config)
     {
-        if (isset($config['mail'])) {
+        if (isset($config['email'])) {
             $this->recipients = $this->getRecipientsFromConfig($config);
             $this->sender = $this->getSenderFromConfig($config);
         }
@@ -45,14 +45,14 @@ class MailBouncer
 
     protected function getRecipientsFromConfig(array $config): ?array
     {
-        if (isset($config['mail']['to'])) {
+        if (isset($config['email']['to'])) {
             $recipients = explode(';', $config['to']);
             if (count($recipients)) {
                 return $this->recipients;
             }
         }
 
-        if (isset($config['mail']['bounce']) && $config['mail']['bounce'] === true) {
+        if (isset($config['email']['bounce']) && $config['email']['bounce'] === true) {
             $currentUser = $this->currentUserRepository->getCurrentUser();
             $email = $currentUser->getEmailAddress();
             if ($email) {
@@ -62,8 +62,8 @@ class MailBouncer
             if ($currentOrganizationEmail) {
                 return [$currentOrganizationEmail];
             }
-            if (isset($config['mail']['site'])) {
-                return [$config['mail']['site']];
+            if (isset($config['email']['site'])) {
+                return [$config['email']['site']];
             }
             throw new Exception('Bounce is enabled, but no fallback e-mail address was found');
         }
@@ -78,8 +78,8 @@ class MailBouncer
 
     protected function getSenderFromConfig(array $config): ?string
     {
-        if (isset($config['mail']['from'])) {
-            return $config['mail']['from'];
+        if (isset($config['email']['from'])) {
+            return $config['email']['from'];
         }
 
         return null;

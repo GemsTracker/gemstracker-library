@@ -267,6 +267,10 @@ class AppointmentModel extends \Gems\Model\JoinModel
 
         $empty  = $this->translatedUtil->getEmptyDropdownArray();
 
+        $this->set('gap_id_user', [
+            'elementClass' => 'Hidden',
+        ]);
+
         $this->setIfExists('gap_id_organization', 'default', $orgId ?: $this->currentOrganization->getId());
         $this->setIfExists('gap_admission_time',  'elementClass', 'Date');
         $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');

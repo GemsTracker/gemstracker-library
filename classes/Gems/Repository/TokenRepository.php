@@ -342,7 +342,7 @@ class TokenRepository
      */
     public function getTokenAskButtonForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $forceButton = false, bool $keepCaps = false): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.ask')) {
+        if (! $this->currentUser->hasPrivilege('pr.ask.forward')) {
             //return null;
         }
 

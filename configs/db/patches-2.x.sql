@@ -45,3 +45,11 @@ INSERT INTO `gems__comm_template_translations` (`gctt_id_template`, `gctt_lang`,
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangeEmail'), 'nl', 'De bevestigingscode voor je email wijziging', 'Gebruik de volgende code om de email wijziging voor de {{organization}} site {{project}} te bevestigen: {{confirmation_code}}'),
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangePhone'), 'en', 'Your confirmation code', 'Verify your new phone number using this code: {{confirmation_code}}'),
     ((SELECT gct_id_template FROM gems__comm_templates WHERE gct_code = 'confirmChangePhone'), 'nl', 'Je bevestigingscode', 'Bevestig je nieuwe telefoonnummer met deze code: {{confirmation_code}}');
+
+-- PATCH: Add id to mailservers
+ALTER TABLE `gems__mail_servers`
+    ADD `ggp_code` bigint unsigned not null auto_increment FIRST
+    ADD PRIMARY KEY `gms_id_server` (`gms_id_server`),
+    ADD UNIQUE `gms_from` (`gms_from`),
+    DROP INDEX `PRIMARY`,
+    DROP INDEX `gms_id_server`;

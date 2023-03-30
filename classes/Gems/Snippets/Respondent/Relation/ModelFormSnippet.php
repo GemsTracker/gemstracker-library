@@ -22,16 +22,8 @@ namespace Gems\Snippets\Respondent\Relation;
 class ModelFormSnippet extends \Gems\Snippets\ModelFormSnippet {
 
     protected function setAfterSaveRoute() {
-        $this->afterSaveRouteUrl = array(
-            'action'                 => 'index',
-            'controller'             => 'respondent-relation',
-            \MUtil\Model::REQUEST_ID1 => $this->request->getParam(\MUtil\Model::REQUEST_ID1),
-            \MUtil\Model::REQUEST_ID2 => $this->request->getParam(\MUtil\Model::REQUEST_ID2),
-        );
 
-        $this->resetRoute = true;
-
-        //parent::setAfterSaveRoute();
+        $this->afterSaveRouteUrl = $this->menuHelper->getRelatedRouteUrl('index');
 
         return $this;
     }
