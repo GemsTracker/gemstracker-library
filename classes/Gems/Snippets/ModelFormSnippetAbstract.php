@@ -238,6 +238,13 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             }
             $this->_form = new \Gems\Form($options);
         }
+
+        if (!\Laminas\Validator\AbstractValidator::hasDefaultTranslator()) {
+            \Laminas\Validator\AbstractValidator::setDefaultTranslator(
+                new \Gems\Translate\LaminasTranslator($this->translate)
+            );
+        }
+
         return $this->_form;
     }
 
