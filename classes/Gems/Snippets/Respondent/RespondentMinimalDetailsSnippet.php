@@ -52,7 +52,7 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
             $label = $this->_('Respondent nr: ');               // ...but have a fall-back
         }
         $bridge->addItem($bridge->gr2o_patient_nr, $label);
-        if (! $this->currentUser->areAllFieldsMaskedWhole('grs_last_name', 'grs_first_name', 'grs_gender', 'grs_surname_prefix')) {
+        if (! $this->maskRepository->areAllFieldsMaskedWhole('grs_last_name', 'grs_first_name', 'grs_gender', 'grs_surname_prefix')) {
             $bridge->addItem(
                 $HTML->spaced(
                         Late::iif($bridge->grs_last_name, [$bridge->grs_last_name, ',']),
@@ -63,10 +63,10 @@ class RespondentMinimalDetailsSnippet extends \Gems\Snippets\RespondentDetailSni
                 $this->_('Respondent'));
         }
         // ROW 1
-        if ($this->model->has('grs_birthday') && (! $this->currentUser->isFieldMaskedWhole('grs_birthday'))) {
+        if ($this->model->has('grs_birthday') && (! $this->maskRepository->isFieldMaskedWhole('grs_birthday'))) {
             $bridge->addItem('grs_birthday');
         }
-        if ($this->model->has('grs_phone_1') && (! $this->currentUser->isFieldMaskedWhole('grs_phone_1'))) {
+        if ($this->model->has('grs_phone_1') && (! $this->maskRepository->isFieldMaskedWhole('grs_phone_1'))) {
             $bridge->addItem('grs_phone_1');
         }
     }

@@ -12,10 +12,7 @@
 namespace Gems\Model;
 
 use Gems\Model\Type\MaskedJsonData;
-use Gems\User\Group;
-use MUtil\Model;
 use MUtil\Model\Type\JsonData;
-use Zalt\Html\Html;
 
 /**
  *
@@ -126,7 +123,7 @@ class LogModel extends \Gems\Model\HiddenOrganizationModel
         $jdType->apply($this, 'gla_message', $detailed);
 
         if ($detailed) {
-            $mjdType = new MaskedJsonData($this->currentUser);
+            $mjdType = new MaskedJsonData($this->maskRepository);
             $this->set('gla_data', [
                 'label' => $this->_('Data'),
             ]);
@@ -140,7 +137,7 @@ class LogModel extends \Gems\Model\HiddenOrganizationModel
             ]);
         }
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
     }
 
     /**
@@ -151,18 +148,5 @@ class LogModel extends \Gems\Model\HiddenOrganizationModel
     public function applyDetailSettings()
     {
         $this->applyBrowseSettings(true);
-    }
-
-    /**
-     * Function to re-apply all the masks and settings for the current group
-     *
-     * @return void
-     */
-    public function refreshGroupSettings()
-    {
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($this, false);
-        }
     }
 }

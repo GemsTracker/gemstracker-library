@@ -18,6 +18,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use MUtil\Model;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -126,6 +127,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         TranslatorInterface $translate,
         protected EventDispatcherInterface $event,
         protected Locale $locale,
+        protected MaskRepository $maskRepository,
         protected Tracker $tracker,
         protected TokenRepository $tokenRepository,
         CurrentUserRepository $currentUserRepository,
@@ -299,7 +301,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
     {
         $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
 
-        if (! $this->currentUser->isFieldMaskedWhole('name')) {
+        if (! $this->maskRepository->isFieldMaskedWhole('name')) {
             $htmlDiv->pInfo(sprintf(
                     $this->_('Answers for token %s, patient number %s: %s.'),
                     strtoupper($this->tokenId),

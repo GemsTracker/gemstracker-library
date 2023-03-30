@@ -20,6 +20,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -279,6 +280,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
         TranslatorInterface $translate,
         RespondentRepository $respondentRepository,
         CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
         protected Model $modelLoader,
         protected OrganizationRepository $organizationRepository,
         protected ResultFetcher $resultFetcher,
@@ -580,7 +582,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     {
         $respondent = $this->getRespondent();
         if ($respondent->exists) {
-            if ($this->currentUser->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
+            if ($this->maskRepository->areAllFieldsMaskedWhole('grs_first_name', 'grs_last_name')) {
                 return sprintf($this->_('Edit respondent nr %s'), $respondent->getPatientNumber());
             }
             return sprintf(

@@ -12,6 +12,7 @@
 namespace Gems\Agenda;
 
 use DateTimeInterface;
+use Gems\User\Mask\MaskRepository;
 use MUtil\Model;
 
 /**
@@ -73,6 +74,8 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
      */
     protected $loader;
 
+    protected MaskRepository $maskRepository;
+
     /**
      * Creates the episode of care object
      *
@@ -83,13 +86,30 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
         if (is_array($episodeData)) {
             $this->_gemsData      = $episodeData;
             $this->_episodeId     = $episodeData['gec_episode_of_care_id'];
-            if ($this->currentUser instanceof \Gems\User\User) {
-                $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-            }
         } else {
             $this->_episodeId = $episodeData;
             // loading occurs in checkRegistryRequestAnswers
         }
+    }
+
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        $this->maskRepository = $this->loader->getMaskRepository();
+
+        if ($this->db && (! $this->_gemsData)) {
+            $this->refresh();
+        } else {
+            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
+        }
+
+        return $this->exists;
     }
 
     /**
@@ -103,21 +123,6 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
         }
 
         return $this->_appointments;
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->db && (! $this->_gemsData)) {
-            $this->refresh();
-        }
-
-        return $this->exists;
     }
 
     /**
@@ -269,9 +274,7 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
         }
         $this->exists = isset($this->_gemsData['gec_episode_of_care_id']);
 
-        if ($this->currentUser instanceof \Gems\User\User) {
-            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-        }
+        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
         $this->_appointments = false;
 
         return $this;

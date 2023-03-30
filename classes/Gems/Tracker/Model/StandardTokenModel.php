@@ -95,7 +95,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
      *
      * @var boolean When true the labels of wholly masked items are removed
      */
-    protected $hideWhollyMasked = true;
+    protected bool $hideWhollyMasked = true;
 
     /**
      *
@@ -406,7 +406,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
                 'elementClass', 'Exhibitor'
                 );
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }

@@ -334,7 +334,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
 
         // ThreeColumnTableBridge->add()
         $bridge->add('gr2o_patient_nr');
-        if (! $this->currentUser->isFieldMaskedWhole('respondent_name')) {
+        if (! $this->maskRepository->isFieldMaskedWhole('respondent_name')) {
             $bridge->add('respondent_name');
         }
 

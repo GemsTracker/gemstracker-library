@@ -64,7 +64,8 @@ class ExecuteMailJobTask extends \MUtil\Task\TaskAbstract
      */
     public function execute($jobId = null, $respondentId = null, $organizationId = null, $preview = false, $forceSent = false)
     {
-        $this->currentUser->disableMask();
+        $maskRepository = $this->loader->getMaskRepository();
+        $maskRepository->disableMaskRepository();
 
         $sql = $this->db->select()->from('gems__comm_jobs')
                     ->join('gems__comm_templates', 'gcj_id_message = gct_id_template')
@@ -224,7 +225,7 @@ class ExecuteMailJobTask extends \MUtil\Task\TaskAbstract
                     ));
         }
 
-        $this->currentUser->enableMask();
+        $maskRepository->enableMaskRepository();
     }
 
     /**

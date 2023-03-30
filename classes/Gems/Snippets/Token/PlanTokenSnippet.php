@@ -12,18 +12,12 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
-use Gems\Repository\TokenRepository;
-use Gems\Tracker;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zalt\Base\RequestInfo;
 use Zalt\Html\AElement;
 use Zalt\Html\TableElement;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
-use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  * Snippet for showing the tokens for the applied filter over multiple respondents.
@@ -56,17 +50,6 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
      * @var boolean
      */
     public $browse = true;
-
-    public function __construct(
-        SnippetOptions $snippetOptions,
-        RequestInfo $requestInfo,
-        MenuSnippetHelper $menuHelper,
-        TranslatorInterface $translate,
-        Tracker $tracker,
-        TokenRepository $tokenRepository,
-    ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
-    }
 
     /**
      * @inheritdoc 

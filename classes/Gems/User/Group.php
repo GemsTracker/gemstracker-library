@@ -106,21 +106,9 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
 
     /**
      *
-     * @var boolean When true mask settings are used
-     */
-    protected $enableMasks = true;
-
-    /**
-     *
      * @var \Gems\Loader
      */
     protected $loader;
-
-    /**
-     *
-     * @var \Gems\User\Mask\MaskStore
-     */
-    protected $maskStore;
 
     /**
      * Set in child classes
@@ -134,74 +122,6 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
      * @var \Gems\Util
      */
     protected $util;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->maskStore->setMaskSettings($this->_data['ggp_mask_settings']);
-    }
-
-    /**
-     *
-     * @param array $row
-     * @return array with the values masked
-     */
-    public function applyGroupToData(array $row)
-    {
-        if ($this->enableMasks) {
-            return $this->maskStore->maskRow($row);
-        } else {
-            return $row;
-        }
-    }
-
-    /**
-     *
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param boolean $hideWhollyMasked When true the labels of wholly masked items are removed
-     * @return $this
-     */
-    public function applyGroupToModel(\MUtil\Model\ModelAbstract $model, $hideWhollyMasked)
-    {
-        if ($this->enableMasks) {
-            $this->maskStore->applyMaskDataToModel($model, $hideWhollyMasked);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Disable mask usage (call before any applyGroupToData() or applyGroupToModel()
-     * calls: doesn't work retroactively
-     *
-     * @return $this
-     */
-    public function disableMask()
-    {
-        $this->enableMasks = false;
-
-        return $this;
-    }
-
-    /**
-     * Enable mask usage (call before any applyGroupToData() or applyGroupToModel()
-     * calls: doesn't work retroactively
-     *
-     * @return $this
-     */
-    public function enableMask()
-    {
-        $this->enableMasks = true;
-
-        return $this;
-    }
 
     /**
      * Return default new use group, if it exists
@@ -299,48 +219,6 @@ class Group extends \Gems\Registry\CachedArrayTargetAbstract
     public function isActive()
     {
         return (boolean) $this->_get('ggp_group_active');
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is invisible
-     */
-    public function isFieldInvisible($fieldName)
-    {
-        if ($this->enableMasks) {
-            return $this->maskStore->isFieldInvisible($fieldName);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
-     */
-    public function isFieldMaskedPartial($fieldName)
-    {
-        if ($this->enableMasks) {
-            return $this->maskStore->isFieldMaskedPartial($fieldName);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is wholly masked (or invisible)
-     */
-    public function isFieldMaskedWhole($fieldName)
-    {
-        if ($this->enableMasks) {
-            return $this->maskStore->isFieldMaskedWhole($fieldName);
-        } else {
-            return false;
-        }
     }
 
     /**

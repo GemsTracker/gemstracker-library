@@ -17,6 +17,7 @@ use DateTimeInterface;
 use Gems\Loader;
 use Gems\Registry\TargetAbstract;
 use Gems\Translate\GenderTranslation;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Translated;
 
@@ -70,6 +71,8 @@ class Respondent extends TargetAbstract
      * @var Loader
      */
     protected $loader;
+
+    protected MaskRepository $maskRepository;
 
     /**
      *
@@ -145,6 +148,9 @@ class Respondent extends TargetAbstract
             $this->model->addLoginCheck();
         }
         $this->initGenderTranslations();
+
+        $this->maskRepository = $this->loader->getMaskRepository();
+
         // Load the data
         $this->refresh();
     }
@@ -612,9 +618,7 @@ class Respondent extends TargetAbstract
             $this->exists = false;
         }
 
-        if ($this->currentUser instanceof User) {
-            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-        }
+        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
 	}
 
     /**

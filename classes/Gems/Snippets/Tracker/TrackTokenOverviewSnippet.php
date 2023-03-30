@@ -17,6 +17,7 @@ use Gems\Model;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\TokenModelSnippetAbstract;
 use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
@@ -84,11 +85,12 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
         Tracker $tracker,
         TokenRepository $tokenRepository,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $tracker, $tokenRepository);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $maskRepository,$tracker, $tokenRepository);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 
@@ -130,7 +132,7 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
 
         // Rights depended score column
         if ($this->currentUser->hasPrivilege('pr.respondent.result') &&
-                (! $this->currentUser->isFieldMaskedWhole('gto_result'))) {
+                (! $this->maskRepository->isFieldMaskedWhole('gto_result'))) {
             $bridge->addSortable('gto_result', $this->_('Score'), 'date');
         }
 

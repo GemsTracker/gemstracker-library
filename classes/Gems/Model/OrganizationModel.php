@@ -314,9 +314,10 @@ class OrganizationModel extends \Gems\Model\JoinModel
                 );
         $this->set('gor_task',
                 'size', 25);
-        $this->set('gor_url',
-                'size', 50
-                );
+        $this->set('gor_url', [
+            'size' => 50,
+            'validators[url]' => 'ExistingUrl',
+            ]);
 //        $this->setIfExists('gor_url_base',
 //                'size', 50,
 //                'filter', 'TrailingSlash'

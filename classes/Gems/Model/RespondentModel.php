@@ -320,7 +320,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }
@@ -444,6 +444,8 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('gr2o_created_by', 'label', $this->_('Creation by'),
                 'multiOptions', $changers
                 );
+
+        $this->applyMask();
 
         return $this;
     }
@@ -582,6 +584,8 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             $this->setIfExists('gr2o_created_by', 'elementClass', 'Exhibitor');
         }
 
+        $this->applyMask();
+
         return $this;
     }
 
@@ -628,7 +632,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
     public function copyToOrg($fromOrgId, $fromPid, $toOrgId, $toPid, $keepConsent = false)
     {
         // Maybe we should disable masking, just to be sure
-        $this->currentUser->disableMask();
+        $this->maskRepository->disableMaskRepository();
 
         // Do some sanity checks
         $fromPatient = $this->loadFirst(['gr2o_id_organization' => $fromOrgId, 'gr2o_patient_nr' => $fromPid]);
@@ -674,7 +678,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         }
 
         // Now re-enable the mask feature
-        $this->currentUser->enableMask();
+        $this->maskRepository->enableMaskRepository();
 
         return $result;
     }
@@ -890,7 +894,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
     public function merge($newPid, $oldPid, $orgId)
     {
         // Maybe we should disable masking, just to be sure
-        $this->currentUser->disableMask();
+        $this->maskRepository->disableMaskRepository();
 
         $patients = $this->load([
             'gr2o_id_organization' => $orgId,
@@ -898,7 +902,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         ]);
 
         // Now re-enable the mask feature
-        $this->currentUser->enableMask();
+        $this->maskRepository->enableMaskRepository();
 
         $cnt = count($patients);
 
@@ -1006,7 +1010,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
     public function move($fromOrgId, $fromPid, $toOrgId, $toPid)
     {
         // Maybe we should disable masking, just to be sure
-        $this->currentUser->disableMask();
+        $this->maskRepository->disableMaskRepository();
 
         $patientFrom = $this->loadFirst([
             'gr2o_id_organization' => $fromOrgId,
@@ -1034,12 +1038,12 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             // already exists, return current patient
             // we can not delete the other records, maybe mark as inactive or throw an error
             $result = $patientTo;
-            $this->currentUser->enableMask();
+            $this->maskRepository->enableMaskRepository();
             throw new RespondentAlreadyExists($this->_('Respondent already exists in destination, please delete current record manually if needed.'), 200, null, RespondentAlreadyExists::OTHERUID);
         }
 
         // Now re-enable the mask feature
-        $this->currentUser->enableMask();
+        $this->maskRepository->enableMaskRepository();
 
         return $result;
     }

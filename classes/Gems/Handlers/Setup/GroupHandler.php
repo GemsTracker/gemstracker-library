@@ -245,8 +245,6 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
                 'elementClass', 'Radio',
                 'multiOptions', $this->screenLoader->listRespondentShowScreens()
             );*/
-
-            //$this->maskStore->addMaskSettingsToModel($model, 'ggp_mask_settings');
         }
 
         if (isset($this->config['translate'], $this->config['translate']['databaseFields']) && $this->config['translate']['databaseFields'] === true) {

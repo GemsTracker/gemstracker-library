@@ -44,13 +44,13 @@ class BirthdayMasker extends MaskerAbstract
     {
         switch ($choice) {
             case 'D':
-                return 'M Y';
+                return 'm Y';
 
             case 'M':
                 return 'Y';
 
             case 'Y':
-                return 'D M';
+                return 'd m';
 
             case '*':
                 return '**-**-****';

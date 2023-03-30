@@ -195,7 +195,7 @@ class CommLogModel extends HiddenOrganizationModel
             //}
         }
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
     }
 
     public function formatJob($jobDescr, $jobId = null)
@@ -224,18 +224,5 @@ class CommLogModel extends HiddenOrganizationModel
             return Html::create('a', $url, $tokenId);
         }
         return $tokenId;
-    }
-
-    /**
-     * Function to re-apply all the masks and settings for the current group
-     *
-     * @return void
-     */
-    public function refreshGroupSettings()
-    {
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($this, false);
-        }
     }
 }

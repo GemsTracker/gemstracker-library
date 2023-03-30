@@ -12,6 +12,7 @@
 namespace Gems\Model;
 
 use Gems\User\Group;
+use Gems\User\Mask\MaskRepository;
 
 /**
  * Extension of JoinModel for models where the organization id is
@@ -23,32 +24,13 @@ use Gems\User\Group;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class HiddenOrganizationModel extends \Gems\Model\JoinModel
+class HiddenOrganizationModel extends MaskedModel
 {
     /**
      *
      * @var \Gems\User\User
      */
     protected $currentUser;
-
-    /**
-     *
-     * @var boolean When true the labels of wholly masked items are removed
-     */
-    protected $hideWhollyMasked = false;
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        $this->refreshGroupSettings();
-    }
 
     /**
      * Stores the fields that can be used for sorting or filtering in the
@@ -175,29 +157,18 @@ class HiddenOrganizationModel extends \Gems\Model\JoinModel
      *
      * @see \MUtil\Model\SelectModelPaginator
      *
-     * @param mxied $data Nested array or \Traversable containing rows or iterator
+     * @param mxied $data Nested array or \Travers (able containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array or \Traversable Nested
      */
     public function processAfterLoad($data, $new = false, $isPostData = false): mixed
     {
-        // Repeat settings here, because the might be overloaded in the meantime
-        $this->refreshGroupSettings();
+        if (isset($this->maskRepository)) {
+            // Repeat settings here, because the might be overloaded in the meantime
+            $this->applyMask();
+        }
 
         return parent::processAfterLoad($data, $new, $isPostData);
-    }
-
-    /**
-     * Function to re-apply all the masks and settings for the current group
-     *
-     * @return void
-     */
-    public function refreshGroupSettings()
-    {
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($this, $this->hideWhollyMasked);
-        }
     }
 }

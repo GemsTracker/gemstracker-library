@@ -49,7 +49,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      *
      * @var boolean When true the labels of wholly masked items are removed
      */
-    protected $hideWhollyMasked = true;
+    protected bool $hideWhollyMasked = true;
 
     /**
      * @var \Gems\Loader
@@ -222,7 +222,8 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('gr2t_comment',         'label', $this->_('Comment'));
         $this->set('grc_description',      'label', $this->_('Reception code'),
             'elementClass', 'Exhibitor');
-        $this->refreshGroupSettings();
+
+        $this->applyMask();
 
         return $this;
     }
@@ -246,6 +247,8 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
         $this->set('respondent_name',     'elementClass', 'Exhibitor');
         $this->set('gtr_track_name',      'elementClass', 'Exhibitor');
 
+        $this->set('gr2t_id_user',        'elementClass', 'Hidden');
+        $this->set('gr2t_id_track',       'elementClass', 'Hidden');
         // Fields set in details
 
         $this->set('gr2t_track_info',     'elementClass', 'None');

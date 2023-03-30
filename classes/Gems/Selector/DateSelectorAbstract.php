@@ -26,6 +26,7 @@ use Zalt\Late\Late;
 use Zalt\Late\RepeatableInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsHandler\SnippetHandler;
 
 /**
  *
@@ -569,7 +570,7 @@ abstract class DateSelectorAbstract
         $href = array(
             $baseurl,
             self::DATE_FACTOR => $repeater->df_link,
-            \MUtil\Model::AUTOSEARCH_RESET => null,
+            SnippetHandler::SEARCH_RESET => null,
             );
 
         // Repeating column

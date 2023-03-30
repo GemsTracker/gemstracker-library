@@ -25,7 +25,7 @@ use Gems\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class AppointmentModel extends \Gems\Model\JoinModel
+class AppointmentModel extends MaskedModel
 {
     /**
      * The number of tokens changed by the last save
@@ -198,7 +198,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
             );
         }
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }
@@ -250,7 +250,7 @@ class AppointmentModel extends \Gems\Model\JoinModel
             $this->setIfExists('gap_id_location',     'multiOptions', $empty + $this->agenda->getLocations());
         }
 
-        $this->refreshGroupSettings();
+        $this->applyMask();
 
         return $this;
     }
@@ -364,18 +364,5 @@ class AppointmentModel extends \Gems\Model\JoinModel
         $this->autoTrackUpdate = $value;
 
         return $this;
-    }
-
-    /**
-     * Function to re-apply all the masks and settings for the current group
-     *
-     * @return void
-     */
-    public function refreshGroupSettings()
-    {
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof \Gems\User\Group) {
-            $group->applyGroupToModel($this, false);
-        }
     }
 }
