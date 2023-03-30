@@ -15,7 +15,9 @@ namespace Gems\Model;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Model\Type\EncryptedField;
 use Gems\User\Embed\EmbedLoader;
+use Gems\User\Filter\PhoneNumberFilter;
 use Gems\User\UserLoader;
+use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
 use MUtil\Validate\NoScript;
@@ -79,6 +81,11 @@ class StaffModel extends JoinModel
      * @var ValueEncryptor
      */
     protected $valueEncryptor;
+
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
      * Create a model that joins two or more tables
@@ -278,7 +285,11 @@ class StaffModel extends JoinModel
             'size', 30,
             'validators[email]', 'SimpleEmail'
         );
-        $this->set('gsf_phone_1',         'label', $this->_('Mobile phone'));
+        $this->set('gsf_phone_1', [
+            'label' => $this->_('Mobile phone'),
+            'validator' => new PhoneNumberValidator($this->config),
+        ]);
+        $this->setOnSave('gsf_phone_1', (new PhoneNumberFilter($this->config))->filter(...));
 
 
         $this->set('gsf_id_primary_group',     'label', $this->_('Primary group'),
