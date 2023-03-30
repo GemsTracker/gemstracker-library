@@ -40,7 +40,7 @@ class PhoneNumberValidator extends AbstractTranslatingValidator
             return [];
         } elseif ($this->valid === false) {
             return [
-                'invalid' => $this->trans('Please provide a valid telephone number'),
+                'invalid' => $this->_('Please provide a valid telephone number'),
             ];
         } else {
             throw new \Exception();
