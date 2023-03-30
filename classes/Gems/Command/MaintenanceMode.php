@@ -38,20 +38,20 @@ class MaintenanceMode extends Command
 
         if ($value === '1' || strtolower($value) == 'on') {
             if ($this->maintenanceLock->isLocked()) {
-                $io->warning('Maintenance mode is already ON</error>');
+                $io->warning('Maintenance mode is already ON');
                 return static::SUCCESS;
             }
             $this->maintenanceLock->lock();
-            $io->warning('Maintenance mode has been turned ON</error>');
+            $io->warning('Maintenance mode has been turned ON');
             return static::SUCCESS;
         }
         if ($value === '0' || strtolower($value) == 'off') {
             if (!$this->maintenanceLock->isLocked()) {
-                $io->info('Maintenance mode is already OFF</info>');
+                $io->info('Maintenance mode is already OFF');
                 return static::SUCCESS;
             }
             $this->maintenanceLock->unlock();
-            $io->info('Maintenance mode has been turned OFF</info>');
+            $io->info('Maintenance mode has been turned OFF');
             return static::SUCCESS;
         }
 
