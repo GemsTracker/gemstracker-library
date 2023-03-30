@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems;
+namespace Gems\Translate;
 
 use Laminas\Validator\Translator\TranslatorInterface as LaminasTranslatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface as SymfonyTranslatorInterface;

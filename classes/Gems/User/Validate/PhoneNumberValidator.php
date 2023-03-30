@@ -2,11 +2,11 @@
 
 namespace Gems\User\Validate;
 
-use Laminas\Validator\AbstractValidator;
+use Gems\Validate\AbstractTranslatingValidator;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 
-class PhoneNumberValidator extends AbstractValidator
+class PhoneNumberValidator extends AbstractTranslatingValidator
 {
     private ?bool $valid = null;
 
@@ -40,7 +40,7 @@ class PhoneNumberValidator extends AbstractValidator
             return [];
         } elseif ($this->valid === false) {
             return [
-                'invalid' => $this->getTranslator()->translate('Please provide a valid telephone number'),
+                'invalid' => $this->trans('Please provide a valid telephone number'),
             ];
         } else {
             throw new \Exception();
