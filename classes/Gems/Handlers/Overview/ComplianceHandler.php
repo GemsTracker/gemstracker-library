@@ -14,6 +14,7 @@ use Gems\Snippets\Tracker\Compliance\ComplianceSearchFormSnippet;
 use Gems\Snippets\Tracker\Compliance\ComplianceTableSnippet;
 use Gems\Snippets\Tracker\TokenStatusLegenda;
 use Gems\User\Group;
+use Gems\User\Mask\MaskRepository;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Having;
@@ -91,6 +92,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         TranslatorInterface $translate,
         protected Adapter $laminasDb,
         CurrentUserRepository $currentUserRepository,
+        protected MaskRepository $maskRepository,
         protected MetaModelLoader $metaModelLoader,
         protected PeriodSelectRepository $periodSelectRepository,
         protected ResultFetcher $resultFetcher,
@@ -116,7 +118,9 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
      */
     public function createModel($detailed, $action): DataReaderInterface
     {
-        $model = new \Gems\Model\JoinModel('resptrack' , 'gems__respondent2track');
+        $model = new \Gems\Model\MaskedModel('resptrack' , 'gems__respondent2track');
+        $model->setMaskRepository($this->maskRepository);
+
         $model->addTable('gems__respondent2org', array(
             'gr2t_id_user' => 'gr2o_id_user',
             'gr2t_id_organization' => 'gr2o_id_organization'
@@ -131,7 +135,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
             'respondent_name');
 
-        if (! $this->currentUser->isFieldMaskedPartial('respondent_name')) {
+        if (! $this->maskRepository->isFieldMaskedPartial('respondent_name')) {
             $model->set('respondent_name', 'label', $this->_('Name'));
         }
         $model->set('gr2t_start_date', 'label', $this->_('Start date'));
@@ -223,10 +227,7 @@ class ComplianceHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         $model->addTransformer($joinTrans);
 
         // Add masking if needed
-        $group = $this->currentUser->getGroup();
-        if ($group instanceof Group) {
-            $group->applyGroupToModel($model, false);
-        }
+        $model->applyMask();
 
         return $model;
     }

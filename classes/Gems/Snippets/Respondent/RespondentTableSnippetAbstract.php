@@ -12,8 +12,13 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\User\Mask\MaskRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -54,6 +59,17 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate);
+    }
 
     /**
      * Add first columns (group) from the model to the bridge that creates the browse table.

@@ -13,6 +13,7 @@ namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
 use Gems\Tracker;
+use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Late\Late;
@@ -69,6 +70,7 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
         protected Tracker $tracker,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate);

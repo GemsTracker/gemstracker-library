@@ -21,6 +21,7 @@ use DateTimeImmutable;
 use Gems\Snippets\Generic\ContentTitleSnippet;
 use Gems\Snippets\Mail\Log\MailLogBrowseSnippet;
 use Gems\Snippets\Mail\Log\MailLogSearchSnippet;
+use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
@@ -75,6 +76,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
     public function __construct(
         SnippetResponderInterface $responder,
         TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
         protected ProjectOverloader $overloader,
         protected PeriodSelectRepository $periodSelectRepository,
     )
@@ -99,6 +101,7 @@ class CommLogHandler extends ModelSnippetLegacyHandlerAbstract
          * @var $model CommLogModel
          */
         $model = $this->overloader->create('Model\\CommLogModel');
+        $model->setMaskRepository($this->maskRepository);
         $model->applySetting($detailed);
         return $model;
     }

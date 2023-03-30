@@ -16,6 +16,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;
+use Gems\User\Mask\MaskRepository;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -56,6 +57,7 @@ class TokenModelSnippetAbstract extends ModelTableSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
+        protected MaskRepository $maskRepository,
         protected Tracker $tracker,
         protected TokenRepository $tokenRepository,
     )

@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model;
@@ -149,6 +150,8 @@ class Token extends \Gems\Registry\TargetAbstract
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
+    protected MaskRepository $maskRepository;
 
     /**
      *
@@ -489,10 +492,10 @@ class Token extends \Gems\Registry\TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
+        $this->maskRepository = $this->loader->getMaskRepository();
+
         if ($this->_gemsData) {
-            if ($this->currentUser instanceof \Gems\User\User) {
-                $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-            }
+            $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
         } else {
             if (!$this->db instanceof \Zend_Db_Adapter_Abstract) {
                 return false;
@@ -1938,9 +1941,7 @@ class Token extends \Gems\Registry\TargetAbstract
                 $this->_gemsData = [];
             }
         }
-        if ($this->currentUser instanceof \Gems\User\User) {
-            $this->_gemsData = $this->currentUser->applyGroupMask($this->_gemsData);
-        }
+        $this->_gemsData = $this->maskRepository->applyMaskToRow($this->_gemsData);
         $this->exists = isset($this->_gemsData['gto_id_token']);
 
         return $this;

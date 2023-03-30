@@ -20,7 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\SnippetsLoader\MezzioLaminasSnippetResponder;
-use Zalt\SnippetsLoader\SnippetLoader;
+use Zalt\SnippetsLoader\SnippetLoaderInterface;
 
 /**
  *
@@ -35,7 +35,7 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
     protected MenuSnippetHelper $menuHelper;
     
     public function __construct(
-        SnippetLoader $snippetLoader,
+        SnippetLoaderInterface $snippetLoader,
         protected LayoutRenderer $layoutRenderer
     ) {
         parent::__construct($snippetLoader);

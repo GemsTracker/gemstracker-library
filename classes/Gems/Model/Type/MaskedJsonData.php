@@ -11,6 +11,7 @@
 
 namespace Gems\Model\Type;
 
+use Gems\User\Mask\MaskRepository;
 use MUtil\Model\Type\JsonData;
 use Zalt\Html\ElementInterface;
 use Zalt\Html\HtmlElement;
@@ -27,20 +28,12 @@ class MaskedJsonData extends JsonData
 {
     /**
      *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
-     *
      * @param int $maxTable Max number of rows to display in table display
      * @param string $separator Separator in table display
      * @param string $more There is more in table display
      */
-    public function __construct(\Gems\User\User $user, $maxTable = 3, $separator = '<br />', $more = '...')
+    public function __construct(protected MaskRepository $maskRepository, $maxTable = 3, $separator = '<br />', $more = '...')
     {
-        $this->currentUser = $user;
-
         parent::__construct($maxTable, $separator, $more);
     }
 
@@ -54,11 +47,7 @@ class MaskedJsonData extends JsonData
     {
         //\MUtil\EchoOut\EchoOut::track($value);
         if (is_array($value)) {
-            $group = $this->currentUser->getGroup();
-
-            if ($group) {
-                $value = $group->applyGroupToData($value);
-            }
+            $value = $this->maskRepository->applyMaskToRow($value);
         }
 
         return parent::formatDetailed($value);
@@ -73,11 +62,7 @@ class MaskedJsonData extends JsonData
     public function formatTable(mixed $value): ElementInterface|string
     {
         if (is_array($value)) {
-            $group = $this->currentUser->getGroup();
-
-            if ($group) {
-                $value = $group->applyGroupToData($value);
-            }
+            $value = $this->maskRepository->applyMaskToRow($value);
         }
 
         return parent::formatTable($value);

@@ -416,22 +416,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     *
-     * @param array $row
-     * @return array $row
-     */
-    public function applyGroupMask(array $row)
-    {
-        $group = $this->getGroup();
-
-        if (! $group) {
-            return $row;
-        }
-
-        return $group->applyGroupToData($row);
-    }
-
-    /**
      * Function where the layout and style can be set, called in \Gems\Escort->prepareController()
      *
      * @param \Gems\Escort $escort
@@ -478,66 +462,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
         $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
         //$source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
-    }
-
-    /**
-     *
-     * @param string $fieldName1 First of unlimited number of field names
-     * @return boolean True if this field is invisible
-     */
-    public function areAllFieldsInvisible($fieldName1, $fieldName2 = null)
-    {
-        $group = $this->getGroup();
-        if (! $group) {
-            return false;
-        }
-
-        foreach (func_get_args() as $fieldName) {
-            if (! $group->isFieldInvisible($fieldName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     *
-     * @param string $fieldName1 First of unlimited number of field names
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
-     */
-    public function areAllFieldsMaskedPartial($fieldName1, $fieldName2 = null)
-    {
-        $group = $this->getGroup();
-        if (! $group) {
-            return false;
-        }
-
-        foreach (func_get_args() as $fieldName) {
-            if (! $group->isFieldMaskedPartial($fieldName)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     *
-     * @param string $fieldName1 First of unlimited number of field names
-     * @return boolean True if this field is wholly masked (or invisible)
-     */
-    public function areAllFieldsMaskedWhole($fieldName1, $fieldName2 = null)
-    {
-        $group = $this->getGroup();
-        if (! $group) {
-            return false;
-        }
-
-        foreach (func_get_args() as $fieldName) {
-            if (! $group->isFieldMaskedWhole($fieldName)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -829,40 +753,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $this->_setVar('user_two_factor_key', null);
 
         $this->definition->setTwoFactorKey($this, null);
-
-        return $this;
-    }
-
-    /**
-     * Disable mask usage (call before any applyGroupToData() or applyGroupToModel()
-     * calls: doesn't work retroactively
-     *
-     * @return $this
-     */
-    public function disableMask()
-    {
-        $group = $this->getGroup();
-
-        if ($group instanceof Group) {
-            $group->disableMask();
-        }
-
-        return $this;
-    }
-
-    /**
-     * Enable mask usage (call before any applyGroupToData() or applyGroupToModel()
-     * calls: doesn't work retroactively
-     *
-     * @return $this
-     */
-    public function enableMask()
-    {
-        $group = $this->getGroup();
-
-        if ($group instanceof Group) {
-            $group->enableMask();
-        }
 
         return $this;
     }
@@ -1912,48 +1802,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function isEmbedded()
     {
         return (boolean) $this->_getVar('user_embedded');
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is invisible
-     */
-    public function isFieldInvisible($fieldName)
-    {
-        $group = $this->getGroup();
-        if ($group) {
-            return $group->isFieldInvisible($fieldName);
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is partially (or wholly) masked (or invisible)
-     */
-    public function isFieldMaskedPartial($fieldName)
-    {
-        $group = $this->getGroup();
-        if ($group) {
-            return $group->isFieldMaskedPartial($fieldName);
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param string $fieldName
-     * @return boolean True if this field is wholly masked (or invisible)
-     */
-    public function isFieldMaskedWhole($fieldName)
-    {
-        $group = $this->getGroup();
-        if ($group) {
-            return $group->isFieldMaskedWhole($fieldName);
-        }
-        return false;
     }
 
     /**

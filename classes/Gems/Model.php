@@ -22,6 +22,7 @@ use Gems\Model\EpisodeOfCareModel;
 use Gems\Model\ExportDbaModel;
 use Gems\Model\JoinModel;
 use Gems\Model\LogModel;
+use Gems\Model\MaskedModel;
 use Gems\Model\OrganizationModel;
 use Gems\Model\RespondentModel;
 use Gems\Model\RespondentRelationModel;
@@ -31,6 +32,7 @@ use Gems\Model\StaffModel;
 use Gems\Model\SurveyCodeBookModel;
 use Gems\Model\SurveyMaintenanceModel;
 use Gems\Project\ProjectSettings;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Db\Adapter\Adapter;
@@ -43,6 +45,7 @@ use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use OpenRosa\Model\OpenRosaFormModel;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Transform\ModelTransformerInterface;
 use Zend_Db_Adapter_Abstract;
 use Zend_Db_Expr;
@@ -101,13 +104,6 @@ class Model
     const TRACK_ID = 'tr';
 
     /**
-     * Allows sub classes of \Gems\Loader\LoaderAbstract to specify the subdirectory where to look for.
-     *
-     * @var string $cascade An optional subdirectory where this subclass always loads from.
-     */
-    protected string $cascade = 'Model';
-
-    /**
      * @var int Current user ID
      */
     protected static int $currentUserId = UserLoader::UNKNOWN_USER_ID;
@@ -123,12 +119,24 @@ class Model
 
     public function __construct(
         protected Adapter $db,
+        protected MaskRepository $maskRepository,
         protected ProjectSettings $project,
         protected Translator $translate,
         protected Translated $translatedUtil,
         ProjectOverloader $overloader
     ) {
-        $this->overloader = $overloader->createSubFolderOverloader($this->cascade);
+        $this->overloader = $overloader->createSubFolderOverloader('Model');
+    }
+
+    protected function _createModel(string $modelClass, ...$args): DataReaderInterface
+    {
+        $model = $this->overloader->create($modelClass, ...$args);
+
+        if ($model instanceof MaskedModel) {
+            $model->setMaskRepository($this->maskRepository);
+        }
+
+        return $model;
     }
 
     /**
@@ -201,7 +209,7 @@ class Model
         /**
          * @var AppointmentModel
          */
-        return $this->overloader->create('AppointmentModel', $agenda);
+        return $this->_createModel('AppointmentModel', $agenda);
     }
 
     /**
@@ -214,7 +222,7 @@ class Model
         /**
          * @var EpisodeOfCareModel
          */
-        return $this->overloader->create('EpisodeOfCareModel', $agenda);
+        return $this->_createModel('EpisodeOfCareModel', $agenda);
     }
 
     /**
@@ -269,7 +277,7 @@ class Model
         /**
          * @var LogModel
          */
-        return $this->overloader->create('LogModel');
+        return $this->_createModel('LogModel');
     }
 
     /**
@@ -282,7 +290,7 @@ class Model
         /**
          * @var $model RespondentModel
          */
-        $model = $this->overloader->create('RespondentModel');
+        $model = $this->_createModel('RespondentModel');
 
         $this->setAsGemsUserId($model, 'grs_id_user');
 
@@ -300,7 +308,7 @@ class Model
         /**
          * @var $model CommLogModel
          */
-        $model = $this->overloader->create('CommLogModel');
+        $model = $this->_createModel('CommLogModel');
         $model->applySetting($detailed);
 
         return $model;
@@ -317,7 +325,7 @@ class Model
         /**
          * @var $model CommMessengersModel
          */
-        $model = $this->overloader->create('CommMessengersModel');
+        $model = $this->_createModel('CommMessengersModel');
         $model->applySetting($detailed);
 
         return $model;
@@ -333,7 +341,7 @@ class Model
         /**
          * @var $model CommtemplateModel
          */
-        $model = $this->overloader->create('CommtemplateModel');
+        $model = $this->_createModel('CommtemplateModel');
 
         return $model;
     }
@@ -348,7 +356,7 @@ class Model
         /**
          * @var $model ConditionModel
          */
-        $model = $this->overloader->create('ConditionModel');
+        $model = $this->_createModel('ConditionModel');
 
         return $model;
     }
@@ -363,7 +371,7 @@ class Model
         /**
          * @var $model ExportDbaModel
          */
-        $model = $this->overloader->create('ExportDbaModel', [$db, $directories]);
+        $model = $this->_createModel('ExportDbaModel', [$db, $directories]);
 
         return $model;
     }
@@ -421,7 +429,7 @@ class Model
         /**
          * @var $model OpenRosaFormModel
          */
-        $model = $this->overloader->create('OpenRosaFormModel');
+        $model = $this->_createModel('OpenRosaFormModel');
 
         return $model;
     }
@@ -437,7 +445,7 @@ class Model
         /**
          * @var $model OrganizationModel
          */
-        $model = $this->overloader->create('OrganizationModel', [$styles]);
+        $model = $this->_createModel('OrganizationModel', [$styles]);
 
         return $model;
     }
@@ -479,7 +487,7 @@ class Model
         /**
          * @var RespondentRelationModel
          */
-        return $this->overloader->create('RespondentRelationModel');
+        return $this->_createModel('RespondentRelationModel');
     }
 
     /**
@@ -492,7 +500,7 @@ class Model
         /**
          * @var SiteModel
          */
-        return $this->overloader->create('SiteModel');
+        return $this->_createModel('SiteModel');
     }
 
     /**
@@ -506,7 +514,7 @@ class Model
         /**
          * @var $model StaffModel
          */
-        $model = $this->overloader->create('StaffModel');
+        $model = $this->_createModel('StaffModel');
 
         if ($addLogin) {
             $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
@@ -527,7 +535,7 @@ class Model
         /**
          * @var $model StaffLogModel
          */
-        $model = $this->overloader->create('StaffLogModel', true);
+        $model = $this->_createModel('StaffLogModel', true);
         if ($detailed) {
             $model->applyDetailSettings();
         } else {
@@ -547,7 +555,7 @@ class Model
         /**
          * @var SurveyMaintenanceModel
          */
-        return $this->overloader->create('SurveyMaintenanceModel', true);
+        return $this->_createModel('SurveyMaintenanceModel', true);
     }
 
     /**
@@ -561,7 +569,7 @@ class Model
         /**
          * @var SurveyCodeBookModel
          */
-        return $this->overloader->create('SurveyCodeBookModel', true, [$surveyId]);
+        return $this->_createModel('SurveyCodeBookModel', true, [$surveyId]);
     }
 
     /**
