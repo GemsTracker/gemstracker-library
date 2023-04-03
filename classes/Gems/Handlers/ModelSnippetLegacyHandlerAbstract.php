@@ -19,6 +19,7 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\Task\TaskRunnerBatch;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
 use Mezzio\Session\SessionInterface;
@@ -217,6 +218,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
 
     protected array $exportBatchSnippets = ['Export\\ExportBatchSnippet'];
 
+    protected array $exportDownloadSnippets = ['Export\\ExportDownloadSnippet'];
+
     /**
      * The parameters used for the export actions.
      *
@@ -387,25 +390,8 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
             $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
             $this->addSnippets($this->exportBatchSnippets, $params);
         } elseif ($step == 'download') {
-            $batch = $this->loader->getTaskRunnerBatch('export_data');
-            $file  = $batch->getSessionVariable('file');
-            if ($file && is_array($file) && is_array($file['headers'])) {
-                $this->view->layout()->disableLayout();
-                $this->_helper->viewRenderer->setNoRender(true);
-
-                foreach($file['headers'] as $header) {
-                    header($header);
-                }
-                while (ob_get_level()) {
-                    ob_end_clean();
-                }
-                readfile($file['file']);
-                // Now clean up the file
-                unlink($file['file']);
-
-                exit;
-            }
-            $this->addMessage($this->_('Download no longer available.'), 'warning');
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+            $this->addSnippets($this->exportDownloadSnippets, $params);
         }
     }
 

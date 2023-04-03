@@ -78,6 +78,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
+        $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
@@ -90,7 +91,6 @@ class ExportBatchSnippet extends ModelSnippetAbstract
 
             //if (!$batch->count()) {
                 $batch->minimalStepDurationMs = 2000;
-                $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
 
                 $batch->setSessionVariable('files', []);
 

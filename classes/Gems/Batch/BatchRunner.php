@@ -68,6 +68,7 @@ class BatchRunner
             'tag' => 'batch-runner',
             'attributes' => [
                 'title' => $this->getTitle(),
+                'finish-url' => $this->batch->finishUrl,
             ],
         ];
 
