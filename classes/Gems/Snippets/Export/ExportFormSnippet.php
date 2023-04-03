@@ -57,7 +57,11 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
             $currentType = key($this->exportClasses);
         }
 
-        $form = new \Gems\Form(array('id' => 'exportOptionsForm', 'class' => 'form-horizontal'));
+        $form = new \Gems\Form([
+            'id' => 'exportOptionsForm',
+            'class' => 'form-horizontal',
+            'data-autosubmit-inplace' => true,
+        ]);
 
         $url = $this->menuHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'batch']);
         $form->setAction($url);

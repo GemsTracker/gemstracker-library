@@ -47,7 +47,11 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
     {
         $output = parent::getSnippetsResponse($snippetNames, $snippetOptions, $request);
 
-        if (! $output instanceof HtmlResponse || $output instanceof FullHtmlResponse) {
+        if (
+            ! $output instanceof HtmlResponse
+            || $output instanceof FullHtmlResponse
+            || $this->request->hasHeader('X-Content-Only')
+        ) {
             return $output;
         }
 
