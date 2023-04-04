@@ -17,6 +17,8 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\MessageTrait;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -32,6 +34,8 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class ExportDownloadSnippet extends ModelSnippetAbstract
 {
+    use MessageTrait;
+
     /**
      *
      * @var \MUtil\Model\ModelAbstract
@@ -42,9 +46,12 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MessengerInterface $messenger,
         protected ProjectOverloader $overLoader,
         protected SessionInterface $session,
     ) {
+        $this->messenger = $messenger;
+
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
@@ -70,7 +77,9 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
             return $response;
         }
 
-        $this->addMessage($this->_('Download no longer available.'), 'warning');
+        $this->addMessage($this->_('Download no longer available.'));
+
+        return null;
     }
 
     public function hasHtmlOutput(): bool
