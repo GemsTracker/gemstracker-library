@@ -37,17 +37,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
 class ExportBatchSnippet extends ModelSnippetAbstract
 {
     /**
-     * @var SessionInterface
-     */
-    //protected $session;
-
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
-    /**
      *
      * @var \MUtil\Model\ModelAbstract
      */
@@ -89,7 +78,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
             $type = $post['type'] ?? 'CsvExport'; // Export type is needed, use most basic type as default
             $batch->setSessionVariable('export_type', $type);
 
-            //if (!$batch->count()) {
+            if (!$batch->count()) {
                 $batch->minimalStepDurationMs = 2000;
 
                 $batch->setSessionVariable('files', []);
@@ -98,7 +87,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
                 $batch->addTask('addTask', 'Export\\ExportCommand', $type, 'finalizeFiles', $post);
 
                 $batch->autoStart = true;
-            //}
+            }
         }
 
         $export = $this->loader->getExport()->getExport($type, null, $batch);

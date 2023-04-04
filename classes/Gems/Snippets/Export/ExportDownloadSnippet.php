@@ -11,13 +11,9 @@
 
 namespace Gems\Snippets\Export;
 
-use Gems\Batch\BatchRunnerLoader;
-use Gems\Loader;
-use Gems\MenuNew\RouteHelper;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
@@ -36,12 +32,6 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class ExportDownloadSnippet extends ModelSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
     /**
      *
      * @var \MUtil\Model\ModelAbstract

@@ -24,7 +24,7 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
      * 
      * @var array
      */
-    //protected $exportClasses;
+    protected $exportClasses;
 
     public function __construct(
         SnippetOptions $snippetOptions,
