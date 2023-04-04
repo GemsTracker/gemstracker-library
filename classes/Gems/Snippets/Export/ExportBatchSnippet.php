@@ -15,6 +15,7 @@ use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
 use Gems\MenuNew\RouteHelper;
 use Gems\Task\TaskRunnerBatch;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -67,15 +68,24 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
+        $batch->restartRedirectUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => null]);
         $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
+        if ($batch->isFinished()) {
+            return new RedirectResponse($batch->restartRedirectUrl);
+        }
+
         if ($batch->hasSessionVariable('export_type')) {
             $type = $batch->getSessionVariable('export_type');
         } else {
-            $type = $post['type'] ?? 'CsvExport'; // Export type is needed, use most basic type as default
+            if (!isset($post['type'])) {
+                return new RedirectResponse($batch->restartRedirectUrl);
+            }
+
+            $type = $post['type'];
             $batch->setSessionVariable('export_type', $type);
 
             if (!$batch->count()) {

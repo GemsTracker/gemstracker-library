@@ -69,6 +69,7 @@ class BatchRunner
             'attributes' => [
                 'title' => $this->getTitle(),
                 'finish-url' => $this->batch->finishUrl,
+                'restart-redirect-url' => $this->batch->restartRedirectUrl,
             ],
         ];
 
