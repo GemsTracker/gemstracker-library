@@ -62,7 +62,7 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
-        $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
+        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $file = $batch->getSessionVariable('file');
         if ($file && is_array($file) && is_array($file['headers']) && file_exists($file['file'])) {
             $response = new \Laminas\Diactoros\Response\TextResponse(

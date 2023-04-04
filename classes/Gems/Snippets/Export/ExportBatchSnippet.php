@@ -64,7 +64,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
-        $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
+        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);

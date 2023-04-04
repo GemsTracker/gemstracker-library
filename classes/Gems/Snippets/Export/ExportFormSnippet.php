@@ -9,12 +9,22 @@ use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
-use Zalt\Snippets\MessageableSnippetAbstract;
+use Zalt\Model\Data\FullDataInterface;
+use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class ExportFormSnippet extends MessageableSnippetAbstract
+class ExportFormSnippet extends ModelSnippetAbstract
 {
+    use MessageTrait;
+
+    /**
+     *
+     * @var \MUtil\Model\ModelAbstract
+     */
+    protected $model;
+
     /**
      *
      * @var \Gems\Export
@@ -39,7 +49,9 @@ class ExportFormSnippet extends MessageableSnippetAbstract
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
+
+        $this->messenger = $messenger;
 
         $this->export = $loader->getExport();
 
@@ -48,8 +60,13 @@ class ExportFormSnippet extends MessageableSnippetAbstract
         //}
     }
 
+    protected function createModel(): FullDataInterface
+    {
+        return $this->model;
+    }
+
     public function getHtmlOutput() {
-        $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
+        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
 
         if ($batch->isLoaded() && !$batch->isFinished()) {
             $lastActive = $batch->getSessionVariable('last_active_at');
