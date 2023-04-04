@@ -19,6 +19,7 @@ use Gems\Model\Bridge\ThreeColumnTableBridge;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenSnippetAbstract;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -44,12 +45,13 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MaskRepository $maskRepository,
         Tracker $tracker,
         protected TokenRepository $tokenRepository,
         protected MenuSnippetHelper $menuSnippetHelper,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $tracker);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $maskRepository, $tracker);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 
