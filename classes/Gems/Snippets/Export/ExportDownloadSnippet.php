@@ -64,7 +64,7 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
     {
         $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
         $file = $batch->getSessionVariable('file');
-        if ($file && is_array($file) && is_array($file['headers'])) {
+        if ($file && is_array($file) && is_array($file['headers']) && file_exists($file['file'])) {
             $response = new \Laminas\Diactoros\Response\TextResponse(
                 file_get_contents($file['file']),
                 200,
