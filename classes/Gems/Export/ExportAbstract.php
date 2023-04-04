@@ -484,8 +484,8 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
             $firstFile = $this->files[$firstName];
 
             $file['file']      = $firstFile;
-            $file['headers'][] = "Content-Type: application/download";
-            $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $firstName . "\"";
+            $file['headers']['Content-Type'] = "application/download";
+            $file['headers']['Content-Disposition'] = "attachment; filename=\"" . $firstName . "\"";
         } elseif (count($this->files) >= 1) {
             $nameArray = explode('.', $firstName);
             array_pop($nameArray);
@@ -508,14 +508,14 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
 
             $file              = array();
             $file['file']      = $zipFile;
-            $file['headers'][] = "Content-Type: application/download";
-            $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
+            $file['headers']['Content-Type'] = "application/download";
+            $file['headers']['Content-Disposition'] = "attachment; filename=\"" . $filename . "\"";
         }
 
-        $file['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
-        $file['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
-        $file['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
-        $file['headers'][] = "Pragma: cache";                          // HTTP/1.0
+        $file['headers']['Expires'] = "Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
+        $file['headers']['Last-Modified'] = gmdate("D, d M Y H:i:s") . " GMT";
+        $file['headers']['Cache-Control'] = "must-revalidate, post-check=0, pre-check=0";
+        $file['headers']['Pragma'] = "cache";                          // HTTP/1.0
 
         if ($this->batch) {
             $this->batch->setSessionVariable('file', $file);
