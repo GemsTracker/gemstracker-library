@@ -100,6 +100,8 @@ class ExportBatchSnippet extends ModelSnippetAbstract
             }
         }
 
+        $batch->setSessionVariable('last_active_at', time());
+
         $export = $this->loader->getExport()->getExport($type, null, $batch);
 
         if ($helpLines = $export->getHelpInfo()) {

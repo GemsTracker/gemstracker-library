@@ -9,9 +9,11 @@ use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Message\MessengerInterface;
+use Zalt\Snippets\MessageableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
+class ExportFormSnippet extends MessageableSnippetAbstract
 {
     /**
      *
@@ -29,13 +31,15 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
         Loader $loader,
         private readonly MenuSnippetHelper $menuHelper,
         private readonly TranslatorInterface $translator,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
 
         $this->export = $loader->getExport();
 
@@ -46,6 +50,16 @@ class ExportFormSnippet extends \Zalt\Snippets\SnippetAbstract
 
     public function getHtmlOutput() {
         $batch = new TaskRunnerBatch('export_data', $this->overLoader, $this->session);
+
+        if ($batch->isLoaded() && !$batch->isFinished()) {
+            $lastActive = $batch->getSessionVariable('last_active_at');
+
+            if ($lastActive && time() - $lastActive < 60) {
+                $this->addMessage($this->_('Another export is still running. Please wait for this export to be finished.'));
+                return '';
+            }
+        }
+
         $batch->reset();
 
         $post = $this->requestInfo->getRequestPostParams();
