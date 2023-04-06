@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [1.9.2]
 ### Added user functionality
 - Add RTF export to DossierExport (#703)
+- Allow difference between values and labels in select and multiselect track fields (#776)
 - Allow mailability to be set at multiple levels (#603)
 - Allow save & resume from LimeSurvey using GT (#702)
 - Allow single click copy of tables and other objects to the clipboard (#705)

@@ -121,7 +121,6 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         parent::__construct($modelName, $modelField);
 
         $model = new \MUtil_Model_TableModel('gems__track_fields');
-        $model->addColumn(new \Zend_Db_Expr('gtf_field_values'), 'gtf_field_value_keys');
         \Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
@@ -203,8 +202,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
 
         $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
-        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_value_keys');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_default');
         $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
     }
@@ -248,6 +247,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'default', 'text'*/
                 );
         if ($detailed) {
+            $this->set('gtf_field_value_keys'); // Set order
             $this->set('gtf_field_values'); // Set order
             $this->set('gtf_field_default'); // Set order
             $this->set('gtf_field_description'); // Set order

@@ -11,6 +11,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker\Model\Dependency\ValuesMaintenanceDependency;
+
 /**
  *
  *
@@ -53,7 +55,9 @@ class MultiselectField extends FieldAbstract
         $settings  = $concatter->getSettings() + $settings;
 
         $settings['elementClass'] = 'MultiCheckbox';
-        $settings['multiOptions'] = array_combine($multiKeys, $multi);
+        $settings['multiOptions'] = ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
+
+        $concatter->setOptions($settings['multiOptions']);
     }
 
     /**

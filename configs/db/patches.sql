@@ -1749,3 +1749,6 @@ ALTER TABLE gems__appointments
 -- PATCH: Add index to log activity
 ALTER TABLE gems__log_activity ADD INDEX gla_created (gla_created);
 
+-- PATCH: Add key values as seperate field
+ALTER TABLE gems__track_fields ADD gtf_field_value_keys text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gtf_field_description;
+UPDATE gems__track_fields  SET gtf_field_value_keys = gtf_field_values WHERE gtf_field_value_keys IS NULL AND gtf_field_values IS NOT NULL;

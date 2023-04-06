@@ -12,6 +12,8 @@
 
 namespace Gems\Tracker\Field;
 
+use Gems\Tracker\Model\Dependency\ValuesMaintenanceDependency;
+
 /**
  *
  *
@@ -44,10 +46,10 @@ class SelectField extends FieldAbstract
         }
 
         $multiKeys = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_value_keys']);
-        $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+        $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
 
 
         $settings['elementClass'] = 'Select';
-        $settings['multiOptions'] = $empty + array_combine($multiKeys, $multi);
+        $settings['multiOptions'] = $empty + ValuesMaintenanceDependency::combineKeyValues($multiKeys, $multi);
     }
 }

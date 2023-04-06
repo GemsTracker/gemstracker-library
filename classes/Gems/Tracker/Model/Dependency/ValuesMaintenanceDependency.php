@@ -33,7 +33,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      *
      * @var array Of name => name
      */
-    protected $_dependentOn = array('gtf_field_type', 'gtf_field_values');
+    protected $_dependentOn = array('gtf_field_type', 'gtf_field_value_keys', 'gtf_field_values');
 
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
@@ -43,6 +43,9 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      * @var array of name => array(setting => setting)
      */
     protected $_effecteds = array(
+        'gtf_field_value_keys' => array(
+            'description', 'elementClass', 'formatFunction', 'label', 'minlength', 'rows', 'required',
+        ),
         'gtf_field_values' => array(
             'description', 'elementClass', 'formatFunction', 'label', 'minlength', 'rows', 'required',
             ),
@@ -56,6 +59,40 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      * @var \Gems_Util
      */
     protected $util;
+
+    /**
+     * Combine arrays even when the keys are not equal
+     *
+     * @param array $keys
+     * @param array $values
+     * @return array
+     */
+    public static function combineKeyValues(array $keys, array $values)
+    {
+        $kCount = count($keys);
+        $vCount = count($values);
+
+        if ($kCount > $vCount) {
+            for ($i = $vCount; $i < $kCount; $i++) {
+                $values[$i] = $keys[$i];
+            }
+        } elseif ($vCount > $kCount) {
+            array_splice($values, $kCount);
+        }
+
+        return array_combine($keys, $values);
+    }
+
+    /**
+     * Put each value on a separate line
+     *
+     * @param string $values
+     * @return \MUtil_Html_Sequence
+     */
+    public function formatLabels($values)
+    {
+        return new \MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
+    }
 
     /**
      * Put each value on a separate line
@@ -93,11 +130,20 @@ class ValuesMaintenanceDependency extends DependencyAbstract
         $multi = explode(FieldAbstract::FIELD_SEP, $context['gtf_field_values']);
 
         return array(
-            'gtf_field_values' => array(
+            'gtf_field_value_keys' => array(
                 'label'          => $this->_('Values'),
                 'description'    => $this->_('Separate multiple values with a vertical bar (|)'),
                 'elementClass'   => 'Textarea',
                 'formatFunction' => array($this, 'formatValues'),
+                'minlength'      => 3,// At least two single chars and a separator
+                'rows'           => 4,
+                'required'       => true,
+            ),
+            'gtf_field_values' => array(
+                'label'          => $this->_('Labels'),
+                'description'    => $this->_('Separate multiple labels with a vertical bar (|)'),
+                'elementClass'   => 'Textarea',
+                'formatFunction' => array($this, 'formatLabels'),
                 'minlength'      => 3,// At least two single chars and a separator
                 'rows'           => 4,
                 'required'       => true,
