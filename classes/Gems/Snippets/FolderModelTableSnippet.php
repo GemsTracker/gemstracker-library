@@ -154,7 +154,7 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      * to define your own method.
      *
      * $param \Zend_Paginator $paginator
-     */
+     * /
     protected function addPaginator(TableElement $table, \Zend_Paginator $paginator)
     {
         // $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
