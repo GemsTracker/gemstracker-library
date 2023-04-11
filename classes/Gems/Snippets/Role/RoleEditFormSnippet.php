@@ -87,10 +87,11 @@ class RoleEditFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FormBridgeInterface $bridge
+     * @param FullDataInterface $dataModel
+     * @return void
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
         $bridge->addHidden('grl_id_role');
         $bridge->addText('grl_name');

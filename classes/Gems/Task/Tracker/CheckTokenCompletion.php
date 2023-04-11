@@ -24,7 +24,7 @@ class CheckTokenCompletion extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 

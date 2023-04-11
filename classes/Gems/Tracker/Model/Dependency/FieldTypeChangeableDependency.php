@@ -42,6 +42,8 @@ class FieldTypeChangeableDependency extends DependencyAbstract
      */
     protected $db;
 
+    protected string $fieldName;
+
     /**
      * Required
      *

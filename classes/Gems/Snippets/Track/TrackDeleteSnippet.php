@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Track;
 
+use Gems\Loader;
+use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
+use Gems\Tracker\Model\TrackModel;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Data\FullDataInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
@@ -24,17 +27,18 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract {
+class TrackDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
+{
     
     /**
      *
-     * @var \Gems\Loader
+     * @var Loader
      */
     protected $loader;
     
     /**
      *
-     * @var \Gems\Tracker\Model\TrackModel
+     * @var TrackModel
      */
     protected $model;
 
@@ -54,11 +58,11 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {
-        if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
+        if (! $this->model instanceof TrackModel) {
             $this->model = $this->loader->getTracker()->getTrackModel();
         }
 
@@ -71,14 +75,14 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model instanceof \Gems\Tracker\Model\TrackModel) {
-            $this->useCount = $model->getStartCount($this->trackId);
+        if ($dataModel instanceof TrackModel) {
+            $this->useCount = $dataModel->getStartCount($this->trackId);
 
             if ($this->useCount) {
                 $this->messenger->addMessage(sprintf($this->plural(
@@ -92,6 +96,6 @@ class TrackDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
             }
         }
 
-        parent::setShowTableFooter($bridge, $model);
+        parent::setShowTableFooter($bridge, $dataModel);
     }
 }

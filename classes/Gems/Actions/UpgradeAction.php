@@ -27,7 +27,7 @@ class UpgradeAction extends \Gems\Controller\Action
 
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 
@@ -59,7 +59,7 @@ class UpgradeAction extends \Gems\Controller\Action
      */
     public function compatibilityReportAction()
     {
-        $this->addSnippet('Upgrade\\UpgradeCompatibilitySnippet', 'escort', $this->escort);
+        $this->addSnippet('Upgrade\\UpgradeCompatibilitySnippet');
     }
 
     /**

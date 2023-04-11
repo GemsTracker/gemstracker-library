@@ -39,7 +39,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 
@@ -282,7 +282,8 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
             unset($filter['respondentstatus']);
         }
         if (isset($filter['accessible_by'])) {
-            $filter[] = $this->db->quoteInto('gor_accessible_by LIKE ?', '%:' . intval($filter['accessible_by']) . ':%');
+            $platform = $this->resultFetcher->getPlatform();
+            $filter[] = 'gor_accessible_by LIKE ' . $platform->quoteValue('%:' . intval($filter['accessible_by']) . ':%');
 
             unset($filter['accessible_by']);
         }

@@ -11,6 +11,8 @@
 
 namespace Gems\Validate;
 
+use MUtil\Registry\TargetAbstract;
+
 /**
  *
  * @package    Gems
@@ -19,7 +21,7 @@ namespace Gems\Validate;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8 Jan 9, 2020 1:05:35 PM
  */
-class SubscriptionThrottleValidator extends \MUtil\Registry\TargetAbstract implements \Zend_Validate_Interface
+class SubscriptionThrottleValidator extends TargetAbstract implements \Zend_Validate_Interface
 {
     /**
      *
@@ -110,7 +112,7 @@ class SubscriptionThrottleValidator extends \MUtil\Registry\TargetAbstract imple
      *
      * @param  mixed $value
      * @return boolean
-     * @throws \Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value)
     {

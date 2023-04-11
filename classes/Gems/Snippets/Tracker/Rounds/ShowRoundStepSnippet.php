@@ -83,15 +83,15 @@ class ShowRoundStepSnippet extends ShowRoundSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $dataModel
      * @return void
      */
-    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $this->_roundData = $bridge->getRow();
 
         if ($this->trackEngine instanceof StepEngineAbstract && $this->_roundData) {
-            $this->trackEngine->updateRoundModelToItem($model, $this->_roundData, $this->locale->getLanguage());
+            $this->trackEngine->updateRoundModelToItem($dataModel, $this->_roundData, $this->locale->getLanguage());
         }
 
         $bridge->addItem('gro_id_track');
@@ -100,23 +100,23 @@ class ShowRoundStepSnippet extends ShowRoundSnippetAbstract
         $bridge->addItem('gro_id_order');
         $bridge->addItem('gro_icon_file');
 
-        if ($model->has('ggp_name')) {
+        if ($dataModel->has('ggp_name')) {
             $bridge->addItem('ggp_name');
-        } elseif ($model->has('gro_id_relationfield')) {
+        } elseif ($dataModel->has('gro_id_relationfield')) {
             $bridge->addItem('gro_id_relationfield');
         }
 
         $bridge->addItem('valid_after');
 
-        $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $model);
-        if ($model->has('gro_valid_after_length', 'label')) {
-            //$bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $model->get('gro_valid_after_length', 'label'));
+        $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $dataModel);
+        if ($dataModel->has('gro_valid_after_length', 'label')) {
+            //$bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $dataModel->get('gro_valid_after_length', 'label'));
         }
 
-        //$bridge->addItem($model->get('valid_for', 'value'));
-        $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $model);
-        if ($model->has('gro_valid_for_length', 'label')) {
-            //$bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
+        //$bridge->addItem($dataModel->get('valid_for', 'value'));
+        $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $dataModel);
+        if ($dataModel->has('gro_valid_for_length', 'label')) {
+            //$bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $dataModel->get('gro_valid_after_length', 'label'));
         }
 
         $bridge->addItem('valid_cond');
@@ -124,7 +124,7 @@ class ShowRoundStepSnippet extends ShowRoundSnippetAbstract
 
         $bridge->addItem('gro_active');
         // Prevent empty row when no changed events exist
-        if ($label = $model->get('gro_changed_event', 'label')) {
+        if ($label = $dataModel->get('gro_changed_event', 'label')) {
             $bridge->addItem('gro_changed_event');
         }
         $bridge->addItem('gro_code');

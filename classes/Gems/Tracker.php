@@ -13,9 +13,11 @@ namespace Gems;
 
 use Gems\Task\TaskRunnerBatch;
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Token\TokenLibrary;
 use Gems\Tracker\Token\TokenSelect;
 use Gems\Tracker\Token\TokenValidator;
 use Gems\User\Mask\MaskRepository;
+use Gems\Util\ReceptionCodeLibrary;
 use Mezzio\Session\SessionInterface;
 use Zalt\Loader\ProjectOverloader;
 
@@ -79,7 +81,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
-     * @var \Gems\Tracker\TokenLibrary
+     * @var TokenLibrary
      */
     private $_tokenLibrary;
 
@@ -240,6 +242,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
+     * @param SessionInterface $session
      * @param int $respondentId    The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
      * @param int $organizationId
      * @param int $trackId
@@ -248,7 +251,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param array $trackFieldsData
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
+    public function createRespondentTrack(SessionInterface $session, $respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
     {
         $trackEngine = $this->getTrackEngine($trackId);
 
@@ -265,7 +268,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $respTrackData['gr2t_id_organization'] = $organizationId;
         if (! array_key_exists('gr2t_reception_code', $respTrackData)) {
             // The start date has to exist.
-            $respTrackData['gr2t_reception_code'] = \Gems\Escort::RECEPTION_OK;
+            $respTrackData['gr2t_reception_code'] = ReceptionCodeLibrary::RECEPTION_OK;
         }
 
         // Create the filter values for creating the track
@@ -291,7 +294,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         $respTrack->setFieldData($trackFieldsData);
 
         // Create the actual tokens!!!!
-        $trackEngine->checkRoundsFor($respTrack, $userId);
+        $trackEngine->checkRoundsFor($respTrack, $session, $userId);
 
         return $respTrack;
     }
@@ -759,7 +762,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
     /**
      *
      * @param string $trackCode Track code or whole word part of code to find track by
-     * @return \Gems\Tracker\Engine\TrackEngineInterface or null when not found
+     * @return \Gems\Tracker\Engine\TrackEngineInterface|null or null when not found
      */
     public function getTrackEngineByCode($trackCode)
     {
@@ -776,6 +779,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
         if ($trackData) {
             return $this->getTrackEngine($trackData);
         }
+        return null;
     }
 
     /**
@@ -879,7 +883,7 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @param int $userId         Id of the user who takes the action (for logging)
      * @param int $orgId          Optional Id of the organization to check for
      * @param boolean $quickCheck Check only tokens with recent gto_start_time's
-     * @return bool               Did we find new answers?
+     * @return void
      */
     public function loadCompletedTokensBatch(TaskRunnerBatch $batch, $respondentId = null, $userId = null, $orgId = null, $quickCheck = false)
     {

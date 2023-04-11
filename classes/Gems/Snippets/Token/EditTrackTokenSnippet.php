@@ -62,11 +62,11 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param FormBridgeInterface $bridge
-     * @param FullDataInterface $model
+     * @param FullDataInterface $dataModel
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
-        $model->set('reset_mail', [
+        $dataModel->set('reset_mail', [
             'label'        => $this->_('Reset sent mail'),
             'description'  => $this->_('Set to zero mails sent'),
             'elementClass' => 'Checkbox',                
@@ -75,7 +75,7 @@ class EditTrackTokenSnippet extends EditTokenSnippetAbstract
         $onOffFields = array('gr2t_track_info', 'gto_round_description', 'grc_description');
         foreach ($onOffFields as $field) {
             if (! (isset($this->formData[$field]) && $this->formData[$field])) {
-                $model->set($field, 'elementClass', 'None');
+                $dataModel->set($field, 'elementClass', 'None');
             }
         }
 

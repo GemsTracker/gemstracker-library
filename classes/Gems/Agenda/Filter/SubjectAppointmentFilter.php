@@ -11,6 +11,7 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
 
 /**
@@ -42,10 +43,10 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
+    public function matchAppointment(Appointment $appointment)
     {
         if (! $this->_data['gaf_filter_text1']) {
             return ! $appointment->getSubject();

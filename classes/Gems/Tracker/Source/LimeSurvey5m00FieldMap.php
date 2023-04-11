@@ -349,7 +349,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
      *
      * @param string $qid
      * @param string $attribute
-     * @param mxied $default
+     * @param mixed $default
      * @return mixed
      */
     protected function _getQuestionAttribute($qid, $attribute, $default = null)

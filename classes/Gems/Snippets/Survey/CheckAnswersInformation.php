@@ -24,7 +24,7 @@ class CheckAnswersInformation extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var Describe which tokens will be checked
+     * @var string Describe which tokens will be checked
      */
     protected $itemDescription;
 

@@ -873,6 +873,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         if (! $this->getRespondentId()) {
             return array('1 = 0');
         }
+        return [];
     }
 
     /**
@@ -941,7 +942,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     /**
      * Retrieve the survey ID
      *
-     * @return int
+     * @return int|null
      */
     public function getSurveyId()
     {
@@ -952,6 +953,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         if ($this->getTokenId()) {
             return $this->getToken()->getSurveyId();
         }
+        return null;
     }
 
     /**
@@ -1072,7 +1074,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
         }
 
         if (! $engine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
-            $trackId = $this->request->getAttribute(\Gems\model::TRACK_ID);
+            $trackId = $this->request->getAttribute(\Gems\Model::TRACK_ID);
 
             if (! $trackId) {
                 throw new \Gems\Exception($this->_('No track engine specified!'));
@@ -1146,26 +1148,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
             $this->getRespondent()->getFullName()
         );
-    }
-
-    /**
-     * Initialize translate and html objects
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init(): void
-    {
-        parent::init();
-
-        if (in_array($this->requestInfo->getCurrentAction(), $this->tokenReturnActions)) {
-            // Tell the system where to return to after a survey has been taken
-            $route = [
-                    'route' => $this->requestInfo->getRouteName(),
-                ] + $this->requestInfo->getRequestMatchedParams();
-            $this->currentUser->setSurveyReturn($route);
-        }
     }
 
     /**

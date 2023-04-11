@@ -27,6 +27,9 @@ class CountryInputGroupAddon extends \Gems\Form\Decorator\InputGroupAddon
     public function render($content)
     {
         $element = $this->getElement();
+        if (!$element instanceof \Zend_Form_Element) {
+            throw new \RuntimeException('Element not found');
+        }
         $value = $element->getValue();
 
         if (empty($content) && !empty($value)) {

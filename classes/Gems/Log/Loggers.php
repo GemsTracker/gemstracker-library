@@ -29,8 +29,8 @@ class Loggers
 
     public function listLoggers(): array
     {
-        if (isset($config['log'])) {
-            return array_keys($config['log']);
+        if (isset($this->config['log'])) {
+            return array_keys($this->config['log']);
         }
         return [];
     }

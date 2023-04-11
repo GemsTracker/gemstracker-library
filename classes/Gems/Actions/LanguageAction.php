@@ -46,7 +46,7 @@ class LanguageAction extends \Gems\Controller\Action
                 if ($url) {
                     $this->getResponse()->setRedirect($url);
                 } else {
-                    $this->currentUser->gotoStartPage($this->menu, $this->getRequest());
+                    //$this->currentUser->gotoStartPage($this->menu, $this->getRequest());
                 }
                 return;
             }

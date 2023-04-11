@@ -96,9 +96,9 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
      * having to recode the core table building code.
      *
      * @param FormBridgeInterface $bridge
-     * @param FullDataInterface $model
+     * @param FullDataInterface $dataModel
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
         $this->saveLabel = $this->_('Change organization');
 

@@ -23,6 +23,11 @@ namespace Gems\Task\Db;
 abstract class PatchAbstract extends \MUtil\Task\TaskAbstract
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -46,10 +51,8 @@ abstract class PatchAbstract extends \MUtil\Task\TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $escort = \Gems\Escort::getInstance();
-
         //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
-        $this->patcher = new \Gems\Util\DatabasePatcher($this->db, 'patches.sql', $escort->getDatabasePaths(), $this->project->databaseFileEncoding);
+        $this->patcher = new \Gems\Util\DatabasePatcher($this->db, 'patches.sql', $this->config['migrations']['migrations'], $this->project->databaseFileEncoding);
 
         return parent::checkRegistryRequestsAnswers();
     }

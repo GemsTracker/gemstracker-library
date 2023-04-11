@@ -429,7 +429,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
      * @param string $name  Name of the element
      * @param string $label Label for element
      * @param string $description Optional description
-     * @return \Zend_Form_Element_Checkbox
+     * @return \Zend_Form_Element_Checkbox|null
      */
     protected function _createCheckboxElement($name, $label, $description = null)
     {
@@ -445,6 +445,7 @@ class AnswerExportModelSource extends \Gems\Export\ModelSource\ExportModelSource
 
             return $element;
         }
+        return null;
     }
 
 	/**

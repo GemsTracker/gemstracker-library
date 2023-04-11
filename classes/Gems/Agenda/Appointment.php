@@ -560,7 +560,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @return \Gems\Agenda\EpisodeOfCare
+     * @return EpisodeOfCare|null
      */
     public function getEpisode()
     {
@@ -569,6 +569,8 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         if ($episodeId) {
             return $this->agenda->getEpisodeOfCare($episodeId);
         }
+
+        return null;
     }
 
     /**
@@ -754,7 +756,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
     /**
      * Return true when the status is active
      *
-     * @return type
+     * @return bool
      */
     public function isActive()
     {
@@ -792,7 +794,7 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @param AppointmentFilterTracer $tracer
+     * @param FilterTracer $tracer
      * @return $this
      */
     public function setFilterTracer(FilterTracer $tracer)

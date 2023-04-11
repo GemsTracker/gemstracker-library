@@ -70,7 +70,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return print_r($this->_itemOptions, true);
     }
@@ -272,7 +272,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
                     if ($this->hasChildren()) {
                         foreach ($this->getChildren() as $child) {
                             if ($child->check(array('allowed', true))) {
-                                $firstChild = $firstChild->toRouteArray($source);
+                                $firstChild = $child->toRouteArray($source);
                                 break;
                             }
                         }
@@ -376,13 +376,13 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
      * Add a standard deactivate action and optional reactivate action to the current menu item
      *
      * @param string $checkField   The name of the field to filter on for deactivation
-     * @param string $deactivateOn The value to check against for deactivation, no menu item when null
-     * @param string $reactivateOn The value to check against for reactivation, no menu item when null
+     * @param string|int $deactivateOn The value to check against for deactivation, no menu item when null
+     * @param string|int $reactivateOn The value to check against for reactivation, no menu item when null
      * @param array  $otherDeact    Array of extra options for deactivate item, e.g. 'visible', 'allowed', 'class',
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
      * @param array  $otherReact    Array of extra options for reactivate item, e.g. 'visible', 'allowed', 'class',
      *                             'icon', 'privilege', 'target', 'type', 'button_only'.
-     * @return \Gems\Menu_SubmenuItem[]
+     * @return \Gems\Menu\SubmenuItem[]
      */
     public function addDeReactivateAction($checkField, $deactivateOn = 1, $reactivateOn = 1, array $otherDeact = array(), array $otherReact = array())
     {
@@ -423,7 +423,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
      * @param string $privilege A privilege name, defaults to parent + .delete when not specified
      * @param array $other      Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon',
      *                          target', 'type', 'button_only'.
-     * @return \Gems\Menu_SubmenuItem
+     * @return \Gems\Menu\SubmenuItem
      */
     public function addDeleteAction($privilege = null, array $other = array())
     {
@@ -449,7 +449,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .edit when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems\Menu_SubmenuItem
+     * @return \Gems\Menu\SubmenuItem
      */
     public function addEditAction($privilege = null, array $other = array())
     {
@@ -473,7 +473,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
     /**
      * Add a standard edit action to the current menu item
      *
-     * @return \Gems\Menu_SubmenuItem
+     * @return \Gems\Menu\SubmenuItem
      */
     public function addExportAction()
     {
@@ -512,7 +512,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .import  when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems\Menu_SubmenuItem
+     * @return \Gems\Menu\SubmenuItem
      */
     public function addImportAction($privilege = null, array $other = array())
     {
@@ -623,7 +623,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
      *
      * @param string $privilege A privilege name, defaults to parent + .show when not specified
      * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
-     * @return \Gems\Menu_SubmenuItem
+     * @return \Gems\Menu\SubmenuItem
      */
     public function addShowAction($privilege = null, array $other = array())
     {
@@ -887,7 +887,7 @@ class SubMenuItem extends \Gems\Menu\MenuAbstract
     /**
      * Set the organization id of the org parameter that can remain hidden.
      *
-     * @param type $orgId
+     * @param int $orgId
      * @return \Gems\Menu\SubMenuItem (continuation pattern)
      */
     public function setHiddenOrgId($orgId)

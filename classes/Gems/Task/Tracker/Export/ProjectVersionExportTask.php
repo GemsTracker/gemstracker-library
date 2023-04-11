@@ -46,7 +46,7 @@ class ProjectVersionExportTask  extends TrackExportAbstract
         $data = [
             'gems_version'    => $versions->getGemsVersion(),
             'project'         => null,
-            'project_env'     => APPLICATION_ENV,
+            'project_env'     => $this->config['app']['env'],
             'project_url'     => $this->util->getCurrentURI(), 
             'project_version' => $versions->getProjectVersion(),
         ];

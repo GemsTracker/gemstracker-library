@@ -11,6 +11,8 @@
 
 namespace Gems\Model\Translator;
 
+use Gems\Loader;
+
 /**
  *
  *
@@ -54,7 +56,7 @@ class AppointmentTranslator extends \Gems\Model\Translator\StraightTranslator
 
     /**
      *
-     * @var \Gems_loader
+     * @var Loader
      */
     protected $loader;
 

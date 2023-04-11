@@ -14,11 +14,10 @@ namespace Gems\Tracker\Model;
 use Gems\Html;
 use Gems\Event\Application\NamedArrayEvent;
 use Gems\Event\Application\TranslatableNamedArrayEvent;
-use Gems\Event\EventDispatcher;
-use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
 use Laminas\Validator\GreaterThan;
-use MUtil\Model\Dependency\ValueSwitchDependency;
+use MUtil\Model\UnionModel;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  *
@@ -29,7 +28,7 @@ use MUtil\Model\Dependency\ValueSwitchDependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FieldMaintenanceModel extends \MUtil\Model\UnionModel
+class FieldMaintenanceModel extends UnionModel
 {
     /**
      * Constant name to id appointment items
@@ -80,7 +79,7 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
         );
 
     /**
-     * @var EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $event;
 
@@ -375,6 +374,8 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
             ),
         );
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gtf_to_track_info');
+
+        return $this;
     }
 
     /**
@@ -433,6 +434,8 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
         $this->addDependency($dependency);
 
         $this->loader->getModels()->addDatabaseTranslationEditFields($this);
+
+        return $this;
     }
 
     /**
@@ -551,13 +554,14 @@ class FieldMaintenanceModel extends \MUtil\Model\UnionModel
      * Get the dependency class name (if any)
      *
      * @param string $fieldType
-     * @return string Classname including Model\Dependency\ part
+     * @return string|null Classname including Model\Dependency\ part
      */
     public function getTypeDependencyClass($fieldType)
     {
         if (isset($this->dependencies[$fieldType]) && $this->dependencies[$fieldType]) {
             return 'Model\\Dependency\\' . $this->dependencies[$fieldType];
         }
+        return null;
     }
 
     /**

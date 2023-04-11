@@ -26,6 +26,8 @@ abstract class CachedArrayTargetAbstract extends \Gems\Registry\TargetAbstract
 {
     use DbTranslateUtilTrait;
 
+    protected $config;
+
     /**
      * Variable to add tags to the cache for cleanup.
      *
@@ -104,7 +106,7 @@ abstract class CachedArrayTargetAbstract extends \Gems\Registry\TargetAbstract
      */
     private function _getCacheId()
     {
-        return \MUtil\StringUtil\StringUtil::toCacheId(GEMS_PROJECT_NAME . '__' . get_class($this) . '__' . $this->_id);
+        return \MUtil\StringUtil\StringUtil::toCacheId($this->config['app']['name'] . '__' . get_class($this) . '__' . $this->_id);
     }
 
     /**

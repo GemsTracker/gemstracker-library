@@ -11,6 +11,7 @@
 
 namespace Gems;
 
+use Gems\User\User;
 use IPLib\Factory as IpFactory;
 use IPLib\Address\AddressInterface;
 use IPLib\Range\RangeInterface;
@@ -44,6 +45,13 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      * @var \Gems\Util\CommTemplateUtil
      */
     protected $commTemplateUtil;
+
+    protected $config;
+
+    /**
+     * @var User
+     */
+    protected $currentUser;
 
     /**
      *
@@ -232,7 +240,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
                 $uri .= $this->basepath->getBasePath();
             } else {
                 // I did not want to add loader to util, can no longer tell why
-                $org = \Gems\Escort::getInstance()->getLoader()->getCurrentUser()->getCurrentOrganization();
+                $org = $this->currentUser->getCurrentOrganization();
 
                 if ($org instanceof \Gems\User\Organization) {
                     $uri = $org->getPreferredSiteUrl();
@@ -302,7 +310,7 @@ class Util extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getLockFile($filename)
     {
-        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/' . $filename));
+        return $this->_loadClass('lockFile', true, array($this->config['rootDir'] . '/var/settings/' . $filename));
     }
 
     /**

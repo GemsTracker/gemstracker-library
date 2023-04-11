@@ -65,7 +65,7 @@ class Roles
     /**
      * Pass any strange call to \MUtil\Acl
      *
-     * @param stringethod
+     * @param string method
      * @param mixed $args
      * @return mixed
      */
@@ -82,8 +82,6 @@ class Roles
 
         if ($logger instanceof \Psr\Log\LoggerInterface) {
             $this->setLogger($logger);
-        } elseif (($_cache instanceof \Gems\Escort) && ($_cache->logger instanceof \Psr\Log\LoggerInterface)) {
-            $this->setLogger($_cache->logger);
         }
 
         $this->load();
@@ -94,10 +92,8 @@ class Roles
      */
     private function _deleteCache()
     {
-        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
-            $this->_cache->deleteItem($this->_cacheid);
-            $this->_cache->deleteItem($this->_cacheid . 'trans');
-        }
+        $this->_cache->deleteItem($this->_cacheid);
+        $this->_cache->deleteItem($this->_cacheid . 'trans');
     }
 
     /**
@@ -185,13 +181,11 @@ class Roles
      */
     private function _save()
     {
-        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
-            if (! (
-                $this->_cache->setCacheItem($this->_cacheid, $this->_acl, ['roles']) &&
-                $this->_cache->setCacheItem($this->_cacheid . 'trans', $this->_roleTranslations, ['roles'])
-            )) {
-                throw new \Gems\Exception('Failed to save acl to cache');
-            }
+        if (! (
+            $this->_cache->setCacheItem($this->_cacheid, $this->_acl, ['roles']) &&
+            $this->_cache->setCacheItem($this->_cacheid . 'trans', $this->_roleTranslations, ['roles'])
+        )) {
+            throw new \Gems\Exception('Failed to save acl to cache');
         }
     }
 
@@ -223,36 +217,18 @@ class Roles
     }
 
     /**
-     * Static acces function
-     *
-     * @return \Gems\Roles
-     */
-    public static function getInstance()
-    {
-        if (!isset(self::$_instanceOfSelf)) {
-            $c = __CLASS__;
-            self::$_instanceOfSelf = new $c;
-        }
-        return self::$_instanceOfSelf;
-    }
-
-    /**
      * Load the ACL values either from the cache or from build()
      */
     public function load()
     {
-        if ($this->_cache instanceof \Gems\Cache\HelperAdapter) {
-            $cache = $this->_cache;
-            if (! ($cache->hasItem($this->_cacheid) && $cache->hasItem($this->_cacheid . 'trans'))) {
-                // cache miss
-                $this->build();
-            } else {
-                // cache hit
-                $this->_acl = $cache->getCacheItem($this->_cacheid);
-                $this->_roleTranslations = $cache->getCacheItem($this->_cacheid . 'trans');
-            }
-        } else {
+        $cache = $this->_cache;
+        if (! ($cache->hasItem($this->_cacheid) && $cache->hasItem($this->_cacheid . 'trans'))) {
+            // cache miss
             $this->build();
+        } else {
+            // cache hit
+            $this->_acl = $cache->getCacheItem($this->_cacheid);
+            $this->_roleTranslations = $cache->getCacheItem($this->_cacheid . 'trans');
         }
     }
 

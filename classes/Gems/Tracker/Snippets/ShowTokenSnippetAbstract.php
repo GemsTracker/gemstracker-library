@@ -17,6 +17,7 @@ use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Late\Late;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelDetailTableSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -72,6 +73,7 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
         TranslatorInterface $translate,
         protected MaskRepository $maskRepository,
         protected Tracker $tracker,
+        protected StatusMessengerInterface $messenger,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
@@ -117,12 +119,13 @@ abstract class ShowTokenSnippetAbstract extends ModelDetailTableSnippetAbstract
                 return $htmlDiv;
 
             } else {
-                $this->addMessage(sprintf($this->_('Token %s not found.'), $this->tokenId));
+                $this->messenger->addMessage(sprintf($this->_('Token %s not found.'), $this->tokenId));
             }
 
         } else {
-            $this->addMessage($this->_('No token specified.'));
+            $this->messenger->addMessage($this->_('No token specified.'));
         }
+        return null;
     }
 
     /**

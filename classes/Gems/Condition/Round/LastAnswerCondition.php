@@ -115,7 +115,7 @@ class LastAnswerCondition extends RoundConditionAbstract
         return $this->_('Previous answer');
     }
 
-    public function getNotValidReason(int $conditionId, array $context): string
+    public function getNotValidReason(int $value, array $context): string
     {
         return sprintf($this->_('There is no question with `%s` in this track.'), $this->_data['gcon_condition_text1']);
     }
@@ -154,11 +154,11 @@ class LastAnswerCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param int $conditionId
+     * @param int $value
      * @param array $context
      * @return boolean
      */
-    public function isValid(int $conditionId, array $context): bool
+    public function isValid(int $value, array $context): bool
     {
         // For now always valid, checking all surveys and possible questions could slow things down
         $result = true;

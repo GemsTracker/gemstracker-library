@@ -24,7 +24,7 @@ class CronAction extends \Gems\Controller\Action
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 

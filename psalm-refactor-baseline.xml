@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="dev-master@71bb951717ae1bdcfb0e9513f149a9763c7fa800">
+  <file src="classes/Gems/Actions/ContactAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/CronAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/DatabaseAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/DatabaseBackupAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/EmbedAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/ExportMultiSurveysAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\ExportSurveyActionAbstract</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/ExportSurveyAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\ExportSurveyActionAbstract</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/ExportSurveyActionAbstract.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/FileActionAbstract.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/FileImportAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\FileActionAbstract</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/ImportedFailuresAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\FileActionAbstract</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/ImportedFilesAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\FileActionAbstract</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/LanguageAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/LogFileAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/OpenRosaFormAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/OpenrosaAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/ParticipateAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/PrivilegesAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/RespondentExportAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/RoleOverviewAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/SiteMaintenanceAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/SurveyCodeBookMultiExportAction.php">
+    <MissingDependency>
+      <code>\Gems\Actions\ExportMultiSurveysAction</code>
+    </MissingDependency>
+  </file>
+  <file src="classes/Gems/Actions/TemplateAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\ModelSnippetActionAbstract</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Actions/UpgradeAction.php">
+    <UndefinedClass>
+      <code>\Gems\Controller\Action</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/Export/ExportAbstract.php">
+    <InvalidParamDefault>
+      <code>array</code>
+    </InvalidParamDefault>
+    <UndefinedConstant>
+      <code>GEMS_ROOT_DIR</code>
+    </UndefinedConstant>
+  </file>
+  <file src="classes/Gems/Export/RespondentExport.php">
+    <NullReference>
+      <code>render</code>
+    </NullReference>
+    <UndefinedClass>
+      <code>\PhpOffice\PhpWord\PhpWord</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass>
+      <code>\PhpOffice\PhpWord</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="classes/Gems/Export/StreamingExcelExport.php">
+    <UndefinedClass>
+      <code>ReaderFactory</code>
+      <code>ReaderFactory</code>
+      <code>StyleBuilder</code>
+      <code>WriterFactory</code>
+      <code>WriterFactory</code>
+      <code>WriterFactory</code>
+    </UndefinedClass>
+  </file>
+  <file src="classes/Gems/FormattedData.php">
+    <MissingTemplateParam>
+      <code>FormattedData</code>
+    </MissingTemplateParam>
+  </file>
+  <file src="classes/Gems/Menu/ParameterSource.php">
+    <MissingTemplateParam>
+      <code>ParameterSource</code>
+    </MissingTemplateParam>
+  </file>
+  <file src="classes/Gems/Model/JoinModel.php">
+    <MethodSignatureMismatch>
+      <code>addLeftTable</code>
+      <code>addRightTable</code>
+      <code>addTable</code>
+    </MethodSignatureMismatch>
+    <ParamNameMismatch>
+      <code>$fieldPrefix</code>
+      <code>$fieldPrefix</code>
+      <code>$fieldPrefix</code>
+      <code>$fieldPrefix</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="classes/Gems/Project/ProjectSettings.php">
+    <MissingTemplateParam>
+      <code>ProjectSettings</code>
+    </MissingTemplateParam>
+  </file>
+  <file src="classes/Gems/Snippets/Agenda/AppointmentCleanupSnippet.php">
+    <UndefinedDocblockClass>
+      <code><![CDATA[$bridge->tfrow($fparams)]]></code>
+      <code>$footer</code>
+      <code>$footer</code>
+      <code>$footer</code>
+      <code>$footer</code>
+      <code>$footer</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="classes/Gems/Snippets/AutosearchPeriodFormSnippet.php">
+    <TooFewArguments>
+      <code>parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher)</code>
+    </TooFewArguments>
+  </file>
+  <file src="classes/Gems/Snippets/Export/ExportFormSnippet.php">
+    <NullReference>
+      <code>$data</code>
+    </NullReference>
+  </file>
+  <file src="classes/Gems/Snippets/Group/GroupFormSnippet.php">
+    <NoValue>
+      <code><![CDATA[return $this->formData;]]></code>
+    </NoValue>
+  </file>
+  <file src="classes/Gems/Snippets/Log/LogMaintenanceSearchSnippet.php">
+    <TooFewArguments>
+      <code>parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher)</code>
+    </TooFewArguments>
+  </file>
+  <file src="classes/Gems/Snippets/Survey/AnswerImportSnippet.php">
+    <UndefinedDocblockClass>
+      <code><![CDATA[$this->getTranslatorDescriptions()]]></code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="classes/Gems/Tracker/Model/FieldDataModel.php">
+    <UndefinedDocblockClass>
+      <code><![CDATA[$this->addUnionModel($modelF, null, FieldMaintenanceModel::FIELDS_NAME)]]></code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="classes/Gems/Tracker/TrackEvent/Respondent/Change/CreateDefaultTracks.php">
+    <TooFewArguments>
+      <code>createRespondentTrack</code>
+      <code>createRespondentTrack</code>
+    </TooFewArguments>
+  </file>
+  <file src="classes/Gems/Twig/Csrf.php">
+    <UndefinedFunction>
+      <code><![CDATA[twig_escape_filter($env, $csrf->generateToken(), 'html_attr')]]></code>
+    </UndefinedFunction>
+  </file>
+  <file src="classes/Gems/User/Form/OrganizationFormAbstract.php">
+    <ParamNameMismatch>
+      <code>$data</code>
+    </ParamNameMismatch>
+  </file>
+</files>

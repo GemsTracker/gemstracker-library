@@ -18,6 +18,9 @@ use Gems\Locale\Locale;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
 use Gems\Tracker;
+use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
+use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
@@ -370,26 +373,26 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         if (array_key_exists('events', $filter)) {
             
             switch ($filter['events']) {
-                case '!Gems_Event_Survey':
+                case '!Gems\Tracker\TrackEvent\Survey':
                     $filter[] = "(gsu_beforeanswering_event IS NOT NULL OR gsu_completed_event IS NOT NULL OR gsu_display_event IS NOT NULL)";
                     break;
-                case '!Gems\Event\SurveyBeforeAnsweringEventInterface':
+                case '!Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface':
                     $filter[] = "gsu_beforeanswering_event IS NOT NULL";
                     break;
-                case '!Gems\Event\SurveyCompletedEventInterface':
+                case '!Gems\Tracker\TrackEvent\SurveyCompletedEventInterface':
                     $filter[] = "gsu_completed_event IS NOT NULL";
                     break;
-                case '!Gems\Event\SurveyDisplayEventInterface':
+                case '!Gems\Tracker\TrackEvent\SurveyDisplayEventInterface':
                     $filter[] = "gsu_display_event IS NOT NULL";
                     break;
                 default:
                     $class = $filter['events'];
                     if (class_exists($class, true)) {
-                        if (is_subclass_of($class, '\\Gems\\Event\\SurveyBeforeAnsweringEventInterface', true)) {
+                        if (is_subclass_of($class, SurveyBeforeAnsweringEventInterface::class, true)) {
                             $filter['gsu_beforeanswering_event'] = $class;
-                        } elseif (is_subclass_of($class, '\\Gems\\Event\\SurveyCompletedEventInterface', true)) {
+                        } elseif (is_subclass_of($class, SurveyCompletedEventInterface::class, true)) {
                             $filter['gsu_completed_event'] = $class;
-                        } elseif (is_subclass_of($class, '\\Gems\\Event\\SurveyDisplayEventInterface', true)) {
+                        } elseif (is_subclass_of($class, SurveyDisplayEventInterface::class, true)) {
                             $filter['gsu_display_event'] = $class;
                         }
                     }

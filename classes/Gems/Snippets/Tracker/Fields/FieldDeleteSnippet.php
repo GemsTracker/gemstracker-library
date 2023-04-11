@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
+use Gems\Snippets\ModelItemYesNoDeleteSnippet;
+
 /**
  *
  *
@@ -20,12 +22,12 @@ namespace Gems\Snippets\Tracker\Fields;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class FieldDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
+class FieldDeleteSnippet extends ModelItemYesNoDeleteSnippet
 {
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \Gems_Snippets_Tracker_Fields_FieldDeleteSnippet (continuation pattern)
+     * @return void
      */
     protected function setAfterDeleteRoute()
     {

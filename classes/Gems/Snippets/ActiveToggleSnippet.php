@@ -9,6 +9,8 @@ class ActiveToggleSnippet extends ModelConfirmDataChangeSnippet
     protected string $deactivateFormTitle;
     protected array $deactivateSaveData;
 
+    protected string $formTitle;
+
     protected string $reactivateConfirmQuestion;
     protected string $reactivateDisplayTitle;
     protected string $reactivateFormTitle;
@@ -30,6 +32,7 @@ class ActiveToggleSnippet extends ModelConfirmDataChangeSnippet
     protected function setAfterDeleteRoute()
     {
         $this->afterSaveRouteUrl = $this->menuSnippetHelper->getRelatedRouteUrl($this->confirmAction);
+        return $this->afterSaveRouteUrl;
     }
 
     public function hasHtmlOutput(): bool

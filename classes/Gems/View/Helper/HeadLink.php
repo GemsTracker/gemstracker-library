@@ -54,10 +54,8 @@ class HeadLink extends \MUtil\View\Helper\HeadLink
         }
 
         if (isset($this->view->currentVersion)) {
-            $version = $this->view->currentVersion;
-
             if (property_exists($item, 'href')) {
-                $item->href = $item->href . '?' . $version;
+                $item->href = $item->href . '?' . $this->view->currentVersion;
             }
         }
 

@@ -5,6 +5,7 @@ namespace Gems\Model;
 use Gems\Exception\RespondentAlreadyExists;
 use Gems\Repository\StaffRepository;
 use Gems\Util\Localized;
+use Gems\Util\ReceptionCodeLibrary;
 
 /**
  *
@@ -664,7 +665,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         // And save the record
         $toPatient['gr2o_patient_nr']      = $toPid;
         $toPatient['gr2o_id_organization'] = $toOrgId;
-        $toPatient['gr2o_reception_code']  = \Gems\Escort::RECEPTION_OK;
+        $toPatient['gr2o_reception_code']  = ReceptionCodeLibrary::RECEPTION_OK;
 
         $loginToSaveTable = false;
         if (isset($this->_saveTables['gems__user_logins'])) {
@@ -1132,13 +1133,14 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return string The salted hash as a 32-character hexadecimal number.
+     * @return mixed The salted hash as a 32-character hexadecimal number.
      */
     public function saveSSN($value, $isNew = false, $name = null, array $context = array())
     {
         if ($value) {
             return $this->project->getValueHash($value, $this->hashAlgorithm);
         }
+        return $value;
     }
 
     /**

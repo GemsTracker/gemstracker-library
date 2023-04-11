@@ -46,12 +46,14 @@ class ModelFormVariableFieldSnippet extends \Gems\Snippets\ModelFormSnippet
     protected $db;
     protected $util;
 
-    protected function addBridgeElements(FormBridgeInterface $bridge, DataReaderInterface $model)
-    {
-        parent::addFormElements($bridge, $model);
+    protected $urlHelper;
 
-        foreach ($model->getItemsOrdered() as $name) {
-            $modelOptions = $model->get($name);
+    protected function addBridgeElements(FormBridgeInterface $bridge, DataReaderInterface $dataModel)
+    {
+        parent::addFormElements($bridge, $dataModel);
+
+        foreach ($dataModel->getItemsOrdered() as $name) {
+            $modelOptions = $dataModel->get($name);
             if (isset($modelOptions['variableSelect'])) {
                 $selectOptions = $modelOptions['variableSelect'];
                 if (isset($selectOptions['source']) && isset($selectOptions['baseQuery'])) {
@@ -151,7 +153,7 @@ class ModelFormVariableFieldSnippet extends \Gems\Snippets\ModelFormSnippet
     {
 
         if ($script = $this->getAjaxEventScript()) {
-            $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath();
+            $baseUrl = $this->urlHelper->getBasePath();
             \MUtil\JQuery::enableView($view);
             $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.getSelectOptions.js');
             $view->inlineScript()->appendScript($script);

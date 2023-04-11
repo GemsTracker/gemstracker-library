@@ -526,7 +526,7 @@ class Menu
                             'label' => $this->translator->trans('Session'),
                             'type' => 'route-link-item',
                         ],
-                        [
+                        /*[
                             'name' => 'setup.project-information.upgrade.index',
                             'label' => $this->translator->trans('Upgrade'),
                             'type' => 'route-link-item',
@@ -547,7 +547,7 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                             ],
-                        ],
+                        ],*/
 
                     ],
                 ],

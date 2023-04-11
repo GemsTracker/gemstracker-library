@@ -51,6 +51,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class AskHandler extends SnippetLegacyHandlerAbstract
 {
+    protected User $currentUser;
+
     /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
      * Ask_ShowAllOpenSnippet or Ask_ShowFirstOpenSnippet or

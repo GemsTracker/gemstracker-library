@@ -23,14 +23,14 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
     /**
      * Return a welcome greeting depending on showlastName switch
      *
-     * @return \MUtil\Html\HtmlElement
+     * @return string
      */
     public function formatWelcome()
     {
         if ($this->wasAnswered) {
-            return $this->_('Welcome back,'); 
+            return $this->translator->_('Welcome back,');
         } else {
-            return $this->_('Welcome,');
+            return $this->translator->_('Welcome,');
         }
     }
     
@@ -53,7 +53,7 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
             $nextToken = $this->token->getNextUnansweredToken();
             if ($nextToken) {
                 $html->pInfo(sprintf(
-                                 $this->_('Thank you for answering "%s".'),
+                                 $this->translator->_('Thank you for answering "%s".'),
                                  $this->token->getSurvey()->getExternalName()));
 
                 $open = $this->getOpenCount();
@@ -65,7 +65,7 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
                 $html->pInfo($this->showLink($nextToken));
             } else {
                 $html->pInfo(sprintf(
-                                 $this->_('Thank you for answering the surveys for "%s".'),
+                                 $this->translator->_('Thank you for answering the surveys for "%s".'),
                                  $this->token->getTrackEngine()->getExternalName()));
             }
             
@@ -97,7 +97,7 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
         $html   = $this->getHtmlSequence();
         $survey = $token->getSurvey();
 
-        $html->append($this->_('Click on the link to answer the survey:'));
+        $html->append($this->translator->_('Click on the link to answer the survey:'));
         $html->append(' ');
         $html->actionLink($href, $survey->getExternalName());
 
@@ -109,6 +109,6 @@ class ShowOpenSequenceSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstra
     }
     public function showTotal($open)
     {
-        return sprintf($this->_('There are open %d surveys'), $open);
+        return sprintf($this->translator->_('There are open %d surveys'), $open);
     }
 }

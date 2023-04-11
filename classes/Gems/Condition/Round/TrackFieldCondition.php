@@ -91,7 +91,7 @@ class TrackFieldCondition extends RoundConditionAbstract
         return $this->_('Track field');
     }
 
-    public function getNotValidReason(int $conditionId, array $context): string
+    public function getNotValidReason(int $value, array $context): string
     {
         return sprintf($this->_('Track does not have a field with code `%s`.'), $this->_data['gcon_condition_text1']);
     }
@@ -152,11 +152,11 @@ class TrackFieldCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param int $conditionId
+     * @param int $value
      * @param array $context
      * @return boolean
      */
-    public function isValid(int $conditionId, array $context): bool
+    public function isValid(int $value, array $context): bool
     {
         $result = false;
 

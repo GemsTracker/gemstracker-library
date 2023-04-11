@@ -17,7 +17,7 @@ class RespondentMailFailed extends Event implements RespondentCommunicationInter
 
     protected Respondent $respondent;
 
-    protected int $currentUser;
+    protected int $currentUserId;
 
     private array $communicationJob;
 

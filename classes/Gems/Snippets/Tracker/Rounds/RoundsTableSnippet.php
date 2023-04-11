@@ -93,26 +93,26 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
      * having to recode the core table building code.
      *
      * @param TableBridge $bridge
-     * @param DataReaderInterface $model
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         // Make sure these fields are loaded
-        $model->get('gro_valid_after_field');
-        $model->get('gro_valid_after_id');
-        $model->get('gro_valid_after_length');
-        $model->get('gro_valid_after_source');
-        $model->get('gro_valid_after_unit');
+        $dataModel->get('gro_valid_after_field');
+        $dataModel->get('gro_valid_after_id');
+        $dataModel->get('gro_valid_after_length');
+        $dataModel->get('gro_valid_after_source');
+        $dataModel->get('gro_valid_after_unit');
 
-        $model->get('gro_valid_for_field');
-        $model->get('gro_valid_for_id');
-        $model->get('gro_valid_for_length');
-        $model->get('gro_valid_for_source');
-        $model->get('gro_valid_for_unit');
+        $dataModel->get('gro_valid_for_field');
+        $dataModel->get('gro_valid_for_id');
+        $dataModel->get('gro_valid_for_length');
+        $dataModel->get('gro_valid_for_source');
+        $dataModel->get('gro_valid_for_unit');
 
         // We want to markt the row for inactive surveys so it visually stands out
-        $model->get('gsu_active');
+        $dataModel->get('gsu_active');
 //        $bridge->tr()->appendAttrib('class', \MUtil\Lazy::iif(
 //            $bridge->gsu_active,
 //            '',
@@ -120,14 +120,14 @@ class RoundsTableSnippet extends ModelTableSnippetAbstract
 //        ));
 
         // Add link to survey-edit
-//        foreach ($this->getEditUrls($bridge, $model->getKeys()) as $linkParts) {
+//        foreach ($this->getEditUrls($bridge, $dataModel->getKeys()) as $linkParts) {
 //            if (! isset($linkParts['label'])) {
 //                $linkParts['label'] = $this->_('Edit');
 //            }
 //            $bridge->addItemLink(Html::actionLink($linkParts['url'], $linkParts['label']));
 //        }
 
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
     }
 
 //    public function getRequestFilter(MetaModelInterface $metaModel) : array

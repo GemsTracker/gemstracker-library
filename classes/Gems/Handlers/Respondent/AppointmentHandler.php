@@ -27,6 +27,7 @@ use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\Track\TracksForAppointment;
 use Gems\Tracker\Respondent;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\User;
 use Gems\User\UserLoader;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -109,7 +110,7 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      *
      * @var \Gems\User\User
      */
-    public $currentUser;
+    public User $currentUser;
 
     /**
      * The parameters used for the index action minus those in autofilter.

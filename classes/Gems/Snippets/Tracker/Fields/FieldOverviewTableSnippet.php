@@ -22,7 +22,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  */
 class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippet
 {
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $params = [
             'id1' => $bridge->getLate('gr2o_patient_nr'),
@@ -38,7 +38,7 @@ class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippet
             $aElem = new AElement($href['url']);
             $aElem->setOnEmpty('');
 
-            $metaModel = $model->getMetaModel();
+            $metaModel = $dataModel->getMetaModel();
             
             // Make sure org is known
             $metaModel->get('gr2o_id_organization');
@@ -47,6 +47,6 @@ class FieldOverviewTableSnippet extends \Gems\Snippets\ModelTableSnippet
             $metaModel->set('respondent_name', 'itemDisplay', $aElem);
         }
         
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
     }
 }

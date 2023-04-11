@@ -90,7 +90,7 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @return HtmlInterface Something that can be rendered
+     * @return HtmlInterface|null Something that can be rendered
      */
     public function getHtmlOutput()
     {
@@ -105,6 +105,7 @@ abstract class EditTokenSnippetAbstract extends ModelFormSnippetAbstract
         } else {
             $this->addMessage($this->_('No token specified.'));
         }
+        return null;
     }
 
 

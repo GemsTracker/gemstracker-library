@@ -55,17 +55,17 @@ class MailLogBrowseSnippet extends ModelTableSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model->has('row_class')) {
+        if ($dataModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
-        $keys = $this->getRouteMaps($model);
+        $keys = $this->getRouteMaps($dataModel);
         if ($this->showMenu) {
             $showMenuItems = $this->getShowUrls($bridge, $keys);
 

@@ -241,12 +241,13 @@ abstract class MaskerAbstract extends \MUtil\Translate\TranslateableAbstract imp
                 $row[$field] = $this->mask($type, $row[$field]);
             }
         }
+        return $row;
     }
 
     /**
      *
      * @param string $choice
-     * @return this
+     * @return self
      */
     public function setChoice($choice)
     {

@@ -45,12 +45,6 @@ class SiteMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $cacheTags = ['urlsites'];
 
     /**
-     *
-     * @var \Gems\Escort
-     */
-    public $escort;
-
-    /**
      * The snippets used for the index action, after those in autofilter
      *
      * @var mixed String or array of snippets name

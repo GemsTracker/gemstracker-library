@@ -12,6 +12,8 @@
 namespace Gems\Util;
 
 use Gems\Cache\HelperAdapter;
+use MUtil\Registry\TargetAbstract;
+use Zalt\Base\TranslateableTrait;
 
 /**
  * Abstract utility class containing caching and sql loading function
@@ -22,8 +24,10 @@ use Gems\Cache\HelperAdapter;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 24-sep-2015 11:37:10
  */
-class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
+class UtilAbstract extends TargetAbstract
 {
+    use \MUtil\Translate\TranslateableTrait;
+
     /**
      *
      * @var HelperAdapter
@@ -220,7 +224,7 @@ class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         $cacheId = HelperAdapter::cleanupForCacheId(get_class($this) . '_' . $cacheId);
 
-        $result = false; //$this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
 
         if ($result) {
             return $result;
@@ -263,7 +267,7 @@ class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
     {
         $cacheId = get_class($this) . '_' . $cacheId;
 
-        $result = false; //$this->cache->load($cacheId);
+        $result = $this->cache->getCacheItem($cacheId);
 
         if ($result) {
             return $result;
@@ -373,7 +377,7 @@ class UtilAbstract extends \MUtil\Translate\TranslateableAbstract
      * Sort the array using the specified sort function
      *
      * @param array $result
-     * @param callable $sort Sort function
+     * @param string|callable $sort Sort function
      */
     protected function _sortResult(array &$result, $sort = 'asort')
     {

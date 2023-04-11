@@ -146,11 +146,11 @@ class ConditionRoundsTableSnippet extends ModelTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MetaModelInterface $model
+     * @param MetaModelInterface $metaModel
      */
-    public function getFilter(MetaModelInterface $model): array
+    public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filter = parent::getFilter($model);
+        $filter = parent::getFilter($metaModel);
 
         $conditionId = null;
         if ($this->condition) {

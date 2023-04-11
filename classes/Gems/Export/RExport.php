@@ -83,7 +83,7 @@ class RExport extends ExportAbstract
     /**
      * Add a separate row to a file
      * @param array $row a row in the model
-     * @param file $file The already opened file
+     * @param resource $file The already opened file
      */
     public function addRow($row, $file)
     {
@@ -224,7 +224,7 @@ class RExport extends ExportAbstract
      * ==>
      * "This isn't ""hard"" to understand"
      *
-     * @param type $input
+     * @param string $input
      * @return string
      */
     public function formatString($input)

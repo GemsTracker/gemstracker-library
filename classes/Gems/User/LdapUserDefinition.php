@@ -56,7 +56,7 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
      * We never need a rehash
      *
      * @param \Gems\User\User $user
-     * @param type $password
+     * @param string $password
      * @return boolean
      */
     public function checkRehash(\Gems\User\User $user, $password)
@@ -111,8 +111,8 @@ class LdapUserDefinition extends \Gems\User\StaffUserDefinition
     /**
      * Copied from \Gems\User\StaffUserDefinition but left out the password link
      *
-     * @param type $login_name
-     * @param type $organization
+     * @param string $login_name
+     * @param string|int $organization
      * @return \Zend_Db_Select
      */
     protected function getUserSelect($login_name, $organization)

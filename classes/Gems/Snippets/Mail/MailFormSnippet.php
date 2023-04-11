@@ -360,9 +360,6 @@ class MailFormSnippet extends \Zalt\Snippets\ModelSnippetAbstract
              return $this->formTitle;
          } else {
             $target = $this->_($this->mailTarget);
-            if (is_array($target)) {
-                $target = reset($target);
-            }
             return sprintf($this->_('Email %s '), $target);
          }
     }

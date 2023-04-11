@@ -94,6 +94,11 @@ class Organization extends CachedArrayTargetAbstract
     protected $basepath;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      *
      * @var \Gems\Loader
      */
@@ -362,7 +367,8 @@ class Organization extends CachedArrayTargetAbstract
         $result['organization_url']             = $this->_get('gor_url');
         $result['organization_welcome']         = $this->getWelcome();
 
-        if ((APPLICATION_ENV === 'production') &&
+        $env = $this->config['app']['env'] ?? 'production';
+        if (($env === 'production') &&
                 preg_match('#^http(s)?://localhost#', $result['organization_login_url'])) {
             throw new \Gems\Exception("Use of 'localhost' as url not permitted on production system.");
         }
@@ -561,7 +567,7 @@ class Organization extends CachedArrayTargetAbstract
 
     /**
      *
-     * @return url string
+     * @return string Url
      */
     public function getUnsubscribeUrl()
     {
@@ -638,16 +644,11 @@ class Organization extends CachedArrayTargetAbstract
      */
     public function setAsCurrentOrganization()
     {
-        $organizationId = $this->getId();
+        /*$organizationId = $this->getId();
 
         if ($organizationId && (! \Gems\Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
             throw new \Exception('Cookies must be enabled for this site.');
-        }
-
-        $escort = \Gems\Escort::getInstance();
-        if ($escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
-            $escort->layoutSwitch($this->getStyle());
-        }
+        }*/
 
         return $this;
     }

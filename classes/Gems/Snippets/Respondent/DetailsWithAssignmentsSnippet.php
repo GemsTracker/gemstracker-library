@@ -40,9 +40,7 @@ class DetailsWithAssignmentsSnippet extends \Gems\Snippets\RespondentDetailSnipp
     protected $translatedUtil;
 
     /**
-     * Place to set the data to display
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param DetailTableBridge $bridge
      * @return void
      */
     protected function addTableCells(DetailTableBridge $bridge)

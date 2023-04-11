@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\Agenda;
 
+use Gems\Repository\OrganizationRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -33,7 +34,8 @@ class AgendaFactory
             $subLoader, 
             $container->get(TranslatorInterface::class),
             $container->get(AdapterInterface::class),
-            $container->get(\Zend_Db_Adapter_Abstract::class)
+            $container->get(\Zend_Db_Adapter_Abstract::class),
+            $container->get(OrganizationRepository::class),
         );
     }
 }

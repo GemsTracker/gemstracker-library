@@ -15,6 +15,7 @@ use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Repository\TokenRepository;
+use Gems\Snippets\ModelTableSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\AElement;
@@ -34,7 +35,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
+class ComplianceTableSnippet extends ModelTableSnippet
 {
     /**
      * Menu actions to show in Edit box.
@@ -73,7 +74,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $keys[\MUtil\Model::REQUEST_ID1] = 'gr2o_patient_nr';
         $keys[\MUtil\Model::REQUEST_ID2] = 'gr2o_id_organization';
@@ -86,10 +87,10 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
             $aElem->setOnEmpty('');
 
             // Make sure org is known
-            $model->get('gr2o_id_organization');
+            $dataModel->get('gr2o_id_organization');
 
-            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-            $model->set('respondent_name', 'itemDisplay', $aElem);
+            $dataModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $dataModel->set('respondent_name', 'itemDisplay', $aElem);
         }
 
         $table = $bridge->getTable();
@@ -115,10 +116,10 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
         // Initialize alter
         $alternateClass = new Alternate(array('odd', 'even'));
 
-        foreach($model->getItemsOrdered() as $name) {
-            $label = $model->get($name, 'label');
+        foreach($dataModel->getItemsOrdered() as $name) {
+            $label = $dataModel->get($name, 'label');
             if ($label) {
-                $round = $model->get($name, 'round');
+                $round = $dataModel->get($name, 'round');
                 if ($round == $cRound) {
                     $span++;
                     $class = null;
@@ -131,7 +132,7 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
 
                     $span    = 1;
                     $cRound  = $round;
-                    if ($cIcon = $model->get($name, 'roundIcon')) {
+                    if ($cIcon = $dataModel->get($name, 'roundIcon')) {
                         $cDesc = ImgElement::imgFile($cIcon, array(
                             'alt'   => $cRound,
                             'title' => $cRound
@@ -144,13 +145,13 @@ class ComplianceTableSnippet extends \Gems\Snippets\ModelTableSnippet
                     $th      = $th_row->td(array('class' => $thClass));
                 }
 
-                if ($model->get($name, 'noSort')) {
+                if ($dataModel->get($name, 'noSort')) {
                     // $result = 'res_' . substr($name, 5);
                     $token  = 'tok_' . substr($name, 5);
 
                     $tds   = $bridge->addColumn(
                             Late::method($this->tokenRepository, 'getTokenStatusLinkForTokenId', $this->menuHelper, $bridge->$token),
-                            array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
+                            array($label, 'title' => $dataModel->get($name, 'description'), 'class' => 'round')
                             );
                 } else {
                         $tds = $bridge->addSortable($name, $label);

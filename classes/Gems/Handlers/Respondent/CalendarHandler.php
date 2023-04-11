@@ -15,15 +15,11 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Model;
 use Gems\Repository\PeriodSelectRepository;
-use Gems\Snippets\AutosearchFormSnippet;
 use Gems\User\User;
-use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
-use function Gems\Actions\count;
-
 /**
  *
  *

@@ -37,6 +37,12 @@ use Symfony\Component\Mime\Email;
 
 class CommunicationRepository
 {
+    const MAIL_NO_ENCRYPT = 0;
+    const MAIL_SSL = 1;
+    const MAIL_TLS = 2;
+
+    protected Client|null $smsClient = null;
+
     public function __construct(
         protected ResultFetcher $resultFetcher,
         protected CachedResultFetcher $cachedResultFetcher,
@@ -289,11 +295,11 @@ class CommunicationRepository
     {
         if (!$this->smsClient) {
 
-            if (isset($this->config['sms'], $config['sms'][$clientId], $config['sms'][$clientId]['class'])) {
-                $httpClient = $this->getHttpClient($config[$clientId]);
-                if (class_exists($config[$clientId]['class'])) {
-                    $class = $config[$clientId]['class'];
-                    $smsClient = new $class($config[$clientId], $httpClient);
+            if (isset($this->config['sms'][$clientId]['class'])) {
+                $httpClient = $this->getHttpClient($this->config['sms'][$clientId]);
+                if (class_exists($this->config['sms'][$clientId]['class'])) {
+                    $class = $this->config['sms'][$clientId]['class'];
+                    $smsClient = new $class($this->config['sms'][$clientId], $httpClient);
                 }
                 if (!($smsClient instanceof SmsClientInterface)) {
                     throw new \Gems\Exception('Sms client could not be loaded from config');

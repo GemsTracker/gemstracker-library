@@ -192,7 +192,7 @@ class SiteUtil
 
     public function isLocked(): bool
     {
-        if (isset($config['useDatabase'], $config['locked']) && $config['useDatabase'] === true && $config['locked'] === false) {
+        if (isset($this->config['useDatabase'], $this->config['locked']) && $this->config['useDatabase'] === true && $this->config['locked'] === false) {
             return false;
         }
         return true;

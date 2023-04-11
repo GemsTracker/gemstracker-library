@@ -32,6 +32,7 @@ class OneToManyTransformer extends NestedTransformer
      */
     protected function transformLoadSubModel(MetaModelInterface $model, DataReaderInterface $sub, array &$data, array $join, $name, $new, $isPostData)
     {
+        $newRow = [];
         if ($new) {
             $newRow = $sub->loadAllNew();
         }

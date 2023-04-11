@@ -96,11 +96,11 @@ class ConditionAndOrTableSnippet extends ModelTableSnippetAbstract
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MetaModelInterface $model
+     * @param MetaModelInterface $metaModel
      */
-    public function getFilter(MetaModelInterface $model): array
+    public function getFilter(MetaModelInterface $metaModel): array
     {
-        $filters = parent::getFilter($model);
+        $filters = parent::getFilter($metaModel);
         $attributes = $this->requestInfo->getRequestMatchedParams();
 
         if (isset($attributes[Model::REQUEST_ID])) {

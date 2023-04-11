@@ -74,10 +74,6 @@ class DbaModel extends \MUtil\Model\ArrayModelAbstract
 
         $this->directories = $directories;
 
-        //Grab translate object from the Escort
-        $this->translate = \Gems\Escort::getInstance()->translate;
-        $this->initTranslateable();
-
         $this->set('group',       'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);
         $this->set('name',        'key', true, 'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);
         $this->set('type',        'maxlength', 40, 'type', \MUtil\Model::TYPE_STRING);

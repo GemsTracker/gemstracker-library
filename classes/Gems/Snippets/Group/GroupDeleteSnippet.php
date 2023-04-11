@@ -15,6 +15,7 @@ use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessageStatus;
@@ -51,11 +52,12 @@ class GroupDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstr
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        CacheItemPoolInterface $cache,
         private readonly AclRepository $aclRepository,
         private readonly CurrentUserRepository $currentUserRepository,
         private readonly GroupRepository $groupRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
     }
 
     /**

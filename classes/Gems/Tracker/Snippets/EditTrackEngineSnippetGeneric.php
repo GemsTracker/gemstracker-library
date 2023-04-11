@@ -74,9 +74,9 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
      * having to recode the core table building code.
      *
      * @param FormBridgeInterface $bridge
-     * @param FullDataInterface $model
+     * @param FullDataInterface $dataModel
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
@@ -94,7 +94,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
 
         // gtr_track_class
         if ($this->trackEngine) {
-            $options      = $model->get('gtr_track_class', 'multiOptions');
+            $options      = $dataModel->get('gtr_track_class', 'multiOptions');
             $alternatives = $this->trackEngine->getConversionTargets($options);
             if (count($alternatives) > 1) {
                 $options = $alternatives;
@@ -113,7 +113,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
             $options = $this->tracker->getTrackEngineList(true, true);
             $classEdit = true;
         }
-        $model->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
+        $dataModel->set('gtr_track_class', 'multiOptions', $options, 'escape', false);
         if ($classEdit) {
             $bridge->addRadio(    'gtr_track_class');
         } else {
@@ -125,19 +125,19 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         //if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         //}
-        if ($model->has('gtr_code')) {
+        if ($dataModel->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
-        if ($model->has('gtr_calculation_event', 'label')) {
+        if ($dataModel->has('gtr_calculation_event', 'label')) {
             $bridge->add('gtr_calculation_event');
         }
-        if ($model->has('gtr_completed_event', 'label')) {
+        if ($dataModel->has('gtr_completed_event', 'label')) {
             $bridge->add('gtr_completed_event');
         }
-        if ($model->has('gtr_beforefieldupdate_event', 'label')) {
+        if ($dataModel->has('gtr_beforefieldupdate_event', 'label')) {
             $bridge->add('gtr_beforefieldupdate_event');
         }
-        if ($model->has('gtr_fieldupdate_event', 'label')) {
+        if ($dataModel->has('gtr_fieldupdate_event', 'label')) {
             $bridge->add('gtr_fieldupdate_event');
         }
         $bridge->add('gtr_organizations');

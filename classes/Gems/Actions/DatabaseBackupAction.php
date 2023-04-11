@@ -12,6 +12,11 @@ class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
     ];
 
     /**
+     * @var array
+     */
+    public $config;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -48,7 +53,7 @@ class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getExportDbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = $this->loader->getModels()->getExportDbaModel($this->db, $this->config['migrations']['migrations']);
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

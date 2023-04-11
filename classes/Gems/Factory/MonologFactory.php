@@ -85,10 +85,7 @@ class MonologFactory implements FactoryInterface
                     if (isset($handlerConfig['formatter'], $handlerConfig['formatter']['name'])) {
                         if (class_exists($handlerConfig['formatter']['name'])) {
                             $formatterClass = $handlerConfig['formatter']['name'];
-                            $options = [];
-                            if (isset($processorConfig['options'])) {
-                                $options = $processorConfig['options'];
-                            }
+                            $options = $handlerConfig['formatter']['options'] ?? [];
                             $handler->setFormatter(new $formatterClass(...$options));
                         }
                     }

@@ -16,6 +16,10 @@ use DateTimeImmutable;
 use DateTimeInterface;
 
 use Gems\Date\Period;
+use Gems\Registry\CachedArrayTargetAbstract;
+use Gems\Tracker\Source\SourceInterface;
+use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
+use Gems\Tracker\TrackEvent\SurveyCompletedEventInterface;
 use MUtil\Model;
 
 /**
@@ -27,7 +31,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Survey extends \Gems\Registry\CachedArrayTargetAbstract
+class Survey extends CachedArrayTargetAbstract
 {
     /**
      * Variable to add tags to the cache for cleanup.
@@ -38,7 +42,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     
     /**
      *
-     * @var \Gems\Tracker\SourceInterface
+     * @var SourceInterface
      */
     private $_source;
 
@@ -282,6 +286,7 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
 
             return $event->getAnswerDisplaySnippets($token);
         }
+        return [];
     }
 
     /**
@@ -570,25 +575,27 @@ class Survey extends \Gems\Registry\CachedArrayTargetAbstract
     /**
      * Return the Survey Before Answering event (if any)
      *
-     * @return \Gems\Event\SurveyBeforeAnsweringEventInterface event instance or null
+     * @return SurveyBeforeAnsweringEventInterface|null event instance or null
      */
     public function getSurveyBeforeAnsweringEvent()
     {
         if ($this->_has('gsu_beforeanswering_event') && $this->_get('gsu_beforeanswering_event')) {
             return $event = $this->trackEvents->loadSurveyBeforeAnsweringEvent($this->_get('gsu_beforeanswering_event'));
         }
+        return null;
     }
 
     /**
      * Return the Survey Completed event
      *
-     * @return \Gems\Event\SurveyCompletedEventInterface event instance or null
+     * @return SurveyCompletedEventInterface|null event instance or null
      */
     public function getSurveyCompletedEvent()
     {
         if ($this->_has('gsu_completed_event') && $this->_get('gsu_completed_event')) {
             return $event = $this->trackEvents->loadSurveyCompletionEvent($this->_get('gsu_completed_event'));
         }
+        return null;
     }
 
     /**

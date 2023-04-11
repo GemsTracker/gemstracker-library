@@ -10,6 +10,9 @@
 
 namespace Gems\Communication;
 
+use Gems\Model;
+use Gems\Util\ReceptionCodeLibrary;
+
 /**
  * Writer implementation to save respondents to the database
  *
@@ -25,9 +28,9 @@ class RespondentModelWriter implements \Gems\Communication\RespondentWriter
      */
     private $_model = null;
 
-    public function __construct()
+    public function __construct(Model $modelLoader)
     {
-        $this->_model = \Gems\Escort::getInstance()->getLoader()->getModels()->createRespondentModel();
+        $this->_model = $modelLoader->createRespondentModel();
     }
 
     /**
@@ -46,7 +49,7 @@ class RespondentModelWriter implements \Gems\Communication\RespondentWriter
         $parameters = $this->_model->applyParameters(
             array(
                 'grs_ssn' => $respondent->getBsn(),
-                'gr2o_reception_code' => \Gems\Escort::RECEPTION_OK,
+                'gr2o_reception_code' => ReceptionCodeLibrary::RECEPTION_OK,
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
         );

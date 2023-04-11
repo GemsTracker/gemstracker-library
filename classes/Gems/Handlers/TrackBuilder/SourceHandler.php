@@ -20,6 +20,7 @@ use Gems\MenuNew\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Tracker;
 use Gems\Util\Translated;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use MUtil\Legacy\RequestHelper;
 use MUtil\Model\ModelAbstract;
@@ -334,7 +335,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
      */
     private function getSourceId()
     {
-        $sourceId = $this->request->getAttribute(\Mutil\Model::REQUEST_ID);
+        $sourceId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
 
         return $sourceId;
     }
@@ -382,7 +383,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $currentRoute = $requestHelper->getRouteResult();
         $showRoute = $this->routeHelper->getRouteSibling($currentRoute->getMatchedRouteName(), 'show');
         $params = $currentRoute->getMatchedParams();
-        $this->redirectUrl = $this->routeHelper->getRouteUrl($showRoute['name'], $params);
+        return new RedirectResponse($this->routeHelper->getRouteUrl($showRoute['name'], $params));
     }
 
     /**

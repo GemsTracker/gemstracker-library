@@ -30,9 +30,9 @@ class CreateNewTables extends \Gems\Task\TaskAbstract
     public $dbaModel;
 
     /**
-     * @var \Gems\Escort
+     * @var array
      */
-    public $escort;
+    public $config;
 
     /**
      * @var \Gems\Project\ProjectSettings
@@ -58,10 +58,8 @@ class CreateNewTables extends \Gems\Task\TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $this->escort = \Gems\Escort::getInstance();
-
         //Load the dbaModel
-        $model = new \Gems\Model\DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems\Model\DbaModel($this->db, $this->config['migrations']['migrations']);
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
