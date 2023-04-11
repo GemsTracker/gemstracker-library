@@ -106,8 +106,8 @@ class SmsJobMessenger extends JobMessengerAbstract implements \MUtil_Registry_Ta
     {
         $token = $this->loader->getTracker()->getToken($tokenData);
         $clientId = 'sms';
-        if (isset($job['gcm_method_identifier'])) {
-            $clientId = $job['gcm_method_identifier'];
+        if (isset($job['gcm_messenger_identifier'])) {
+            $clientId = $job['gcm_messenger_identifier'];
         }
         $communicationLoader = $this->loader->getCommunicationLoader();
         $smsClient = $communicationLoader->getSmsClient($clientId);
