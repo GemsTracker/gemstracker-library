@@ -14,7 +14,10 @@ namespace Gems\Tracker\Engine;
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Model\Dependency\FieldDataDependency;
 use Gems\Tracker\Model\FieldDataModel;
+use Gems\Tracker\Model\LogFieldDataModel;
 use MUtil\Model\Dependency\OffOnElementsDependency;
+use MUtil\Registry\TargetAbstract;
+use Zalt\Base\TranslateableTrait;
 
 /**
  *
@@ -24,8 +27,10 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class FieldsDefinition extends \MUtil\Translate\TranslateableAbstract
+class FieldsDefinition extends TargetAbstract
 {
+    use TranslateableTrait;
+
     /**
      * Field key separator
      */
@@ -68,7 +73,7 @@ class FieldsDefinition extends \MUtil\Translate\TranslateableAbstract
     private $_hasAppointmentFields = null;
 
     /**
-     * @var \Gems\Tracker\Model\LogFieldDataModel
+     * @var LogFieldDataModel
      */
     protected $_logModel;
 
@@ -307,13 +312,14 @@ class FieldsDefinition extends \MUtil\Translate\TranslateableAbstract
      * Get a specific field
      *
      * @param string $key
-     * @return \Gems\Tracker\Field\FieldInterface
+     * @return \Gems\Tracker\Field\FieldInterface|null
      */
     public function getField($key)
     {
         if (isset($this->_fields[$key])) {
             return $this->_fields[$key];
         }
+        return null;
     }
 
     /**
@@ -507,7 +513,7 @@ class FieldsDefinition extends \MUtil\Translate\TranslateableAbstract
     /**
      * Get the storage model for field values
      *
-     * @return \Gems\Tracker\Model\LogFieldDataModel
+     * @return LogFieldDataModel
      */
     public function getLogStorageModel()
     {

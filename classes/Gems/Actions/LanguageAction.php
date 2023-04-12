@@ -19,7 +19,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class LanguageAction extends \Gems\Controller\Action
+class LanguageAction extends \MUtil\Controller\Action
 {
     /**
      *
@@ -46,7 +46,7 @@ class LanguageAction extends \Gems\Controller\Action
                 if ($url) {
                     $this->getResponse()->setRedirect($url);
                 } else {
-                    $this->currentUser->gotoStartPage($this->menu, $this->getRequest());
+                    //$this->currentUser->gotoStartPage($this->menu, $this->getRequest());
                 }
                 return;
             }

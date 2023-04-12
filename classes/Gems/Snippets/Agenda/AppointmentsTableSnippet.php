@@ -118,16 +118,16 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
 
-        $keys = $this->getRouteMaps($model->getMetaModel());
+        $keys = $this->getRouteMaps($dataModel->getMetaModel());
         
         $episode = $this->currentUser->hasPrivilege('pr.respondent.episodes-of-care.index');
 
@@ -157,25 +157,25 @@ class AppointmentsTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
             $bridge->addMultiSort(
                 [$bridge->date_only],
                 $br,
-                [$bridge->gap_admission_time, $model->get('gap_admission_time', 'label')]
+                [$bridge->gap_admission_time, $dataModel->get('gap_admission_time', 'label')]
             );
             if ($episode) {
-                $bridge->addMultiSort([$bridge->gap_id_episode, $model->get('gap_id_episode', 'label')]);
+                $bridge->addMultiSort([$bridge->gap_id_episode, $dataModel->get('gap_id_episode', 'label')]);
             }
             $bridge->addMultiSort(
-                [$bridge->gap_subject, $model->get('gap_subject', 'label')],
+                [$bridge->gap_subject, $dataModel->get('gap_subject', 'label')],
                 $br,
-                [$bridge->gas_name, $model->get('gas_name', 'label')]
+                [$bridge->gas_name, $dataModel->get('gas_name', 'label')]
             );
             $bridge->addMultiSort(
-                [$bridge->gaa_name, $model->get('gaa_name', 'label')],
+                [$bridge->gaa_name, $dataModel->get('gaa_name', 'label')],
                 $br,
-                [$bridge->gapr_name, $model->get('gapr_name', 'label')]
+                [$bridge->gapr_name, $dataModel->get('gapr_name', 'label')]
             );
             $bridge->addMultiSort(
-                [$bridge->gor_name, $model->get('gor_name', 'label')],
+                [$bridge->gor_name, $dataModel->get('gor_name', 'label')],
                 $br,
-                [$bridge->glo_name, $model->get('glo_name', 'label')]
+                [$bridge->glo_name, $dataModel->get('glo_name', 'label')]
             );
         }
         if ($this->showMenu) {

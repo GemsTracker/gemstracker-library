@@ -219,6 +219,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
                 $this->routeAction        = 'index';
             } else {
                 // Just a stop code
+                $count = 0;
                 $this->addMessage(sprintf($this->plural('Stopped %d track.', 'Stopped %d tracks.', $count), $count));
             }
         }

@@ -141,10 +141,10 @@ class ModelConfirmDataChangeSnippet extends ModelConfirmDataChangeSnippetAbstrac
      * having to recode the core table building code.
      *
      * @param DetailTableBridge $bridge
-     * @param DataReaderInterface $model
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $footer = $bridge->tfrow();
 

@@ -39,7 +39,7 @@ class TokenDateSelectorSnippet extends \Zalt\Snippets\SnippetAbstract
     /**
      * Required
      *
-     * @var \Zend_Controller_Request_Abstracto
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 

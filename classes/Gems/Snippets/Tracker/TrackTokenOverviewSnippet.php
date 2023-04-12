@@ -100,11 +100,11 @@ class TrackTokenOverviewSnippet extends TokenModelSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->tr()->appendAttrib('class', Late::iif(
                         $bridge->gro_id_round,

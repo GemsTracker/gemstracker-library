@@ -87,5 +87,6 @@ class StaffUserClassDependency extends DependencyAbstract
                 return ['gul_user_class' => ['multiOptions' => $org->getAllowedUserClasses()]];
             }
         }
+        return [];
     }
 }

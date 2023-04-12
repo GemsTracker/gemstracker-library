@@ -13,6 +13,10 @@ namespace Gems\Tracker\Model;
 
 use DateTime;
 
+use Gems\Loader;
+use Gems\Model\HiddenOrganizationModel;
+use Gems\Tracker\Engine\TrackEngineInterface;
+use Gems\Util;
 use Gems\Util\Translated;
 use MUtil\JQuery\Form\Element\DatePicker;
 use MUtil\Model;
@@ -43,7 +47,7 @@ use DateTimeInterface;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
+class RespondentTrackModel extends HiddenOrganizationModel
 {
     /**
      *
@@ -52,7 +56,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     protected bool $hideWhollyMasked = true;
 
     /**
-     * @var \Gems\Loader
+     * @var Loader
      */
     protected $loader;
 
@@ -63,7 +67,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
 
     /**
      *
-     * @var \Gems\Util
+     * @var Util
      */
     protected $util;
 
@@ -125,7 +129,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * Add tracking off manual end date changes by the user
      *
      * @param mixed $value The value to store when the tracked field has changed
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return self
      */
     public function addEditTracking()
     {
@@ -137,7 +141,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems\Model_RespondentTrackModel
+     * @return self
      */
     public function applyBrowseSettings()
     {
@@ -176,11 +180,11 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param \Gems\Tracker\Engine\TrackEngineInterface $trackEngine
+     * @param TrackEngineInterface $trackEngine
      * @param boolean $edit When true the fields are added in edit mode
-     * @return \Gems\Model_RespondentTrackModel
+     * @return self
      */
-    public function applyDetailSettings(\Gems\Tracker\Engine\TrackEngineInterface $trackEngine, $edit = false)
+    public function applyDetailSettings(TrackEngineInterface $trackEngine, $edit = false)
     {
         $this->resetOrder();
 
@@ -231,10 +235,10 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
     /**
      * Set those values needed for editing
      *
-     * @param \Gems\Tracker\Engine\TrackEngineInterface $trackEngine
+     * @param TrackEngineInterface $trackEngine
      * @return self
      */
-    public function applyEditSettings(\Gems\Tracker\Engine\TrackEngineInterface $trackEngine)
+    public function applyEditSettings(TrackEngineInterface $trackEngine)
     {
         $this->applyDetailSettings($trackEngine, true);
         $this->addEditTracking();
@@ -314,7 +318,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * The $filter values are also propagated to the corresponding key values in the new item.
      *
      * @param int $count When null a single new item is return, otherwise a nested array with $count new items
-     * @param array $filter Allowed key values: gr2o_patient_nr, gr2o_id_organization and gtr_id_track
+     * @param array|null $filter Allowed key values: gr2o_patient_nr, gr2o_id_organization and gtr_id_track
      * @return array Nested when $count is not null, otherwise just a simple array
      */
     public function loadNew($count = null, array $filter = null): array
@@ -378,7 +382,7 @@ class RespondentTrackModel extends \Gems\Model\HiddenOrganizationModel
      * Save a single model item.
      *
      * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
+     * @param array|null $filter If the filter contains old key values these are used
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */

@@ -63,7 +63,7 @@ class Respondent extends TargetAbstract
 
     /**
      *
-     * @var Boolean true if Respondent exists in the database
+     * @var boolean true if Respondent exists in the database
      */
     public $exists = false;
 

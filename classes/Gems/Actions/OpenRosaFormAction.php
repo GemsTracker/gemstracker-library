@@ -3,7 +3,7 @@
 
 namespace Gems\Actions;
 
-class OpenRosaFormAction extends \Gems\Controller\ModelSnippetActionAbstract
+class OpenRosaFormAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the create and edit actions.

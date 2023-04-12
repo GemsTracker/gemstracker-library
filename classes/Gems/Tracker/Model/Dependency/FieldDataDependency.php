@@ -35,7 +35,7 @@ class FieldDataDependency extends DependencyAbstract
      * Add a field to this dependency
      *
      * @param FieldInterface $field
-     * @return \Gems\Tracker\Model\FieldDataDependency
+     * @return self
      */
     public function addField(FieldInterface $field)
     {
@@ -89,8 +89,7 @@ class FieldDataDependency extends DependencyAbstract
     /**
      * Add a field to this dependency
      *
-     * @param FieldInterface $field
-     * @return \Gems\Tracker\Model\FieldDataDependency
+     * @return int
      */
     public function getFieldCount()
     {

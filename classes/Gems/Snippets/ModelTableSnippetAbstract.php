@@ -12,10 +12,11 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
+use Gems\Html\Paginator\GemsPaginator;
 use Gems\MenuNew\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\Marker;
+use Zalt\Html\Paginator\PaginatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;
@@ -71,6 +72,11 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      * @var array (int/label => route or routepart)
      */
     protected array $menuShowRoutes = ['show'];
+
+    /**
+     * @var string
+     */
+    protected string $paginatorClass = GemsPaginator::class;
 
     /**
      * Option to manually diasable the menu
@@ -134,8 +140,8 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
      * to define your own method.
      *
      * $param \Zend_Paginator $paginator
-     */
-    protected function addPaginator($table, \Zend_Paginator $paginator)
+     * /
+    protected function addPaginator(TableElement $table, int $count)
     {
         //$table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
     }
@@ -166,7 +172,25 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
             return $table;
         }
     }
-    
+
+    public function getPageItems(): int
+    {
+        $items = $this->requestInfo->getParam(PaginatorInterface::REQUEST_ITEMS);
+        if ($items) {
+            $this->pageItems = $items;
+        }
+        return $this->pageItems;
+    }
+
+    public function getPageNumber(): int
+    {
+        $page = $this->requestInfo->getParam(PaginatorInterface::REQUEST_PAGE);
+        if ($page) {
+            $this->pageNumber = $page;
+        }
+        return $this->pageNumber;
+    }
+
     public function getRouteMaps(MetaModelInterface $metaModel): array
     {
         return $metaModel->getMaps();

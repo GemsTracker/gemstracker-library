@@ -44,15 +44,17 @@ class CKEditor extends \Zend_Form_Decorator_ViewHelper {
     public function render($content)
     {
         $element = $this->getElement();
+        if (!$element instanceof \Zend_Form_Element) {
+            throw new \RuntimeException('Element not found');
+        }
         $view    = $element->getView();
 
-        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = '/';//\Gems\Escort::getInstance()->basepath->getBasePath() . '/';
         $view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
 
 
         //\MUtil\EchoOut\EchoOut::track($baseUrl);
         //\MUtil\EchoOut\EchoOut::track('test');
-        $element = $this->getElement();
         $name    = htmlentities($element->getFullyQualifiedName());
         $label   = htmlentities($element->getLabel());
         $id      = htmlentities($element->getId());

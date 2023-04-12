@@ -50,6 +50,7 @@ class LockFile
             $date = new DateTimeImmutable();
             return $date->setTimestamp(filectime($this->lockFileName));
         }
+        return null;
     }
 
     /**

@@ -11,6 +11,8 @@
 
 namespace Gems\Import;
 
+use Gems\Model;
+
 /**
  * The import loader is used to gather all the GemsTracker specific knowledge
  * for importing model data.
@@ -38,6 +40,8 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
 
     // protected $importMatches = array();
 
+    protected $config;
+
     /**
      *
      * @var \Gems\User\Organization
@@ -55,6 +59,11 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      * @var \Gems\Loader
      */
     protected $loader;
+
+    /**
+     * @var Model
+     */
+    protected $modelLoader;
 
     /**
      *
@@ -91,12 +100,12 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
     {
         switch ($controller) {
             case 'respondent':
-                $model = $this->loader->getModels()->getRespondentModel(true);
+                $model = $this->modelLoader->getRespondentModel(true);
                 $model->applyEditSettings();
                 return $model;
 
             case 'calendar':
-                $model = $this->loader->getModels()->createAppointmentModel();
+                $model = $this->modelLoader->createAppointmentModel($this->loader->getAgenda());
                 $this->applySource($model);
                 $model->applyEditSettings();
                 return $model;
@@ -126,7 +135,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getFailureDirectory($controller = null)
     {
-        return rtrim(GEMS_ROOT_DIR . '/var/import_failed/' . $controller, '/');
+        return rtrim($this->config['rootDir'] . '/var/import_failed/' . $controller, '/');
     }
 
     /**
@@ -265,7 +274,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getSuccessDirectory($controller = null)
     {
-        return rtrim(GEMS_ROOT_DIR . '/var/imported/' . $controller, '/');
+        return rtrim($this->config['rootDir'] . '/var/imported/' . $controller, '/');
     }
 
     /**
@@ -275,7 +284,7 @@ class ImportLoader extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getTempDirectory()
     {
-        return GEMS_ROOT_DIR . '/var/importing';
+        return $this->config['rootDir'] . '/var/importing';
     }
 
     /**

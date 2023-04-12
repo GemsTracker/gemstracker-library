@@ -16,6 +16,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Tracker\Respondent;
+use Gems\User\User;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -31,6 +32,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class RespondentChildHandlerAbstract extends ModelSnippetLegacyHandlerAbstract
 {
+    protected User $currentUser;
+
     /**
      * @var Respondent
      */

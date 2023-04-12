@@ -28,6 +28,8 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     const RESPONDENT_UNSUBSCRIBE_SCREEN = 'Respondent\\Unsubscribe';
     const TOKEN_ASK_SCREEN              = 'Token\\Ask';
 
+    protected $config;
+
     /**
      * Each screen type must implement an screen class or interface derived
      * from ScreenInterface specified in this array.
@@ -91,7 +93,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
      * Returns a list of selectable screens with an empty element as the first option.
      *
      * @param string $screenType The type (i.e. lookup directory with an associated class) of the screens to list
-     * @return \Gems_tracker_TrackerEventInterface or more specific a $screenClass type object
+     * @return ScreenInterface or more specific a $screenClass type object
      */
     protected function _listScreens($screenType)
     {
@@ -106,7 +108,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
      *
      * @param string $screenName The class name of the individual screen to load
      * @param string $screenType The type (i.e. lookup directory with an associated class) of the screen
-     * @return \Gems_tracker_TrackerEventInterface or more specific a $screenClass type object
+     * @return ScreenInterface or more specific a $screenClass type object
      */
     protected function _loadScreen($screenName, $screenType)
     {
@@ -116,7 +118,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
         if (! class_exists($screenName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
-            $filename = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'Screens' . DIRECTORY_SEPARATOR .
+            $filename = $this->config['rootDir'] . DIRECTORY_SEPARATOR . 'Screens' . DIRECTORY_SEPARATOR .
                     strtolower($screenType) . DIRECTORY_SEPARATOR . $screenName . '.php';
 
             if (! file_exists($filename)) {
@@ -197,7 +199,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\Respondent\Browse
+     * @return BrowseScreenInterface
      */
     public function loadRespondentBrowseScreen($screenName)
     {
@@ -207,7 +209,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\Respondent\EditScreenInterface
+     * @return EditScreenInterface
      */
     public function loadRespondentEditScreen($screenName)
     {
@@ -217,7 +219,7 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\ShowScreenInterface
+     * @return ShowScreenInterface
      */
     public function loadRespondentShowScreen($screenName)
     {
@@ -227,19 +229,20 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\SubscribeScreenInterface
+     * @return SubscribeScreenInterface|null
      */
     public function loadSubscribeScreen($screenName)
     {
         if ($screenName) {
             return $this->_loadScreen($screenName, self::RESPONDENT_SUBSCRIBE_SCREEN);
         }
+        return null;
     }
 
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\AskScreenInterface
+     * @return AskScreenInterface
      */
     public function loadTokenAskScreen($screenName)
     {
@@ -249,12 +252,13 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      *
      * @param string $screenName Name of the screen class
-     * @return \Gems\Screens\UnsubscribeScreenInterface
+     * @return UnsubscribeScreenInterface|null
      */
     public function loadUnsubscribeScreen($screenName)
     {
         if ($screenName) {
             return $this->_loadScreen($screenName, self::RESPONDENT_UNSUBSCRIBE_SCREEN);
         }
+        return null;
     }
 }

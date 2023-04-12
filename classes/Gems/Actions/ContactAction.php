@@ -19,7 +19,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class ContactAction extends \Gems\Controller\Action
+class ContactAction extends \MUtil\Controller\Action
 {
     /**
      * @var array

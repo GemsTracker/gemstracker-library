@@ -33,14 +33,14 @@ class RespondentNoAddressTableSnippet extends RespondentTableSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model->hasAlias('gems__respondent2track')) {
-            parent::addBrowseColumn3($bridge, $model);
+        if ($dataModel->hasAlias('gems__respondent2track')) {
+            parent::addBrowseColumn3($bridge, $dataModel);
         }
     }
 }

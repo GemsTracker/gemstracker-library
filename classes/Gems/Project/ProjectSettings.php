@@ -1,24 +1,15 @@
 <?php
 
-/**
- *
- * @package    Gems
- * @subpackage Project
- * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- */
 
 namespace Gems\Project;
 
 /**
- * Class that extends Array object to add \Gems specific functions.
- *
- * @package    Gems
- * @subpackage Project
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.5
+ * This class allows objects to work as arrays.
+ * @link https://php.net/manual/en/class.arrayobject.php
+ * @template TKey
+ * @template TValue
+ * @template-implements \IteratorAggregate<TKey, TValue>
+ * @template-implements \ArrayAccess<TKey, TValue>
  */
 class ProjectSettings extends \ArrayObject
 {
@@ -144,7 +135,7 @@ class ProjectSettings extends \ArrayObject
         }
 
         $superPassword = $this->getSuperAdminPassword();
-        if (('production' === APPLICATION_ENV || 'acceptance' === APPLICATION_ENV) &&
+        if (('production' === $this['app']['env'] || 'acceptance' === $this['app']['env']) &&
                 $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
                 $error = sprintf("Project setting 'admin.pwd' is shorter than %d characters. That is not allowed.", $this->minimumSuperPasswordLength);
@@ -188,7 +179,7 @@ class ProjectSettings extends \ArrayObject
 
             $method = $methods[$mkey];
         } else {
-            $mkey   = 'mcrypt';
+            $mkey   = 'AES-256-CBC';
             $base64 = $input;
             $method = $mkey;
         }
@@ -198,35 +189,13 @@ class ProjectSettings extends \ArrayObject
         }
 
         $decoded = base64_decode($base64);
-        if ('mcrypt' == $method) {
-            $output = $this->decryptMcrypt($decoded, $key);
-        } elseif ('null' == $method) {
-            $output = $base64;
-        } else {
-            $output = $this->decryptOpenSsl($decoded, $method, $key);
-        }
+        $output = $this->decryptOpenSsl($decoded, $method, $key);
 
         if (false === $output) {
             return $input;
         } else {
             return $output;
         }
-    }
-
-    /**
-     * Decrypt a string encrypted with encrypt()
-     *
-     * @param string $input String to decrypt
-     * @param string $key Key to use for decryption
-     * @return string decrypted string of false
-     */
-    protected function decryptMcrypt($input, $key)
-    {
-        $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv    = substr($input, 0, $ivlen);
-
-        // Remove trailing zero bytes!
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, substr($input, $ivlen), MCRYPT_MODE_CBC, $iv), "\0");
     }
 
     /**
@@ -265,32 +234,10 @@ class ProjectSettings extends \ArrayObject
             $key = $this->getEncryptionSaltKey();
         }
 
-        if ('mcrypt' == $method) {
-            $result = $this->encryptMcrypt($input, $key);
-        } elseif ('null' == $method) {
-            $result = $input;
-        } else {
-            $result = $this->encryptOpenSsl($input, $method, $key);
-        }
+        $result = $this->encryptOpenSsl($input, $method, $key);
 
         return ":$mkey:" . base64_encode($result);
     }
-
-    /**
-     * Reversibly encrypt a string
-     *
-     * @param string $input String to encrypt
-     * @param string $key Key used for encryption
-     * @return string encrypted string
-     */
-    protected function encryptMcrypt($input, $key)
-    {
-        $ivlen = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
-        $iv    = mcrypt_create_iv($ivlen, MCRYPT_RAND);
-
-        return $iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv);
-    }
-
 
     /**
      * Reversibly encrypt a string
@@ -364,9 +311,7 @@ class ProjectSettings extends \ArrayObject
     public function getAskThrottleSettings()
     {
         // Check for the 'askThrottle' config section
-        if (!empty($this->askThrottle)) {
-            return $this->askThrottle;
-        } else {
+        if (empty($this->askThrottle)) {
             // Set some sensible defaults
             // Detection window: 15 minutes
             // Threshold: 20 requests per minute
@@ -377,6 +322,7 @@ class ProjectSettings extends \ArrayObject
                 'delay'      => 10
             );
         }
+        return $this->askThrottle;
     }
 
     /**
@@ -461,7 +407,7 @@ class ProjectSettings extends \ArrayObject
         if (\MUtil\File::isRootPath($file)) {
             return $file;
         }
-        return GEMS_ROOT_DIR . '/var/logs/' . $file;
+        return $this['app']['rootDir'] . '/var/logs/' . $file;
     }
 
     /**
@@ -511,25 +457,27 @@ class ProjectSettings extends \ArrayObject
     /**
      * Returns the documentation url
      *
-     * @return string
+     * @return string|null
      */
     public function getDocumentationUrl()
     {
         if (isset($this['contact'], $this['contact']['docsUrl'])) {
             return $this['contact']['docsUrl'];
         }
+        return null;
     }
 
     /**
      * The the email BCC address - if any
      *
-     * @return string
+     * @return string|null
      */
     public function getEmailBcc()
     {
         if ($this->offsetExists('email') && isset($this->email['bcc'])) {
             return trim($this->email['bcc']);
         }
+        return null;
     }
 
     /**
@@ -596,9 +544,6 @@ class ProjectSettings extends \ArrayObject
         } else {
             $output = [];
         }
-        if (! isset($output['mcrypt'])) {
-            $output['mcrypt'] = 'mcrypt';
-        }
         if (! isset($output['null'])) {
             $output['null'] = 'null';
         }
@@ -640,19 +585,7 @@ class ProjectSettings extends \ArrayObject
         if ($this->offsetExists('fileImportRoot')) {
             return $this->offsetGet('fileImportRoot');
         }
-        return GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR .  'auto_import';
-    }
-
-    /**
-     * Returns the forum url
-     *
-     * @return string
-     */
-    public function getForumUrl()
-    {
-        if (isset($this['contact'], $this['contact']['forumUrl'])) {
-            return $this['contact']['forumUrl'];
-        }
+        return $this['app']['rootDir'] . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR .  'auto_import';
     }
 
     /**
@@ -712,13 +645,14 @@ class ProjectSettings extends \ArrayObject
     /**
      * Get the LDAP query settings
      *
-     * @return array Settings
+     * @return array|null Settings
      */
     public function getLdapSettings()
     {
         if ($this->offsetExists('ldap')) {
             return $this->ldap;
         }
+        return null;
     }
 
     /**
@@ -767,7 +701,7 @@ class ProjectSettings extends \ArrayObject
      * @return int The loglevel to use
      */
     public function getLogLevelDefault() {
-        if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV) {
+        if ('development' == $this['app']['env'] || 'testing' == $this['app']['env']) {
             $logLevel = \Zend_Log::DEBUG;
         } else {
             $logLevel = \Zend_Log::ERR;
@@ -780,7 +714,7 @@ class ProjectSettings extends \ArrayObject
      * Return a long description, in the correct language if available
      *
      * @param string $language Iso code languahe
-     * @return string
+     * @return string|null
      */
     public function getLongDescription($language)
     {
@@ -791,6 +725,7 @@ class ProjectSettings extends \ArrayObject
         if (isset($this['longDescr'])) {
             return $this['longDescr'];
         }
+        return null;
     }
 
     /**
@@ -811,13 +746,14 @@ class ProjectSettings extends \ArrayObject
     /**
      * Returns the manual url
      *
-     * @return string
+     * @return string|null
      */
     public function getManualUrl()
     {
         if (isset($this['contact'], $this['contact']['manualUrl'])) {
             return $this['contact']['manualUrl'];
         }
+        return null;
     }
 
     /**
@@ -1036,13 +972,14 @@ class ProjectSettings extends \ArrayObject
     /**
      * The site email address - if any
      *
-     * @return string
+     * @return string|null
      */
     public function getSiteEmail()
     {
         if ($this->offsetExists('email') && isset($this->email['site'])) {
             return trim($this->email['site']);
         }
+        return null;
     }
 
      /**
@@ -1061,73 +998,79 @@ class ProjectSettings extends \ArrayObject
    /**
      * Returns the super admin name, if any
      *
-     * @return string
+     * @return string|null
      */
     public function getSuperAdminName()
     {
         if ($this->offsetExists('admin') && isset($this->admin['user'])) {
             return trim($this->admin['user']);
         }
+        return null;
     }
 
     /**
      * Returns the super admin password, if it exists
      *
-     * @return string
+     * @return string|null
      */
     protected function getSuperAdminPassword()
     {
         if ($this->offsetExists('admin') && isset($this->admin['pwd'])) {
             return trim($this->admin['pwd']);
         }
+        return null;
     }
 
     /**
      * Get the super admin two factor authentication ip exclude range
      *
-     * @return string
+     * @return string|null
      */
     public function getSuperAdminTwoFactorIpExclude()
     {
         if ($this->offsetExists('admin') && isset($this->admin['2fa'], $this->admin['2fa']['exclude'])) {
             return trim($this->admin['2fa']['exclude']);
         }
+        return null;
     }
 
     /**
      * Get the super admin two factor authentication key
      *
-     * @return string
+     * @return string|null
      */
     public function getSuperAdminTwoFactorKey()
     {
         if ($this->offsetExists('admin') && isset($this->admin['2fa'], $this->admin['2fa']['key'])) {
             return trim($this->admin['2fa']['key']);
         }
+        return null;
     }
 
     /**
      * Returns the super admin ip range, if it exists
      *
-     * @return string
+     * @return string|null
      */
     public function getSuperAdminIPRanges()
     {
         if ($this->offsetExists('admin') && isset($this->admin['ipRanges'])) {
             return $this->admin['ipRanges'];
         }
+        return null;
     }
 
     /**
      * Returns the support url
      *
-     * @return string
+     * @return string|null
      */
     public function getSupportUrl()
     {
         if (isset($this['contact'], $this['contact']['supportUrl'])) {
             return $this['contact']['supportUrl'];
         }
+        return null;
     }
 
     /**

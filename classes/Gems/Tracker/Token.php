@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Event\Application\TokenEvent;
 use Gems\Log\LogHelper;
+use Gems\Registry\TargetAbstract;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Gems\Util\Translated;
@@ -32,7 +33,7 @@ use MUtil\Translate\TranslateableTrait;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Token extends \Gems\Registry\TargetAbstract
+class Token extends TargetAbstract
 {
     use TranslateableTrait;
 
@@ -1221,7 +1222,7 @@ class Token extends \Gems\Registry\TargetAbstract
     /**
      * Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs
      *
-     * @return string
+     * @return string|null
      */
     public function getRespondentGenderHello()
     {
@@ -1231,6 +1232,7 @@ class Token extends \Gems\Registry\TargetAbstract
         if (isset($greetings[$gender])) {
             return $greetings[$gender];
         }
+        return null;
     }
 
     /**
@@ -1242,7 +1244,7 @@ class Token extends \Gems\Registry\TargetAbstract
         if (array_key_exists('gto_id_respondent', $this->_gemsData)) {
             return $this->_gemsData['gto_id_respondent'];
         } else {
-            throw new \Gems\Exception(sprintf('Token not loaded correctly', $this->getTokenId()));
+            throw new \Gems\Exception(sprintf('Token %s not loaded correctly', $this->getTokenId()));
         }
     }
 

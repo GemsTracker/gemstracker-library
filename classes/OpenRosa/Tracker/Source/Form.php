@@ -14,6 +14,9 @@
 
 namespace OpenRosa\Tracker\Source;
 
+use Gems\Tracker;
+use Gems\User\User;
+
 /**
  * Helper for OpenRosa forms
  *
@@ -43,22 +46,12 @@ class Form
     private $groupLabels;
     private $title;
 
-    /**
-     * @var \Zend_Db
-     */
-    protected $db;
-
-    /**
-     * @var \Zend_Translate_Adapter
-     */
-    protected $translate;
-
     protected $mainTablePrefix = 'orf';
 
     protected $relatedTablePrefix = 'orfr';
 
     /**
-     * @var SimpleXmlElement
+     * @var \SimpleXmlElement
      */
     private $_xml;
 
@@ -67,10 +60,13 @@ class Form
      *
      * @param string $file the sanitized filename (absolute path)
      */
-    public function __construct($file, \Zend_Db_Adapter_Abstract $db, \Zend_Translate $translate)
+    public function __construct($file,
+        protected \Zend_Db_Adapter_Abstract $db,
+        protected \Zend_Translate $translate,
+        protected Tracker $tracker,
+        protected User $currentUser
+    )
     {
-        $this->db = $db;
-        $this->translate = $translate;
 
         if (!file_exists($file)) {
             throw new \Gems\Exception\Coding(sprintf($this->translate->_('File not found: %s'), $file));
@@ -345,7 +341,7 @@ class Form
                 $elementName = $name;
             }
             if (count($element->children()) > 0) {
-                if ($model->get($elementName, 'type') == Mutil_Model::TYPE_CHILD_MODEL) {
+                if ($model->get($elementName, 'type') == \Mutil\Model::TYPE_CHILD_MODEL) {
                     // Now do something :)
                     $output[$elementName][] = $this->flattenInstance($element, $elementName);
                 } else {
@@ -380,8 +376,8 @@ class Form
     /**
      * Return flattend element
      *
-     * @param SimpleXMLElement $xml
-     * @param type $context
+     * @param \SimpleXMLElement $xml
+     * @param string $context
      */
     private function flattenBody($xml, $context = '')
     {
@@ -839,9 +835,10 @@ class Form
         // @@TODO: make hook for respondentID lookup too
         if (isset($answers['token'])) {
             // We receveid a form linked to a token, signal the 'inSource' for this token.
-            $loader = \Gems\Escort::getInstance()->getLoader();
-            $token = $loader->getTracker()->getToken($answers['token']);
-            $token->getUrl($loader->getCurrentUser()->getLocale(), $loader->getCurrentUser()->getUserId());
+
+            $token = $this->tracker->getToken($answers['token']);
+
+            $token->getUrl($this->currentUser->getLocale(), $this->currentUser->getId());
         }
 
         return $answers;

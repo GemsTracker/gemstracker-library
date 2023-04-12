@@ -468,15 +468,6 @@ class Route
                     'change-organization',
                 ]
             ),
-            [
-                'name' => 'respondent-show',
-                'path' => '/respondent-show/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}',
-                'allowed_methods' => ['GET'],
-                'middleware' => [
-                    LegacyCurrentUserMiddleware::class,
-                    RespondentShowHandler::class,
-                ],
-            ],
             ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
                 controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
                 basePath:                          '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/episodes-of-care',
@@ -683,7 +674,7 @@ class Route
                 ],
             ),
 
-            ...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',
+           /*...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',
                 controllerClass: \Gems\Actions\UpgradeAction::class,
                 pages: [
                     'index',
@@ -696,7 +687,7 @@ class Route
                 parameters: [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
-            ),
+            ),*/
 
             [
                 'name' => 'setup.codes',
@@ -1030,7 +1021,7 @@ class Route
             ),
             //...$this->createBrowseRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Actions\ChartconfigAction::class),
 
-            ...$this->createSnippetRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Handlers\TrackBuilder\ChartconfigHandler::class),
+            ...$this->createSnippetRoutes(baseName: 'track-builder.chartconfig', controllerClass: \Gems\Handlers\TrackBuilder\ChartConfigHandler::class),
 
             ...$this->createSnippetRoutes(baseName: 'track-builder.condition', controllerClass: \Gems\Handlers\TrackBuilder\ConditionHandler::class),
             ...$this->createSnippetRoutes(baseName: 'track-builder.survey-maintenance',

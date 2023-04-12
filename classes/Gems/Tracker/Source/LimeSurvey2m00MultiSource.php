@@ -107,8 +107,8 @@ class LimeSurvey2m00MultiSource extends LSSingleSource {
      * Add the site to the filter so we only get our own site's responses.
      * 
      * @param array $filter
-     * @param type $surveyId
-     * @param type $sourceSurveyId
+     * @param int $surveyId
+     * @param int $sourceSurveyId
      * @return \Zend_Db_Select
      */
     public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {

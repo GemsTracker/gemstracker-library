@@ -122,7 +122,7 @@ abstract class ShowTrackUsageAbstract extends \Gems\Snippets\ModelTableSnippetAb
      */
     public function checkRegistryRequestsAnswers()
     {
-        return $this->db && $this->loader && parent::checkRegistryRequestsAnswers();
+        return $this->db && $this->loader;
     }
 
     /**

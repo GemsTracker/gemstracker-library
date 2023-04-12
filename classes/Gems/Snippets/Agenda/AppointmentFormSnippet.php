@@ -38,12 +38,6 @@ class AppointmentFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
 
     /**
      *
-     * @var GemsLoader
-     */
-    protected $loader;
-
-    /**
-     *
      * @var \MUtil\Model\ModelAbstract
      */
     protected $model;

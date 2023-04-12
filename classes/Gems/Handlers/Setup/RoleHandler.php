@@ -86,6 +86,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly RouteHelper $routeHelper,
         private readonly AclRepository $aclRepository,
         private readonly UrlHelper $urlHelper,
+        private readonly StatusMessengerInterface $messenger,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -214,8 +215,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         //If we try to edit master, add an error message and reroute
         if (isset($data['grl_name']) && $data['grl_name']=='master') {
-            $this->addMessage($this->_('Editing `master` is not allowed'));
-            $this->_reroute(['action'=>'index'], true);
+            $this->messenger->addError($this->_('Editing `master` is not allowed'));
+            // TODO: reroute
+            //$this->_reroute(['action'=>'index'], true);
         }
 
         parent::editAction();
@@ -307,9 +309,9 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     }
 
     /**
-     * Output of not allowed for viewing rols
+     * Output of not allowed for viewing rolls
      *
-     * @param strong $data parents tab privileges
+     * @param string $data parents tab privileges
      * @return \Zalt\Html\ListElement
      */
     public function formatNotAllowed($data)
@@ -334,7 +336,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
     }
 
     /**
-     * Output for viewing rols
+     * Output for viewing roles
      *
      * @param array $privileges
      * @return \Zalt\Html\HtmlElement

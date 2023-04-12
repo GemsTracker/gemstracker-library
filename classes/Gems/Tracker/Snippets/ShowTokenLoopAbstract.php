@@ -11,7 +11,6 @@
 
 namespace Gems\Tracker\Snippets;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use DateTimeInterface;
@@ -25,6 +24,7 @@ use Symfony\Component\Mime\Address;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\HrefArrayAttribute;
 use Zalt\Html\Html;
+use Zalt\Html\HtmlElement;
 use Zalt\Html\HtmlInterface;
 use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -98,14 +98,11 @@ class ShowTokenLoopAbstract extends SnippetAbstract
             $token = $this->token;
         }
         if (! $token->isCompleted()) {
-            $mailLoader = $this->loader->getMailLoader();
-            /** @var TokenMailer $mailer */
-            $mailer     = $mailLoader->getMailer('token', $token->getTokenId());
             $orgEmail   = $token->getOrganization()->getFrom();
-            $respEmail  = $token->getEmail();
+            $templateId = $this->communicationRepository->getTemplateIdFromCode('continue');
 
             // If there is no template, or no email for sender / receiver we show no link
-            if ($mailer->setTemplateByCode('continue') && (!empty($orgEmail)) && $token->isMailable()) {
+            if ($templateId && (!empty($orgEmail)) && $token->isMailable()) {
                 $html->pInfo($this->translator->_('or'));
                 $url = $this->routeHelper->getRouteUrl("ask.$this->action", [
                     'id' => $token->getTokenId()
@@ -155,17 +152,13 @@ class ShowTokenLoopAbstract extends SnippetAbstract
         $template = $this->communicationRepository->getTemplate($token->getOrganization());
         $language = $this->communicationRepository->getCommunicationLanguage($token->getRespondentLanguage());
         $templateId = $this->communicationRepository->getTemplateIdFromCode('continue');
-
-        $mailLoader = $this->loader->getMailLoader();
-        /** @var \Gems\Mail\TokenMailer $mail */
-        $mail       = $mailLoader->getMailer('token', $token->getTokenId());
-        $mail->setFrom($token->getOrganization()->getFrom());
         
         if ($templateId) {
 
             $mailTexts = $this->communicationRepository->getCommunicationTexts($templateId, $language);
             $mailFields = $this->communicationRepository->getTokenMailFields($token, $language);
-            $mailer = $this->communicationRepository->getMailer($token->getOrganization()->getEmail());
+            $mailer = $this->communicationRepository->getMailer();
+            $email->from($token->getOrganization()->getFrom());
             $email->subject($mailTexts['subject'], $mailFields);
             $email->htmlTemplate($template, $mailTexts['body'], $mailFields);
 
@@ -225,13 +218,14 @@ class ShowTokenLoopAbstract extends SnippetAbstract
      * Returns the duration if it should be displayed.
      *
      * @param string $duration
-     * @return string
+     * @return string|null
      */
     public function formatDuration($duration)
     {
         if ($duration && $this->showDuration) {
             return sprintf($this->translator->_('Takes about %s to answer.'),  $duration) . ' ';
         }
+        return null;
     }
 
     /**

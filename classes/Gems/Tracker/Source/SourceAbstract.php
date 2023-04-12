@@ -215,7 +215,7 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     /**
      * Adds database (if needed) and tablename prefix to the table name
      *
-     * @param return $tableName
+     * @param string $tableName
      * @param boolean $addDatabaseName Optional, when true (= default) and there is a database name then it is prepended to the name.
      * @return string
      */
@@ -381,6 +381,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
                 return $cache[$surveyId][$field];
             }
         }
+
+        return [];
     }
 
     /**
@@ -428,6 +430,8 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
             $batch->addTask('Tracker\\CheckSurvey', $this->getId(), $sourceSurveyId, null, $userId);
             $batch->addTask('Tracker\\AddRefreshQuestions', $this->getId(), $sourceSurveyId, null);
         }
+
+        return [];
     }
 
     /**

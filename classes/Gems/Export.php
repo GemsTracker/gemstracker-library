@@ -31,13 +31,6 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
     protected ?string $cascade = 'Export';
 
     /**
-     * Is set to the calling controller to allow rendering the view
-     *
-     * @var \Gems\Controller\Action
-     */
-    public $controller = null;
-
-    /**
      * This variable holds all registered export classes, may be changed in derived classes
      *
      * @var array Of classname => description
@@ -71,7 +64,7 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @param type $container A container acting as source fro \MUtil\Registry\Source
+     * @param ProjectOverloader $container A container acting as source fro \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container)

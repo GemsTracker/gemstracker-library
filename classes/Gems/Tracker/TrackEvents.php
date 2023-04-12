@@ -47,6 +47,8 @@ class TrackEvents
     const SURVEY_COMPLETION_EVENT       = 'Survey/Completed';
     const SURVEY_DISPLAY_EVENT          = 'Survey/Display';
 
+    protected array $config = [];
+
     public function __construct(
         protected Translated $translatedUtil,
         protected HelperAdapter $cache,

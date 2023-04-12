@@ -46,7 +46,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 
@@ -88,7 +88,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
 
     /**
      *
-     * @var \Gems_View
+     * @var \Zend_View
      */
     public $view;
 
@@ -1132,7 +1132,7 @@ class ImportTrackSnippetAbstract extends \MUtil\Snippets\WizardFormSnippetAbstra
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return \Gems\Tracker\Snippets\ImportMergeSnippetAbstract
+     * @return self
      */
     protected function setAfterSaveRoute()
     {

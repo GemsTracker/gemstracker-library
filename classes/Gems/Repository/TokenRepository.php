@@ -322,7 +322,7 @@ class TokenRepository
                 $link = Html::actionLink($url, $label);
 
                 if ($link) {
-                    $link->title = sprintf($this->_('Answer token %s'), strtoupper($tokenId));
+                    $link->title = sprintf($this->translator->_('Answer token %s'), strtoupper($tokenId));
 
                     return $link;
                 }
@@ -404,13 +404,14 @@ class TokenRepository
      *
      * @param string $tokenId
      * @param string $tokenStatus
-     * @return string
+     * @return string|null
      */
     public function getTokenCopyLink($tokenId, $tokenStatus)
     {
         if ('O' == $tokenStatus || 'P' == $tokenStatus) {
             return $tokenId . ' ';
         }
+        return null;
     }
 
     /**

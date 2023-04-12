@@ -28,6 +28,11 @@ class BrowseFilteredAction extends BrowseTableAction implements PostActionInterf
         ModelTableSnippet::class,
         ];
 
+    /**
+     * @var boolean Sets pagination on or off.
+     */
+    public bool $browse = true;
+
     public string $class = 'browser table';
 
     public array $defaultSearchData = [];

@@ -88,6 +88,8 @@ class DeferredStaffUser extends DeferredUserLoaderAbstract
 
             return $user;
         }
+
+        return null;
     }
 
     /**

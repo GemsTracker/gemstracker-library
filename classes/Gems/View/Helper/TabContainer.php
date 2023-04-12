@@ -37,7 +37,7 @@ class TabContainer extends \ZendX_JQuery_View_Helper_TabContainer
      * @param  string $id
      * @param  array  $params
      * @param  array  $attribs
-     * @return string|\ZendX_JQuery_View_Helper_TabsContainer
+     * @return string|self
      */
     public function tabContainer($id=null, $params=array(), $attribs=array())
     {

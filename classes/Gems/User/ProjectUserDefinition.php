@@ -57,11 +57,11 @@ class ProjectUserDefinition extends \Gems\User\UserDefinitionAbstract
     /**
      * Returns the data for a user object. It may be empty if the user is unknown.
      *
-     * @param string $loginName
+     * @param string $login_name
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public function getUserData($loginName, $organization)
+    public function getUserData($login_name, $organization)
     {
         $orgs = null;
 

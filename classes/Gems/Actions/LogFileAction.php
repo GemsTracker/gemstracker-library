@@ -22,7 +22,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 23-nov-2015 12:13:12
  */
-class LogFileAction extends \Gems\Controller\ModelSnippetActionAbstract
+class LogFileAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.

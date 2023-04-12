@@ -10,6 +10,9 @@
 
 namespace Gems;
 
+use Gems\Menu\SubMenuItem;
+use Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  * This is the generic Menu class to be extended by the project
  *
@@ -51,7 +54,7 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
     private $_visible = true;
 
     /**
-     * @var \Gems\Event\EventDispatcher
+     * @var EventDispatcherInterface
      */
     public $event;
 
@@ -361,7 +364,7 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
      */
     public function addOpenRosaContainer($label, $parent = null)
     {
-        if ($this->escort instanceof \Gems\Escort && $this->escort->getOption('useOpenRosa')) {
+        /*if ($this->escort instanceof \Gems\Escort && $this->escort->getOption('useOpenRosa')) {
             if (is_null($parent)) {
                 $parent = $this;
             }
@@ -374,7 +377,7 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
             $this->addPage(null, 'pr.islogin', 'openrosa', 'image'); // For image rendering
 
             $this->addPage(null, null, 'open-rosa-form', 'edit');
-        }
+        }*/
     }
 
     /**
@@ -463,147 +466,91 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
         $apage->addDeleteAction()->setNamedParameters($appParams);
         $apage->addAction($this->_('Filter Check'), 'pr.appointments.check', 'check')->setNamedParameters($appParams);
 
-        if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
 
-            $subPage = $rPage->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
-                    ->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId)
-                    ->addHiddenParameter(\Gems\Model::TRACK_ID, $this->escort->getTrackId());
+        $trPage = $rPage->addPage($this->_('Tracks'), 'pr.track', 'track');
+        $trPage->setNamedParameters($params)
+                ->setHiddenOrgId($orgId)
+                ->addAutofilterAction();
 
-            $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 1)
-                    ->addHiddenParameter('track_can_be_created', 1);
-            $subPage->addAction($this->_('Preview'), 'pr.track', 'view')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 1)
-                    ->addHiddenParameter('track_can_be_created', 1);
-            $subPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 0)
-                    ->addHiddenParameter('track_can_be_created', 0);
+        $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
+                ->setHiddenOrgId($orgId);
 
-            $tkPage = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter(\Gems\Model::ID_TYPE, 'token');
+        $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
+                ->setHiddenOrgId($orgId);
 
-            $subPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
-                    ->setNamedParameters($params)
-                    ->addOptionalParameters(\Gems\Model::SURVEY_ID, 'gsu_id_survey')
-                    ->setHiddenOrgId($orgId);
+        $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
+                ->setNamedParameters($params)
+                ->addOptionalParameters(\Gems\Model::SURVEY_ID, 'gsu_id_survey')
+                ->setHiddenOrgId($orgId);
 
-            $subPage->addAction($this->_('Check answers'), 'pr.track.answers', 'check-track-answers')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 0)
-                    ->addHiddenParameter('track_can_be_created', 0);
-            $subPage->addAction($this->_('Check rounds'), 'pr.track.check', 'check-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 0, 'gtr_active', 1, 'gr2t_active', 1)
-                    ->addHiddenParameter('track_can_be_created', 0);
-            $subPage->addAction($this->_('Recalculate fields'), 'pr.track.check', 'recalc-fields')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('track_can_be_created', 0, 'gtr_active', 1, 'gr2t_active', 1)
-                    ->addHiddenParameter('track_can_be_created', 0);
+        $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId);
 
-        } else {
+        $itemPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 1);
 
-            $trPage = $rPage->addPage($this->_('Tracks'), 'pr.track', 'track');
-            $trPage->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId)
-                    ->addAutofilterAction();
+        $itemPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 1);
 
-            $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId);
+        $itemPage->addAction($this->_('Undelete!'), 'pr.track.undelete', 'undelete-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 0);
 
-            $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId);
+        $itemPage->addAction($this->_('Check answers'), 'pr.track.answers', 'check-track-answers')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId);
+        $itemPage->addAction($this->_('Check rounds'), 'pr.track.check', 'check-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
+        $itemPage->addAction($this->_('Recalculate fields'), 'pr.track.check', 'recalc-fields')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
 
-            $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
-                    ->setNamedParameters($params)
-                    ->addOptionalParameters(\Gems\Model::SURVEY_ID, 'gsu_id_survey')
-                    ->setHiddenOrgId($orgId);
+        $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                ->setHiddenOrgId($orgId)
+                ->setParameterFilter('can_edit', 1);
 
-            $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId);
+        $tkPage = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
+                ->setNamedParameters(\MUtil\Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter(\Gems\Model::ID_TYPE, 'token');
 
-            $itemPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 1);
+        $trPage->addAction($this->_('Check all answers'), 'pr.track.answers', 'check-all-answers')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+        $trPage->addAction($this->_('Check all rounds'), 'pr.track.check', 'check-all-tracks')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+        $trPage->addAction($this->_('Recalculate all fields'), 'pr.track.check', 'recalc-all-fields')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
-            $itemPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 1);
+        $trPage = $rPage->addPage($this->_('Surveys'), 'pr.survey', 'token');
 
-            $itemPage->addAction($this->_('Undelete!'), 'pr.track.undelete', 'undelete-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 0);
-
-            $itemPage->addAction($this->_('Check answers'), 'pr.track.answers', 'check-track-answers')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId);
-            $itemPage->addAction($this->_('Check rounds'), 'pr.track.check', 'check-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
-            $itemPage->addAction($this->_('Recalculate fields'), 'pr.track.check', 'recalc-fields')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 1, 'gtr_active', 1, 'gr2t_active', 1);
-
-            $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems\Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('can_edit', 1);
-
-            $tkPage = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->setNamedParameters(\MUtil\Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter(\Gems\Model::ID_TYPE, 'token');
-
-            $trPage->addAction($this->_('Check all answers'), 'pr.track.answers', 'check-all-answers')
-                    ->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId);
-            $trPage->addAction($this->_('Check all rounds'), 'pr.track.check', 'check-all-tracks')
-                    ->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId);
-            $trPage->addAction($this->_('Recalculate all fields'), 'pr.track.check', 'recalc-all-fields')
-                    ->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId);
-
-            $trPage = $rPage->addPage($this->_('Surveys'), 'pr.survey', 'token');
-
-            // Surveys overview
-            $trPage->setNamedParameters($params)
-                    ->setHiddenOrgId($orgId)
-                    ->addAutofilterAction();
-        }
+        // Surveys overview
+        $trPage->setNamedParameters($params)
+                ->setHiddenOrgId($orgId)
+                ->addAutofilterAction();
 
         $tkPage->addEditAction('pr.token.edit')
                 ->setNamedParameters(\MUtil\Model::REQUEST_ID, 'gto_id_token')
@@ -717,7 +664,7 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_SubMenuItem
+     * @return \Gems\Menu\SubMenuItem
      */
     public function findAllowedController($controller, $action = 'index')
     {
@@ -746,7 +693,7 @@ class Menu extends \Gems\Menu\MenuAbstract implements \MUtil\Html\HtmlInterface
      *
      * @param string $controller
      * @param string $action
-     * @return \Gems_SubMenuItem
+     * @return SubMenuItem
      */
     public function findController($controller, $action = 'index')
     {

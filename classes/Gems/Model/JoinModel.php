@@ -152,6 +152,7 @@ class JoinModel extends \MUtil\Model\JoinModel
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return \Gems\Model\JoinModel
+     * @no-named-arguments
      */
     public function addLeftTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
@@ -173,6 +174,7 @@ class JoinModel extends \MUtil\Model\JoinModel
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return \Gems\Model\JoinModel
+     * @no-named-arguments
      */
     public function addRightTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
@@ -194,6 +196,7 @@ class JoinModel extends \MUtil\Model\JoinModel
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return \Gems\Model\JoinModel
+     * @no-named-arguments
      */
     public function addTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
@@ -274,14 +277,14 @@ class JoinModel extends \MUtil\Model\JoinModel
 
     /**
      *
-     * @param string $table_name  Does not test for existence
+     * @param string $tableName  Does not test for existence
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return \Gems\Model\JoinModel
+     * @return self
      */
-    public function setTableSaveable($table_name, $fieldPrefix = null, $saveable = null)
+    public function setTableSaveable($tableName, $fieldPrefix = null, $saveable = null)
     {
-        parent::setTableSaveable($table_name, $this->_checkSaveable($saveable, $fieldPrefix));
+        parent::setTableSaveable($tableName, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             \Gems\Model::setChangeFieldsByPrefix($this, $fieldPrefix);

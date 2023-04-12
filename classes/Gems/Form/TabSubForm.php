@@ -15,9 +15,9 @@ class TabSubForm extends \Gems\Form\TableForm
     /**
      * For backward compatibility, allow \MUtil\Html calls to set or append to the title
      *
-     * @param type $method
-     * @param type $args
-     * @return \Gems\Form\TabSubForm
+     * @param string $method
+     * @param array $args
+     * @return self|string
      */
     public function __call($method, $args)
     {
@@ -47,7 +47,7 @@ class TabSubForm extends \Gems\Form\TableForm
     /**
      * Load default decorators
      *
-     * @return void
+     * @return self
      */
     public function loadDefaultDecorators()
     {

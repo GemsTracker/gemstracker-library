@@ -12,9 +12,11 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
+use Gems\MenuNew\RouteHelper;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionMiddleware;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -31,7 +33,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 
@@ -192,6 +194,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         TranslatorInterface $translate,
         Tracker $tracker,
         protected BatchRunnerLoader $batchRunnerLoader,
+        protected RouteHelper $routeHelper,
     ) {
         parent::__construct($responder, $translate, $tracker);
     }
@@ -215,7 +218,10 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
         $engine     = $this->getTrackEngine();
         $newTrackId = $engine->copyTrack($trackId);
 
-        $this->_reroute(urlOptions: array('action' => 'edit', \MUtil\Model::REQUEST_ID => $newTrackId));
+
+        return new RedirectResponse($this->routeHelper->getRouteUrl('track-builder.track-maintenance.edit', [
+            \MUtil\Model::REQUEST_ID => $newTrackId,
+        ]));
     }
 
     /**

@@ -20,6 +20,7 @@ use Laminas\Db\Sql\Select;
 use MUtil\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Ra\Ra;
 use Zalt\Snippets\TranslatableSnippetAbstract;
@@ -111,6 +112,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         protected ResultFetcher $resultFetcher,
+        protected StatusMessengerInterface $messenger,
         )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate);
@@ -205,7 +207,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
      * @param string $name  Name of the element
      * @param string $label Label for element
      * @param string $description Optional description
-     * @return \Zend_Form_Element_Checkbox
+     * @return \Zend_Form_Element_Checkbox|null
      */
     protected function _createCheckboxElement($name, $label, $description = null)
     {
@@ -221,6 +223,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
             return $element;
         }
+        return null;
     }
 
     /**
@@ -424,8 +427,8 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
             // \MUtil\EchoOut\EchoOut::track($data);
             if ($this->isPost) {
                 if (! $form->isValid($data)) {
-                    $this->addMessage($form->getErrorMessages());
-                    $this->addMessage($form->getMessages());
+                    $this->messenger->addMessages($form->getErrorMessages());
+                    $this->messenger->addMessages($form->getMessages());
                 }
             } else {
                 $form->populate($data);
@@ -444,7 +447,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
 
     /**
      *
-     * @return string Href attribute for type as you go autofilter
+     * @return string|null Href attribute for type as you go autofilter
      */
     protected function getAutoSearchHref()
     {
@@ -454,6 +457,7 @@ class AutosearchFormSnippet extends TranslatableSnippetAbstract
         $fixedParams  = array_intersect_key($searchData, array_flip($neededParams));
         // $href = array('action' => 'autofilter', $this->textSearchField => null, 'RouteReset' => true) + $fixedParams;
         // return Html::attrib('href', $href);
+        return null;
     }
 
     /**

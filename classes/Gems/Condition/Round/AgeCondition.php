@@ -28,7 +28,7 @@ class AgeCondition extends RoundConditionAbstract
 {
     /**
      *
-     * @return \Gems\Condition\Comparator\ComparatorInterface
+     * @return ComparatorInterface
      */
     protected function getActiveComparator(): ComparatorInterface
     {
@@ -90,7 +90,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function getNotValidReason(int $conditionId, array $context): string
+    public function getNotValidReason(int $value, array $context): string
     {
         // Always available
         return '';
@@ -137,7 +137,7 @@ class AgeCondition extends RoundConditionAbstract
     /**
      * @inheritDoc
      */
-    public function isValid(int $conditionId, array $context): bool
+    public function isValid(int $value, array $context): bool
     {
         // Always available
         return true;

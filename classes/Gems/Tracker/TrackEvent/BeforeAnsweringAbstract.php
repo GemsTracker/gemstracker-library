@@ -14,6 +14,7 @@ namespace Gems\Tracker\TrackEvent;
 use Gems\Locale\Locale;
 use Gems\Tracker\Mock\TokenReadonly;
 use Gems\Tracker\Token;
+use MUtil\Model;
 use MUtil\Translate\Translator;
 
 /**

@@ -15,7 +15,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 
@@ -97,7 +97,7 @@ class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 
     /**
      *
-     * @var \Gems_View
+     * @var \Zend_View
      */
     public $view;
 

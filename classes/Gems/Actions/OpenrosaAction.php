@@ -27,7 +27,7 @@ namespace Gems\Actions;
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  */
-class OpenrosaAction extends \Gems\Controller\ModelSnippetActionAbstract
+class OpenrosaAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
 
     /**

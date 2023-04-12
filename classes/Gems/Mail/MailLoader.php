@@ -12,6 +12,7 @@
 namespace Gems\Mail;
 
 use MUtil\Translate\TranslateableTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -40,7 +41,7 @@ class MailLoader extends \Gems\Loader\TargetLoaderAbstract
     protected ?string $cascade = 'Mail';
 
     /**
-     * @var null|Psr\Log\LoggerInterface
+     * @var null|LoggerInterface
      */
     public $cronLog = null;
 
@@ -114,21 +115,11 @@ class MailLoader extends \Gems\Loader\TargetLoaderAbstract
     /**
      * Get the possible mail targets
      *
-     * @return Array  mail targets
+     * @return array  mail targets
      */
     public function getMailTargets()
     {
         return $this->mailTargets;
-    }
-
-    /**
-     * Get default mailform
-     *
-     * @return \Gems\Mail_MailForm
-     */
-    public function getMailForm()
-    {
-        return $this->_loadClass('MailForm');
     }
 
     /**

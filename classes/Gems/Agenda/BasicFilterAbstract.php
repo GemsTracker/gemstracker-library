@@ -94,7 +94,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * The field id as it is recognized be the track engine
      *
-     * @return string
+     * @return string|null
      */
     public function getFieldId()
     {
@@ -104,6 +104,8 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
                     $this->_data['gtap_id_app_field']
                     );
         }
+
+        return null;
     }
 
     /**
@@ -143,19 +145,20 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * The track id for the filter
      *
-     * @return int
+     * @return int|null
      */
     public function getTrackId()
     {
         if (isset($this->_data['gtap_id_track']) && $this->_data['gtap_id_track']) {
             return $this->_data['gtap_id_track'];
         }
+        return null;
     }
 
     /**
      * The number of days to wait between track creation
      *
-     * @return int or null when no track creation or no wait days
+     * @return int|null null when no track creation or no wait days
      */
     public function getWaitDays()
     {
@@ -163,6 +166,7 @@ abstract class BasicFilterAbstract extends \MUtil\Translate\TranslateableAbstrac
                 $this->_data['gtap_create_track']) {
             return intval($this->_data['gtap_create_wait_days']);
         }
+        return null;
     }
 
     /**

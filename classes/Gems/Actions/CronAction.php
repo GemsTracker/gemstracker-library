@@ -20,11 +20,11 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class CronAction extends \Gems\Controller\Action
+class CronAction extends \MUtil\Controller\Action
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 

@@ -3,11 +3,13 @@
 namespace Gems\Model;
 
 
-class CommMessengersModel extends \Gems\Model\JoinModel
+use Gems\Util\Translated;
+
+class CommMessengersModel extends JoinModel
 {
 
     /**
-     * @var \Gems_Util_Translated
+     * @var Translated
      */
     protected $translatedUtil;
 

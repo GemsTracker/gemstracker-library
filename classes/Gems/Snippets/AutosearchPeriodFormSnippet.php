@@ -16,6 +16,7 @@ use Gems\Form\Element\DateTimeInput;
 use Gems\Repository\PeriodSelectRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -25,15 +26,17 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @since      Class available since version 1.9.2
  */
 class AutosearchPeriodFormSnippet extends AutosearchFormSnippet
-{    public function __construct(
+{
+    public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         protected PeriodSelectRepository $periodSelectRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
     }
     
     /**

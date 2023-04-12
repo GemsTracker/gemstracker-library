@@ -88,13 +88,14 @@ class MailModelFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param FormBridgeInterface $bridge
+     * @param FullDataInterface $dataModel
+     * @return void
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
         $this->mailElements->setForm($bridge->getForm());
-        $this->initItems();
+        $this->initItems($dataModel->getMetaModel());
         $this->addItems($bridge, 'gct_name');
         $this->addItems($bridge, 'gct_id_template', 'gct_target');
         $this->addItems($bridge, 'gct_code');

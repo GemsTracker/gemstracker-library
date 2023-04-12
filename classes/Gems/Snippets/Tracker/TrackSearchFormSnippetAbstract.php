@@ -17,6 +17,7 @@ use Gems\Repository\PeriodSelectRepository;
 use Gems\Repository\TrackDataRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -53,12 +54,13 @@ class TrackSearchFormSnippetAbstract extends \Gems\Snippets\AutosearchPeriodForm
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackData,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

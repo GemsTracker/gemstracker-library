@@ -83,11 +83,11 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         // \MUtil\Model::$verbose = true;
         //
@@ -98,8 +98,8 @@ class RespondentTokenSnippet extends TokenModelSnippetAbstract
 
         $HTML = Html::create();
 
-        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
-        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
 
         $roundIcon[] = \MUtil\Lazy::iif($bridge->gto_icon_file, Html::create('img', array('src' => $bridge->gto_icon_file, 'class' => 'icon')),
                 \MUtil\Lazy::iif($bridge->gro_icon_file, Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));

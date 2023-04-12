@@ -633,6 +633,7 @@ class CommJobRepository
 
         $sendTokenList = [];
         $incrementWithoutSendingList = [];
+        $sentContactData = [];
         foreach($tokenIds as $tokenData) {
             $token = $this->tracker->getToken($tokenData['gto_id_token']);
 

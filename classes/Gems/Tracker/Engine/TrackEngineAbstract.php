@@ -12,13 +12,23 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Condition\ConditionLoader;
+use Gems\Model\JoinModel;
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
 use Gems\Tracker\Model\RoundModel;
+use Gems\Tracker\Model\StandardTokenModel;
 use Gems\Tracker\Round;
+use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
+use Gems\Tracker\TrackEvent\TrackBeforeFieldUpdateEventInterface;
+use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
+use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Translate\DbTranslateUtilTrait;
 use Gems\Util\Translated;
 use Mezzio\Session\SessionInterface;
 use MUtil\Model\Dependency\DependencyInterface;
+use MUtil\Model\ModelAbstract;
+use MUtil\Registry\TargetAbstract;
+use Zalt\Base\TranslateableTrait;
 use Zalt\Loader\ProjectOverloader;
 
 /**
@@ -30,8 +40,9 @@ use Zalt\Loader\ProjectOverloader;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstract implements \Gems\Tracker\Engine\TrackEngineInterface
+abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngineInterface
 {
+    use TranslateableTrait;
     use DbTranslateUtilTrait;
     
     /**
@@ -214,12 +225,12 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Integrate field loading en showing and editing
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
-     * @param string $respTrackId Optional Database column name where Respondent Track Id is set
-     * @return \Gems\Tracker\Engine\TrackEngineAbstract
+     * @param string|bool $respTrackId Optional Database column name where Respondent Track Id is set
+     * @return self
      */
-    public function addFieldsToModel(\MUtil\Model\ModelAbstract $model, $addDependency = true, $respTrackId = false)
+    public function addFieldsToModel(ModelAbstract $model, $addDependency = true, $respTrackId = false)
     {
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
@@ -454,7 +465,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @see getConversionTargets()
      *
-     * @param type $conversionTargetClass
+     * @param string $conversionTargetClass
      */
     public function convertTo($conversionTargetClass)
     {
@@ -464,7 +475,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Copy a track and all it's related data (rounds/fields etc)
      *
-     * @param inte $oldTrackId  The id of the track to copy
+     * @param int $oldTrackId  The id of the track to copy
      * @return int              The id of the copied track
      */
     public function copyTrack($oldTrackId)
@@ -490,6 +501,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         // Now copy the fields
         $fieldModel->applyParameters(array('id' => $oldTrackId));
         $fields = $fieldModel->load();
+        $oldNewFieldMap = [];
 
         if ($fields) {
             $oldIds = array();
@@ -544,7 +556,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Create model for rounds. Allowes overriding by sub classes.
      *
-     * @return \Gems\Model\JoinModel
+     * @return JoinModel
      */
     protected function createRoundModel()
     {
@@ -587,7 +599,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null
+     * @return TrackBeforeFieldUpdateEventInterface | null
      */
     public function getFieldBeforeUpdateEvent()
     {
@@ -686,7 +698,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems\Event\TrackFieldUpdateEventInterface | null
+     * @return TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent()
     {
@@ -713,7 +725,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      * Look up the round id for the next round
      *
      * @param int $roundId  \Gems round id
-     * @return int \Gems round id
+     * @return int|null \Gems round id
      */
     public function getNextRoundId($roundId)
     {
@@ -736,6 +748,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
            end($this->_rounds);
            return key($this->_rounds);
        }
+       return null;
     }
 
     /**
@@ -743,7 +756,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
      *
      * @param int $roundId  \Gems round id
      * @param int $roundOrder Optional extra round order, for when the current round may have changed.
-     * @return int \Gems round id
+     * @return int|null \Gems round id
      */
     public function getPreviousRoundId($roundId, $roundOrder = null)
     {
@@ -770,7 +783,8 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
                 prev($this->_rounds);
             }
             return key($this->_rounds);
-        }
+       }
+       return null;
     }
 
     /**
@@ -808,13 +822,14 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
 
             return $event->getAnswerDisplaySnippets($token);
         }
+        return [];
     }
 
     /**
      * Return the Round Changed event name for this round
      *
      * @param int $roundId
-     * @return \Gems\Event\RoundChangedEventInterface event instance or null
+     * @return RoundChangedEventInterface|null event instance or null
      */
     public function getRoundChangedEvent($roundId)
     {
@@ -823,6 +838,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
         if (isset($this->_rounds[$roundId]['gro_changed_event']) && $this->_rounds[$roundId]['gro_changed_event']) {
             return $this->trackEvents->loadRoundChangedEvent($this->_rounds[$roundId]['gro_changed_event']);
         }
+        return null;
     }
 
     /**
@@ -1019,7 +1035,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return StandardTokenModel
      */
     public function getTokenModel()
     {
@@ -1029,7 +1045,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Get the TrackCompletedEvent for this trackId
      *
-     * @return \Gems\Event\TrackCalculationEventInterface | null
+     * @return TrackCalculationEventInterface | null
      */
     public function getTrackCalculationEvent()
     {
@@ -1050,7 +1066,7 @@ abstract class TrackEngineAbstract extends \MUtil\Translate\TranslateableAbstrac
     /**
      * Get the TrackCompletedEvent for this trackId
      *
-     * @return \Gems\Event\TrackCompletedEventInterface|null
+     * @return TrackCompletedEventInterface|null
      */
     public function getTrackCompletionEvent()
     {

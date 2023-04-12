@@ -24,7 +24,7 @@ class TextExplanationSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
-     * @var the tag of the element to create
+     * @var string the tag of the element to create
      */
     protected $explanationTag = 'p';
 

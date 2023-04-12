@@ -11,7 +11,9 @@
 
 namespace Gems\Tracker;
 
+use Gems\Model\JoinModel;
 use Gems\Tracker\Model\AddAnswersTransformer;
+use Gems\Tracker\Source\SourceInterface;
 
 /**
  * More correctly a Survey ANSWERS Model as it adds answers to token information/
@@ -22,7 +24,7 @@ use Gems\Tracker\Model\AddAnswersTransformer;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class SurveyModel extends \Gems\Model\JoinModel
+class SurveyModel extends JoinModel
 {
     /**
      * Constant containing css classname for main questions
@@ -36,22 +38,22 @@ class SurveyModel extends \Gems\Model\JoinModel
 
     /**
      *
-     * @var \Gems\Tracker\Source\SourceInterface
+     * @var SourceInterface
      */
     protected $source;
 
     /**
      *
-     * @var \Gems\Tracker\Survey
+     * @var Survey
      */
     protected $survey;
 
     /**
      *
-     * @param \Gems\Tracker\Survey $survey
-     * @param \Gems\Tracker\Source\SourceInterface $source
+     * @param Survey $survey
+     * @param SourceInterface $source
      */
-    public function __construct(\Gems\Tracker\Survey $survey, \Gems\Tracker\Source\SourceInterface $source)
+    public function __construct(Survey $survey, SourceInterface $source)
     {
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
 

@@ -68,11 +68,11 @@ class LogShowSnippet extends ModelDetailTableSnippetAbstract
         }
         return $this->model;
     }
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $row = $bridge->getRow();
 
-        parent::setShowTableFooter($bridge, $model);
+        parent::setShowTableFooter($bridge, $dataModel);
 
         $footer = $bridge->tfrow();
         if (isset($row['gla_respondent_id'], $row['gla_organization'])) {

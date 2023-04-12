@@ -91,9 +91,8 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
                     return true;
                 }
             }
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**
@@ -196,7 +195,7 @@ abstract class DbUserDefinitionAbstract extends \Gems\User\UserDefinitionAbstrac
 
     /**
      * get the credential validation callback function for the callback check adapter
-     * @return callback Function
+     * @return callable Function
      */
     public function getCredentialValidationCallback()
     {

@@ -78,12 +78,6 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
-     * @var \Gems\Escort
-     */
-    protected $escort;
-
-    /**
-     *
      * @var \MUtil\Html\Sequence
      */
     protected $html;
@@ -466,7 +460,6 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
                 $this->_wordPdf = true;
             }
         }
-        $this->escort  = \Gems\Escort::getInstance();
         $this->html    = \MUtil\Html::div(['class' => 'copy-to-clipboard-before']);
         $this->request = \Zend_Controller_Front::getInstance()->getRequest();
 
@@ -655,10 +648,6 @@ class RespondentExport extends \MUtil\Translate\TranslateableAbstract
         $this->html->snippet($this->_reportFooter,  'respondents', $respondents);
 
         $this->menu->setVisible(false);
-        if ($this->escort instanceof \Gems\Project\Layout\MultiLayoutInterface) {
-            $this->escort->layoutSwitch();
-        }
-        $this->escort->postDispatch($this->request);
 
         \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
         \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);

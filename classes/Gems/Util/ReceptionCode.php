@@ -51,7 +51,7 @@ class ReceptionCode extends \Gems\Registry\CachedArrayTargetAbstract
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getCode();
     }

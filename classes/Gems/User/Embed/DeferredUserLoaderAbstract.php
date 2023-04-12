@@ -37,7 +37,7 @@ abstract class DeferredUserLoaderAbstract
         CurrentUserRepository $currentUserRepository,
     )
     {
-        $this->currentOrganization = $currentUserRepository->getCurrentUser()->getCurrentOrganizationId();
+        $this->currentOrganizationId = $currentUserRepository->getCurrentUser()->getCurrentOrganizationId();
     }
 
     /**

@@ -17,6 +17,7 @@ use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -41,11 +42,12 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

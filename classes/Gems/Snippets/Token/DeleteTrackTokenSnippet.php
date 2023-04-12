@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Token;
 
+use Carbon\CarbonImmutable;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
@@ -243,8 +244,9 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
 
                 // Fixing #582: autoextend the date
                 if ($this->token->getValidUntil() && $this->token->getValidUntil()->getTimestamp() < time()) {
+                    $now = new CarbonImmutable();
                     $otherValues = [
-                        'gto_valid_until' => $now->addDay(7),
+                        'gto_valid_until' => $now->addDays(7),
                         'gto_valid_until_manual' => 1,
                         ];
                 } else {

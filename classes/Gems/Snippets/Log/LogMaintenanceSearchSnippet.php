@@ -16,6 +16,7 @@ use Gems\Snippets\AutosearchFormSnippet;
 use Gems\Util\Translated;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -35,9 +36,10 @@ class LogMaintenanceSearchSnippet extends AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         protected Translated $translatedUtil,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
     }
 
     /**

@@ -177,15 +177,6 @@ class DatabasePatcher
     }
 
     /**
-     * There exist files with patches to load
-     * @return boolean
-     */
-    public function hasPatchFiles()
-    {
-        return (boolean) $this->patch_files;
-    }
-
-    /**
      * Loads execution of selected db patches for the given $patchLevel into a TaskBatch.
      *
      * @param int $patchLevel Only execute patches for this patchlevel
@@ -249,7 +240,7 @@ class DatabasePatcher
 
         try {
             $existing = $select->query()->fetchAll();
-        } catch (exception $e) {
+        } catch (\Exception $e) {
             return -1;
         }
 

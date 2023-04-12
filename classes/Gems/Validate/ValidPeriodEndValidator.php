@@ -52,6 +52,6 @@ class ValidPeriodEndValidator extends \Zend_Validate_Abstract
      */
     public function isValid($value, $context = array())
     {
-
+        return true;
     }
 }

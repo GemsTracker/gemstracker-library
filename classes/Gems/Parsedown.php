@@ -21,6 +21,8 @@ namespace Gems;
 class Parsedown extends \Parsedown
 {
     public $GitHub = 'https://github.com';
+
+    protected string $projectName = '';
     
      function __construct($projectName = '')
     {
@@ -64,5 +66,6 @@ class Parsedown extends \Parsedown
             
             return $inline;
         }
+        return [];
     }
 }

@@ -38,11 +38,11 @@ class OrganizationTableSnippet extends ModelTableSnippet
      */
     protected $_fixedSort = ['gor_name' => SORT_ASC];
 
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->tr()->class = $bridge->row_class;
 
-        $keys = $this->getRouteMaps($model->getMetaModel());
+        $keys = $this->getRouteMaps($dataModel->getMetaModel());
 
         $showMenuItems = $this->getShowUrls($bridge, $keys);
         foreach ($showMenuItems as $menuItem) {
@@ -63,7 +63,7 @@ class OrganizationTableSnippet extends ModelTableSnippet
 
         $bridge->addMultiSort($orgName, $br, 'gor_task', $br, 'gor_location');
         $bridge->addMultiSort($mailName, $br, 'gor_active', $br, 'gor_has_login');
-        if ($model->has('gor_respondent_group', 'label')) {
+        if ($dataModel->has('gor_respondent_group', 'label')) {
             $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents', $br, 'gor_respondent_group');
         } else {
             $bridge->addMultiSort('gor_add_respondents', $br, 'gor_has_respondents');

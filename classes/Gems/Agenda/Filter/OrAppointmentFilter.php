@@ -11,6 +11,7 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Agenda\AppointmentSubFilterAbstract;
 use Gems\Agenda\EpisodeOfCare;
@@ -93,10 +94,10 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
+    public function matchAppointment(Appointment $appointment)
     {
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {
@@ -111,7 +112,7 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\EpisodeOfCare $episode
+     * @param EpisodeOfCare $episode
      * @return boolean
      */
     public function matchEpisode(EpisodeOfCare $episode)

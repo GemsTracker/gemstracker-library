@@ -23,6 +23,7 @@ use Gems\Translate\DbTranslateUtilTrait;
 
 use Gems\User\Mask\MaskRepository;
 use MUtil\Model;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Object representing a track assignment to a respondent.
@@ -107,7 +108,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     protected $currentUser;
 
     /**
-     * @var \Gems\Event\EventDispatcher
+     * @var EventDispatcherInterface
      */
     protected $event;
 
@@ -809,7 +810,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     /**
      *
      * @param string $fieldName
-     * @return DateTimeInterface
+     * @return DateTimeInterface|null
      */
     public function getDate($fieldName)
     {
@@ -837,6 +838,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         if ($date) {
             return Model::getDateTimeInterface($date);
         }
+        return null;
     }
 
     /**
@@ -1489,6 +1491,7 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
         if ($this->hasSuccesCode() && $this->isOpen()) {
             return $this->checkTrackTokens($this->currentUser->getUserId());
         }
+        return 0;
     }
 
     /**

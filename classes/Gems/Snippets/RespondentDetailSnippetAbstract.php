@@ -159,8 +159,7 @@ abstract class RespondentDetailSnippetAbstract extends \Gems\Snippets\MenuSnippe
     }
 
     /**
-     *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
+     * @param DetailTableBridge $bridge
      * @return void
      */
     protected function addOnClick(DetailTableBridge $bridge)

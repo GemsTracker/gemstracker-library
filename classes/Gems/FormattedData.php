@@ -49,7 +49,8 @@ class FormattedData extends \IteratorIterator
      */
     public function __construct($data, \MUtil\Model\ModelAbstract $model, $formatted = true)
     {
-        $this->data  = parent::__construct(new \ArrayObject($data));
+        $this->data = new \ArrayObject($data);
+        parent::__construct($this->data);
         $this->model = $model;
         $this->setFormatted($formatted);
         return $this;
@@ -84,10 +85,10 @@ class FormattedData extends \IteratorIterator
      /**
      * This is the actual format function, copied from the Exhibitor for field
      *
-     * @param type $name
-     * @param type $result
+     * @param string $name
+     * @param mixed $result
       *@param \MUtil\Model\ModelAbstract $model
-     * @return type
+     * @return mixed
      */
     private function _format($name, $result, $model)
     {
@@ -115,9 +116,9 @@ class FormattedData extends \IteratorIterator
                          *  formatFunction -> handle each element in the array.
                          */
                         if (is_array($result)) {
-                            foreach($result as $key => $value) {
-                                if (array_key_exists($value, $multiOptions)) {
-                                    $result[$key] = $multiOptions[$value];
+                            foreach($result as $resultKey => $resultValue) {
+                                if (array_key_exists($resultValue, $multiOptions)) {
+                                    $result[$resultKey] = $multiOptions[$resultValue];
                                 }
                             }
                         } else {

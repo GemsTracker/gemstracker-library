@@ -61,6 +61,7 @@ interface TrackerInterface
     /**
      * Create a new track for a patient
      *
+     * @param SessionInterface $session
      * @param int $respondentId   The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
      * @param int $organizationId
      * @param int $trackId
@@ -69,7 +70,7 @@ interface TrackerInterface
      * @param array $trackFieldsData
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
+    public function createRespondentTrack(SessionInterface $session, $respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
 
     /**
      * Dynamically load and create a [Gems|Project]_Tracker class

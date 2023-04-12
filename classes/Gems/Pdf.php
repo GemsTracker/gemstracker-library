@@ -80,7 +80,8 @@ class Pdf
     public function __construct(
         protected ProjectSettings $project,
         protected ResultFetcher $resultFetcher,
-        protected Translator $translate
+        protected Translator $translate,
+        protected readonly array $config,
     )
     {
         if (isset($this->project->export) && isset($this->project->export['pdfExportCommand'])) {
@@ -288,7 +289,7 @@ class Pdf
      */
     public function getUploadDir(string $subdir = null): string
     {
-        $dir = GEMS_ROOT_DIR . '/var/uploads';
+        $dir = $this->config['rootDir'] . '/var/uploads';
 
         if ($subdir) {
             if (($subdir[0] == '/') || ($subdir[0] == '\\') || (substr($subdir, 1, 2) == ':\\')) {
@@ -328,10 +329,10 @@ class Pdf
      */
     public function convertFromHtml(string $content): string
     {
-        \MUtil\File::ensureDir(GEMS_ROOT_DIR . '/var/tmp');
+        \MUtil\File::ensureDir($this->config['rootDir'] . '/var/tmp');
 
-        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(Pdf . phptime()) . '.html';
-        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(Pdf . phptime()) . '.pdf';
+        $tempInputFilename  = $this->config['rootDir'] . '/var/tmp/export-' . md5(time() . rand()) . '.html';
+        $tempOutputFilename = $this->config['rootDir'] . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
 
         if (\MUtil\File::isOnWindows()) {
             // Running on Windows, remove drive letter as that will not work with some

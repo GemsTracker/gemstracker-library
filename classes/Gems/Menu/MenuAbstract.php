@@ -47,11 +47,6 @@ abstract class MenuAbstract extends \Gems\Loader\TargetLoaderAbstract
     protected $currentUser;
 
     /**
-     * @var \Gems\Escort
-     */
-    public $escort;
-
-    /**
      *
      * @var \Gems\Loader
      *
@@ -66,7 +61,6 @@ abstract class MenuAbstract extends \Gems\Loader\TargetLoaderAbstract
 
     public function __construct()
     {
-        $this->escort = \Gems\Escort::getInstance();
     }
 
     /**
@@ -694,34 +688,17 @@ abstract class MenuAbstract extends \Gems\Loader\TargetLoaderAbstract
      */
     public function addProjectPage($label)
     {
-        if ($this->escort instanceof \Gems\Project\Tracks\SingleTrackInterface) {
-            if ($trackId = $this->escort->getTrackId()) {
-                $infoPage = $this->addPage($label, 'pr.project', 'project-tracks', 'show')
-                    ->addHiddenParameter(\MUtil\Model::REQUEST_ID, $trackId);
-                $trackSurveys = $infoPage;
-            } else {
-                $infoPage = $this->addPage($label, 'pr.project', 'project-tracks');
-                $trackSurveys = $infoPage->addShowAction('pr.project');
-            }
-            $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::SURVEY_ID, 'gsu_id_survey');
+        $infoPage = $this->addContainer($label);
+        $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
+        $tracksPage->addAutofilterAction();
 
-            $infoPage->addAutofilterAction();
+        $trackSurveys = $tracksPage->addShowAction('pr.project');
+        $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
+                ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::SURVEY_ID, 'gsu_id_survey');
 
-            // \MUtil\EchoOut\EchoOut::track($infoPage->_toNavigationArray(array($this->_getOriginalRequest())));
-        } else {
-            $infoPage = $this->addContainer($label);
-            $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
-            $tracksPage->addAutofilterAction();
-
-            $trackSurveys = $tracksPage->addShowAction('pr.project');
-            $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(\MUtil\Model::REQUEST_ID, 'gro_id_track', \Gems\Model::SURVEY_ID, 'gsu_id_survey');
-
-            $surveysPage = $infoPage->addPage($this->_('Surveys'), 'pr.project', 'project-surveys');
-            $surveysPage->addAutofilterAction();
-            $surveysPage->addShowAction('pr.project');
-        }
+        $surveysPage = $infoPage->addPage($this->_('Surveys'), 'pr.project', 'project-surveys');
+        $surveysPage->addAutofilterAction();
+        $surveysPage->addShowAction('pr.project');
 
         return $infoPage;
     }

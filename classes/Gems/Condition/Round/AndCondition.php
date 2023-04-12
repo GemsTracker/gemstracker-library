@@ -75,14 +75,14 @@ class AndCondition extends RoundConditionAbstract
         return $this->_('Multiple conditions AND');
     }
 
-    public function getNotValidReason(int $conditionId, array $context): string
+    public function getNotValidReason(int $value, array $context): string
     {
         $conditions = $this->getConditions();
         $text = [];
         foreach($conditions as $condition)
         {
-            if (!$condition->isValid($conditionId, $context)) {
-                $text[] = $condition->getNotValidReason($conditionId, $context);
+            if (!$condition->isValid($value, $context)) {
+                $text[] = $condition->getNotValidReason($value, $context);
             }
         }
 
@@ -116,17 +116,17 @@ class AndCondition extends RoundConditionAbstract
     /**
      * Does this track have the fieldcode the condition depends on?
      *
-     * @param int $conditionId
-     * @param int $context
+     * @param int $value
+     * @param array $context
      * @return bool
      */
-    public function isValid(int $conditionId, array $context): bool
+    public function isValid(int $value, array $context): bool
     {
         $conditions = $this->getConditions();
         $valid = true;
         foreach($conditions as $condition)
         {
-            $valid = $valid && $condition->isValid($conditionId, $context);
+            $valid = $valid && $condition->isValid($value, $context);
         }
         
         return $valid;

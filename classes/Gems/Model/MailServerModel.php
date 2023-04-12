@@ -2,8 +2,8 @@
 
 namespace Gems\Model;
 
+use Gems\Communication\CommunicationRepository;
 use Gems\Encryption\ValueEncryptor;
-use Gems\Mail;
 use Gems\Model;
 use Gems\Model\Type\EncryptedField;
 
@@ -39,9 +39,9 @@ class MailServerModel extends JoinModel
             false,
             'multiOptions',
             [
-                Mail::MAIL_NO_ENCRYPT => $this->_('None'),
-                Mail::MAIL_SSL => $this->_('SSL'),
-                Mail::MAIL_TLS => $this->_('TLS')
+                CommunicationRepository::MAIL_NO_ENCRYPT => $this->_('None'),
+                CommunicationRepository::MAIL_SSL => $this->_('SSL'),
+                CommunicationRepository::MAIL_TLS => $this->_('TLS')
             ]
         );
         $this->set(

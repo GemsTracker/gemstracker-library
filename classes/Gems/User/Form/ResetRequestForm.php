@@ -42,7 +42,7 @@ class ResetRequestForm extends \Gems\User\Form\OrganizationFormAbstract
     /**
      * Returns a link to the login page
      *
-     * @return \MUtil\Form\Element\Html
+     * @return \MUtil\Form\Element\Html|null
      */
     public function getLoginLinkElement()
     {
@@ -60,6 +60,8 @@ class ResetRequestForm extends \Gems\User\Form\OrganizationFormAbstract
 
             return $element;
         }
+
+        return null;
     }
 
     /**

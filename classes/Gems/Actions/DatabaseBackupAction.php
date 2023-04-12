@@ -4,12 +4,17 @@
 
 namespace Gems\Actions;
 
-class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
+class DatabaseBackupAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     protected $defaultSearchData = [
         'include_drop' => 1,
         'single_transaction' => 1,
     ];
+
+    /**
+     * @var array
+     */
+    public $config;
 
     /**
      * @var \Zend_Db_Adapter_Abstract
@@ -48,7 +53,7 @@ class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getExportDbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = $this->loader->getModels()->getExportDbaModel($this->db, $this->config['migrations']['migrations']);
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

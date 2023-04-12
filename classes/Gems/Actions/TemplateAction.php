@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Project\ProjectSettings;
+
 /**
  * Generic controller class for showing and editing template variables
  *
@@ -20,7 +22,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
+class TemplateAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     protected $createEditSnippets = 'ModelTabFormSnippet';
 
@@ -29,6 +31,11 @@ class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
      * @var \Gems\Loader
      */
     public $loader;
+
+    /**
+     * @var ProjectSettings
+     */
+    public $project;
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -43,7 +50,7 @@ class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new \Gems\Model\TemplateModel('templates', $this->escort->project);
+        $model = new \Gems\Model\TemplateModel('templates', $this->project);
 
         return $model;
     }

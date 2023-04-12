@@ -7,13 +7,16 @@ use Symfony\Component\Mime\Address;
 
 class DevMailSmsClient implements SmsClientInterface
 {
-    public function __construct(private readonly CommunicationRepository $communicationRepository)
+    public function __construct(
+        private readonly array $config,
+        private readonly CommunicationRepository $communicationRepository
+    )
     {
     }
 
     public function sendMessage($number, $body, $originator=null)
     {
-        $reference = sprintf('%s: %s', GEMS_PROJECT_NAME, APPLICATION_ENV);
+        $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['env']);
 
         $message = [
             'encoding' => 'auto',
@@ -42,7 +45,7 @@ class DevMailSmsClient implements SmsClientInterface
         $email->addTo(new Address('mailhog@example.com', 'Local'));
         $email->addFrom(new Address('dev@example.com'));
 
-        $mailer = $this->communicationRepository->getMailer('dev@example.com');
+        $mailer = $this->communicationRepository->getMailer();
 
         $email->subject('Redirected SMS');
         $email->text(var_export($options, true));

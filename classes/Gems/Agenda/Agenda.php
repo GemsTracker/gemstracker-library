@@ -13,6 +13,7 @@ namespace Gems\Agenda;
 
 use Gems\Cache\HelperAdapter;
 use Gems\Episode;
+use Gems\Repository\OrganizationRepository;
 use MUtil\Model;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -68,7 +69,8 @@ class Agenda
         TranslatorInterface $translator,
         protected AdapterInterface $cache,
         protected \Zend_Db_Adapter_Abstract $db,
-        )
+        protected readonly OrganizationRepository $organizationRepository,
+    )
     {
         $this->translate = $translator;
 
@@ -171,8 +173,8 @@ class Agenda
 
     /**
      *
-     * @param type $name
-     * @param type $organizationId
+     * @param string $name
+     * @param int $organizationId
      * @param array $matches
      * @return array
      */
@@ -428,7 +430,7 @@ class Agenda
     /**
      * Get all appointments for an episode
      *
-     * @param int|Episode $episode Episode Id or object
+     * @param int|EpisodeOfCare $episode Episode Id or object
      * @return array appointmentId => appointment object
      */
     public function getAppointmentsForEpisode($episode)
@@ -650,7 +652,7 @@ class Agenda
      */
     public final function getFieldLabels()
     {
-        $output = \Mutil\Ra::column('label', $this->getFieldData());
+        $output = \MUtil\Ra::column('label', $this->getFieldData());
 
         asort($output);
 
@@ -714,7 +716,7 @@ class Agenda
      * Get a filter from the database
      *
      * @param $filterId string|int Id of a single filter
-     * @return AppointmentFilterInterface or null
+     * @return AppointmentFilterInterface|null or null
      */
     public function getFilter($filterId)
     {
@@ -731,6 +733,8 @@ class Agenda
             $filters[$filterId] = reset($found);
             return $filters[$filterId];
         }
+
+        return null;
     }
 
     /**
@@ -842,7 +846,7 @@ class Agenda
         $select->from('gems__locations', array('glo_id_location', 'glo_name', 'glo_organizations'))
                ->order('glo_name');
 
-        $orgList   = $this->util->getDbLookup()->getOrganizations();
+        $orgList   = $this->organizationRepository->getOrganizations();
         $locations = $this->db->fetchAll($select);
         $results   = [];
         if ($locations) {
@@ -1056,37 +1060,6 @@ class Agenda
     }
 
     /**
-     * Function that checks the setup of this class/traight
-     *
-     * This function is not needed if the variables have been defined correctly in the
-     * source for this object and theose variables have been applied.
-     *
-     * return @void
-     */
-    protected function initTranslateable()
-    {
-        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
-            // OK
-            return;
-        }
-
-        if ($this->translate instanceof \Zend_Translate) {
-            // Just one step
-            $this->translateAdapter = $this->translate->getAdapter();
-            return;
-        }
-
-        if ($this->translate instanceof \Zend_Translate_Adapter) {
-            // It does happen and if it is all we have
-            $this->translateAdapter = $this->translate;
-            return;
-        }
-
-        // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new \MUtil\Translate\Adapter\Potemkin();
-    }
-
-    /**
      * Returns true when the status code is active
      *
      * @param string $code
@@ -1117,7 +1090,7 @@ class Agenda
             foreach ($output as $key => $filterObject) {
                 // Filterobjects should not serialize anything loaded from a source
                 if ($filterObject instanceof \MUtil\Registry\TargetInterface) {
-                    $this->applySource($filterObject);
+                    $this->subloader->applyToLegacyTarget($filterObject);
                 }
                 $this->_filters[$key] = $filterObject;
             }

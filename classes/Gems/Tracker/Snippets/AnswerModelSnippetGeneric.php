@@ -142,11 +142,11 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $br = Html::create('br');
         if ($this->showSelected) {
@@ -164,7 +164,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $td->appendAttrib('class', $selectedClass);
 
         $bridge->th($this->_('Question'));
-        if ($model->has('grr_name') && $model->has('gtf_field_name')) {
+        if ($dataModel->has('grr_name') && $dataModel->has('gtf_field_name')) {
             $td = $bridge->tdh(
                     Late::iif($bridge->grr_name, array($bridge->grr_name, $br)),
                     Late::iif($bridge->gtf_field_name, array($bridge->gtf_field_name, $br)),
@@ -183,7 +183,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $td->appendAttrib('class', $bridge->row_class);
 
         // Apply filter on the answers displayed
-        $answerNames = $model->getItemsOrdered();
+        $answerNames = $dataModel->getItemsOrdered();
 
         $eventName = 'gems.survey.answers.display-filter';
 
@@ -203,7 +203,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
             $eventFunction = null;
         }
 
-        $answerFilterEvent = new AnswerFilterEvent($bridge, $model, $answerNames);
+        $answerFilterEvent = new AnswerFilterEvent($bridge, $dataModel, $answerNames);
         $this->event->dispatch($answerFilterEvent, $eventName);
         $answerNames = $answerFilterEvent->getCurrentNames();
         $oldGroup    = null;
@@ -217,9 +217,9 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
         $visible = Html::create('i', ['class' => 'fa fa-eye', 'renderClosingTag' => true]);
         
         foreach($answerNames as $name) {
-            $label = $model->get($name, 'label');
+            $label = $dataModel->get($name, 'label');
             if (null !== $label) {     // Was strlen($label), but this ruled out empty sub-questions
-                $group = $model->get($name, 'groupName');
+                $group = $dataModel->get($name, 'groupName');
                 if ($oldGroup !== $group) {
                     if ($group) {
                         $bridge->thd(['class' => 'group groupLabel'])->raw($group);
@@ -227,20 +227,20 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                     }
                     $oldGroup = $group;
                 }
-                $th = $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
+                $th = $bridge->thd($label, array('class' => $dataModel->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
                 $td->appendAttrib('class', 'answer');
                 $td->appendAttrib('class', $selectedClass);
                 $td->appendAttrib('class', $bridge->row_class);
 
                 $col2 = $visible;
-                if ($model->get($name, 'alwaysHidden')) {
+                if ($dataModel->get($name, 'alwaysHidden')) {
                     $td->appendAttrib('class', 'hideAlwaysQuestion');
                     $td->title = $this->_('Hidden question');
                     $th->title = $this->_('Hidden question');
                     $col2 = $hidden;
                 }
-                if ($model->get($name, 'hasConditon')) {
+                if ($dataModel->get($name, 'hasConditon')) {
                     $td->appendAttrib('class', 'conditionQuestion');
                     $td->title = $this->_('Conditional question');
                     $th->title = $this->_('Conditional question');

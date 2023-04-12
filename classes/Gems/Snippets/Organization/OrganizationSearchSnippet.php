@@ -11,6 +11,9 @@
 
 namespace Gems\Snippets\Organization;
 
+use Gems\Snippets\AutosearchFormSnippet;
+use Gems\User\User;
+
 /**
  *
  * @package    Gems
@@ -19,11 +22,11 @@ namespace Gems\Snippets\Organization;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 9, 2017 2:44:24 PM
  */
-class OrganizationSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
+class OrganizationSearchSnippet extends AutosearchFormSnippet
 {
     /**
      *
-     * @var \gems_User_User
+     * @var User
      */
     protected $currentUser;
 

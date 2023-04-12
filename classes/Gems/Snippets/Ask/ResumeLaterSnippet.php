@@ -40,7 +40,7 @@ class ResumeLaterSnippet extends \Gems\Tracker\Snippets\ShowTokenLoopAbstract
      */
     protected function getHeaderLabel()
     {
-        return $this->_('Thank you for answering so far');
+        return $this->translator->_('Thank you for answering so far');
     }
 
     /**

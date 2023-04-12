@@ -74,11 +74,11 @@ class FromAppointmentsMaintenanceDependency extends DependencyAbstract
     /**
      * Use this function for a default application of this dependency to the model
      *
-     * @param \MUtil\Model\ModelAbstract $model Try not to store the model as variabe in the dependency (keep it simple)
+     * @param MetaModelInterface $metaModel Try not to store the model as variabe in the dependency (keep it simple)
      */
-    public function applyToModel(MetaModelInterface $model)
+    public function applyToModel(MetaModelInterface $metaModel)
     {
-        $model->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
+        $metaModel->set('gtf_calculate_using', 'elementClass', 'MultiCheckbox', 'description', null);
     }
 
     /**

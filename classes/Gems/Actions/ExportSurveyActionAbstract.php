@@ -19,7 +19,7 @@ namespace Gems\Actions;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.2 04-Jul-2017 18:57:11
  */
-class ExportSurveyActionAbstract extends \Gems\Controller\ModelSnippetActionAbstract
+class ExportSurveyActionAbstract extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      * Object for export model source

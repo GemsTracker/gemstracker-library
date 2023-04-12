@@ -97,7 +97,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn2(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -113,7 +113,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseColumn3(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -157,8 +157,8 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \Zalt\Snippets\ModelBridge\TableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
     protected function addBrowseTableColumnsColumns(TableBridge $bridge, DataReaderInterface $dataModel)
@@ -176,7 +176,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         }
 
         if ($this->showMenu) {
-            $showMenuItems = $this->getShowUrls($bridge);
+            $showMenuItems = $this->getShowUrls($bridge, []);
 
             foreach ($showMenuItems as $menuItem) {
                 $bridge->addItemLink(Html::actionLink($menuItem, $this->_('Show')));
@@ -190,7 +190,7 @@ abstract class RespondentTableSnippetAbstract extends \Gems\Snippets\ModelTableS
         $this->addBrowseColumn5($bridge, $dataModel);
 
         if ($this->showMenu) {
-            $editMenuItems = $this->getEditUrls($bridge);
+            $editMenuItems = $this->getEditUrls($bridge, []);
 
             foreach ($editMenuItems as $menuItem) {
                 $bridge->addItemLink(\Gems\Html::actionLink($menuItem, $this->_('Edit')));

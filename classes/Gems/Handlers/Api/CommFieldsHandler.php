@@ -56,6 +56,7 @@ class CommFieldsHandler implements RequestHandlerInterface
     protected function getRespondentFields(ServerRequestInterface $request): ResponseInterface
     {
         $id = $request->getAttribute('id');
+        $queryParams = $request->getQueryParams();
         if ($id === null && isset($queryParams['id'])) {
             $id = $queryParams['id'];
         }
@@ -87,6 +88,7 @@ class CommFieldsHandler implements RequestHandlerInterface
     protected function getStaffFields(ServerRequestInterface $request, bool $passwordFields = false): ResponseInterface
     {
         $id = $request->getAttribute('id');
+        $queryParams = $request->getQueryParams();
         if ($id === null && isset($queryParams['id'])) {
             $id = $queryParams['id'];
         }

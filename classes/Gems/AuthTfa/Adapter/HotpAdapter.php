@@ -12,8 +12,6 @@ class HotpAdapter implements OtpAdapterInterface
 {
     use ThrottleVerifyTrait;
 
-    private readonly HOTP $otp;
-
     private readonly int $codeLength;
 
     private int $codeValidSeconds = 300;

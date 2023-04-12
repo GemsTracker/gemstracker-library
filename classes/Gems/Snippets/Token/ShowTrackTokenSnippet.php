@@ -19,10 +19,12 @@ use Gems\Model\Bridge\ThreeColumnTableBridge;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenSnippetAbstract;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use MUtil\Model\ModelAbstract;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
 use Zalt\SnippetsLoader\SnippetOptions;
@@ -44,12 +46,14 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
+        MaskRepository $maskRepository,
         Tracker $tracker,
+        StatusMessengerInterface $messenger,
         protected TokenRepository $tokenRepository,
         protected MenuSnippetHelper $menuSnippetHelper,
         protected CurrentUserRepository $currentUserRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $tracker);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $maskRepository, $tracker, $messenger);
         $this->currentUser = $this->currentUserRepository->getCurrentUser();
     }
 
@@ -60,8 +64,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param ThreeColumnTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
     protected function addCompletionBlock(ThreeColumnTableBridge $bridge)
@@ -118,8 +120,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param ThreeColumnTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
     protected function addContactBlock(ThreeColumnTableBridge $bridge)
@@ -140,8 +140,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * having to recode the core table building code.
      *
      * @param ThreeColumnTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
-     * @param \Gems\Menu\MenuList $links
      * @return boolean True when there was row output
      */
     protected function addHeaderGroup(ThreeColumnTableBridge $bridge)
@@ -367,11 +365,11 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $model
      * @return void
      */
-    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function addShowTableRows(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         // \MUtil\Model::$verbose = true;
 
@@ -381,10 +379,10 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             if ($this->addHeaderGroup($bridge)) {
                 $bridge->addMarkerRow();
             }
-            if ($this->addRespondentGroup($bridge, $model)) {
+            if ($this->addRespondentGroup($bridge, $dataModel)) {
                 $bridge->addMarkerRow();
             }
-            if ($this->addTrackGroup($bridge, $model)) {
+            if ($this->addTrackGroup($bridge, $dataModel)) {
                 $bridge->addMarkerRow();
             }
             if ($this->addRoundGroup($bridge)) {
