@@ -11,6 +11,16 @@
 
 namespace Gems\Tracker\Engine;
 
+use Gems\Model\JoinModel;
+use Gems\Tracker\Model\FieldDataModel;
+use Gems\Tracker\Model\FieldMaintenanceModel;
+use Gems\Tracker\Model\StandardTokenModel;
+use Gems\Tracker\Token;
+use Gems\Tracker\TrackEvent\RoundChangedEventInterface;
+use Gems\Tracker\TrackEvent\TrackBeforeFieldUpdateEventInterface;
+use Gems\Tracker\TrackEvent\TrackCalculationEventInterface;
+use Gems\Tracker\TrackEvent\TrackCompletedEventInterface;
+use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Mezzio\Session\SessionInterface;
 
 /**
@@ -34,7 +44,7 @@ interface TrackEngineInterface
      *
      * @param \MUtil\Model\ModelAbstract $model
      * @param boolean $addDependency True when editing, can be false in all other cases
-     * @param string $respTrackId Optional Database column name where Respondent Track Id is set
+     * @param int|bool $respTrackId Optional Database column name where Respondent Track Id is set
      * @return \Gems\Tracker\Engine\TrackEngineAbstract
      */
     public function addFieldsToModel(\MUtil\Model\ModelAbstract $model, $addDependency = true, $respTrackId = false);
@@ -97,14 +107,14 @@ interface TrackEngineInterface
      *
      * @see getConversionTargets()
      *
-     * @param type $conversionTargetClass
+     * @param string $conversionTargetClass
      */
     public function convertTo($conversionTargetClass);
 
     /**
      * Copy a track and all it's related data (rounds/fields etc)
      *
-     * @param inte $oldTrackId  The id of the track to copy
+     * @param int $oldTrackId  The id of the track to copy
      * @return int              The id of the copied track
      */
     public function copyTrack($oldTrackId);
@@ -146,7 +156,7 @@ interface TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems\Event\TrackBeforeFieldUpdateEventInterface | null
+     * @return TrackBeforeFieldUpdateEventInterface | null
      */
     public function getFieldBeforeUpdateEvent();
 
@@ -176,14 +186,14 @@ interface TrackEngineInterface
     /**
      * Get the storage model for field values
      *
-     * @return \Gems\Tracker\Model\FieldDataModel
+     * @return FieldDataModel
      */
     public function getFieldsDataStorageModel();
 
     /**
      * Returns the field definition for the track enige.
      *
-     * @return \Gems\Tracker\Engine\FieldsDefinition;
+     * @return FieldsDefinition;
      */
     public function getFieldsDefinition();
 
@@ -192,7 +202,7 @@ interface TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \Gems\Tracker\Model\FieldMaintenanceModel
+     * @return FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed = false, $action = 'index');
 
@@ -207,7 +217,7 @@ interface TrackEngineInterface
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return \Gems\Event\TrackFieldUpdateEventInterface | null
+     * @return TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent();
 
@@ -273,7 +283,7 @@ interface TrackEngineInterface
      * Return the Round Changed event name for this round
      *
      * @param int $roundId
-     * @return \Gems\Event\RoundChangedEventInterface event instance or null
+     * @return RoundChangedEventInterface event instance or null
      */
     public function getRoundChangedEvent($roundId);
 
@@ -303,7 +313,7 @@ interface TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return \Gems\Model\JoinModel
+     * @return JoinModel
      */
     public function getRoundModel($detailed, $action);
 
@@ -324,38 +334,38 @@ interface TrackEngineInterface
     /**
      * An array of snippet names for deleting a token.
      *
-     * @param \Gems\Tracker\Token $token Allows token status dependent delete snippets
+     * @param Token $token Allows token status dependent delete snippets
      * @return array of string snippet names
      */
-    public function getTokenDeleteSnippetNames(\Gems\Tracker\Token $token);
+    public function getTokenDeleteSnippetNames(Token $token);
 
     /**
      * An array of snippet names for editing a token.
      *
-     * @param \Gems\Tracker\Token $token Allows token status dependent edit snippets
+     * @param Token $token Allows token status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTokenEditSnippetNames(\Gems\Tracker\Token $token);
+    public function getTokenEditSnippetNames(Token $token);
 
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return \Gems\Tracker\Model\StandardTokenModel
+     * @return StandardTokenModel
      */
     public function getTokenModel();
 
     /**
      * An array of snippet names for displaying a token
      *
-     * @param \Gems\Tracker\Token $token Allows token status dependent show snippets
+     * @param Token $token Allows token status dependent show snippets
      * @return array of string snippet names
      */
-    public function getTokenShowSnippetNames(\Gems\Tracker\Token $token);
+    public function getTokenShowSnippetNames(Token $token);
 
     /**
      * Get the TrackCompletedEvent for the given trackId
      *
-     * @return \Gems\Event\TrackCalculationEventInterface | null
+     * @return TrackCalculationEventInterface | null
      */
     public function getTrackCalculationEvent();
 
@@ -368,7 +378,7 @@ interface TrackEngineInterface
     /**
      * Get the TrackCompletedEvent for the given trackId
      *
-     * @return \Gems\Event\TrackCompletedEventInterface|null
+     * @return TrackCompletedEventInterface|null
      */
     public function getTrackCompletionEvent();
 

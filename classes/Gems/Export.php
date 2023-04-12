@@ -11,6 +11,8 @@
 
 namespace Gems;
 
+use Zalt\Loader\ProjectOverloader;
+
 /**
  *
  * @package    Gems
@@ -27,13 +29,6 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
     protected ?string $cascade = 'Export';
-
-    /**
-     * Is set to the calling controller to allow rendering the view
-     *
-     * @var \Gems\Controller\Action
-     */
-    public $controller = null;
 
     /**
      * This variable holds all registered export classes, may be changed in derived classes
@@ -69,12 +64,12 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
 
     /**
      *
-     * @param type $container A container acting as source fro \MUtil\Registry\Source
+     * @param ProjectOverloader $container A container acting as source fro \MUtil\Registry\Source
      * @param array $dirs The directories where to look for requested classes
      */
-    public function __construct($container, array $dirs)
+    public function __construct($container)
     {
-        parent::__construct($container, $dirs);
+        parent::__construct($container);
 
         // Make sure the export is known
         $this->addRegistryContainer(array('export' => $this));

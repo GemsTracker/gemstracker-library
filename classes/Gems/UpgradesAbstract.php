@@ -27,6 +27,11 @@ class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
     use TranslateableTrait;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var null default context
      */
     protected $_context = null;
@@ -81,7 +86,7 @@ class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
 
     public function __construct()
     {
-        $this->upgradeFile = getcwd() . str_replace('/', DIRECTORY_SEPARATOR , '/data/upgrades_' . APPLICATION_ENV . '.ini');
+        $this->upgradeFile = getcwd() . str_replace('/', DIRECTORY_SEPARATOR , '/data/upgrades_' . $this->config['app']['env'] . '.ini');
     }
 
     /**
@@ -218,9 +223,9 @@ class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
      * When context is null, it will get the current context
      * When level is null, it will get the current level
      *
-     * @param type $level
-     * @param type $context
-     * @return type
+     * @param string|null $context
+     * @param int|null $level
+     * @return int
      */
     public function getNextLevel($context = null, $level = null) 
     {
@@ -292,13 +297,10 @@ class UpgradesAbstract extends \Gems\Loader\TargetLoaderAbstract
             $result[$context] = $row;
         }
 
-        if (is_null($requestedContext)) {
-            return $result;
-        } else {
-            if (isset($result[$requestedContext])) {
-                return $result[$requestedContext];
-            }
+        if (!is_null($requestedContext) && isset($result[$requestedContext])) {
+            return $result[$requestedContext];
         }
+        return $result;
     }
     
     /**

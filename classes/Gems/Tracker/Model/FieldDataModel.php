@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Model;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use MUtil\Model\UnionModel;
 
 /**
  *
@@ -21,7 +22,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class FieldDataModel extends \MUtil\Model\UnionModel
+class FieldDataModel extends UnionModel
 {
     /**
      *
@@ -66,7 +67,7 @@ class FieldDataModel extends \MUtil\Model\UnionModel
      * Get the SQL table name of the union sub model that should be used for this row.
      *
      * @param string $modelName Name of the submodel
-     * @return string
+     * @return string|null
      */
     public function getTableName($modelName)
     {
@@ -79,5 +80,6 @@ class FieldDataModel extends \MUtil\Model\UnionModel
         if ($model instanceof \MUtil\Model\TableModel) {
             return $model->getTableName();
         }
+        return null;
     }
 }

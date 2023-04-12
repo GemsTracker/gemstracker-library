@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Token;
 
 use Gems\Html;
+use Gems\Snippets\TokenModelSnippetAbstract;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;
 use Zalt\Html\AElement;
@@ -28,7 +29,7 @@ use Zalt\Snippets\ModelBridge\TableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
+class PlanTokenSnippet extends TokenModelSnippetAbstract
 {
     /**
      * Set a fixed model sort.
@@ -54,7 +55,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
     /**
      * @inheritdoc 
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         // Add link to patient to overview
         $respondentRoute = $this->menuHelper->getRelatedRoute('respondent.show');
@@ -64,13 +65,13 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
             $aElem->setOnEmpty('');
 
             // Make sure org is known
-            $model->get('gr2o_id_organization');
+            $dataModel->get('gr2o_id_organization');
 
-            $model->set('gr2o_patient_nr', 'itemDisplay', $aElem);
-            $model->set('respondent_name', 'itemDisplay', $aElem);
+            $dataModel->set('gr2o_patient_nr', 'itemDisplay', $aElem);
+            $dataModel->set('respondent_name', 'itemDisplay', $aElem);
         }
 
-        $model->set('gto_id_token', 'formatFunction', 'strtoupper');
+        $dataModel->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         $bridge->setDefaultRowClass(TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr1 = $bridge->tr();
@@ -86,7 +87,7 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gto_id_token');
         // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
-        $this->addRespondentCell($bridge, $model);
+        $this->addRespondentCell($bridge, $dataModel);
         $bridge->addMultiSort('ggp_name', [$this->createActionButtons($bridge)]);
 
         $tr2 = $bridge->tr();
@@ -96,8 +97,8 @@ class PlanTokenSnippet extends \Gems\Snippets\TokenModelSnippetAbstract
         $bridge->addSortable('gto_completion_time');
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
-        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort(
             'gtr_track_name', 'gr2t_track_info',
             array($bridge->gtr_track_name->if(Html::raw(' &raquo; ')), ' '),

@@ -15,6 +15,8 @@ class SetFrontControllerDirectory extends Event
      */
     protected $front;
 
+    protected $found = false;
+
     /**
      * @var string
      */

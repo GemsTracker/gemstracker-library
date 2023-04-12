@@ -11,6 +11,8 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Agenda;
+use Gems\Agenda\Appointment;
 use Gems\Agenda\AppointmentFilterAbstract;
 
 /**
@@ -26,7 +28,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
      *
-     * @var \Gems\Agenda\Agenda
+     * @var Agenda
      */
     protected $agenda;
 
@@ -45,38 +47,38 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      *
      * @return array fieldname => array(tableName, tableId, tableLikeFilter)
      */
-    protected $_lookupTables = array(
-            'gap_id_organization' => array(
+    protected $_lookupTables = [
+            'gap_id_organization' => [
                 'tableName' => 'gems__organizations',
                 'tableId' => 'gor_id_organization',
                 'tableLikeFilter' => "gor_active = 1 AND gor_name LIKE '%s'",
-                ),
-            'gap_id_attended_by' => array(
+            ],
+            'gap_id_attended_by' => [
                 'tableName' => 'gems__agenda_staff',
                 'tableId' => 'gas_id_staff',
                 'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
-                ),
-            'gap_id_referred_by' => array(
+            ],
+            'gap_id_referred_by' => [
                 'tableName' => 'gems__agenda_staff',
                 'tableId' => 'gas_id_staff',
                 'tableLikeFilter' => "gas_active = 1 AND gas_name LIKE '%s'",
-                ),
-            'gap_id_activity' => array(
+            ],
+            'gap_id_activity' => [
                 'tableName' => 'gems__agenda_activities',
                 'tableId' => 'gaa_id_activity',
                 'tableLikeFilter' => "gaa_active = 1 AND gaa_name LIKE '%s'",
-                ),
-            'gap_id_procedure' => array(
+            ],
+            'gap_id_procedure' => [
                 'tableName' => 'gems__agenda_procedures',
                 'tableId' => 'gapr_id_procedure',
                 'tableLikeFilter' => "gapr_active = 1 AND gapr_name LIKE '%s'",
-                ),
-            'gap_id_location' => array(
+            ],
+            'gap_id_location' => [
                 'tableName' => 'gems__locations',
                 'tableId' => 'glo_id_location',
                 'tableLikeFilter' => "glo_active = 1 AND glo_name LIKE '%s'",
-                ),
-        );
+            ],
+    ];
 
     /*
      *
@@ -108,11 +110,11 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Get the field value from an appointment object
      *
-     * @param \Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @param string $field
      * @return mixed
      */
-    public function getAppointmentFieldValue(\Gems\Agenda\Appointment $appointment, $field)
+    public function getAppointmentFieldValue(Appointment $appointment, $field)
     {
         switch ($field) {
             case 'gap_id_organization':
@@ -211,10 +213,10 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
+    public function matchAppointment(Appointment $appointment)
     {
         $result1 = $this->matchSingle(
                 $this->_data['gaf_filter_text1'],
@@ -237,7 +239,7 @@ class FieldLikeAppointmentFilter extends AppointmentFilterAbstract
      * @param $field
      * @param $searchTxt
      * @param $fieldList
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
     protected function matchSingle($field, $searchTxt, $fieldList, $appointment)

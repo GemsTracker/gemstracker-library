@@ -14,6 +14,7 @@ namespace Gems\Agenda;
 use Gems\Db\ResultFetcher;
 use Gems\Html;
 use Gems\MenuNew\RouteHelper;
+use Gems\Model\JoinModel;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 13:07:11
  */
-class AppointmentFilterModel extends \Gems\Model\JoinModel
+class AppointmentFilterModel extends JoinModel
 {
     /**
      * The filter dependency class names, the parts after *_Agenda_Filter_
@@ -126,7 +127,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @return \Gems\Agenda\AppointmentFilterModelAbstract
+     * @return self
      */
     public function applyDetailSettings()
     {
@@ -181,7 +182,7 @@ class AppointmentFilterModel extends \Gems\Model\JoinModel
     /**
      * Set those values needed for editing
      *
-     * @return \Gems\Agenda\AppointmentFilterModelAbstract
+     * @return self
      */
     public function applyEditSettings($create = false)
     {

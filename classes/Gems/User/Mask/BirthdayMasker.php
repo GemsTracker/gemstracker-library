@@ -55,6 +55,7 @@ class BirthdayMasker extends MaskerAbstract
             case '*':
                 return '**-**-****';
         }
+        return null;
     }
 
     /**

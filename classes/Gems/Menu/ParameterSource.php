@@ -12,16 +12,12 @@
 namespace Gems\Menu;
 
 /**
- * ParameterSource is a central class for setting menu parameters.
- *
- * As using $request to set menu items currently does not perform parameter tests,
- * this is the place to set variables that are used in a parameter filter.
- *
- * @package    Gems
- * @subpackage Menu
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.4
+ * This class allows objects to work as arrays.
+ * @link https://php.net/manual/en/class.arrayobject.php
+ * @template TKey
+ * @template TValue
+ * @template-implements \IteratorAggregate<TKey, TValue>
+ * @template-implements \ArrayAccess<TKey, TValue>
  */
 class ParameterSource extends \ArrayObject implements \Gems\Menu\ParameterSourceInterface
 {

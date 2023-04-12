@@ -46,7 +46,7 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
     
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     // protected $accesslog;
 
@@ -114,14 +114,14 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
-     * @param \Zalt\Model\Data\FullDataInterface $model
+     * @param \Zalt\Model\Data\FullDataInterface $dataModel
      */
-    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $model)
+    protected function addBridgeElements(FormBridgeInterface $bridge, FullDataInterface $dataModel)
     {
-        $metaModel = $model->getMetaModel();
+        $metaModel = $dataModel->getMetaModel();
 
         if (! $bridge->getForm() instanceof \Gems\TabForm) {
-            parent::addBridgeElements($bridge, $model);
+            parent::addBridgeElements($bridge, $dataModel);
             return;
         }
 

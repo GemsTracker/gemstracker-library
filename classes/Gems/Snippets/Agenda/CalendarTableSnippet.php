@@ -70,15 +70,15 @@ class CalendarTableSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->gr2o_id_organization;
         
-        $keys = $this->getRouteMaps($model->getMetaModel());
+        $keys = $this->getRouteMaps($dataModel->getMetaModel());
         
         $appointmentHref = $this->menuHelper->getLateRouteUrl('respondent.appointments.show', $keys, $bridge);
         $appointmentButton = isset($appointmentHref['url']) ? Html::actionLink($appointmentHref['url'], $this->_('Show appointment')) : null;

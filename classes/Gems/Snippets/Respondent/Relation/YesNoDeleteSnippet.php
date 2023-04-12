@@ -31,10 +31,11 @@ class YesNoDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippet
     /**
      * Use findmenuitem for the abort action so we get the right id appended
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $dataModel
+     * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $footer = $bridge->tfrow();
 

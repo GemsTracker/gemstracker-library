@@ -139,20 +139,6 @@ class RequestCache extends \Gems\Registry\TargetAbstract
 
     /**
      *
-     * @return \Gems\Menu
-     */
-    protected function getMenu()
-    {
-        if (! $this->menu) {
-            $escort = \Gems\Escort::getInstance();
-            $this->setMenu($escort->menu);
-        }
-
-        return $this->menu;
-    }
-
-    /**
-     *
      * @return array
      */
     public function getProgramParams()
@@ -291,7 +277,7 @@ class RequestCache extends \Gems\Registry\TargetAbstract
     /**
      * Makes sure any new values in the request are not written to the cache.
      *
-     * @param boolen $value
+     * @param bool $value
      * @return \Gems\Util\RequestCache (continuation pattern)
      */
     public function setReadonly($value = true)

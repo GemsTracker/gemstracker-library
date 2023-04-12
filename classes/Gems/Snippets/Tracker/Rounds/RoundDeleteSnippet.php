@@ -14,6 +14,7 @@ namespace Gems\Snippets\Tracker\Rounds;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Message\MessengerInterface;
@@ -70,9 +71,10 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
         RequestInfo $requestInfo,
         MenuSnippetHelper $menuHelper,
         TranslatorInterface $translate,
-        MessengerInterface $messenger
+        MessengerInterface $messenger,
+        protected CacheItemPoolInterface $cache,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
     }
 
     /**
@@ -114,13 +116,13 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
      * having to recode the core table building code.
      *
      * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \MUtil\Model\ModelAbstract $dataModel
      * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model instanceof RoundModel) {
-            $refCount = $model->getRefCount($this->roundId);
+        if ($dataModel instanceof RoundModel) {
+            $refCount = $dataModel->getRefCount($this->roundId);
             if ($refCount) {
                 $this->messenger->addMessage(sprintf($this->plural(
                     'This round is used %s time in another round.', 'This round is used %s times in other rounds.',
@@ -128,7 +130,7 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
                 ), $refCount));
             }
             
-            $this->useCount = $model->getStartCount($this->roundId);
+            $this->useCount = $dataModel->getStartCount($this->roundId);
             
             if ($this->useCount) {
                 $this->messenger->addMessage(sprintf($this->plural(
@@ -144,6 +146,6 @@ class RoundDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
             }
         }
 
-        parent::setShowTableFooter($bridge, $model);
+        parent::setShowTableFooter($bridge, $dataModel);
     }
 }

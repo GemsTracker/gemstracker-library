@@ -108,7 +108,7 @@ class GroupFormSnippet extends \Gems\Snippets\ModelFormSnippetAbstract
                 }
             }
 
-            if ($this->formData['ggp_role'] && (! isset($roles[$this->formData['ggp_role']]))) {
+            if ($this->formData && $this->formData['ggp_role'] && (! isset($roles[$this->formData['ggp_role']]))) {
                 if ($this->createData) {
                     $this->formData['ggp_role'] = reset($roles);
                 } else {

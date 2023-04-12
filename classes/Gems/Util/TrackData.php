@@ -507,7 +507,7 @@ class TrackData extends UtilAbstract
      * Returns title of the track.
      *
      * @param int $trackId
-     * @return string
+     * @return string|null
      */
     public function getTrackTitle($trackId)
     {
@@ -516,5 +516,7 @@ class TrackData extends UtilAbstract
         if ($tracks && isset($tracks[$trackId])) {
             return $tracks[$trackId];
         }
+
+        return null;
     }
 }

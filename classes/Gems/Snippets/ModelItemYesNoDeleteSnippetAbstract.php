@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets;
 
+use Gems\Audit\AuditLog;
 use Gems\MenuNew\MenuSnippetHelper;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
@@ -20,6 +21,7 @@ use Zalt\Html\Html;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\Snippets\ModelYesNoDeleteSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -33,11 +35,11 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelYesNoDeleteSnippetAbstract
+abstract class ModelItemYesNoDeleteSnippetAbstract extends ModelYesNoDeleteSnippetAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var AuditLog
      */
     // protected $accesslog;
 
@@ -128,10 +130,10 @@ abstract class ModelItemYesNoDeleteSnippetAbstract extends \Zalt\Snippets\ModelY
      * having to recode the core table building code.
      *
      * @param \Zalt\Snippets\ModelBridge\DetailTableBridge $bridge
-     * @param \Zalt\Model\Data\DataReaderInterface $model
+     * @param \Zalt\Model\Data\DataReaderInterface $dataModel
      * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
         $footer = $bridge->tfrow();
 

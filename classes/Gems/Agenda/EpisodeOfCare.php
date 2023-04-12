@@ -240,6 +240,7 @@ class EpisodeOfCare extends \MUtil\Translate\TranslateableAbstract
             }
             return $this->_gemsData['gec_startdate'];
         }
+        return null;
     }
 
     /**

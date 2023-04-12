@@ -28,6 +28,11 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
     implements \MUtil\Snippets\SnippetLoaderInterface
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * Static variable for debuggging purposes. Toggles the echoing of what snippets
      * are requested and returned.
      *
@@ -61,7 +66,9 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
     {
         parent::__construct($source, $dirs);
 
-        $this->addPrefixPath('MUtil_Snippets_Standard', MUTIL_LIBRARY_DIR . '/MUtil/Snippets/Standard', false);
+        $mutilLibraryDir = $this->config['rootDir'] . '/vendor/magnafacta';
+
+        $this->addPrefixPath('MUtil_Snippets_Standard', $mutilLibraryDir . '/MUtil/Snippets/Standard', false);
     }
 
     /**
@@ -140,18 +147,18 @@ class SnippetLoader extends \Gems\Loader\TargetLoaderAbstract
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
      * @return \MUtil\Snippets\SnippetInterface The snippet
      */
-    public function getSnippet($filename, array $extraSourceParameters = null)
+    public function getSnippet($className, array $extraSourceParameters = null)
     {
         try {
             $this->addRegistryContainer($extraSourceParameters, 'tmpContainer');
-            $snippet = $this->_loadClass($filename, true, $extraSourceParameters);
+            $snippet = $this->_loadClass($className, true, $extraSourceParameters);
             $this->removeRegistryContainer('tmpContainer');
             if (self::$verbose) {
-                \MUtil\EchoOut\EchoOut::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
+                \MUtil\EchoOut\EchoOut::r('Loading snippet ' . $className . '<br/>' . 'Using snippet: ' . get_class($snippet));
                }
         } catch (\Exception $exc) {
             if (self::$verbose) {
-                \MUtil\EchoOut\EchoOut::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
+                \MUtil\EchoOut\EchoOut::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $className . ')');
             }
             throw $exc;
         }

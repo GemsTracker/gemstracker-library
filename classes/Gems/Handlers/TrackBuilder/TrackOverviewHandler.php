@@ -155,18 +155,14 @@ class TrackOverviewHandler extends ModelSnippetLegacyHandlerAbstract
     }
 
     /**
-     * Calculated fields can not exists in a where clause.
+     * Calculated fields can not exist in a where clause.
      *
-     * We don't need to search on them with the text filter so we return
+     * We don't need to search on them with the text filter, so we return
      * an empty array to disable text search.
      *
-     * @param type $filter
-     * @param type $name
-     * @param type $field
-     * @param type $model
      * @return array
      */
-    public function noTextFilter($filter, $name, $field, $model)
+    public function noTextFilter()
     {
         return [];
     }

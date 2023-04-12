@@ -8,6 +8,8 @@
 
 namespace Gems\Export;
 
+use MUtil\Form;
+
 /**
  * The export interface
  *
@@ -25,22 +27,22 @@ interface ExportInterface
     /**
      * Add an export command with specific details. Can be batched.
      * @param array $data    Data submitted by export form
-     * @param array $modelId Model Id when multiple models are passed
+     * @param int|string|null $modelId Model Id when multiple models are passed
      */
-    public function addExport($data, $modelId = false);
+    public function addExport($data, $modelId = null);
             
     /**
      * Finalizes the files stored in $this->files.
      * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
-     * @return File with download headers
+     * @return array File with download headers
      */
     public function finalizeFiles();
             
     /**
      * Return an array of Form Elements for this specific export
      *
-     * @param type $form
-     * @param type $data
+     * @param Form $form
+     * @param array $data
      * @return \Zend_Form_Element[]
      */
     public function getFormElements(&$form, &$data);

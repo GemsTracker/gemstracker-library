@@ -13,6 +13,7 @@ use Gems\Tracker;
 use Gems\Tracker\Token;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use League\HTMLToMarkdown\HtmlConverter;
+use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -26,6 +27,7 @@ class SmsJobMessenger implements JobMessengerInterface
         protected Tracker $tracker,
         protected EventDispatcherInterface $event,
         protected CommunicationRepository $communicationRepository,
+        protected Translator $translator,
         CurrentUserRepository $currentUserRepository,
     )
     {
@@ -48,7 +50,7 @@ class SmsJobMessenger implements JobMessengerInterface
                 return $job['gcj_from_fixed'];
 
             default:
-                throw new Exception(sprintf($this->_('Invalid option for `%s`'), $this->_('From address used')));
+                throw new Exception(sprintf($this->translator->_('Invalid option for `%s`'), $this->translator->_('From address used')));
         }
     }
 

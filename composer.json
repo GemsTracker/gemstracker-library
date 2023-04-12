@@ -27,7 +27,6 @@
         }
     ],
     "autoload": {
-        "classmap": ["classes/GemsEscort.php"],
         "psr-0": {
             "Gems_": "classes",
             "Zend_": "classes",
@@ -85,7 +84,7 @@
         "mezzio/mezzio-session-cache": "^1.7",
         "mezzio/mezzio-session-ext": "^1.12",
         "mezzio/mezzio-template": "^2.4.0",
-        "mezzio/mezzio-twigrenderer": "^2.9",
+        "mezzio/mezzio-twigrenderer": "2.14.x-dev",
         "mlocati/ip-lib": "1.*",
         "monolog/monolog": "^3.0.0",
         "openspout/openspout": "^3.7.4",
@@ -109,13 +108,18 @@
         "middlewares/debugbar": "^2.1",
         "chillerlan/php-qrcode": "^4.3",
         "nesbot/carbon": "^2.66",
-        "giggsey/libphonenumber-for-php": "^8.13.7"
+        "giggsey/libphonenumber-for-php": "^8.13.7",
+        "laminas/laminas-config-aggregator": "1.14.x-dev",
+        "guzzlehttp/guzzle": "^7.5@dev",
+        "laminas/laminas-stratigility": "4.0.x-dev"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9",
-        "symfony/yaml": "^6.1"
+        "symfony/yaml": "^6.1",
+        "vimeo/psalm": "^5.0@dev",
+        "phpstan/phpstan": "1.10.x-dev"
     },
     "autoload-dev": {
         "psr-0": {

@@ -11,6 +11,9 @@
 
 namespace Gems\Tracker\Mock;
 
+use Gems\Tracker\Token;
+use Gems\Util\ReceptionCodeLibrary;
+
 /**
  *
  * @package    Gems
@@ -18,7 +21,7 @@ namespace Gems\Tracker\Mock;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class TokenReadonly extends \Gems\Tracker\Token
+class TokenReadonly extends Token
 {
     /**
      * @var array function => [changes]
@@ -270,7 +273,7 @@ class TokenReadonly extends \Gems\Tracker\Token
      */
     public function setValidFrom($validFrom, $validUntil, $userId)
     {
-        $this->_changes[__FUNCTION__] = ['validFrom' => $validUntil, 'validFrom' => $validUntil, 'userId' => $userId];
+        $this->_changes[__FUNCTION__] = ['validFrom' => $validFrom, 'validUntil' => $validUntil, 'userId' => $userId];
 
         return parent::setValidFrom($validFrom, $validUntil, $userId);
     }
@@ -296,6 +299,6 @@ class TokenReadonly extends \Gems\Tracker\Token
         $this->_changes                         = [];
         $this->_gemsData['gto_in_source']       = 0;
         $this->_gemsData['gto_completion_time'] = null;
-        $this->_gemsData['gto_reception_code']  = \Gems\Escort::RECEPTION_OK;
+        $this->_gemsData['gto_reception_code']  = ReceptionCodeLibrary::RECEPTION_OK;
     }
 }

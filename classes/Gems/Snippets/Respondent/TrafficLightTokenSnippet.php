@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Respondent;
 
+use Gems\Menu\SubMenuItem;
 use MUtil\Model;
 use Zalt\Model\Data\DataReaderInterface;
 
@@ -52,7 +53,6 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         'gto_valid_from'          => SORT_ASC,
         'gto_round_description'   => SORT_ASC,
         'forgroup'                => SORT_ASC,
-        'gto_round_order'         => SORT_ASC
     );
 
     protected $_completed       = 0;
@@ -463,16 +463,14 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $this->currentOrgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
     }
 
+
     /**
-     * Copied, optimised to we use the optional $menuItem we stored in _initView instead
-     * of doing the lookup again and again
-     *
-     * @param type $parameterSource
-     * @param type $controller
-     * @param type $action
-     * @param type $label
-     * @param type $menuItem
-     * @return \MUtil\Html\AElement
+     * @param mixed $parameterSource
+     * @param string $controller
+     * @param string $action
+     * @param string|null $label
+     * @param SubMenuItem|null $menuItem
+     * @return SubMenuItem|null
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null)
     {
@@ -483,6 +481,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
             }
             return $item;
         }
+        return null;
     }
 
     /**
@@ -582,7 +581,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
 
         //$main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
-        $currentTrackId  = \Gems\Cookies::get($this->request, 'track_idx');
+        $currentTrackId  = null; //\Gems\Cookies::get($this->request, 'track_idx');
         $data            = $this->_loadData();
         $doelgroep       = null;
         $lastDate        = null;
@@ -590,7 +589,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
         $now             = time();
         $progressDiv     = null;
         $respTrackId     = 0;
-        $today           = \DateTimeImmutable('today');
+        $today           = new \DateTimeImmutable('today');
         $trackProgress   = null;
         $minIcon         = \MUtil\Html::create('span', array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
         $summaryIcon     = \MUtil\Html::create('i', array('class' => 'fa fa-list-alt fa-fw', 'renderClosingTag' => true));
@@ -768,7 +767,7 @@ class TrafficLightTokenSnippet extends \Gems\Snippets\Token\RespondentTokenSnipp
                 ));
         }
 
-        if (!isset($clibboardIcon)) {
+        if (!isset($clipboardIcon)) {
             $clipboardIcon = \MUtil\Html::create('i', array(
                 'class'            => 'fa fa-fw fa-clipboard dropdown-toggle',
                 'renderClosingTag' => true

@@ -14,7 +14,7 @@ use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class CacheFactory
 {
-    protected $defaultCacheDirectory = 'data/cache';
+    protected string $defaultCacheDirectory = 'data/cache';
 
     public function __invoke(ContainerInterface $container, string $requestedName, array $options = null): AdapterInterface
     {
@@ -37,6 +37,9 @@ class CacheFactory
                     if (isset($config['cache']['dsn'])) {
                         $dsn = $config['cache']['dsn'];
                     }
+                    /**
+                     * @psalm-suppress UndefinedClass
+                     */
                     $client = RedisAdapter::createConnection($dsn);
                     $cache = new RedisAdapter($client, $namespace, $defaultLifetime);
                     break;

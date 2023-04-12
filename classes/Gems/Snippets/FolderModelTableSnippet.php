@@ -92,13 +92,13 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
 
         $bridge->getTable()->addColumn(null,$this->_('Action'));
         $td = $bridge->getTable()->tbody()->getLast()->getLast();
@@ -200,10 +200,10 @@ class FolderModelTableSnippet extends \Zalt\Snippets\ModelTableSnippetAbstract
     /**
      * Get the file icons
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
+     * @param TableBridge $bridge
      * @return array $icon => $menuItem or array($menuItem, $other)
      */
-    protected function getFileIcons(\MUtil\Model\Bridge\TableBridge $bridge)
+    protected function getFileIcons(TableBridge $bridge)
     {
         $onDelete = new \MUtil\Html\OnClickArrayAttribute();
         $onDelete->addConfirm(\MUtil\Lazy::call(

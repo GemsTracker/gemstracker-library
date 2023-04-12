@@ -25,7 +25,7 @@ class ScoreChartsSnippet extends \Gems\Snippets\Tracker\Answers\TrackAnswersMode
      * Copied from parent, but insert chart instead of table after commented out part
      *
      * @param \Zend_View_Abstract $view
-     * @return type
+     * @return mixed
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {

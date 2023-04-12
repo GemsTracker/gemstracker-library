@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets;
 
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Model;
+use Gems\Model\ConditionModel;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelBridge\DetailTableBridge;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -23,32 +31,34 @@ use Zalt\Snippets\ModelBridge\DetailTableBridge;
  * @license    New BSD License
  * @since      Class available since version 1.8.7
  */
-class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract {
-    
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-    
-    /**
-     *
-     * @var \Gems\Model\ConditionModel
-     */
-    protected $model;
+class ConditionDeleteSnippet extends ModelItemYesNoDeleteSnippetAbstract
+{
+    protected ConditionModel|null $model = null;
 
     /**
      *
      * @var int
      */
-    protected $conditionId;
+    protected int $conditionId;
 
     /**
      * The number of times someone started answering a round in this track
      *
      * @var int
      */
-    protected $useCount = 0;
+    protected int $useCount = 0;
+
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        MenuSnippetHelper $menuHelper,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        CacheItemPoolInterface $cache,
+        protected readonly Model $modelLoader,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $menuHelper, $translate, $messenger, $cache);
+    }
 
     /**
      * Creates the model
@@ -57,8 +67,8 @@ class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetA
      */
     protected function createModel(): DataReaderInterface
     {
-        if (! $this->model instanceof \Gems\Model\ConditionModel) {
-            $this->model = $this->loader->getModels()->getConditionModel();
+        if (! $this->model instanceof ConditionModel) {
+            $this->model = $this->modelLoader->getConditionModel();
         }
 
         return $this->model;
@@ -70,27 +80,27 @@ class ConditionDeleteSnippet extends \Gems\Snippets\ModelItemYesNoDeleteSnippetA
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\VerticalTableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DetailTableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $model)
+    protected function setShowTableFooter(DetailTableBridge $bridge, DataReaderInterface $dataModel)
     {
-        if ($model instanceof \Gems\Model\ConditionModel) {
-            $this->useCount = $model->getUsedCount($this->conditionId);
+        if ($dataModel instanceof ConditionModel) {
+            $this->useCount = $dataModel->getUsedCount($this->conditionId);
 
             if ($this->useCount) {
-                $this->addMessage(sprintf($this->plural(
+                $this->messenger->addMessage(sprintf($this->plural(
                         'This condition has been used %s time.', 'This condition has been used %s times.',
                         $this->useCount
                         ), $this->useCount));
-                $this->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
+                $this->messenger->addMessage($this->_('This condition cannot be deleted, only deactivated.'));
 
                 $this->deleteQuestion = $this->_('Do you want to deactivate this condition?');
                 $this->displayTitle   = $this->_('Deactivate condition');
             }
         }
 
-        parent::setShowTableFooter($bridge, $model);
+        parent::setShowTableFooter($bridge, $dataModel);
     }
 }

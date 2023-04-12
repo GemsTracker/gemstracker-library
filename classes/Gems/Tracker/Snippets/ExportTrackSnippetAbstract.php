@@ -35,7 +35,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 
@@ -44,6 +44,11 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      * @var HelperAdapter
      */
     protected $cache;
+
+    /**
+     * @var array
+     */
+    protected $config;
 
     /**
      *
@@ -468,7 +473,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         }
 
         if (! $this->_batch->isLoaded()) {
-            $filename = \MUtil\File::createTemporaryIn(GEMS_ROOT_DIR . '/var/tmp/export/track');
+            $filename = \MUtil\File::createTemporaryIn($this->config['rootDir'] . '/var/tmp/export/track');
             $trackId  = $this->trackEngine->getTrackId();
             $this->_batch->setSessionVariable('filename', $filename);
 

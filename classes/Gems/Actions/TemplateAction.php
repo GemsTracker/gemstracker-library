@@ -11,6 +11,8 @@
 
 namespace Gems\Actions;
 
+use Gems\Project\ProjectSettings;
+
 /**
  * Generic controller class for showing and editing template variables
  *
@@ -31,6 +33,11 @@ class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
     public $loader;
 
     /**
+     * @var ProjectSettings
+     */
+    public $project;
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -43,7 +50,7 @@ class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new \Gems\Model\TemplateModel('templates', $this->escort->project);
+        $model = new \Gems\Model\TemplateModel('templates', $this->project);
 
         return $model;
     }

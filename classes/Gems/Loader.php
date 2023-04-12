@@ -11,10 +11,13 @@
 
 namespace Gems;
 
+use Gems\Agenda\Agenda;
 use Gems\Loader\LoaderAbstract;
 use Gems\Tracker\TrackEvents;
+use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
+use Gems\Validate\SubscriptionThrottleValidator;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
 
 /**
@@ -136,17 +139,10 @@ class Loader extends LoaderAbstract
      */
     public function getAgenda()
     {
+        /**
+         * @var Agenda
+         */
         return $this->loadByDependency('Gems\\Agenda\\Agenda');
-        return $this->_getClass('Agenda\\Agenda');
-    }
-
-    /**
-     *
-     * @return \Gems\Communication\CommunicationLoader
-     */
-    public function getCommunicationLoader()
-    {
-        return $this->_getClass('communicationLoader', 'Communication\\CommunicationLoader');
     }
 
     /**
@@ -184,6 +180,9 @@ class Loader extends LoaderAbstract
      */
     public function getEmbedLoader()
     {
+        /**
+         * @var EmbedLoader
+         */
         return $this->loadByDependency('User\\Embed\\EmbedLoader');
     }
 
@@ -245,29 +244,11 @@ class Loader extends LoaderAbstract
     }
 
     /**
-     * @return \Gems\Mail
-     */
-    public function getMail($charset = null)
-    {
-        return $this->_loadClass('mail', true, array($charset));
-    }
-
-    /**
      * @return \Gems\Mail\MailLoader
      */
     public function getMailLoader()
     {
         return $this->_getClass('mailLoader', 'Mail\\MailLoader');
-    }
-
-    /**
-     * Get the possible mail targets
-     *
-     * @return Array  mail targets
-     */
-    public function getMailTargets()
-    {
-        return $this->getMailLoader()->getMailTargets();
     }
 
     /**
@@ -368,12 +349,11 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @param \Gems\Escort $escort
-     * @return \Gems\Roles
+     * @return Roles
      */
-    public function getRoles(\Gems\Escort $escort)
+    public function getRoles(): Roles
     {
-        return $this->_getClass('roles', null, array($escort, $escort->logger));
+        return $this->containerLoad('Roles');
     }
 
     /**
@@ -409,7 +389,7 @@ class Loader extends LoaderAbstract
 
     /**
      *
-     * @return \Gems_SubscribeThrottleValidator
+     * @return SubscriptionThrottleValidator
      */
     public function getSubscriptionThrottleValidator()
     {

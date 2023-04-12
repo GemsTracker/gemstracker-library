@@ -24,7 +24,7 @@ class ModelImportSnippet extends \MUtil\Snippets\Standard\ModelImportSnippet
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 

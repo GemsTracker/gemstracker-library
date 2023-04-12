@@ -24,7 +24,7 @@ abstract class FileActionAbstract extends \Gems\Controller\ModelSnippetActionAbs
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
 

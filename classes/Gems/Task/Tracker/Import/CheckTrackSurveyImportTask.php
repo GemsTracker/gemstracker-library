@@ -93,6 +93,7 @@ class CheckTrackSurveyImportTask extends \MUtil\Task\TaskAbstract
                 ($source == \Gems\Tracker\Engine\StepEngineAbstract::TOKEN_TABLE)) {
             return isset($rounds[$field]) && $rounds[$field];
         }
+        return false;
     }
 
     /**

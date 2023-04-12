@@ -55,7 +55,7 @@ class SiteModel extends  \Gems\Model\JoinModel
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @param int $defaultOrgId The default organization id or null if current organization
-     * @return \Gems\Model\StaffModel
+     * @return void
      */
     public function applySettings($detailed, $action)
     {
@@ -86,18 +86,18 @@ class SiteModel extends  \Gems\Model\JoinModel
         );
         $this->addDependency(array('ValueSwitchDependency', $switches), 'gsi_select_organizations');
 
-        $styles = null;
+        $styles = [];
         // TODO: Add styles in a different way!
         if ($styles) {
             $this->set('gsi_style', 'label', $this->_('Style'),
                        'multiOptions', $styles
             );
             
-            $default = $this->get('gsi_style', 'default');
+            /*$default = $this->get('gsi_style', 'default');
             if (! in_array($default, $styles)) {
                 reset($styles);
                 $this->set('gsi_style', 'default', $default);
-            }
+            }*/
         }
 
         $this->set('gsi_iso_lang', 'label', $this->_('Initial language'),

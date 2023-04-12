@@ -13,15 +13,17 @@ namespace Gems\Tracker\Engine;
 
 use Gems\Date\Period;
 use Gems\Locale\Locale;
-use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Project\ProjectSettings;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Token;
+use Gems\User\User;
 use Gems\Util\Translated;
 
 use DateTimeImmutable;
 use DateTimeInterface;
 
-use MUtil\Model;
+use MUtil\Model\ModelAbstract;
+use MUtil\Model\TableModel;
 
 /**
  * Parent class for all engines that calculate dates using information
@@ -33,7 +35,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstract
+abstract class StepEngineAbstract extends TrackEngineAbstract
 {
     /**
      * Database stored constant value for using an answer in a survey as date source
@@ -69,11 +71,11 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      *
      * @var string Class name for creating the round model.
      */
-    protected $_roundModelClass = '\\MUtil\\Model\\TableModel';
+    protected $_roundModelClass = TableModel::class;
 
     /**
      *
-     * @var \Gems\User\User
+     * @var User
      */
     protected $currentUser;
 
@@ -85,7 +87,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
 
     /**
      *
-     * @var \Gems\Project\ProjectSettings
+     * @var ProjectSettings
      */
     protected $project;
 
@@ -97,13 +99,13 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
     /**
      * Helper function for default handling of multi options value sets
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param ModelAbstract $model
      * @param string $fieldName
      * @param array $options
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function _applyOptions(\MUtil\Model\ModelAbstract $model, $fieldName, array $options, array &$itemData)
+    protected function _applyOptions(ModelAbstract $model, $fieldName, array $options, array &$itemData)
     {
         if ($options) {
             $model->set($fieldName, 'multiOptions', $options);
@@ -193,7 +195,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      * @param \MUtil\Model\ModelAbstract $model The round model
      * @param array $itemData    The current items data
      *
-     * @return boolean True if the update changed values (usually by changed selection lists).
+     * @return void
      */
     protected function applyRespondentRelation(\MUtil\Model\ModelAbstract $model, array &$itemData)
     {
@@ -519,7 +521,7 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
      * @param int $roundId  \Gems round id
      * @param string $language   (ISO) language string
      * @param boolean $validAfter True if it concenrs _valid_after_ dates
-     * @return type
+     * @return array
      */
     protected function getDateOptionsFor($sourceType, $roundId, $language, $validAfter)
     {
@@ -566,6 +568,8 @@ abstract class StepEngineAbstract extends \Gems\Tracker\Engine\TrackEngineAbstra
                     );
 
         }
+
+        return [];
     }
 
     /**

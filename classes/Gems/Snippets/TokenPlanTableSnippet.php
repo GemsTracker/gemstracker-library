@@ -50,17 +50,17 @@ class TokenPlanTableSnippet extends ModelTableSnippet
      * having to recode the core table building code.
      *
      * @param TableBridge $bridge
-     * @param DataReaderInterface $model
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
-        $model->set('gto_round_description', 'label', $this->_('Round / Details'));
-        $model->set('gto_valid_from',        'label', $this->_('Valid from'));
-        $model->set('gto_valid_until',       'label', $this->_('Valid until'));
-        $model->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
-        $model->set('respondent_name',       'label', $this->_('Name'));
+        $dataModel->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
+        $dataModel->set('gto_round_description', 'label', $this->_('Round / Details'));
+        $dataModel->set('gto_valid_from',        'label', $this->_('Valid from'));
+        $dataModel->set('gto_valid_until',       'label', $this->_('Valid until'));
+        $dataModel->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
+        $dataModel->set('respondent_name',       'label', $this->_('Name'));
 
         $HTML  = Html::create();
         
@@ -94,8 +94,8 @@ class TokenPlanTableSnippet extends ModelTableSnippet
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 
-        $model->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
-        $model->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gr2t_track_info', 'tableDisplay', [Html::class, 'smallData']);
+        $dataModel->set('gto_round_description', 'tableDisplay', [Html::class, 'smallData']);
         $bridge->addMultiSort(
             'gtr_track_name', 'gr2t_track_info',
             $bridge->gtr_track_name->if($HTML->raw(' &raquo; ')),

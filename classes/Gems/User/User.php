@@ -17,8 +17,8 @@ use DateTimeImmutable;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
-use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Gems\Util\Translated;
+use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Model;
 
 use Laminas\Authentication\Result;
@@ -37,13 +37,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
 {
     /**
      *
-     * @var TwoFactorAuthenticatorInterface
-     */
-    protected $_authenticator;
-
-    /**
-     *
-     * @var \Laminas\Authentication\Result
+     * @var Result
      */
     protected $_authResult;
 
@@ -416,55 +410,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Function where the layout and style can be set, called in \Gems\Escort->prepareController()
-     *
-     * @param \Gems\Escort $escort
-     * @return $this
-     */
-    public function applyLayoutSettings(\Gems\Escort $escort)
-    {
-        if ($this->_hasVar('current_user_crumbs')) {
-            // \MUtil\EchoOut\EchoOut::track($this->_getVar('current_user_crumbs'));
-            switch ($this->_getVar('current_user_crumbs')) {
-                case 'no_display':
-                    $this->project['layoutPrepare']['crumbs'] = null;
-                    break;
-
-                case 'no_top':
-                    $this->project['layoutPrepareArgs']['crumbs']['always' ] = 1;
-                    $this->project['layoutPrepareArgs']['crumbs']['hideTop' ] = 1;
-                    break;
-            }
-        }
-
-        if ($this->_hasVar('current_user_layout')) {
-            $layout     = $escort->layout;
-            $usedLayout = $this->_getVar('current_user_layout');
-
-            if ($usedLayout && $layout instanceof \Zend_Layout) {
-                $layout->setLayout($usedLayout);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Set menu parameters from this user
-     *
-     * @param \Gems\Menu\ParameterSource $source
-     * @return \Gems\User\User
-     */
-    public function applyToMenuSource(\Gems\Menu\ParameterSource $source)
-    {
-        $source->offsetSet('gsf_id_organization', $this->getBaseOrganizationId());
-        $source->offsetSet('gsf_active',          $this->isActive() ? 1 : 0);
-        $source->offsetSet('accessible_role',     $this->inAllowedGroup() ? 1 : 0);
-        $source->offsetSet('can_mail',            $this->hasEmailAddress() ? 1 : 0);
-        //$source->offsetSet('has_2factor',         $this->isTwoFactorEnabled() ? 2 : 0);
-    }
-
-    /**
      * Authenticate a users credentials using the submitted form
      *
      * @param string $password The password to test
@@ -608,9 +553,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
     protected function authorizeOrgIp()
     {
         //special case: project user should have no restriction
-        if ($this->project->getSuperAdminName() == $this->getLoginName()) {
+        /*if ($this->project->getSuperAdminName() == $this->getLoginName()) {
             return true;
-        }
+        }*/
 
         //In unit test REMOTE_ADDR is not available and will return null
         $request = $this->getRequest();
@@ -914,18 +859,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getCurrentOrganizationId(): int
     {
         $orgId = $this->_getVar('user_organization_id');
-
-        //If not set, read it from the cookie
-        if ($this->isCurrentUser() && ((null === $orgId) || (\Gems\User\UserLoader::SYSTEM_NO_ORG === $orgId))) {
-            $request = $this->getRequest();
-            if ($request) {
-                $orgId = \Gems\Cookies::getOrganization($this->getRequest());
-            }
-            if (! $orgId) {
-                $orgId = 0;
-            }
-            $this->_setVar('user_organization_id', $orgId);
-        }
         return (int)$orgId;
     }
 
@@ -1064,6 +997,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         if (isset($greetings[$this->_getVar('user_gender')])) {
             return $greetings[$this->_getVar('user_gender')];
         }
+        return [];
     }
 
     /**
@@ -1081,6 +1015,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         if (isset($greetings[$this->_getVar('user_gender')])) {
             return $greetings[$this->_getVar('user_gender')];
         }
+        return null;
     }
 
     /**
@@ -1306,9 +1241,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
      */
     public function getRequest()
     {
-        if (! $this->request) {
-            $this->request = \Zend_Controller_Front::getInstance()->getRequest();
-        }
         return $this->request;
     }
 
@@ -1402,7 +1334,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
     /**
      * Return the secret key for embedded login
      *
-     * @return array
+     * @return string
      */
     public function getSecretKey()
     {
@@ -1416,6 +1348,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             }
             return $this->_getVar('secretKey', null);
         }
+        return '';
     }
 
     /**
@@ -1447,113 +1380,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getSurveyReturn()
     {
         return $this->_getVar('surveyReturn', array());
-    }
-
-    public function hasTfaConfigured(): bool
-    {
-        return $this->_hasVar('user_two_factor_key') && !empty($this->_getVar('user_two_factor_key'));
-    }
-
-    public function getTfaMethodClass(): string
-    {
-        if ($this->hasTfaConfigured()) {
-            $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
-                $this->_getVar('user_two_factor_key'),
-                TwoFactorAuthenticatorInterface::SEPERATOR
-            );
-        } else {
-            //$authClass = $this->defaultAuthenticatorClass;
-            throw new \Exception('No TFA configured');
-        }
-
-        return match($authClass) {
-            'GoogleAuthenticator' => 'AuthenticatorTotp', // TODO: Legacy
-            'AuthenticatorTotp' => 'AuthenticatorTotp',
-            'MailHotp' => 'MailHotp',
-            'SmsHotp' => 'SmsHotp',
-            default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
-        };
-    }
-
-    public function setTfa(string $className, string $secret): void
-    {
-        $newValue = $className . TwoFactorAuthenticatorInterface::SEPERATOR . $secret;
-
-        $this->_setVar('user_two_factor_key', $newValue);
-
-        $this->definition->setTwoFactorKey($this, $newValue);
-    }
-
-    /**
-     *
-     * @return TwoFactorAuthenticatorInterface
-     */
-    public function getTwoFactorAuthenticator()
-    {
-        if (! $this->_authenticator instanceof TwoFactorAuthenticatorInterface) {
-            if ($this->_hasVar('user_two_factor_key')) {
-                $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
-                        $this->_getVar('user_two_factor_key'),
-                        TwoFactorAuthenticatorInterface::SEPERATOR
-                        );
-
-            } else {
-                $authClass = $this->defaultAuthenticatorClass;
-            }
-
-            $this->_authenticator = $this->userLoader->getTwoFactorAuthenticator($authClass);
-            if ($this->_authenticator instanceof \Gems\User\TwoFactor\UserOtpInterface) {
-                $this->_authenticator->setUserId($this->getUserLoginId());
-                $this->_authenticator->setUserOtpCount($this->getOtpCount());
-                $this->_authenticator->setUserOtpRequested($this->getOtpRequested());
-            }
-        }
-
-        return $this->_authenticator;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getTwoFactorKey()
-    {
-        if ($this->hasTfaConfigured()) {
-            list($class, $key) = explode(
-                    TwoFactorAuthenticatorInterface::SEPERATOR,
-                    $this->_getVar('user_two_factor_key'),
-                    2
-                    );
-        } else {
-            $key = null;
-        }
-        return $key;
-    }
-
-    /**
-     *
-     * @return string|null
-     */
-    public function getTwoFactorKeyForAdapter(string $adapter): ?string
-    {
-        $adapters = [
-            'Hotp' => ['MailHotp', 'SmsHotp'],
-            'Totp' => ['AuthenticatorTotp'],
-        ];
-
-        if ($this->hasTfaConfigured()) {
-            [$method, $key] = explode(
-                TwoFactorAuthenticatorInterface::SEPERATOR,
-                $this->_getVar('user_two_factor_key'),
-                2
-            );
-
-            if (in_array($method, $adapters[$adapter], true)) {
-                return $key;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -1596,52 +1422,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
             return $this->_getVar('user_login_id');
         }
         return 0;
-    }
-
-    /**
-     * Redirects the user to his/her start page.
-     *
-     * @param \Gems\Menu $menu
-     * @param \Zend_Controller_Request_Abstract $request
-     * @return \Gems\Menu\SubMenuItem
-     */
-    public function gotoStartPage(\Gems\Menu $menu, \Zend_Controller_Request_Abstract $request)
-    {
-        if (false && $this->isPasswordResetRequired()) {
-            // Set menu OFF
-            // This code may be obsolete from 1.8.4
-            $menu->setVisible(false);
-
-            $menuItem = $menu->findController('option', 'change-password');
-            // This may not yet be true, but is needed for the redirect.
-            $menuItem->set('allowed', true);
-            $menuItem->set('visible', true);
-        } else {
-            $menuItem = $menu->findFirst(array('allowed' => true, 'visible' => true));
-        }
-
-        if ($menuItem) {
-            // Prevent redirecting to the current page.
-            if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
-                if (!$menuItem->has('controller')) {
-                    //This is a container, try to find first active child
-                    $item = $menuItem;
-                    foreach ($item->sortByOrder()->getChildren() as $menuItem) {
-                        if ($menuItem->isAllowed() && $menuItem->has('controller')) {
-                            break;
-                        }
-                        $menuItem = null;
-                    }
-                }
-
-                if ($menuItem) {
-                    $redirector = \Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-                    $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
-                }
-            }
-        }
-
-        return $menuItem;
     }
 
     /**
@@ -2069,8 +1849,8 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
         $email = $this->communicationRepository->getNewEmail();
         $email->addTo(new \Symfony\Component\Mime\Address($this->getEmailAddress(), $this->getFullName()));
-        if (isset($config['email']['bcc'])) {
-            $email->addBcc($config['email']['bcc']);
+        if (isset($this->config['email']['bcc'])) {
+            $email->addBcc($this->config['email']['bcc']);
         }
 
         if ($useResetFields) {
@@ -2126,7 +1906,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
             }
 
             // Perform the interface switch
-            $this->switchLocale();
+            //$this->switchLocale();
 
             if ($signalLoader) {
                 $this->userLoader->setCurrentUser($this);
@@ -2386,62 +2166,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $this->_setVar('surveyReturn', $return);
 
         return $this;
-    }
-
-    /**
-     *
-     * @param string TwoFactorAuthenticatorInterface $authenticator
-     * @param string $newKey
-     * @param boolean $enabled
-     * @return $this
-     */
-    public function setTwoFactorKey(TwoFactorAuthenticatorInterface $authenticator, $newKey)
-    {
-        // Make sure the authclass is part of the data
-        $authClass = get_class($authenticator);
-        $authFind  = '\\User\\TwoFactor\\';
-        $pos = strrpos($authClass, $authFind);
-        if ($pos) {
-            $authClass = substr($authClass, $pos + strlen($authFind));
-        }
-
-        $newValue = $authClass . TwoFactorAuthenticatorInterface::SEPERATOR . $newKey;
-
-        $this->_setVar('user_two_factor_key', $newValue);
-
-        $this->definition->setTwoFactorKey($this, $newValue);
-
-        return $this;
-    }
-
-    /**
-     * Switch to new locale
-     *
-     * @param string $locale Current if omitted
-     * @return boolean true if cookie was set
-     */
-    public function switchLocale($locale = null)
-    {
-        if (null === $locale) {
-            $locale = $this->getLocale();
-            if (null === $locale) {
-                /* $site = $this->util->getSites()->getSiteForCurrentUrl();
-                if ($site) {
-                    $locale = $site->getLocale();
-                } */
-            }
-        } 
-        if ($this->getLocale() != $locale) {
-            $this->setLocale($locale);
-        }
-
-        if ($locale !== null) {
-            $this->locale->setCurrentLanguage($locale);
-            $this->translate->setLocale($locale);
-            return \Gems\Cookies::setLocale($locale, $this->basepath->getBasePath());
-        }
-
-        return false;
     }
 
     /**

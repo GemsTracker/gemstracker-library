@@ -189,7 +189,7 @@ class RelatedTracksField extends MultiselectField
                    \Gems\Model::RESPONDENT_TRACK => $respondentTrack->getRespondentTrackId(),
                 ]);
                 if ($url) {
-                    $li->a($showMenuItem->toHRefAttribute($url), $label);
+                    $li->a($url, $label);
                 } else {
                     $li->append($label);
                 }

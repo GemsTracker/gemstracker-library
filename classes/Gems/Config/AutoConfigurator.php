@@ -89,11 +89,13 @@ class AutoConfigurator
     }
 
     /**
-     * @return
+     * @return array
+     * @throws ReflectionException
      */
     protected function getFilePaths(): array
     {
-        $moduleConfigProviders = require('config/modules.php');
+        $rootDir = $this->config['rootDir'] ?? '';
+        $moduleConfigProviders = require($rootDir.'/config/modules.php');
         $filePaths = [];
 
         foreach($moduleConfigProviders as $configProvider) {

@@ -1,23 +1,12 @@
 <?php
 
-/**
- *
- * @package    Gems
- * @subpackage User\Embed
- * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
- * @license    New BSD License
- */
-
 namespace Gems\User\Embed;
 
+use Gems\User\User;
+
 /**
- *
- * @package    Gems
- * @subpackage User\Embed
- * @copyright  Copyright (c) 2020, Erasmus MC and MagnaFacta B.V.
- * @license    New BSD License
- * @since      Class available since version 1.8.8 15-Apr-2020 13:53:48
+ * @template T
+ * @extends \ArrayObject<string, T>
  */
 class EmbeddedUserData extends \ArrayObject
 {
@@ -40,12 +29,7 @@ class EmbeddedUserData extends \ArrayObject
      */
     protected $loader;
 
-    /**
-     * Creates the class for this embedded user opject
-     *
-     * @param mixed $settings Array, \Zend_Session_Namespace or \ArrayObject for this user.
-     * @param \Gems\User\UserDefinitionInterface $definition The user class definition.
-     */
+
     public function __construct($userId, \Zend_Db_Adapter_Abstract $db, \Gems\Loader $loader)
     {
         $this->offsetSet('user_id', $userId);
@@ -92,11 +76,11 @@ class EmbeddedUserData extends \ArrayObject
     /**
      * Shortcut function to get the deferred user
      *
-     * @param \Gems\User\User $embeddedUser
+     * @param User $embeddedUser
      * @param string $deferredLogin name of the user to log in
-     * @return \Gems_User_user|null
+     * @return User|null
      */
-    public function getDeferredUser(\Gems\User\User $embeddedUser, $deferredLogin)
+    public function getDeferredUser(User $embeddedUser, $deferredLogin)
     {
         $userLoader = $this->getUserLoader();
 
@@ -165,6 +149,7 @@ class EmbeddedUserData extends \ArrayObject
         if ($className) {
             return $this->embedLoader->loadDeferredUserLoader($className);
         }
+        throw new \Exception('No deferred user loader found');
     }
 
     /**

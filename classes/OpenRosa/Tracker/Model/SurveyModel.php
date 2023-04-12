@@ -11,6 +11,9 @@
 
 namespace OpenRosa\Tracker\Model;
 
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Transform\NestedTransformer;
+
 /**
  * More correctly a Survey ANSWERS Model as it adds answers to token information
  *
@@ -66,18 +69,18 @@ class SurveyModel extends \Gems\Tracker\SurveyModel
      * You get a nested join where a set of rows is placed in the $name field
      * of each row of the parent model.
      *
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DataReaderInterface $model
      * @param array $joins The join fields for the sub model
      * @param string $name Optional 'field' name, otherwise model name is used
      * @return \MUtil\Model\Transform\NestedTransformer The added transformer
      */
-    public function addModel(\MUtil\Model\ModelAbstract $model, array $joins, $name = null)
+    public function addModel(DataReaderInterface $model, array $joins, $name = null)
     {
         if (null === $name) {
             $name = $model->getName();
         }
 
-        $trans = new \MUtil\Model\Transform\NestedTransformer();
+        $trans = new NestedTransformer();
         $trans->skipSave = true;
         $trans->addModel($model, $joins);
 

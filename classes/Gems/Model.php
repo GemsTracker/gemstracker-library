@@ -16,7 +16,7 @@ use Gems\Agenda\Agenda;
 use Gems\Model\AppointmentModel;
 use Gems\Model\CommLogModel;
 use Gems\Model\CommMessengersModel;
-use Gems\Model\CommtemplateModel;
+use Gems\Model\CommTemplateModel;
 use Gems\Model\ConditionModel;
 use Gems\Model\EpisodeOfCareModel;
 use Gems\Model\ExportDbaModel;

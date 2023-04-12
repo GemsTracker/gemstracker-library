@@ -28,7 +28,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
+class LimeSurvey1m9Database extends SourceAbstract
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
@@ -1159,7 +1159,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
         // Prevent failure when survey no longer active
         try {
             $rows = $select->query()->fetchAll(\Zend_Db::FETCH_ASSOC);
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $rows = false;
         }
 
@@ -1208,8 +1208,8 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * Get the select object to use for RawTokenAnswerRows
      *
      * @param array $filter
-     * @param type $surveyId
-     * @param type $sourceSurveyId
+     * @param int $surveyId
+     * @param int $sourceSurveyId
      * @return \Zend_Db_Select
      */
     public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {
@@ -1320,10 +1320,10 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * Retrieve all fields stored in the token table, and store them in the tokencache
      *
      * @param \Gems\Tracker\Token $token
-     * @param type $surveyId
-     * @param type $sourceSurveyId
+     * @param int $surveyId
+     * @param int $sourceSurveyId
      * @param array $fields
-     * @return type
+     * @return array
      */
     public function getTokenInfo(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId, array $fields = null)
     {
@@ -1459,7 +1459,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
      * @param array $answers Field => Value array
      * @param int $surveyId \Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return true When answers changed
+     * @return bool true When answers changed
      */
     public function setRawTokenAnswers(\Gems\Tracker\Token $token, array $answers, $surveyId, $sourceSurveyId = null)
     {
@@ -1495,6 +1495,7 @@ class LimeSurvey1m9Database extends \Gems\Tracker\Source\SourceAbstract
 
             return true;
         }
+        return false;
     }
 
     /**

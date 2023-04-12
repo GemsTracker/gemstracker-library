@@ -75,11 +75,11 @@ class ShowFirstOpenSnippet extends ShowTokenLoopAbstract
             return (int)$queryParams['delay'];
         }
         if ($this->wasAnswered) {
-            if (isset($config['survey']['ask'], $config['survey']['ask']['askNextDelay'])) {
-                return (int)$config['survey']['ask']['askNextDelay'];
+            if (isset($this->config['survey']['ask']['askNextDelay'])) {
+                return (int)$this->config['survey']['ask']['askNextDelay'];
             }
-        } elseif (isset($config['survey']['ask'], $config['survey']['ask']['askDelay'])) {
-            return (int)$config['survey']['ask']['askDelay'];
+        } elseif (isset($this->config['survey']['ask']['askDelay'])) {
+            return (int)$this->config['survey']['ask']['askDelay'];
         }
 
         return -1;

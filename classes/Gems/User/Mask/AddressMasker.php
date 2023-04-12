@@ -157,7 +157,7 @@ class AddressMasker extends AnyMasker
     /**
      * Mask the value
      *
-     * @param $value The original value
+     * @param string $value The original value
      * @return string
      */
     public function maskZip($value)
@@ -165,6 +165,7 @@ class AddressMasker extends AnyMasker
         if ($value) {
             return substr($value, 0 , 4) . '**';
         }
+        return null;
     }
 
 }

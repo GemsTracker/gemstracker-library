@@ -250,7 +250,7 @@ class AppointmentMaintenanceDependency extends DependencyAbstract
                 'description'  => $description,
                 'elementClass' => 'Text',
             ];
-        } else {
+        } elseif (isset($output['gtf_create_wait_days'])) {
             unset($output['gtf_create_wait_days']);
         }
 

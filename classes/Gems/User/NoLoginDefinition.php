@@ -64,7 +64,7 @@ class NoLoginDefinition extends \Gems\User\UserDefinitionAbstract
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization)
+    public function getUserData($login_name, $organization): array
     {
         return self::getNoLoginDataFor($login_name, $organization);
     }

@@ -10,6 +10,8 @@
 
 namespace Gems\Snippets\Survey\Display;
 
+use Zalt\Html\Html;
+
 /**
  * The BarChart snippet provides a single dimension barchart based on one question_code for all surveys using a specific survey_code
  *
@@ -268,7 +270,7 @@ class BarChartSnippet extends \MUtil\Snippets\SnippetAbstract {
                 } else {
                     $class = 'spacer bar';
                 }
-                $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => $class));
+                $chart[] = $html->div(Html::raw('&nbsp;'), array('class' => $class));
             }
         }
         $wrapper[] = $legend;
@@ -280,7 +282,7 @@ class BarChartSnippet extends \MUtil\Snippets\SnippetAbstract {
      * Copied from parent, but insert chart instead of table after commented out part
      *
      * @param \Zend_View_Abstract $view
-     * @return type
+     * @return mixed
      */
     public function getHtmlOutput(\Zend_View_Abstract $view = null) {
         //$view->headLink()->prependStylesheet($view->serverUrl() . \Gems\Escort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');
@@ -360,7 +362,7 @@ class BarChartSnippet extends \MUtil\Snippets\SnippetAbstract {
     /**
      * Return the percentage in the range between min and max for this chart
      *
-     * @param number $value
+     * @param int|float $value
      * @return float
      */
     private function getPercentage($value)

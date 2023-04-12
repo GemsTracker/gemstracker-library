@@ -11,6 +11,7 @@
 
 namespace Gems\Agenda\Filter;
 
+use Gems\Agenda\Appointment;
 use Gems\Agenda\EpisodeOfCare;
 
 /**
@@ -63,10 +64,10 @@ class XorAppointmentFilter extends OrAppointmentFilter
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems\Agenda\Appointment $appointment)
+    public function matchAppointment(Appointment $appointment)
     {
         return ! parent::matchAppointment($appointment);
     }
@@ -74,7 +75,7 @@ class XorAppointmentFilter extends OrAppointmentFilter
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\EpisodeOfCare $episode
+     * @param EpisodeOfCare $episode
      * @return boolean
      */
     public function matchEpisode(EpisodeOfCare $episode)

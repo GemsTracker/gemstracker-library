@@ -195,7 +195,6 @@ class Radius implements AdapterInterface
 	 * been configured with all necessary information to successfully connect to a Radius
 	 * server and attempt to find a record matching the provided identity.
 	 *
-	 * @throws \Laminas\Authentication\Adapter\Exception\ExceptionInterface If authentication cannot be performed
 	 * @return \Laminas\Authentication\Result
 	 */
 	public function authenticate()

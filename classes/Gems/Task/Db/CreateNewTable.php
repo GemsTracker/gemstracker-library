@@ -22,6 +22,11 @@ namespace Gems\Task\Db;
 class CreateNewTable extends \MUtil\Task\TaskAbstract
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -30,11 +35,6 @@ class CreateNewTable extends \MUtil\Task\TaskAbstract
      * @var \Gems\Model\DbaModel
      */
     protected $dbaModel;
-
-    /**
-     * @var \Gems\Escort
-     */
-    protected $escort;
 
     /**
      * @var \Gems\Project\ProjectSettings
@@ -78,10 +78,8 @@ class CreateNewTable extends \MUtil\Task\TaskAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        $this->escort = \Gems\Escort::getInstance();
-
         //Load the dbaModel
-        $model = new \Gems\Model\DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems\Model\DbaModel($this->db, $this->config['migrations']['migrations']);
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

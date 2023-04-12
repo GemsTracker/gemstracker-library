@@ -174,7 +174,7 @@ class TrackDataRepository
      * Returns title of the track.
      *
      * @param int $trackId
-     * @return string
+     * @return string|null
      */
     public function getTrackTitle(int $trackId)
     {
@@ -183,5 +183,6 @@ class TrackDataRepository
         if ($tracks && isset($tracks[$trackId])) {
             return $tracks[$trackId];
         }
+        return null;
     }
 }

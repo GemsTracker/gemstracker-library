@@ -100,7 +100,7 @@ class CKEditor extends \Zend_Form_Element_Textarea {
     public function init() {
         // If basepath not set, try a default
         if (empty($this->basePath)) {
-            $this->setBasePath(GEMS_WEB_DIR . '/gems/ckeditor');
+            $this->setBasePath('/gems/ckeditor');
         }
     }
 
@@ -138,7 +138,7 @@ class CKEditor extends \Zend_Form_Element_Textarea {
      * Set the path to the public files of the CKEditor
      *
      * @param string $basePath
-     * @return CKEditor_Form_CKEditor
+     * @return self
      */
     public function setBasePath($basePath) {
         $basePath = (string) $basePath;
@@ -190,7 +190,7 @@ class CKEditor extends \Zend_Form_Element_Textarea {
      * Ensures that the view object has the CKEditor view helper path set.
      *
      * @param  \Zend_View_Interface $view
-     * @return CKEditor_Form_CKEditor
+     * @return self
      */
     public function setView(\Zend_View_Interface $view = null) {
         if (null !== $view) {

@@ -77,7 +77,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
 
     /**
      *
-     * @var integer Model Id for when multiple models are passed
+     * @var int|string|null Model Id for when multiple models are passed
      */
     protected $modelId;
 
@@ -112,7 +112,10 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * @param  array $data current options set in the form
      * @return array Form elements
      */
-    public function getFormElements(&$form, &$data) {}
+    public function getFormElements(&$form, &$data)
+    {
+        return [];
+    }
 
     /**
      * @return string|null Optional snippet containing help text
@@ -155,9 +158,9 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      * Add an export command with specific details. Can be batched.
      * @param array $data    Data submitted by export form
-     * @param array $modelId Model Id when multiple models are passed
+     * @param int|string|null $modelId Model Id when multiple models are passed
      */
-    public function addExport($data, $modelId = false)
+    public function addExport($data, $modelId = null)
     {
         $this->files   = $this->getFiles();
         $this->data    = $data;
@@ -226,7 +229,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      * Add model rows to file. Can be batched
      * @param array $data                       Data submitted by export form
-     * @param array $modelId                    Model Id when multiple models are passed
+     * @param int|string|null $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
      * @param array  $filter                    Filter (limit) to use
      */
@@ -258,7 +261,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      * Add a separate row to a file
      * @param array $row a row in the model
-     * @param file $file The already opened file
+     * @param resource $file The already opened file
      */
     abstract public function addRow($row, $file);
 
@@ -269,7 +272,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      * Add a footer to a specific file
      * @param string $filename The temporary filename while the file is being written
-     * @param string $modelId ID of the current model
+     * @param int|string|null $modelId ID of the current model
      * @param array $data Current export settings
      */
     public function addFooter($filename, $modelId = null, $data = null) {
@@ -461,13 +464,13 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
      * Finalizes the files stored in $this->files.
      * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
      * @param array $data Current export settings
-     * @return array File with download headers
+     * @return array|null File with download headers
      */
     public function finalizeFiles($data=null)
     {
         $this->getFiles();
         if (count($this->files) === 0) {
-            return false;
+            return null;
         }
         $firstName = key($this->files);
         $file      = array();
@@ -514,6 +517,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
         } else {
             return $file;
         }
+
+        return null;
     }
 
     /**

@@ -36,7 +36,7 @@ class ColorPicker extends \ZendX_JQuery_View_Helper_ColorPicker
 
         $this->jquery->addOnLoad($js);
 
-        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath();
+        $baseUrl = ''; //\Gems\Escort::getInstance()->basepath->getBasePath();
         $this->view->headScript()->appendFile($baseUrl . '/gems/spectrum/spectrum.js');
         $this->view->headLink()->appendStylesheet($baseUrl . '/gems/spectrum/spectrum.css');
         //$z = new \Zend_View_Helper_HeadStyle()->append($baseUrl)

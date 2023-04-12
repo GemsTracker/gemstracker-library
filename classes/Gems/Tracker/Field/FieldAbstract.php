@@ -300,6 +300,7 @@ abstract class FieldAbstract extends \MUtil\Translate\TranslateableAbstract impl
                 'separator'    => ' ',
                 ];
         }
+        return [];
     }
 
     /**

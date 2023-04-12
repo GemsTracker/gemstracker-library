@@ -32,7 +32,7 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
         
@@ -40,7 +40,7 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
 
         $bridge->add(
                 'gro_round_description',
-                $bridge->createSortLink('gro_id_order', $model->getMetaModel()->get('gro_round_description', 'label'))
+                $bridge->createSortLink('gro_id_order', $dataModel->getMetaModel()->get('gro_round_description', 'label'))
                 );
         $bridge->addSortable('gsu_survey_name');
         $bridge->th(array($bridge->createSortLink('answered'), 'colspan' => 2))->class = 'centerAlign';
@@ -71,8 +71,8 @@ class SummaryTableSnippet extends \Gems\Snippets\ModelTableSnippet
                     \MUtil\Html::create('em', ' - ', $bridge->gsu_id_primary_group)
                     ),
                 array(
-                    $model->get('gsu_survey_name', 'label'),
-                    \MUtil\Html::create('em', ' - ', $model->get('gsu_id_primary_group', 'label'))
+                    $dataModel->get('gsu_survey_name', 'label'),
+                    \MUtil\Html::create('em', ' - ', $dataModel->get('gsu_id_primary_group', 'label'))
                     )
                 )->colspan = 7;
         $bridge->add('removed');

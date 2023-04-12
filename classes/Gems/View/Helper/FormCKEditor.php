@@ -57,7 +57,7 @@ class FormCKEditor extends \Zend_View_Helper_FormTextarea
             }
         }
 
-        $baseUrl = \Gems\Escort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = '/';//\Gems\Escort::getInstance()->basepath->getBasePath() . '/';
 
         $this->view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
         $this->view->headScript()->prependScript("

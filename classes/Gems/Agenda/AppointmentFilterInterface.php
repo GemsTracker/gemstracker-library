@@ -95,15 +95,15 @@ interface AppointmentFilterInterface
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\Gems\Agenda\Appointment $appointment
+     * @param Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(\Gems\Agenda\Appointment $appointment);
+    public function matchAppointment(Appointment $appointment);
 
     /**
      * Check a filter for a match
      *
-     * @param \Gems\Agenda\EpisodeOfCare $episode
+     * @param EpisodeOfCare $episode
      * @return boolean
      */
     public function matchEpisode(EpisodeOfCare $episode);

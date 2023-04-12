@@ -81,7 +81,7 @@ class SiteUrl extends \Gems\Registry\CachedArrayTargetAbstract
         if (isset($this->_data['gsi_iso_lang'])) {
             return $this->_data['gsi_iso_lang'];
         }
-        // print_r($this->_data);
+        return 'en';
     }
 
     /**

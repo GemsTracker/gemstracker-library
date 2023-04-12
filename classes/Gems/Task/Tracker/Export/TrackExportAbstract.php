@@ -27,7 +27,7 @@ abstract class TrackExportAbstract extends \MUtil\Task\TaskAbstract
 {
     /**
      *
-     * @var file resource
+     * @var string file resource
      */
     private $_file;
 

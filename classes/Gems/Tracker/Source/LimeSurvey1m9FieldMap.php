@@ -519,7 +519,7 @@ class LimeSurvey1m9FieldMap
      *
      * @param string $qid
      * @param string $attribute
-     * @param mxied $default
+     * @param mixed $default
      * @return mixed
      */
     protected function _getQuestionAttribute($qid, $attribute, $default = null)
@@ -929,7 +929,7 @@ class LimeSurvey1m9FieldMap
     /**
      * Returns an array containing fieldname => label for dropdown list etc..
      *
-     * @param string $forType Optional type filter
+     * @param string|bool $forType Optional type filter
      * @return array fieldname => label
      */
     public function getQuestionList($forType = false)
@@ -994,9 +994,9 @@ class LimeSurvey1m9FieldMap
     {
         try {
             $tableName = $this->_getSurveyTableName();
-            $table = new \Zend_DB_Table(array('name' => $tableName, 'db' => $this->lsDb));
+            $table = new \Zend_Db_Table(array('name' => $tableName, 'db' => $this->lsDb));
             $info = $table->info();
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $info = array('metadata'=>array());
         }
 

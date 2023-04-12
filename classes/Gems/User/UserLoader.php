@@ -142,6 +142,8 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         $extras['userLoader'] = $this;
 
         $this->addRegistryContainer($extras);
+
+        return true;
     }
 
     /**
@@ -250,22 +252,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         return $output;
     }
 
-    /**
-     * Returns a change password form for this user
-     *
-     * @param \Gems_user_User $user
-     * @param mixed $args_array \MUtil\Ra::args array for LoginForm initiation.
-     * @return \Gems\User\Form\ChangePasswordForm
-     */
-    public function getChangePasswordForm($user, $args_array = null)
-    {
-        $args = \MUtil\Ra::args(func_get_args(), array('user' => '\\Gems\\User\\User'));
-
-        $form = $this->_loadClass('Form\\ChangePasswordForm', true, array($args));
-
-        return $form;
-    }
-
     public function getConsoleUser(): User
     {
         return $this->loadUser(self::USER_CONSOLE, 70, 'console');
@@ -326,49 +312,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
             Group::TWO_FACTOR_SET_OUTSIDE_ONLY  => $this->translate->_('Required - except in optional IP Range'),
             Group::TWO_FACTOR_SET_DISABLED      => $this->translate->_('Disabled - never ask'),
         ];
-    }
-
-    /**
-     * Returns a layered login form where user first selects a top organization and then a
-     * child organization
-     *
-     * @param mixed $args_array \MUtil\Ra::args array for LoginForm initiation.
-     * @return \Gems\User\Form\LayeredLoginForm
-     */
-    public function getLayeredLoginForm($args_array = null)
-    {
-        $args = \MUtil\Ra::args(func_get_args());
-
-        return $this->_loadClass('Form\\LayeredLoginForm', true, array($args));
-    }
-
-    /**
-     * Returns a login form
-     *
-     * @param mixed $args_array \MUtil\Ra::args array for LoginForm initiation.
-     * @return \Gems\User\Form\LoginForm
-     */
-    public function getLoginForm($args_array = null)
-    {
-        $args = \MUtil\Ra::args(func_get_args());
-
-        return $this->_loadClass('Form\\LoginForm', true, array($args));
-    }
-
-    /**
-     *
-     * @staticvar \Gems\User\LoginStatusTracker $statusTracker
-     * @return \Gems\User\LoginStatusTracker
-     */
-    public function getLoginStatusTracker()
-    {
-        static $statusTracker;
-
-        if (! $statusTracker) {
-            $statusTracker = $this->_loadClass('LoginStatusTracker', true, [$this]);
-        }
-
-        return $statusTracker;
     }
 
     /**
@@ -491,32 +434,6 @@ class UserLoader extends \Gems\Loader\TargetLoaderAbstract
         $args = \MUtil\Ra::args(func_get_args());
 
         return $this->_loadClass('Form\\ResetRequestForm', true, array($args));
-    }
-
-    /**
-     * Get TwoFactorAuthenticatorInterface class
-     *
-     * @return \Gems\User\TwoFactor\TwoFactorAuthenticatorInterface
-     */
-    public function getTwoFactorAuthenticator($className)
-    {
-        $settings = $this->project->getTwoFactorMethodSettings();
-
-        $authenticatorSettings = null;
-        if (isset($settings[$className]) && $settings[$className] != 1) {
-            $authenticatorSettings = $settings[$className];
-        }
-
-        $object = $this->_loadClass('TwoFactor_' . $className, true, [$authenticatorSettings]);
-
-        if (! $object instanceof TwoFactorAuthenticatorInterface) {
-            throw new \Gems\Exception\Coding(sprintf(
-                    'The authenticator class %s should be an instance of TwoFactorAuthenticatorInterface.',
-                    $className
-                    ));
-        }
-
-        return $object;
     }
 
     /**

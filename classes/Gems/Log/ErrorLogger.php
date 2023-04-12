@@ -4,9 +4,6 @@ namespace Gems\Log;
 
 use Monolog\Logger;
 
-class ErrorLogger extends Logger
+class ErrorLogger
 {
-    public function __construct() {
-        parent::__construct('errorLogger');
-    }
 }

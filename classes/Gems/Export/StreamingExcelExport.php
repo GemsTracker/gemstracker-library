@@ -107,7 +107,7 @@ class StreamingExcelExport extends ExportAbstract
     /**
      * Add model rows to file. Can be batched
      * @param array $data                       Data submitted by export form
-     * @param array $modelId                    Model Id when multiple models are passed
+     * @param int|string|null $modelId                    Model Id when multiple models are passed
      * @param string $tempFilename              The temporary filename while the file is being written
      * @param array  $filter                    Filter (limit) to use
      */
@@ -185,7 +185,7 @@ class StreamingExcelExport extends ExportAbstract
     /**
      * Add a separate row to a file
      * @param array $row a row in the model
-     * @param file $file The already opened file
+     * @param resource $file The already opened file
      */
     public function addRowWithCount($row, $writer, $rowNumber)
     {
@@ -198,7 +198,7 @@ class StreamingExcelExport extends ExportAbstract
     /**
      * Add a separate row to a file
      * @param array $row a row in the model
-     * @param file $file The already opened file
+     * @param resource $file The already opened file
      */
     public function addRow($row, $file)
     { }

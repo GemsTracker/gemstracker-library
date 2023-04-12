@@ -55,7 +55,7 @@ class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
     {
         $tableName = $this->_getTokenTableName();
 
-        $table = new \Zend_DB_Table(array('name' => $tableName, 'db' => $this->lsDb));
+        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
         $info = $table->info();
         $metaData = $info['metadata'];
 

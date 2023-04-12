@@ -26,9 +26,11 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     public $accesslog;
+
+    public $config;
 
     /**
      * The snippets used for the autofilter action.
@@ -208,7 +210,7 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $moreDetails = ! in_array($action, array('run', 'deleted'));
 
-        $model = new \Gems\Model\DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems\Model\DbaModel($this->db, $this->config['migrations']['migrations']);
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
@@ -383,7 +385,7 @@ class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
     {
         $this->html->h3($this->_('Patch maintenance'));
 
-        $patcher  = new \Gems\Util\DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths(), $this->project->databaseFileEncoding);
+        $patcher  = new \Gems\Util\DatabasePatcher($this->db, 'patches.sql', $this->config['migrations']['migrations'], $this->project->databaseFileEncoding);
         $tableSql = sprintf(
             'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s`, MAX(gpa_changed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),

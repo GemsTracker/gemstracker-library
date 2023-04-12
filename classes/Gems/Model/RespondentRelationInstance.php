@@ -14,6 +14,7 @@ namespace Gems\Model;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Registry\TargetAbstract;
 use Gems\Util\Translated;
 
 /**
@@ -24,7 +25,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-class RespondentRelationInstance extends \Gems\Registry\TargetAbstract 
+class RespondentRelationInstance extends TargetAbstract
 {
     /**
      * The model this instance is designed for
@@ -75,8 +76,9 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
         $this->_data  = $data;
     }
 
-    public function __toString() {
-        return $this->_data;
+    public function __toString(): string
+    {
+        return serialize($this->_data);
     }
 
     protected function _getDefaults()
@@ -228,9 +230,9 @@ class RespondentRelationInstance extends \Gems\Registry\TargetAbstract
      */
     public function isMailable()
     {
-        if (!array_key_exists('grr_mailable', $this->_data)) {
+        /*if (!array_key_exists('grr_mailable', $this->_data)) {
             $this->refresh();
-        }
+        }*/
 
         return $this->_data['grr_mailable'] == 1;
     }

@@ -13,6 +13,7 @@ namespace Gems\Model;
 
 use Gems\User\Group;
 use Gems\User\Mask\MaskRepository;
+use Gems\User\User;
 
 /**
  * Extension of JoinModel for models where the organization id is
@@ -28,7 +29,7 @@ class HiddenOrganizationModel extends MaskedModel
 {
     /**
      *
-     * @var \Gems\User\User
+     * @var User
      */
     protected $currentUser;
 
@@ -63,8 +64,6 @@ class HiddenOrganizationModel extends MaskedModel
 
             if (isset($parameters[\MUtil\Model::REQUEST_ID2]) &&
                 (! array_key_exists($parameters[\MUtil\Model::REQUEST_ID2], $this->currentUser->getAllowedOrganizations()))) {
-
-                $this->initTranslateable();
 
                 throw new \Gems\Exception(
                         $this->_('Inaccessible or unknown organization'),
@@ -157,7 +156,7 @@ class HiddenOrganizationModel extends MaskedModel
      *
      * @see \MUtil\Model\SelectModelPaginator
      *
-     * @param mxied $data Nested array or \Travers (able containing rows or iterator
+     * @param mixed $data Nested array or \Travers (able containing rows or iterator
      * @param boolean $new True when it is a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array or \Traversable Nested

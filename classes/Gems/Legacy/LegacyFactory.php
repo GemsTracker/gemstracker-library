@@ -9,6 +9,7 @@ use Gems\View\View;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ProjectOverloader;
 
 class LegacyFactory implements FactoryInterface
@@ -116,20 +117,12 @@ class LegacyFactory implements FactoryInterface
 
     protected function getEnvironment(): string
     {
-        if (defined('APPLICATION_ENV')) {
-            return APPLICATION_ENV;
-        } elseif ($config = $this->container->get('config') && isset($config['project'], $config['project']['environment'])) {
-            return $config['project']['environment'];
-        } elseif (isset($_ENV['APP_ENV'])) {
-            return $_ENV['APP_ENV'];
-        }
-
-        return 'development';
+        return $_ENV['APP_ENV'] ?? 'development';
     }
 
     protected function getEventDispatcher()
     {
-        $event = new EventDispatcher();
+        $event = $this->container->get(EventDispatcherInterface::class);
         if (isset($this->config['events'])) {
             foreach($this->config['events'] as $subscriberClass) {
                 if ($this->container->has($subscriberClass)) {
@@ -157,7 +150,7 @@ class LegacyFactory implements FactoryInterface
             defined('DATABASE') || define('DATABASE', $this->config['db']['database']);
         }
 
-        $projectArray = $this->includeFile(GEMS_ROOT_DIR . '/config/project');
+        $projectArray = $this->includeFile($this->config['rootDir'] . '/config/project');
 
         $project = $this->loader->create('Project\\ProjectSettings', $projectArray);
 
@@ -173,18 +166,7 @@ class LegacyFactory implements FactoryInterface
 
     protected function getSession()
     {
-        $project = $this->container->get('LegacyProject');
-        $session = new \Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
-
-        $idleTimeout = $project->getSessionTimeOut();
-
-        $session->setExpirationSeconds($idleTimeout);
-
-        if (! isset($session->user_role)) {
-            $session->user_role = 'nologin';
-        }
-
-        return $session;
+        return null;
     }
 
     protected function getTranslate(): \Zend_Translate

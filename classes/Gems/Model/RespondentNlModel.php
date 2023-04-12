@@ -11,6 +11,8 @@
 
 namespace Gems\Model;
 
+use MUtil\Filter\Dutch\Burgerservicenummer;
+
 /**
  * Class containing the Netherlands specific model extensions.
  *
@@ -24,6 +26,8 @@ namespace Gems\Model;
  */
 class RespondentNlModel extends \Gems\Model\RespondentModel
 {
+    protected $config;
+
     /**
      * Set those settings needed for the detailed display
      *
@@ -91,7 +95,7 @@ class RespondentNlModel extends \Gems\Model\RespondentModel
      */
     public static function setDutchSsn(\MUtil\Model\ModelAbstract $model, \Zend_Translate_Adapter $translator, $fieldName = 'grs_ssn')
     {
-        $bsn = new \MUtil_Validate_Dutch_Burgerservicenummer();
+        $bsn = new Burgerservicenummer();
 
         $model->set($fieldName,
                 'size', 10,
@@ -99,7 +103,7 @@ class RespondentNlModel extends \Gems\Model\RespondentModel
                 'filter', new \MUtil\Filter\Dutch\Burgerservicenummer(),
                 'validators[bsn]', $bsn);
 
-        if (APPLICATION_ENV !== 'production') {
+        if ($_ENV['APP_ENV'] !== 'production') {
             $num = mt_rand(100000000, 999999999);
 
             while (! $bsn->isValid($num)) {

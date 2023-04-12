@@ -75,8 +75,8 @@ class PlaceholderModel extends \MUtil\Model\ArrayModelAbstract
     /**
      * Calculates the total number of items in a model result with certain filters
      *
-     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
-     * @param array $sort Sort array field name => sort type
+     * @param array|bool $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array|bool $sort Sort array field name => sort type
      * @return integer number of total items in model result
      * @throws \Zend_Db_Select_Exception
      */

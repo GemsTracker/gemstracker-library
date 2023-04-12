@@ -12,6 +12,8 @@ use ReflectionParameter;
 class ReflectionAbstractFactory implements AbstractFactoryInterface
 {
 
+    protected array $aliases = [];
+
     /**
      * Allows overriding the internal list of aliases. These should be of the
      * form `class name => well-known service name`; see the documentation for

@@ -111,6 +111,6 @@ class MessengerFactory implements FactoryInterface
         }
 
         krsort($perPriority);
-        return array_merge(...$perPriority);
+        return $perPriority;
     }
 }

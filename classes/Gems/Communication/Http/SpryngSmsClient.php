@@ -66,7 +66,7 @@ class SpryngSmsClient extends ApiKeyClient implements SmsClientInterface
             $originator = $this->defaultOriginator;
         }
 
-        $reference = sprintf('%s: %s', GEMS_PROJECT_NAME, APPLICATION_ENV);
+        $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['env']);
 
         $message = [
             'encoding' => 'auto',

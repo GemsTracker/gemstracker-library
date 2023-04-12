@@ -11,6 +11,8 @@
 
 namespace Gems\User\Form;
 
+use Gems\Util;
+
 /**
  *
  *
@@ -65,14 +67,14 @@ abstract class OrganizationFormAbstract extends \Gems\Form\AutoLoadFormAbstract 
 
     /**
      *
-     * @var \Zend_Util
+     * @var Util
      */
     protected $util;
 
     /**
      * Get the organization id that has been currently entered
      * 
-     * @return int
+     * @return int|null
      */
     public function getActiveOrganizationId()
     {
@@ -80,6 +82,7 @@ abstract class OrganizationFormAbstract extends \Gems\Form\AutoLoadFormAbstract 
         if ($request->isPost()) {
             return $request->getParam($this->organizationFieldName);
         }
+        return null;
     }
 
     /**

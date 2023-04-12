@@ -11,6 +11,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 trait GenderTranslation
 {
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
      * @var EventDispatcherInterface
      */
     protected $event;
@@ -142,7 +147,7 @@ trait GenderTranslation
         $this->event->dispatch($event, $event::NAME . '.gender.' . $gender);
 
         //Now if we have a project specific language file, add it to the event
-        $projectLanguageDir = APPLICATION_PATH . '/languages/gender/' . $gender;
+        $projectLanguageDir = $this->config['rootDir'] . '/languages/gender/' . $gender;
         if (file_exists($projectLanguageDir)) {
             $event->addTranslationByDirectory($projectLanguageDir);
         }

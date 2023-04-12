@@ -26,7 +26,7 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
 {
     /**
      *
-     * @var \Gems\AccessLog
+     * @var \Gems\Audit\AuditLog
      */
     protected $accesslog;
 

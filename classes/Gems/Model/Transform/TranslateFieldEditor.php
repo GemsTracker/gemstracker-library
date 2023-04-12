@@ -265,7 +265,7 @@ class TranslateFieldEditor extends \MUtil\Model\Transform\NestedTransformer impl
     {
         if (!isset($row['table_keys'])) {
             $tableKeys = $model->getKeys();
-            $keyValues;
+            $keyValues = [];
             foreach($tableKeys as $keyName => $column) {
                 if (isset($row[$column])) {
                     $keyValues[] = $row[$column];

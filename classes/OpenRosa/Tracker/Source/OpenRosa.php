@@ -13,6 +13,9 @@ namespace OpenRosa\Tracker\Source;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Tracker;
+use Gems\User\User;
+use Mezzio\Helper\UrlHelper;
 use MUtil\Model;
 
 use OpenRosa\Tracker\Source\Form;
@@ -43,6 +46,16 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
     protected $cache;
 
     /**
+     * @var array
+     */
+    protected $config;
+
+    /**
+     * @var User
+     */
+    protected $currentUser;
+
+    /**
      * @var \Zend_Db
      */
     protected $db;
@@ -69,10 +82,20 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
     protected $loader;
 
     /**
+     * @var Tracker
+     */
+    protected $tracker;
+
+    /**
      *
      * @var \Zend_Translate
      */
     protected $translate;
+
+    /**
+     * @var UrlHelper
+     */
+    protected $urlHelper;
 
     /**
      * Standard constructor for sources
@@ -83,7 +106,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
     public function __construct(array $sourceData, \Zend_Db_Adapter_Abstract $gemsDb)
     {
         parent::__construct($sourceData, $gemsDb);
-        $this->baseDir = GEMS_ROOT_DIR . '/var/uploads/openrosa/';
+        $this->baseDir = $this->config['rootDir'] . '/var/uploads/openrosa/';
         $this->formDir = $this->baseDir . 'forms/';
     }
 
@@ -91,8 +114,8 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * Open the dir, suppressing possible errors and try to
      * create when it does not exist
      *
-     * @param type $directory
-     * @return Directory
+     * @param string $directory
+     * @return \Directory
      */
     protected function _checkDir($directory)
     {
@@ -114,8 +137,8 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
     /**
      * Returns the source surveyId for a given \Gems survey Id
      *
-     * @param type $surveyId
-     * @return type
+     * @param int $surveyId
+     * @return int
      */
     private function _getSid($surveyId)
     {
@@ -230,12 +253,12 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * returns an Open Rosa Form
      *
      * @param $filename absolute filename
-     * @return \OpenRosa\Tracker\Source\OpenRosa\Form
+     * @return \OpenRosa\Tracker\Source\Form
      * @throws \Gems\Exception\Coding
      */
     protected function createForm($filename)
     {
-        return new Form($filename, $this->db, $this->translate);
+        return new Form($filename, $this->db, $this->translate, $this->tracker, $this->currentUser);
     }
 
     /**
@@ -310,7 +333,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
 
-        $dateItems = $model->getItemsFor('type', Mutil_model::TYPE_DATETIME) + $model->getItemsFor('type', Mutil_model::TYPE_DATE);
+        $dateItems = $model->getItemsFor('type', \Mutil\Model::TYPE_DATETIME) + $model->getItemsFor('type', \Mutil\Model::TYPE_DATE);
 
         foreach ($dateItems as $name)
         {
@@ -520,8 +543,8 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
      * Get the select object to use for RawTokenAnswerRows
      *
      * @param array $filter
-     * @param type $surveyId
-     * @param type $sourceSurveyId
+     * @param int $surveyId
+     * @param int|null $sourceSurveyId
      * @return \Zend_Db_Select
      */
     public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null)
@@ -561,9 +584,9 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
 
     /**
      *
-     * @param type $surveyId
-     * @param type $sourceSurveyId
-     * @return \OpenRosa_Tracker_Source_OpenRosa_Form
+     * @param int $surveyId
+     * @param int|null $sourceSurveyId
+     * @return \OpenRosa\Tracker\Source\Form
      */
     public function getSurvey($surveyId, $sourceSurveyId = null)
     {
@@ -704,7 +727,7 @@ class OpenRosa extends \Gems\Tracker\Source\SourceAbstract
     public function getTokenUrl(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId)
     {
         // There is no url, so return null
-        $basePath = \Gems\Escort::getInstance()->basePath->__toString();
+        $basePath = $this->urlHelper->getBasePath();
         return $basePath . '/open-rosa-form/edit/id/' . $token->getTokenId();
     }
     

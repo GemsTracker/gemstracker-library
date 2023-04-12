@@ -11,6 +11,8 @@ class TranslateDatabaseFields extends \MUtil\Model\ModelTransformerAbstract impl
     use TargetTrait;
     use DbTranslateTrait;
 
+    protected array $config;
+
     /**
      * @var \Zend_Locale
      */

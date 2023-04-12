@@ -86,7 +86,7 @@ class GenderCondition extends RoundConditionAbstract
         return $this->_('Respondent or relation gender');
     }
 
-    public function getNotValidReason(int $conditionId, array $context): string
+    public function getNotValidReason(int $value, array $context): string
     {
         if ($this->_data['gcon_condition_text1'] === 'f') {
             $reason = $this->_('Round is not for relations');
@@ -138,7 +138,7 @@ class GenderCondition extends RoundConditionAbstract
         return $comparator->isValid($actualGender);        
     }
 
-    public function isValid(int $conditionId, array $context): bool
+    public function isValid(int $value, array $context): bool
     {
         $result = false;
 
@@ -146,7 +146,7 @@ class GenderCondition extends RoundConditionAbstract
             $survey = $this->tracker->getSurvey($context['gro_id_survey']);
             if (!$survey->isTakenByStaff()) {
                 // For patient or relation
-                $relationField = isset($context['gro_id_relationfield']) ? $context['gro_id_relationfield'] : -1;
+                $relationField = $context['gro_id_relationfield'] ?? -1;
                 if ($this->_data['gcon_condition_text1'] === 'r' && $relationField <= 0) {
                     return true;
                 }

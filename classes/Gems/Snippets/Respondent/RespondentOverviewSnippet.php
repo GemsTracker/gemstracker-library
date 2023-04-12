@@ -100,11 +100,11 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
         $this->onEmpty = $this->_('No summary available');
     }
     
-    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model) 
+    public function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
         
-        $showMenuItems = $this->getShowUrls($bridge);
+        $showMenuItems = $this->getShowUrls($bridge, []);
 
 //        foreach ($showMenuItems as $menuItem) {
 //            $link = $menuItem->toActionLinkLower($this->request, $bridge);

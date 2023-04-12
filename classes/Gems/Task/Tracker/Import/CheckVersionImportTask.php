@@ -56,7 +56,7 @@ class CheckVersionImportTask extends \MUtil\Task\TaskAbstract
                         $this->_('%d sets of "version" data found in import file.'),
                         count($versionData)
                         ));
-                foreach ($tracksData as $lineNr => $versionData) {
+                foreach ($versionData as $lineNr => $versionRow) {
                     $batch->addMessage(sprintf(
                             $this->_('"version" data found on line %d.'),
                             $lineNr

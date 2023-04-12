@@ -39,6 +39,8 @@ class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
 
     protected $_saveable = true;
 
+    protected $config;
+
     /**
      *
      * @param string $modelName
@@ -106,7 +108,7 @@ class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
                     if (!array_key_exists($urlParts[0], $templates)) {
                         $templates[$urlParts[0]] = array(
                             'name' => $urlParts[0],
-                            'path' => GEMS_WEB_DIR . '/' . $urlParts[0]
+                            'path' => $this->config['publicDir'] . '/' . $urlParts[0]
                         );
                     }
 
@@ -121,8 +123,8 @@ class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
 
     /**
      *
-     * @param type $path
-     * @return \Zend_Config_Ini
+     * @param string $path
+     * @return \Zend_Config_Ini|null
      */
     protected function _loadConfig($path) {
         if (file_exists($path . '/template.ini')) {
@@ -132,6 +134,7 @@ class TemplateModel extends \MUtil\Model\ArrayModelAbstract {
             }
             return $config;
         }
+        return null;
     }
 
     protected function _saveAllTraversable(array $data)

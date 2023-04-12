@@ -32,11 +32,11 @@ class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstrac
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $dataModel
      * @return void
      */
-    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $model)
+    protected function addBrowseTableColumns(TableBridge $bridge, DataReaderInterface $dataModel)
     {
         // Signal the bridge that we need these values
         $bridge->gr2t_id_respondent_track;
@@ -63,7 +63,7 @@ class ShowTrackUsageSnippet extends \Gems\Tracker\Snippets\ShowTrackUsageAbstrac
         // Add show-track button if allowed, otherwise show, again if allowed
         $bridge->addItemLink($menuList->getActionLink($controller, 'show-track'));
 
-        parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $dataModel);
 
         // Add edit-track button if allowed (and not current
         $bridge->addItemLink($menuList->getActionLink($controller, 'edit-track'));

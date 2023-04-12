@@ -17,6 +17,7 @@ use Gems\Repository\AccessRepository;
 use Gems\Snippets\AutosearchFormSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -36,9 +37,10 @@ class StaffSearchSnippet extends AutosearchFormSnippet
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
         CurrentUserRepository $currentUserRepository,
+        StatusMessengerInterface $messenger,
         protected AccessRepository $accessRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

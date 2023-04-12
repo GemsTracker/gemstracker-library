@@ -226,10 +226,10 @@ class CommJobsUtil extends UtilAbstract
 
             if ($target == 3) {
                 // Only staff
-                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = 'staff'");
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = ?" ,'staff');
             } elseif ($target == 2) {
                 // Only respondents
-                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = 'respondent'");
+                $sqlGroups .= $this->db->quoteInto(" AND ggp_member_type = ?", 'respondent');
             }
         }
 

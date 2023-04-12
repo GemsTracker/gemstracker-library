@@ -15,7 +15,7 @@ class RespondentMailSent extends Event implements RespondentCommunicationInterfa
 
     protected Respondent $respondent;
 
-    protected int $currentUser;
+    protected int $currentUserId;
 
     private array $communicationJob;
 

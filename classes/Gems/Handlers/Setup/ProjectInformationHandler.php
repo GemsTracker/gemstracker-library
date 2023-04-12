@@ -72,6 +72,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         protected ProjectSettings $projectSettings,
         protected HelperAdapter $cache,
         protected Loggers $loggers,
+        protected readonly array $config,
     )
     {
         parent::__construct($responder, $translate);
@@ -208,10 +209,10 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
      */
     public function changelogAction()
     {
-        if (file_exists(APPLICATION_PATH . '/CHANGELOG.md')) {
-            $this->_showText(sprintf($this->_('Changelog %s'), $this->project->getName()), APPLICATION_PATH . '/CHANGELOG.md');
+        if (file_exists($this->config['rootDir'] . '/CHANGELOG.md')) {
+            $this->_showText(sprintf($this->_('Changelog %s'), $this->projectSettings->getName()), $this->config['rootDir'] . '/CHANGELOG.md');
         } else {
-            $this->_showText(sprintf($this->_('Changelog %s'), $this->project->getName()), APPLICATION_PATH . '/changelog.txt');
+            $this->_showText(sprintf($this->_('Changelog %s'), $this->projectSettings->getName()), $this->config['rootDir'] . '/changelog.txt');
         }
     }
 
@@ -220,7 +221,7 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
      */
     public function changelogGemsAction()
     {
-        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
+        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), $this->config['rootDir'] . 'vendor/gemstracker/gemstracker/CHANGELOG.md', null, 'GemsTracker/gemstracker-library');
     }
 
     protected function getLogFile(string $loggerName): ?string
@@ -344,8 +345,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
             $this->accesslog->logChange($this->getRequest(), $this->_('Maintenance mode set OFF'));
 
             // Dump the existing maintenance mode messages.
-            $this->escort->getMessenger()->clearCurrentMessages();
-            $this->escort->getMessenger()->clearMessages();
             \MUtil\EchoOut\EchoOut::out();
         }*/
 
@@ -421,7 +420,8 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         }
 
         $this->html->h2($this->_('Project settings'));
-        $this->_showTable(GEMS_PROJECT_NAME . ' Project.ini', $project);
+        $appName = $this->config['app']['name'] ?? 'GemsTracker';
+        $this->_showTable($appName . ' Project.ini', $project);
     }
 
 

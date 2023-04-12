@@ -22,6 +22,7 @@ use Gems\Util\Translated;
 use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -40,14 +41,16 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         RequestInfo $requestInfo,
         Translator $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         protected Translated $translatedUtil,
         protected TrackEvents $trackEvents,
         protected SurveyRepository $surveyRepository,
         protected TrackDataRepository $trackDataRepository,
         protected SourceRepository $sourceRepository,
         protected AccessRepository $accessRepository,
+
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
     }
 
     /**
@@ -108,12 +111,12 @@ class SurveyMaintenanceSearchSnippet extends AutosearchFormSnippet
         $yesNo      = $this->translatedUtil->getYesNo();
         $elements[] = $this->_createSelectElement('gsu_insertable', $yesNo, $this->_('(any insertable)'));
 
-        $eList['!Gems_Event_Survey'] = $this->_('(any event)');
-        $eList['!Gems\Event\SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
+        $eList['!Gems\Tracker\TrackEvent\Survey'] = $this->_('(any event)');
+        $eList['!Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface'] = $this->_('(any before answering)');
         $eList += $this->trackEvents->listSurveyBeforeAnsweringEvents();
-        $eList['!Gems\Event\SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
+        $eList['!Gems\Tracker\TrackEvent\SurveyCompletedEventInterface'] = $this->_('(any survey completed)');
         $eList += $this->trackEvents->listSurveyCompletionEvents();
-        $eList['!Gems\Event\SurveyDisplayEventInterface'] = $this->_('(any display event)');
+        $eList['!Gems\Tracker\TrackEvent\SurveyDisplayEventInterface'] = $this->_('(any display event)');
         $eList += $this->trackEvents->listSurveyDisplayEvents();
         $elements[] = $this->_createSelectElement('events', $eList, $this->_('(all surveys)'));
 

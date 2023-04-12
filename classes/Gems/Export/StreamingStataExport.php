@@ -51,9 +51,9 @@ class StreamingStataExport extends ExportAbstract
      * COPIED from ExportAbstract to add $modelId to footer.
      * 
      * @param array $data    Data submitted by export form
-     * @param array $modelId Model Id when multiple models are passed
+     * @param int|string|null $modelId Model Id when multiple models are passed
      */
-    public function addExport($data, $modelId = false)
+    public function addExport($data, $modelId = null)
     {
 
         $this->files   = $this->getFiles();
@@ -302,7 +302,7 @@ class StreamingStataExport extends ExportAbstract
     /**
      * Add a separate row to a file
      * @param array $row a row in the model
-     * @param file $file The already opened file
+     * @param resource $file The already opened file
      */
     public function addRow($row, $file)
     { }
@@ -574,7 +574,7 @@ class StreamingStataExport extends ExportAbstract
      * ==>
      * 'This isn''t hard to understand'
      *
-     * @param type $input
+     * @param string $input
      * @return string
      */
     public function formatString($input)

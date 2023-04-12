@@ -43,12 +43,6 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
 
     /**
      *
-     * @var \Gems\Escort
-     */
-    protected $escort;
-
-    /**
-     *
      * @var \MUtil\Html\Sequence
      */
     protected $html;
@@ -150,7 +144,6 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
             'Exception',
             'FilesystemIterator',
             'FilterIterator',
-            '\\Gems\\Escort',
             'Generator',
             '\\Iterator', // also checks for 'IteratorAggregate',
             'OuterIterator',
@@ -196,9 +189,6 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
         }
 
         $obsFunctions = array(
-            '\\Gems\\Escort' => [
-                'isAllowedHost' => 'SiteUtil->isRequestFromAllowedHost',
-                ],
             'Gems\\Agenda\\Filter\\FieldLikeAppointmentFilter' => [
                 'getAppointmentFieldVale'   => 'getAppointmentFieldValue',
                 ],
@@ -563,59 +553,11 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
      */
     protected function _getFilenames()
     {
-        foreach ($this->getRecursiveDirectoryIterator(APPLICATION_PATH) as $filename) {
+        foreach ($this->getRecursiveDirectoryIterator($this->config['rootDir']) as $filename) {
             $files[] = $filename;
         }
 
         return $files;
-    }
-
-    /**
-     * A specific report on the escort class
-     */
-    protected function addEscortReport()
-    {
-        $this->html->h3('Project and escort class report');
-
-        $escortClass   = get_class($this->escort);
-        $foundNone     = true;
-        $projectName   = null;
-
-        if (isset($this->config['app']['name'])) {
-            $projectName = $this->config['app']['name'];
-        }
-
-        $oldInterfaces = array(
-            '\\Gems\\Project\\Log\\LogRespondentAccessInterface',
-            '\\Gems\\Project\\Organization\\MultiOrganizationInterface',
-            '\\Gems\\Project\\Organization\\SingleOrganizationInterface',
-            '\\Gems\\Project\\Tracks\\FixedTracksInterface',
-            '\\Gems\\Project\\Tracks\\StandAloneSurveysInterface',
-            '\\Gems\\Project\\Tracks\\TracksOnlyInterface',
-            );
-        foreach ($oldInterfaces as $interface) {
-            if ($this->escort instanceof $interface) {
-                $foundNone = false;
-                $this->html->pInfo(sprintf(
-                        '%s implements the deprecated %s interface. Remove this interface.',
-                        $escortClass,
-                        $interface
-                        ));
-            }
-        }
-
-        $snippetsDir = APPLICATION_PATH . '\snippets';
-        if (file_exists($snippetsDir)) {
-            $foundNone = false;
-            $this->html->pInfo(sprintf(
-                    '%s still uses the deprecated %s directory for snippets. This directory is deprecated and will be removed in 1.7.2.',
-                    $projectName,
-                    $snippetsDir
-                    ));
-        }
-        if ($foundNone) {
-            $this->html->pInfo(sprintf('%s and %s are up to date.', $projectName, $escortClass));
-        }
     }
 
     /**
@@ -655,7 +597,7 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
             return false;
         }
 
-        $this->html->h3(sprintf('Report on file %s', substr($fileinfo->getPathname(), strlen(GEMS_ROOT_DIR) + 1)));
+        $this->html->h3(sprintf('Report on file %s', substr($fileinfo->getPathname(), strlen($this->config['rootDir']) + 1)));
         foreach ($messages as $message) {
             $this->html->pInfo($message);
         }
@@ -676,11 +618,14 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
             $output = $this->addFileReport($filename) || $output;
         }
         if ($this->appNamespaceError) {
+
+            $applicationPath = $this->config['rootDir'] . '/src';
+            $gemsLibraryPath = $this->config['rootDir']. '/vendor/gemstracker/gemstracker';
             $sCode->h3('Code change issues found');
             $sCode->pInfo('The application code has code change issues. You can try to fix them by running this phing script:');
             $sCode->pre(
-                    'cd ' . APPLICATION_PATH . "\n" .
-                    'phing -f ' . GEMS_LIBRARY_DIR . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'namespacer.xml'
+                    'cd ' . $applicationPath . "\n" .
+                    'phing -f ' . $gemsLibraryPath . DIRECTORY_SEPARATOR . 'scripts' . DIRECTORY_SEPARATOR . 'namespacer.xml'
                     );
             $p = $sCode->pInfo('To use this script you have to install ');
             $p->a('https://www.phing.info/', 'Phing');
@@ -788,9 +733,9 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
     public function afterRegistry()
     {
         $this->codeVersion = $this->loader->getVersions()->getBuild();
-        foreach ($this->escort->getLoaderDirs() as $prefix => $dir) {
+        /*foreach ($this->escort->getLoaderDirs() as $prefix => $dir) {
             $this->projectDirs[str_replace('\\', '\\\\', $prefix) . '_'] = $prefix;
-        }
+        }*/
     }
 
     /**
@@ -826,8 +771,6 @@ class UpgradeCompatibilitySnippet extends \MUtil\Snippets\SnippetAbstract
                 $versions->getGemsVersion(),
                 $versions->getBuild()
                 ));
-
-        $this->addEscortReport();
 
         $this->addProjectIniReport();
 

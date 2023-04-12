@@ -74,7 +74,7 @@ class Monitor extends UtilAbstract
      */
     protected function _getMailTo($monitorName)
     {     
-        $projTo  = explode(',',$this->getTo());
+        $projTo  = explode(',',$this->getTo($monitorName));
         $userTo  = $this->_getUserTo($monitorName);
         $orgTo   = $this->_getOrgTo($monitorName);
         $mailtos = array_merge($projTo, $userTo, $orgTo);
@@ -127,7 +127,7 @@ class Monitor extends UtilAbstract
     public function afterRegistry()
     {
         MonitorJob::$monitorDateFormat  = 'l j F Y H:i';
-        MonitorJob::$monitorDir         = GEMS_ROOT_DIR . '/var/settings';
+        MonitorJob::$monitorDir         = $this->config['rootDir'] . '/var/settings';
     }
 
     /**
@@ -326,8 +326,6 @@ This messages was send automatically.";
 
         $locale = $this->project->getLocaleDefault();
         list($initSubject, $initBbText, $subject, $messageBbText) = $this->getReverseMaintenanceMonitorTemplate($locale);
-
-        $this->getFrom();
 
         $job->setFrom($this->getFrom('maintenancemode'))
                 ->setMessage($messageBbText)
