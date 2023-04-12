@@ -19,6 +19,7 @@ use Gems\Snippets\AutosearchInRespondentSnippet;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -39,11 +40,12 @@ class MailLogSearchSnippet extends AutosearchInRespondentSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         CurrentUserRepository $currentUserRepository,
         protected TrackDataRepository $trackDataRepository,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

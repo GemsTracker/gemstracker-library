@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class DatabaseAction extends \Gems\Controller\ModelSnippetActionAbstract
+class DatabaseAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      *

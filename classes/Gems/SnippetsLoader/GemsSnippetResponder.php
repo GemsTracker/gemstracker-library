@@ -16,6 +16,7 @@ use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zalt\Base\RequestInfo;
@@ -80,7 +81,9 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         $this->layoutSettings = new LayoutSettings();
         $this->layoutSettings->setTemplate( 'gems::legacy-view');
         $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);
-        
+
+        $this->snippetLoader->addConstructorVariable(SessionInterface::class, $request->getAttribute(SessionInterface::class));
+
         return $requestInfo;
     }
 }

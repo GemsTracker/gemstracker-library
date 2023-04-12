@@ -22,7 +22,7 @@ use Gems\Screens\UnsubscribeScreenInterface;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.6 18-Mar-2019 16:02:12
  */
-class ParticipateAction extends \Gems\Controller\Action
+class ParticipateAction extends \MUtil\Controller\Action
 {
     /**
      *

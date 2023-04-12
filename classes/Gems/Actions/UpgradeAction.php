@@ -18,7 +18,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class UpgradeAction extends \Gems\Controller\Action
+class UpgradeAction extends \MUtil\Controller\Action
 {
     /**
      * @var \Gems\Upgrades

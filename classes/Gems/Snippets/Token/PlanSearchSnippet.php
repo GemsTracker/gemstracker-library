@@ -23,6 +23,7 @@ use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -55,14 +56,14 @@ class PlanSearchSnippet extends AutosearchInRespondentSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         protected SurveyRepository $surveyRepository,
         protected TokenRepository $tokenRepository,
         protected TrackDataRepository $trackDataRepository,
         CurrentUserRepository $currentUserRepository,
-
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }
 

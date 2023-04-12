@@ -26,7 +26,7 @@ use Gems\User\Embed\RedirectInterface;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 14-Aug-2019 16:03:20
  */
-class EmbedAction extends \Gems\Controller\Action
+class EmbedAction extends \MUtil\Controller\Action
 {
     /**
      * Embed specific log

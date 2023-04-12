@@ -37,8 +37,8 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
-        CurrentUserRepository $currentUserRepository,
         StatusMessengerInterface $messenger,
+        CurrentUserRepository $currentUserRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);
         $this->currentUser = $currentUserRepository->getCurrentUser();

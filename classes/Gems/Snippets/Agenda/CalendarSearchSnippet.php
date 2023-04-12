@@ -18,6 +18,7 @@ use Gems\Repository\PeriodSelectRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Gems\Snippets\AutosearchPeriodFormSnippet;
+use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -42,12 +43,13 @@ class CalendarSearchSnippet extends AutosearchPeriodFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
+        StatusMessengerInterface $messenger,
         PeriodSelectRepository $periodSelectRepository,
         protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
     )
     {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $periodSelectRepository);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger, $periodSelectRepository);
         
         $this->currentUser = $currentUserRepository->getCurrentUser();
     }

@@ -20,7 +20,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-abstract class FileActionAbstract extends \Gems\Controller\ModelSnippetActionAbstract
+abstract class FileActionAbstract extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      *

@@ -18,7 +18,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class SiteMaintenanceAction extends \Gems\Controller\ModelSnippetActionAbstract
+class SiteMaintenanceAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.

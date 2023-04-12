@@ -36,8 +36,8 @@ class StaffSearchSnippet extends AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
-        CurrentUserRepository $currentUserRepository,
         StatusMessengerInterface $messenger,
+        CurrentUserRepository $currentUserRepository,
         protected AccessRepository $accessRepository,
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $resultFetcher, $messenger);

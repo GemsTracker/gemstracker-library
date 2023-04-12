@@ -22,7 +22,7 @@ use Gems\Project\ProjectSettings;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class TemplateAction extends \Gems\Controller\ModelSnippetActionAbstract
+class TemplateAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     protected $createEditSnippets = 'ModelTabFormSnippet';
 

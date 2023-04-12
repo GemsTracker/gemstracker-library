@@ -18,7 +18,7 @@ namespace Gems\Actions;
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  */
-class RespondentExportAction extends \Gems\Controller\Action
+class RespondentExportAction extends \MUtil\Controller\Action
 {
     public bool $useHtmlView = true;
 

@@ -4,7 +4,7 @@
 
 namespace Gems\Actions;
 
-class DatabaseBackupAction extends \Gems\Controller\ModelSnippetActionAbstract
+class DatabaseBackupAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     protected $defaultSearchData = [
         'include_drop' => 1,

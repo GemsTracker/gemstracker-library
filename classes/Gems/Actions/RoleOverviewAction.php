@@ -2,7 +2,7 @@
 
 namespace Gems\Actions;
 
-class RoleOverviewAction extends \Gems\Controller\ModelSnippetActionAbstract
+class RoleOverviewAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      *

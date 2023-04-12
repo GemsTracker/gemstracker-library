@@ -42,8 +42,8 @@ class RespondentSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         ResultFetcher $resultFetcher,
-        protected Agenda $agenda,
         StatusMessengerInterface $messenger,
+        protected Agenda $agenda,
         CurrentUserRepository $currentUserRepository,
     )
     {

@@ -19,7 +19,7 @@ namespace Gems\Actions;
  * @license    New BSD License
  * @since      Class available since version 1.8.4
  */
-class PrivilegesAction extends \Gems\Controller\ModelSnippetActionAbstract
+class PrivilegesAction extends \MUtil\Controller\ModelSnippetActionAbstract
 {
     /**
      *
