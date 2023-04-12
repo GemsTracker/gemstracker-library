@@ -56,9 +56,9 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
         return [
             sprintf($this->_('%d to '), $start),
-            $this->getItemLink(intval($this->pageItems / 2), '-'),
+            $this->getItemLink($this->getLessItems(), '-'),
             $end,
-            $this->getItemLink(intval($this->pageItems * 2), '+'),
+            $this->getItemLink($this->getMoreItems(), '+'),
             sprintf($this->_('of %d'), $this->itemCount),
         ];
     }
