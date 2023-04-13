@@ -35,11 +35,13 @@ class AclMiddleware implements MiddlewareInterface
             $userRole = $user->getRole();
         }
 
+        $disablePrivileges = isset($this->config['temp_config']['disable_privileges']) && $this->config['temp_config']['disable_privileges'] === true;
+
         if (
             !empty($options['privilege']) && (
                 $userRole === null
                 || !$this->acl->isAllowed($userRole, $options['privilege'])
-            ) && !$this->config['temp_config']['disable_privileges']
+            ) && !$disablePrivileges
         ) {
             return new HtmlResponse($this->template->render('error::404'), 404);
         }
