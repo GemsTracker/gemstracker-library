@@ -274,7 +274,8 @@ class RouteHelper
 
     public function hasPrivilege(string $resource): bool
     {
-        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $this->config['temp_config']['disable_privileges'];
+        $disablePrivileges = isset($this->config['temp_config']['disable_privileges']) && $this->config['temp_config']['disable_privileges'] === true;
+        return $this->userRole !== null && $this->acl->isAllowed($this->userRole, $resource) || $disablePrivileges;
     }
     
     public function tryGeneration(string $name, array $params): string
