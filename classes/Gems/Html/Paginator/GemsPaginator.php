@@ -28,13 +28,15 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
     public string $itemsClass = 'pagination-index rightFloat pull-right';
 
-    protected string $itemsLinkClass = 'browselink btn btn-xs';
+    protected string $itemsLinkClass = 'browselink btn btn-sm';
 
-    protected string $pageDisabledClass = 'browselink disabled';
+    protected string $pageDisabledClass = 'page-link';
 
-    protected string $pageLinkClass = 'browselink';
+    protected string $pageLinkClass = 'page-link';
 
     public string $pagesClass = 'pagination pagination-sm pull-left';
+
+    public string $pageItemClass = 'page-item';
 
     public function getFirstPageLabel(): ?string
     {
@@ -90,10 +92,11 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
         }
 
         if ($pageNumber === $this->pageNumber) {
+            $class = $this->pageItemClass;
             if ($isSpecialLink) {
-                $class = 'disabled';
+                $class .= ' disabled';
             } else {
-                $class = 'active';
+                $class .= ' active';
             }
             return Html::create('li', $output, ['class' => $class]);
         }
