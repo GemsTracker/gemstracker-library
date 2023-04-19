@@ -51,7 +51,7 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class AskHandler extends SnippetLegacyHandlerAbstract
 {
-    protected User $currentUser;
+    protected User|null $currentUser = null;
 
     /**
      * Usually a child of \Gems\Tracker\Snippets\ShowTokenLoopAbstract,
