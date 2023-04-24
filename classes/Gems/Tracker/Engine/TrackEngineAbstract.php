@@ -28,7 +28,7 @@ use Mezzio\Session\SessionInterface;
 use MUtil\Model\Dependency\DependencyInterface;
 use MUtil\Model\ModelAbstract;
 use MUtil\Registry\TargetAbstract;
-use Zalt\Base\TranslateableTrait;
+use MUtil\Translate\TranslateableTrait;
 use Zalt\Loader\ProjectOverloader;
 
 /**
