@@ -106,4 +106,13 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         parent::deleteAction();
     }
 
+    public function indexAction()
+    {
+        $this->autofilterParameters['extraFilter'] = [
+            'gr2o_patient_nr' => $this->request->getAttribute(\MUtil\Model::REQUEST_ID1),
+            'gr2o_id_organization' => $this->request->getAttribute(\MUtil\Model::REQUEST_ID2),
+        ];
+        parent::indexAction();
+    }
+
 }
