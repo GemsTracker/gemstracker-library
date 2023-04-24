@@ -64,7 +64,7 @@ class ValuesMaintenanceDependency extends DependencyAbstract
      */
     public function formatValues($values)
     {
-        return new \MUtil\Html\Sequence(array('glue' => '<br/>'), explode('|', $values));
+        return new \MUtil\Html\Sequence(array('glue' => '<br/>'), explode('|', (string)$values));
     }
 
     /**
