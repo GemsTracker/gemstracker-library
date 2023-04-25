@@ -84,7 +84,7 @@ class BatchRunner
         $data = [
             'count' => $progress->getCount(),
             'percent' => $progress->getPercent(),
-            'messages' => $messages,
+            'messages' => array_values($messages),
             'timeElapsed' => $progress->getEstimated(),
             'timeRemaining' => $progress->getRemaining(),
         ];
