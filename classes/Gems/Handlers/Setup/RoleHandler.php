@@ -86,7 +86,6 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         private readonly RouteHelper $routeHelper,
         private readonly AclRepository $aclRepository,
         private readonly UrlHelper $urlHelper,
-        private readonly StatusMessengerInterface $messenger,
     ) {
         parent::__construct($responder, $translate);
     }
@@ -215,7 +214,11 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         //If we try to edit master, add an error message and reroute
         if (isset($data['grl_name']) && $data['grl_name']=='master') {
-            $this->messenger->addError($this->_('Editing `master` is not allowed'));
+            /**
+             * @var $messenger StatusMessengerInterface
+             */
+            $messenger = $this->request->getAttribute(FlashMessageMiddleware::STATUS_MESSENGER_ATTRIBUTE);
+            $messenger->addError($this->_('Editing `master` is not allowed'));
             // TODO: reroute
             //$this->_reroute(['action'=>'index'], true);
         }
