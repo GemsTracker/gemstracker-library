@@ -29,6 +29,7 @@ use Gems\Screens\ScreenLoader;
 use Gems\Site\SiteUtil;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
+use Gems\User\Mask\MaskRepository;
 use Gems\User\PasswordChecker;
 use Gems\User\UserLoader;
 use Gems\Util\ConsentUtil;
@@ -92,6 +93,7 @@ class LegacyConfigProvider
                 'LegacyLoader' => \Gems\Loader::class,
                 'LegacyLocale' => Locale::class,
                 'LegacyLocalized' => Localized::class,
+                'LegacyMaskRepository' => MaskRepository::class,
                 'LegacyModelLoader' => Model::class,
                 'LegacyOverLoader' => ProjectOverloader::class,
                 'LegacyOrganizationRepository' => OrganizationRepository::class,

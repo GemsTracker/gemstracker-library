@@ -11,7 +11,10 @@ class MaskedModel extends JoinModel
      */
     protected bool $hideWhollyMasked = false;
 
-    protected MaskRepository $maskRepository;
+    /**
+     * @var MaskRepository
+     */
+    protected $maskRepository;
 
     public function applyMask(): MaskedModel
     {
