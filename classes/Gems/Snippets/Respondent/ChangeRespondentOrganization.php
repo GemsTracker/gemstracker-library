@@ -344,7 +344,6 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
         );
 
         $changed   = 0;
-        $currentTs = new CurrentTimestamp();
         $userId    = $this->currentUser->getUserId();
 
         foreach ($tables as $tableName => $settings) {
@@ -355,7 +354,6 @@ class ChangeRespondentOrganization extends ModelFormSnippetAbstract
 
                 $values = [
                     $orgIdField            => $toOrgId,
-                    $start . '_changed'    => $currentTs,
                     $start . '_changed_by' => $userId,
                     ];
                 $where = [
