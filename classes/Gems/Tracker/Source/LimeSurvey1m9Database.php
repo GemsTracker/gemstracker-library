@@ -796,29 +796,31 @@ class LimeSurvey1m9Database extends SourceAbstract
         // Get the mapped values
         $values = $this->_fillAttributeMap($token) + $validDates;
         // Apparently it is possible to have this value filled without a survey questionnaire.
+        $values['completed'] = 'N';
         if ($token->isCompleted()) {
-            $values['completed'] = $token->getCompletionTime()->toString(self::LS_DB_COMPLETION_FORMAT);
-        } else {
-            $values['completed'] = 'N';
+            $completionTime = $token->getCompletionTime();
+            if ($completionTime instanceof \DateTimeInterface) {
+                $values['completed'] = $completionTime->format(self::LS_DB_COMPLETION_FORMAT);
+            }
         }
 
         $result = 0;
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
             if ($this->tracker->filterChangesOnly($oldValues, $values)) {
-                if (\Gems\Tracker::$verbose) {
+                /*if (\Gems\Tracker::$verbose) {
                     $echo = '';
                     foreach ($values as $key => $val) {
                         $echo .= $key . ': ' . $oldValues[$key] . ' => ' . $val . "\n";
                     }
                     \MUtil\EchoOut\EchoOut::r($echo, "Updated limesurvey values for $tokenId");
-                }
+                }*/
 
                 $result = $lsDb->update($lsTokens, $values, array('token = ?' => $tokenId));
             }
         } else {
-            if (\Gems\Tracker::$verbose) {
+            /*if (\Gems\Tracker::$verbose) {
                 \MUtil\EchoOut\EchoOut::r($values, "Inserted $tokenId into limesurvey");
-            }
+            }*/
             $values['token'] = $tokenId;
 
             $result = $lsDb->insert($lsTokens, $values);
