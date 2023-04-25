@@ -87,6 +87,7 @@ class BatchRunner
             'messages' => array_values($messages),
             'timeElapsed' => $progress->getEstimated(),
             'timeRemaining' => $progress->getRemaining(),
+            'finished' => $progress->isFinished(),
         ];
 
         return new JsonResponse($data);
