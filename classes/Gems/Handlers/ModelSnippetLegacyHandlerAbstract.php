@@ -35,6 +35,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSnippetLegacyHandlerAbstract
 {
+    use PaginatorHandlerTrait;
+
     /**
      * \Gems only parameters used for the autofilter action. Can be overruled
      * by setting $this->autofilterParameters
@@ -44,7 +46,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     private array $_autofilterExtraParameters = [
         'browse'          => true,
         'containingId'    => 'autofilter_target',
+        'dynamicSort'     => 'getDynamicSort',
         'onEmpty'         => 'getOnEmptyText',
+        'pageItems'       => 'getPageItems',
+        'pageNumber'      => 'getPageNumber',
         'sortParamAsc'    => 'asrt',
         'sortParamDesc'   => 'dsrt',
         'textSearchField' => 'searchText', 
@@ -413,6 +418,20 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         return sprintf($this->_('Delete %s'), $this->getTopic(1));
     }
 
+    public function getDynamicSort(): array
+    {
+        // Get (new) request sort DESC value
+        $sortDescParam = isset($this->autofilterParameters['sortParamDesc']) ?
+            $this->autofilterParameters['sortParamDesc'] :
+            $this->_autofilterExtraParameters['sortParamDesc'];
+
+        $sortAscParam  = isset($this->autofilterParameters['sortParamAsc']) ?
+            $this->autofilterParameters['sortParamAsc'] :
+            $this->_autofilterExtraParameters['sortParamAsc'];
+
+        return $this->getDynamicSortFor($sortDescParam, $sortAscParam);
+    }
+
     /**
      * Helper function to get the title for the edit action.
      *
@@ -553,7 +572,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     {
         $this->currentUserId = $request->getAttribute('userId', $this->currentUserId);
         
-        return parent::handle($request); 
+        return $this->processCookies(parent::handle($request));
     }
 
     /**

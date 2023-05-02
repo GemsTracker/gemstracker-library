@@ -17,8 +17,11 @@ use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Mezzio\Session\SessionInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\MetaModelLoader;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -31,6 +34,8 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbstract
 {
+    use PaginatorHandlerTrait;
+
     /**
      *
      * @var ?array The search data
@@ -212,7 +217,12 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
     {
         return $this->plural('item', 'items', $count);
     }
-    
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->processCookies(parent::handle($request));
+    }
+
     public function prepareAction(SnippetActionInterface $action) : void
     {
         parent::prepareAction($action);
@@ -220,11 +230,19 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         if ($action instanceof ModelActionInterface) {
             $action->model = $this->getModel($action);
         }
-        if ($action instanceof BrowseFilteredAction) {
-            $action->searchFilter = $this->getSearchFilter(true);
-                   
-            if ($action instanceof BrowseSearchAction) {
-                $action->searchData = $this->getSearchData(true);
+
+        if ($action instanceof BrowseTableAction) {
+            $path = $this->requestInfo->getBasePath();
+            $action->dynamicSort = $this->getDynamicSortFor($action->sortParamDesc, $action->sortParamAsc);
+            $action->pageItems   = $this->getPageItems();
+            $action->pageNumber  = $this->getPageNumber();
+
+            if ($action instanceof BrowseFilteredAction) {
+                $action->searchFilter = $this->getSearchFilter(true);
+
+                if ($action instanceof BrowseSearchAction) {
+                    $action->searchData = $this->getSearchData(true);
+                }
             }
         }
         if ($action instanceof CreateAction) {

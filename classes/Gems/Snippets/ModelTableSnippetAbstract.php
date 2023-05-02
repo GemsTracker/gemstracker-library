@@ -86,11 +86,12 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     protected bool $showMenu = true;
 
     public function __construct(SnippetOptions $snippetOptions,
-                                protected RequestInfo $requestInfo,
+                                RequestInfo $requestInfo,
                                 protected MenuSnippetHelper $menuHelper,
-                                TranslatorInterface $translate)
+                                TranslatorInterface $translate,
+                                )
     {
-        parent::__construct($snippetOptions, $this->requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $translate);
     }
     
     /**
@@ -171,24 +172,6 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
         } else {
             return $table;
         }
-    }
-
-    public function getPageItems(): int
-    {
-        $items = $this->requestInfo->getParam(PaginatorInterface::REQUEST_ITEMS);
-        if ($items) {
-            $this->pageItems = $items;
-        }
-        return $this->pageItems;
-    }
-
-    public function getPageNumber(): int
-    {
-        $page = $this->requestInfo->getParam(PaginatorInterface::REQUEST_PAGE);
-        if ($page) {
-            $this->pageNumber = $page;
-        }
-        return $this->pageNumber;
     }
 
     public function getRouteMaps(MetaModelInterface $metaModel): array
