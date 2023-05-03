@@ -56,11 +56,18 @@ class SpssExport extends ExportAbstract
     /**
      * Add the help snippet
      * 
-     * @return string
+     * @return string[]
      */
-    public function getHelpSnippet()
+    public function getHelpInfo(): array
     {
-        return 'Export\\ExportInformationSpss';
+        return [
+            $this->_('Export to SPSS'),
+            $this->_("Extract all files from the downloaded zip and open the .sps file.\n" .
+                "Change line number 8 to include the full path to the .dat file:\n" .
+                "    /FILE=\"filename.dat\"  ==>  /FILE=\"c:\\downloads\\filename.dat\"\n" .
+                "Choose Run/All and all your data should be visible."
+            )
+        ];
     }
     /**
      * @return string name of the specific export
@@ -277,7 +284,11 @@ class SpssExport extends ExportAbstract
         if (!preg_match("/^([a-z]|[A-Z])+.*$/", $input)) {
             $input = "q_" . $input;
         }
-        $input = str_replace(array(" ", "-", ":", ";", "!", "/", "\\", "'"), array("_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'), $input);
+        $input = str_replace(
+            [" ", "-", ":", ";", "!", "/", "\\", "'"],
+            ["_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'],
+            $input ?? ''
+        );
         return $input;
     }
 
@@ -298,7 +309,7 @@ class SpssExport extends ExportAbstract
         if (is_array($input)) {
             $input = join(', ', $input);
         }
-        $output = strip_tags($input);
+        $output = strip_tags($input ?? '');
         $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
         //$output = "'" . $output . "'";
         return $output;

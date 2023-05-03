@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsLoader;
 
+use Gems\FullHtmlResponse;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\MenuSnippetHelper;
@@ -46,7 +47,11 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
     {
         $output = parent::getSnippetsResponse($snippetNames, $snippetOptions, $request);
 
-        if (! $output instanceof HtmlResponse) {
+        if (
+            ! $output instanceof HtmlResponse
+            || $output instanceof FullHtmlResponse
+            || $this->request->hasHeader('X-Content-Only')
+        ) {
             return $output;
         }
 
@@ -81,8 +86,9 @@ class GemsSnippetResponder extends MezzioLaminasSnippetResponder
         $this->layoutSettings = new LayoutSettings();
         $this->layoutSettings->setTemplate( 'gems::legacy-view');
         $this->snippetLoader->addConstructorVariable(LayoutSettings::class, $this->layoutSettings);
-
+        
         $this->snippetLoader->addConstructorVariable(SessionInterface::class, $request->getAttribute(SessionInterface::class));
+        $this->snippetLoader->addConstructorVariable(ServerRequestInterface::class, $request);
 
         return $requestInfo;
     }

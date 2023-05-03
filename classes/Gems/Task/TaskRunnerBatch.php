@@ -50,4 +50,12 @@ class TaskRunnerBatch extends TaskBatch
      * @var int
      */
     public int $initialPushPaddingKb = 10;
+
+    /**
+     * The URL to redirect to when clicking the restart button.
+     * Set to null to not redirect and perform standard batch restart behavior.
+     *
+     * @var string|null
+     */
+    public ?string $restartRedirectUrl = null; // TODO: Move to TaskBatch
 }

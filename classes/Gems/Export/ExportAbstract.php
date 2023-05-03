@@ -10,6 +10,8 @@
 
 namespace Gems\Export;
 
+use Mezzio\Session\SessionInterface;
+
 /**
  *
  * @package    Gems
@@ -18,7 +20,7 @@ namespace Gems\Export;
  * @license    New BSD License
  * @since      Class available since version 1.7.1
  */
-abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract implements ExportInterface
+abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstract implements ExportInterface
 {
     /**
      * @var \Zend_Session_Namespace    Own session used for non-batch exports
@@ -28,7 +30,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     /**
      * @var \Gems\Task\TaskRunnerBatch   The batch object if one is set
      */
-    protected $batch;
+//    protected $batch;
 
     /**
      * @var array   Data submitted by export form
@@ -117,12 +119,18 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
         return [];
     }
 
+    public function __construct(
+        private readonly ?SessionInterface $session,
+        protected readonly ?\Gems\Task\TaskRunnerBatch $batch,
+    ) {
+    }
+
     /**
-     * @return string|null Optional snippet containing help text
+     * @return string[] Optional snippet containing help text
      */
-    public function getHelpSnippet()
+    public function getHelpInfo(): array
     {
-        return null;
+        return [];
     }
 
     /**
@@ -253,8 +261,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
     public function afterRegistry() {
         parent::afterRegistry();
 
-        if (!$this->batch) {
-            $this->_session = new \Zend_Session_Namespace(__CLASS__);
+        if (isset($this->batch) === isset($this->session)) {
+            throw new \Exception('Should either set batch or session');
         }
     }
 
@@ -307,7 +315,7 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
         $dangers = ['=', '+', '-', '@'];
 
         // Trim leading spaces for our test
-        $trimmed = trim($input);
+        $trimmed = trim($input ?? '');
 
         if (strlen($trimmed)>1 && in_array($trimmed[0], $dangers)) {
             return "'" . $input;
@@ -479,8 +487,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
             $firstFile = $this->files[$firstName];
 
             $file['file']      = $firstFile;
-            $file['headers'][] = "Content-Type: application/download";
-            $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $firstName . "\"";
+            $file['headers']['Content-Type'] = "application/download";
+            $file['headers']['Content-Disposition'] = "attachment; filename=\"" . $firstName . "\"";
         } elseif (count($this->files) >= 1) {
             $nameArray = explode('.', $firstName);
             array_pop($nameArray);
@@ -503,14 +511,14 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
 
             $file              = array();
             $file['file']      = $zipFile;
-            $file['headers'][] = "Content-Type: application/download";
-            $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
+            $file['headers']['Content-Type'] = "application/download";
+            $file['headers']['Content-Disposition'] = "attachment; filename=\"" . $filename . "\"";
         }
 
-        $file['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
-        $file['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
-        $file['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
-        $file['headers'][] = "Pragma: cache";                          // HTTP/1.0
+        $file['headers']['Expires'] = "Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
+        $file['headers']['Last-Modified'] = gmdate("D, d M Y H:i:s") . " GMT";
+        $file['headers']['Cache-Control'] = "must-revalidate, post-check=0, pre-check=0";
+        $file['headers']['Pragma'] = "cache";                          // HTTP/1.0
 
         if ($this->batch) {
             $this->batch->setSessionVariable('file', $file);
@@ -678,7 +686,8 @@ abstract class ExportAbstract extends \MUtil\Translate\TranslateableAbstract imp
      */
     public function setBatch(\Gems\Task\TaskRunnerBatch $batch)
     {
-        $this->batch = $batch;
+        throw new \Exception();
+        //$this->batch = $batch;
     }
 
     /**

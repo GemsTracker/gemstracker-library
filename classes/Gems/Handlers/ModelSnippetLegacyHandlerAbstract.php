@@ -19,8 +19,10 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\Task\TaskRunnerBatch;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
+use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -219,6 +221,10 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected array $exportFormSnippets = ['Export\\ExportFormSnippet'];
 
+    protected array $exportBatchSnippets = ['Export\\ExportBatchSnippet'];
+
+    protected array $exportDownloadSnippets = ['Export\\ExportDownloadSnippet'];
+
     /**
      * The parameters used for the export actions.
      *
@@ -354,7 +360,44 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function exportAction()
     {
-        // TODO Add export action to snippet
+        $step = $this->requestInfo->getParam('step');
+        $post = $this->requestInfo->getRequestPostParams();
+
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
+        $model = $this->getExportModel();
+
+        if (isset($this->autofilterParameters['sortParamAsc'])) {
+            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
+        }
+        if (isset($this->autofilterParameters['sortParamDesc'])) {
+            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
+        }
+
+        $model->applyParameters($this->getSearchFilter(false), true);
+
+//        if (!empty($post)) {
+//            $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
+//        }
+
+        // Add any defaults.
+        if (isset($this->autofilterParameters['extraFilter'])) {
+            $model->addFilter($this->autofilterParameters['extraFilter']);
+        }
+        if (isset($this->autofilterParameters['extraSort'])) {
+            $model->addSort($this->autofilterParameters['extraSort']);
+        }
+
+        if ((!$step) || ($post && $step == 'form')) {
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+            $this->addSnippets($this->exportFormSnippets, $params);
+        } elseif ($step == 'batch') {
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+            $this->addSnippets($this->exportBatchSnippets, $params);
+        } elseif ($step == 'download') {
+            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+            $this->addSnippets($this->exportDownloadSnippets, $params);
+        }
     }
 
 

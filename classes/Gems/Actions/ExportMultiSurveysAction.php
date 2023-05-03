@@ -118,8 +118,8 @@ class ExportMultiSurveysAction extends \Gems\Actions\ExportSurveyActionAbstract
         $this->_helper->viewRenderer->setNoRender(true);
         $batch = $this->loader->getTaskRunnerBatch('export_surveys');
         $file = $batch->getSessionVariable('file');
-        foreach($file['headers'] as $header) {
-            header($header);
+        foreach($file['headers'] as $header => $value) {
+            header($header . ': ' . $value);
         }
         while (ob_get_level()) {
             ob_end_clean();

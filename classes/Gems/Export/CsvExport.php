@@ -156,7 +156,7 @@ class CsvExport extends ExportAbstract
             // Keeps < and <= values
             $output = $input;
         } else {
-            $output = strip_tags($input);
+            $output = strip_tags($input ?? '');
         }
         $output = str_replace(array("\r", "\n"), array(' ', ' '), $output);
         

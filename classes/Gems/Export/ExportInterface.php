@@ -59,9 +59,9 @@ interface ExportInterface
     public function getDefaultFormValues();
     
     /**
-     * @return string|null Optional snippet containing help text
+     * @return string[] Optional snippet containing help text
      */
-    public function getHelpSnippet();
+    public function getHelpInfo(): array;
 
     /**
      * Returns the unique name for this class

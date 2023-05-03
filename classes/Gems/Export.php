@@ -11,7 +11,7 @@
 
 namespace Gems;
 
-use Zalt\Loader\ProjectOverloader;
+use Mezzio\Session\SessionInterface;
 
 /**
  *
@@ -94,9 +94,9 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      *
      * @return \Gems\Export\ExportInterface
      */
-    public function getExport($type)
+    public function getExport(string $type, ?SessionInterface $session, ?\Gems\Task\TaskRunnerBatch $batch = null)
     {
-        return $this->_getClass($type);
+        return $this->_getClass($type, null, [$session, $batch]);
     }
 
     /**

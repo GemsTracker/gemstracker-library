@@ -579,7 +579,7 @@ class StreamingStataExport extends ExportAbstract
      */
     public function formatString($input)
     {
-        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $input);
+        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $input ?? '');
         return $output;
     }
 

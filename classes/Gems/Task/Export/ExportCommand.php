@@ -36,8 +36,7 @@ class ExportCommand extends \Gems\Task\TaskAbstract
     public function execute($exportType = null, $command = null, $params = null)
     {
         $params = array_slice(func_get_args(), 2);
-        $export = $this->loader->getExport()->getExport($exportType);
-        $export->setBatch($this->_batch);
+        $export = $this->loader->getExport()->getExport($exportType, null, $this->_batch);
 
         if ($messages = call_user_func_array(array($export, $command), $params)) {
             foreach ($messages as $message) {

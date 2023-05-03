@@ -39,11 +39,19 @@ class RExport extends ExportAbstract
     /**
      * Add the help snippet
      * 
-     * @return string
+     * @return string[]
      */
-    public function getHelpSnippet()
+    public function getHelpInfo(): array
     {
-        return 'Export\\ExportInformationR';
+        return [
+            $this->_('Export to R'),
+            $this->_("Open the downloaded zip file when finished and open the .R file using:\n" .
+                "    source(\"filename.R\", encoding=\"UTF-8\")\n" .
+                "or use File -> Reopen with Encoding... when using RStudio and choose UTF-8 and run all lines.\n" .
+                "\n" .
+                "Your data is now in a frame called 'data'"
+            )
+        ];
     }
 
     /**
@@ -232,7 +240,7 @@ class RExport extends ExportAbstract
         if (is_array($input)) {
             $input = join(', ', $input);
         }
-        $output = strip_tags($input);
+        $output = strip_tags($input ?? '');
         $output = str_replace(array('"', "\r", "\n"), array('""', ' ', ' '), $output);
         //$output = "'" . $output . "'";
         return $output;
