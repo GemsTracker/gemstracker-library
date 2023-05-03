@@ -523,6 +523,9 @@ class MaskRepository
     protected function loadUserMaskData(): void
     {
         $user = $this->currentUserRepository->getCurrentUser();
+        if (! $user) {
+            return;
+        }
         $currentGroup        = $user->getGroupId(true);
         $currentOrganization = $user->getCurrentOrganizationId();
         $baseGroup           = $user->getGroupId(false);

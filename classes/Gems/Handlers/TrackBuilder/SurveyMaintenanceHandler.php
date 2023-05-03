@@ -17,6 +17,7 @@ use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Locale\Locale;
 use Gems\Pdf;
 use Gems\Repository\SurveyRepository;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\TrackEvent\SurveyBeforeAnsweringEventInterface;
 use Gems\Tracker\TrackEvent\SurveyDisplayEventInterface;
@@ -121,6 +122,7 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
         'ModelDetailTableSnippet',
+        CurrentButtonRowSnippet::class,
         'Survey\\SurveyQuestionsSnippet'
     ];
 

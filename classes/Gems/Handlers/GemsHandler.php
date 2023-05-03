@@ -220,7 +220,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->processCookies(parent::handle($request));
+        return $this->processResponseCookies(parent::handle($request));
     }
 
     public function prepareAction(SnippetActionInterface $action) : void

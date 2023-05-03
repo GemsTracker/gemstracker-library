@@ -86,10 +86,9 @@ trait PaginatorHandlerTrait
     public function getPageItems(): int
     {
         $cookies = $this->request->getCookieParams();
-        dump($cookies);
 
         if (isset($cookies[PaginatorInterface::REQUEST_ITEMS])) {
-            $currentItems = intval($cookies[PaginatorInterface::REQUEST_ITEMS]);
+            $currentItems = intval($cookies[PaginatorInterface::REQUEST_ITEMS]) ?? 10;
         } else {
             $currentItems = 10;
         }
@@ -129,7 +128,7 @@ trait PaginatorHandlerTrait
         return $default;
     }
 
-    protected function processCookies(ResponseInterface $response): ResponseInterface
+    protected function processResponseCookies(ResponseInterface $response): ResponseInterface
     {
         if ($this->_cookiesSet) {
             foreach ($this->_cookiesSet as $cookie) {

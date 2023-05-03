@@ -572,7 +572,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     {
         $this->currentUserId = $request->getAttribute('userId', $this->currentUserId);
         
-        return $this->processCookies(parent::handle($request));
+        return $this->processResponseCookies(parent::handle($request));
     }
 
     /**
