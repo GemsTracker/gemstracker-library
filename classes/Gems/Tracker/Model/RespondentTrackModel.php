@@ -23,6 +23,7 @@ use MUtil\Model;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  * The RespondentTrackModel is the model used to display and edit
@@ -89,8 +90,6 @@ class RespondentTrackModel extends HiddenOrganizationModel
         $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'), 'gtr', false);
         $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'), 'grc', false);
         $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));
-
-
 
         // No need to send all this information to the user
         $this->setCol($this->getItemsFor('table', 'gems__staff'), 'elementClass', 'None');
@@ -162,8 +161,12 @@ class RespondentTrackModel extends HiddenOrganizationModel
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
             'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate,
-            'default', new \DateTimeImmutable());
-        $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
+            'default', new \DateTimeImmutable(),
+            'type', MetaModelInterface::TYPE_DATE
+            );
+        $this->set('gr2t_start_date', 'description', $this->_('dd-mm-yyyy'));
+
+            $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
             'dateFormat', 'd-m-Y',
             'formatFunction', $formatDate);
         $this->set('gr2t_reception_code');
@@ -208,7 +211,8 @@ class RespondentTrackModel extends HiddenOrganizationModel
         $this->set('assigned_by',          'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',      'label', $this->_('Start'),
             'dateFormat', 'd-m-Y',
-            'formatFunction', $formatDate);
+            'formatFunction', $formatDate,
+            'description', $this->_('dd-mm-yyyy'));
 
         // Integrate fields
         $trackEngine->addFieldsToModel($this, $edit);

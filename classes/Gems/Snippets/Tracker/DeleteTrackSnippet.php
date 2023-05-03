@@ -11,8 +11,16 @@
 
 namespace Gems\Snippets\Tracker;
 
+use Gems\Legacy\CurrentUserRepository;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Gems\Tracker;
+use Gems\Util\ReceptionCodeLibrary;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Data\FullDataInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -29,23 +37,23 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var array
      */
-    protected $editItems = array('gr2t_comment');
+    protected array $editItems = ['gr2t_comment'];
 
     /**
      * Array of items that should be shown to the user
      *
      * @var array
      */
-    protected $exhibitItems = array(
+    protected array $exhibitItems = [
         'gr2o_patient_nr', 'respondent_name', 'gtr_track_name', 'gr2t_track_info', 'gr2t_start_date',
-        );
+        ];
 
     /**
      * Array of items that should be kept, but as hidden
      *
      * @var array
      */
-    protected $hiddenItems = array('gr2t_id_respondent_track', 'gr2t_id_user', 'gr2t_id_organization');
+    protected array $hiddenItems = ['gr2t_id_respondent_track', 'gr2t_id_user', 'gr2t_id_organization'];
 
     /**
      *
@@ -58,7 +66,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var string
      */
-    protected $receptionCodeItem = 'gr2t_reception_code';
+    protected string $receptionCodeItem = 'gr2t_reception_code';
 
     /**
      * Required
@@ -81,6 +89,21 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
      */
     protected $trackEngine;
 
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
+        CurrentUserRepository $currentUserRepository,
+        protected ReceptionCodeLibrary $receptionCodeLibrary,
+        protected Tracker $tracker,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper, $currentUserRepository);
+    }
+
+
     /**
      * Hook that allows actions when data was saved
      *
@@ -101,8 +124,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     protected function createModel(): FullDataInterface
     {
         if (! $this->model instanceof \Gems\Tracker\Model\TrackModel) {
-            $tracker     = $this->loader->getTracker();
-            $this->model = $tracker->getRespondentTrackModel();
+            $this->model = $this->tracker->getRespondentTrackModel();
 
             if (! $this->trackEngine instanceof \Gems\Tracker\Engine\TrackEngineInterface) {
                 $this->trackEngine = $this->respondentTrack->getTrackEngine();
@@ -119,36 +141,17 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     }
 
     /**
-     *
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList(): array
-    {
-        $links = $this->menu->getMenuList();
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
-
-        $links->addByController('respondent', 'show', $this->_('Show respondent'))
-                ->addByController('track', 'index', $this->_('Show tracks'))
-                ->addByController('track', 'show-track', $this->_('Show track'))
-                ->addByController('track', 'edit-track', $this->_('Edit track'));
-
-        return $links;
-    }
-
-    /**
      * Called after loadFormData() and isUndeleting() but before the form is created
      *
      * @return array
      */
     public function getReceptionCodes()
     {
-        $rcLib = $this->util->getReceptionCodeLibrary();
-
         if ($this->unDelete) {
-            return $rcLib->getTrackRestoreCodes();
+            return $this->receptionCodeLibrary->getTrackRestoreCodes();
         }
 
-        return $rcLib->getTrackDeletionCodes();
+        return $this->receptionCodeLibrary->getTrackDeletionCodes();
     }
 
     /**
@@ -167,6 +170,21 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
     }
 
     /**
+     * Set what to do when the form is 'finished'.
+     */
+    protected function setAfterSaveRoute()
+    {
+        // Default is just go to the index
+        if ($this->respondentTrack && ! $this->afterSaveRouteUrl) {
+            $urlParams = $this->respondentTrack->getMenuUrlParameters();
+
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show-track', $urlParams);
+        }
+
+        parent::setAfterSaveRoute();
+    }
+
+    /**
      * Hook performing actual save
      *
      * @param string $newCode
@@ -178,7 +196,7 @@ class DeleteTrackSnippet extends ChangeReceptionCodeSnippetAbstract
         $oldCode = $this->respondentTrack->getReceptionCode();
         
         if (! $newCode instanceof \Gems\Util\ReceptionCode) {
-            $newCode = $this->util->getReceptionCode($newCode);
+            $newCode = $this->receptionCodeLibrary->getReceptionCode($newCode);
         }
 
         // Use the repesondent track function as that cascades the consent code

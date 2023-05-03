@@ -539,6 +539,7 @@ class Route
                     \Gems\Model::RESPONDENT_TRACK => '\d+',
                 ],
                 postRoutes: [
+                    'delete-track',
                     'edit-track',
                 ]
             ),
@@ -576,6 +577,8 @@ class Route
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
                 ],
+                postRoutes:
+                    array_merge($this->defaultPostRoutes, ['correct']),
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,

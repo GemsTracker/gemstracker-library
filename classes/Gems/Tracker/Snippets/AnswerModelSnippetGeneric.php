@@ -227,7 +227,7 @@ class AnswerModelSnippetGeneric extends ModelTableSnippetAbstract
                     }
                     $oldGroup = $group;
                 }
-                $th = $bridge->thd($label, array('class' => $dataModel->get($name, 'thClass')));
+                $th = $bridge->thd(Html::raw($label), array('class' => $dataModel->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
                 $td->appendAttrib('class', 'answer');
                 $td->appendAttrib('class', $selectedClass);

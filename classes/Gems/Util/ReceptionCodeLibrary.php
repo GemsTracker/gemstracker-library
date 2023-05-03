@@ -17,6 +17,7 @@ use Gems\Project\ProjectSettings;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use MUtil\Translate\Translator;
+use Zalt\Loader\ProjectOverloader;
 
 /**
  * Library functions and constants for working with reception codes.
@@ -44,17 +45,22 @@ class ReceptionCodeLibrary
      */
     protected ?string $language = null;
 
+    protected ProjectOverloader $utilOverloader;
+
     public function __construct(
         protected ResultFetcher $resultFetcher,
         protected Translator $translator,
         ProjectSettings $projectSettings,
-        Locale $locale
+        Locale $locale,
+        ProjectOverloader $overloader,
     ) {
         $language = $locale->getLanguage();
 
         if ($projectSettings->translateDatabaseFields() && ($language != $projectSettings->getLocaleDefault())) {
             $this->language = $language;
         }
+
+        $this->utilOverloader = $overloader->createSubFolderOverloader('Util');
     }
     
     /**
@@ -154,6 +160,23 @@ class ReceptionCodeLibrary
     public function getOKString(): string
     {
         return static::RECEPTION_OK;
+    }
+
+    /**
+     * Returns a single reception code object.
+     *
+     * @param string $code
+     * @return \Gems\Util\ReceptionCode
+     */
+    public function getReceptionCode($code)
+    {
+        static $codes = array();
+
+        if (! isset($codes[$code])) {
+            $codes[$code] = $this->utilOverloader->create('ReceptionCode', $code);
+        }
+
+        return $codes[$code];
     }
 
 

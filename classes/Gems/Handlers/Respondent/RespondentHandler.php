@@ -20,6 +20,7 @@ use Gems\Repository\RespondentRepository;
 use Gems\Repository\TrackDataRepository;
 use Gems\Screens\ConsentInterface;
 use Gems\Screens\ProcessModelInterface;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -179,7 +180,11 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    public array $deleteSnippets = ['Respondent\\RespondentDetailsSnippet', 'Respondent\\DeleteRespondentSnippet'];
+    public array $deleteSnippets = [
+        'Respondent\\RespondentDetailsSnippet',
+        'Respondent\\DeleteRespondentSnippet',
+        CurrentButtonRowSnippet::class,
+        ];
 
     /**
      *

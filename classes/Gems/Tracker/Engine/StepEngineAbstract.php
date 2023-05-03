@@ -14,6 +14,7 @@ namespace Gems\Tracker\Engine;
 use Gems\Date\Period;
 use Gems\Locale\Locale;
 use Gems\Project\ProjectSettings;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Tracker\Token;
 use Gems\User\User;
@@ -851,7 +852,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     public function getTokenDeleteSnippetNames(\Gems\Tracker\Token $token)
     {
-        return array('Token\\DeleteTrackTokenSnippet');
+        return array('Token\\DeleteTrackTokenSnippet', CurrentButtonRowSnippet::class);
     }
 
     /**

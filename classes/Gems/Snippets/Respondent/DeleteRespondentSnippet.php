@@ -16,6 +16,7 @@ use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\RespondentModel;
 use Gems\Snippets\ReceptionCode\ChangeReceptionCodeSnippetAbstract;
+use Gems\Snippets\Token\DeleteTrackTokenSnippet;
 use Gems\Tracker\Respondent;
 use Gems\Util\ReceptionCodeLibrary;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,21 +41,21 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var array
      */
-    protected $editItems = [];
+    protected array $editItems = [];
 
     /**
      * Array of items that should be shown to the user
      *
      * @var array
      */
-    protected $exhibitItems = ['gr2o_patient_nr', 'gr2o_id_organization'];
+    protected array $exhibitItems = ['gr2o_patient_nr', 'gr2o_id_organization'];
 
     /**
      * Array of items that should be kept, but as hidden
      *
      * @var array
      */
-    protected $hiddenItems = ['grs_id_user'];
+    protected array $hiddenItems = ['grs_id_user'];
 
     /**
      *
@@ -67,7 +68,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var string
      */
-    protected $receptionCodeItem = 'gr2o_reception_code';
+    protected string $receptionCodeItem = 'gr2o_reception_code';
 
     /**
      *
@@ -80,7 +81,7 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
      *
      * @var string
      */
-    protected $unDeleteRight = 'pr.respondent.undelete';
+    protected ?string $unDeleteRight = 'pr.respondent.undelete';
 
     public function __construct(
         SnippetOptions $snippetOptions,
@@ -186,6 +187,24 @@ class DeleteRespondentSnippet extends ChangeReceptionCodeSnippetAbstract
 
         $this->editItems[] = 'restore_tracks';
         return true;
+    }
+
+
+    /**
+     * Set what to do when the form is 'finished'.
+     *
+     * @return DeleteTrackTokenSnippet (continuation pattern)
+     */
+    protected function setAfterSaveRoute()
+    {
+        // Default is just go to the index
+        if ($this->respondent && ! $this->afterSaveRouteUrl) {
+            $urlParams = $this->respondent->getMenuUrlParameters();
+
+            $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.show', $urlParams);
+        }
+
+        parent::setAfterSaveRoute();
     }
 
     /**

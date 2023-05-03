@@ -95,8 +95,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         ];
 
         $buttons = [];
+        $params  = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
-            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $this->requestInfo->getRequestMatchedParams());
+            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $params);
             if ($url) {
                 if (isset($item['disabled']) && $item['disabled'] === true) {
                     $buttons[$item['route']] = Html::actionDisabled($item['label']);
@@ -125,8 +126,8 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     protected function addContactBlock(ThreeColumnTableBridge $bridge)
     {
         // E-MAIL
-
-        $buttons = Html::actionLink($this->menuSnippetHelper->getRouteUrl('respondent.tracks.email', $this->requestInfo->getRequestMatchedParams()), $this->_('E-mail now!'));
+        $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.email', $this->token->getMenuUrlParameters());
+        $buttons = Html::actionLink($url, $this->_('E-mail now!'));
 
         $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
 
@@ -144,13 +145,18 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      */
     protected function addHeaderGroup(ThreeColumnTableBridge $bridge)
     {
+        $urlParams = $this->token->getMenuUrlParameters();
+
         $bridge->addItem('gto_id_token', $this->_('Token'), array('colspan' => 1.5));
         $copiedFrom = $this->token->getCopiedFrom();
         if ($copiedFrom) {
+            $urlParams[\MUtil\Model::REQUEST_ID] = $copiedFrom;
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
+
             $bridge->tr();
             $bridge->tdh($this->_('Token copied from'));
             $bridge->td(array('colspan' => 2, 'skiprowclass' => true))
-                ->a([\MUtil\Model::REQUEST_ID => $copiedFrom], $copiedFrom);
+                ->a($url, $copiedFrom);
         }
         $copiedTo = $this->token->getCopiedTo();
         if ($copiedTo) {
@@ -158,7 +164,10 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $bridge->tdh($this->_('Token copied to'));
             $td = $bridge->td(array('colspan' => 2, 'skiprowclass' => true));
             foreach ($copiedTo as $copy) {
-                $td->a([\MUtil\Model::REQUEST_ID => $copy], $copy);
+                $urlParams[\MUtil\Model::REQUEST_ID] = $copy;
+                $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
+
+                $td->a($url, $copy);
                 $td->append(' ');
             }
         }
@@ -200,8 +209,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         ];
 
         $buttons = [];
+        $urlParams = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
-            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $this->requestInfo->getRequestMatchedParams());
+            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $urlParams);
             if ($url) {
                 if (isset($item['disabled']) && $item['disabled'] === true) {
                     $buttons[$item['route']] = Html::actionDisabled($item['label']);
@@ -216,25 +226,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $bridge->tdh($this->_('Actions'));
             $bridge->td($buttons, ['colspan' => 2, 'skiprowclass' => true]);
         }
-
-        //$buttons = $this->routeHelper->getActionLinksFromRouteItems($items, $this->requestInfo->getRequestMatchedParams());
-
-        //if (count($buttons)) {
-            /*if (isset($buttons['ask.take']) && ($buttons['ask.take'] instanceof \MUtil\Html\HtmlElement)) {
-                if ('a' == $buttons['ask.take']->tagName) {
-                    $buttons['ask.take'] = $tData->getTokenAskButtonForBridge($bridge, true, true);
-                }
-            }
-            if (isset($buttons['track.answer']) && ($buttons['track.answer'] instanceof \MUtil\Html\HtmlElement)) {
-                if ('a' == $buttons['track.answer']->tagName) {
-                    $buttons['track.answer'] = $tData->getTokenAnswerLinkForBridge($bridge, true);
-                }
-            }*/
-
-            //$bridge->tr();
-            //$bridge->tdh($this->_('Actions'));
-            //$bridge->td($buttons, array('colspan' => 2, 'skiprowclass' => true));
-        //}
 
         return true;
     }
@@ -264,9 +255,6 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             [
                 'route' => 'respondent.tracks.show-track',
                 'label' => $this->_('Show track'),
-                'parameters' => [
-                    Model::RESPONDENT_TRACK => $this->token->getRespondentTrackId(),
-                ]
             ],
             /*[
                 'route' => 'respondent.tracks.undelete',
@@ -284,8 +272,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         ];
 
         $links = [];
+        $urlParams = $this->token->getMenuUrlParameters();
         foreach($items as $item) {
-            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $this->requestInfo->getRequestMatchedParams());
+            $url = $this->menuSnippetHelper->getRouteUrl($item['route'], $urlParams);
             if ($url) {
                 $links[$item['route']] = Html::actionLink($url, $item['label']);
             }
@@ -321,13 +310,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      */
     protected function addRespondentGroup(ThreeColumnTableBridge $bridge, \MUtil\Model\ModelAbstract $model)
     {
-        $params = [
-            'id1' => 'gr2o_patient_nr',
-            'id2' => 'gr2o_id_organization',
-        ];
+        $urlParams = $this->token->getMenuUrlParameters();
 
-        $href = $this->menuSnippetHelper->getLateRouteUrl('respondent.show', $params);
-
+        $href = $this->menuSnippetHelper->getRouteUrl('respondent.show', $urlParams);
         $model->set('gr2o_patient_nr', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
 
         // ThreeColumnTableBridge->add()
@@ -410,13 +395,9 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
      */
     protected function addTrackGroup(ThreeColumnTableBridge $bridge, ModelAbstract $model)
     {
-        $params = [
-            'id1' => 'gr2o_patient_nr',
-            'id2' => 'gr2o_id_organization',
-            Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
-        ];
+        $urlParams = $this->token->getMenuUrlParameters();
 
-        $href = $this->menuSnippetHelper->getLateRouteUrl('respondent.tracks.show-track', $params);
+        $href = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show-track', $urlParams);
         $model->set('gtr_track_name', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
 
         // ThreeColumnTableBridge->add()
@@ -441,10 +422,11 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     protected function addValidFromBlock(ThreeColumnTableBridge $bridge)
     {
         // Editable part (INFO / VALID FROM / UNTIL / E-MAIL
+        $urlParams = $this->token->getMenuUrlParameters();
 
-        $links = [
-            Html::actionLink($this->menuSnippetHelper->getRouteUrl('respondent.tracks.edit', $this->requestInfo->getRequestMatchedParams()), $this->_('edit'))
-        ];
+        $link = Html::actionLink(
+            $this->menuSnippetHelper->getRouteUrl('respondent.tracks.edit', $urlParams),
+            $this->_('Edit'));
 
         $bridge->addWithThird(
             'gto_valid_from_manual',
@@ -452,7 +434,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             'gto_valid_until_manual',
             'gto_valid_until',
             'gto_comment',
-            $links,
+            $link,
         );
 
         return true;

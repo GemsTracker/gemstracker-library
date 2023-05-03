@@ -946,6 +946,20 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     }
 
     /**
+     * @return array Url array for token routes
+     */
+    public function getMenuUrlParameters(): array
+    {
+        $params[\MUtil\Model::REQUEST_ID] = $this->getRespondentTrackId();
+        $params[\MUtil\Model::REQUEST_ID1] = $this->getPatientNumber();
+        $params[\MUtil\Model::REQUEST_ID2] = $this->getOrganizationId();
+        $params[\Gems\Model::RESPONDENT_TRACK] = $this->getRespondentTrackId();
+
+        return $params;
+    }
+
+
+    /**
      *
      * @return string The respondents patient number
      */

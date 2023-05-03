@@ -39,35 +39,35 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
      *
      * @var array
      */
-    protected $editItems = array();
+    protected array $editItems = [];
 
     /**
      * Array of items that should be shown to the user
      *
      * @var array
      */
-    protected $exhibitItems = array();
+    protected array $exhibitItems = [];
 
     /**
      * When a fixed reception code is specified, then no choice list is presented to the user
      *
      * @var string
      */
-    protected $fixedReceptionCode = null;
+    protected ?string $fixedReceptionCode = null;
 
     /**
      * Array of items that should be kept, but as hidden
      *
      * @var array
      */
-    protected $hiddenItems = array();
+    protected array $hiddenItems = [];
 
     /**
      * The item containing the reception code field
      *
      * @var string
      */
-    protected $receptionCodeItem = '';
+    protected string $receptionCodeItem = '';
 
     /**
      * The name of the action to forward to after form completion
@@ -81,14 +81,14 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
      *
      * @var boolean
      */
-    protected $unDelete = false;
+    protected bool $unDelete = false;
 
     /**
      * Optional right to check for undeleting
      *
      * @var string
      */
-    protected $unDeleteRight;
+    protected ?string $unDeleteRight = null;
 
     public function __construct(
         SnippetOptions $snippetOptions,

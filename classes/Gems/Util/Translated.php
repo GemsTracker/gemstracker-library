@@ -41,7 +41,7 @@ class Translated
      *
      * @var string
      */
-    public $dateFormatString = 'Y-M-d';
+    public $dateFormatString = 'd-M-Y';
 
     /**
      * DateTime format string used by this project

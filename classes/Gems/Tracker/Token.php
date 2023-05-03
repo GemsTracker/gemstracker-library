@@ -942,6 +942,19 @@ class Token extends TargetAbstract
     }
 
     /**
+     * @return array Url array for token routes
+     */
+    public function getMenuUrlParameters(): array
+    {
+        $params[\MUtil\Model::REQUEST_ID] = $this->getTokenId();
+        $params[\MUtil\Model::REQUEST_ID1] = $this->getPatientNumber();
+        $params[\MUtil\Model::REQUEST_ID2] = $this->getOrganizationId();
+        $params[\Gems\Model::RESPONDENT_TRACK] = $this->getRespondentTrackId();
+
+        return $params;
+    }
+
+    /**
      * Returns a model that can be used to save, edit, etc. the token
      *
      * @return \Gems\Tracker\Model\StandardTokenModel

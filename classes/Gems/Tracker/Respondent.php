@@ -470,6 +470,17 @@ class Respondent extends TargetAbstract
     }
 
     /**
+     * @return array Url array for token routes
+     */
+    public function getMenuUrlParameters(): array
+    {
+        $params[\MUtil\Model::REQUEST_ID1] = $this->getPatientNumber();
+        $params[\MUtil\Model::REQUEST_ID2] = $this->getOrganizationId();
+
+        return $params;
+    }
+
+    /**
      * Get the Mobile phone number specifically. In some projects this is fixed to a specific field
      *
      * @return string|null

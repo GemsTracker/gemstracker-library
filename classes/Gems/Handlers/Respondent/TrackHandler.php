@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
@@ -206,6 +207,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteTrackSnippets = [
         'Tracker\\DeleteTrackSnippet',
+        CurrentButtonRowSnippet::class,
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
     ];
