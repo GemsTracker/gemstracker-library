@@ -33,6 +33,8 @@ use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
 use Mezzio\Flash\FlashMessagesInterface;
 use Mezzio\Session\SessionInterface;
+use MUtil\Bootstrap\Form\Element\Password;
+use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Model\TableModel;
 use MUtil\Ra;
 use MUtil\Validate\SimpleEmail;
@@ -421,7 +423,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         if (!$this->verify) {
             $flashValues = $this->flash->getFlash('own_account_edit_auth_input');
 
-            $element = new \MUtil\Form\Element\Text('gsf_email');
+            $element = new Text('gsf_email');
             $element
                 ->setLabel($this->_('E-Mail'))
                 ->setAttrib('size', 30)
@@ -431,7 +433,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             ;
             $form->addElement($element);
 
-            $element = new \MUtil\Form\Element\Text('gsf_phone_1');
+            $element = new Text('gsf_phone_1');
             $element
                 ->setLabel($this->_('Mobile phone'))
                 ->setRequired()
@@ -439,7 +441,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
             ;
             $form->addElement($element);
 
-            $element = new \MUtil\Form\Element\Password('password');
+            $element = new Password('password');
             $element
                 ->setLabel($this->_('Current password'))
                 ->setAttrib('renderPassword', true)
