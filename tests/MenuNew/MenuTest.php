@@ -498,7 +498,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
                 'path' => '/route-b',
                 'allowed_methods' => ['GET'],
                 'options' => [
-                    'permission' => 'permission-b',
+                    'privilege' => 'privilege-b',
                 ],
             ],
             [
@@ -521,7 +521,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
                 'path' => '/route-f',
                 'allowed_methods' => ['GET'],
                 'options' => [
-                    'permission' => 'permission-c',
+                    'privilege' => 'privilege-c',
                 ],
             ],
         ];
@@ -571,12 +571,12 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $menuConfig->method('getItems')->willReturn($menu);
 
         $acl = new Acl();
-        $acl->addResource('permission-b');
-        $acl->addResource('permission-c');
+        $acl->addResource('privilege-b');
+        $acl->addResource('privilege-c');
         $acl->addRole('role-a');
         $acl->addRole('role-b');
 
-        $acl->allow('role-b', 'permission-b');
+        $acl->allow('role-b', 'privilege-b');
 
         $config = [
             'routes' => $routes,
