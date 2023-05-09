@@ -58,7 +58,7 @@ class TfaLoginHandler implements RequestHandlerInterface
             return AuthenticationMiddleware::redirectToIntended($this->authenticationService, $session, $this->urlHelper);
         }
 
-        $tfaConfigured = $this->user->hasTfaConfigured();
+        $tfaConfigured = $this->user->hasTwoFactorConfigured();
         $otpMethod = null;
         if ($tfaConfigured) {
             if ($request->getMethod() === 'POST') {

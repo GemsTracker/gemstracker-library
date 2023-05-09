@@ -13,7 +13,6 @@ namespace Gems\User;
 
 use Gems\Exception\AuthenticationException;
 use Gems\User\Group;
-use Gems\User\TwoFactor\TwoFactorAuthenticatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 
 /**

@@ -47,11 +47,11 @@ class OtpMethodBuilder
 
     public function setOtpMethod(User $user, string $className): void
     {
-        $user->setTfa($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret());
+        $user->setTwoFactorKey($className, $this->buildSpecificOtpMethod($className, $user)->generateSecret());
     }
 
     public function setOtpMethodAndSecret(User $user, string $className, string $secret): void
     {
-        $user->setTfa($className, $secret);
+        $user->setTwoFactorKey($className, $secret);
     }
 }

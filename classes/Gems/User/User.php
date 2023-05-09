@@ -14,6 +14,7 @@ namespace Gems\User;
 
 use DateTimeImmutable;
 
+use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
@@ -1384,6 +1385,53 @@ class User extends \MUtil\Translate\TranslateableAbstract
 
     /**
      *
+     * @return string|null
+     */
+    public function getTwoFactorKeyForAdapter(string $adapter): ?string
+    {
+        $adapters = [
+            'Hotp' => ['MailHotp', 'SmsHotp'],
+            'Totp' => ['AuthenticatorTotp'],
+        ];
+
+        if ($this->hasTwoFactorConfigured()) {
+            [$method, $key] = explode(
+                OtpMethodInterface::SEPERATOR,
+                $this->_getVar('user_two_factor_key'),
+                2
+            );
+
+            if (in_array($method, $adapters[$adapter], true)) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
+    public function getTfaMethodClass(): string
+    {
+        if ($this->hasTwoFactorConfigured()) {
+            $authClass = \MUtil\StringUtil\StringUtil::beforeChars(
+                $this->_getVar('user_two_factor_key'),
+                OtpMethodInterface::SEPERATOR
+            );
+        } else {
+            //$authClass = $this->defaultAuthenticatorClass;
+            throw new \Exception('No TFA configured');
+        }
+
+        return match($authClass) {
+            'GoogleAuthenticator' => 'AuthenticatorTotp', // TODO: Legacy
+            'AuthenticatorTotp' => 'AuthenticatorTotp',
+            'MailHotp' => 'MailHotp',
+            'SmsHotp' => 'SmsHotp',
+            default => throw new \Exception('Invalid auth class value "' . $authClass . '"'),
+        };
+    }
+
+    /**
+     *
      * @return string
      */
     public function getUserDefinitionClass()
@@ -1474,13 +1522,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
         return (isset($roles[$role]));
     }
 
-    /**
-     *
-     * @return boolean
-     */
-    public function hasTwoFactor()
+    public function hasTwoFactorConfigured(): bool
     {
-        return (boolean) $this->_getVar('user_two_factor_key');
+        return $this->_hasVar('user_two_factor_key') && !empty($this->_getVar('user_two_factor_key'));
     }
 
     /**
@@ -1627,9 +1671,9 @@ class User extends \MUtil\Translate\TranslateableAbstract
      *
      * @return boolean
      */
-    public function isTwoFactorEnabled()
+    public function isTwoFactorEnabled(): bool
     {
-        return (boolean) $this->hasTwoFactor();
+        return $this->hasTwoFactorConfigured();
     }
 
     /**
@@ -2166,6 +2210,15 @@ class User extends \MUtil\Translate\TranslateableAbstract
         $this->_setVar('surveyReturn', $return);
 
         return $this;
+    }
+
+    public function setTwoFactorKey(string $className, string $secret): void
+    {
+        $newValue = $className . OtpMethodInterface::SEPERATOR . $secret;
+
+        $this->_setVar('user_two_factor_key', $newValue);
+
+        $this->definition->setTwoFactorKey($this, $newValue);
     }
 
     /**

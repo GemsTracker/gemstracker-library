@@ -77,7 +77,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
 
         $methodElement = $form->createElement('exhibitor', 'twoFactorMethod', [
             'label' => $this->_('Current Two Factor method'),
-            'value' => $this->user->hasTfaConfigured() ? $this->user->getTfaMethodClass() : $this->_('None'),
+            'value' => $this->user->hasTwoFactorConfigured() ? $this->user->getTfaMethodClass() : $this->_('None'),
         ]);
         $form->addElement($methodElement);
 
@@ -85,7 +85,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
         $resetElement->setLabel($this->_('Change TFA method to SMS and send mail'))
             ->setAttrib('class', 'button btn btn-primary')
             ->setOrder($order++);
-        if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
+        if ($this->user->hasTwoFactorConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
             $resetElement->setAttrib('disabled', 'disabled');
 
             if (empty($this->user->getPhonenumber())) {
@@ -130,7 +130,7 @@ class StaffResetAuthenticationSnippet extends ZendFormSnippetAbstract
                 $successMessage = $this->_('Reset password mail sent');
             }
         } elseif (isset($this->formData['reset_tfa']) && $this->formData['reset_tfa']) {
-            if ($this->user->hasTfaConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
+            if ($this->user->hasTwoFactorConfigured() && $this->user->getTfaMethodClass() === 'SmsHotp') {
                 $this->addMessage($this->_('This user already has SMS TFA enabled'));
             } elseif (empty($this->user->getPhonenumber())) {
                 $this->statusMessenger->addError($this->_('Please first add a mobile telephone number before activating SMS TFA'));

@@ -188,7 +188,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
      */
     public function hasHtmlOutput(): bool
     {
-        if (! ($this->user->hasTwoFactor() || $this->user->canSaveTwoFactorKey())) {
+        if (! ($this->user->hasTwoFactorConfigured() || $this->user->canSaveTwoFactorKey())) {
             $this->addMessage(sprintf(
                 $this->_('A two factor key cannot be set for %s.'),
                 $this->user->getFullName()
@@ -222,7 +222,7 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
             return;
         }
 
-        if ($this->user->hasTfaConfigured() && $tfaMethod = $this->otpMethodBuilder->buildOtpMethod($this->user)) {
+        if ($this->user->hasTwoFactorConfigured() && $tfaMethod = $this->otpMethodBuilder->buildOtpMethod($this->user)) {
             $tfaMethodName = (new \ReflectionClass($tfaMethod))->getShortName();
             if (isset($tfaMethods[$tfaMethodName])) {
                 $this->tfaMethod = $tfaMethod;
