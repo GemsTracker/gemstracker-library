@@ -50,11 +50,10 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
     {
-        $appointmentDate = DateTimeImmutable('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = new DateTimeImmutable('2018-01-01');
 
         if ($endDate) {
-            $trackEndDate = clone $appointmentDate;
-            $trackEndDate->subDay(5);
+            $trackEndDate = $appointmentDate->sub(new DateInterval('P5D'));
             $respTrack    = $this->_getRespondentTrack($trackEndDate);
         } else {
             $respTrack = $this->_getRespondentTrack();
