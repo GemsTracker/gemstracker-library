@@ -22,6 +22,7 @@ use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
 use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
+use MUtil\Ra;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Bridge\BridgeInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -450,12 +451,18 @@ class TrackHandler extends RespondentChildHandlerAbstract
                 sprintf($this->_('Access to this token is not allowed for current role: %s.'), $this->currentUser->getRole()));
         }
 
-        $snippets = $token->getAnswerSnippetNames();
+        $snippetNames = $token->getAnswerSnippetNames();
 
-        if ($snippets) {
+        if ($snippetNames) {
             //$this->setTitle(sprintf($this->_('Token answers: %s'), strtoupper($token->getTokenId())));
 
             $params = $this->_processParameters($this->answerParameters + $this->defaultTokenParameters);
+
+            list($snippets, $snippetParams) = Ra::keySplit($snippetNames);
+
+            if ($snippetParams) {
+                $params += $snippetParams;
+            }
 
             $this->addSnippets($snippets, $params);
         }
