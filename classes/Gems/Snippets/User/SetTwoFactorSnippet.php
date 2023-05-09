@@ -97,19 +97,6 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        //$this->authenticator = $this->user->getTwoFactorAuthenticator();
-    }
-
-    /**
      * Return a list of Two Factor methods with Authenticator class name as key and label as value
      *
      * @return array
