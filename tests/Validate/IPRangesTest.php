@@ -6,16 +6,16 @@
  * and open the template in the editor.
  */
 
-namespace Gems\Validator;
+namespace GemsTest\Validate;
 
 /**
  * Description of IPRangesTest
  *
  * @author 175780
  */
-class IPRangesTest extends \PHPUnit_Framework_TestCase
+class IPRangesTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->validator = new \Gems\Validate\IPRanges();
