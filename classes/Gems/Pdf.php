@@ -289,7 +289,7 @@ class Pdf
      */
     public function getUploadDir(string $subdir = null): string
     {
-        $dir = $this->config['rootDir'] . '/var/uploads';
+        $dir = $this->config['rootDir'] . '/data/uploads';
 
         if ($subdir) {
             if (($subdir[0] == '/') || ($subdir[0] == '\\') || (substr($subdir, 1, 2) == ':\\')) {
