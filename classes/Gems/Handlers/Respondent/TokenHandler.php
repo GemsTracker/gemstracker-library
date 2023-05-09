@@ -129,7 +129,7 @@ class TokenHandler extends TokenSearchHandlerAbstract
 
         $orgsFor = $this->organizationRepository->getAllowedOrganizationsFor($this->request->getAttribute(Model::REQUEST_ID2));
         if (is_array($orgsFor)) {
-            $data['gto_id_organization'] = $orgsFor;
+            $data['gto_id_organization'] = array_keys($orgsFor);
         } elseif (true !== $orgsFor) {
             $data['gto_id_organization'] = $this->request->getAttribute(Model::REQUEST_ID2);
         }
