@@ -320,7 +320,12 @@ class MenuSnippetHelper
      */
     public function getSiblingRoutes(string $current): array
     {
-        $routes = $this->getChildRoutes($this->getParentRoute($current));
+        $parent = $this->getParentRoute($current);
+        if (! $parent) {
+            return [];
+        }
+
+        $routes = $this->getChildRoutes($parent);
         unset($routes[$current]);
         return $routes;
     }

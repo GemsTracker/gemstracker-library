@@ -48,12 +48,12 @@ class TrackIndexButtonRow extends ButtonRowSnippet
     /**
      * Set the menu items (allows for overruling in subclasses)
      */
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $this->extraRoutesLabelled = [
             'respondent.show' => $this->_('Show respondent'),
         ];
 
-        return parent::addButtons();
+        return parent::getButtons();
     }
 }

@@ -13,8 +13,10 @@ namespace Gems\Snippets;
 
 use Gems\Html;
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\Generic\ButtonRowTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\Raw;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeAbstract;
 use Zalt\Model\Bridge\FormBridgeInterface;
@@ -42,8 +44,9 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 {
+    use ButtonRowTrait;
     use TopicCallableTrait;
-    
+
     /**
      *
      * @var \Gems\Audit\AuditLog
@@ -216,6 +219,37 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
         if ($changed) {
             //$this->accesslog->logChange($this->request, null, $this->formData);
         }
+    }
+
+    /**
+     * Perform some actions on the form, right before it is displayed but already populated
+     *
+     * Here we add the table display to the form.
+     */
+    public function beforeDisplay()
+    {
+        $menuList = $this->getButtons();
+
+        if (count($menuList)) {
+            $container = Html::create('div', array('class' => 'fromButtons', 'renderClosingTag' => true));
+            foreach ($menuList as $buttonInfo) {
+                if (isset($buttonInfo['label'])) {
+                    if (isset($buttonInfo['disabled']) && $buttonInfo['disabled'] === true) {
+                        $container->append(Html::actionDisabled(Raw::raw($buttonInfo['label'])));
+                    } elseif (isset($buttonInfo['url'])) {
+                        $container->append(Html::actionLink($buttonInfo['url'], Raw::raw($buttonInfo['label'])));
+                    }
+                }
+            }
+
+            $buttons = $this->_form->createElement('Html', 'buttons');
+            if ($buttons instanceof \MUtil\Bootstrap\Form\Element\Html) {
+                $buttons->setValue($container);
+                $this->_form->addElement($buttons);
+            }
+        }
+
+        parent::beforeDisplay();
     }
 
     /**

@@ -13,7 +13,7 @@ namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\FilterTracer;
 use Gems\Model;
-use Gems\Snippets\FormSnippetAbstract;
+use Gems\Snippets\FormSnippetAbstractMUtil;
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Util\Translated;
 
@@ -25,7 +25,7 @@ use Gems\Util\Translated;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 07-Jan-2020 11:49:55
  */
-class AppointmentCheckSnippet extends FormSnippetAbstract
+class AppointmentCheckSnippet extends FormSnippetAbstractMUtil
 {
     /**
      *

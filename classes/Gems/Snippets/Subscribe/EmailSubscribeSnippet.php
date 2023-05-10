@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Subscribe;
 
-use Gems\Snippets\FormSnippetAbstract;
+use Gems\Snippets\FormSnippetAbstractMUtil;
 
 /**
  *
@@ -21,7 +21,7 @@ use Gems\Snippets\FormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:35:38
  */
-class EmailSubscribeSnippet extends FormSnippetAbstract
+class EmailSubscribeSnippet extends FormSnippetAbstractMUtil
 {
     /**
      *

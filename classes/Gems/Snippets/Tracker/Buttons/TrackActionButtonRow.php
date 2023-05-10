@@ -48,7 +48,7 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
     /**
      * Set the menu items (allows for overruling in subclasses)
      */
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $this->extraRoutesLabelled = [
             'respondent.show'              => $this->_('Show respondent'),
@@ -57,6 +57,6 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
             'respondent.tracks.edit-track' => $this->_('Edit track'),
         ];
 
-        return parent::addButtons();
+        return parent::getButtons();
     }
 }

@@ -24,10 +24,10 @@ class CommJobIndexButtonRowSnippet extends CurrentButtonRowSnippet
         parent::__construct($snippetOptions, $requestInfo, $translate, $menuHelper);
     }
 
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         if (!$this->routeHelper->hasAccessToRoute($this->lockRoute)) {
-            return parent::addButtons();
+            return parent::getButtons();
         }
 
         $url = $this->menuHelper->getRouteUrl('setup.communication.job.lock', []);
@@ -38,6 +38,6 @@ class CommJobIndexButtonRowSnippet extends CurrentButtonRowSnippet
                 'label' => $label,
                 'url' => $url,
             ]
-        ] + parent::addButtons();
+        ] + parent::getButtons();
     }
 }

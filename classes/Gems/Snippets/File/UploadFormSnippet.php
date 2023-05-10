@@ -18,7 +18,7 @@ namespace Gems\Snippets\File;
  * @license    New BSD License
  * @since      Class available since version 1.9.1
  */
-class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstract
+class UploadFormSnippet extends \Gems\Snippets\FormSnippetAbstractMUtil
 {
     /**
      * @var \Zend_Form_Element_File

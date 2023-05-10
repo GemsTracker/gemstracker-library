@@ -4,7 +4,7 @@ namespace Gems\Snippets\Generic;
 
 abstract class PrevNextButtonRowSnippetAbstract extends CurrentButtonRowSnippet
 {
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $buttons = [];
 
@@ -16,7 +16,7 @@ abstract class PrevNextButtonRowSnippetAbstract extends CurrentButtonRowSnippet
             'disabled' => $prevUrl === null,
         ];
 
-        $buttons = array_merge($buttons, parent::addButtons());
+        $buttons = array_merge($buttons, parent::getButtons());
 
         $nextUrl = $this->getNextUrl();
 

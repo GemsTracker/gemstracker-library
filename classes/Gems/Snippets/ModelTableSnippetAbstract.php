@@ -108,6 +108,7 @@ abstract class ModelTableSnippetAbstract extends \Zalt\Snippets\ModelTableSnippe
     {
         $metaModel = $dataModel->getMetaModel();
         $keys      = $this->getRouteMaps($metaModel);
+        dump($keys);
         
         if ($metaModel->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);

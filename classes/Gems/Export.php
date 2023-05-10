@@ -85,6 +85,12 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
         $this->_exportClasses = array_merge($this->_exportClasses, $stack);
     }
 
+    public function getDefaultExportClass()
+    {
+        reset($this->_exportClasses);
+        return key($this->_exportClasses);
+    }
+
     public function getDefaults()
     {
         return $this->_defaults;

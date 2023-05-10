@@ -15,7 +15,9 @@ use DateTimeInterface;
 use Gems\Html;
 use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Browse\BrowseSearchAction;
+use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
+use Gems\SnippetsActions\Form\EditAction;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -247,6 +249,21 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
         }
         if ($action instanceof CreateAction) {
             $action->class = "formTable";
+            $action->addCurrentParent = true;
+            $action->addCurrentChildren = false;
+
+            if ($action instanceof EditAction) {
+                $action->addCurrentSiblings = true;
+            } else {
+                $action->addCurrentSiblings = false;
+            }
         }
+//        if ($action instanceof ExportAction) {
+//            $step = $this->requestInfo->getParam('step');
+//            if ($step) {
+//                $action->step = $step;
+//            }
+//            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+//        }
     }
 }
