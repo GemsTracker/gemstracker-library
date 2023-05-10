@@ -254,11 +254,13 @@ class AskHandler extends SnippetLegacyHandlerAbstract
         $this->html->h3($form->getDescription());
         $this->html[] = $form;
         $this->html->pInfo(
-            $this->_('Tokens identify a survey that was assigned to you personally.') . ' AskHandler.php' . $this->_('Entering the token and pressing OK will open that survey.'));
+            $this->_('Tokens identify a survey that was assigned to you personally.'), ' ',
+            $this->_('Entering the token and pressing OK will open that survey.'), ' '
+        );
 
         if ($this->currentUser !== null && $this->currentUser->isActive()) {
             if ($this->currentUser->isLogoutOnSurvey()) {
-                $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'));
+                $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'), ' ');
             }
         }
 
