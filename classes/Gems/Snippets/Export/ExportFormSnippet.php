@@ -94,7 +94,7 @@ class ExportFormSnippet extends ModelSnippetAbstract
             'data-autosubmit-inplace' => true,
         ]);
 
-        $url = $this->menuHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'batch']);
+        $url = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => 'batch']);
         $form->setAction($url);
 
         $elements = array();

@@ -13,7 +13,7 @@ namespace Gems\Snippets\Export;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
-use Gems\MenuNew\RouteHelper;
+use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Task\TaskRunnerBatch;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
@@ -50,7 +50,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         protected Loader $loader,
         protected BatchRunnerLoader $batchRunnerLoader,
         protected ProjectOverloader $overLoader,
-        protected RouteHelper $routeHelper,
+        protected MenuSnippetHelper $menuHelper,
         protected SessionInterface $session,
         protected ServerRequestInterface $request,
     ) {
@@ -68,8 +68,8 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
-        $batch->restartRedirectUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => null]);
-        $batch->finishUrl = $this->routeHelper->getRouteUrl('setup.codes.mail-code.export', ['step' => 'download']);
+        $batch->restartRedirectUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => null]);
+        $batch->finishUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => 'download']);
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
