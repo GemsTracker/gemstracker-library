@@ -51,7 +51,8 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameters = null,
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
-                                       ?array $parentParameters = null): array
+                                       ?array $parentParameters = null,
+                                       bool $genericExport = false): array
     {
         if ($basePath === null) {
             $basePath = '/' . str_replace('.', '/', $baseName);
@@ -90,6 +91,11 @@ trait ModelSnippetActionRouteHelpers
 
         $parameterString = join('/', $combinedParameters);
 
+        if ($genericExport) {
+            array_unshift($pages, 'export');
+            $postRoutes[] = 'export';
+        }
+
         foreach($pages as $pageName) {
             $route = [
                 'name' => $baseName . '.' . $pageName,
@@ -108,6 +114,8 @@ trait ModelSnippetActionRouteHelpers
 
             if ($pageName === 'index' || $pageName === 'show') {
                 $route['path'] = $basePath;
+            } elseif ($genericExport && $pageName === 'export') {
+                $route['path'] .= '[/step/{step:batch|download}]';
             }
 
             if ($parentParameters !== null) {
@@ -199,7 +207,8 @@ trait ModelSnippetActionRouteHelpers
                                        ?array $parameters = null,
                                        ?array $parameterRoutes = null,
                                        ?array $postRoutes = null,
-                                       ?array $parentParameters = null): array
+                                       ?array $parentParameters = null,
+                                       bool $genericExport = false): array
     {
         return $this->createBrowseRoutes(
             $baseName, 
@@ -213,7 +222,8 @@ trait ModelSnippetActionRouteHelpers
             $parameters, 
             $parameterRoutes, 
             $postRoutes, 
-            $parentParameters);
+            $parentParameters,
+            $genericExport);
     }
 
     public function getDefaultMiddleware(string|array $additionalMiddleware): array

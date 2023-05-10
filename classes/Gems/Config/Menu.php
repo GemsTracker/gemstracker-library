@@ -583,6 +583,11 @@ class Menu
                                         ],
                                     ],
                                 ],
+                                [
+                                    'name' => 'setup.codes.reception.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
+                                ],
                             ],
                         ],
                         [

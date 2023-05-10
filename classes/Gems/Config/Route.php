@@ -707,6 +707,7 @@ class Route
                 parameters:                        [
                     'id' => '[a-zA-Z0-9-_]+',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'setup.codes.consent',
                 controllerClass: \Gems\Handlers\Setup\ConsentHandler::class,
@@ -717,24 +718,8 @@ class Route
 
             ...$this->createSnippetRoutes(baseName: 'setup.codes.mail-code',
                 controllerClass: \Gems\Handlers\Setup\MailCodeHandler::class,
+                genericExport: true,
             ),
-            [
-                'name' => 'setup.codes.mail-code.export',
-                'path' => '/setup/codes/mail-code/export[/step/{step:batch|download}]',
-                'middleware' => [
-                    \Gems\Middleware\LegacyCurrentUserMiddleware::class,
-                    \Gems\Handlers\Setup\MailCodeHandler::class,
-                ],
-                'allowed_methods' => [
-                    'GET',
-                    'POST',
-                ],
-                'options' => [
-                    'controller' => \Gems\Handlers\Setup\MailCodeHandler::class,
-                    'action' => 'export',
-                    'privilege' => 'pr.setup.codes.mail-code.export',
-                ]
-            ],
 
             [
                 'name' => 'setup.communication',
