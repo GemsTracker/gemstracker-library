@@ -140,9 +140,9 @@ class RespondentTrack extends \Gems\Registry\TargetAbstract
     {
         if (is_array($respTracksData)) {
             $this->_respTrackData = $respTracksData;
-            $this->_respTrackId   = $respTracksData['gr2t_id_respondent_track'];
+            $this->_respTrackId   = (int)$respTracksData['gr2t_id_respondent_track'];
         } else {
-            $this->_respTrackId = $respTracksData;
+            $this->_respTrackId = (int)$respTracksData;
         }
     }
 
