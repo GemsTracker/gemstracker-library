@@ -242,16 +242,16 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
 
     /**
      *
-     * @param SessionInterface $session
      * @param int $respondentId    The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
      * @param int $organizationId
      * @param int $trackId
      * @param int $userId          Id of the user who takes the action (for logging)
      * @param mixed $respTrackData Optional array containing field values or the start date.
      * @param array $trackFieldsData
+     * @param SessionInterface $session
      * @return \Gems\Tracker\RespondentTrack The newly created track
      */
-    public function createRespondentTrack(SessionInterface $session, $respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
+    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array(), SessionInterface $session = null)
     {
         $trackEngine = $this->getTrackEngine($trackId);
 
