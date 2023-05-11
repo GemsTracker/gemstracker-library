@@ -31,12 +31,12 @@ class NewRoundButtonRow extends ButtonRowSnippet
      *
      * @param \Gems\Menu\MenuList $menuList
      */
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $this->extraRoutesLabelled = [
             'track-builder.track-maintenance.track-rounds.create' => $this->_('New round'),
         ];
 
-        return parent::addButtons();
+        return parent::getButtons();
     }
 }

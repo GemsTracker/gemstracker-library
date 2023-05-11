@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsActions\Form;
 
+use Gems\Snippets\Generic\ButtonRowTrait;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Snippets\ModelFormSnippet;
+use Gems\SnippetsActions\ButtonRowActiontrait;
 use Zalt\Model\MetaModellerInterface;
 
 /**
@@ -23,12 +25,13 @@ use Zalt\Model\MetaModellerInterface;
  */
 class CreateAction extends \Zalt\SnippetsActions\Form\ZendEditAction
 {
+    use ButtonRowActiontrait;
+
     /**
      * @var array Of snippet class names
      */
     protected array $_snippets = [
         ModelFormSnippet::class,
-        CurrentButtonRowSnippet::class,
     ];
 
     /**

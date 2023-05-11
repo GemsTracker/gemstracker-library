@@ -11,7 +11,14 @@
 
 namespace Gems\Snippets;
 
-use MUtil\Snippets\FormSnippetAbstract as MUtilFormSnippetAbstract;
+use Gems\Html;
+use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\Generic\ButtonRowTrait;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Html\Raw;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -22,8 +29,10 @@ use MUtil\Snippets\FormSnippetAbstract as MUtilFormSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 11:26:15
  */
-abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
+abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
 {
+    use ButtonRowTrait;
+
     /**
      *
      * @var \Gems\Audit\AuditLog
@@ -45,50 +54,95 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     protected $formTitle;
 
     /**
-     *
-     * @var boolean
+     * @param \Zalt\SnippetsLoader\SnippetOptions                $snippetOptions
+     * @param \Zalt\Base\RequestInfo                             $requestInfo
+     * @param \Symfony\Contracts\Translation\TranslatorInterface $translate
+     * @param \Zalt\Message\MessengerInterface                   $messenger
+     * @param \Gems\MenuNew\MenuSnippetHelper                    $menuHelper
      */
-    protected $menuShowChildren = false;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected MenuSnippetHelper $menuHelper,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+
+        $this->saveLabel = $this->_('Save');
+        // $this->useCsrf = $project->useCsrfCheck();
+    }
 
     /**
-     *
-     * @var boolean
+     * @inheritdoc
      */
-    protected $menuShowSiblings = false;
+    // abstract protected function addFormElements(mixed $form);
 
     /**
-     * When set getTopic uses this function instead of parent class.
+     * Simple default function for making sure there is a $this->_saveButton.
      *
-     * @var callable
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
      */
-    protected $topicCallable;
+    protected function addSaveButton(string $saveButtonId, string $saveLabel, string $buttonClass)
+    {
+        if ("OK" == $this->saveLabel) {
+            $this->saveLabel = $this->_('Save');
+        }
+
+        if ($this->_form instanceof \Gems\TabForm) {
+            $this->_form->resetContext();
+        }
+        parent::addSaveButton($saveButtonId, $saveLabel, $buttonClass);
+    }
 
     /**
-     * Required
+     * Hook that allows actions when data was saved
      *
-     * @var \Gems\Menu
-     */
-    protected $menu;
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     * /
+    protected function afterSave($changed)
+    {
+        parent::afterSave($changed);
+
+        if ($changed) {
+            // $this->accesslog->logChange($this->request, null, $this->formData);
+        }
+    }
 
     /**
+     * Perform some actions on the form, right before it is displayed but already populated
      *
-     * @var \Gems\Project\ProjectSettings
+     * Here we add the table display to the form.
      */
-    protected $project;
+    public function beforeDisplay()
+    {
+        $menuList = $this->getButtons();
 
-    /**
-     * The name of the action to forward to after form completion
-     *
-     * @var string
-     */
-    protected $routeAction = 'show';
+        if (count($menuList)) {
+            $container = Html::create('div', array('class' => 'fromButtons', 'renderClosingTag' => true));
+            foreach ($menuList as $buttonInfo) {
+                if (isset($buttonInfo['label'])) {
+                    if (isset($buttonInfo['disabled']) && $buttonInfo['disabled'] === true) {
+                        $container->append(Html::actionDisabled(Raw::raw($buttonInfo['label'])));
+                    } elseif (isset($buttonInfo['url'])) {
+                        $container->append(Html::actionLink($buttonInfo['url'], Raw::raw($buttonInfo['label'])));
+                    }
+                }
+            }
 
-    /**
-     * Add the elements to the form
-     *
-     * @param \Zend_Form $form
-     */
-    // abstract protected function addFormElements(\Zend_Form $form);
+            $buttons = $this->_form->createElement('Html', 'buttons');
+            if ($buttons instanceof \MUtil\Bootstrap\Form\Element\Html) {
+                $buttons->setValue($container);
+                $this->_form->addElement($buttons);
+            }
+        }
+
+        parent::beforeDisplay();
+    }
 
     /**
      * Creates an empty form. Allows overruling in sub-classes.
@@ -104,77 +158,6 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
     }
 
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if ($this->project instanceof \Gems\Project\ProjectSettings) {
-            $this->useCsrf = $this->project->useCsrfCheck();
-        }
-    }
-
-    /**
-     * Hook that allows actions when data was saved
-     *
-     * When not rerouted, the form will be populated afterwards
-     *
-     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     */
-    protected function afterSave($changed)
-    {
-        parent::afterSave($changed);
-
-        if ($changed) {
-            $this->accesslog->logChange($this->request, null, $this->formData);
-        }
-    }
-
-    /**
-     * Perform some actions on the form, right before it is displayed but already populated
-     *
-     * Here we add the table display to the form.
-     *
-     * @return \Zend_Form
-     */
-    public function beforeDisplay()
-    {
-        if ($this->_csrf) {
-            $this->_csrf->initCsrfToken();
-        }
-
-        $links = $this->getMenuList();
-        if ($links) {
-            $linkContainer = \MUtil\Html::create()->div(['class' => 'element-container-labelless', 'renderWithoutContent' => false,]);
-            $linkContainer[] = $links;
-
-            $element = $this->_form->createElement('html', 'formLinks');
-            $element->setValue($linkContainer)
-                    ->setOrder(999)
-                    ->removeDecorator('HtmlTag')
-                    ->removeDecorator('Label')
-                    ->removeDecorator('DtDdWrapper');
-
-            $this->_form->addElement($element);
-        }
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return $this->menu && parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
@@ -182,40 +165,17 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
      * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
-        $htmlDiv = \MUtil\Html::div();
+        $htmlDiv = Html::div();
 
         $htmlDiv->h3($this->getTitle(), array('class' => 'title'));
 
-        $form = parent::getHtmlOutput($view);
+        $form = parent::getHtmlOutput();
 
         $htmlDiv[] = $form;
 
         return $htmlDiv;
-    }
-
-    /**
-     * overrule to add your own buttons.
-     *
-     * @return \Gems\Menu\MenuList
-     */
-    protected function getMenuList()
-    {
-        $links = $this->menu->getMenuList();
-
-        $links->addParameterSources($this->request, $this->menu->getParameterSource());
-        $links->addCurrentParent($this->_('Cancel'));
-
-        if ($this->menuShowSiblings) {
-            $links->addCurrentSiblings();
-        }
-
-        if ($this->menuShowChildren) {
-            $links->addCurrentChildren();
-        }
-
-        return $links;
     }
 
     /**
@@ -231,21 +191,6 @@ abstract class FormSnippetAbstract extends MUtilFormSnippetAbstract
             return sprintf($this->_('New %s...'), $this->getTopic());
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());
-        }
-    }
-
-    /**
-     * Helper function to allow generalized statements about the items in the model to used specific item names.
-     *
-     * @param int $count
-     * @return $string
-     */
-    public function getTopic($count = 1)
-    {
-        if (is_callable($this->topicCallable)) {
-            return call_user_func($this->topicCallable, $count);
-        } else {
-            return parent::getTopic($count);
         }
     }
 }

@@ -77,7 +77,6 @@ class AppointmentHandler extends RespondentChildHandlerAbstract
      */
     protected array $createEditSnippets = [
         AppointmentFormSnippet::class,
-        CurrentButtonRowSnippet::class,
     ];
 
     /**

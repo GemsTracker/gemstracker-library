@@ -48,11 +48,13 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $createEditParameters = [
-        'menuShowChildren' => true,
-        'onlyUsedElements' => true,
+        'addCurrentChildren' => true,
+        'addCurrentParent'   => false,
+        'addCurrentSiblings' => true,
+        'onlyUsedElements'   => true,
         'afterSaveRoutePart' => 'edit',
-        'currentUser'      => 'getCurrentUser',
-        'request' => 'getRequest',
+        'currentUser'        => 'getCurrentUser',
+        'request'            => 'getRequest',
     ];
 
     /**
@@ -66,11 +68,13 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      * The parameters used for the edit authentication action.
      */
     protected array $editAuthParameters = [
-        'menuShowChildren' => true,
-        'onlyUsedElements' => true,
+        'addCurrentChildren' => true,
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => true,
+        'onlyUsedElements'   => true,
         'afterSaveRoutePart' => 'edit-auth',
-        'currentUser'      => 'getCurrentUser',
-        'request' => 'getRequest',
+        'currentUser'        => 'getCurrentUser',
+        'request'            => 'getRequest',
     ];
 
     /**
@@ -135,9 +139,13 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $twoFactorParameters = [
-        'contentTitle' => 'getShowTwoFactorTitle',
-        'routeAction'  => 'edit',
-        'user'         => 'getCurrentUser',
+        'addCurrentChildren' => true,
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => true,
+        'onlyUsedElements'   => true,
+        'contentTitle'       => 'getShowTwoFactorTitle',
+        'routeAction'        => 'edit',
+        'user'               => 'getCurrentUser',
     ];
 
     /**
@@ -148,7 +156,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     protected array $twoFactorSnippets = [
         'Generic\\ContentTitleSnippet',
         'User\\SetTwoFactorSnippet',
-        'Generic\\CurrentButtonRowSnippet',
     ];
 
     public function __construct(
@@ -181,6 +188,20 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
         }
 
         return $model;
+    }
+
+    /**
+     * Action for showing the edit authentication page
+     */
+    public function editAuthAction()
+    {
+        if ($this->editAuthSnippets) {
+            $params = $this->_processParameters($this->editAuthParameters);
+
+            $params['session'] = $this->request->getAttribute(SessionInterface::class);
+
+            $this->addSnippets($this->editAuthSnippets, $params);
+        }
     }
 
     /**
@@ -274,20 +295,6 @@ class OptionHandler extends ModelSnippetLegacyHandlerAbstract
     public function getTopic($count = 1): string
     {
         return $this->plural('your setup', 'your setup', $count);
-    }
-
-    /**
-     * Action for showing the edit authentication page
-     */
-    public function editAuthAction()
-    {
-        if ($this->editAuthSnippets) {
-            $params = $this->_processParameters($this->editAuthParameters);
-
-            $params['session'] = $this->request->getAttribute(SessionInterface::class);
-
-            $this->addSnippets($this->editAuthSnippets, $params);
-        }
     }
 
     /**

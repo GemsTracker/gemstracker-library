@@ -48,7 +48,7 @@ class TokenActionButtonRow extends CurrentButtonRowSnippet
     /**
      * Set the menu items (allows for overruling in subclasses)
      */
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $this->extraRoutesLabelled = [
             'respondent.show'              => $this->_('Show respondent'),
@@ -57,7 +57,7 @@ class TokenActionButtonRow extends CurrentButtonRowSnippet
             'respondent.tracks.show'       => $this->_('Show token'),
             ];
 
-        return parent::addButtons();
+        return parent::getButtons();
     }
 }
 

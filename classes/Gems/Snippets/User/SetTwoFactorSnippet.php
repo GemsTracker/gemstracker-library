@@ -17,6 +17,7 @@ use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Layout\LayoutSettings;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\SessionNamespace;
+use Gems\Snippets\FormSnippetAbstract;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Mezzio\Session\SessionInterface;
@@ -33,7 +34,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.8.4 29-Jun-2018 19:05:43
  */
-class SetTwoFactorSnippet extends ZendFormSnippetAbstract
+class SetTwoFactorSnippet extends FormSnippetAbstract
 {
     protected User $user;
 
@@ -48,12 +49,12 @@ class SetTwoFactorSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        MenuSnippetHelper $menuSnippetHelper,
         private readonly array $config,
         private readonly OtpMethodBuilder $otpMethodBuilder,
-        private readonly MenuSnippetHelper $menuSnippetHelper,
         private readonly LayoutSettings $layoutSettings,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuSnippetHelper);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 

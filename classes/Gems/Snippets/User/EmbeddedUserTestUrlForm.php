@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\User;
 
-use Gems\Snippets\FormSnippetAbstract;
+use Gems\Snippets\FormSnippetAbstractMUtil;
 use Gems\User\Embed\EmbeddedUserData;
 
 /**
@@ -22,7 +22,7 @@ use Gems\User\Embed\EmbeddedUserData;
  * @license    New BSD License
  * @since      Class available since version 1.8.8 14-Apr-2020 17:22:44
  */
-class EmbeddedUserTestUrlForm extends FormSnippetAbstract
+class EmbeddedUserTestUrlForm extends FormSnippetAbstractMUtil
 {
     /**
      *

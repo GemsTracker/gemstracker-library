@@ -29,12 +29,12 @@ class NewFieldButtonRow extends ButtonRowSnippet
     /**
      * Set the menu items (allows for overruling in subclasses)
      */
-    protected function addButtons(): array
+    protected function getButtons(): array
     {
         $this->extraRoutesLabelled = [
             'track-builder.track-maintenance.track-fields.create' => $this->_('New field'),
         ];
 
-        return parent::addButtons();
+        return parent::getButtons();
     }
 }

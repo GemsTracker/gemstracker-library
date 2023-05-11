@@ -22,6 +22,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\MenuNew\MenuSnippetHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\SessionNamespace;
+use Gems\Snippets\FormSnippetAbstract;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use Gems\User\User;
@@ -56,7 +57,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 15:15:07
  */
-class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
+class OwnAccountEditAuthSnippet extends FormSnippetAbstract
 {
     private const MAX_ATTEMPTS = 10;
 
@@ -85,6 +86,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
         private readonly array $config,
         private readonly Adapter $db,
         private readonly UserLoader $userLoader,
@@ -97,7 +99,7 @@ class OwnAccountEditAuthSnippet extends ZendFormSnippetAbstract
         private readonly SmsClientInterface $smsClient,
         private readonly HelperAdapter $throttleCache,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
         $this->sessionNamespace = new SessionNamespace($this->session, __CLASS__);
 

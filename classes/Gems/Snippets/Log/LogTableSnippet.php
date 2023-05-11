@@ -94,6 +94,7 @@ class LogTableSnippet extends ModelTableSnippetAbstract
             $this->model = $this->modelLoader->createLogModel();
             $this->model->applyBrowseSettings();
         }
+        $this->model->addMap(\Gems\Model::LOG_ITEM_ID, 'gla_id');
 
         return $this->model;
     }

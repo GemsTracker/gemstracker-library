@@ -70,6 +70,12 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
     }
 
+    public function beforeDisplay()
+    {
+        parent::beforeDisplay();
+    }
+
+
     public function getResponse(): ?ResponseInterface
     {
         return $this->response;
@@ -127,7 +133,7 @@ class OwnAccountEditSnippet extends ModelFormSnippetAbstract
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return FullDataInterface
      */
     protected function createModel(): FullDataInterface
     {

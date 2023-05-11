@@ -4,7 +4,7 @@
 namespace Gems\Snippets\Database;
 
 
-use Gems\Snippets\FormSnippetAbstract;
+use Gems\Snippets\FormSnippetAbstractMUtil;
 
 /**
  * Class RunSqlFormSnippet
@@ -12,7 +12,7 @@ use Gems\Snippets\FormSnippetAbstract;
  *
  * @package Gems\Snippets\Database
  */
-class RunSqlFormSnippet extends FormSnippetAbstract
+class RunSqlFormSnippet extends FormSnippetAbstractMUtil
 {
     /**
      * @var array of menu links to show under the form

@@ -87,7 +87,6 @@ class StaffHandler extends ModelSnippetLegacyHandlerAbstract
      */
     protected array $createEditSnippets = [
         'Staff\\StaffCreateEditSnippet',
-        CurrentButtonRowSnippet::class,
     ];
 
     /**

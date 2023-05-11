@@ -307,7 +307,8 @@ class Loader extends LoaderAbstract
      */
     public function getPdf()
     {
-        return $this->_getClass('pdf');
+        $sm = $this->_overLoader->getContainer();
+        return $sm->get(Pdf::class);
     }
 
     /**

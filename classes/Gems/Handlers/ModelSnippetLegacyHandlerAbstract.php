@@ -19,6 +19,7 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Csrf\CsrfGuardInterface;
 use Mezzio\Csrf\CsrfMiddleware;
@@ -64,9 +65,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array Mixed key => value array for snippet initialization
      */
     private array $_createExtraParameters = [
-        'formTitle'     => 'getCreateTitle',
-        'topicCallable' => 'getTopicCallable',
-        'csrfGuard'     => 'getCsrfGuard',
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => false,
+        'formTitle'          => 'getCreateTitle',
+        'topicCallable'      => 'getTopicCallable',
+        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -102,9 +105,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      * @var array Mixed key => value array for snippet initialization
      */
     private array $_editExtraParameters = [
-        'formTitle'     => 'getEditTitle',
-        'topicCallable' => 'getTopicCallable',
-        'csrfGuard'     => 'getCsrfGuard',
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => true,
+        'formTitle'          => 'getEditTitle',
+        'topicCallable'      => 'getTopicCallable',
+        'csrfGuard'          => 'getCsrfGuard',
     ];
 
     /**
@@ -185,7 +190,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     protected array $createEditSnippets = [
         ModelFormSnippet::class,
-        CurrentButtonRowSnippet::class,
         ];
 
     /**

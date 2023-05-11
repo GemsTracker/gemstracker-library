@@ -19,7 +19,7 @@ class BatchRunner
 
     protected null|string|array $jobInfo = null;
 
-    protected null|string $title = null;
+    protected string $formTitle = '';
 
     public function __construct(protected BatchAbstract $batch,
         TranslatorInterface $translate,
@@ -78,7 +78,7 @@ class BatchRunner
 
     protected function getTitle(): ?string
     {
-        return $this->title;
+        return $this->formTitle;
     }
 
     public function reportProgress(Progress $progress, ?array $messages): JsonResponse
@@ -108,6 +108,6 @@ class BatchRunner
      */
     public function setTitle(?string $title): void
     {
-        $this->title = $title;
+        $this->formTitle = $title;
     }
 }

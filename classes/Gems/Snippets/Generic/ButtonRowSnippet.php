@@ -30,86 +30,16 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
 {
-    /**
-     * Add the children of the current menu item
-     *
-     * @var boolean
-     */
-    protected bool $addCurrentChildren = false;
-
-    /**
-     * Add the parent of the current menu item
-     *
-     * @var boolean
-     */
-    protected bool $addCurrentParent = false;
-
-    /**
-     * Add the siblings of the current menu item
-     *
-     * @var boolean
-     */
-    protected bool $addCurrentSiblings = false;
-
-    /**
-     * @var array An array of routes
-     */
-    protected array $extraRoutes = [];
-
-    /**
-     * @var array An array of route => label
-     */
-    protected array $extraRoutesLabelled = [];
-    
-    /**
-     * @var string|null 
-     */
-    protected ?string $parentLabel = null;  
+    use ButtonRowTrait;
 
     public function __construct(
         SnippetOptions              $snippetOptions,
         protected RequestInfo       $requestInfo,
         TranslatorInterface         $translate,
-        protected MenuSnippetHelper $menuHelper)
+        protected MenuSnippetHelper $menuHelper
+    )
     {
         parent::__construct($snippetOptions, $this->requestInfo, $translate);
-    }
-
-    /**
-     * @param array $menuList
-     * @return array
-     */
-    protected function addButtons() : array
-    {
-        $menuList = [];
-        if ($this->addCurrentParent) {
-            // $menuList += $this->menuHelper->getCurrentParentUrls();
-            $menuList['parent'] = 
-                [
-                'label' => $this->getParentLabel(),
-                'url'   => $this->menuHelper->getCurrentParentUrl(),
-            ];
-        }
-        if ($this->addCurrentSiblings) {
-            $menuList += $this->menuHelper->getCurrentSiblingUrls();
-        }
-        if ($this->addCurrentChildren) {
-            $menuList += $this->menuHelper->getCurrentChildUrls();
-        }
-        if ($this->extraRoutes) {
-            $menuList += $this->menuHelper->getRouteUrls($this->extraRoutes, $this->requestInfo->getParams());
-        }
-        if ($this->extraRoutesLabelled) {
-            $params =$this->requestInfo->getParams();
-            foreach ($this->extraRoutesLabelled as $route => $label) {
-                $url = $this->menuHelper->getRouteUrl($route, $params);
-                if ($url) {
-                    $menuList[$route] = ['label' => $label, 'url' => $url];
-                }
-            }
-        }
-        // file_put_contents('data/logs/echo.txt', get_class($this) . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($menuList, true) . "\n", FILE_APPEND);
-        return $menuList;
     }
 
     /**
@@ -119,7 +49,7 @@ class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
      */
     public function getHtmlOutput()
     {
-        $menuList = $this->addButtons();
+        $menuList = $this->getButtons();
 
         if (count($menuList)) {
             $container = Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true));
@@ -136,10 +66,5 @@ class ButtonRowSnippet extends \Zalt\Snippets\TranslatableSnippetAbstract
             return $container;
         }
         return null;
-    }
-    
-    public function getParentLabel(): string
-    {
-        return $this->parentLabel ?: $this->_('Cancel');
     }
 }
