@@ -7,6 +7,7 @@ use Gems\Dev\VarDumper\HtmlDumper;
 use Gems\Dev\VarDumper\ContextualizedDumper;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Stream;
+use MUtil\EchoOut\EchoOut;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -20,21 +21,6 @@ class DebugDumperMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
-        /*$cloner = new VarCloner();
-        $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
-
-        $dumper = new HtmlDumper($output);
-
-        VarDumper::setHandler(function ($var) use ($cloner, &$dumper) {
-            $dumper->dump($cloner->cloneVar($var));
-        });
-
-        dump('test');
-
-        return $handler->handle($request);*/
-
-
         $cloner = new VarCloner();
         $cloner->addCasters(ReflectionCaster::UNSET_CLOSURE_FILE_INFO);
 
@@ -59,6 +45,7 @@ class DebugDumperMiddleware implements MiddlewareInterface
         }
 
         $html = $response->getBody()->getContents();
+        $html .= EchoOut::out();
         $html .= $debugOutput = stream_get_contents($output,-1, 0);
 
         $body = new Stream('php://temp', 'wb+');
