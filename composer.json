@@ -28,7 +28,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Gems\\": "src",
+            "Gems\\": "src"
         }
     },
     "include-path": [
