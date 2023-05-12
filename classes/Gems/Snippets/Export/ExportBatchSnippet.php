@@ -21,8 +21,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
-use Zalt\Model\Data\FullDataInterface;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelSnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
@@ -60,7 +61,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    protected function createModel(): FullDataInterface
+    protected function createModel(): DataReaderInterface
     {
         return $this->model;
     }
@@ -74,15 +75,17 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
-        $batch->restartRedirectUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => null]);
-        $batch->finishUrl = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => 'download']);
+//        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_RESET]);
+//        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_DOWNLOAD]);
+        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_RESET]);
+        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_DOWNLOAD]);
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
-            return new RedirectResponse($batch->restartRedirectUrl);
+            return new RedirectResponse($batch->finishUrl);
         }
 
         if ($batch->hasSessionVariable('export_type')) {

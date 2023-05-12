@@ -53,7 +53,7 @@ trait PaginatorHandlerTrait
     public function getDynamicSortFor(string $sortDescParam, string $sortAscParam): array
     {
         $requestSort = [];
-        $session     = $this->request->getAttribute(SessionInterface::class);
+        $session     = $this->getSession();
         $sessionId   = $this->requestInfo->getBasePath() . '/dynamicSort';
 
         // Get (new) request sort DESC
@@ -88,7 +88,7 @@ trait PaginatorHandlerTrait
         $cookies = $this->request->getCookieParams();
 
         if (isset($cookies[PaginatorInterface::REQUEST_ITEMS])) {
-            $currentItems = intval($cookies[PaginatorInterface::REQUEST_ITEMS]) ?? 10;
+            $currentItems = max(intval($cookies[PaginatorInterface::REQUEST_ITEMS]), 5);
         } else {
             $currentItems = 10;
         }
@@ -107,10 +107,15 @@ trait PaginatorHandlerTrait
         return $this->getSessionRequestInt(PaginatorInterface::REQUEST_PAGE, 1);
     }
 
+    protected function getSession(): ?SessionInterface
+    {
+        return $this->request->getAttribute(SessionInterface::class);
+    }
+
     protected function getSessionRequestInt(string $requestId, int $default): int
     {
         $sessionId = $this->requestInfo->getBasePath() . '/' . $requestId;
-        $session   = $this->request->getAttribute(SessionInterface::class);
+        $session   = $this->getSession();
 
         $value = $this->requestInfo->getParam($requestId);
         if ($value) {

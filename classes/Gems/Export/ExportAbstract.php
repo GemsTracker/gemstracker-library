@@ -11,6 +11,8 @@
 namespace Gems\Export;
 
 use Mezzio\Session\SessionInterface;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -23,29 +25,19 @@ use Mezzio\Session\SessionInterface;
 abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstract implements ExportInterface
 {
     /**
-     * @var \Zend_Session_Namespace    Own session used for non-batch exports
-     */
-    protected $_session;
-
-    /**
-     * @var \Gems\Task\TaskRunnerBatch   The batch object if one is set
-     */
-//    protected $batch;
-
-    /**
      * @var array   Data submitted by export form
      */
     protected $data;
 
     /**
+     * @var DataReaderInterface Current model to export
+     */
+    protected DataReaderInterface $dataModel;
+
+    /**
      * @var array   Array with the filter options that should be used for this exporter
      */
     protected $defaultModelFilterAttributes = ['multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'];
-
-    /**
-     * @var string  The temporary filename while the file is being written
-     */
-    protected $tempFilename;
 
     /**
      * @var string  Current used file extension
@@ -78,25 +70,30 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     protected $modelFilterAttributes = array('multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
 
     /**
+     * @var \Gems\Loader
+     */
+    public $loader;
+
+    /**
+     * @var MetaModelInterface Current model to export
+     */
+    protected MetaModelInterface $metaModel;
+
+    /**
      *
      * @var int|string|null Model Id for when multiple models are passed
      */
     protected $modelId;
 
     /**
-     * @var \Gems\Loader
-     */
-    public $loader;
-
-    /**
-     * @var \MUtil\Model\ModelAbstract  Current model to export
-     */
-    protected $model;
-
-    /**
      * @var array Filter settings of the current loaded model
      */
     protected $modelFilter;
+
+    /**
+     * @var string  The temporary filename while the file is being written
+     */
+    protected $tempFilename;
 
     /**
      * @var integer     How many rows the batch will do in one go
@@ -120,47 +117,9 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     }
 
     public function __construct(
-        private readonly ?SessionInterface $session,
-        protected readonly ?\Gems\Task\TaskRunnerBatch $batch,
+        protected ?SessionInterface $session,
+        protected ?\Gems\Task\TaskRunnerBatch $batch,
     ) {
-    }
-
-    /**
-     * @return string[] Optional snippet containing help text
-     */
-    public function getHelpInfo(): array
-    {
-        return [];
-    }
-
-    /**
-     * Returns an array of ordered columnnames that have a label
-     *
-     * @return array Array of columnnames
-     */
-    public function getLabeledColumns()
-    {
-        if (!$this->model->hasMeta('labeledColumns')) {
-            $orderedCols = $this->model->getItemsOrdered();
-
-            $results = array();
-            foreach ($orderedCols as $name) {
-                if ($this->model->has($name, 'label')) {
-                    $results[] = $name;
-                }
-            }
-
-            $this->model->setMeta('labeledColumns', $results);
-        }
-
-        return $this->model->getMeta('labeledColumns');
-    }
-
-    /**
-     * @return array Default values in form
-     */
-    public function getDefaultFormValues() {
-        return [];
     }
 
     /**
@@ -174,13 +133,16 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         $this->data    = $data;
         $this->modelId = $modelId;
 
-        if ($model = $this->getModel()) {
+        $model = $this->getModel();
+
+        if ($model) {
             $totalRows  = $this->getModelCount();
             $this->addFile();
             $this->addHeader($this->tempFilename . $this->fileExtension);
             $currentRow = 0;
             do {
-                $filter['limit'] = array($this->rowsPerBatch, $currentRow);
+                // $filter['limit'] = array($this->rowsPerBatch, $currentRow);
+                $filter = [];
                 if ($this->batch) {
                     $this->batch->addTask('Export\\ExportCommand', $data['type'], 'addRows', $data, $modelId, $this->tempFilename, $filter);
                 } else {
@@ -194,7 +156,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
-                $this->_session->files = $this->files;
+                $this->session->set('files', $this->files);
             }
         }
     }
@@ -212,7 +174,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
 
         $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
         $this->tempFilename = $tempFilename;
-        $basename           = $this->cleanupName($this->model->getName());
+        $basename           = $this->cleanupName($this->dataModel->getName());
         $filename           = $basename;
         $i                  = 1;
         while (isset($this->files[$filename . $this->fileExtension])) {
@@ -229,10 +191,27 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     }
 
     /**
+     * Add a footer to a specific file
+     * @param string $filename The temporary filename while the file is being written
+     * @param int|string|null $modelId ID of the current model
+     * @param array $data Current export settings
+     */
+    public function addFooter($filename, $modelId = null, $data = null) {
+        $this->modelId = $modelId;
+    }
+
+    /**
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
     abstract protected function addHeader($filename);
+
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param resource $file The already opened file
+     */
+    abstract public function addRow($row, $file);
 
     /**
      * Add model rows to file. Can be batched
@@ -243,48 +222,18 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
      */
     public function addRows($data, $modelId, $tempFilename, $filter)
     {
-        $this->data    = $data;
-        $this->modelId = $modelId;
-        $this->model   = $this->getModel();
+        $this->data      = $data;
+        $this->modelId   = $modelId;
+        $this->dataModel = $this->getModel();
+        $this->metaModel = $this->dataModel->getMetaModel();
 
-        $this->model->setFilter($filter + $this->model->getFilter());
-        if ($this->model) {
-            $rows = $this->model->load();
-            $file = fopen($tempFilename . $this->fileExtension, 'a');
-            foreach ($rows as $row) {
-                $this->addRow($row, $file);
-            }
-            fclose($file);
+        $this->dataModel->setFilter($filter + $this->dataModel->getFilter());
+        $rows = $this->dataModel->load();
+        $file = fopen($tempFilename . $this->fileExtension, 'a');
+        foreach ($rows as $row) {
+            $this->addRow($row, $file);
         }
-    }
-
-    public function afterRegistry() {
-        parent::afterRegistry();
-
-        if (isset($this->batch) === isset($this->session)) {
-            throw new \Exception('Should either set batch or session');
-        }
-    }
-
-    /**
-     * Add a separate row to a file
-     * @param array $row a row in the model
-     * @param resource $file The already opened file
-     */
-    abstract public function addRow($row, $file);
-
-    /**
-     * Add a footer to a specific file
-     * @param string $filename The temporary filename while the file is being written
-     */
-    /**
-     * Add a footer to a specific file
-     * @param string $filename The temporary filename while the file is being written
-     * @param int|string|null $modelId ID of the current model
-     * @param array $data Current export settings
-     */
-    public function addFooter($filename, $modelId = null, $data = null) {
-        $this->modelId = $modelId;
+        fclose($file);
     }
 
     /**
@@ -330,7 +279,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
             return $value->format($dateFormat);
         }
         
-        $storageFormat = $this->model->get($columnName, 'storageFormat');
+        $storageFormat = $this->metaModel->get($columnName, 'storageFormat');
         return \MUtil\Model::reformatDate($value, $storageFormat, $dateFormat);
     }
 
@@ -424,8 +373,8 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     {
         $exportRow = array();
         foreach ($row as $columnName => $result) {
-            if (!is_null($this->model->get($columnName, 'label'))) {
-                $options = $this->model->get($columnName, $this->modelFilterAttributes);
+            if (!is_null($this->metaModel->get($columnName, 'label'))) {
+                $options = $this->metaModel->get($columnName, $this->modelFilterAttributes);
 
 
                 foreach ($options as $optionName => $optionValue) {
@@ -552,6 +501,13 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         return $model;
     }
 
+    /**
+     * @return array Default values in form
+     */
+    public function getDefaultFormValues() {
+        return [];
+    }
+
     protected function getExportTempDir()
     {
         return GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
@@ -568,7 +524,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
             if ($this->batch) {
                 $files = $this->batch->getSessionVariable('files');
             } else {
-                $files = $this->_session->files;
+                $files = $this->session->get('files');
             }
             if (!is_array($files)) {
                 $files = array();
@@ -579,19 +535,50 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     }
 
     /**
-     * Get the model to export
-     * @return \MUtil\Model\ModelAbstract
+     * @return string[] Optional snippet containing help text
      */
-    public function getModel()
+    public function getHelpInfo(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns an array of ordered columnnames that have a label
+     *
+     * @return array Array of columnnames
+     */
+    public function getLabeledColumns()
+    {
+        if (!$this->metaModel->hasMeta('labeledColumns')) {
+            $orderedCols = $this->metaModel->getItemsOrdered();
+
+            $results = array();
+            foreach ($orderedCols as $name) {
+                if ($this->metaModel->has($name, 'label')) {
+                    $results[] = $name;
+                }
+            }
+
+            $this->metaModel->setMeta('labeledColumns', $results);
+        }
+
+        return $this->metaModel->getMeta('labeledColumns');
+    }
+
+    /**
+     * Get the model to export
+     * @return ?DataReaderInterface
+     */
+    public function getModel(): ?DataReaderInterface
     {
         if ($this->batch) {
             $model = $this->batch->getVariable('model');
         } else {
-            $model = $this->_session->model;
+            $model = $this->session->get('model');
         }
         if (is_array($model)) {
             if ($this->modelId) {
-                if (isset($model[$this->modelId]) && $model[$this->modelId] instanceof \MUtil\Model\ModelAbstract) {
+                if (isset($model[$this->modelId]) && $model[$this->modelId] instanceof DataReaderInterface) {
                     $model = $model[$this->modelId];
                 } else {
                     $modelType = null;
@@ -641,18 +628,23 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
                     }
                 }
             } else {
-                return false;
+                return null;
             }
         }
 
-        $this->model = $model;
-
-        if ($this->model->getMeta('exportPreprocess') === null) {
-            $this->preprocessModel();
-            $this->model->setMeta('exportPreprocess', true);
+        $this->dataModel = $model;
+        if ($this->dataModel instanceof MetaModelInterface) {
+            $this->metaModel = $this->dataModel;
+        } else {
+            $this->metaModel = $this->dataModel->getMetaModel();
         }
 
-        return $this->model;
+        if ($this->metaModel->getMeta('exportPreprocess') === null) {
+            $this->preprocessModel();
+            $this->metaModel->setMeta('exportPreprocess', true);
+        }
+
+        return $this->dataModel;
     }
 
     /**
@@ -662,8 +654,8 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
      */
     protected function getModelCount($filter = true)
     {
-        if ($this->model && $this->model instanceof \MUtil\Model\ModelAbstract) {
-            $totalCount = $this->model->loadPaginator()->getTotalItemCount();
+        if ($this->dataModel && $this->dataModel instanceof DataReaderInterface) {
+            $totalCount = $this->dataModel->loadCount();
             return $totalCount;
         }
         return 0;
@@ -695,11 +687,10 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
      *
      * @param \MUtil\Model\ModelAbstract $model
      */
-    public function setModel(\MUtil\Model\ModelAbstract $model)
+    public function setModel(DataReaderInterface $model)
     {
-        if ($this->_session) {
-            $this->_session->model = $model;
+        if ($this->session) {
+            $this->session->set('model', $model);
         }
-    }
-
+    } // */
 }

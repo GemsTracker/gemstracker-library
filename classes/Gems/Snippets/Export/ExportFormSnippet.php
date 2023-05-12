@@ -14,6 +14,7 @@ use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
+use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
@@ -82,7 +83,10 @@ class ExportFormSnippet extends FormSnippetAbstract
         $options['class'] = 'form-horizontal';
         $options['data-autosubmit-inplace'] = true;
 
-        return parent::createForm($options);
+        $form = parent::createForm($options);
+        $form->setAction($this->requestInfo->getBasePath());
+
+        return $form;
     }
 
     /**
@@ -110,6 +114,11 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function hasHtmlOutput(): bool
     {
+        $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+        if(ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
+            $this->exportAction->batch->reset();
+        }
+
         if ($this->exportAction->step == ExportAction::STEP_FORM) {
             parent::hasHtmlOutput();
 
@@ -129,7 +138,6 @@ class ExportFormSnippet extends FormSnippetAbstract
     protected function loadFormData(): array
     {
         $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
-        $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
 
         $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
 

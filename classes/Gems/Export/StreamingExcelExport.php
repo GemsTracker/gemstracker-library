@@ -41,48 +41,10 @@ class StreamingExcelExport extends ExportAbstract
     protected $rowsPerBatch = 2000;
 
     /**
-     * @return string name of the specific export
-     */
-    public function getName() {
-        return 'StreamingExcelExport';
-    }
-
-    /**
-     * form elements for extra options for this particular export option
-     * @param  \MUtil\Form $form Current form to add the form elements
-     * @param  array $data current options set in the form
-     * @return array Form elements
-     */
-    public function getFormElements(&$form, &$data)
-    {
-        $element = $form->createElement('multiCheckbox', 'format');
-        $element->setLabel($this->_('Excel options'))
-                ->setMultiOptions(array(
-                    'formatVariable'=> $this->_('Export labels instead of field names'),
-                    'formatAnswer'  => $this->_('Format answers'),
-                    'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date'),
-                    'combineFiles'    => $this->_('Combine multiple files to separate sheets in one excel file'),
-                ))
-                ->setBelongsTo($this->getName())
-                ->setSeparator('');
-        $elements['format'] = $element;
-
-        return $elements;
-    }
-
-    /**
-     * @return array Default values in form
-     */
-    public function getDefaultFormValues()
-    {
-        return array('format'=>array('formatVariable', 'formatAnswer'));
-    }
-
-    /**
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
-    protected function addheader($filename)
+    protected function addHeader($filename)
     {
         $tempFilename = str_replace($this->fileExtension, '', $filename);
 
@@ -116,22 +78,22 @@ class StreamingExcelExport extends ExportAbstract
     {
         $this->data = $data;
         $this->modelId = $modelId;
-        $this->model = $this->getModel();
+        $dataModel = $this->getModel();
 
 
-        if ($this->model) {
-            $this->model->setFilter($filter + $this->model->getFilter());
+        if ($dataModel) {
+            $dataModel->setFilter($filter + $dataModel->getFilter());
 
             if ($this->batch) {
                 $rowNumber = $this->batch->getSessionVariable('rowNumber');
                 $iteration = $this->batch->getSessionVariable('iteration');
             } else {
-                $rowNumber = $this->_session->rowNumber;
-                $iteration = $this->_session->iteration;
+                $rowNumber = $this->session->rowNumber;
+                $iteration = $this->session->iteration;
             }
 
             // Reset internal rownumber when we move to a new file
-            if ($filter = $this->model->getFilter()) {
+            if ($filter = $dataModel->getFilter()) {
                 if (array_key_exists('limit', $filter)) {
                     if ($filter['limit'][1] == 0) {
                         $rowNumber = 2;
@@ -149,7 +111,7 @@ class StreamingExcelExport extends ExportAbstract
 
             $filename = $tempFilename . '_' . $iteration . $this->fileExtension;
 
-            $rows = $this->model->load();
+            $rows = $dataModel->load();
 
             $exportName = $this->getName();
 
@@ -178,8 +140,8 @@ class StreamingExcelExport extends ExportAbstract
             $this->batch->setSessionVariable('rowNumber', $rowNumber);
             $this->batch->setSessionVariable('iteration', ++$iteration);
         } else {
-            $this->_session->rowNumber = $rowNumber;
-            $this->_session->iteration = ++$iteration;
+            $this->session->set('rowNumber', $rowNumber);
+            $this->session->set('iteration', ++$iteration);
         }
     }
 
@@ -212,7 +174,7 @@ class StreamingExcelExport extends ExportAbstract
     {
         parent::addFooter($filename, $modelId, $data);
         
-        $this->model = $this->getModel();
+        $this->getModel();
 
         $writer = $this->getWriter($filename, $data);
 
@@ -237,7 +199,7 @@ class StreamingExcelExport extends ExportAbstract
         if ($this->batch) {
             $iteration = $this->batch->getSessionVariable('iteration');
         } else {
-            $iteration = $this->_session->iteration;
+            $iteration = $this->session->iteration;
         }
 
         for($i=0;$i<$iteration;$i++) {
@@ -268,8 +230,8 @@ class StreamingExcelExport extends ExportAbstract
             $this->batch->setSessionVariable('rowNumber', 0);
             $this->batch->setSessionVariable('iteration', 0);
         } else {
-            $this->_session->rowNumber = 0;
-            $this->_session->iteration = 0;
+            $this->session->set('rowNumber', 0);
+            $this->session->set('iteration', 0);
         }
     }
 
@@ -424,10 +386,48 @@ class StreamingExcelExport extends ExportAbstract
 
         $columnHeaders = array();
         foreach($labeledCols as $columnName) {
-            $columnHeaders[$columnName] = strip_tags($this->model->get($columnName, 'label'));
+            $columnHeaders[$columnName] = strip_tags($this->metaModel->get($columnName, 'label'));
         }
 
         return $columnHeaders;
+    }
+
+    /**
+     * @return array Default values in form
+     */
+    public function getDefaultFormValues()
+    {
+        return ['format'=> ['formatVariable', 'formatAnswer']];
+    }
+
+    /**
+     * form elements for extra options for this particular export option
+     * @param  \MUtil\Form $form Current form to add the form elements
+     * @param  array $data current options set in the form
+     * @return array Form elements
+     */
+    public function getFormElements(&$form, &$data)
+    {
+        $element = $form->createElement('multiCheckbox', 'format');
+        $element->setLabel($this->_('Excel options'))
+            ->setMultiOptions(array(
+                'formatVariable'=> $this->_('Export labels instead of field names'),
+                'formatAnswer'  => $this->_('Format answers'),
+                'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date'),
+                'combineFiles'    => $this->_('Combine multiple files to separate sheets in one excel file'),
+            ))
+            ->setBelongsTo($this->getName())
+            ->setSeparator('');
+        $elements['format'] = $element;
+
+        return $elements;
+    }
+
+    /**
+     * @return string name of the specific export
+     */
+    public function getName() {
+        return 'StreamingExcelExport';
     }
 
     protected function getNameFromTempname()
@@ -445,7 +445,7 @@ class StreamingExcelExport extends ExportAbstract
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
-            $type = $this->model->get($columnName, 'type');
+            $type = $this->metaModel->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'Y-m-d';
@@ -470,7 +470,7 @@ class StreamingExcelExport extends ExportAbstract
                     break;*/
             }
             $options['type']           = $type;
-            $this->model->set($columnName, $options);
+            $this->metaModel->set($columnName, $options);
         }
     }
 }

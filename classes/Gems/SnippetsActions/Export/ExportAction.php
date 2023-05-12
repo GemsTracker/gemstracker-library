@@ -33,6 +33,7 @@ class ExportAction extends AbstractAction implements ModelActionInterface, PostA
     const STEP_BATCH = 'batch';
     const STEP_DOWNLOAD = 'download';
     const STEP_FORM = 'form';
+    const STEP_RESET = 'reset';
 
     /**
      * @var array Of snippet class names

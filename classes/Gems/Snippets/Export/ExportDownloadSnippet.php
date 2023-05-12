@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\FullHtmlResponse;
+use Gems\Html;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
@@ -43,6 +45,8 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
      */
     protected $model;
 
+    protected ?ResponseInterface $response;
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
@@ -64,15 +68,31 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
-        if (($this->exportAction->step !== ExportAction::STEP_BATCH) || (! isset($this->exportAction->batch))) {
-            return null;
+        if (isset($this->response)) {
+            return $this->response;
+        }
+
+        return null;
+    }
+
+    public function getHtmlOutput()
+    {
+        $this->addMessage($this->_('Download no longer available.'));
+
+        return Html::actionLink([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_RESET], $this->_('Reset'));
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        if (($this->exportAction->step !== ExportAction::STEP_DOWNLOAD) || (! isset($this->exportAction->batch))) {
+            return false;
         }
         // $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $batch = $this->exportAction->batch;
 
         $file = $batch->getSessionVariable('file');
         if ($file && is_array($file) && is_array($file['headers']) && file_exists($file['file'])) {
-            $response = new \Laminas\Diactoros\Response\TextResponse(
+            $this->response = new \Laminas\Diactoros\Response\TextResponse(
                 file_get_contents($file['file']),
                 200,
                 $file['headers']
@@ -81,16 +101,9 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
             // Now clean up the file
             unlink($file['file']);
 
-            return $response;
+            return false;
         }
 
-        $this->addMessage($this->_('Download no longer available.'));
-
-        return null;
-    }
-
-    public function hasHtmlOutput(): bool
-    {
-        return false;
+        return true;
     }
 }

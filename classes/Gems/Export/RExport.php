@@ -100,19 +100,19 @@ class RExport extends ExportAbstract
         $exportRow = array_replace(array_flip($labeledCols), $exportRow);
         $changed = false;
         foreach ($exportRow as $name => $value) {
-            $type = $this->model->get($name, 'type');
+            $type = $this->metaModel->get($name, 'type');
             // When numeric, there could be a non numeric answer, just ignore empty values
             if ($type == \MUtil\Model::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
-                $this->model->set($name, 'type', \MUtil\Model::TYPE_STRING);
+                $this->metaModel->set($name, 'type', \MUtil\Model::TYPE_STRING);
                 $changed = true;
             }
         }
         fputcsv($file, $exportRow, $this->delimiter, '"');
         if ($changed) {
             if ($this->batch) {
-                $this->batch->setVariable('model', $this->model);
+                $this->batch->setVariable('model', $this->getModel());
             } else {
-                $this->_session->model = $this->model;
+                $this->session->set('model', $this->getModel());
             }
         }
     }
@@ -122,7 +122,7 @@ class RExport extends ExportAbstract
      */
     protected function addSyntaxFile($filename)
     {
-        $model       = $this->model;
+        $model       = $this->getModel();
         $files       = $this->getFiles();
         $datFileName = array_search($filename, $files);
         $spsFileName = substr($datFileName, 0, -strlen($this->fileExtension)) . '.R';
@@ -132,7 +132,7 @@ class RExport extends ExportAbstract
         if ($this->batch) {
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
-                $this->_session->files = $this->files;
+                $this->session->set('files', $this->files);
             }
         $file = fopen($tmpFileName, 'a');
 
@@ -256,7 +256,7 @@ class RExport extends ExportAbstract
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
-            $type = $this->model->get($columnName, 'type');
+            $type = $this->metaModel->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'Y-M-d';
@@ -281,7 +281,7 @@ class RExport extends ExportAbstract
                     break;
             }
             $options['type']           = $type;
-            $this->model->set($columnName, $options);
+            $this->metaModel->set($columnName, $options);
         }
     }
 }

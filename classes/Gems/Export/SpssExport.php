@@ -10,6 +10,8 @@
 
 namespace Gems\Export;
 
+use Zalt\Model\MetaModelInterface;
+
 /**
  *
  * @package    Gems
@@ -109,17 +111,17 @@ class SpssExport extends ExportAbstract
         $exportRow = array_replace(array_flip($labeledCols), $exportRow);
         $changed = false;
         foreach ($exportRow as $name => $value) {
-            $type = $this->model->get($name, 'type');
+            $type = $this->metaModel->get($name, 'type');
             // When numeric, there could be a non numeric answer, just ignore empty values
-            if ($type == \MUtil\Model::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
-                $this->model->set($name, 'type', \MUtil\Model::TYPE_STRING);
+            if ($type == MetaModelInterface::TYPE_NUMERIC && !empty($value) && !is_numeric($value)) {
+                $this->metaModel->set($name, 'type', \MUtil\Model::TYPE_STRING);
                 $changed = true;
             }
             
             if ($type == \MUtil\Model::TYPE_STRING) {
-                $size = (int) $this->model->get($name, 'maxlength');
+                $size = (int) $this->metaModel->get($name, 'maxlength');
                 if (mb_strlen($value)>$size) {
-                    $this->model->set($name, 'maxlength', mb_strlen($value));
+                    $this->metaModel->set($name, 'maxlength', mb_strlen($value));
                     $changed = true;
                 }
             }
@@ -129,8 +131,8 @@ class SpssExport extends ExportAbstract
             $modelData = [];
             foreach ($exportRow as $name => $value) {
                 $modelData[$name] = [
-                    'type' => $this->model->get($name, 'type'),
-                    'maxlength' => $this->model->get($name, 'maxlength')
+                    'type' => $this->metaModel->get($name, 'type'),
+                    'maxlength' => $this->metaModel->get($name, 'maxlength')
                 ];
             }
             if ($this->batch) {
@@ -138,9 +140,9 @@ class SpssExport extends ExportAbstract
                 $models[$this->modelId] = $modelData;
                 $this->batch->setSessionVariable('modelsExtra', $models);
             } else {
-                $models = $this->_session->modelsExtra;
+                $models = $this->session->modelsExtra;
                 $models[$this->modelId] = $modelData;
-                $this->_session->modelsExtra = $models;
+                $this->session->set('modelsExtra', $models);
             }
         }
     }
@@ -150,7 +152,7 @@ class SpssExport extends ExportAbstract
      */
     protected function addSpssFile($filename)
     {
-        $model       = $this->model;
+        $model       = $this->getModel();
         $files       = $this->getFiles();
         $datFileName = array_search($filename, $files);
         $spsFileName = substr($datFileName, 0, -strlen($this->fileExtension)) . '.sps';
@@ -160,7 +162,7 @@ class SpssExport extends ExportAbstract
         if ($this->batch) {
             $this->batch->setSessionVariable('files', $this->files);
         } else {
-            $this->_session->files = $this->files;
+            $this->session->set('files', $this->files);
         }
         $this->addHeader($tmpFileName);
         $file = fopen($tmpFileName, 'a');
@@ -325,7 +327,7 @@ class SpssExport extends ExportAbstract
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
-            $type = $this->model->get($columnName, 'type');
+            $type = $this->metaModel->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'yyyy-MM-dd';
@@ -350,14 +352,14 @@ class SpssExport extends ExportAbstract
                     break;
             }
             $options['type']           = $type;
-            $this->model->set($columnName, $options);
+            $this->metaModel->set($columnName, $options);
         }
         
         // Load extra data
         if ($this->batch) {
             $models = $this->batch->getSessionVariable('modelsExtra');
         } else {
-            $models = $this->_session->modelsExtra;
+            $models = $this->session->get('modelsExtra');
         }
         
         if (!is_array($models) || !isset($models[$this->modelId])) {
@@ -366,14 +368,14 @@ class SpssExport extends ExportAbstract
         $modelData = $models[$this->modelId];
         foreach($modelData as $name => $items)
         {
-            $this->model->set($name, $items);
+            $this->metaModel->set($name, $items);
         }
         
         // Save extra data
         if ($this->batch) {
             $this->batch->setSessionVariable('modelsExtra', $models);
         } else {
-            $this->_session->modelsExtra = $models;
+            $this->session->set('modelsExtra', $models);
         }
     }
 }

@@ -61,7 +61,7 @@ class StreamingStataExport extends ExportAbstract
         $this->modelId = $modelId;
 
         if ($model = $this->getModel()) {
-            if ($this->model->getMeta('nested', false)) {
+            if ($this->metaModel->getMeta('nested', false)) {
                $this->rowsPerBatch = $this->nestedRowsPerBatch;
             }
             
@@ -84,7 +84,7 @@ class StreamingStataExport extends ExportAbstract
                 $this->batch->setSessionVariable('files', $this->files);
             } else {
                 $this->addFooter($this->tempFilename . $this->fileExtension, $modelId, $data);
-                $this->_session->files = $this->files;
+                $this->session->set('files', $this->files);
             }
         }
     }
@@ -93,7 +93,7 @@ class StreamingStataExport extends ExportAbstract
      * Add headers to a specific file
      * @param  string $filename The temporary filename while the file is being written
      */
-    protected function addheader($filename)
+    protected function addHeader($filename)
     {
         //Probably not much as most needs to be added after
     }
@@ -135,22 +135,21 @@ class StreamingStataExport extends ExportAbstract
     {
         $this->data = $data;
         $this->modelId = $modelId;
-        $this->model = $this->getModel();
-        
-        
-        if ($this->model) {
-            $this->model->setFilter($filter + $this->model->getFilter());
+        $this->getModel();
+
+        if ($this->dataModel) {
+            $this->dataModel->setFilter($filter + $this->dataModel->getFilter());
             
             if ($this->batch) {
                 $rowNumber = $this->batch->getSessionVariable('rowNumber');
                 $iteration = $this->batch->getSessionVariable('iteration');
             } else {
-                $rowNumber = $this->_session->rowNumber;
-                $iteration = $this->_session->iteration;
+                $rowNumber = $this->session->get('rowNumber');
+                $iteration = $this->session->get('iteration');
             }
             
             // Reset internal rownumber when we move to a new file
-            if ($filter = $this->model->getFilter()) {
+            if ($filter = $this->dataModel->getFilter()) {
                 if (array_key_exists('limit', $filter)) {
                     if ($filter['limit'][1] == 0) {
                         $rowNumber = 0;
@@ -168,7 +167,7 @@ class StreamingStataExport extends ExportAbstract
             
             $filename = $tempFilename . '_' . $iteration . $this->fileExtension;
 
-            $rows = $this->model->load();
+            $rows = $this->dataModel->load();
             
             $exportName = $this->getName();
 
@@ -176,8 +175,8 @@ class StreamingStataExport extends ExportAbstract
             $writer->openURI($filename);
             $writer->setIndent(true);
 
-            if ($this->model->getMeta('nested', false)) {
-                $nestedNames = $this->model->getMeta('nestedNames');
+            if ($this->metaModel->getMeta('nested', false)) {
+                $nestedNames = $this->metaModel->getMeta('nestedNames');
                 $rows = $this->addNestedRows($rows, $nestedNames);
             }
             
@@ -191,8 +190,8 @@ class StreamingStataExport extends ExportAbstract
             $this->batch->setSessionVariable('rowNumber', $rowNumber);
             $this->batch->setSessionVariable('iteration', ++$iteration);
         } else {
-            $this->_session->rowNumber = $rowNumber;
-            $this->_session->iteration = ++$iteration;
+            $this->session->set('rowNumber', $rowNumber);
+            $this->session->set('iteration', ++$iteration);
         }
     }
 
@@ -212,13 +211,13 @@ class StreamingStataExport extends ExportAbstract
         if ($this->batch) {
             $stringSizes = $this->batch->getSessionVariable('stringSizes');
         } else {
-            $stringSizes = $this->_session->stringSizes;
+            $stringSizes = $this->session->get('stringSizes');
         }
 
         foreach($labeledCols as $columnName) {
 
-            $variableName = $this->model->get($columnName, 'variableName');
-            $type = $this->model->get($columnName, 'type');
+            $variableName = $this->metaModel->get($columnName, 'variableName');
+            $type = $this->metaModel->get($columnName, 'type');
 
             if (($type == Model::TYPE_DATE || $type == Model::TYPE_DATETIME) && $exportRow[$columnName] !== null) {
 
@@ -239,7 +238,7 @@ class StreamingStataExport extends ExportAbstract
                     }
                 }
             }
-            if ($type == Model::TYPE_STRING && !$this->model->get($columnName, 'multiOptions')) {
+            if ($type == Model::TYPE_STRING && !$this->metaModel->get($columnName, 'multiOptions')) {
                 $size = strlen($exportRow[$columnName]);
 
                 if ((!isset($stringSizes[$variableName]) || ($stringSizes[$variableName] < $size)) && $size > 0) {
@@ -248,12 +247,12 @@ class StreamingStataExport extends ExportAbstract
                     if ($this->batch) {
                         $this->batch->setSessionVariable('stringSizes', $stringSizes);
                     } else {
-                        $this->_session->stringSizes = $stringSizes;
+                        $this->session->set('stringSizes', $stringSizes);
                     }
                 }
             }
 
-            if ($multiOptions = $this->model->get($columnName, 'multiOptions')) {
+            if ($multiOptions = $this->metaModel->get($columnName, 'multiOptions')) {
                 if ($exportRow[$columnName] !== null) {
 
                     $numeric = true;
@@ -320,7 +319,7 @@ class StreamingStataExport extends ExportAbstract
         if ($this->batch) {
             $iteration = $this->batch->getSessionVariable('iteration');
         } else {
-            $iteration = $this->_session->iteration;
+            $iteration = $this->session->get('iteration');
         }
 
         $writer = new XMLWriter();
@@ -352,9 +351,9 @@ class StreamingStataExport extends ExportAbstract
             $this->batch->setSessionVariable('iteration', 0);
             $this->batch->setSessionVariable('stringSizes', array());
         } else {
-            $this->_session->rowNumber = 0;
-            $this->_session->iteration = 0;
-            $this->_session->stringSizes = array();
+            $this->session->set('rowNumber', 0);
+            $this->session->set('iteration', 0);
+            $this->session->set('stringSizes', []);
         }
     }
 
@@ -368,9 +367,9 @@ class StreamingStataExport extends ExportAbstract
             $files = $this->batch->getSessionVariable('files');
 
         } else {
-            $rowNumber = $this->_session->rowNumber;
-            $stringSizes = $this->_session->stringSizes;
-            $files = $this->_session->files;
+            $rowNumber = $this->session->get('rowNumber');
+            $stringSizes = $this->session->get('stringSizes');
+            $files = $this->session->get('files');
         }
 
         $finalFiles = array_flip($files);
@@ -420,7 +419,7 @@ class StreamingStataExport extends ExportAbstract
 
             $writer->startElement('typelist');
                 foreach($columnHeaders as $colname => $columnHeader) {
-                    $variableName = $this->model->get($colname, 'variableName');
+                    $variableName = $this->metaModel->get($colname, 'variableName');
 
                     $writer->startElement('type');
                         $writer->writeAttribute('varname', $variableName);
@@ -431,7 +430,7 @@ class StreamingStataExport extends ExportAbstract
 
             $writer->startElement('varlist');
                 foreach($columnHeaders as $colname => $columnHeader) {
-                    $variableName = $this->model->get($colname, 'variableName');
+                    $variableName = $this->metaModel->get($colname, 'variableName');
 
                     $writer->startElement('variable');
                         $writer->writeAttribute('varname', $variableName);
@@ -441,7 +440,7 @@ class StreamingStataExport extends ExportAbstract
 
             $writer->startElement('fmtlist');
                 foreach($columnHeaders as $colname => $columnHeader) {
-                    $variableName = $this->model->get($colname, 'variableName');
+                    $variableName = $this->metaModel->get($colname, 'variableName');
 
                     $writer->startElement('fmt');
                         $writer->writeAttribute('varname', $variableName);
@@ -452,7 +451,7 @@ class StreamingStataExport extends ExportAbstract
 
             $writer->startElement('lbllist');
                 foreach($columnHeaders as $colname => $columnHeader) {
-                    $variableName = $this->model->get($colname, 'variableName');
+                    $variableName = $this->metaModel->get($colname, 'variableName');
 
                     $writer->startElement('lblname');
                         $writer->writeAttribute('varname', $variableName);
@@ -482,7 +481,7 @@ class StreamingStataExport extends ExportAbstract
         $writer->startElement('value_labels');
             foreach($columnHeaders as $colname => $columnHeader) {
                 if (isset($columnHeader['multiOptions'])) {
-                    $variableName = $this->model->get($colname, 'variableName');
+                    $variableName = $this->metaModel->get($colname, 'variableName');
                     $multiOptionName = 'val'.$variableName;
                     $writer->startElement('vallab');
                     $writer->writeAttribute('name', $multiOptionName);
@@ -593,7 +592,7 @@ class StreamingStataExport extends ExportAbstract
         if ($this->batch) {
             $stringSizes = $this->batch->getSessionVariable('stringSizes');
         } else {
-            $stringSizes = $this->_session->stringSizes;
+            $stringSizes = $this->session->get('stringSizes');
         }
 
         foreach($labeledCols as $colname) {
@@ -667,8 +666,8 @@ class StreamingStataExport extends ExportAbstract
         $newColNames = array();
         foreach($labeledCols as $columnName) {
             $options = array();
-            $this->model->remove($columnName, 'dateFormat');
-            $type = $this->model->get($columnName, 'type');
+            $this->metaModel->remove($columnName, 'dateFormat');
+            $type = $this->metaModel->get($columnName, 'type');
             switch ($type) {
                 case Model::TYPE_DATE:
                     break;
@@ -693,13 +692,13 @@ class StreamingStataExport extends ExportAbstract
                     break;
             }
             $options['type']           = $type;
-            $this->model->set($columnName, $options);
+            $this->metaModel->set($columnName, $options);
 
-            if ($multiOptions = $this->model->get($columnName, 'multiOptions')) {
+            if ($multiOptions = $this->metaModel->get($columnName, 'multiOptions')) {
                 $keys = array_keys($multiOptions);
                 if ($keys ==  array('Y', 'N') || $keys == array('Y', '')) {
                     $multiOptions = array_reverse($multiOptions);
-                    $this->model->set($columnName, 'multiOptions', $multiOptions);
+                    $this->metaModel->set($columnName, 'multiOptions', $multiOptions);
                 }
             }
 
@@ -714,7 +713,7 @@ class StreamingStataExport extends ExportAbstract
                 }
             }
             $newColNames[$colName] = true;
-            $this->model->set($columnName, 'variableName', $colName);
+            $this->metaModel->set($columnName, 'variableName', $colName);
         }
     }
 }

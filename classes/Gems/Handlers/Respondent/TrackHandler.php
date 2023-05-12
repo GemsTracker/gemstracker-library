@@ -944,11 +944,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
         }
     }
 
-    public function getSession(): ?SessionInterface
-    {
-        return $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
-    }
-
     /**
      * Retrieve the survey ID
      *

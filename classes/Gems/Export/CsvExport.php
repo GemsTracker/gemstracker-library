@@ -91,7 +91,7 @@ class CsvExport extends ExportAbstract
 
             if (in_array('formatVariable', $this->data[$name]['format'])) {
                 foreach($labeledCols as $columnName) {
-                    $labels[] = $this->model->get($columnName, 'label');
+                    $labels[] = $this->metaModel->get($columnName, 'label');
                 }
             } else {
                 $labels = $labeledCols;
@@ -175,7 +175,7 @@ class CsvExport extends ExportAbstract
         $labeledCols = $this->getLabeledColumns();
         foreach($labeledCols as $columnName) {
             $options = array();
-            $type = $this->model->get($columnName, 'type');
+            $type = $this->metaModel->get($columnName, 'type');
             switch ($type) {
                 case \MUtil\Model::TYPE_DATE:
                     $options['dateFormat']    = 'Y-M-d';
@@ -200,7 +200,7 @@ class CsvExport extends ExportAbstract
                     break;
             }
             $options['type']           = $type;
-            $this->model->set($columnName, $options);
+            $this->metaModel->set($columnName, $options);
         }
     }
 }

@@ -18,6 +18,7 @@ use Gems\SnippetsActions\Browse\BrowseSearchAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\SnippetsActions\Form\CreateAction;
 use Gems\SnippetsActions\Form\EditAction;
+use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -259,9 +260,12 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             }
         }
         if ($action instanceof ExportAction) {
+            // $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->getModel()->getName(), $this->overLoader, $this->getSession());
             $step = $this->requestInfo->getParam('step');
             if ($step) {
-                $action->step = $step;
+                if (ExportAction::STEP_RESET !== $step) {
+                    $action->step = $step;
+                }
             }
             $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
