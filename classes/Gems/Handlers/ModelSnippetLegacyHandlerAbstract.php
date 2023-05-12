@@ -364,7 +364,11 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function exportAction()
     {
-        $step = $this->requestInfo->getParam('step');
+        if ($this->requestInfo->getParam('export_submit')) {
+            $step = 'batch';
+        } else {
+            $step = $this->requestInfo->getParam('step');
+        }
         $post = $this->requestInfo->getRequestPostParams();
 
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
@@ -391,17 +395,29 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         if (isset($this->autofilterParameters['extraSort'])) {
             $model->addSort($this->autofilterParameters['extraSort']);
         }
+        $action = $this->responder->getSnippetsAction(ExportAction::class);
 
-        if ((!$step) || ($post && $step == 'form')) {
-            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-            $this->addSnippets($this->exportFormSnippets, $params);
-        } elseif ($step == 'batch') {
-            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-            $this->addSnippets($this->exportBatchSnippets, $params);
-        } elseif ($step == 'download') {
-            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-            $this->addSnippets($this->exportDownloadSnippets, $params);
+        if ($action instanceof ExportAction) {
+            $step = $this->requestInfo->getParam('step');
+            if ($step) {
+                $action->step = $step;
+            }
+            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
+
+        $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+        $this->addSnippets(array_merge($this->exportFormSnippets, $this->exportBatchSnippets, $this->exportDownloadSnippets), $params);
+
+//        if ((!$step) || ($post && $step == 'form')) {
+//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+//            $this->addSnippets($this->exportFormSnippets, $params);
+//        } elseif ($step == 'batch') {
+//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+//            $this->addSnippets($this->exportBatchSnippets, $params);
+//        } elseif ($step == 'download') {
+//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
+//            $this->addSnippets($this->exportDownloadSnippets, $params);
+//        }
     }
 
 

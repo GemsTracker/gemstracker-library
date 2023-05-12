@@ -873,11 +873,6 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'setup.access.mask.export',
-                                    'label' => $this->translator->trans('Export'),
-                                    'type' => 'route-link-item',
-                                ],
-                                [
                                     'name' => 'setup.access.mask.show',
                                     'label' => $this->translator->trans('Show'),
                                     'type' => 'route-link-item',
@@ -893,6 +888,11 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                     ],
+                                ],
+                                [
+                                    'name' => 'setup.access.mask.export',
+                                    'label' => $this->translator->trans('Export'),
+                                    'type' => 'route-link-item',
                                 ],
                             ],
                         ],

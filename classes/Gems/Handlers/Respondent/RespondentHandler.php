@@ -68,6 +68,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $changeConsentParameters = [
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => true,
         'editMailable'     => true,
         'menuShowSiblings' => true,
         'menuShowChildren' => true,

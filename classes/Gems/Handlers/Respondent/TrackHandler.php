@@ -193,6 +193,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
      * @var array Mixed key => value array for snippet initialization
      */
     protected array $deleteTrackParameters = [
+        'addCurrentParent'   => true,
+        'addCurrentSiblings' => true,
         'formTitle'         => null,
         'respondentTrack'   => 'getRespondentTrack',
         'respondentTrackId' => 'getRespondentTrackId',
@@ -208,7 +210,6 @@ class TrackHandler extends RespondentChildHandlerAbstract
      */
     protected array $deleteTrackSnippets = [
         'Tracker\\DeleteTrackSnippet',
-        CurrentButtonRowSnippet::class,
         'Tracker\\TrackTokenOverviewSnippet',
         'Tracker\\TrackUsageOverviewSnippet',
     ];

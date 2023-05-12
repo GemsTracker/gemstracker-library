@@ -258,12 +258,13 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
                 $action->addCurrentSiblings = false;
             }
         }
-//        if ($action instanceof ExportAction) {
-//            $step = $this->requestInfo->getParam('step');
-//            if ($step) {
-//                $action->step = $step;
-//            }
-//            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
-//        }
+        if ($action instanceof ExportAction) {
+            $step = $this->requestInfo->getParam('step');
+            if ($step) {
+                $action->step = $step;
+            }
+            $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
+        }
+
     }
 }

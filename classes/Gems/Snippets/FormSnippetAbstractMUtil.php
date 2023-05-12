@@ -21,6 +21,7 @@ use MUtil\Snippets\FormSnippetAbstract as MUtilFormSnippetAbstract;
  * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.7.2 14-okt-2015 11:26:15
+ * @deprecated
  */
 abstract class FormSnippetAbstractMUtil extends MUtilFormSnippetAbstract
 {

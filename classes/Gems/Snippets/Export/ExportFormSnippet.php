@@ -2,8 +2,14 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\Export;
+use Gems\Export\ExportInterface;
+use Gems\Form;
+use Gems\Html;
 use Gems\Loader;
 use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Snippets\FormSnippetAbstract;
+use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -11,127 +17,133 @@ use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
-use Zalt\Model\Data\FullDataInterface;
-use Zalt\Snippets\ModelSnippetAbstract;
+use Zalt\Model\MetaModellerInterface;
+use Zalt\SnippetsLoader\SnippetException;
 use Zalt\SnippetsLoader\SnippetOptions;
 
-class ExportFormSnippet extends ModelSnippetAbstract
+class ExportFormSnippet extends FormSnippetAbstract
 {
     use MessageTrait;
 
-    /**
-     *
-     * @var \MUtil\Model\ModelAbstract
-     */
-    protected $model;
+    protected ExportInterface $currentExport;
 
     /**
      *
      * @var \Gems\Export
      */
-    protected $export;
+    protected Export $export;
 
-    /**
-     * Should be set to the available export classes
-     * 
-     * @var array
-     */
-    protected $exportClasses;
+    protected MetaModellerInterface $model;
+
+    protected bool $processed = false;
 
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        MenuSnippetHelper $menuHelper,
         Loader $loader,
-        private readonly MenuSnippetHelper $menuHelper,
-        private readonly TranslatorInterface $translator,
+        protected ExportAction $exportAction,
         private readonly SessionInterface $session,
         private readonly ProjectOverloader $overLoader,
     ) {
-        parent::__construct($snippetOptions, $requestInfo, $translate);
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
-        $this->messenger = $messenger;
-
-        $this->export = $loader->getExport();
-
-        //if (!isset($this->exportClasses)) {
-            $this->exportClasses = $this->export->getExportClasses();
-        //}
+        $this->export    = $loader->getExport();
+        $this->saveLabel = $this->_('Export');
     }
 
-    protected function createModel(): FullDataInterface
+    protected function addFormElements(mixed $form)
     {
-        return $this->model;
-    }
-
-    public function getHtmlOutput() {
-        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-
-        if ($batch->isLoaded() && !$batch->isFinished()) {
-            $lastActive = $batch->getSessionVariable('last_active_at');
-
-            if ($lastActive && time() - $lastActive < 60) {
-                $this->addMessage($this->_('Another export is still running. Please wait for this export to be finished.'));
-                return '';
-            }
+        if (! $form instanceof Form) {
+            throw new SnippetException(sprintf("Incorrect form type %s, expected a \gems\Form form!"), get_class($form));
         }
 
-        $batch->reset();
-
-        $post = $this->requestInfo->getRequestPostParams();
-
-        if (isset($post['type'])) {
-            $currentType = $post['type'];
-        } else {
-            reset($this->exportClasses);
-            $currentType = key($this->exportClasses);
-        }
-
-        $form = new \Gems\Form([
-            'id' => 'exportOptionsForm',
-            'class' => 'form-horizontal',
-            'data-autosubmit-inplace' => true,
-        ]);
-
-        $url = $this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute(), ['step' => 'batch']);
-        $form->setAction($url);
-
-        $elements = array();
-
-        $elements['type'] = $form->createElement('select', 'type', [
-            'label' => $this->translator->trans('Export to'),
-            'multiOptions' => $this->exportClasses,
-            'class' => 'autosubmit'
-        ]);
-
-        $form->addElements($elements);
-
-        $exportClass        = $this->export->getExport($currentType, null, $batch);
-        $exportName         = $exportClass->getName();
-        $exportFormElements = $exportClass->getFormElements($form, $data);
-
-        if ($exportFormElements) {
-            $exportFormElements['firstCheck'] = $form->createElement('hidden', $currentType)->setBelongsTo($currentType);
-            $form->addElements($exportFormElements);
-        }
-
-        if (!isset($post[$currentType])) {
-            $post[$exportName] = $exportClass->getDefaultFormValues();
-        }
-
-        $element = $form->createElement('submit', 'export_submit', array('label' => $this->translator->trans('Export')));
-        $form->addElement($element);
-
-        if ($post) {
-            $form->populate($post);
-        }
-
-        $container = \Gems\Html::div(array('id' => 'export-form'));
-        $container->append($form);
-        //$form->setAttrib('id', 'autosubmit');
         $form->setAutoSubmit(\MUtil\Html::attrib('href', array('action' => $this->requestInfo->getCurrentAction())), 'export-form', true);
 
+        $element = $form->createElement('select', 'type', [
+            'label' => $this->_('Export to'),
+            'multiOptions' => $this->export->getExportClasses(),
+            'class' => 'autosubmit'
+        ]);
+        $form->addElement($element);
+
+        $exportFormElements = $this->currentExport->getFormElements($form, $this->formData);
+
+        if ($exportFormElements) {
+            $form->addElements($exportFormElements);
+        }
+    }
+
+    protected function createForm($options = null)
+    {
+        $options['id'] = 'exportOptionsForm';
+        $options['class'] = 'form-horizontal';
+        $options['data-autosubmit-inplace'] = true;
+
+        return parent::createForm($options);
+    }
+
+    /**
+     * Return the default values for the form
+     *
+     * @return array
+     */
+    protected function getDefaultFormValues(): array
+    {
+        $defaults[$this->currentExport->getName()] = $this->currentExport->getDefaultFormValues();
+        $defaults['type'] = $this->export->getDefaultExportClass();
+
+        return $defaults;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHtmlOutput()
+    {
+        $container = Html::div(array('id' => 'export-form'));
+        $container->append(parent::getHtmlOutput());
         return $container;
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        if ($this->exportAction->step == ExportAction::STEP_FORM) {
+            parent::hasHtmlOutput();
+
+            if (! $this->processed) {
+                return true;
+            }
+            $this->exportAction->step = ExportAction::STEP_BATCH;
+        }
+        return false;
+    }
+
+    /**
+     * Hook that loads the form data from $_POST or the model
+     *
+     * Or from whatever other source you specify here.
+     */
+    protected function loadFormData(): array
+    {
+        $currentType = $this->requestInfo->getParam('type', $this->export->getDefaultExportClass());
+        $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+
+        $this->currentExport = $this->export->getExport($currentType, null, $this->exportAction->batch);
+
+        if ($this->isPost()) {
+            $this->formData = $this->requestInfo->getRequestPostParams() + $this->getDefaultFormValues();
+            return $this->formData;
+        }
+
+        $this->formData = $this->getDefaultFormValues() + $this->requestInfo->getRequestPostParams();
+        return $this->formData;
+    }
+
+    protected function setAfterSaveRoute()
+    {
+        $this->processed = true;
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Gems\Snippets\Export;
 
+use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -47,6 +48,7 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        protected ExportAction $exportAction,
         protected ProjectOverloader $overLoader,
         protected SessionInterface $session,
     ) {
@@ -62,7 +64,12 @@ class ExportDownloadSnippet extends ModelSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
-        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+        if (($this->exportAction->step !== ExportAction::STEP_BATCH) || (! isset($this->exportAction->batch))) {
+            return null;
+        }
+        // $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+        $batch = $this->exportAction->batch;
+
         $file = $batch->getSessionVariable('file');
         if ($file && is_array($file) && is_array($file['headers']) && file_exists($file['file'])) {
             $response = new \Laminas\Diactoros\Response\TextResponse(

@@ -14,7 +14,7 @@ namespace Gems\Snippets\Export;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
 use Gems\MenuNew\MenuSnippetHelper;
-use Gems\Task\TaskRunnerBatch;
+use Gems\SnippetsActions\Export\ExportAction;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -43,12 +43,15 @@ class ExportBatchSnippet extends ModelSnippetAbstract
      */
     protected $model;
 
+    protected string $formTitle = '';
+
     public function __construct(
         SnippetOptions $snippetOptions,
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         protected Loader $loader,
         protected BatchRunnerLoader $batchRunnerLoader,
+        protected ExportAction $exportAction,
         protected ProjectOverloader $overLoader,
         protected MenuSnippetHelper $menuHelper,
         protected SessionInterface $session,
@@ -64,7 +67,10 @@ class ExportBatchSnippet extends ModelSnippetAbstract
 
     public function getResponse(): ?ResponseInterface
     {
-        $batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+        if (($this->exportAction->step !== ExportAction::STEP_BATCH) || (! isset($this->exportAction->batch))) {
+            return null;
+        }
+        $batch = $this->exportAction->batch;
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
@@ -75,6 +81,7 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $jobInfo = [];
 
         if ($batch->isFinished()) {
+            $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
             return new RedirectResponse($batch->restartRedirectUrl);
         }
 
@@ -108,10 +115,8 @@ class ExportBatchSnippet extends ModelSnippetAbstract
             $jobInfo = [...$jobInfo, ...$helpLines];
         }
 
-        $title = $this->_('Export');
-
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
-        $batchRunner->setTitle($title);
+        $batchRunner->setTitle($this->formTitle);
         $batchRunner->setJobInfo($jobInfo);
 
         return $batchRunner->getResponse($this->request);

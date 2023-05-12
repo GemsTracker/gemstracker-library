@@ -40,7 +40,7 @@ class ExportAction extends AbstractAction implements ModelActionInterface, PostA
     protected array $_snippets = [
         ExportFormSnippet::class,
         ExportBatchSnippet::class,
-//        ExportDownloadSnippet::class,
+        ExportDownloadSnippet::class,
         ];
 
     public TaskRunnerBatch $batch;

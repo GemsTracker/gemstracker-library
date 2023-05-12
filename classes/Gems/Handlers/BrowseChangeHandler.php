@@ -36,7 +36,7 @@ abstract class BrowseChangeHandler extends GemsHandler
         'create'     => CreateAction::class,
         'show'       => ShowAction::class,
         'edit'       => EditAction::class,
-//        'export'     => ExportAction::class,
+        'export'     => ExportAction::class,
         'delete'     => DeleteAction::class,
         ];
 }
