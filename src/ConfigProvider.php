@@ -541,10 +541,10 @@ class ConfigProvider
     {
         return [
             'migrations' => [
-                __DIR__ . '/../../configs/db/migrations',
+                __DIR__ . '/../configs/db/migrations',
             ],
             'seeds' => [
-                __DIR__ . '/../../configs/db/seeds',
+                __DIR__ . '/../configs/db/seeds',
             ],
         ];
     }
@@ -659,10 +659,10 @@ class ConfigProvider
     {
         return [
             'paths' => [
-                'gems' => [__DIR__ . '/../../templates/gems'],
-                'layout' => [__DIR__ . '/../../templates/layout'],
-                'mail' => [__DIR__ . '/../../templates/mail'],
-                'menu' => [__DIR__ . '/../../templates/menu'],
+                'gems' => [__DIR__ . '/../templates/gems'],
+                'layout' => [__DIR__ . '/../templates/layout'],
+                'mail' => [__DIR__ . '/../templates/mail'],
+                'menu' => [__DIR__ . '/../templates/menu'],
             ],
         ];
     }
@@ -738,7 +738,7 @@ class ConfigProvider
         return [
             'databaseFields' => false,
             'paths' => [
-                'gems' => [__DIR__ . '/../../languages'],
+                'gems' => [__DIR__ . '/../languages'],
             ],
         ];
     }

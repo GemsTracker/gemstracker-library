@@ -40,12 +40,12 @@ class Form extends \MUtil\Form
     {
         parent::__construct($options);
 
-        $this->addPrefixPath('Gems_Form_Decorator', 'Gems/Form/Decorator/', \Zend_Form::DECORATOR);
-        $this->addPrefixPath('Gems_Form_Element',   'Gems/Form/Element/',   \Zend_Form::ELEMENT);
+        $this->addPrefixPath('Gems_Form_Decorator', 'Form/Decorator/', \Zend_Form::DECORATOR);
+        $this->addPrefixPath('Gems_Form_Element',   'Form/Element/',   \Zend_Form::ELEMENT);
 
-        $this->addElementPrefixPath('Gems\Form_Decorator',  'Gems/Form/Decorator/',  \Zend_Form_Element::DECORATOR);
-        $this->addElementPrefixPath('Gems_Filter',          'Gems/Filter/',          \Zend_Form_Element::FILTER);
-        $this->addElementPrefixPath('Gems_Validate',        'Gems/Validate/',        \Zend_Form_Element::VALIDATE);
+        $this->addElementPrefixPath('Gems\Form_Decorator',  'Form/Decorator/',  \Zend_Form_Element::DECORATOR);
+        $this->addElementPrefixPath('Gems_Filter',          'Filter/',          \Zend_Form_Element::FILTER);
+        $this->addElementPrefixPath('Gems_Validate',        'Validate/',        \Zend_Form_Element::VALIDATE);
 
         $this->setDisableTranslator(true);
 
