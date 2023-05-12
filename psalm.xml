@@ -9,9 +9,7 @@
     errorBaseline="psalm-refactor-baseline.xml"
 >
     <projectFiles>
-        <directory name="classes" />
-        <directory name="classes/Gems" />
-        <directory name="classes/OpenRosa" />
+        <directory name="srv" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

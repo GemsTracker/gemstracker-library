@@ -15,10 +15,8 @@
     </transformations>
     
     <files>
-        <directory>classes</directory>
-        <ignore>classes/Zend/*</ignore>
-        <ignore>classes/ZFDebug/*</ignore>
-        <ignore>classes/Gems/User/Adapter/Radius/**.**</ignore>
+        <directory>src</directory>
+        <ignore>src/User/Adapter/Radius/**.**</ignore>
     </files>
   
 </phpdoc>

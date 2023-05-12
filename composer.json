@@ -27,18 +27,12 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Gems_": "classes",
-            "Zend_": "classes",
-            "OpenRosa_" : "classes"
-        },
         "psr-4": {
-            "Gems\\": "classes/Gems",
-            "OpenRosa\\": "classes/OpenRosa"
+            "Gems\\": "src",
         }
     },
     "include-path": [
-        "classes/"
+        "src/"
     ],
     "minimum-stability": "dev",
     "prefer-stable": false,
@@ -123,7 +117,6 @@
     },
     "autoload-dev": {
         "psr-0": {
-            "Gems_": "tests/classes",
             "MUtil_": "vendor/magnafacta/mutil/tests/"
         },
         "psr-4": {
