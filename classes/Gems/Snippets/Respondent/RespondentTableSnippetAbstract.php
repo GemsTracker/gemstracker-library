@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\User\Mask\MaskRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

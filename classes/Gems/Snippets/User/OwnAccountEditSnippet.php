@@ -15,7 +15,7 @@ use Gems\Audit\AccesslogRepository;
 use Gems\Cache\HelperAdapter;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\LocaleCookie;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;

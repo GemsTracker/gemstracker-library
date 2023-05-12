@@ -2,7 +2,7 @@
 
 namespace Gems\Tracker\Token;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker\Token;
 use MUtil\Model;
 use Psr\Http\Message\ServerRequestInterface;

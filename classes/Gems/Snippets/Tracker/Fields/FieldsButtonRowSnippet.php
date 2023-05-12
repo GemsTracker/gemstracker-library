@@ -2,7 +2,7 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\PrevNextButtonRowSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Engine\FieldsDefinition;

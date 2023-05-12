@@ -13,7 +13,7 @@ namespace Gems\Handlers\Setup;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;

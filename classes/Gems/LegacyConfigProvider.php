@@ -15,7 +15,7 @@ use Gems\Layout\LayoutRenderer;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\AccessRepository;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\OrganizationRepository;

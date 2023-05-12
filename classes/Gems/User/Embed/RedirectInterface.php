@@ -11,7 +11,7 @@
 
 namespace Gems\User\Embed;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\User\User;
 
 /**

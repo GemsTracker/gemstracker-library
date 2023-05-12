@@ -11,7 +11,7 @@
 
 namespace Gems\Handlers\Overview;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\PeriodSelectRepository;
 use Gems\Selector\TokenDateSelector;
 use Gems\Snippets\Generic\ContentTitleSnippet;

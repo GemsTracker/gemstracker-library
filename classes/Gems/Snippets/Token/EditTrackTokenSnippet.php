@@ -17,7 +17,7 @@ use DateTimeInterface;
 use Gems\Date\Period;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\EditTokenSnippetAbstract;

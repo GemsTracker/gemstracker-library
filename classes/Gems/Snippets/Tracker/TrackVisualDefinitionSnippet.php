@@ -13,8 +13,8 @@ namespace Gems\Snippets\Tracker;
 
 use Gems\Db\ResultFetcher;
 use Gems\Exception\Coding;
-use Gems\MenuNew\MenuSnippetHelper;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Menu\RouteHelper;
 use MUtil\Model\SelectModel;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

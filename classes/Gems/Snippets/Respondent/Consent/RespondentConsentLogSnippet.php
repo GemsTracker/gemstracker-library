@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Respondent\Consent;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;
 use MUtil\Model\TableModel;

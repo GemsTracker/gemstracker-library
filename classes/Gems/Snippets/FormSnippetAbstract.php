@@ -12,7 +12,7 @@
 namespace Gems\Snippets;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\Generic\ButtonRowTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
@@ -58,7 +58,7 @@ abstract class FormSnippetAbstract extends ZendFormSnippetAbstract
      * @param \Zalt\Base\RequestInfo                             $requestInfo
      * @param \Symfony\Contracts\Translation\TranslatorInterface $translate
      * @param \Zalt\Message\MessengerInterface                   $messenger
-     * @param \Gems\MenuNew\MenuSnippetHelper                    $menuHelper
+     * @param \Gems\Menu\MenuSnippetHelper                    $menuHelper
      */
     public function __construct(
         SnippetOptions $snippetOptions,

@@ -4,7 +4,7 @@ namespace Gems\Repository;
 
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\User\User;
 use Laminas\Db\Sql\Predicate\Expression;

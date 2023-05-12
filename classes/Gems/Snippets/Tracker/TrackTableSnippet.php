@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker\Respondent;

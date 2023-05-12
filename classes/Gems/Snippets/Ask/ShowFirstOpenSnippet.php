@@ -15,7 +15,7 @@ use Gems\Communication\CommunicationRepository;
 use Gems\Html;
 use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
 use Gems\Tracker\Token;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;
 use Zalt\SnippetsLoader\SnippetOptions;

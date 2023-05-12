@@ -13,7 +13,7 @@ namespace Gems\Snippets\Role;
 
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\RoleAdapterInterface;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Permissions\Acl\Acl;

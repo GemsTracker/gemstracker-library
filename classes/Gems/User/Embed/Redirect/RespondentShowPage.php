@@ -11,7 +11,7 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\User\Embed\RedirectAbstract;
 use Gems\User\User;
 use MUtil\Model;

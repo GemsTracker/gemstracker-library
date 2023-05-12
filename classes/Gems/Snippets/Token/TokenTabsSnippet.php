@@ -9,7 +9,7 @@
 
 namespace Gems\Snippets\Token;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\TabSnippetAbstract;
 use MUtil\Translate\Translator;
 use Zalt\Base\RequestInfo;

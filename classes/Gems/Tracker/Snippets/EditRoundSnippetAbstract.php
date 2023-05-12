@@ -13,7 +13,7 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TrackDataRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;

@@ -13,7 +13,7 @@ namespace Gems\Snippets\Token;
 
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\Bridge\ThreeColumnTableBridge;
 use Gems\Repository\TokenRepository;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Gems\Middleware;
 
 use Gems\AuthNew\AuthenticationMiddleware;
-use Gems\MenuNew\Menu;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\Menu;
+use Gems\Menu\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Template\TemplateRendererInterface;

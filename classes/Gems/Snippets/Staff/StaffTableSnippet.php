@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Staff;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\StaffModel;
 use Gems\Snippets\ModelTableSnippetAbstract;

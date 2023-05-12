@@ -13,7 +13,7 @@ namespace Gems\Agenda;
 
 use Gems\Db\ResultFetcher;
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Model\JoinModel;
 use Gems\Tracker\Model\FieldMaintenanceModel;
 use Gems\Util\Translated;

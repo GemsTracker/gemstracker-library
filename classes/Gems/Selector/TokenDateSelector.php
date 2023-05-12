@@ -11,7 +11,7 @@
 
 namespace Gems\Selector;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Util\Localized;
 use Gems\Util\Translated;

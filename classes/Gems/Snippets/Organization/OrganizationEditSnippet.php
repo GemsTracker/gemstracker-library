@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Organization;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\User\User;
 use Gems\User\UserLoader;

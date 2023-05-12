@@ -2,8 +2,8 @@
 
 namespace GemsTest\MenuNew;
 
-use Gems\MenuNew\RouteHelper;
-use Gems\MenuNew\RouteNotFoundException;
+use Gems\Menu\RouteHelper;
+use Gems\Menu\RouteNotFoundException;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\FastRouteRouter;

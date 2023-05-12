@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 abstract class MenuNode
 {
@@ -19,7 +19,7 @@ abstract class MenuNode
     }
 
     /**
-     * @return \Gems\MenuNew\MenuItem[]
+     * @return \Gems\Menu\MenuItem[]
      */
     public function getChildren(): array
     {

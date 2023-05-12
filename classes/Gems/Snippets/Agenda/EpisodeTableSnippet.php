@@ -14,7 +14,7 @@ namespace Gems\Snippets\Agenda;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\AppointmentFilterInterface;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\EpisodeOfCareModel;
 use Symfony\Contracts\Translation\TranslatorInterface;

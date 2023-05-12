@@ -13,7 +13,7 @@ namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TrackDataRepository;
 use Gems\Tracker;
 use Gems\Tracker\Engine\StepEngineAbstract;

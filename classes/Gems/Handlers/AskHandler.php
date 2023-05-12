@@ -13,8 +13,8 @@ namespace Gems\Handlers;
 
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
-use Gems\MenuNew\RouteHelper;
-use Gems\MenuNew\RouteNotFoundException;
+use Gems\Menu\RouteHelper;
+use Gems\Menu\RouteNotFoundException;
 use Gems\Middleware\ClientIpMiddleware;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;

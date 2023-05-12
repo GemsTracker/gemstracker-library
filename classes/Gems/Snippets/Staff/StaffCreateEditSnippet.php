@@ -9,7 +9,7 @@
 namespace Gems\Snippets\Staff;
 
 use Gems\Loader;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

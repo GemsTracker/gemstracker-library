@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 use Mezzio\Router\RouteResult;
 use Mezzio\Template\TemplateRendererInterface;

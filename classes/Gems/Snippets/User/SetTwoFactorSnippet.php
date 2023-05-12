@@ -15,7 +15,7 @@ use Gems\AuthNew\LoginStatusTracker;
 use Gems\AuthTfa\Method\OtpMethodInterface;
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Layout\LayoutSettings;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\SessionNamespace;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\Snippets\ZendFormSnippetAbstract;

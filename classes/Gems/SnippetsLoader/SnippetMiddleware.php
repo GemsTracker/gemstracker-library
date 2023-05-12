@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Gems\SnippetsLoader;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Middleware\MenuMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

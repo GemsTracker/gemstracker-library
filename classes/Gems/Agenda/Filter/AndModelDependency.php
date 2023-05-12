@@ -15,7 +15,7 @@ use Gems\Agenda\Agenda;
 use Gems\Agenda\FilterModelDependencyAbstract;
 use Gems\Agenda\SubFilterDependencyInterface;
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Util\Translated;
 use MUtil\Validate\NotEqualTo;
 use Symfony\Contracts\Translation\TranslatorInterface;

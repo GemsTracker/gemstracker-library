@@ -16,7 +16,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Gems\Communication\CommunicationRepository;
 use Gems\Mail\TokenMailer;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker\Token;
 use MUtil\Model;
 use MUtil\Translate\Translator;

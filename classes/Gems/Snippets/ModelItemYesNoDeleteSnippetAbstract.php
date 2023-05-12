@@ -12,7 +12,7 @@
 namespace Gems\Snippets;
 
 use Gems\Audit\AuditLog;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;

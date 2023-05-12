@@ -17,7 +17,7 @@ use DateTimeInterface;
 use Gems\Agenda\Agenda;
 use Gems\Agenda\Appointment;
 use Gems\Date\Period;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Gems\Util\Translated;
 use MUtil\Model;

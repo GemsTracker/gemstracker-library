@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Log;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Gems\Repository\RespondentRepository;

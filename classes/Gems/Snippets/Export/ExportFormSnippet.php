@@ -7,7 +7,7 @@ use Gems\Export\ExportInterface;
 use Gems\Form;
 use Gems\Html;
 use Gems\Loader;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;

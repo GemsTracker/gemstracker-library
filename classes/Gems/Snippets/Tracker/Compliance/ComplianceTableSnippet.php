@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Tracker\Compliance;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippet;

@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Tracker;
 
 use Gems\Html;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;

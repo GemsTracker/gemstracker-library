@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Respondent;
 
 use Gems\Db\ResultFetcher;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\User\UserLoader;
 use Symfony\Contracts\Translation\TranslatorInterface;

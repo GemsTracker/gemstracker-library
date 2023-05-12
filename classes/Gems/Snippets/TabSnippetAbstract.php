@@ -2,7 +2,7 @@
 
 namespace Gems\Snippets;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;
 use Zalt\Html\HtmlInterface;

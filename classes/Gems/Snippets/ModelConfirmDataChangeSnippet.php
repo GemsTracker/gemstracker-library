@@ -12,7 +12,7 @@
 namespace Gems\Snippets;
 
 use Gems\Audit\AccesslogRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Mezzio\Helper\UrlHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

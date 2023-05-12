@@ -11,7 +11,7 @@
 
 namespace Gems\User\Embed\Redirect;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\RespondentRepository;
 use Gems\User\User;
 use MUtil\Translate\Translator;

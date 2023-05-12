@@ -12,7 +12,7 @@
 namespace Gems\Snippets;
 
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;

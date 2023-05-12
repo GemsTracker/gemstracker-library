@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Tracker\Rounds;
 
 use Gems\Locale\Locale;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Gems\Tracker\Engine\StepEngineAbstract;
 use Gems\Tracker\Snippets\ShowRoundSnippetAbstract;

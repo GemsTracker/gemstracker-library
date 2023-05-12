@@ -2,8 +2,8 @@
 
 namespace Gems\Snippets\Communication;
 
-use Gems\MenuNew\MenuSnippetHelper;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Util\Lock\CommJobLock;
 use Symfony\Contracts\Translation\TranslatorInterface;

@@ -12,7 +12,7 @@
 namespace Gems\Util;
 
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use MUtil\Model;
 
 /**

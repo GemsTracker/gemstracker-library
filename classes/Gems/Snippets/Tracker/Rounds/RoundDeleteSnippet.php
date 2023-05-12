@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker\Rounds;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelItemYesNoDeleteSnippetAbstract;
 use Gems\Tracker\Model\RoundModel;
 use Psr\Cache\CacheItemPoolInterface;

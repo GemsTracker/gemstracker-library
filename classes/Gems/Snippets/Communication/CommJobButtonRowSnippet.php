@@ -3,7 +3,7 @@
 namespace Gems\Snippets\Communication;
 
 use Gems\Db\ResultFetcher;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\CommJobRepository;
 use Gems\Snippets\Generic\PrevNextButtonRowSnippetAbstract;
 use MUtil\Model;

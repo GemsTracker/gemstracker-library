@@ -13,7 +13,7 @@ namespace Gems\Snippets\Staff;
 
 use Gems\AuthTfa\OtpMethodBuilder;
 use Gems\Communication\CommunicationRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\User;
 use Symfony\Component\Mime\Address;

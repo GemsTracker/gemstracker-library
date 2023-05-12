@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Tracker;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Util\Translated;

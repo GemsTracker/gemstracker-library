@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 use Gems\Html;
 use Laminas\Permissions\Acl\Acl;

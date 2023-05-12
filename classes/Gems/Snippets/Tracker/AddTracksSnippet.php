@@ -15,7 +15,7 @@ use Gems\Cache\HelperAdapter;
 use Gems\Html;
 use Gems\Loader;
 use Gems\Locale\Locale;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

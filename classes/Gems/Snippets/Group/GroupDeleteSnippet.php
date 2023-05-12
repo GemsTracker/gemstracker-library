@@ -14,7 +14,7 @@ namespace Gems\Snippets\Group;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\GroupRepository;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

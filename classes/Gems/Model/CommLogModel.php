@@ -11,7 +11,7 @@
 
 namespace Gems\Model;
 
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Repository\CommJobRepository;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;

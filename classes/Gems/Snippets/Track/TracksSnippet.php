@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Track;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Tracker;
 use Gems\Util\Translated;
 use Symfony\Contracts\Translation\TranslatorInterface;

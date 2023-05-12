@@ -13,7 +13,7 @@ namespace Gems\Snippets;
 
 use Gems\Html;
 use Gems\Html\Paginator\GemsPaginator;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Paginator\PaginatorInterface;

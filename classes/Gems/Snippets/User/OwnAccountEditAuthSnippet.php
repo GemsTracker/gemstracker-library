@@ -19,7 +19,7 @@ use Gems\Cache\RateLimiter;
 use Gems\Communication\CommunicationRepository;
 use Gems\Communication\Http\SmsClientInterface;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\SessionNamespace;
 use Gems\Snippets\FormSnippetAbstract;

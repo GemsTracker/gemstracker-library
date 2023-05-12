@@ -14,7 +14,7 @@ namespace Gems\Snippets\Agenda;
 use Gems\Agenda\Agenda;
 use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\AppointmentModel;
 use Gems\Tracker\Respondent;

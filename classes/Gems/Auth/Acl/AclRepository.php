@@ -3,7 +3,7 @@
 namespace Gems\Auth\Acl;
 
 use Brick\VarExporter\VarExporter;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\UntranslatedString;
 use Gems\User\User;
 use Laminas\Permissions\Acl\Acl;

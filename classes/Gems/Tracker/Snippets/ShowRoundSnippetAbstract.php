@@ -13,7 +13,7 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

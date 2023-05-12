@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Track;
 
 use Gems\Db\ResultFetcher;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Tracker;
 use Gems\Util\Translated;

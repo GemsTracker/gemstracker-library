@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Agenda;
 
 use Gems\Agenda\Agenda;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;

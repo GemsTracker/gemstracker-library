@@ -14,7 +14,7 @@ namespace Gems\Snippets\Respondent;
 use Gems\Db\ResultFetcher;
 use Gems\Exception\RespondentAlreadyExists;
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model\RespondentModel;
 use Gems\Repository\OrganizationRepository;
 use Gems\Snippets\ModelFormSnippetAbstract;

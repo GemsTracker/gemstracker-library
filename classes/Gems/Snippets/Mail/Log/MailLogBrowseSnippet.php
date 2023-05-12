@@ -12,7 +12,7 @@
 namespace Gems\Snippets\Mail\Log;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippet;
 use Gems\User\Mask\MaskRepository;

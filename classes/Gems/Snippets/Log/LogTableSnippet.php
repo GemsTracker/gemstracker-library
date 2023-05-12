@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Log;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\LogModel;
 use Gems\Snippets\ModelTableSnippetAbstract;

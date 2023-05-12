@@ -14,7 +14,7 @@ namespace Gems\Tracker\Snippets;
 use Gems\Event\Application\AnswerFilterEvent;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\Locale\Locale;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Repository\TokenRepository;
 use Gems\Snippets\ModelTableSnippetAbstract;
 use Gems\Tracker;

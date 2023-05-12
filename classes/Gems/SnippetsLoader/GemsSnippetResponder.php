@@ -14,7 +14,7 @@ namespace Gems\SnippetsLoader;
 use Gems\FullHtmlResponse;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Middleware\MenuMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Mezzio\Session\SessionInterface;

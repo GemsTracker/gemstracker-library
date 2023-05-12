@@ -8,7 +8,7 @@ use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\DbRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
 use Gems\Layout\LayoutRenderer;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\User\UserLoader;
 use Gems\Util\Translated;
 use Laminas\Diactoros\Response\HtmlResponse;

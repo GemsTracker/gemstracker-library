@@ -5,11 +5,11 @@ declare(strict_types=1);
 /**
  *
  * @package    Gems
- * @subpackage MenuNew
+ * @subpackage Menu
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  */
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 use Zalt\Base\RequestInfo;
 use Zalt\Late\Late;
@@ -19,7 +19,7 @@ use Zalt\Model\Bridge\BridgeInterface;
 /**
  *
  * @package    Gems
- * @subpackage MenuNew
+ * @subpackage Menu
  * @since      Class available since version 1.9.2
  */
 class MenuSnippetHelper

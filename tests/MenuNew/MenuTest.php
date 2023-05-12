@@ -2,9 +2,9 @@
 
 namespace GemsTest\MenuNew;
 
-use Gems\MenuNew\Menu;
-use Gems\MenuNew\MenuItemNotFoundException;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\Menu;
+use Gems\Menu\MenuItemNotFoundException;
+use Gems\Menu\RouteHelper;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\Route;

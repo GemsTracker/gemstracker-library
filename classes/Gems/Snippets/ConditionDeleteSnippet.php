@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Model\ConditionModel;
 use Psr\Cache\CacheItemPoolInterface;

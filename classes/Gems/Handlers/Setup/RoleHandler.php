@@ -14,7 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Auth\Acl\AclRepository;
 use Gems\Auth\Acl\ConfigRoleAdapter;
 use Gems\Auth\Acl\RoleAdapterInterface;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Laminas\Validator\Regex;

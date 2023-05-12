@@ -13,7 +13,7 @@ namespace Gems\Snippets\Export;
 
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Loader;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\SnippetsActions\Export\ExportAction;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Session\SessionInterface;

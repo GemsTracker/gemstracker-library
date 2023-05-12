@@ -14,7 +14,7 @@ namespace Gems\Handlers\Setup;
 use Gems\Batch\BatchRunnerLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\CommJobModel;
 use Gems\Repository\CommJobRepository;

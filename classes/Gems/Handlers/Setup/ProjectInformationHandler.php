@@ -15,7 +15,7 @@ use Gems\Cache\HelperAdapter;
 use Gems\Handlers\SnippetLegacyHandlerAbstract;
 use Gems\Log\ErrorLogger;
 use Gems\Log\Loggers;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Project\ProjectSettings;
 use Gems\Util\Lock\MaintenanceLock;

@@ -12,7 +12,7 @@
 namespace Gems\Handlers\TrackBuilder;
 
 use Gems\Batch\BatchRunnerLoader;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\TrackModel;

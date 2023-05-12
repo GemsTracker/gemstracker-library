@@ -11,7 +11,7 @@
 
 namespace Gems\Tracker\Snippets;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\Tracker;
 use Gems\Tracker\Model\StandardTokenModel;

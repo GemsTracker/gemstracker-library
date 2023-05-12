@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 class RouteLinkItem extends MenuItem
 {

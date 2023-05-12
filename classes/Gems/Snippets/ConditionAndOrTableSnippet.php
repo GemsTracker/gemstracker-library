@@ -12,8 +12,8 @@
 namespace Gems\Snippets;
 
 use Gems\Condition\ConditionLoader;
-use Gems\MenuNew\MenuSnippetHelper;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Model\ConditionModel;
 use MUtil\Model;
 use MUtil\Model\ModelAbstract;

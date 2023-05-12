@@ -2,7 +2,7 @@
 
 namespace Gems\Handlers\Setup;
 
-use Gems\MenuNew\Menu;
+use Gems\Menu\Menu;
 use Gems\Middleware\MenuMiddleware;
 
 trait RoleHandlerTrait

@@ -12,7 +12,7 @@
 namespace Gems\Snippets\ReceptionCode;
 
 use Gems\Legacy\CurrentUserRepository;
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\ModelFormSnippetAbstract;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;

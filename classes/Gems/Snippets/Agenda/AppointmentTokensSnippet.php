@@ -11,7 +11,7 @@
 
 namespace Gems\Snippets\Agenda;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Model;
 use Gems\Repository\TokenRepository;
 use Gems\Tracker;

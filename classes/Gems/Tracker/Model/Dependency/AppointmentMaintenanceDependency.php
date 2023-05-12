@@ -13,7 +13,7 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Agenda\Agenda;
 use Gems\Db\ResultFetcher;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Util\Translated;
 use Laminas\Validator\GreaterThan;
 use Laminas\Validator\LessThan;

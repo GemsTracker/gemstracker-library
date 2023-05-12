@@ -15,7 +15,7 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 
-use Gems\MenuNew\MenuSnippetHelper;
+use Gems\Menu\MenuSnippetHelper;
 use Gems\Util\Localized;
 use Gems\Util\Translated;
 use MUtil\Model\Transform\RequiredRowsTransformer;

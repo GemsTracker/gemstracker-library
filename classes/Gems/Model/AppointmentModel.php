@@ -13,7 +13,7 @@ namespace Gems\Model;
 
 use Gems\Agenda\Agenda;
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Model;
 
 /**

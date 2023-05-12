@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\MenuNew;
+namespace Gems\Menu;
 
 abstract class MenuItem extends MenuNode
 {

@@ -13,7 +13,7 @@ namespace Gems\Snippets\Ask;
 
 use Gems\Communication\CommunicationRepository;
 use Gems\Html;
-use Gems\MenuNew\RouteHelper;
+use Gems\Menu\RouteHelper;
 use Gems\Tracker;
 use Gems\Tracker\Snippets\ShowTokenLoopAbstract;
 use Gems\Tracker\Token;
