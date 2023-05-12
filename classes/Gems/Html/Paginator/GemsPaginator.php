@@ -30,6 +30,8 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
     protected string $itemsLinkClass = 'browselink btn btn-sm';
 
+    protected string $itemsDisabledClass = 'browselink btn btn-sm disabled';
+
     protected string $pageDisabledClass = 'page-link';
 
     protected string $pageLinkClass = 'page-link';
