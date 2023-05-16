@@ -6,14 +6,26 @@
  * and open the template in the editor.
  */
 
-namespace Gems\Tracker;
+namespace GemsTest\Tracker;
 
 /**
  * Description of TokenLibraryTest
  *
  * @author mdekk
  */
-class TokenLibraryTest extends \PHPUnit_Framework_TestCase {
+class TokenLibraryTest extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * @var array
+     */
+    protected $testConfig = [
+        'tokens' => [
+            'chars'  => '23456789abcdefghijklmnopqrstuvwxyz',
+            'format' => 'XXXX\-XXXX',
+            'from' => '01',
+            'to' => 'ol',
+        ],
+    ];
 
     /**
      *
@@ -21,13 +33,13 @@ class TokenLibraryTest extends \PHPUnit_Framework_TestCase {
      */
     protected $object;
 
-    public function setUp() {
+    protected function setUp(): void
+    {
         parent::setUp();
 
         $object = new \Gems\Tracker\Token\TokenLibrary();
 
-        $projectArray = new \Zend_Config_Ini(APPLICATION_PATH . '/configs/project.example.ini', APPLICATION_ENV);
-        $project = new \Gems\Project\ProjectSettings($projectArray);
+        $project = new \Gems\Project\ProjectSettings($this->testConfig);
         $object->answerRegistryRequest('project', $project);
         $object->checkRegistryRequestsAnswers();
 

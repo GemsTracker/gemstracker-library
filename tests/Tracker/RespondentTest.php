@@ -6,28 +6,28 @@
  * and open the template in the editor.
  */
 
-namespace Gems;
+namespace GemsTest\Tracker;
 
+use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
-use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * Description of RespondentTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class RespondentTest extends \PHPUnit_Framework_TestCase
+class RespondentTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @param array              $respondentData
-     * @param \DateTimeInterface $date
-     * @param boolean            $months
-     * @param                    $expected
+     * @param array                  $respondentData
+     * @param DateTimeInterface|null $date
+     * @param bool                   $months
+     * @param                        $expected
      * @return void
      * @dataProvider getAgeProvider
      */
-    public function testGetAge(array $respondentData, DateTimeInterface $date, \boolean $months, $expected)
+    public function testGetAge(array $respondentData, ?DateTimeInterface $date, bool $months, $expected)
     {
         $respondent = new \Gems\Tracker\Respondent(1,1);
         $respondent->answerRegistryRequest('_gemsData', $respondentData);
@@ -39,7 +39,7 @@ class RespondentTest extends \PHPUnit_Framework_TestCase
     public function getAgeProvider()
     {
         $date = new DateTimeImmutable();
-        $ageNine = $date->sub(new DateInterval('P9Y-1D'));
+        $ageNine = $date->sub(new DateInterval('P10Y'))->add(new DateInterval('P1D'));
         return [
             [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-15'), true, 120],  // Happy birthday!
             [['grs_birthday' => new DateTimeImmutable('2000-03-15')], new DateTimeImmutable('2010-03-16'), true, 120],  // The day after

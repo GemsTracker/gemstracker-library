@@ -236,7 +236,9 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         $end         = $respTrack->getEndDate();
         $wait        = $filter->getWaitDays();
 
-        $diff = $curr->diff($end);
+        if ($curr && $end) {
+            $diff = $curr->diff($end);
+        }
         
         if ((! $end) || ($diff->days <= $wait)) {
             $createTrack = false;
@@ -316,7 +318,10 @@ class Appointment extends \MUtil\Translate\TranslateableAbstract
         $curr        = $this->getAdmissionTime();
         $start       = $respTrack->getStartDate();
         $wait        = $filter->getWaitDays();
-        $diff        = $curr->diff($start);
+
+        if ($curr && $start) {
+            $diff = $curr->diff($start);
+        }
 
         if ((! $start) || ($diff->days <= $wait)) {
             $createTrack = false;
