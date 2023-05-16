@@ -36,7 +36,7 @@ class RespondentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $actual);
     }
     
-    public function getAgeProvider()
+    public static function getAgeProvider()
     {
         $date = new DateTimeImmutable();
         $ageNine = $date->sub(new DateInterval('P10Y'))->add(new DateInterval('P1D'));

@@ -587,7 +587,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         return new Menu($template, $routeHelper, $menuConfig);
     }
 
-    public function dataProviderPermissionRoutes()
+    public static function dataProviderPermissionRoutes()
     {
         return [
             [null, false],

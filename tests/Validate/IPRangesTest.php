@@ -30,7 +30,7 @@ class IPRangesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $this->validator->isValid($range));
     }
 
-    public function validProvider()
+    public static function validProvider()
     {
         return [
             ['10.0.0.0'],
@@ -53,7 +53,7 @@ class IPRangesTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false, $this->validator->isValid($range));
     }
 
-    public function invalidProvider()
+    public static function invalidProvider()
     {
         return [
             ['10.0.0.0.1'],          // One digit too much

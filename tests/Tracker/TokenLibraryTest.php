@@ -55,7 +55,7 @@ class TokenLibraryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $this->object->filter($token));
     }
 
-    public function filterProvider() {
+    public static function filterProvider() {
         return [
             ['ABCD-EFGH', 'abcd-efgh'], // Check to lowercase
             ['0bcd-efgh', 'obcd-efgh'], // Check replacement zero to o
