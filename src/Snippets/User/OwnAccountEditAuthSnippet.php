@@ -23,7 +23,6 @@ use Gems\Menu\MenuSnippetHelper;
 use Gems\Middleware\FlashMessageMiddleware;
 use Gems\SessionNamespace;
 use Gems\Snippets\FormSnippetAbstract;
-use Gems\Snippets\ZendFormSnippetAbstract;
 use Gems\User\Filter\DutchPhonenumberFilter;
 use Gems\User\User;
 use Gems\User\UserLoader;
@@ -154,7 +153,11 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
             $newEmail = trim($formData['gsf_email'] ?: '');
             $newPhone = trim($formData['gsf_phone_1'] ?: '');
 
-            if ($newPhone !== $this->currentUser->getPhonenumber()) {
+            if ($newPhone === $this->defaultCountryCode) {
+                $newPhone = '';
+            }
+
+            if ($newPhone !== $this->currentUser->getPhonenumber() && $newPhone !== '') {
                 $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
                 try {
                     $parsedPhone = $phoneUtil->parse($newPhone, $this->config['account']['edit-auth']['defaultRegion']);
@@ -185,12 +188,16 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
                 ]);
             }
 
-            if ($newPhone !== $this->currentUser->getPhonenumber()) {
-                $code = (string)random_int(100000, 999999);
+            if ($newPhone !== ($this->currentUser->getPhonenumber() ?? '')) {
+                if ($newPhone === '') {
+                    $code = null;
+                } else {
+                    $code = (string)random_int(100000, 999999);
 
-                if (!$this->sendPhoneCode($newPhone, $code)) {
-                    $this->sessionNamespace->unset('new_email'); // Might have been set above
-                    return false;
+                    if (!$this->sendPhoneCode($newPhone, $code)) {
+                        $this->sessionNamespace->unset('new_email'); // Might have been set above
+                        return false;
+                    }
                 }
 
                 $this->sessionNamespace->set('new_phone', [
@@ -227,7 +234,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
                 }
             }
 
-            if ($this->sessionNamespace->has('new_phone')) {
+            if ($this->sessionNamespace->has('new_phone') && $this->sessionNamespace->get('new_phone')['phone'] !== '') {
                 $phoneSession = $this->sessionNamespace->get('new_phone');
 
                 $newPhoneSecret = $formData['new_phone_secret'] ?: '';
@@ -403,7 +410,7 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
             $newValues['gsf_email'] = $newEmail;
         }
 
-        if ($newPhone) {
+        if ($newPhone !== null) {
             $newValues['gsf_phone_1'] = $newPhone;
         }
 
@@ -438,7 +445,6 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
             $element = new Text('gsf_phone_1');
             $element
                 ->setLabel($this->_('Mobile phone'))
-                ->setRequired()
                 ->setValue($flashValues['gsf_phone_1'] ?? $this->currentUser->getPhonenumber() ?? $this->defaultCountryCode)
             ;
             $form->addElement($element);
@@ -473,21 +479,27 @@ class OwnAccountEditAuthSnippet extends FormSnippetAbstract
         }
 
         if ($this->sessionNamespace->has('new_phone')) {
-            $element = new \MUtil\Form\Element\Html('phone_explanation');
-            $element->div(sprintf(
-                $this->_('Enter the 6-digit verification code we sent to you by SMS to verify your new mobile number %s'),
-                $this->sessionNamespace->get('new_phone')['phone'],
-            ));
-            $form->addElement($element);
+            if ($this->sessionNamespace->get('new_phone')['phone'] !== '') {
+                $element = new \MUtil\Form\Element\Html('phone_explanation');
+                $element->div(sprintf(
+                    $this->_('Enter the 6-digit verification code we sent to you by SMS to verify your new mobile number %s'),
+                    $this->sessionNamespace->get('new_phone')['phone'],
+                ));
+                $form->addElement($element);
 
-            $element = new \MUtil\Form\Element\Text('new_phone_secret');
-            $element
-                ->setLabel($this->_('Phone code'))
-                ->setAttrib('size', 6)
-                ->addValidator(new Digits())
-                ->addValidator(new StringLength(6, 6))
-            ;
-            $form->addElement($element);
+                $element = new \MUtil\Form\Element\Text('new_phone_secret');
+                $element
+                    ->setLabel($this->_('Phone code'))
+                    ->setAttrib('size', 6)
+                    ->addValidator(new Digits())
+                    ->addValidator(new StringLength(6, 6))
+                ;
+                $form->addElement($element);
+            } else {
+                $element = new \MUtil\Form\Element\Html('phone_explanation');
+                $element->div($this->_('By clicking Save you will erase your currently configured phone number'));
+                $form->addElement($element);
+            }
         }
 
         $element = new \MUtil\Form\Element\FakeSubmit('cancel');

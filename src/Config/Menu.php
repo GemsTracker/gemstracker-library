@@ -809,7 +809,7 @@ class Menu
                                         ],
                                         [
                                             'name' => 'setup.access.staff.reset',
-                                            'label' => $this->translator->trans('Reset auth.'),
+                                            'label' => $this->translator->trans('Actions'),
                                             'type' => 'route-link-item',
                                         ],
                                         [

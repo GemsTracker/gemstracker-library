@@ -32,6 +32,11 @@ class Psr11HandlersLocator implements HandlersLocatorInterface
         foreach (self::listTypes($envelope) as $type) {
             foreach ($this->handlers[$type] ?? [] as $handlerId => $handlerDescriptor) {
                 $options = [];
+
+                if (is_array($handlerDescriptor) && array_keys($handlerDescriptor) === [0]) {
+                    $handlerDescriptor = $handlerDescriptor[0];
+                }
+
                 if (is_string($handlerId) && $this->container->has($handlerId)) {
                     $options = $handlerDescriptor;
                     $handlerDescriptor = $this->container->get($handlerId);
