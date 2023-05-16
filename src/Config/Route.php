@@ -56,11 +56,11 @@ class Route
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
                     AuthenticationMiddleware::class,
+                    MenuMiddleware::class,
                     AclMiddleware::class,
                     MaintenanceModeMiddleware::class,
                     CurrentOrganizationMiddleware::class,
                     AuditLogMiddleware::class,
-                    MenuMiddleware::class,
                 ],
             ], [
                 ...$this->getGeneralRoutes(),

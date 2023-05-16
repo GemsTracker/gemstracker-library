@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gems\Middleware;
 
 use Gems\AuthNew\AuthenticationMiddleware;
+use Gems\Layout\LayoutRenderer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Template\TemplateRendererInterface;
@@ -18,6 +19,7 @@ class AclMiddleware implements MiddlewareInterface
     public function __construct(
         private readonly Acl $acl,
         private readonly TemplateRendererInterface $template,
+        private readonly LayoutRenderer $layoutRenderer,
         private readonly array $config,
     ) {
     }
@@ -43,7 +45,7 @@ class AclMiddleware implements MiddlewareInterface
                 || !$this->acl->isAllowed($userRole, $options['privilege'])
             ) && !$disablePrivileges
         ) {
-            return new HtmlResponse($this->template->render('error::404'), 404);
+            return new HtmlResponse($this->layoutRenderer->renderTemplate('error::404', $request), 404);
         }
 
         return $handler->handle($request);
