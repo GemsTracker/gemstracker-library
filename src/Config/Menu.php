@@ -35,6 +35,7 @@ class Menu
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
             $this->getAskMenu(),
+            $this->getParticipateMenu(),
             $this->getContactMenu(),
             /*[
                 'name' => 'auth.logout',
@@ -1616,6 +1617,27 @@ class Menu
                 [
                     'name' => 'option.two-factor',
                     'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
+                ],
+            ],
+        ];
+    }
+
+    public function getParticipateMenu(): array
+    {
+        return [
+            'name' => 'participate.index',
+            'label' => $this->translator->trans('Participate'),
+            'type' => 'route',
+            'children' => [
+                [
+                    'name' => 'participate.subscribe',
+                    'label' => $this->translator->trans('Subscribe'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'participate.unsubscribe',
+                    'label' => $this->translator->trans('Unsubscribe'),
                     'type' => 'route-link-item',
                 ],
             ],
