@@ -30,37 +30,34 @@ class Psr11HandlersLocator implements HandlersLocatorInterface
         $seen = [];
 
         foreach (self::listTypes($envelope) as $type) {
-            foreach ($this->handlers[$type] ?? [] as $handlerId => $handlerDescriptor) {
-                $options = [];
+            foreach ($this->handlers[$type] ?? [] as $priority => $handlers) {
+                foreach($handlers as $handlerId => $handlerDescriptor) {
+                    $options = [];
+                    if (is_string($handlerId) && $this->container->has($handlerId)) {
+                        $options = $handlerDescriptor;
+                        $handlerDescriptor = $this->container->get($handlerId);
+                    }
+                    if (is_string($handlerDescriptor) && $this->container->has($handlerDescriptor)) {
+                        $handlerDescriptor = $this->container->get($handlerDescriptor);
+                    }
 
-                if (is_array($handlerDescriptor) && array_keys($handlerDescriptor) === [0]) {
-                    $handlerDescriptor = $handlerDescriptor[0];
+                    if (\is_callable($handlerDescriptor)) {
+                        $handlerDescriptor = new HandlerDescriptor($handlerDescriptor, $options);
+                    }
+
+                    if (!$this->shouldHandle($envelope, $handlerDescriptor)) {
+                        continue;
+                    }
+
+                    $name = $handlerDescriptor->getName();
+                    if (\in_array($name, $seen)) {
+                        continue;
+                    }
+
+                    $seen[] = $name;
+
+                    yield $handlerDescriptor;
                 }
-
-                if (is_string($handlerId) && $this->container->has($handlerId)) {
-                    $options = $handlerDescriptor;
-                    $handlerDescriptor = $this->container->get($handlerId);
-                }
-                if (is_string($handlerDescriptor) && $this->container->has($handlerDescriptor)) {
-                    $handlerDescriptor = $this->container->get($handlerDescriptor);
-                }
-
-                if (\is_callable($handlerDescriptor)) {
-                    $handlerDescriptor = new HandlerDescriptor($handlerDescriptor, $options);
-                }
-
-                if (!$this->shouldHandle($envelope, $handlerDescriptor)) {
-                    continue;
-                }
-
-                $name = $handlerDescriptor->getName();
-                if (\in_array($name, $seen)) {
-                    continue;
-                }
-
-                $seen[] = $name;
-
-                yield $handlerDescriptor;
             }
         }
     }
