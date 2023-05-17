@@ -357,6 +357,10 @@ class ConfigProvider
                 // Cache
                 \Psr\Cache\CacheItemPoolInterface::class => \Symfony\Component\Cache\Adapter\AdapterInterface::class,
 
+                // Databases
+                AdapterInterface::class => Adapter::class,
+                'databaseAdapterGems' => Adapter::class,
+
                 // Messenger
                 'messenger.bus.default' => MessageBusInterface::class,
 
@@ -556,6 +560,9 @@ class ConfigProvider
         return [
             'migrations' => [
                 __DIR__ . '/../configs/db/migrations',
+            ],
+            'tables' => [
+                __DIR__ . '/../configs/db/tables',
             ],
             'seeds' => [
                 __DIR__ . '/../configs/db/seeds',
