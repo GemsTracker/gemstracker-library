@@ -16,7 +16,7 @@ class DevMailSmsClient implements SmsClientInterface
 
     public function sendMessage($number, $body, $originator=null)
     {
-        $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['env']);
+        $reference = sprintf('%s: %s', $this->config['app']['name'], $this->config['app']['env']);
 
         $message = [
             'encoding' => 'auto',

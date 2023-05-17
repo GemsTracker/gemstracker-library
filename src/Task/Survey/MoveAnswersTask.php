@@ -20,7 +20,7 @@ namespace Gems\Task\Survey;
  * @license    New BSD License
  * @since      Class available since version 1.8.6
  */
-class MoveanswersTask extends \MUtil\Task\TaskAbstract
+class MoveAnswersTask extends \MUtil\Task\TaskAbstract
 {
     /**
      *
