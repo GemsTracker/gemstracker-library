@@ -35,6 +35,7 @@ class Menu
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
             $this->getAskMenu(),
+            $this->getContactMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
@@ -1615,6 +1616,37 @@ class Menu
                 [
                     'name' => 'option.two-factor',
                     'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
+                ],
+            ],
+        ];
+    }
+
+    public function getContactMenu(): array
+    {
+        return [
+            'name' => 'contact.index',
+            'label' => $this->translator->trans('Contact'),
+            'type' => 'route',
+            'children' => [
+                [
+                    'name' => 'contact.about',
+                    'label' => $this->translator->trans('About'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.gems',
+                    'label' => $this->translator->trans('Gems'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.bugs',
+                    'label' => $this->translator->trans('Bugs'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.support',
+                    'label' => $this->translator->trans('Support'),
                     'type' => 'route-link-item',
                 ],
             ],
