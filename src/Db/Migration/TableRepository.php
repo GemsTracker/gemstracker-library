@@ -1,25 +1,49 @@
 <?php
 
-namespace Gems\Db;
+namespace Gems\Db\Migration;
 
+use Gems\Db\Databases;
+use Gems\Db\ResultFetcher;
+use Gems\Event\Application\CreateTableMigrationEvent;
 use Gems\Model\IteratorModel;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Finder\Finder;
 use Zalt\Model\MetaModelInterface;
 
-class DatabaseRepository
-{
-    protected string $defaultDatabase = 'gems';
 
+class TableRepository extends MigrationRepositoryAbstract
+{
     protected int $defaultOrder = 1000;
 
-    public function __construct(
-        private readonly array $config,
-        private readonly Databases $databases,
-        private readonly Translator $translator,
-    )
-    {}
+
+
+    public function createTable(array $tableInfo): void
+    {
+        if (!isset($tableInfo['db'], $tableInfo['sql']) || empty($tableInfo['sql'])) {
+            throw new \Exception('Not enough table info to create table');
+        }
+        $adapter = $this->databases->getDatabase($tableInfo['db']);
+        if (!$adapter instanceof Adapter) {
+            throw new \Exception('Not enough table info to create table');
+        }
+        $resultFetcher = new ResultFetcher($adapter);
+        $event = new CreateTableMigrationEvent(
+            'table',
+            $tableInfo['name'],
+            $tableInfo['group'],
+            $tableInfo['name'],
+            'sucess',
+            $tableInfo['sql'],
+            microtime(true),
+        );
+        $resultFetcher->query($tableInfo['sql']);
+        $event->setEnd();
+
+        $this->eventDispatcher->dispatch($event);
+    }
 
     protected function getGroupName(string $name): ?string
     {
@@ -34,58 +58,6 @@ class DatabaseRepository
     {
         $tableDirectories = $this->getTablesDirectories();
         return array_column($tableDirectories, 'db');
-    }
-
-    public function getDsn(array $config): ?string
-    {
-        if (isset($config['dsn'])) {
-            return $config['dsn'];
-        }
-        $connectionName = $config['driver'] ?? null;
-        if (!isset($config['database'])) {
-            throw new \Exception('No database in config');
-        }
-        $dbName = $config['database'];
-        $driverName = $this->getDsnDriverName($connectionName);
-        if ($driverName === 'sqlite') {
-            return "$driverName:$dbName";
-        }
-
-        $host = $config['host'] ?? 'localhost';
-        $dsnParts = [
-            'host' => $host,
-        ];
-
-        if (isset($config['port'])) {
-            $dsnParts['port'] = $config['port'];
-        }
-        $dsnParts['dbname'] = $dbName;
-        if (isset($config['username'])) {
-            $dsnParts['user'] = $config['username'];
-        }
-        if (isset($config['password'])) {
-            $dsnParts['password'] = $config['password'];
-        }
-        if (isset($config['charset'])) {
-            $dsnParts['charset'] = $config['charset'];
-        }
-
-        $dsn = "$driverName:";
-        foreach($dsnParts as $key=>$value) {
-            $dsn .= "$key=$value;";
-        }
-
-        return rtrim($dsn, ';');
-    }
-
-    public function getDsnDriverName(?string $connection): string
-    {
-        return match (strtolower($connection)) {
-            'pdo_sqlite', 'sqlite' => 'sqlite',
-            'pdo_pgsql', 'pgsql' => 'pgsql',
-            'sqlsrv', 'mssql' => 'mssql',
-            default => 'mysql',
-        };
     }
 
     public function getTableInfoFromDb()
@@ -111,8 +83,9 @@ class DatabaseRepository
                     'name' => $tableName,
                     'group' => $this->getGroupName($tableName),
                     'type' => $tableType,
+                    'description' => null,
                     'order' => $this->defaultOrder,
-                    'script' => '',
+                    'sql' => '',
                     'lastChanged' => null,
                     'location' => null,
                     'db' => $dbName,
@@ -179,7 +152,7 @@ class DatabaseRepository
         $model->set('state', [
             'type' => MetaModelInterface::TYPE_NUMERIC
         ]);
-        $model->set('script', [
+        $model->set('sql', [
             'type' => MetaModelInterface::TYPE_STRING
         ]);
         $model->set('lastChanged', [
@@ -204,46 +177,45 @@ class DatabaseRepository
     {
         $tableDirectories = $this->getTablesDirectories();
         $tables = [];
+
         foreach($tableDirectories as $tableDirectory) {
-            if (!is_dir($tableDirectory['path'])) {
-                continue;
-            }
-            foreach (new \GlobIterator($tableDirectory['path'] . DIRECTORY_SEPARATOR . '*.sql') as $file) {
-                $filenameParts = explode('.', $file->getBaseName('.sql'));
+            $finder = new Finder();
+            $files = $finder->files()->name('*.sql')->in($tableDirectory['path']);
+
+            foreach ($files as $file) {
+                $filenameParts = explode('.', $file->getFilenameWithoutExtension());
                 $name = $filenameParts[0];
-                $fileContent = file_get_contents($file->getPathname());
+                $fileContent = $file->getContents();
+                $firstRow = substr($fileContent, 0, strpos($fileContent, "\n"));
+                $description = null;
+                if (str_starts_with($firstRow, '--')) {
+                    $description = trim(substr($firstRow, 2));
+                }
+
                 $table = [
-                    'name' => $filenameParts[0],
+                    'name' => $name,
                     'group' => $this->getGroupName($name),
                     'type' => 'table',
+                    'description' => $description,
                     'order' => $this->defaultOrder,
-                    'script' => $fileContent,
+                    'sql' => $fileContent,
                     'lastChanged' => $file->getMTime(),
-                    'location' => $tableDirectory['path'],
+                    'location' => $file->getRealPath(),
                     'db' => $tableDirectory['db'],
                 ];
+
                 if (count($filenameParts) === 2 && is_numeric($filenameParts[1])) {
                     $table['order'] = (int)$filenameParts[1];
                 }
                 $tables[$name] = $table;
             }
         }
+
         return $tables;
     }
 
     public function getTablesDirectories(): array
     {
-        $tableDirectories = $this->config['migrations']['tables'] ?? [];
-
-        foreach($tableDirectories as $key=>$tableDirectory) {
-            if (is_string($tableDirectory)) {
-                $tableDirectories[$key] = [
-                    'db' => $this->defaultDatabase,
-                    'path' => $tableDirectory,
-                ];
-            }
-        }
-
-        return $tableDirectories;
+        return $this->getResourceDirectories('tables');
     }
 }

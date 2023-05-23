@@ -8,6 +8,8 @@ use Psr\Container\ContainerInterface;
 class Databases
 {
     public const DEFAULT_DATABASE_NAME = 'gems';
+
+    public const ALIAS_PREFIX = 'databaseAdapter';
     public function __construct(
         protected readonly ContainerInterface $container,
     )
@@ -23,7 +25,7 @@ class Databases
         if ($name === static::DEFAULT_DATABASE_NAME) {
             return $this->getDefaultDatabase();
         }
-        $containerAlias = 'databaseAdapter' . ucfirst($name);
+        $containerAlias = static::ALIAS_PREFIX . ucfirst($name);
         if ($this->container->has($containerAlias)) {
             return $this->container->get($containerAlias);
         }
