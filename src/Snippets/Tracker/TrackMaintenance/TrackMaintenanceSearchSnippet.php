@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\TrackMaintenance;
 
 use Gems\Db\ResultFetcher;
+use Gems\Html;
 use Gems\Legacy\CurrentUserRepository;
 use Gems\User\User;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -58,7 +59,7 @@ class TrackMaintenanceSearchSnippet extends \Gems\Snippets\AutosearchFormSnippet
         $elements = parent::getAutoSearchElements($data);
 
         if ($elements) {
-            $br = \MUtil\Html::create('br');
+            $br = Html::create('br');
             $elements[] = $this->_createSelectElement('gtr_track_class', $this->model, $this->_('(all track engines)'));
 
             $elements[] = $br;

@@ -516,6 +516,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -525,6 +526,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -539,6 +541,7 @@ class Route
                 ],
                 postRoutes: [
                     'delete-track',
+                    'undelete-track',
                     'edit-track',
                 ]
             ),
