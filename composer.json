@@ -98,6 +98,7 @@
         "symfony/messenger": "^6.1",
         "symfony/redis-messenger": "^6.1",
         "symfony/translation": "^6.1",
+        "symfony/yaml": "^6.2",
         "twig/twig": "^3.4",
         "middlewares/debugbar": "^2.1",
         "chillerlan/php-qrcode": "^4.3",
