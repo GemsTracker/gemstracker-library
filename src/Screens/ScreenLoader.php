@@ -11,6 +11,8 @@
 
 namespace Gems\Screens;
 
+use Zalt\Loader\ConstructorProjectOverloader;
+
 /**
  *
  * @package    Gems
@@ -19,7 +21,7 @@ namespace Gems\Screens;
  * @license    New BSD License
  * @since      Class available since version 1.8.2 Jan 17, 2017 5:07:06 PM
  */
-class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
+class ScreenLoader
 {
     const RESPONDENT_BROWSE_SCREEN      = 'Respondent\\Browse';
     const RESPONDENT_EDIT_SCREEN        = 'Respondent\\Edit';
@@ -46,6 +48,11 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
         self::RESPONDENT_UNSUBSCRIBE_SCREEN => 'Gems\\Screens\\UnsubscribeScreenInterface',
         self::TOKEN_ASK_SCREEN              => 'Gems\\Screens\\AskScreenInterface',
         ];
+
+    public function __construct(
+        protected ConstructorProjectOverloader $overloader,
+    )
+    {}
 
     /**
      * Lookup screen class for a screen type. This class or interface should at the very least
@@ -114,29 +121,10 @@ class ScreenLoader extends \Gems\Loader\TargetLoaderAbstract
     {
         $screenClass = $this->_getScreenClass($screenType);
 
-        // \MUtil\EchoOut\EchoOut::track($screenName);
-        if (! class_exists($screenName, true)) {
-            // Autoload is used for Zend standard defined classnames,
-            // so if the class is not autoloaded, define the path here.
-            $filename = $this->config['rootDir'] . DIRECTORY_SEPARATOR . 'Screens' . DIRECTORY_SEPARATOR .
-                    strtolower($screenType) . DIRECTORY_SEPARATOR . $screenName . '.php';
-
-            if (! file_exists($filename)) {
-                throw new \Gems\Exception\Coding("The screen '$screenName' of type '$screenType' does not exist at location: $filename.");
-            }
-            // \MUtil\EchoOut\EchoOut::track($filename);
-
-            include($filename);
-        }
-
-        $screen = new $screenName();
+        $screen = $this->overloader->create($screenName);
 
         if (! $screen instanceof $screenClass) {
             throw new \Gems\Exception\Coding("The screen '$screenName' of type '$screenType' is not an instance of '$screenClass'.");
-        }
-
-        if ($screen instanceof \MUtil\Registry\TargetInterface) {
-            $this->applySource($screen);
         }
 
         return $screen;
