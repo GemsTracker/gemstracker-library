@@ -325,12 +325,6 @@ class Menu
                                 ],
                             ],
                         ],
-
-                        [
-                            'name' => 'respondent.delete',
-                            'label' => $this->translator->trans('Delete'),
-                            'type' => 'route-link-item',
-                        ],
                     ],
                 ],
             ],

@@ -450,12 +450,14 @@ class Route
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',
@@ -465,6 +467,7 @@ class Route
                     ...$this->defaultPostRoutes,
                     'change-consent',
                     'change-organization',
+                    'undelete',
                 ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
