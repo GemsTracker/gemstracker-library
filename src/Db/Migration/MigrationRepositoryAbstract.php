@@ -53,9 +53,7 @@ class MigrationRepositoryAbstract
 
         foreach($resources as $key=>$resource) {
             if (is_string($resource)) {
-                echo 'hi1';
                 if (class_exists($resource)) {
-                    echo 'hi2';
                     $resources[$key] = [
                         'db' => $this->defaultDatabase,
                         'class' => $resource,

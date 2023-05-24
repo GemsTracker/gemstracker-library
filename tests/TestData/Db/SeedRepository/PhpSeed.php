@@ -2,10 +2,20 @@
 
 namespace GemsTest\Data\Db\SeedRepository;
 
-use Gems\Db\Migration\SeedInterface;
+use Gems\Db\Migration\SeedAbstract;
 
-class TestPhpSeed implements SeedInterface
+class PhpSeed extends SeedAbstract
 {
+    public function getDescription(): string|null
+    {
+        return 'php test seed';
+    }
+
+    public function getOrder(): int
+    {
+        return 501;
+    }
+
     public function __invoke(): array
     {
         return [
