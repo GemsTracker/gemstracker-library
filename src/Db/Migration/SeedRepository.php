@@ -76,8 +76,6 @@ class SeedRepository extends MigrationRepositoryAbstract
     {
         $seedClasses = $this->getResourceClasses('seeds');
 
-        print_r($seedClasses);
-
         $seeds = [];
 
         foreach($seedClasses as $seedClassInfo) {
@@ -87,7 +85,6 @@ class SeedRepository extends MigrationRepositoryAbstract
             if (!$seedClass instanceof SeedInterface) {
                 throw new MigrationException("$seedClassName is not a valid seed class");
             }
-            $description = $seedClass->getDescription();
             $data = $seedClass();
             $reflectionClass = new \ReflectionClass($seedClassName);
 
