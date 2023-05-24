@@ -11,7 +11,18 @@
 
 namespace Gems\Snippets\Subscribe;
 
-use Gems\Snippets\FormSnippetAbstractMUtil;
+use Gems\Legacy\CurrentUserRepository;
+use Gems\Loader;
+use Gems\Locale\Locale;
+use Gems\Menu\MenuSnippetHelper;
+use Gems\Snippets\FormSnippetAbstract;
+use Gems\Util;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -21,7 +32,7 @@ use Gems\Snippets\FormSnippetAbstractMUtil;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:35:38
  */
-class EmailSubscribeSnippet extends FormSnippetAbstractMUtil
+class EmailSubscribeSnippet extends FormSnippetAbstract
 {
     /**
      *
@@ -37,39 +48,34 @@ class EmailSubscribeSnippet extends FormSnippetAbstractMUtil
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Zend_Locale
-     */
-    protected $locale;
-
-    /**
-     *
      * @var callable
      */
     protected $patientNrGenerator;
 
-    /**
-     * @var \Gems\Util
-     */
-    protected $util;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected Loader $loader,
+        protected Util $util,
+        protected MenuSnippetHelper $menuHelper,
+        protected Locale $locale,
+        protected readonly Adapter $db,
+        protected readonly CurrentUserRepository $currentUserRepository,
+    ) {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
+
+        $this->currentUser = $currentUserRepository->getCurrentUser();
+        $this->currentOrganization = $this->currentUser->getCurrentOrganization();
+    }
 
     /**
      * Add the elements to the form
      *
-     * @param \Zend_Form $form
+     * @param mixed $form
      */
-    protected function addFormElements(\Zend_Form $form)
+    protected function addFormElements(mixed $form)
     {
 //        \MUtil\EchoOut\EchoOut::track('EmailSubscribeSnippet');
         // Veld inlognaam
@@ -77,8 +83,9 @@ class EmailSubscribeSnippet extends FormSnippetAbstractMUtil
         $element->setLabel($this->_('Your E-Mail address'))
                 ->setAttrib('size', 30)
                 ->setRequired(true)
-                ->addValidator('SimpleEmail')
-                ->addValidator($this->loader->getSubscriptionThrottleValidator());
+                ->addValidator('SimpleEmail');
+                // FIXME Roel
+                // ->addValidator($this->loader->getSubscriptionThrottleValidator());
 
         $form->addElement($element);
 
@@ -94,16 +101,28 @@ class EmailSubscribeSnippet extends FormSnippetAbstractMUtil
     {
         $this->addMessage($this->_('You have been subscribed succesfully.'));
 
-        $sql = "SELECT gr2o_id_user, gr2o_patient_nr FROM gems__respondent2org
-            WHERE gr2o_email = ? AND gr2o_id_organization = ?";
+        $sql = new Sql($this->db);
+        $select = $sql->select()
+            ->columns([
+                'gr2o_id_user',
+                'gr2o_patient_nr',
+            ])
+            ->from('gems__respondent2org')
+            ->where([
+                'gr2o_email' => $this->formData['email'],
+                'gr2o_id_organization' => $this->currentOrganization->getId(),
+            ]);
 
-        $userIds = $this->db->fetchRow($sql, [$this->formData['email'], $this->currentOrganization->getId()]);
+        $resultSet = $sql->prepareStatementForSqlObject($select)->execute();
+        $resultSet->buffer();
+        $userIds = $resultSet->current(); // Take only the first one
 
         $model = $this->loader->getModels()->createRespondentModel();
 
         $mailCodes = $this->util->getDbLookup()->getRespondentMailCodes();
         key($mailCodes);
         $mailable = key($mailCodes);
+        // Roel FIXME: $mailable is 0 at this point, so we still cannot send mail to the subscriber.
         
         $values['grs_iso_lang']         = $this->locale->getLanguage();
         $values['gr2o_id_organization'] = $this->currentOrganization->getId();
