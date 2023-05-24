@@ -11,7 +11,15 @@
 
 namespace Gems\Snippets\Unsubscribe;
 
+use Gems\Menu\RouteHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\Snippets\MessageableSnippetAbstract;
+
 /**
+ * Snippet that is shown when there are no organizations to unsubscribe from.
  *
  * @package    Gems
  * @subpackage Snippets\Unsubscribe
@@ -19,39 +27,43 @@ namespace Gems\Snippets\Unsubscribe;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:18:39
  */
-class NoUnsubscriptionsSnippet extends \MUtil\Snippets\SnippetAbstract
+class NoUnsubscriptionsSnippet extends MessageableSnippetAbstract
 {
-    /**
-     *
-     * @var \Gems\Menu
+    /*
+     * @var \Gems\Menu\RouteHelper
      */
-    protected $menu;
+    protected $routeHelper;
+
+    public function __construct(SnippetOptions $snippetOptions,
+                                RequestInfo $requestInfo,
+                                TranslatorInterface $translate,
+                                MessengerInterface $messenger,
+                                RouteHelper $routeHelper)
+    {
+        $this->routeHelper = $routeHelper;
+        
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+    }
 
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $this->addMessage($this->_('Unsubscribing not possible'));
 
         $html = $this->getHtmlSequence();
         $html->h2($this->_('Unsubscribing not possible'));
-        $p = $html->pInfo($this->_('To unsubscribe please contact the organization that subscribed you to this project.'));
+        $html->pInfo($this->_('To unsubscribe please contact the organization that subscribed you to this project.'));
 
-        $menu = $this->menu->findAllowedController('contact');
-        if ($menu) {
-            $p->append(' ');
-            $p->append($this->_('The participating organizations are on the contact page.'));
-
-            $html->append($menu->toActionLink());
+        if ($this->routeHelper->hasAccessToRoute('contact.index')) {
+            $html->pInfo($this->_('The participating organizations are on the contact page.'));
+            $html->actionLink($this->routeHelper->getRouteUrl('contact.index'), $this->_('Contact'));
         }
-
-
 
         return $html;
     }
