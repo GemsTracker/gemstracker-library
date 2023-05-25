@@ -57,6 +57,7 @@ class MigrationRepositoryAbstract
                     $resources[$key] = [
                         'db' => $this->defaultDatabase,
                         'class' => $resource,
+                        'module' => 'gems',
                     ];
                     continue;
                 }
@@ -82,6 +83,7 @@ class MigrationRepositoryAbstract
                     $resourceDirectories[$key] = [
                         'db' => $this->defaultDatabase,
                         'path' => $resourceDirectory,
+                        'module' => 'gems',
                     ];
                     continue;
                 }
