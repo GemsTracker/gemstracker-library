@@ -4,8 +4,12 @@ namespace Gems\Db\Migration;
 
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
+use Gems\Event\Application\RunSeedMigrationEvent;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Sql;
 use MUtil\Translate\Translator;
+use PHPUnit\Exception;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -43,6 +47,69 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
 
         return null;
+    }
+
+    public function runSeed(array $seedInfo)
+    {
+        if (!isset($seedInfo['db'], $seedInfo['data']) || empty($seedInfo['data'])) {
+            throw new \Exception('Not enough info to run seed');
+        }
+        $adapter = $this->databases->getDatabase($seedInfo['db']);
+        if (!$adapter instanceof Adapter) {
+            throw new \Exception('Not enough info to run seed');
+        }
+
+        $resultFetcher = new ResultFetcher($adapter);
+        $sqlQueries = $this->getQueryFromData($adapter, $seedInfo['data']);
+
+        $start = microtime(true);
+
+        try {
+            foreach($sqlQueries as $sqlQuery) {
+                $resultFetcher->query($sqlQuery);
+            }
+
+            $event = new RunSeedMigrationEvent(
+                'seed',
+                $seedInfo['name'],
+                $seedInfo['module'],
+                $seedInfo['name'],
+                'sucess',
+                join("\n", $sqlQueries),
+                null,
+                $start,
+                microtime(true),
+            );
+            $this->eventDispatcher->dispatch($event);
+        } catch(Exception $e) {
+            $event = new RunSeedMigrationEvent(
+                'seed',
+                $seedInfo['name'],
+                $seedInfo['module'],
+                $seedInfo['name'],
+                'error',
+                join("\n", $sqlQueries),
+                $e->getMessage(),
+                $start,
+                microtime(true),
+            );
+            $this->eventDispatcher->dispatch($event);
+        }
+    }
+
+    protected function getQueryFromData(Adapter $adapter, array $data): array
+    {
+        $sql = new Sql($adapter);
+        $sqlStatements = [];
+        foreach($data as $table => $rows) {
+            foreach($rows as $row) {
+                $insert = $sql->insert($table);
+                $insert->values($row);
+                $sqlStatements[] = $sql->buildSqlString($insert);
+            }
+        }
+
+        return $sqlStatements;
     }
 
     public function getSeedInfo(): array
@@ -90,6 +157,7 @@ class SeedRepository extends MigrationRepositoryAbstract
 
             $seed = [
                 'name' => $seedClassName,
+                'module' => $seedClassInfo['module'] ?? 'gems',
                 'type' => 'seed',
                 'description' => $description,
                 'order' => $this->defaultOrder,
@@ -125,6 +193,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 $description = $data['description'] ?? null;
                 $seed = [
                     'name' => $filenameParts[0],
+                    'module' => $directory['module'] ?? 'gems',
                     'type' => 'seed',
                     'description' => $description,
                     'order' => $this->defaultOrder,
