@@ -183,7 +183,7 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
         $this->unDelete = $this->isUndeleting();
 
         if ($this->unDelete !== $this->requestUndelete) {
-            exit(); // TODO redirect to Show page
+            $this->redirectRoute = $this->menuHelper->getRelatedRouteUrl($this->routeAction);
         }
 
         $receptionCodes = $this->getReceptionCodes();
@@ -254,6 +254,11 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
     protected function saveData(): int
     {
         $this->beforeSave();
+
+        if ($this->isUndeleting() !== $this->requestUndelete) {
+            $this->redirectRoute = $this->menuHelper->getRelatedRouteUrl($this->routeAction);
+            return 0;
+        }
 
         $changed = $this->setReceptionCode(
                 $this->formData[$this->receptionCodeItem],
