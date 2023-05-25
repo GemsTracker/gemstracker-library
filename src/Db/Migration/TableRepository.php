@@ -23,25 +23,40 @@ class TableRepository extends MigrationRepositoryAbstract
     public function createTable(array $tableInfo): void
     {
         if (!isset($tableInfo['db'], $tableInfo['sql']) || empty($tableInfo['sql'])) {
-            throw new \Exception('Not enough table info to create table');
+            throw new MigrationException('Not enough table info to create table');
         }
         $adapter = $this->databases->getDatabase($tableInfo['db']);
         if (!$adapter instanceof Adapter) {
-            throw new \Exception('Not enough table info to create table');
+            throw new MigrationException('Not enough table info to create table');
         }
         $resultFetcher = new ResultFetcher($adapter);
-        $event = new CreateTableMigrationEvent(
-            'table',
-            $tableInfo['name'],
-            $tableInfo['group'],
-            $tableInfo['name'],
-            'sucess',
-            $tableInfo['sql'],
-            microtime(true),
-        );
-        $resultFetcher->query($tableInfo['sql']);
-        $event->setEnd();
-
+        $start = microtime(true);
+        try {
+            $resultFetcher->query($tableInfo['sql']);
+            $event = new CreateTableMigrationEvent(
+                'table',
+                $tableInfo['name'],
+                $tableInfo['group'],
+                $tableInfo['name'],
+                'sucess',
+                $tableInfo['sql'],
+                null,
+                $start,
+                microtime(true),
+            );
+        } catch (\Exception $e) {
+            $event = new CreateTableMigrationEvent(
+                'table',
+                $tableInfo['name'],
+                $tableInfo['group'],
+                $tableInfo['name'],
+                'error',
+                $tableInfo['sql'],
+                $e->getMessage(),
+                $start,
+                microtime(true),
+            );
+        }
         $this->eventDispatcher->dispatch($event);
     }
 
