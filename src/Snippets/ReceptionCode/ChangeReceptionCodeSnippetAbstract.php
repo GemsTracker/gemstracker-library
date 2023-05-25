@@ -84,6 +84,13 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
     protected bool $unDelete = false;
 
     /**
+     * Whether we are handling an undelete request
+     *
+     * @var bool|null
+     */
+    protected ?bool $requestUndelete = null;
+
+    /**
      * Optional right to check for undeleting
      *
      * @var string
@@ -174,6 +181,11 @@ abstract class ChangeReceptionCodeSnippetAbstract extends ModelFormSnippetAbstra
         $model = $this->getModel();
 
         $this->unDelete = $this->isUndeleting();
+
+        if ($this->unDelete !== $this->requestUndelete) {
+            exit(); // TODO redirect to Show page
+        }
+
         $receptionCodes = $this->getReceptionCodes();
         // \MUtil\EchoOut\EchoOut::track($this->unDelete, $receptionCodes);
 

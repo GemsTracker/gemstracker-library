@@ -736,6 +736,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function deleteTrackAction()
     {
         if ($this->deleteTrackSnippets) {
+            $this->deleteParameters['requestUndelete'] = false;
+
             $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
 
             $this->addSnippets($this->deleteTrackSnippets, $params);
@@ -1311,6 +1313,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function undeleteTrackAction()
     {
         if ($this->deleteTrackSnippets) {
+            $this->deleteParameters['requestUndelete'] = true;
+
             $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
 
             $this->addSnippets($this->deleteTrackSnippets, $params);
