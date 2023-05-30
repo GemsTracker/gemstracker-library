@@ -554,6 +554,7 @@ class Route
                 pages: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -566,6 +567,7 @@ class Route
                 parameterRoutes: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -583,7 +585,7 @@ class Route
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
                 ],
                 postRoutes:
-                    array_merge($this->defaultPostRoutes, ['correct']),
+                    array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,

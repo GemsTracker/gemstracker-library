@@ -726,6 +726,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
         $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+        $this->deleteParameters['requestUndelete'] = false;
 
         parent::deleteAction();
     }
@@ -1303,6 +1304,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
         $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+        $this->deleteParameters['requestUndelete'] = true;
 
         parent::deleteAction();
     }

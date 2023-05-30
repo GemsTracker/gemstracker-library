@@ -47,9 +47,9 @@ class DeleteTrackTokenSnippet extends ChangeReceptionCodeSnippetAbstract
     protected ?string $_replacementTokenId;
 
     /**
-     * @var Token
+     * @var Token|null
      */
-    protected Token $_replacementToken;
+    protected ?Token $_replacementToken = null;
 
     /**
      * Array of items that should be shown to the user
