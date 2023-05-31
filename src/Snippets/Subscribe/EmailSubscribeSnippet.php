@@ -120,7 +120,8 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $model = $this->loader->getModels()->createRespondentModel();
 
         $mailCodes = $this->util->getDbLookup()->getRespondentMailCodes();
-        key($mailCodes);
+        // Use the second mailCode, the first is the no-mail code.
+        next($mailCodes);
         $mailable = key($mailCodes);
         // Roel FIXME: $mailable is 0 at this point, so we still cannot send mail to the subscriber.
         
