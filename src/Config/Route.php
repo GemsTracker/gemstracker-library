@@ -324,7 +324,9 @@ class Route
                 pages: [
                     'index',
                     'subscribe',
+                    'subscribe-thanks',
                     'unsubscribe',
+                    'unsubscribe-thanks',
                 ],
                 postRoutes: [
                     ...$this->defaultPostRoutes,
