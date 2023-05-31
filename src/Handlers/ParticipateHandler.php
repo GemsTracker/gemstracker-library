@@ -187,7 +187,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
             }
         }
 
-        $this->html->h1($this->_('Subscribe'));
+        $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Subscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
 
@@ -238,7 +238,7 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
             }
         }
 
-        $this->html->h1($this->_('Unsubscribe'));
+        $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Unsubscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
 
