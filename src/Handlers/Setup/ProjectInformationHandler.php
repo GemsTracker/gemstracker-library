@@ -41,9 +41,6 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
  */
 class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
 {
-    protected array $_defaultParameters = [];
-    protected array $defaultParameters = [];
-
     protected $monitorParameters = [
         'monitorJob' => 'getMaintenanceMonitorJob'
     ];

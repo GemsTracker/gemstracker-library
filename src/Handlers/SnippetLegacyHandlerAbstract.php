@@ -7,6 +7,9 @@ use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 class SnippetLegacyHandlerAbstract extends \MUtil\Handler\SnippetLegacyHandlerAbstract
 {
+    protected array $_defaultParameters = [];
+    protected array $defaultParameters = [];
+
     public function __construct(SnippetResponderInterface $responder, TranslatorInterface $translate)
     {
         parent::__construct($responder, $translate);
