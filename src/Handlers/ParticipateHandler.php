@@ -187,6 +187,8 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
             }
         }
 
+        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Subscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
@@ -238,6 +240,8 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
             }
         }
 
+        $params = $this->convertLegacyRouteActionToAfterSaveRouteUrl($params);
+
         $this->addSnippets('Gems\\Snippets\\Generic\\ContentTitleSnippet', ['contentTitle' => $this->_('Unsubscribe'), 'tagName' => 'h1']);
         $this->addSnippets($snippets, $params);
     }
@@ -268,5 +272,21 @@ class ParticipateHandler extends SnippetLegacyHandlerAbstract
         }
 
         $this->forward('unsubscribe');
+    }
+
+    /**
+     * Since we don't have the routeHelper in the Snippets we're loading, convert
+     * the route name to a URL here.
+     * @param  array  $params Snippet parameters
+     * @return array          Updated snippet parameters
+     */
+    private function convertLegacyRouteActionToAfterSaveRouteUrl(array $params): array
+    {
+        // Convert routeAction to afterSaveRouteUrl
+        if (isset($params['routeAction'])) {
+            $params['afterSaveRouteUrl'] = $this->routeHelper->getRouteUrl($params['routeAction']);
+            unset($params['routeAction']);
+        }
+        return $params;
     }
 }
