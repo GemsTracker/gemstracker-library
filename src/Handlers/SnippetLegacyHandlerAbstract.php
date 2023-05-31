@@ -14,4 +14,27 @@ class SnippetLegacyHandlerAbstract extends \MUtil\Handler\SnippetLegacyHandlerAb
             \Gems\Html::init();
         }
     }
+
+    /**
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function _processParameters(array $input): array
+    {
+        $output = [];
+
+        foreach ($input + $this->defaultParameters + $this->_defaultParameters as $key => $value) {
+            if (is_string($value) && method_exists($this, $value)) {
+                $value = $this->$value();
+
+                if (is_integer($key) || ($value === null)) {
+                    continue;
+                }
+            }
+            $output[$key] = $value;
+        }
+
+        return $output;
+    }
 }

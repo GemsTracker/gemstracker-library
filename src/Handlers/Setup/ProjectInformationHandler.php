@@ -115,29 +115,6 @@ class ProjectInformationHandler  extends SnippetLegacyHandlerAbstract
         return $data;
     }
 
-    /**
-     *
-     * @param array $input
-     * @return array
-     */
-    protected function _processParameters(array $input)
-    {
-        $output = [];
-
-        foreach ($input + $this->defaultParameters + $this->_defaultParameters as $key => $value) {
-            if (is_string($value) && method_exists($this, $value)) {
-                $value = $this->$value($key);
-
-                if (is_integer($key) || ($value === null)) {
-                    continue;
-                }
-            }
-            $output[$key] = $value;
-        }
-
-        return $output;
-    }
-
     protected function _showTable($caption, $data, $nested = false)
     {
         $tableContainer = Html::create()->div(array('class' => 'table-container'));
