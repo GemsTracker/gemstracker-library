@@ -102,7 +102,8 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         $model = $this->loader->getModels()->createRespondentModel();
 
         $mailCodes = $this->util->getDbLookup()->getRespondentMailCodes();
-        key($mailCodes);
+        // Use the second mailCode, the first is the no-mail code.
+        next($mailCodes);
         $mailable = key($mailCodes);
         
         $values['grs_iso_lang']         = $this->locale->getLanguage();
