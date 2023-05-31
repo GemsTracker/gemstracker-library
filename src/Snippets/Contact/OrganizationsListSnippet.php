@@ -61,6 +61,7 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
         switch ($orgCount) {
             case 0:
                 $html->pInfo(sprintf($this->_('%s is still under development.'), $this->project->getName()));
+                break;
 
             case 1:
                 $organization = reset($this->organizations);
@@ -74,6 +75,7 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
                     $organization['gor_name'],
                     $this->getProjectName()
                 );
+                break;
 
             default:
                 $p = $html->pInfo(sprintf(
@@ -93,6 +95,7 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
                     $this->_('You can contact any of these organizations if you have questions regarding %s.'),
                     $this->project->getName()
                 );
+                break;
         }
 
         return $html;
