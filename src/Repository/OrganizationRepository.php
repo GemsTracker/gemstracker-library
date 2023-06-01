@@ -119,6 +119,33 @@ class OrganizationRepository
         return static::getNotOrganizationArray();
     }
 
+    public function getOrganizationsPerSite()
+    {
+        $select = $this->cachedResultFetcher->getSelect();
+        $select->from('gems__organizations')
+            ->columns(['gor_id_organization', 'gor_sites'])
+            ->where(['gor_active' => 1]);
+
+        $key = static::class . 'organizationSites';
+
+        $result = $this->cachedResultFetcher->fetchPairs($key, $select);
+
+        $organizationsPerSite = [];
+        foreach($result as $organizationId => $sites) {
+            if ($sites === null) {
+                continue;
+            }
+            if (is_string($sites)) {
+                $sites = explode('|', $sites);
+            }
+            foreach($sites as $site) {
+                $organizationsPerSite[$site][] = $organizationId;
+            }
+        }
+
+        return $organizationsPerSite;
+    }
+
     /**
      * Returns a list of the organizations that (can) have respondents.
      *

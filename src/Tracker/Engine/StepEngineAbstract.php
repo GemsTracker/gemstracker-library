@@ -12,6 +12,7 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Date\Period;
+use Gems\Html;
 use Gems\Locale\Locale;
 use Gems\Project\ProjectSettings;
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
@@ -814,7 +815,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         if ($detailed) {
             foreach ($results as $key => $value) {
                 if (is_array($value)) {
-                    $results[$key] = \MUtil\Html::raw(sprintf('<strong>%s</strong> %s', reset($value), next($value)));
+                    $results[$key] = Html::raw(sprintf('<strong>%s</strong> %s', reset($value), next($value)));
                 }
             }
         } else {

@@ -12,6 +12,7 @@
 namespace Gems\Snippets\Tracker\Buttons;
 
 use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Tracker\RespondentTrack;
 
 /**
  *
@@ -46,6 +47,13 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
     protected bool $addCurrentSiblings = true;
 
     /**
+     * The respondent2track
+     *
+     * @var RespondentTrack
+     */
+    protected RespondentTrack $respondentTrack;
+
+    /**
      * Set the menu items (allows for overruling in subclasses)
      */
     protected function getButtons(): array
@@ -56,6 +64,12 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
             'respondent.tracks.index'      => $this->_('Show tracks'),
             'respondent.tracks.edit-track' => $this->_('Edit track'),
         ];
+
+        if ($this->respondentTrack->hasSuccesCode()) {
+            $this->extraRoutesLabelled['respondent.tracks.delete-track'] = $this->_('Delete track');
+        } else  {
+            $this->extraRoutesLabelled['respondent.tracks.undelete-track'] = $this->_('Undelete track');
+        }
 
         return parent::getButtons();
     }
