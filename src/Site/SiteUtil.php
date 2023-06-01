@@ -20,8 +20,6 @@ class SiteUtil
 {
     CONST ORG_SEPARATOR = '|';
 
-    protected HelperAdapter $cache;
-
     protected string $cacheKey = 'app.sites';
 
     protected array $config = [];
@@ -36,21 +34,31 @@ class SiteUtil
         'gsi_blocked' => 'blocked',
     ];
 
-    protected Adapter $db;
 
     protected array $sites;
 
-    protected OrganizationRepository $organizatonRepository;
-
-    public function __construct(Adapter $db, HelperAdapter $cache, OrganizationRepository $organizationRepository, array $config)
+    public function __construct(
+        protected Adapter $db,
+        protected HelperAdapter $cache,
+        protected OrganizationRepository $organizationRepository, array $config)
     {
-        $this->db = $db;
-        $this->cache = $cache;
         if (isset($config['sites'])) {
             $this->config = $config['sites'];
         }
         $this->sites = $this->getSites();
-        $this->organizatonRepository = $organizationRepository;
+    }
+
+
+    protected function addOrganizationsToSitesArray(array $sitesArray)
+    {
+        $organizationsPerSite = $this->organizationRepository->getOrganizationsPerSite();
+        foreach ($sitesArray as $key => $siteSettings) {
+            if (isset($siteSettings['url'], $organizationsPerSite[$siteSettings['url']])) {
+                $sitesArray[$key]['organizations'] = $organizationsPerSite[$siteSettings['url']];
+            }
+        }
+
+        return $sitesArray;
     }
 
     public function getCurrentSite(ServerRequestInterface $request): ?SiteUrl
@@ -107,7 +115,7 @@ class SiteUtil
     public function getNamedOrganizationsFromSiteUrl(SiteUrl $siteUrl): array
     {
         $siteOrganizations = $siteUrl->getOrganizations();
-        $namedSites = $this->organizatonRepository->getOrganizationsForLogin();
+        $namedSites = $this->organizationRepository->getOrganizationsForLogin();
         if (count($siteOrganizations) === 0) {
             return $namedSites;
         }
@@ -153,6 +161,7 @@ class SiteUtil
     protected function getSites(): array
     {
         $sitesArray = $this->getSitesArray();
+        $sitesArray = $this->addOrganizationsToSitesArray($sitesArray);
         $sites = [];
         foreach($sitesArray as $siteArray) {
             $site = new SiteUrl(...$siteArray);
