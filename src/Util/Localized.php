@@ -12,6 +12,7 @@
 
 namespace Gems\Util;
 
+use Gems\Project\ProjectSettings;
 use NumberFormatter;
 use Gems\Locale\Locale;
 use Symfony\Component\Intl\Countries;
@@ -27,16 +28,8 @@ use Symfony\Component\Intl\Languages;
  */
 class Localized
 {
-    /**
-     *
-     * @var Locale
-     */
-    protected Locale $locale;
-
-    public function __construct(Locale $locale)
-    {
-        $this->locale = $locale;
-    }
+    public function __construct(protected Locale $locale, protected ProjectSettings $project )
+    {}
 
     public function getCountries()
     {
@@ -57,12 +50,12 @@ class Localized
      */
     public function getLanguages()
     {
-        if (isset($this->project->locales)) {
-            $locales = $this->project->locales;
+        if (isset($this->project->locale['availableLocales'])) {
+            $locales = $this->project->locale['availableLocales'];
         } elseif (isset($this->project->locale['default'])) {
-            $locales = array($this->project->locale['default']);
+            $locales = [$this->project->locale['default']];
         } else {
-            $locales = array('en');
+            $locales = ['en'];
         }
 
         foreach ($locales as $locale) {
