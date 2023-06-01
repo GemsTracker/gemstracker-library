@@ -122,6 +122,7 @@ class Route
             ],
             [
                 ...$this->getAskRoutes(),
+                ...$this->getContactRoutes(),
             ]),
 
 
@@ -309,6 +310,23 @@ class Route
                     ...$this->defaultPostRoutes,
                     'lost',
                 ]
+            ),
+        ];
+    }
+
+    public function getContactRoutes(): array
+    {
+        return [
+            ...$this->createSnippetRoutes(baseName: 'contact',
+                controllerClass: \Gems\Handlers\ContactHandler::class,
+                basePrivilege: false,
+                pages: [
+                    'index',
+                    'about',
+                    'gems',
+                    'bugs',
+                    'support',
+                ],
             ),
         ];
     }
