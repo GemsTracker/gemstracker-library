@@ -54,6 +54,10 @@ class Survey
                 'maxAttempts' => 300,
                 'delay' => 10,
             ],
+
+            'limesurvey' => [
+                'tokenUrlStart' => 'index.php',
+            ],
         ];
     }
 }
