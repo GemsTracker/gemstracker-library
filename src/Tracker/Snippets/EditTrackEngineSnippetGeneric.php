@@ -142,7 +142,7 @@ class EditTrackEngineSnippetGeneric extends ModelFormSnippetAbstract
         }
         $bridge->add('gtr_organizations');
 
-        $element = new ToggleCheckboxes('toggleOrg', ['selector'=>'input[name^=gtr_organizations]']);
+        $element = new ToggleCheckboxes('toggleOrg', ['selectorName'=>'gtr_organizations']);
 
         $element->setLabel($this->_('Toggle'));
         $bridge->addElement($element);
