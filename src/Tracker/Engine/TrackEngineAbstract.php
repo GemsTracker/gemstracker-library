@@ -25,11 +25,11 @@ use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Translate\DbTranslateUtilTrait;
 use Gems\Util\Translated;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\Dependency\DependencyInterface;
 use MUtil\Model\ModelAbstract;
 use MUtil\Registry\TargetAbstract;
 use MUtil\Translate\TranslateableTrait;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Dependency\DependencyInterface;
 
 /**
  * Utility class containing functions used by most track engines.
