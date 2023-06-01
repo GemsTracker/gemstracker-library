@@ -196,11 +196,6 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'respondent.tracks.delete-track',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
                                             'name' => 'respondent.tracks.check-track-answers',
                                             'label' => $this->translator->trans('Check answers'),
                                             'type' => 'route-link-item',
@@ -240,11 +235,6 @@ class Menu
                                         [
                                             'name' => 'respondent.tracks.answer',
                                             'label' => $this->translator->trans('Answers'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.delete',
-                                            'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -330,12 +320,6 @@ class Menu
                                     ],
                                 ],
                             ],
-                        ],
-
-                        [
-                            'name' => 'respondent.delete',
-                            'label' => $this->translator->trans('Delete'),
-                            'type' => 'route-link-item',
                         ],
                     ],
                 ],

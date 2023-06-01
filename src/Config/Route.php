@@ -468,12 +468,14 @@ class Route
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',
@@ -483,6 +485,7 @@ class Route
                     ...$this->defaultPostRoutes,
                     'change-consent',
                     'change-organization',
+                    'undelete',
                 ]
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
@@ -534,6 +537,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -543,6 +547,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -557,6 +562,7 @@ class Route
                 ],
                 postRoutes: [
                     'delete-track',
+                    'undelete-track',
                     'edit-track',
                 ]
             ),
@@ -566,6 +572,7 @@ class Route
                 pages: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -578,6 +585,7 @@ class Route
                 parameterRoutes: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -595,7 +603,7 @@ class Route
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
                 ],
                 postRoutes:
-                    array_merge($this->defaultPostRoutes, ['correct']),
+                    array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,

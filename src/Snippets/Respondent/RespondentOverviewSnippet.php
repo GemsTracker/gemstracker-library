@@ -118,7 +118,6 @@ class RespondentOverviewSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
     {
         // Make sure we can use jQuery
 
-        $br              = \MUtil\Html::create('br');
         $this->columns[] = array('gto_completion_time');
         $this->columns[] = array('gsu_survey_name');
         $this->columns[] = array('forgroup');

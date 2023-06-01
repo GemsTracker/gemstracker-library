@@ -11,6 +11,7 @@
 
 namespace Gems\Util;
 
+use Gems\Cache\HelperAdapter;
 use Gems\User\User;
 use Gems\Util\UtilAbstract;
 
@@ -166,7 +167,7 @@ class TrackData extends UtilAbstract
      */
     public function getAllSurveysAndDescriptions()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $cacheId = HelperAdapter::cleanupForCacheId(__CLASS__ . '_' . __FUNCTION__);
 
         if ($results = $this->cache->getCacheItem($cacheId)) {
             return $results;

@@ -88,11 +88,19 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('Correct answers'),
                 'disabled' => !$this->token->isCompleted(),
             ],
-            [
+        ];
+
+        if ($this->token->getReceptionCode()->isSuccess()) {
+            $items[] = [
                 'route' => 'respondent.tracks.delete',
                 'label' => $this->_('Delete'),
-            ],
-        ];
+            ];
+        } else {
+            $items[] = [
+                'route' => 'respondent.tracks.undelete',
+                'label' => $this->_('Undelete'),
+            ];
+        }
 
         $buttons = [];
         $params  = $this->token->getMenuUrlParameters();
