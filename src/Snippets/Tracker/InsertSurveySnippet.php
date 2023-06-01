@@ -159,7 +159,7 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
             $requestInfo->getParam(\MUtil\Model::REQUEST_ID2),
         );
 
-        $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.show');
+        $this->afterSaveRouteUrl = $this->menuHelper->getRouteUrl('respondent.tracks.index', $this->requestInfo->getRequestMatchedParams());
     }
 
     /**
