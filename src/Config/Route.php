@@ -586,6 +586,9 @@ class Route
                     'insert',
                     'view-survey',
                 ],
+                postRoutes: [
+                    'insert',
+                ],
                 parameterRoutes: [
                     'insert',
                     'view-survey',

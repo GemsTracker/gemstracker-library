@@ -99,6 +99,32 @@ class TrackDataRepository
         );
     }
 
+    /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     * that are active and are insertable
+     *
+     * @param int $organizationId Optional organization id
+     * @return array
+     */
+    public function getInsertableSurveys(int $organizationId = null)
+    {
+        $where = new Predicate();
+        $where->equalTo('gsu_active', 1)->and->equalTo('gsu_insertable', 1);
+        if ($organizationId !== null) {
+            $orgId = (int) $organizationId;
+            $where->and->like('gsu_insert_organizations', "%|$organizationId|%");
+        }
+
+        return $this->utilDbHelper->getTranslatedPairsCached(
+            'gems__surveys',
+            'gsu_id_survey',
+            'gsu_survey_name',
+            ['surveys'],
+            [$where],
+            'asort'
+        );
+    }
+
     public function getRespondersForTrack(int $trackId): array
     {
         $select1 = $this->resultFetcher->getSelect('gems__groups');
