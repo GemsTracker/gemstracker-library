@@ -4,6 +4,7 @@ namespace Gems\Config;
 
 use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Handlers\Api\CommFieldsHandler;
+use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
 use Gems\Model\CommTemplateModel;
 use Gems\Model\InsertableQuestionnaireModel;
 use Gems\Model\SimpleTrackModel;
@@ -87,6 +88,12 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                 name: 'comm-fields',
                 path: 'comm-fields/{target:[a-zA-Z0-9-_]+}[/{id:[a-zA-Z0-9-_]+}[/{organizationId:\d+}]]',
                 handler: CommFieldsHandler::class,
+            ),
+
+            ...$this->createRoute(
+                name: 'other-patient-numbers',
+                path: 'other-patient-numbers/{patientNr:[a-zA-Z0-9-_]+}/{organizationId:\d+}',
+                handler: OtherPatientNumbersHandler::class,
             ),
         ];
     }
