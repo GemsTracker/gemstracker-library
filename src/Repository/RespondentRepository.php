@@ -31,7 +31,6 @@ class RespondentRepository
         protected Model $modelLoader, 
         protected ProjectOverloader $overLoader,
         protected ResultFetcher $resultFetcher,
-        protected readonly ReceptionCodeRepository $receptionCodeRepository,
     )
     {
     }
