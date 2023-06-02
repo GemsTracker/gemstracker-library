@@ -248,7 +248,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showParameters = [
         'addCurrentParent' => true,
-        'baseUrl'          => 'getItemUrlArray',
         'forOtherOrgs'     => 'getOtherOrgs',
         'onclick'          => 'getEditLink',
         // 'respondentData'   => 'getRespondentData',
@@ -266,7 +265,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'Respondent\\MultiOrganizationTab',
+        //'Respondent\\MultiOrganizationTab',
         //'Respondent\\RespondentDetailsSnippet',
     	//'Tracker\\AddTracksSnippet',
         'Vue\\PatientVueSnippet',
