@@ -205,7 +205,7 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $this->_searchFilter[$field] = $value;
         }
 
-        // \MUtil\EchoOut\EchoOut::track($this->_searchFilter);
+        // dump($this->_searchFilter);
 
         return $this->_searchFilter;
     }
@@ -241,10 +241,11 @@ abstract class GemsHandler extends \Zalt\SnippetsHandler\ModelSnippetHandlerAbst
             $action->pageNumber  = $this->getPageNumber();
 
             if ($action instanceof BrowseFilteredAction) {
-                $action->searchFilter = $this->getSearchFilter(true);
+                $useRequest = $this->requestInfo->isPost() && ! $action instanceof ExportAction;
+                $action->searchFilter = $this->getSearchFilter($useRequest);
 
                 if ($action instanceof BrowseSearchAction) {
-                    $action->searchData = $this->getSearchData(true);
+                    $action->searchData = $this->getSearchData($useRequest);
                 }
             }
         }

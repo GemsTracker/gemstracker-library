@@ -19,6 +19,7 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -28,6 +29,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
 use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
@@ -276,17 +278,12 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function autofilterAction(bool $resetMvc = true)
     {
-        //$htmlOrig = $this->html;
-        //$div      = $this->html->div(array('id' => 'autofilter_target', 'class' => 'table-container'));
-
         // Already done when this value is false
         if ($resetMvc) {
             $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
         }
 
-        // $this->html = $div;
         parent::autofilterAction($resetMvc);
-        // $this->html = $htmlOrig;
     }
 
     /**
@@ -334,42 +331,33 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function exportAction()
     {
-        if ($this->requestInfo->getParam('export_submit')) {
-            $step = 'batch';
-        } else {
-            $step = $this->requestInfo->getParam('step');
-        }
-        $post = $this->requestInfo->getRequestPostParams();
-
-        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
-
-        $model = $this->getExportModel();
-
-        if (isset($this->autofilterParameters['sortParamAsc'])) {
-            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
-        }
-        if (isset($this->autofilterParameters['sortParamDesc'])) {
-            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
-        }
-
-        $model->applyParameters($this->getSearchFilter(false), true);
-
-//        if (!empty($post)) {
-//            $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
-//        }
-
-        // Add any defaults.
-        if (isset($this->autofilterParameters['extraFilter'])) {
-            $model->addFilter($this->autofilterParameters['extraFilter']);
-        }
-        if (isset($this->autofilterParameters['extraSort'])) {
-            $model->addSort($this->autofilterParameters['extraSort']);
-        }
+        $model  = $this->getExportModel();
         $action = $this->responder->getSnippetsAction(ExportAction::class);
 
         if ($action instanceof ModelActionInterface) {
             $action->model = $model;
         }
+
+        if ($action instanceof BrowseTableAction) {
+            $params = $this->_processParameters($this->autofilterParameters + $this->_autofilterExtraParameters);
+            if (isset($params['sortParamAsc'])) {
+                $action->sortParamAsc = $params['sortParamAsc'];
+            }
+            if (isset($params['sortParamDesc'])) {
+                $action->sortParamDesc = $params['sortParamDesc'];
+            }
+
+            $path = $this->requestInfo->getBasePath();
+            $action->dynamicSort = $this->getDynamicSortFor($action->sortParamDesc, $action->sortParamAsc);
+
+            if ($action instanceof BrowseFilteredAction) {
+                if (isset($params['textSearchField'])) {
+                    $action->textSearchField = $params['textSearchField'];
+                }
+                $action->searchFilter = $this->getSearchFilter(false);
+            }
+        }
+
         if ($action instanceof ExportAction) {
             $step = $this->requestInfo->getParam('step');
             if ($step) {

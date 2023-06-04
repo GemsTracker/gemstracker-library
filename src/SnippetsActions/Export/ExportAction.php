@@ -13,22 +13,18 @@ namespace Gems\SnippetsActions\Export;
 use Gems\Snippets\Export\ExportBatchSnippet;
 use Gems\Snippets\Export\ExportDownloadSnippet;
 use Gems\Snippets\Export\ExportFormSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\ButtonRowActiontrait;
 use Gems\Task\ExportRunnerBatch;
-use Zalt\SnippetsActions\AbstractAction;
-use Zalt\SnippetsActions\ModelActionInterface;
-use Zalt\SnippetsActions\ModelActionTrait;
-use Zalt\SnippetsActions\PostActionInterface;
 
 /**
  * @package    Gems
  * @subpackage SnippetsActions\Export
  * @since      Class available since version 1.0
  */
-class ExportAction extends AbstractAction implements ModelActionInterface, PostActionInterface
+class ExportAction extends BrowseFilteredAction
 {
     use ButtonRowActiontrait;
-    use ModelActionTrait;
 
     const STEP_BATCH = 'batch';
     const STEP_DOWNLOAD = 'download';

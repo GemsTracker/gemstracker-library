@@ -24,6 +24,7 @@ use Zalt\Base\RequestInfo;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelSnippetAbstract;
+use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -35,13 +36,13 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class ExportBatchSnippet extends ModelSnippetAbstract
+class ExportBatchSnippet extends SnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
-    protected $model;
+    protected DataReaderInterface $model;
 
     protected string $formTitle = '';
 
@@ -60,19 +61,15 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    protected function createModel(): DataReaderInterface
-    {
-        return $this->model;
-    }
-
     public function getResponse(): ?ResponseInterface
     {
         if (($this->exportAction->step !== ExportAction::STEP_BATCH) || (! isset($this->exportAction->batch))) {
             return null;
         }
         $batch = $this->exportAction->batch;
-        $model = $this->getModel();
+        $model = $this->model;
 
+        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($model->getFilter(), true) . "\n", FILE_APPEND);
         $batch->setVariable('model', $model);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
