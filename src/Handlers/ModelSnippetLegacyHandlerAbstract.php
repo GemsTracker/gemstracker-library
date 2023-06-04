@@ -463,7 +463,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     protected function getExportModel(): DataReaderInterface
     {
         $model = $this->getModel();
-        $noExportColumns = $model->getColNames('noExport');
+        $noExportColumns = $model->getMetaModel()->getColNames('noExport');
         foreach($noExportColumns as $colName) {
             $model->remove($colName, 'label');
         }

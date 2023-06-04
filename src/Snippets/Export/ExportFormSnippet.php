@@ -134,8 +134,6 @@ class ExportFormSnippet extends FormSnippetAbstract
     {
         $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
         $model = $this->getModel();
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($this->searchFilter, true) . "\n", FILE_APPEND);
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($model->getFilter(), true) . "\n", FILE_APPEND);
 
         if (ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
             $this->exportAction->batch->reset();
