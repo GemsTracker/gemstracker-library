@@ -28,6 +28,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -110,16 +111,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'formTitle'          => 'getEditTitle',
         'topicCallable'      => 'getTopicCallable',
         'csrfGuard'          => 'getCsrfGuard',
-    ];
-
-    /**
-     * \Gems only parameters used for the export action. Can be overruled
-     * by setting $this->editParameters
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    private array $_exportExtraParameters = [
-        'exportClasses' => 'getExportClasses',
     ];
 
     /**
@@ -218,28 +209,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         ModelItemYesNoDeleteSnippet::class,
         ];
 
-    /**
-     * The snippets used for the export action
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $exportFormSnippets = ['Export\\ExportFormSnippet'];
-
-    protected array $exportBatchSnippets = ['Export\\ExportBatchSnippet'];
-
-    protected array $exportDownloadSnippets = ['Export\\ExportDownloadSnippet'];
-
-    /**
-     * The parameters used for the export actions.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $exportParameters = [];
+    protected string $exportActionClass = ExportAction::class;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -397,6 +367,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         }
         $action = $this->responder->getSnippetsAction(ExportAction::class);
 
+        if ($action instanceof ModelActionInterface) {
+            $action->model = $model;
+        }
         if ($action instanceof ExportAction) {
             $step = $this->requestInfo->getParam('step');
             if ($step) {
@@ -407,19 +380,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
             $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
 
-        $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-        $this->addSnippets(array_merge($this->exportFormSnippets, $this->exportBatchSnippets, $this->exportDownloadSnippets), $params);
-
-//        if ((!$step) || ($post && $step == 'form')) {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportFormSnippets, $params);
-//        } elseif ($step == 'batch') {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportBatchSnippets, $params);
-//        } elseif ($step == 'download') {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportDownloadSnippets, $params);
-//        }
+        return $this->responder->getSnippetsResponse($action->getSnippetClasses(), $action->getSnippetOptions());
     }
 
 
