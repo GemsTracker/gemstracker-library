@@ -10,11 +10,10 @@ use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\SnippetsActions\Export\ExportAction;
-use Gems\Task\TaskRunnerBatch;
+use Gems\Task\ExportRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
@@ -114,8 +113,9 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function hasHtmlOutput(): bool
     {
-        $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-        if(ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
+        $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+
+        if (ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
             $this->exportAction->batch->reset();
         }
 

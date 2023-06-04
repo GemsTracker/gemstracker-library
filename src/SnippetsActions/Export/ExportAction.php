@@ -14,7 +14,7 @@ use Gems\Snippets\Export\ExportBatchSnippet;
 use Gems\Snippets\Export\ExportDownloadSnippet;
 use Gems\Snippets\Export\ExportFormSnippet;
 use Gems\SnippetsActions\ButtonRowActiontrait;
-use Gems\Task\TaskRunnerBatch;
+use Gems\Task\ExportRunnerBatch;
 use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsActions\ModelActionTrait;
@@ -44,7 +44,10 @@ class ExportAction extends AbstractAction implements ModelActionInterface, PostA
         ExportDownloadSnippet::class,
         ];
 
-    public TaskRunnerBatch $batch;
+    /**
+     * @var ExportRunnerBatch Set in ExportFormSnippet->hasHtmlOutput()
+     */
+    public ExportRunnerBatch $batch;
 
     public string $formTitle = '';
 

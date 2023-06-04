@@ -10,6 +10,7 @@
 namespace Gems\Task;
 
 use MUtil\Task\TaskBatch;
+use Zalt\Html\UrlArrayAttribute;
 
 /**
  * Handles running tasks independent on the kind of task
@@ -27,6 +28,7 @@ use MUtil\Task\TaskBatch;
  */
 class TaskRunnerBatch extends TaskBatch
 {
+    protected array $baseUrl = [];
 
     /**
      * The number of bytes to pad during push communication in Kilobytes.
@@ -58,4 +60,20 @@ class TaskRunnerBatch extends TaskBatch
      * @var string|null
      */
     public ?string $restartRedirectUrl = null; // TODO: Move to TaskBatch
+
+    public function getJsAttributes(): array
+    {
+        $output['autostart']  = $this->autoStart;
+        $output['initurl']    = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterInitValue]);
+        $output['runurl']     = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRunValue]);
+        $output['restarturl'] = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRestartValue]);
+
+        return $output;
+    }
+
+    public function setBaseUrl(mixed $url): TaskRunnerBatch
+    {
+        $this->baseUrl = (array) $url;
+        return $this;
+    }
 }

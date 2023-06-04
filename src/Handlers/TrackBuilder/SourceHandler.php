@@ -396,6 +396,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $session = $this->request->getAttribute(SessionInterface::class);
 
         $batch = $this->tracker->synchronizeSources($session, $sourceId);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -420,6 +421,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->synchronizeSources($session);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batch->minimalStepDurationMs = 3000;
 

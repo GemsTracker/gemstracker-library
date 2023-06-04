@@ -21,7 +21,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelSnippetAbstract;
@@ -75,17 +74,14 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         $model = $this->getModel();
 
         $batch->setVariable('model', $model);
-//        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_RESET]);
-//        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_DOWNLOAD]);
-        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_RESET]);
-        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_DOWNLOAD]);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
-            return new RedirectResponse($batch->finishUrl);
+            return new RedirectResponse($batch->getDownloadUrl());
         }
 
         if ($batch->hasSessionVariable('export_type')) {

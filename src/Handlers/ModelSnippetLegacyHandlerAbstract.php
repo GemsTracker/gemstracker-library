@@ -400,7 +400,9 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         if ($action instanceof ExportAction) {
             $step = $this->requestInfo->getParam('step');
             if ($step) {
-                $action->step = $step;
+                if (ExportAction::STEP_RESET !== $step) {
+                    $action->step = $step;
+                }
             }
             $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }

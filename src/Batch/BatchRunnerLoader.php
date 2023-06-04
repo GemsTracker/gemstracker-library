@@ -4,7 +4,7 @@ namespace Gems\Batch;
 
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
-use MUtil\Batch\BatchAbstract;
+use Gems\Task\TaskRunnerBatch;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BatchRunnerLoader
@@ -12,7 +12,7 @@ class BatchRunnerLoader
     public function __construct(private TranslatorInterface $translate, private LayoutRenderer $layoutRenderer)
     {}
 
-    public function getBatchRunner(BatchAbstract $batch, ?LayoutSettings $layoutSettings = null): BatchRunner
+    public function getBatchRunner(TaskRunnerBatch $batch, ?LayoutSettings $layoutSettings = null): BatchRunner
     {
         if ($layoutSettings === null) {
             $layoutSettings = new LayoutSettings();
