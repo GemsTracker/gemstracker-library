@@ -2,8 +2,8 @@
 
 namespace GemsTest\MenuNew;
 
-use Gems\MenuNew\RouteHelper;
-use Gems\MenuNew\RouteNotFoundException;
+use Gems\Menu\RouteHelper;
+use Gems\Menu\RouteNotFoundException;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Helper\UrlHelper;
 use Mezzio\Router\FastRouteRouter;
@@ -31,7 +31,7 @@ class RouteHelperTest extends \PHPUnit\Framework\TestCase
                     'path' => '/route-c',
                     'allowed_methods' => ['GET'],
                     'options' => [
-                        'permission' => 'permission-b',
+                        'privilege' => 'privilege-b',
                     ]
                 ],
                 [
@@ -43,12 +43,12 @@ class RouteHelperTest extends \PHPUnit\Framework\TestCase
         ];
 
         $acl = new Acl();
-        $acl->addResource('permission-b');
-        $acl->addResource('permission-c');
+        $acl->addResource('privilege-b');
+        $acl->addResource('privilege-c');
         $acl->addRole('role-a');
         $acl->addRole('role-b');
 
-        $acl->allow('role-b', 'permission-b');
+        $acl->allow('role-b', 'privilege-b');
 
         $router = new FastRouteRouter(null, null, $config);
         $urlHelper = new UrlHelper($router);
@@ -185,15 +185,15 @@ class RouteHelperTest extends \PHPUnit\Framework\TestCase
     public function testHasPermission()
     {
         $routeHelper = $this->buildRouteHelper('role-b');
-        $this->assertTrue($routeHelper->hasPermission('permission-b'));
-        $this->assertFalse($routeHelper->hasPermission('permission-c'));
+        $this->assertTrue($routeHelper->hasPrivilege('privilege-b'));
+        $this->assertFalse($routeHelper->hasPrivilege('privilege-c'));
 
         $routeHelper = $this->buildRouteHelper('role-a');
-        $this->assertFalse($routeHelper->hasPermission('permission-b'));
-        $this->assertFalse($routeHelper->hasPermission('permission-c'));
+        $this->assertFalse($routeHelper->hasPrivilege('privilege-b'));
+        $this->assertFalse($routeHelper->hasPrivilege('privilege-c'));
 
         $routeHelper = $this->buildRouteHelper();
-        $this->assertFalse($routeHelper->hasPermission('permission-b'));
-        $this->assertFalse($routeHelper->hasPermission('permission-c'));
+        $this->assertFalse($routeHelper->hasPrivilege('privilege-b'));
+        $this->assertFalse($routeHelper->hasPrivilege('privilege-c'));
     }
 }

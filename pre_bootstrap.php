@@ -39,7 +39,7 @@ $composer_autoloader = require (VENDOR_DIR . '/autoload.php');
  * add it here for backward compatibility
  */
 set_include_path(
-        APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
+        APPLICATION_PATH . '/src' . PATH_SEPARATOR .
         get_include_path()
 );
 

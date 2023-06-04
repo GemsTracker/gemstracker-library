@@ -24,7 +24,7 @@ class TrackFieldConditionTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->conditions = new \Gems\ConditionLoader([], ['Gems' => GEMS_ROOT_DIR . '/classes/Gems']);
+        $this->conditions = new \Gems\ConditionLoader([], ['Gems' => GEMS_ROOT_DIR . '/src']);
 
         $this->condition = $this->conditions->loadRoundCondition('\\Gems\\Condition\\Round\\TrackFieldCondition');
     }

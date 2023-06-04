@@ -1,0 +1,476 @@
+<?php
+
+/**
+ *
+ * @package    Pulse
+ * @subpackage Export
+ * @copyright  Copyright (c) 2015 Erasmus MC
+ * @license    New BSD License
+ */
+
+namespace Gems\Export;
+
+
+use Gems\Export\ExportAbstract;
+use MUtil\Model;
+
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Reader\XLSX\Options;
+use OpenSpout\Reader\XLSX\Reader;
+use OpenSpout\Writer\XLSX\Writer;
+
+/**
+ *
+ * @package    Gems
+ * @subpackage Export
+ * @copyright  Copyright (c) 2015 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.7.1
+ */
+class StreamingExcelExport extends ExportAbstract
+{
+    /**
+     * @var string  Current used file extension
+     */
+    protected $fileExtension = '.xlsx';
+
+    /**
+     * @var integer     How many rows the batch will do in one go
+     */
+    protected $rowsPerBatch = 2000;
+
+    /**
+     * Add headers to a specific file
+     * @param  string $filename The temporary filename while the file is being written
+     */
+    protected function addHeader($filename)
+    {
+        $tempFilename = str_replace($this->fileExtension, '', $filename);
+
+        $headerFilename = $tempFilename . '_header' . $this->fileExtension;
+
+        $exportName = $this->getName();
+
+        $writer = new Writer();
+        $writer->openToFile($headerFilename);
+
+        $header = $this->getColumnHeaders();
+        if (isset($this->data[$exportName]) &&
+                isset($this->data[$exportName]['format']) &&
+                in_array('formatVariable', (array) $this->data[$exportName]['format'])) {
+            $writer->addRow(Row::fromValues($header));
+        } else {
+            $writer->addRow(Row::fromValues(array_keys($header)));
+        }
+
+        $writer->close();
+    }
+
+    /**
+     * Add model rows to file. Can be batched
+     * @param array $data                       Data submitted by export form
+     * @param int|string|null $modelId                    Model Id when multiple models are passed
+     * @param string $tempFilename              The temporary filename while the file is being written
+     * @param array  $filter                    Filter (limit) to use
+     */
+    public function addRows($data, $modelId, $tempFilename, $filter)
+    {
+        $this->data = $data;
+        $this->modelId = $modelId;
+        $dataModel = $this->getModel();
+
+
+        if ($dataModel) {
+            $dataModel->setFilter($filter + $dataModel->getFilter());
+
+            if ($this->batch) {
+                $rowNumber = $this->batch->getSessionVariable('rowNumber');
+                $iteration = $this->batch->getSessionVariable('iteration');
+            } else {
+                $rowNumber = $this->session->rowNumber;
+                $iteration = $this->session->iteration;
+            }
+
+            // Reset internal rownumber when we move to a new file
+            if ($filter = $dataModel->getFilter()) {
+                if (array_key_exists('limit', $filter)) {
+                    if ($filter['limit'][1] == 0) {
+                        $rowNumber = 2;
+                    }
+                }
+            }
+
+            if (empty($rowNumber)) {
+                $rowNumber = 2;
+            }
+
+            if (empty($iteration)) {
+                $iteration = 0;
+            }
+
+            $filename = $tempFilename . '_' . $iteration . $this->fileExtension;
+
+            $rows = $dataModel->load();
+
+            $exportName = $this->getName();
+
+            if (isset($this->data[$exportName]) &&
+                    isset($this->data[$exportName]['format']) &&
+                    in_array('formatAnswer', (array) $this->data[$exportName]['format'])) {
+                // We want answer labels instead of codes
+                $this->modelFilterAttributes = $this->defaultModelFilterAttributes;
+            } else {
+                // Skip formatting multiOptions
+               $this->modelFilterAttributes = array('formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay');
+            }
+
+            $writer = new Writer();
+            $writer->openToFile($filename);
+
+            foreach($rows as $row) {
+                $this->addRowWithCount($row, $writer, $rowNumber);
+                $rowNumber++;
+            }
+
+            $writer->close();
+        }
+
+        if ($this->batch) {
+            $this->batch->setSessionVariable('rowNumber', $rowNumber);
+            $this->batch->setSessionVariable('iteration', ++$iteration);
+        } else {
+            $this->session->set('rowNumber', $rowNumber);
+            $this->session->set('iteration', ++$iteration);
+        }
+    }
+
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param resource $file The already opened file
+     */
+    public function addRowWithCount(array $row, Writer $writer, $rowNumber)
+    {
+        $exportRow   = $this->filterRow($row);
+        $labeledCols = $this->getLabeledColumns();
+        $exportRow   = array_replace(array_flip($labeledCols), $exportRow);
+        $writer->addRow(Row::fromValues($exportRow));
+    }
+
+    /**
+     * Add a separate row to a file
+     * @param array $row a row in the model
+     * @param resource $file The already opened file
+     */
+    public function addRow($row, $file)
+    { }
+
+    /**
+     * Add a footer to a specific file
+     * @param string $filename The temporary filename while the file is being written
+     */
+    public function addFooter($filename, $modelId = null, $data = null)
+    {
+        parent::addFooter($filename, $modelId, $data);
+        
+        $this->getModel();
+
+        $writer = $this->getWriter($filename, $data);
+
+        $tempFilename = str_replace($this->fileExtension, '', $filename);
+
+        $headerFilename = $tempFilename . '_header' . $this->fileExtension;
+
+        $reader = new Reader();
+        $reader->open($headerFilename);
+
+        $rowStyle = (new Style())->setFontBold();
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            foreach ($sheet->getRowIterator() as $row) {
+                $row->setStyle($rowStyle);
+                $writer->addRow($row);
+            }
+        }
+        $reader->close();
+        unlink($headerFilename);
+
+        if ($this->batch) {
+            $iteration = $this->batch->getSessionVariable('iteration');
+        } else {
+            $iteration = $this->session->iteration;
+        }
+
+        for($i=0;$i<$iteration;$i++) {
+            $partFilename = $tempFilename . '_' . $i . $this->fileExtension;
+
+            $options = new Options();
+            $options->SHOULD_FORMAT_DATES = true;
+
+            $reader = new Reader($options);
+            $reader->open($partFilename);
+            foreach($reader->getSheetIterator() as $sheetIndex=>$sheet) {
+                if ($sheetIndex !== 1) {
+                    $writer->addNewSheetAndMakeItCurrent();
+                }
+
+                foreach($sheet->getRowIterator() as $row) {
+                    $writer->addRow($row);
+                }
+            }
+            $reader->close();
+            unlink($partFilename);
+        }
+
+        $writer->close();
+
+        // reset row number and iteration
+        if ($this->batch) {
+            $this->batch->setSessionVariable('rowNumber', 0);
+            $this->batch->setSessionVariable('iteration', 0);
+        } else {
+            $this->session->set('rowNumber', 0);
+            $this->session->set('iteration', 0);
+        }
+    }
+
+    /**
+     * Check if files should be combined in one excel file with a new sheet per file
+     *
+     * @param $data
+     * @return bool
+     */
+    protected function combineFilesEnabled($data)
+    {
+        $exportName = $this->getName();
+        if (isset($data[$exportName], $data[$exportName]['format']) && in_array('combineFiles', $data[$exportName]['format'])) {
+            return true;
+        }
+        return false;
+    }
+
+    protected function getWriter($filename, $data)
+    {
+        $writer = new Writer();
+        $writer->openToFile($filename);
+        return $writer;
+    }
+
+    protected function filterDateFormat($value, $dateFormat, $columnName)
+    {
+        $exportName = $this->getName();
+        if (isset($this->data[$exportName]) &&
+                isset($this->data[$exportName]['format']) &&
+                in_array('formatDate', (array) $this->data[$exportName]['format'])) {
+
+            $date = Model::getDateTimeInterface($value);
+            if ($date) {
+                return $this->createExcelDate($date);
+            }
+        }
+
+        return parent::filterDateFormat($value, $dateFormat, $columnName);
+    }
+
+    /**
+     * Finalizes the files stored in $this->files.
+     * If it has 1 file, it will return that file, if it has more, it will return a zip containing all the files, named as the first file in the array.
+     * @param array $data Current export settings
+     * @return array File with download headers
+     */
+    public function finalizeFiles($data=null)
+    {
+        if ($this->combineFilesEnabled($data)) {
+            $files = $this->getFiles();
+
+            $combinedTempFilename = $this->getExportTempDir() . 'combined-export-' . md5(time() . rand()) . $this->fileExtension;
+
+            $writer = $this->getWriter($combinedTempFilename, []);
+
+            $headerRowStyle = (new Style())->setFontBold();
+
+            $new = true;
+
+            foreach($files as $newFilename=>$tempFilename) {
+
+                $baseNewName = str_replace([$this->fileExtension, '_', '  '], ['', ' ', ' '], $newFilename);
+                if (strlen($baseNewName) > 32) {
+                    $baseNewName = substr($baseNewName, 0,31);
+                }
+                if ($new) {
+                    $sheet = $writer->getCurrentSheet();
+                } else {
+                    $sheet = $writer->addNewSheetAndMakeItCurrent();
+                }
+                $sheet->setName($baseNewName);
+
+                $options = new Options();
+                $options->SHOULD_FORMAT_DATES = true;
+
+                $reader = new Reader($options);
+                $reader->open($tempFilename);
+                foreach ($reader->getSheetIterator() as $sheetIndex => $sheet) {
+                    if ($sheetIndex !== 1) {
+                        $writer->addNewSheetAndMakeItCurrent();
+                    }
+
+                    /** @var Row $row */
+                    foreach ($sheet->getRowIterator() as $rowIndex => $row) {
+                        if ($rowIndex === 1) {
+                            $row->setStyle($headerRowStyle);
+                        }
+                        $writer->addRow($row);
+                    }
+                }
+                $reader->close();
+                $new = false;
+            }
+
+            $writer->close();
+
+            $date = new \DateTime();
+            $newFileName = 'combined-export.' . $date->format('Ymd.His') . $this->fileExtension;
+            $this->files = [
+                $newFileName => $combinedTempFilename,
+            ];
+        }
+
+        return parent::finalizeFiles($data);
+    }
+
+    /**
+     * Create Excel date stamp from DateTime
+     *
+     * @param \DateTime $date
+     * @return float number of days since 1900-01-00
+     */
+    public function createExcelDate(\DateTime $date)
+    {
+        $day = clone $date;
+        $endDate = $day->setTime(0, 0, 0);
+        $startDate = new \DateTime('1970-01-01 00:00:00');
+        $diff = $endDate->diff($startDate)->format('%a');
+
+        if ($endDate < $startDate) {
+            $daysBetween = 25569 - $diff;
+        } else {
+            $daysBetween = 25569 + $diff;
+        }
+
+        $seconds = $date->getTimestamp() - $endDate->getTimestamp();
+
+        return (float)$daysBetween + ($seconds / 86400);
+    }
+
+    protected function filterHtml($result)
+    {
+        $result = parent::filterHtml($result);
+
+        if (is_numeric($result)) {
+            if (is_int($result)) {
+                $result = (int) $result;
+            } else {
+                $result = (double) $result;
+            }
+        } else {
+            $result = $this->filterCsvInjection($result);
+        }
+
+        return $result;
+    }
+
+    protected function getColumnHeaders()
+    {
+        $labeledCols = $this->getLabeledColumns();
+
+        $columnHeaders = array();
+        foreach($labeledCols as $columnName) {
+            $columnHeaders[$columnName] = strip_tags($this->metaModel->get($columnName, 'label'));
+        }
+
+        return $columnHeaders;
+    }
+
+    /**
+     * @return array Default values in form
+     */
+    public function getDefaultFormValues()
+    {
+        return ['format'=> ['formatVariable', 'formatAnswer']];
+    }
+
+    /**
+     * form elements for extra options for this particular export option
+     * @param  \MUtil\Form $form Current form to add the form elements
+     * @param  array $data current options set in the form
+     * @return array Form elements
+     */
+    public function getFormElements(&$form, &$data)
+    {
+        $element = $form->createElement('multiCheckbox', 'format');
+        $element->setLabel($this->_('Excel options'))
+            ->setMultiOptions(array(
+                'formatVariable'=> $this->_('Export labels instead of field names'),
+                'formatAnswer'  => $this->_('Format answers'),
+                'formatDate'    => $this->_('Format dates as Excel numbers easily convertable to date'),
+                'combineFiles'    => $this->_('Combine multiple files to separate sheets in one excel file'),
+            ))
+            ->setBelongsTo($this->getName())
+            ->setSeparator('');
+        $elements['format'] = $element;
+
+        return $elements;
+    }
+
+    /**
+     * @return string name of the specific export
+     */
+    public function getName() {
+        return 'StreamingExcelExport';
+    }
+
+    protected function getNameFromTempname()
+    {
+
+    }
+
+    /**
+     * Preprocess the model to add specific options
+     */
+    protected function preprocessModel()
+    {
+        parent::preprocessModel();
+
+        $labeledCols = $this->getLabeledColumns();
+        foreach($labeledCols as $columnName) {
+            $options = array();
+            $type = $this->metaModel->get($columnName, 'type');
+            switch ($type) {
+                case \MUtil\Model::TYPE_DATE:
+                    $options['dateFormat']    = 'Y-m-d';
+                    break;
+
+                case \MUtil\Model::TYPE_DATETIME:
+                    $options['dateFormat']    = 'Y-m-d H:i:s';
+                    break;
+
+                case \MUtil\Model::TYPE_TIME:
+                    $options['dateFormat']    = 'H:i:s';
+                    break;
+
+                case \MUtil\Model::TYPE_NUMERIC:
+                    break;
+
+                //When no type set... assume string
+                /*case \MUtil\Model::TYPE_STRING:
+                default:
+                    $type                      = \MUtil\Model::TYPE_STRING;
+                    $options['formatFunction'] = 'formatString';
+                    break;*/
+            }
+            $options['type']           = $type;
+            $this->metaModel->set($columnName, $options);
+        }
+    }
+}

@@ -53,3 +53,7 @@ ALTER TABLE `gems__mail_servers`
     ADD UNIQUE `gms_from` (`gms_from`),
     DROP INDEX `PRIMARY`,
     DROP INDEX `gms_id_server`;
+
+-- PATCH: Add sites to organizations
+ALTER TABLE `gems__organizations`
+    ADD `gor_sites` varchar(255) COLLATE 'utf8mb4_unicode_ci' NULL AFTER `gor_url_base`;

@@ -5,13 +5,15 @@ namespace GemsTest\Agenda;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Tracker\RespondentTrack;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Description of AppointmentTest
  *
  * @author Menno Dekker <menno.dekker@erasmusmc.nl>
  */
-class AppointmentTest extends \PHPUnit\Framework\TestCase
+class AppointmentTest extends TestCase
 {
 
     /**
@@ -24,7 +26,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     protected function _getRespondentTrack($endDate = null, $startDate = null)
     {
-        $respTrack = $this->getMockBuilder('\\Gems\\Tracker\\RespondentTrack')
+        $respTrack = $this->getMockBuilder(RespondentTrack::class)
                 ->disableOriginalConstructor()
                 ->getMock();
 
@@ -50,11 +52,10 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateAfterWaitDays_NoEndDate($expected, $waitDays, $endDate)
     {
-        $appointmentDate = DateTimeImmutable('2018-01-01', 'yyyy-MM-dd');
+        $appointmentDate = new DateTimeImmutable('2018-01-01');
 
         if ($endDate) {
-            $trackEndDate = clone $appointmentDate;
-            $trackEndDate->subDay(5);
+            $trackEndDate = $appointmentDate->sub(new DateInterval('P5D'));
             $respTrack    = $this->_getRespondentTrack($trackEndDate);
         } else {
             $respTrack = $this->_getRespondentTrack();
@@ -75,7 +76,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $appointment->createAfterWaitDays($filter, $respTrack));
     }
 
-    public function createAfterWaitDays_NoEndDateProvider()
+    public static function createAfterWaitDays_NoEndDateProvider()
     {
         return [
             'noenddate'             => [false, 2, false],
@@ -95,7 +96,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromStart($expected, $waitDays, $startDate)
     {
-        $appointmentDate = DateTimeImmutable::createFromFormat('Y-m-d', '2018-01-01');
+        $appointmentDate = new DateTimeImmutable('2018-01-01');
 
         if ($startDate) {
             $trackStartDate = $appointmentDate->sub(new DateInterval('P5D'));
@@ -119,7 +120,7 @@ class AppointmentTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $appointment->createFromStart($filter, $respTrack));
     }
 
-    public function createFromStartProvider()
+    public static function createFromStartProvider()
     {
         return [
             'nostartdate'             => [false, 2, false],
