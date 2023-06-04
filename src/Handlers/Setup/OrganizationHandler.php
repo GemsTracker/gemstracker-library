@@ -94,6 +94,7 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         if (! $batch->isLoaded()) {
 
@@ -149,6 +150,8 @@ class OrganizationHandler extends ModelSnippetLegacyHandlerAbstract
         if ($go) {
             $session = $this->request->getAttribute(SessionInterface::class);
             $batch = new TaskRunnerBatch('orgCheckAll', $this->overLoader, $session);
+            $batch->setBaseUrl($this->requestInfo->getBasePath());
+
             if (! $batch->isLoaded()) {
 
                 $select = $this->getCheckOrgSelect();

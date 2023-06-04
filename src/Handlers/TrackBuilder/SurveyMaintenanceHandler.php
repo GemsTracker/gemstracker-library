@@ -177,7 +177,8 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         $where    = 'gto_id_survey = ?';
 
         $batch = $this->tracker->recalculateTokens($session, 'surveyCheck' . $surveyId, $this->currentUserId, $where, $surveyId);
-        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 
         $title = sprintf($this->_('Checking for the %s survey for answers .'),
                 $this->resultFetcher->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", [$surveyId]));
@@ -200,7 +201,8 @@ class SurveyMaintenanceHandler extends ModelSnippetLegacyHandlerAbstract
         $session = $this->request->getAttribute(SessionInterface::class);
 
         $batch = $this->tracker->recalculateTokens($session,'surveyCheckAll', $this->currentUserId);
-        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));        
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
+        $batch->setProgressTemplate($this->_('Remaining time: {remaining} - {msg}'));
 
         $title = $this->_('Checking for all surveys for answers .');
 

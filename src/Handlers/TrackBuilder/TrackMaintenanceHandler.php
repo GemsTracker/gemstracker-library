@@ -234,6 +234,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
             'allTrackCheckRounds',
             $this->currentUserId,
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($this->_('Checking round assignments for all tracks.'));
@@ -266,6 +267,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
                 $where,
                 $id
             );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_("Checking round assignments for track %d '%s'."), $id, $track->getTrackName());
 
@@ -392,6 +394,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
             'trackRecalcAllFields'
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($this->_('Recalculating fields for all tracks.'));
@@ -422,6 +425,7 @@ class TrackMaintenanceHandler extends TrackMaintenanceWithEngineHandlerAbstract
             $where,
             $id
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_("Recalculating fields for track %d '%s'."), $id, $track->getTrackName());
 
