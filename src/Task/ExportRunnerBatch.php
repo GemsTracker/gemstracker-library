@@ -29,11 +29,11 @@ class ExportRunnerBatch extends TaskRunnerBatch
     {
         $output = parent::getJsAttributes();
 
-        $output['restartload'] = 1;
-        $output['initurl']     = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_BATCH, $this->progressParameterName => $this->progressParameterInitValue]);
-        $output['runurl']      = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_BATCH, $this->progressParameterName => $this->progressParameterRunValue]);
-        $output['restarturl']  = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_RESET]);
-        $output['downloadurl'] = $this->getDownloadUrl();
+        $output[':restart-load'] = 'true';
+        $output['init-url']     = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_BATCH, $this->progressParameterName => $this->progressParameterInitValue]);
+        $output['run-url']      = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_BATCH, $this->progressParameterName => $this->progressParameterRunValue]);
+        $output['restart-url']  = UrlArrayAttribute::toUrlString($this->baseUrl + ['step' => ExportAction::STEP_RESET]);
+        $output['download-url'] = $this->getDownloadUrl();
 
         return $output;
     }

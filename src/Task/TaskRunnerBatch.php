@@ -63,10 +63,10 @@ class TaskRunnerBatch extends TaskBatch
 
     public function getJsAttributes(): array
     {
-        $output['autostart']  = $this->autoStart;
-        $output['initurl']    = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterInitValue]);
-        $output['runurl']     = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRunValue]);
-        $output['restarturl'] = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRestartValue]);
+        $output[':autostart']  = $this->autoStart ? 'true' : 'false';
+        $output['init-url']    = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterInitValue]);
+        $output['run-url']     = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRunValue]);
+        $output['restart-url'] = UrlArrayAttribute::toUrlString($this->baseUrl + [$this->progressParameterName => $this->progressParameterRestartValue]);
 
         return $output;
     }
