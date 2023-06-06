@@ -185,6 +185,15 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
         return $this->_applyOptions($model, 'gro_valid_for_field', $dateOptions, $itemData);
     }
 
+    protected function applyOrganizationRounds(\MUtil\Model\ModelAbstract $model, array &$itemData)
+    {
+        if ($itemData['org_specific_round'] == 0) {
+            $model->set('organizations', [
+               'elementClass' => 'hidden',
+            ]);
+        }
+    }
+
     /**
      * Apply respondent relation settings to the round model
      *
@@ -201,7 +210,9 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     protected function applyRespondentRelation(\MUtil\Model\ModelAbstract $model, array &$itemData)
     {
-        $model->set('gro_id_survey', 'onchange', 'this.form.submit();');
+        $model->set('gro_id_survey', [
+            'class' => 'autosubmit',
+        ]);
         if (!empty($itemData['gro_id_survey']) && $model->has('gro_id_relationfield')) {
             $forStaff = $this->tracker->getSurvey($itemData['gro_id_survey'])->isTakenByStaff();
             if (!$forStaff) {
@@ -646,12 +657,12 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'elementClass', 'Radio',
                 'escape', false,
                 'required', true,
-                'onchange', 'this.form.submit();',
+                'class', 'autosubmit',
                 'multiOptions', $this->getSourceList(true, false, false)
                 );
         $model->set('gro_valid_after_id',
                 'label', $this->_('Round used'),
-                'onchange', 'this.form.submit();'
+                'class', 'autosubmit',
                 );
 
         if ($detailed) {
@@ -660,7 +671,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
-                    'onchange', 'this.form.submit();'
+                    'class', 'autosubmit',
                     );
             $model->set('gro_valid_after_length',
                     'label', $this->_('Add to date'),
@@ -708,20 +719,20 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
                 'elementClass', 'Radio',
                 'escape', false,
                 'required', true,
-                'onchange', 'this.form.submit();',
+                'class', 'autosubmit',
                 'multiOptions', $this->getSourceList(false, false, false)
                 );
         $model->set('gro_valid_for_id',
                 'label', $this->_('Round used'),
                 'default', '',
-                'onchange', 'this.form.submit();'
+                'class', 'autosubmit',
                 );
 
         if ($detailed) {
             $model->set('gro_valid_for_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
-                    'onchange', 'this.form.submit();'
+                    'class', 'autosubmit',
                     );
             $model->set('gro_valid_for_length',
                     'label', $this->_('Add to date'),
@@ -1065,6 +1076,8 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
 
         // Apply respondent relation settings
         $result = $this->applyRespondentRelation($model, $itemData) || $result;
+
+        $result = $this->applyOrganizationRounds($model, $itemData) || $result;
 
         return $result;
     }

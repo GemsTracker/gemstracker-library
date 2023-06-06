@@ -55,6 +55,10 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
 
     protected string $afterSaveRoutePart = 'show';
 
+    protected bool $autosubmit = false;
+
+    protected bool $selectedAutosubmit = false;
+
     /**
      * Shortfix to add class attribute
      *
@@ -277,6 +281,17 @@ abstract class ModelFormSnippetAbstract extends ZendModelFormSnippetAbstract
             \Laminas\Validator\AbstractValidator::setDefaultTranslator(
                 new \Gems\Translate\LaminasTranslator($this->translate)
             );
+        }
+
+        if ($this->autosubmit) {
+            $class = $this->_form->getAttrib('class');
+            $class .= ' autosubmit';
+            $this->_form->setAttrib('class', $class);
+        }
+        if ($this->selectedAutosubmit) {
+            $class = $this->_form->getAttrib('class');
+            $class .= ' selected-autosubmit';
+            $this->_form->setAttrib('class', $class);
         }
 
         return $this->_form;

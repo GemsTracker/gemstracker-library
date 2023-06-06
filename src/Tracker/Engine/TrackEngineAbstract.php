@@ -991,7 +991,8 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                         'label', $this->_('Organization specific round'),
                         'default', 0,
                         'multiOptions', $this->translatedUtil->getYesNo(),
-                        'elementClass', 'radio'
+                        'elementClass', 'radio',
+                        'class', 'autosubmit'
                         );
 
                 break;
