@@ -16,11 +16,9 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
-use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Ra;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -495,6 +493,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -524,6 +523,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -571,6 +571,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $token->getTokenId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -601,6 +602,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -639,6 +641,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -1218,6 +1221,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -1253,6 +1257,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(

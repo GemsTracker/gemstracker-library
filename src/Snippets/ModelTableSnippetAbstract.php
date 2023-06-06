@@ -16,7 +16,6 @@ use Gems\Html\Paginator\GemsPaginator;
 use Gems\Menu\MenuSnippetHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\Paginator\PaginatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 use Zalt\Snippets\ModelBridge\TableBridge;

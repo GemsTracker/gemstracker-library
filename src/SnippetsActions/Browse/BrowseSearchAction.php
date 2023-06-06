@@ -37,6 +37,11 @@ class BrowseSearchAction extends BrowseFilteredAction
         CurrentButtonRowSnippet::class,
     ];
 
+    /**
+     * @var array The raw data the search is based on
+     */
+    public array $searchData = [];
+
     public function appendStopSnippet(string $snippetClass)
     {
         $this->_stopSnippets[] = $snippetClass;

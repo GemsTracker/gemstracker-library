@@ -10,21 +10,26 @@ use Gems\Loader;
 use Gems\Menu\MenuSnippetHelper;
 use Gems\Snippets\FormSnippetAbstract;
 use Gems\SnippetsActions\Export\ExportAction;
-use Gems\Task\TaskRunnerBatch;
+use Gems\Task\ExportRunnerBatch;
 use Mezzio\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessageTrait;
 use Zalt\Message\MessengerInterface;
-use Zalt\Model\MetaModellerInterface;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Snippets\DataReaderGenericModelTrait;
+use Zalt\Snippets\ModelSnippetTrait;
+use Zalt\Snippets\ModelTextFilterTrait;
 use Zalt\SnippetsLoader\SnippetException;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 class ExportFormSnippet extends FormSnippetAbstract
 {
+    use DataReaderGenericModelTrait;
     use MessageTrait;
+    use ModelSnippetTrait;
+    use ModelTextFilterTrait;
 
     protected ExportInterface $currentExport;
 
@@ -33,8 +38,6 @@ class ExportFormSnippet extends FormSnippetAbstract
      * @var \Gems\Export
      */
     protected Export $export;
-
-    protected MetaModellerInterface $model;
 
     protected bool $processed = false;
 
@@ -102,6 +105,21 @@ class ExportFormSnippet extends FormSnippetAbstract
         return $defaults;
     }
 
+    public function getFilter(MetaModelInterface $metaModel) : array
+    {
+        if (false !== $this->searchFilter) {
+            $filter = $this->searchFilter;
+        } else {
+            $filter = $this->getRequestFilter($metaModel);
+        }
+
+        // Filter in request overrules same filter from extraFilter settings which again overrule fiwxedFilter settings
+        // Sinc the arrays can contian numeric keys we use array_merge to include those from all filters
+        $filter = array_merge($this->_fixedFilter, $this->extraFilter, $this->cleanUpFilter($filter, $metaModel));
+
+        return $this->processTextFilter($filter, $metaModel, $this->searchFilter);
+    }
+
     /**
      * @inheritDoc
      */
@@ -114,8 +132,10 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function hasHtmlOutput(): bool
     {
-        $this->exportAction->batch = new TaskRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
-        if(ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
+        $this->exportAction->batch = new ExportRunnerBatch('export_data_' . $this->model->getName(), $this->overLoader, $this->session);
+        $model = $this->getModel();
+
+        if (ExportAction::STEP_RESET === $this->requestInfo->getParam('step')) {
             $this->exportAction->batch->reset();
         }
 

@@ -68,16 +68,9 @@ class Menu
             'type' => 'route-link-item',
             'children' => [
                 [
-                    'name' => 'calendar.show',
-                    'label' => $this->translator->trans('Show'),
+                    'name' => 'calendar.export',
+                    'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
-                    'children' => [
-                        [
-                            'name' => 'calendar.edit',
-                            'label' => $this->translator->trans('Edit'),
-                            'type' => 'route-link-item',
-                        ],
-                    ],
                 ],
             ],
         ];
@@ -323,6 +316,11 @@ class Menu
                         ],
                     ],
                 ],
+                [
+                    'name' => 'respondent.export',
+                    'label' => $this->translator->trans('Export'),
+                    'type' => 'route-link-item',
+                ],
             ],
         ];
     }
@@ -352,7 +350,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.compliance.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -364,7 +362,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.field-report.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -376,7 +374,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.field-overview.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -388,7 +386,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.overview-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -400,7 +398,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.token-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -412,7 +410,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.respondent-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -429,7 +427,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.consent-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],

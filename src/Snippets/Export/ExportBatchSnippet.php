@@ -21,10 +21,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
-use Zalt\Html\UrlArrayAttribute;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Snippets\ModelSnippetAbstract;
+use Zalt\Snippets\SnippetAbstract;
 use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
@@ -36,13 +36,13 @@ use Zalt\SnippetsLoader\SnippetOptions;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 24-sep-2014 18:26:00
  */
-class ExportBatchSnippet extends ModelSnippetAbstract
+class ExportBatchSnippet extends SnippetAbstract
 {
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var DataReaderInterface
      */
-    protected $model;
+    protected DataReaderInterface $model;
 
     protected string $formTitle = '';
 
@@ -61,31 +61,24 @@ class ExportBatchSnippet extends ModelSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate);
     }
 
-    protected function createModel(): DataReaderInterface
-    {
-        return $this->model;
-    }
-
     public function getResponse(): ?ResponseInterface
     {
         if (($this->exportAction->step !== ExportAction::STEP_BATCH) || (! isset($this->exportAction->batch))) {
             return null;
         }
         $batch = $this->exportAction->batch;
-        $model = $this->getModel();
+        $model = $this->model;
 
+        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($model->getFilter(), true) . "\n", FILE_APPEND);
         $batch->setVariable('model', $model);
-//        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_RESET]);
-//        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->menuHelper->getRouteUrl($this->menuHelper->getCurrentRoute())] + ['step' => ExportAction::STEP_DOWNLOAD]);
-        $batch->restartRedirectUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_RESET]);
-        $batch->finishUrl = UrlArrayAttribute::toUrlString([$this->requestInfo->getBasePath()] + ['step' => ExportAction::STEP_DOWNLOAD]);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $post = $this->requestInfo->getRequestPostParams();
         $jobInfo = [];
 
         if ($batch->isFinished()) {
             $this->exportAction->step = ExportAction::STEP_DOWNLOAD;
-            return new RedirectResponse($batch->finishUrl);
+            return new RedirectResponse($batch->getDownloadUrl());
         }
 
         if ($batch->hasSessionVariable('export_type')) {

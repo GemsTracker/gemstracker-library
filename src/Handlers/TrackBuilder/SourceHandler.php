@@ -100,6 +100,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheck', $where, $sourceId);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -124,6 +125,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->refreshTokenAttributes($session, 'attributeCheckAll');
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
@@ -150,6 +152,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
 
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->recalculateTokens($session, 'sourceCheck' . $sourceId, $this->currentUserId, $where, $sourceId);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Checking all surveys in the %s source for answers.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -176,6 +179,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->recalculateTokens($session, 'surveyCheckAll', $this->currentUserId);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = $this->_('Checking all surveys for all sources for answers.');
 
@@ -396,6 +400,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
         $session = $this->request->getAttribute(SessionInterface::class);
 
         $batch = $this->tracker->synchronizeSources($session, $sourceId);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
             $this->resultFetcher->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", [$sourceId]));
@@ -420,6 +425,7 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
     {
         $session = $this->request->getAttribute(SessionInterface::class);
         $batch = $this->tracker->synchronizeSources($session);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batch->minimalStepDurationMs = 3000;
 
