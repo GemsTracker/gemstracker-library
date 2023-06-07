@@ -347,7 +347,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
                 $action->sortParamDesc = $params['sortParamDesc'];
             }
 
-            $path = $this->requestInfo->getBasePath();
             $action->dynamicSort = $this->getDynamicSortFor($action->sortParamDesc, $action->sortParamAsc);
 
             if ($action instanceof BrowseFilteredAction) {
