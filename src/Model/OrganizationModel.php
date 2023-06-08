@@ -220,19 +220,19 @@ class OrganizationModel extends \Gems\Model\JoinModel
             ];
 
         $this->setIfExists('gor_respondent_edit', 'label', $this->_('Respondent edit screen'),
-                'multiOptions', $groupLevel + $this->screenLoader->listRespondentEditScreens()
+                'multiOptions', []//$groupLevel + $this->screenLoader->listRespondentEditScreens()
                 );
         $this->setIfExists('gor_respondent_show', 'label', $this->_('Respondent show screen'),
-                'multiOptions', $groupLevel + $this->screenLoader->listRespondentShowScreens()
+                'multiOptions', []//$groupLevel + $this->screenLoader->listRespondentShowScreens()
                 );
         $this->setIfExists('gor_respondent_subscribe', 'label', $this->_('Subscribe screen'),
-                'multiOptions', $this->screenLoader->listSubscribeScreens()
+                'multiOptions', []//$this->screenLoader->listSubscribeScreens()
                 );
         $this->setIfExists('gor_respondent_unsubscribe', 'label', $this->_('Unsubscribe screen'),
-                'multiOptions', $this->screenLoader->listUnsubscribeScreens()
+                'multiOptions', []//$this->screenLoader->listUnsubscribeScreens()
                 );
         $this->setIfExists('gor_token_ask', 'label', $this->_('Token ask screen'),
-                'multiOptions', $this->screenLoader->listTokenAskScreens()
+                'multiOptions', []//$this->screenLoader->listTokenAskScreens()
                 );
 
         $this->setIfExists('gor_resp_change_event', 'label', $this->_('Respondent change event'),
