@@ -62,6 +62,8 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
         'type' => 'StreamingExcelExport'
     ];
 
+    protected $config;
+
     /**
      *
      * @param ProjectOverloader $container A container acting as source fro \MUtil\Registry\Source
@@ -102,7 +104,7 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
      */
     public function getExport(string $type, ?SessionInterface $session, ?\Gems\Task\TaskRunnerBatch $batch = null)
     {
-        return $this->_getClass($type, null, [$session, $batch]);
+        return $this->_getClass($type, null, [$session, $batch, $this->getExportTempDir()]);
     }
 
     /**
@@ -123,6 +125,11 @@ class Export extends \Gems\Loader\TargetLoaderAbstract
     public function getExportModelSources()
     {
         return $this->_exportModelSources;
+    }
+
+    public function getExportTempDir(): string
+    {
+        return $this->config['rootDir'] . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'export';
     }
 
     /**

@@ -119,6 +119,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
     public function __construct(
         protected ?SessionInterface $session,
         protected ?\Gems\Task\TaskRunnerBatch $batch,
+        protected string $exportTempDir,
     ) {
     }
 
@@ -510,7 +511,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
 
     protected function getExportTempDir()
     {
-        return GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+        return $this->exportTempDir;
     }
 
     /**
