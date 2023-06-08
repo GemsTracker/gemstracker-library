@@ -12,8 +12,8 @@
 namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
-use MUtil\Model\Bridge\TableBridge;
-use MUtil\Model\ModelAbstract;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  * Put the highest value first
@@ -33,11 +33,11 @@ class ByValue extends SurveyAnswerFilterAbstract
      * @see AnswerModelSnippetGeneric
      *
      * @param TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
     {
         $currentNames = array_combine($currentNames, $currentNames);
         $newOrder     = array();
