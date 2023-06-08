@@ -1084,6 +1084,9 @@ class Route
                 parameterRoutes: [
                     'export',
                 ],
+                postRoutes: [
+                    'export',
+                ],
             ),
 
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance',
