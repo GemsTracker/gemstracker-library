@@ -269,7 +269,7 @@ abstract class StepEngineAbstract extends TrackEngineAbstract
      */
     protected function calculateFromDate($startDate, $type, $period)
     {
-        return Period::applyPeriod($startDate, $type, $period);
+        return Period::applyPeriod($startDate, $type, (int)$period);
     }
 
     /**

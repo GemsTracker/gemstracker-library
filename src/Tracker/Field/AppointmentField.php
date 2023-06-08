@@ -174,13 +174,13 @@ class AppointmentField extends FieldAbstract
                     $minDate = Period::applyPeriod(
                             $fromDate,
                             $this->_fieldDefinition['gtf_min_diff_unit'],
-                            $this->_fieldDefinition['gtf_min_diff_length']
+                            (int)$this->_fieldDefinition['gtf_min_diff_length']
                             );
                     if ($this->_fieldDefinition['gtf_max_diff_exists']) {
                         $maxDate = Period::applyPeriod(
                                 $fromDate,
                                 $this->_fieldDefinition['gtf_max_diff_unit'],
-                                $this->_fieldDefinition['gtf_max_diff_length']
+                                (int)$this->_fieldDefinition['gtf_max_diff_length']
                                 );
                     } else {
                         $maxDate = null;
