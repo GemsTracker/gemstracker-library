@@ -69,7 +69,6 @@ class ExportBatchSnippet extends SnippetAbstract
         $batch = $this->exportAction->batch;
         $model = $this->model;
 
-        file_put_contents('data/logs/echo.txt', __CLASS__ . '->' . __FUNCTION__ . '(' . __LINE__ . '): ' .  print_r($model->getFilter(), true) . "\n", FILE_APPEND);
         $batch->setVariable('model', $model);
         $batch->setBaseUrl($this->requestInfo->getBasePath());
 
