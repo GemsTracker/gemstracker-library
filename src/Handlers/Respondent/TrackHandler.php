@@ -16,6 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
+use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
@@ -261,6 +262,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
         // 'model'        => 'getModel',
         'routeAction'  => 'show',
         'templateOnly' => 'isTemplateOnly',
+        'dataResource' => 'emailTokenModel',
+        'dataEndpoint' => 'respondent/email-token',
     ];
 
     /**
@@ -268,7 +271,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $emailSnippets = ['Mail\\TokenMailFormSnippet'];
+    protected array $emailSnippets = [CreateEditSnippet::class];
 
     /**
      * The parameters used for the export track action.
@@ -778,6 +781,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         if ($this->emailSnippets) {
             $params = $this->_processParameters($this->emailParameters + $this->defaultTokenParameters);
+            $params['submitLabel'] = $this->translate->_('Send email');
 
             $this->addSnippets($this->emailSnippets, $params);
         }

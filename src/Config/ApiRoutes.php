@@ -6,6 +6,7 @@ use Gems\Api\RestModelConfigProviderAbstract;
 use Gems\Handlers\Api\CommFieldsHandler;
 use Gems\Handlers\Api\Respondent\OtherPatientNumbersHandler;
 use Gems\Model\CommTemplateModel;
+use Gems\Model\EmailTokenModel;
 use Gems\Model\InsertableQuestionnaireModel;
 use Gems\Model\SimpleTrackModel;
 
@@ -83,6 +84,29 @@ class ApiRoutes extends RestModelConfigProviderAbstract
                         'gctt_subject',
                         'gctt_body',
                     ],
+                ],
+            ),
+            ...$this->createModelRoute(
+                endpoint: 'respondent/email-token',
+                model: EmailTokenModel::class,
+                methods: ['GET', 'PATCH'],
+                idRegex: '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
+                allowedFields: [
+                    'id',
+                    'to',
+                    'trackName',
+                    'roundName',
+                    'surveyName',
+                    'lastContact',
+                    'preferredLanguage',
+                    'template',
+                    'subject',
+                    'message',
+                ],
+                allowedSaveFields: [
+                    'gto_id_token',
+                    'to',
+                    'communicationTemplate',
                 ],
             ),
             ...$this->createRoute(
