@@ -4,6 +4,7 @@ namespace Gems\Config;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\AuthNew\MaybeAuthenticatedMiddleware;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\ChangePasswordHandler;
@@ -19,7 +20,6 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
-use Gems\Handlers\Respondent\RespondentShowHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
@@ -112,7 +112,7 @@ class Route
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
-                    //AuthenticationMiddleware::class,
+                    MaybeAuthenticatedMiddleware::class,
                     MaintenanceModeMiddleware::class,
                     AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
@@ -1108,6 +1108,10 @@ class Route
                     'export',
                     'check-track',
                     'recalc-fields',
+                ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'export',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-overview',
