@@ -59,6 +59,7 @@ class ApiRoutes extends RestModelConfigProviderAbstract
             ),
             ...$this->createModelRoute(
                 endpoint: 'comm-template',
+                applySettings: ['applyDetailSettings'],
                 model: CommTemplateModel::class,
                 methods: ['GET', 'POST', 'PATCH'],
                 allowedFields: [
