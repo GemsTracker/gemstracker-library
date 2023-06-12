@@ -11,8 +11,7 @@
 
 namespace Gems\Model;
 
-use Gems\User\Group;
-use Gems\User\Mask\MaskRepository;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\User\User;
 
 /**
@@ -28,10 +27,9 @@ use Gems\User\User;
 class HiddenOrganizationModel extends MaskedModel
 {
     /**
-     *
-     * @var User
+     * @var CurrentUserRepository
      */
-    protected $currentUser;
+    protected $currentUserRepository;
 
     /**
      * Stores the fields that can be used for sorting or filtering in the
@@ -52,17 +50,11 @@ class HiddenOrganizationModel extends MaskedModel
                 $field = array_shift($keys);
 
                 $parameters[$field] = $id;
-
-                if ($field2 = array_shift($keys)) {
-                    $parameters[$field2] = $this->getCurrentOrganization();
-                    \MUtil\EchoOut\EchoOut::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
-                    \MUtil\EchoOut\EchoOut::r($parameters);
-                }
-
-                unset($parameters[\MUtil\Model::REQUEST_ID]);
             }
 
-            if (isset($parameters[\MUtil\Model::REQUEST_ID2]) &&
+            $currentUser = $this->currentUserRepository->getCurrentUser();
+
+            if (isset($parameters[\MUtil\Model::REQUEST_ID2]) && $currentUser instanceof User &&
                 (! array_key_exists($parameters[\MUtil\Model::REQUEST_ID2], $this->currentUser->getAllowedOrganizations()))) {
 
                 throw new \Gems\Exception(
@@ -78,24 +70,13 @@ class HiddenOrganizationModel extends MaskedModel
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return ($this->currentUser instanceof \Gems\User\User);
-    }
-
-    /**
      * The current organization id of the current user
      *
      * @return int
      */
     public function getCurrentOrganization()
     {
-        return $this->currentUser->getCurrentOrganizationId();
+        return $this->currentUserRepository->getCurrentOrganizationId();
     }
 
     /**

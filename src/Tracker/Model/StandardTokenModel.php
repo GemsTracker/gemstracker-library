@@ -16,6 +16,7 @@ use DateTimeInterface;
 
 use Gems\Date\Period;
 use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
+use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\OffOnElementsDependency;
 
@@ -50,12 +51,6 @@ use MUtil\Model\Dependency\OffOnElementsDependency;
  */
 class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
 {
-    /**
-     *
-     * @var \Gems\User\User
-     */
-    protected $currentUser;
-
     /**
      * @var boolean When true the default settings are date only values
      */
@@ -273,12 +268,17 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
     {
         parent::afterRegistry();
 
-        $this->addColumn(
-            $this->util->getTokenData()->getShowAnswersExpression($this->currentUser->getGroupId(true)),
-            'show_answers');
+        $currentUser = $this->currentUserRepository->getCurrentUser();
+
+        if ($currentUser instanceof User) {
+            $this->addColumn(
+                $this->util->getTokenData()->getShowAnswersExpression($currentUser->getGroupId(true)),
+                'show_answers'
+            );
+        }
         
         //If we are allowed to see who filled out a survey, modify the model accordingly
-        if ($this->currentUser->hasPrivilege('pr.respondent.who')) {
+        if ($currentUser instanceof User && $currentUser->hasPrivilege('pr.respondent.who')) {
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
             $this->addColumn(new \Zend_Db_Expr('CASE
                 WHEN gems__staff_2.gsf_id_user IS NULL THEN COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)
@@ -292,7 +292,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
         } else {
             $this->set('ggp_name', 'column_expression', new \Zend_Db_Expr('COALESCE(gems__track_fields.gtf_field_name, gems__groups.ggp_name)'));
         }
-        if ($this->currentUser->hasPrivilege('pr.respondent.result')) {
+        if ($currentUser instanceof User && $currentUser->hasPrivilege('pr.respondent.result')) {
             $this->addColumn('gto_result', 'calc_result', 'gto_result');
         } else {
             $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');

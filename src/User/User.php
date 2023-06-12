@@ -1124,39 +1124,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     }
 
     /**
-     * Array of field name => values for sending E-Mail
-     *
-     * @param string $locale
-     * @return array
-     */
-    public function getMailFields($locale = null)
-    {
-        $org         = $this->getBaseOrganization();
-        $orgResults  = $org->getMailFields();
-
-        // $result['bcc']            = $projResults['project_bcc'];
-        $result['dear']           = $this->getDearGreeting();
-        $result['email']          = $this->getEmailAddress();
-        $result['first_name']     = $this->_getVar('user_first_name');
-        $result['from']           = $this->getFrom();
-        $result['full_name']      = trim($this->getGenderHello($locale) . ' ' . $this->getFullName());
-        $result['greeting']       = $this->getGreeting($locale);
-        $result['last_name']      = ltrim($this->_getVar('user_surname_prefix') . ' ') . $this->_getVar('user_last_name');
-        $result['login_url']      = $orgResults['organization_login_url'];
-        $result['name']           = $this->getFullName();
-        $result['login_name']     = $this->getLoginName();
-
-        $result = $result + $orgResults;
-
-        $result['reset_ask']      = $orgResults['organization_login_url'] . '/index/resetpassword';
-        $result['reset_in_hours'] = $this->definition->getResetKeyDurationInHours();
-        $result['reply_to']       = $result['from'];
-        $result['to']             = $result['email'];
-
-        return $result;
-    }
-
-    /**
      * Get the HOTP count
      */
     public function getOtpCount()
@@ -1243,21 +1210,6 @@ class User extends \MUtil\Translate\TranslateableAbstract
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * Array of field name => values for sending a reset password E-Mail
-     *
-     * @param string $locale
-     * @return array
-     */
-    public function getResetPasswordMailFields($locale = null)
-    {
-        $result['reset_key'] = $this->getPasswordResetKey();
-        $result['reset_url'] = $this->getBaseOrganization()->getLoginUrl() . '/index/resetpassword/key/' . $result['reset_key'];
-        $result['reset_in_hours'] = $this->definition->getResetKeyDurationInHours();
-
-        return $result + $this->getMailFields($locale);
     }
 
     /**

@@ -8,12 +8,13 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Respondent extends \Gems\Tracker\Respondent
 {
-    public function __construct(Translated $translatedUtil, Translator $translator, EventDispatcherInterface $eventDispatcher)
+    public function __construct(Translated $translatedUtil, Translator $translator, EventDispatcherInterface $eventDispatcher, array $config)
     {
         parent::__construct('EXAMPLE001', 0, 0);
         $this->translatedUtil = $translatedUtil;
         $this->translate = $translator;
         $this->event = $eventDispatcher;
+        $this->config = $config;
         $this->initGenderTranslations();
         $this->refresh();
     }
