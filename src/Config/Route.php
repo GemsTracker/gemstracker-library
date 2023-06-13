@@ -648,6 +648,25 @@ class Route
                     \Gems\Model::SURVEY_ID => '\d+',
                 ],
             ),
+            ...$this->createSnippetRoutes(baseName: 'respondent.communication-log',
+                controllerClass: \Gems\Handlers\Respondent\RespondentCommLogHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/comm-log',
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show'
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
+                parameters: [
+                    \Gems\Model::LOG_ITEM_ID => '\d+',
+                ],
+            ),
             ...$this->createSnippetRoutes(baseName: 'respondent.activity-log',
                 controllerClass: \Gems\Handlers\Respondent\RespondentLogHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/activity-log',

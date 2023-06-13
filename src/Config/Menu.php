@@ -274,6 +274,18 @@ class Menu
                             ],
                         ],
                         [
+                            'name' => 'respondent.communication-log.index',
+                            'label' => $this->translator->trans('Communication log'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.communication-log.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'respondent.activity-log.index',
                             'label' => $this->translator->trans('Activity log'),
                             'type' => 'route-link-item',
