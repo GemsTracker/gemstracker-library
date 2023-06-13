@@ -224,7 +224,7 @@ class MenuSnippetHelper
     public function getParentRoutes(string $route, int $maxSteps = 1): array
     {
         $output  = [];
-        $current = $this->getParentRoute($route);
+        $current = $route;
         if ($current === null) {
             return $output;
         }
