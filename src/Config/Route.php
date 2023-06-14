@@ -4,6 +4,7 @@ namespace Gems\Config;
 
 use Gems\AuthNew\AuthenticationMiddleware;
 use Gems\AuthNew\AuthenticationWithoutTfaMiddleware;
+use Gems\AuthNew\MaybeAuthenticatedMiddleware;
 use Gems\AuthNew\NotAuthenticatedMiddleware;
 use Gems\Handlers\Auth\AuthIdleCheckHandler;
 use Gems\Handlers\Auth\ChangePasswordHandler;
@@ -19,7 +20,6 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
-use Gems\Handlers\Respondent\RespondentShowHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
@@ -112,7 +112,7 @@ class Route
                     FlashMessageMiddleware::class,
                     CsrfMiddleware::class,
                     LocaleMiddleware::class,
-                    //AuthenticationMiddleware::class,
+                    MaybeAuthenticatedMiddleware::class,
                     MaintenanceModeMiddleware::class,
                     AclMiddleware::class,
                     CurrentOrganizationMiddleware::class,
@@ -122,6 +122,7 @@ class Route
             ],
             [
                 ...$this->getAskRoutes(),
+                ...$this->getContactRoutes(),
             ]),
 
 
@@ -313,6 +314,23 @@ class Route
         ];
     }
 
+    public function getContactRoutes(): array
+    {
+        return [
+            ...$this->createSnippetRoutes(baseName: 'contact',
+                controllerClass: \Gems\Handlers\ContactHandler::class,
+                basePrivilege: false,
+                pages: [
+                    'index',
+                    'about',
+                    'gems',
+                    'bugs',
+                    'support',
+                ],
+            ),
+        ];
+    }
+
     public function getCalendarRoutes(): array
     {
         return [
@@ -321,6 +339,7 @@ class Route
                 controllerClass: CalendarHandler::class,
                 // pages: ['index', 'autofilter'],
                 parameters: [Model::APPOINTMENT_ID =>  '\d+',],
+                genericExport: true,
             ),
         ];
     }
@@ -343,6 +362,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.compliance',
                 controllerClass:                   \Gems\Handlers\Overview\ComplianceHandler::class,
@@ -351,6 +371,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.field-report',
                 controllerClass: \Gems\Handlers\Overview\FieldReportHandler::class,
@@ -359,6 +380,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.field-overview',
                 controllerClass:                   \Gems\Handlers\Overview\FieldOverviewHandler::class,
@@ -367,6 +389,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.overview-plan',
                 controllerClass:                   \Gems\Handlers\Overview\OverviewPlanHandler::class,
@@ -375,6 +398,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.token-plan',
                 controllerClass:                   \Gems\Handlers\Overview\TokenPlanHandler::class,
@@ -383,6 +407,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.respondent-plan',
                 controllerClass:                   \Gems\Handlers\Overview\RespondentPlanHandler::class,
@@ -391,6 +416,7 @@ class Route
                     'autofilter',
                     'export',
                 ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'overview.consent-plan',
                 controllerClass:                   \Gems\Handlers\Overview\ConsentPlanHandler::class,
@@ -400,6 +426,7 @@ class Route
                     'export',
                     'show',
                 ],
+                genericExport: true,
             ),
         ];
     }
@@ -450,12 +477,14 @@ class Route
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameterRoutes: [
                     ...$this->defaultParameterRoutes,
                     'change-consent',
                     'change-organization',
                     'export-archive',
+                    'undelete',
                 ],
                 parameters: [
                     'id1' => '[a-zA-Z0-9-_]+',
@@ -465,7 +494,9 @@ class Route
                     ...$this->defaultPostRoutes,
                     'change-consent',
                     'change-organization',
-                ]
+                    'undelete',
+                ],
+                genericExport: true,
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.episodes-of-care',
                 controllerClass:                   \Gems\Handlers\Respondent\CareEpisodeHandler::class,
@@ -516,6 +547,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -525,6 +557,7 @@ class Route
                     'show-track',
                     'edit-track',
                     'delete-track',
+                    'undelete-track',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
@@ -539,6 +572,7 @@ class Route
                 ],
                 postRoutes: [
                     'delete-track',
+                    'undelete-track',
                     'edit-track',
                 ]
             ),
@@ -548,6 +582,7 @@ class Route
                 pages: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -560,6 +595,7 @@ class Route
                 parameterRoutes: [
                     'answer',
                     'delete',
+                    'undelete',
                     'edit',
                     'show',
                     'answer-export',
@@ -577,7 +613,7 @@ class Route
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
                 ],
                 postRoutes:
-                    array_merge($this->defaultPostRoutes, ['correct']),
+                    array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
@@ -585,6 +621,9 @@ class Route
                 pages: [
                     'insert',
                     'view-survey',
+                ],
+                postRoutes: [
+                    'insert',
                 ],
                 parameterRoutes: [
                     'insert',
@@ -607,6 +646,25 @@ class Route
                 ],
                 parameters: [
                     \Gems\Model::SURVEY_ID => '\d+',
+                ],
+            ),
+            ...$this->createSnippetRoutes(baseName: 'respondent.communication-log',
+                controllerClass: \Gems\Handlers\Respondent\RespondentCommLogHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/comm-log',
+                parentParameters: [
+                    'id1',
+                    'id2',
+                ],
+                pages: [
+                    'index',
+                    'autofilter',
+                    'show'
+                ],
+                parameterRoutes: [
+                    'show',
+                ],
+                parameters: [
+                    \Gems\Model::LOG_ITEM_ID => '\d+',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.activity-log',
@@ -1045,6 +1103,9 @@ class Route
                 parameterRoutes: [
                     'export',
                 ],
+                postRoutes: [
+                    'export',
+                ],
             ),
 
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance',
@@ -1066,6 +1127,10 @@ class Route
                     'export',
                     'check-track',
                     'recalc-fields',
+                ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'export',
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'track-builder.track-maintenance.track-overview',

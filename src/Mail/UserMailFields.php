@@ -26,7 +26,7 @@ class UserMailFields extends OrganizationMailFields
             'from'           => $this->user->getFrom(),
             'full_name'      => trim($this->user->getGenderHello($language) . ' ' . $this->user->getFullName()),
             'greeting'       => $this->user->getGreeting($language),
-            'last_name'      => ltrim($this->user->getSurnamePrefix() . ' ') . $this->user->getLastName(),
+            'last_name'      => $this->user->getLastName(),
             'login_url'      => $organizationLoginUrl,
             'name'           => $this->user->getFullName(),
             'login_name'     => $this->user->getLoginName(),

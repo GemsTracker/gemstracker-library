@@ -12,9 +12,9 @@
 namespace Gems\Date;
 
 use DateInterval;
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Gems\Exception\Coding;
 
 /**
  *
@@ -34,7 +34,7 @@ class Period
      * @param int $period Can be negative
      * @return ?DateTimeInterface
      */
-    public static function applyPeriod($startDate, $type, $period): ?DateTimeInterface
+    public static function applyPeriod(DateTimeInterface|null $startDate, string $type, int $period): ?DateTimeInterface
     {
         if (! $startDate instanceof DateTimeInterface) {
             return null;
@@ -54,7 +54,7 @@ class Period
                     break;
 
                 case 'N':
-                    $periodString = 'PT' . abs($period) . 'M;';
+                    $periodString = 'PT' . abs($period) . 'M';
                     break;
                     
                 case 'H':
@@ -70,12 +70,12 @@ class Period
                     break;
 
                 default:
-                    throw new \Gems\Exception\Coding('Unknown period type; ' . $type);
+                    throw new Coding('Unknown period type: ' . $type);
 
             }
             $interval = new DateInterval($periodString);
             if ($period < 0) {
-                $interval->invert;
+                $interval->invert = 1;
             }
             return $date->add($interval);
         }
@@ -84,10 +84,10 @@ class Period
     }
 
     /**
-     * @param $type One letter
+     * @param string $type One letter
      * @return bool True when whole date
      */
-    public static function isDateType($type)
+    public static function isDateType(string $type): bool
     {
         switch (strtoupper($type)) {
             case 'S':

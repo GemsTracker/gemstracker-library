@@ -248,7 +248,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showParameters = [
         'addCurrentParent' => true,
-        'baseUrl'          => 'getItemUrlArray',
         'forOtherOrgs'     => 'getOtherOrgs',
         'onclick'          => 'getEditLink',
         // 'respondentData'   => 'getRespondentData',
@@ -266,7 +265,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected array $showSnippets = [
         'Generic\\ContentTitleSnippet',
-        'Respondent\\MultiOrganizationTab',
+        //'Respondent\\MultiOrganizationTab',
         //'Respondent\\RespondentDetailsSnippet',
     	//'Tracker\\AddTracksSnippet',
         'Vue\\PatientVueSnippet',
@@ -469,6 +468,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function deleteAction(): void
     {
         $this->deleteParameters['formTitle'] = $this->_('Delete or stop respondent');
+        $this->deleteParameters['requestUndelete'] = false;
 
         parent::deleteAction();
     }
@@ -976,6 +976,8 @@ class RespondentHandler extends RespondentChildHandlerAbstract
     public function undeleteAction(): void
     {
         if ($this->deleteSnippets) {
+            $this->deleteParameters['requestUndelete'] = true;
+
             $params = $this->_processParameters($this->deleteParameters);
 
             $this->addSnippets($this->deleteSnippets, $params);

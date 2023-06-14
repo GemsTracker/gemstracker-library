@@ -68,7 +68,7 @@ class ExportMultiSurveysAction extends \Gems\Actions\ExportSurveyActionAbstract
 
             if (!$batch->count()) {
                 $batch->minimalStepDurationMs = 2000;
-                $batch->finishUrl = $this->view->url(array('step' => 'download'));
+                $batch->downloadurl = $this->view->url(array('step' => 'download'));
 
                 $batch->setSessionVariable('files', array());
 

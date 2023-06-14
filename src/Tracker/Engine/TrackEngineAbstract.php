@@ -25,11 +25,11 @@ use Gems\Tracker\TrackEvent\TrackFieldUpdateEventInterface;
 use Gems\Translate\DbTranslateUtilTrait;
 use Gems\Util\Translated;
 use Mezzio\Session\SessionInterface;
-use MUtil\Model\Dependency\DependencyInterface;
 use MUtil\Model\ModelAbstract;
 use MUtil\Registry\TargetAbstract;
 use MUtil\Translate\TranslateableTrait;
 use Zalt\Loader\ProjectOverloader;
+use Zalt\Model\Dependency\DependencyInterface;
 
 /**
  * Utility class containing functions used by most track engines.
@@ -991,7 +991,8 @@ abstract class TrackEngineAbstract extends TargetAbstract implements TrackEngine
                         'label', $this->_('Organization specific round'),
                         'default', 0,
                         'multiOptions', $this->translatedUtil->getYesNo(),
-                        'elementClass', 'radio'
+                        'elementClass', 'radio',
+                        'class', 'autosubmit'
                         );
 
                 break;

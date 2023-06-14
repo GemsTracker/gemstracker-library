@@ -41,6 +41,7 @@ use Gems\Middleware\FlashMessageMiddleware;
 use Gems\Model\MetaModelLoader as GemsMetaModelLoader;
 use Gems\Model\MetaModelLoaderFactory;
 use Gems\Route\ModelSnippetActionRouteHelpers;
+use Gems\Session\PhpSessionPersistenceFactory;
 use Gems\SnippetsLoader\GemsSnippetResponder;
 use Gems\SnippetsLoader\GemsSnippetResponderFactory;
 use Gems\Tracker\TrackEvent\RespondentChangedEventInterface;
@@ -65,6 +66,7 @@ use Gems\Util\Lock\MaintenanceLock;
 use Gems\Util\Lock\Storage\FileLock;
 use Gems\Util\Lock\Storage\LockStorageAbstract;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Acl\Acl;
 use Mezzio\Csrf\CsrfGuardFactoryInterface;
@@ -74,7 +76,6 @@ use Mezzio\Csrf\FlashCsrfGuardFactory;
 use Mezzio\Session\Cache\CacheSessionPersistence;
 use Mezzio\Session\Cache\CacheSessionPersistenceFactory;
 use Mezzio\Session\Ext\PhpSessionPersistence;
-use Mezzio\Session\Ext\PhpSessionPersistenceFactory;
 use Mezzio\Session\SessionMiddleware;
 use Mezzio\Session\SessionMiddlewareFactory;
 use Mezzio\Session\SessionPersistenceInterface;
@@ -263,6 +264,15 @@ class ConfigProvider
         ];
     }
 
+    public function getDatabaseSettings(): array
+    {
+        return [
+            'gemsData' => [
+
+            ],
+        ];
+    }
+
     /**
      * Returns the container dependencies
      * @return mixed[]
@@ -292,9 +302,8 @@ class ConfigProvider
 
                 // Database
                 \PDO::class => PdoFactory::class,
-
-                // Laminas DB
                 Adapter::class => LaminasDbAdapterFactory::class,
+                'databaseAdapterGemsData' => LaminasDbAdapterFactory::class,
 
                 // Doctrine
                 Connection::class => DoctrineDbalFactory::class,

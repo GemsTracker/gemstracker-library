@@ -6,6 +6,7 @@ namespace Gems\Handlers\TrackBuilder;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model\SurveyCodeBookModel;
 use MUtil\Model\ModelAbstract;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Loader\ProjectOverloader;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
@@ -37,45 +38,13 @@ class SurveyCodeBookExportHandler extends ModelSnippetLegacyHandlerAbstract
         return $this->_('Codebook');
     }
 
-    public function getTopicTitle(): string
-    {
-        return $this->_('Codebook');
-    }
-
-    public function exportAction(): void
+    public function exportAction(): ResponseInterface
     {
         $this->surveyId = $this->request->getAttribute(\MUtil\Model::REQUEST_ID);
         if ($this->surveyId === null) {
             throw new \Exception('No Survey ID set');
         }
 
-        parent::exportAction();
-    }
-
-    public function getExportClasses()
-    {
-        return $this->loader->getExport()->getExportClasses();
-    }
-
-    /**
-     * Get the return url
-     *
-     * @return \MUtil\Html\HrefArrayAttribute Used as href for the \MUtil\Html\AElement
-     */
-    protected function getExportReturnLink() {
-        // At the moment we can only come from the survey-maintenance action, so we redirect there instead of the the index of this action.
-
-        $urlArray = \Zalt\Html\UrlArrayAttribute::rerouteUrl(
-            $this->getRequest(),
-            [
-                'controller' => 'survey-maintenance',
-                'action'     => 'show',
-                'id'         => $this->surveyId
-            ]);
-
-        $url = new \MUtil\Html\HrefArrayAttribute($urlArray);
-        $url->setRouteReset(true);
-
-        return $url;
+        return parent::exportAction();
     }
 }

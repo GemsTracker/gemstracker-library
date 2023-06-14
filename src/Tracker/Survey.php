@@ -423,7 +423,7 @@ class Survey extends CachedArrayTargetAbstract
         return Period::applyPeriod(
                 $from,
                 $this->_get('gsu_valid_for_unit'),
-                $this->_get('gsu_valid_for_length')
+                (int)$this->_get('gsu_valid_for_length')
                 );
     }
 

@@ -104,7 +104,7 @@ class FieldOverviewHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstr
      */
     public function createModel($detailed, $action): DataReaderInterface
     {
-        $model = new \Gems\Model\MaskedModel('resptrack' , 'gems__respondent2track');
+        $model = new \Gems\Model\MaskedModel('track_fields' , 'gems__respondent2track');
         $model->setMaskRepository($this->maskRepository);
 
         $model->addTable('gems__respondent2org', array(

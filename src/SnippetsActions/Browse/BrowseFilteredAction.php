@@ -42,4 +42,6 @@ class BrowseFilteredAction extends BrowseTableAction implements PostActionInterf
     public array $menuShowRoutes = ['show'];
 
     public MetaModellerInterface $model;
+
+    public string $textSearchField;
 }

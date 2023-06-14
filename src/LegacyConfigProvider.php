@@ -12,6 +12,7 @@ use Gems\Condition\ConditionLoader;
 use Gems\Db\ResultFetcher;
 use Gems\Encryption\ValueEncryptor;
 use Gems\Layout\LayoutRenderer;
+use Gems\Legacy\CurrentUserRepository;
 use Gems\Legacy\LegacyFactory;
 use Gems\Legacy\LegacyZendDatabaseFactory;
 use Gems\Locale\Locale;
@@ -88,6 +89,7 @@ class LegacyConfigProvider
                 'LegacyConditionLoader' => ConditionLoader::class,
                 'LegacyConfig' => 'config',
                 'LegacyConsentUtil' => ConsentUtil::class,
+                'LegacyCurrentUserRepository' => CurrentUserRepository::class,
                 'LegacyEmbedLoader' => EmbedLoader::class,
                 'LegacyEvent' => EventDispatcher::class,
                 'LegacyLoader' => \Gems\Loader::class,

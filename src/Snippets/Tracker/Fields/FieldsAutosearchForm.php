@@ -11,6 +11,8 @@
 
 namespace Gems\Snippets\Tracker\Fields;
 
+use Gems\Html;
+
 /**
  *
  *
@@ -37,7 +39,7 @@ class FieldsAutosearchForm extends \Gems\Snippets\AutosearchFormSnippet
 
         $elements[] = new \Zend_Form_Element_Hidden(\MUtil\Model::REQUEST_ID);
         $elements[] = $this->_createSelectElement('gtf_field_type', $this->model, $this->_('(all types)'));
-        $elements[] = \MUtil\Html::create('br');
+        $elements[] = Html::create('br');
 
         return $elements;
     }

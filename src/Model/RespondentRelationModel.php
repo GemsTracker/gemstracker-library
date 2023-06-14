@@ -15,6 +15,7 @@ namespace Gems\Model;
 use Gems\Communication\CommunicationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Util\Translated;
+use MUtil\Validate\SimpleEmail;
 
 /**
  *
@@ -74,7 +75,7 @@ class RespondentRelationModel extends JoinModel
         $this->set('grr_first_name', 'label', $this->_('First name'));
         $this->set('grr_last_name', 'label', $this->_('Last name'));
         $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', 'd-m-Y', 'elementClass', 'Date');
-        $this->set('grr_email', 'label', $this->_('E-Mail'));
+        $this->set('grr_email', 'label', $this->_('E-Mail'), 'validator', SimpleEmail::class);
         $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->communicationRepository->getRespondentMailCodes());
     }
 

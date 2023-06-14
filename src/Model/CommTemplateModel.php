@@ -9,6 +9,7 @@ use Gems\Repository\MailRepository;
 use Gems\Util\Translated;
 use MUtil\Model\TableModel;
 use MUtil\Translate\Translator;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
 class CommTemplateModel extends JoinModel
@@ -55,42 +56,18 @@ class CommTemplateModel extends JoinModel
         ]);
 
         Model::setChangeFieldsByPrefix($this, 'gct');
+    }
 
-        $subModel = new TableModel('gems__comm_template_translations');
-        $subModel->set('gctt_lang', [
-            'label' => $translator->_('Language'),
-            'apiName' => 'language',
-            'multiOptions' => array_combine($this->locale->getAvailableLanguages(), $this->locale->getAvailableLanguages()),
-            'elementClass' => 'Html',
-        ]);
-        $subModel->set('gctt_subject', [
-            'label' => $translator->_('Subject'),
-            'apiName' => 'subject',
-            'size' => 50,
-            'formatFunction' => [$this->translatedUtil, 'markEmpty'],
-        ]);
-        $subModel->set('gctt_body', [
-            'label' => $translator->_('Body'),
-            'apiName' => 'body',
-            'elementClass' => 'Textarea',
-            'cols' => 100,
-            'rows' => 10
-        ]);
+    public function applyBrowseSettings()
+    {
+
+    }
+
+    public function applyDetailSettings()
+    {
+        $subModel = $this->getSubModel();
 
         $subModel->addTransformer(new HtmlSanitizeTransformer(['gctt_subject', 'gctt_body']));
-
-        $requiredRows = [
-            [
-                'gctt_lang' => $this->locale->getDefaultLanguage(),
-            ],
-        ];
-        if (isset($config['email'], $config['email']['multiLanguage']) && $config['email']['multiLanguage'] === true) {
-            $languages = $this->locale->getAvailableLanguages();
-            $requiredRows = [];
-            foreach($languages as $code) {
-                $requiredRows[]['gctt_lang'] = $code;
-            }
-        }
 
         $oneToMany = new OneToManyTransformer();
         $oneToMany->addModel($subModel, [
@@ -106,8 +83,51 @@ class CommTemplateModel extends JoinModel
             'label' => $this->translator->_('Translations'),
         ]);
 
+        $requiredRows = [
+            [
+                'gctt_lang' => $this->locale->getDefaultLanguage(),
+            ],
+        ];
+
+        if (isset($config['email'], $config['email']['multiLanguage']) && $config['email']['multiLanguage'] === true) {
+            $languages = $this->locale->getAvailableLanguages();
+            $requiredRows = [];
+            foreach ($languages as $code) {
+                $requiredRows[]['gctt_lang'] = $code;
+            }
+        }
+
         $requiredRowsTransformer = new Model\Transform\SubmodelRequiredRows('translations');
         $requiredRowsTransformer->setRequiredRows($requiredRows);
         $this->addTransformer($requiredRowsTransformer);
+    }
+
+    protected function getSubModel(): DataReaderInterface
+    {
+        $subModel = new TableModel('gems__comm_template_translations');
+        $subModel->set('gctt_lang', [
+            'label' => $this->translator->_('Language'),
+            'apiName' => 'language',
+            'multiOptions' => array_combine(
+                $this->locale->getAvailableLanguages(),
+                $this->locale->getAvailableLanguages()
+            ),
+            'elementClass' => 'Html',
+        ]);
+        $subModel->set('gctt_subject', [
+            'label' => $this->translator->_('Subject'),
+            'apiName' => 'subject',
+            'size' => 50,
+            'formatFunction' => [$this->translatedUtil, 'markEmpty'],
+        ]);
+        $subModel->set('gctt_body', [
+            'label' => $this->translator->_('Body'),
+            'apiName' => 'body',
+            'elementClass' => 'Textarea',
+            'cols' => 100,
+            'rows' => 10
+        ]);
+
+        return $subModel;
     }
 }

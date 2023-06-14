@@ -14,6 +14,7 @@ namespace Gems\Handlers\Respondent;
 use Gems\Handlers\ModelSnippetLegacyHandlerAbstract;
 use Gems\Model;
 use Gems\Model\RespondentRelationModel;
+use Gems\Model\Transform\RespondentIdTransformer;
 use Gems\Repository\RespondentRepository;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Tracker\Respondent;
@@ -58,10 +59,9 @@ class RespondentRelationHandler extends ModelSnippetLegacyHandlerAbstract
         /* @var $relationModel RespondentRelationModel */
         $relationModel = $this->modelLoader->getRespondentRelationModel();
 
-        $respondentId = $respondent->getId();
-        $relationModel->set('grr_id_respondent', 'default', $respondentId);
         $relationModel->set('gr2o_patient_nr', 'default', $respondent->getPatientNumber());
         $relationModel->set('gr2o_id_organization', 'default', $respondent->getOrganizationId());
+        $relationModel->addTransformer(new RespondentIdTransformer($respondent->getId(), 'grr_id_respondent'));
 
         if ($detailed) {
             $relationModel->applyDetailSettings();

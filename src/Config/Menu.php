@@ -35,6 +35,7 @@ class Menu
             $this->getTrackBuilderMenu(),
             $this->getOptionMenu(),
             $this->getAskMenu(),
+            $this->getContactMenu(),
             /*[
                 'name' => 'auth.logout',
                 'label' => $this->translator->trans('Log out'),
@@ -67,16 +68,9 @@ class Menu
             'type' => 'route-link-item',
             'children' => [
                 [
-                    'name' => 'calendar.show',
-                    'label' => $this->translator->trans('Show'),
+                    'name' => 'calendar.export',
+                    'label' => $this->translator->trans('Export'),
                     'type' => 'route-link-item',
-                    'children' => [
-                        [
-                            'name' => 'calendar.edit',
-                            'label' => $this->translator->trans('Edit'),
-                            'type' => 'route-link-item',
-                        ],
-                    ],
                 ],
             ],
         ];
@@ -195,11 +189,6 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'respondent.tracks.delete-track',
-                                            'label' => $this->translator->trans('Delete'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
                                             'name' => 'respondent.tracks.check-track-answers',
                                             'label' => $this->translator->trans('Check answers'),
                                             'type' => 'route-link-item',
@@ -239,11 +228,6 @@ class Menu
                                         [
                                             'name' => 'respondent.tracks.answer',
                                             'label' => $this->translator->trans('Answers'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.delete',
-                                            'label' => $this->translator->trans('Delete'),
                                             'type' => 'route-link-item',
                                         ],
                                         [
@@ -290,6 +274,18 @@ class Menu
                             ],
                         ],
                         [
+                            'name' => 'respondent.communication-log.index',
+                            'label' => $this->translator->trans('Communication log'),
+                            'type' => 'route-link-item',
+                            'children' => [
+                                [
+                                    'name' => 'respondent.communication-log.show',
+                                    'label' => $this->translator->trans('Show'),
+                                    'type' => 'route-link-item',
+                                ],
+                            ],
+                        ],
+                        [
                             'name' => 'respondent.activity-log.index',
                             'label' => $this->translator->trans('Activity log'),
                             'type' => 'route-link-item',
@@ -330,13 +326,12 @@ class Menu
                                 ],
                             ],
                         ],
-
-                        [
-                            'name' => 'respondent.delete',
-                            'label' => $this->translator->trans('Delete'),
-                            'type' => 'route-link-item',
-                        ],
                     ],
+                ],
+                [
+                    'name' => 'respondent.export',
+                    'label' => $this->translator->trans('Export'),
+                    'type' => 'route-link-item',
                 ],
             ],
         ];
@@ -367,7 +362,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.compliance.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -379,7 +374,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.field-report.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -391,7 +386,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.field-overview.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -403,7 +398,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.overview-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -415,7 +410,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.token-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -427,7 +422,7 @@ class Menu
                     'type' => 'route-link-item',
                     'children' => [
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.respondent-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -444,7 +439,7 @@ class Menu
                             'type' => 'route-link-item',
                         ],
                         [
-                            'name' => 'overview.summary.export',
+                            'name' => 'overview.consent-plan.export',
                             'label' => $this->translator->trans('Export'),
                             'type' => 'route-link-item',
                         ],
@@ -1615,6 +1610,37 @@ class Menu
                 [
                     'name' => 'option.two-factor',
                     'label' => $this->translator->trans('Two factor setup'),
+                    'type' => 'route-link-item',
+                ],
+            ],
+        ];
+    }
+
+    public function getContactMenu(): array
+    {
+        return [
+            'name' => 'contact.index',
+            'label' => $this->translator->trans('Contact'),
+            'type' => 'route',
+            'children' => [
+                [
+                    'name' => 'contact.about',
+                    'label' => $this->translator->trans('About'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.gems',
+                    'label' => $this->translator->trans('Gems'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.bugs',
+                    'label' => $this->translator->trans('Bugs'),
+                    'type' => 'route-link-item',
+                ],
+                [
+                    'name' => 'contact.support',
+                    'label' => $this->translator->trans('Support'),
                     'type' => 'route-link-item',
                 ],
             ],

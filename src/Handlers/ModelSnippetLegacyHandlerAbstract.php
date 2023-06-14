@@ -19,6 +19,7 @@ use Gems\Snippets\ModelDetailTableSnippet;
 use Gems\Snippets\ModelFormSnippet;
 use Gems\Snippets\ModelItemYesNoDeleteSnippet;
 use Gems\Snippets\ModelTableSnippet;
+use Gems\SnippetsActions\Browse\BrowseFilteredAction;
 use Gems\SnippetsActions\Export\ExportAction;
 use Gems\Task\TaskRunnerBatch;
 use Mezzio\Csrf\CsrfGuardInterface;
@@ -28,6 +29,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\SnippetsActions\Browse\BrowseTableAction;
+use Zalt\SnippetsActions\ModelActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
 
 /**
@@ -110,16 +113,6 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         'formTitle'          => 'getEditTitle',
         'topicCallable'      => 'getTopicCallable',
         'csrfGuard'          => 'getCsrfGuard',
-    ];
-
-    /**
-     * \Gems only parameters used for the export action. Can be overruled
-     * by setting $this->editParameters
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    private array $_exportExtraParameters = [
-        'exportClasses' => 'getExportClasses',
     ];
 
     /**
@@ -218,28 +211,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
         ModelItemYesNoDeleteSnippet::class,
         ];
 
-    /**
-     * The snippets used for the export action
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected array $exportFormSnippets = ['Export\\ExportFormSnippet'];
-
-    protected array $exportBatchSnippets = ['Export\\ExportBatchSnippet'];
-
-    protected array $exportDownloadSnippets = ['Export\\ExportDownloadSnippet'];
-
-    /**
-     * The parameters used for the export actions.
-     *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
-     */
-    protected array $exportParameters = [];
+    protected string $exportActionClass = ExportAction::class;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -306,17 +278,12 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function autofilterAction(bool $resetMvc = true)
     {
-        //$htmlOrig = $this->html;
-        //$div      = $this->html->div(array('id' => 'autofilter_target', 'class' => 'table-container'));
-
         // Already done when this value is false
         if ($resetMvc) {
             $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
         }
 
-        // $this->html = $div;
         parent::autofilterAction($resetMvc);
-        // $this->html = $htmlOrig;
     }
 
     /**
@@ -364,60 +331,43 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
      */
     public function exportAction()
     {
-        if ($this->requestInfo->getParam('export_submit')) {
-            $step = 'batch';
-        } else {
-            $step = $this->requestInfo->getParam('step');
-        }
-        $post = $this->requestInfo->getRequestPostParams();
-
-        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
-
-        $model = $this->getExportModel();
-
-        if (isset($this->autofilterParameters['sortParamAsc'])) {
-            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
-        }
-        if (isset($this->autofilterParameters['sortParamDesc'])) {
-            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
-        }
-
-        $model->applyParameters($this->getSearchFilter(false), true);
-
-//        if (!empty($post)) {
-//            $this->accesslog->logChange($this->request, null, $post + $model->getFilter());
-//        }
-
-        // Add any defaults.
-        if (isset($this->autofilterParameters['extraFilter'])) {
-            $model->addFilter($this->autofilterParameters['extraFilter']);
-        }
-        if (isset($this->autofilterParameters['extraSort'])) {
-            $model->addSort($this->autofilterParameters['extraSort']);
-        }
+        $model  = $this->getExportModel();
         $action = $this->responder->getSnippetsAction(ExportAction::class);
+
+        if ($action instanceof ModelActionInterface) {
+            $action->model = $model;
+        }
+
+        if ($action instanceof BrowseTableAction) {
+            $params = $this->_processParameters($this->autofilterParameters + $this->_autofilterExtraParameters);
+            if (isset($params['sortParamAsc'])) {
+                $action->sortParamAsc = $params['sortParamAsc'];
+            }
+            if (isset($params['sortParamDesc'])) {
+                $action->sortParamDesc = $params['sortParamDesc'];
+            }
+
+            $action->dynamicSort = $this->getDynamicSortFor($action->sortParamDesc, $action->sortParamAsc);
+
+            if ($action instanceof BrowseFilteredAction) {
+                if (isset($params['textSearchField'])) {
+                    $action->textSearchField = $params['textSearchField'];
+                }
+                $action->searchFilter = $this->getSearchFilter(false);
+            }
+        }
 
         if ($action instanceof ExportAction) {
             $step = $this->requestInfo->getParam('step');
             if ($step) {
-                $action->step = $step;
+                if (ExportAction::STEP_RESET !== $step) {
+                    $action->step = $step;
+                }
             }
             $action->formTitle = \ucfirst(sprintf($this->_('%s export'), $this->getTopic(1)));
         }
 
-        $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-        $this->addSnippets(array_merge($this->exportFormSnippets, $this->exportBatchSnippets, $this->exportDownloadSnippets), $params);
-
-//        if ((!$step) || ($post && $step == 'form')) {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportFormSnippets, $params);
-//        } elseif ($step == 'batch') {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportBatchSnippets, $params);
-//        } elseif ($step == 'download') {
-//            $params = $this->_processParameters($this->exportParameters + $this->_exportExtraParameters);
-//            $this->addSnippets($this->exportDownloadSnippets, $params);
-//        }
+        return $this->responder->getSnippetsResponse($action->getSnippetClasses(), $action->getSnippetOptions());
     }
 
 
@@ -512,7 +462,7 @@ abstract class ModelSnippetLegacyHandlerAbstract extends \MUtil\Handler\ModelSni
     protected function getExportModel(): DataReaderInterface
     {
         $model = $this->getModel();
-        $noExportColumns = $model->getColNames('noExport');
+        $noExportColumns = $model->getMetaModel()->getColNames('noExport');
         foreach($noExportColumns as $colName) {
             $model->remove($colName, 'label');
         }

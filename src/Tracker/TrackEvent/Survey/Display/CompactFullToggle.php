@@ -12,8 +12,8 @@ namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\Token;
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
-use MUtil\Model\Bridge\TableBridge;
-use MUtil\Model\ModelAbstract;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  * Display only those questions that have an answer
@@ -36,12 +36,12 @@ class CompactFullToggle extends SurveyAnswerFilterAbstract
      *
      * @see \Gems\Tracker\Snippets\AnswerModelSnippetGeneric
      *
-     * @param \MUtil\Model\Bridge\TableBridge $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param TableBridge $bridge
+     * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames): array
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
     {
 
         $repeater = $model->loadRepeatable();

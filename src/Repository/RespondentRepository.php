@@ -20,7 +20,11 @@ use Zalt\Loader\ProjectOverloader;
 
 class RespondentRepository
 {
+    public const ORGANIZATION_SEPARATOR = '@';
+
     protected array $respondents = [];
+
+
 
     public function __construct(
         protected Adapter $db, 
@@ -150,7 +154,13 @@ class RespondentRepository
         return $this->resultFetcher->fetchOne($select);
     }
 
-    public function getOtherPatientNumbers(string $patientNr, int $organizationId, bool $combined=false): array
+    public function getOtherPatientNumbers(
+        string $patientNr,
+        int $organizationId,
+        bool $pairs = true,
+        bool $combined = false,
+        bool $withOrganizationName = false
+    ): array
     {
         $subSelect = $this->resultFetcher->getSelect('gems__respondent2org')
             ->columns(['gr2o_id_user'])
@@ -162,31 +172,40 @@ class RespondentRepository
         $currentOrganizationPredicate = new Predicate();
         $currentOrganizationPredicate->equalTo('gr2o_id_organization', $organizationId);
 
+        $columns = [
+            'organizationId' => 'gr2o_id_organization',
+            'patientNr' => 'gr2o_patient_nr',
+        ];
+
+        if ($combined) {
+            $columns['patientNr'] = new Expression('CONCAT(gr2o_patient_nr, "'.static::ORGANIZATION_SEPARATOR.'", gr2o_id_organization)');
+        }
+
+        $organizationColumns = [];
+        if ($withOrganizationName) {
+            $organizationColumns['organizationName'] = 'gor_name';
+        }
+
         $select = $this->resultFetcher->getSelect('gems__respondent2org')
-            ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', [])
+            ->join('gems__organizations', 'gor_id_organization = gr2o_id_organization', $organizationColumns)
             ->join('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', [])
-            ->columns(['gr2o_id_organization', 'gr2o_patient_nr'])
+            ->columns($columns)
             ->where([
                 'grc_success' => 1,
                 'gr2o_id_user' => $subSelect,
                 new PredicateSet([
                     $currentOrganizationPredicate,
-                    new Like('gor_accessible_by', '%'.(int)$organizationId.'%'),
+                    new Like('gor_accessible_by', '%'.$organizationId.'%'),
                 ], PredicateSet::COMBINED_BY_OR),
             ]);
 
         $patients = $this->resultFetcher->fetchAll($select);
 
-        if ($combined) {
-            $combinedPatients = [];
-            foreach($patients as $patient) {
-                $combinedPatients[] = $patient['gr2o_patient_nr'] . '@' . $patient['gr2o_id_organization'];
-            }
-            return $combinedPatients;
+        if ($pairs) {
+            return array_column($patients, 'patientNr', 'organizationId');
         }
 
-        $pairs = array_column($patients, 'gr2o_patient_nr', 'gr2o_id_organization');
-        return $pairs;
+        return $patients;
     }
 
     public function getRespondentIdFromRequest(ServerRequestInterface $request)

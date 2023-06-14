@@ -13,8 +13,8 @@ namespace Gems\Tracker\TrackEvent;
 
 use Gems\Tracker\Snippets\AnswerNameFilterInterface;
 use Gems\Tracker\Token;
-use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
+use Zalt\Model\Data\DataReaderInterface;
 
 /**
  * Abstract class for defining filters on answer displays
@@ -61,11 +61,11 @@ abstract class SurveyAnswerFilterAbstract
     /**
      * Returns only the headers
      *
-     * @param ModelAbstract $model
+     * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function getHeaders(ModelAbstract $model, array $currentNames): array
+    protected function getHeaders(DataReaderInterface $model, array $currentNames): array
     {
         $results    = array();
         foreach ($currentNames as $name) {
@@ -93,11 +93,11 @@ abstract class SurveyAnswerFilterAbstract
      * to their sub-questions position. (NOTE: As in LimeSurvey their are no question
      * headers with values we leave it at this for the moment.)
      *
-     * @param ModelAbstract $model
+     * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    protected function restoreHeaderPositions(ModelAbstract $model, array $currentNames): array
+    protected function restoreHeaderPositions(DataReaderInterface $model, array $currentNames): array
     {
         $lastParent = null;
         $results    = array();

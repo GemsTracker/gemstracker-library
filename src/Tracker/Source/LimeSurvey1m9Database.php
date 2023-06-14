@@ -1382,7 +1382,10 @@ class LimeSurvey1m9Database extends SourceAbstract
 
         // mgzdev.erasmusmc.nl/incant/index.php?sid=1&token=o7l9_b8z2
         $baseurl = $this->getBaseUrl();
-        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . 'index.php?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
+
+        $start = $this->config['survey']['limesurvey']['tokenUrlStart'] ?? 'index.php';
+
+        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . $start .'?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
     }
 
     /**

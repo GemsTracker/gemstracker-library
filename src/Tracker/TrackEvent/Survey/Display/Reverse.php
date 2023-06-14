@@ -12,8 +12,8 @@
 namespace Gems\Tracker\TrackEvent\Survey\Display;
 
 use Gems\Tracker\TrackEvent\SurveyAnswerFilterAbstract;
-use MUtil\Model\Bridge\TableBridge;
-use MUtil\Model\ModelAbstract;
+use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Snippets\ModelBridge\TableBridge;
 
 /**
  * Put the last question first
@@ -33,11 +33,11 @@ class Reverse extends SurveyAnswerFilterAbstract
      * @see AnswerModelSnippetGeneric
      *
      * @param TableBridge $bridge
-     * @param ModelAbstract $model
+     * @param DataReaderInterface $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(TableBridge $bridge, ModelAbstract $model, array $currentNames)
+    public function filterAnswers(TableBridge $bridge, DataReaderInterface $model, array $currentNames): array
     {
         return $this->restoreHeaderPositions($model, array_reverse($currentNames));
     }

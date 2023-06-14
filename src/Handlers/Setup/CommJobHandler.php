@@ -204,6 +204,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
         $session = $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
 
         $batch = new TaskRunnerBatch($jobId, $this->overloader, $session);
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         if ($this->cronLog instanceof LoggerInterface) {
             $batch->setMessageLogger($this->cronLog);
@@ -264,6 +265,7 @@ class CommJobHandler extends ModelSnippetLegacyHandlerAbstract
             $this->overloader,
             $this->request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE),
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle($this->_('Execute all message jobs'));

@@ -4,8 +4,10 @@ namespace Gems\Model;
 
 use Gems\Exception\RespondentAlreadyExists;
 use Gems\Repository\StaffRepository;
+use Gems\User\User;
 use Gems\Util\Localized;
 use Gems\Util\ReceptionCodeLibrary;
+use Zalt\Model\MetaModelInterface;
 
 /**
  *
@@ -172,10 +174,13 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         } else {
             // Add the correct filter
             if ($this->isMultiOrganization() && !isset($filter['gr2o_patient_nr'])) {
-                $allowed = $this->currentUser->getAllowedOrganizations();
 
                 // If we are not looking for a specific patient, we can look at all patients
-                $filter['gr2o_id_organization'] = array_keys($allowed);
+                $filter['gr2o_id_organization'] = $this->currentUserRepository->getCurrentOrganizationId();
+                $currentUser = $this->currentUserRepository->getCurrentUser();
+                if ($currentUser instanceof User) {
+                    $filter['gr2o_id_organization'] = array_keys($currentUser->getAllowedOrganizations());
+                }
             } else {
                 // Otherwise, we can only see in our current organization
                 $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
@@ -268,7 +273,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 
         $this->setOnSave('gr2o_opened', new \MUtil\Db\Expr\CurrentTimestamp());
         $this->setSaveOnChange('gr2o_opened');
-        $this->setOnSave('gr2o_opened_by', $this->currentUser->getUserId());
+        $this->setOnSave('gr2o_opened_by', $this->currentUserRepository->getCurrentUserId());
         $this->setSaveOnChange('gr2o_opened_by');
     }
 
@@ -340,15 +345,22 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         }
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
+            $currentUser = $this->currentUserRepository->getCurrentUser();
+
+            $respondentOrganizations = [];
+            if ($currentUser instanceof User) {
+                $respondentOrganizations= $currentUser->getRespondentOrganizations();
+            }
+
             $this->set('gr2o_id_organization',
                     'label', $this->_('Organization'),
                     'tab', $this->_('Identification'),
-                    'multiOptions', $this->currentUser->getRespondentOrganizations()
+                    'multiOptions', $respondentOrganizations,
                     );
 
-            $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
+            $this->set('gr2o_id_organization', 'default', $this->currentUserRepository->getCurrentUserId());
 
-            if (count($this->currentUser->getAllowedOrganizations()) == 1) {
+            if (!$currentUser instanceof User || count($currentUser->getAllowedOrganizations()) == 1) {
                 $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
             }
         }
@@ -479,7 +491,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                     );
         }
 
-        $this->set('gr2o_id_organization', 'default', $this->currentUser->getCurrentOrganizationId());
+        $this->set('gr2o_id_organization', 'default', $this->currentUserRepository->getCurrentOrganizationId());
         if (! $create) {
             $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
         }
@@ -579,9 +591,9 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             $this->setIfExists('gr2o_created',    'elementClass', 'None');
             $this->setIfExists('gr2o_created_by', 'elementClass', 'None');
         } else {
-            $this->setIfExists('gr2o_changed',    'elementClass', 'Exhibitor');
+            $this->setIfExists('gr2o_changed',    'elementClass', 'Exhibitor', 'description', null, 'type', MetaModelInterface::TYPE_STRING);
             $this->setIfExists('gr2o_changed_by', 'elementClass', 'Exhibitor');
-            $this->setIfExists('gr2o_created',    'elementClass', 'Exhibitor');
+            $this->setIfExists('gr2o_created',    'elementClass', 'Exhibitor', 'description', null, 'type', MetaModelInterface::TYPE_STRING);
             $this->setIfExists('gr2o_created_by', 'elementClass', 'Exhibitor');
         }
 
@@ -845,7 +857,11 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
      */
     public function isMultiOrganization()
     {
-        return true || $this->currentUser->hasPrivilege('pr.respondent.multiorg');
+        $currentUser = $this->currentUserRepository->getCurrentUser();
+        if ($currentUser instanceof $currentUser) {
+            return $currentUser->hasPrivilege('pr.respondent.multiorg');
+        }
+        return true;
     }
 
     /**
@@ -869,7 +885,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 $values['glrc_old_consent']     = $newValues[$oldConsent];
                 $values['glrc_new_consent']     = $newValues[$consent];
                 $values['glrc_created']         = new \MUtil\Db\Expr\CurrentTimestamp();
-                $values['glrc_created_by']      = $userId ?: $this->currentUser->getUserId();
+                $values['glrc_created_by']      = $userId ?: $this->currentUserRepository->getCurrentUserId();
 
                 $this->db->insert('gems__log_respondent_consents', $values);
                 $changes++;
@@ -958,7 +974,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 
                 $changed   = 0;
                 $currentTs = new \MUtil\Db\Expr\CurrentTimestamp();
-                $userId    = $this->currentUser->getUserId();
+                $userId    = $this->currentUserRepository->getCurrentUserId();
 
                 foreach ($tables as $tableName => $settings) {
                     list($respIdField, $orgIdField) = $settings;
@@ -1117,7 +1133,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
             // Tell the organization it has at least one user
             $org = $this->loader->getOrganization($result['gr2o_id_organization']);
             if ($org) {
-                $org->setHasRespondents($this->currentUser->getUserId());
+                $org->setHasRespondents($this->currentUserRepository->getCurrentUserId());
             }
 
             $this->handleRespondentChanged($result['gr2o_patient_nr'], $org, $result['grs_id_user']);
@@ -1159,7 +1175,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         if (!$newCode instanceof \Gems\Util\ReceptionCode) {
             $newCode = $this->util->getReceptionCode($newCode);
         }
-        $userId = $this->currentUser->getUserId();
+        $userId = $this->currentUserRepository->getCurrentUserId();
 
         // Perform actual save, but not for simple stop codes.
         if ($newCode->isForRespondents()) {

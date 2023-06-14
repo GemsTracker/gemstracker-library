@@ -10,6 +10,7 @@
 
 namespace Gems\Util;
 
+use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use MUtil\Model;
 use MUtil\Translate\TranslateableTrait;
@@ -41,14 +42,14 @@ class Translated
      *
      * @var string
      */
-    public $dateFormatString = 'd-M-Y';
+    public $dateFormatString = 'd-m-Y';
 
     /**
      * DateTime format string used by this project
      *
      * @var string
      */
-    public $dateTimeFormatString = 'Y-M-d H:i';
+    public $dateTimeFormatString = 'Y-m-d H:i';
 
     /**
      * Array representing an empty choice
@@ -98,41 +99,34 @@ class Translated
      */
     public function describeDateFromNow($dateTimeValue)
     {
-        $dateTime = Model::getDateTimeInterface($dateTimeValue);
+        $dateTime = CarbonImmutable::create(Model::getDateTimeInterface($dateTimeValue));
         if (! $dateTime) {
             return null;
         }
 
-        $diff = $dateTime->diff(new DateTimeImmutable());
-        $days = $diff->days;
-
-        switch ($days) {
-            case -2:
-                return $this->_('2 days ago');
-
-            case -1:
-                return $this->_('Yesterday');
-
-            case 0:
-                return $this->_('Today');
-
-            case 1:
-                return $this->_('Tomorrow');
-
-            case 2:
-                return $this->_('Over 2 days');
-
-            default:
-                if (($days > -14) && ($days < 14)) {
-                    if ($days > 0) {
-                        return sprintf($this->_('Over %d days'), $days);
-                    } else {
-                        return sprintf($this->_('%d days ago'), -$days);
-                    }
-                }
-
-                return $dateTime->format($this->dateFormatString);
+        if ($dateTime->isFuture() ) {
+            $dateTime = $dateTime->setTime(23,59,59);
         }
+
+        $this->translate->getLocale();
+        $dateTime = $dateTime->locale($this->translate->getLocale());
+
+        if ($dateTime->diffInDays() > 7 || $dateTime->diffInDays() < -7) {
+            return $dateTime->format($this->dateFormatString);
+        }
+
+        if ($dateTime->isToday()) {
+            return $this->_('Today');
+        }
+        if ($dateTime->isTomorrow()) {
+            return $this->_('Tomorrow');
+        }
+
+        if ($dateTime->isYesterday()) {
+            return $this->_('Yesterday');
+        }
+
+        return $dateTime->diffForHumans();
     }
 
     /**

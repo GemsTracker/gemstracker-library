@@ -16,11 +16,10 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Generic\CurrentButtonRowSnippet;
+use Gems\Snippets\Vue\CreateEditSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
-use Mezzio\Session\SessionInterface;
 use Mezzio\Session\SessionMiddleware;
 use MUtil\Ra;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -263,6 +262,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
         // 'model'        => 'getModel',
         'routeAction'  => 'show',
         'templateOnly' => 'isTemplateOnly',
+        'dataResource' => 'emailTokenModel',
+        'dataEndpoint' => 'respondent/email-token',
     ];
 
     /**
@@ -270,7 +271,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $emailSnippets = ['Mail\\TokenMailFormSnippet'];
+    protected array $emailSnippets = [CreateEditSnippet::class];
 
     /**
      * The parameters used for the export track action.
@@ -495,6 +496,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -524,6 +526,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -571,6 +574,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $token->getTokenId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -601,6 +605,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -639,6 +644,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -726,6 +732,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
         $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+        $this->deleteParameters['requestUndelete'] = false;
 
         parent::deleteAction();
     }
@@ -736,6 +743,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function deleteTrackAction()
     {
         if ($this->deleteTrackSnippets) {
+            $this->deleteParameters['requestUndelete'] = false;
+
             $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
 
             $this->addSnippets($this->deleteTrackSnippets, $params);
@@ -772,6 +781,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         if ($this->emailSnippets) {
             $params = $this->_processParameters($this->emailParameters + $this->defaultTokenParameters);
+            $params['submitLabel'] = $this->translate->_('Send email');
 
             $this->addSnippets($this->emailSnippets, $params);
         }
@@ -1215,6 +1225,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respondent->getId()
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -1250,6 +1261,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
             $where,
             $respTrackId
         );
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
 
         $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
         $batchRunner->setTitle(sprintf(
@@ -1301,6 +1313,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
     {
         $this->deleteParameters = $this->deleteParameters + $this->defaultTokenParameters;
         $this->deleteSnippets   = $this->getToken()->getDeleteSnippetNames();
+        $this->deleteParameters['requestUndelete'] = true;
 
         parent::deleteAction();
     }
@@ -1311,6 +1324,8 @@ class TrackHandler extends RespondentChildHandlerAbstract
     public function undeleteTrackAction()
     {
         if ($this->deleteTrackSnippets) {
+            $this->deleteParameters['requestUndelete'] = true;
+
             $params = $this->_processParameters($this->deleteTrackParameters + $this->deleteParameters);
 
             $this->addSnippets($this->deleteTrackSnippets, $params);

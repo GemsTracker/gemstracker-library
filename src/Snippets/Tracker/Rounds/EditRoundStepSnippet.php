@@ -33,6 +33,7 @@ use Zalt\SnippetsLoader\SnippetOptions;
  */
 class EditRoundStepSnippet extends EditRoundSnippetAbstract
 {
+    protected bool $selectedAutosubmit = true;
 
     public function __construct(
         SnippetOptions $snippetOptions,

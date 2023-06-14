@@ -28,6 +28,8 @@ class CreateEditSnippet extends SnippetAbstract
 
     protected $formType = 'horizontal';
 
+    protected ?string $submitLabel = null;
+
     protected string $tag = 'gems-form';
 
     protected $vueOptions = [];
@@ -67,6 +69,10 @@ class CreateEditSnippet extends SnippetAbstract
 
         if ($this->createData === false) {
             $attributes['edit'] = $this->requestInfo->getParam(Model::REQUEST_ID);
+        }
+
+        if ($this->submitLabel) {
+            $attributes['submit-label'] = $this->submitLabel;
         }
 
         $container = Html::div(['id' => $this->appId]);

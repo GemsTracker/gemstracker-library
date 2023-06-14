@@ -85,9 +85,16 @@ class CommTemplateHandler extends ModelSnippetLegacyHandlerAbstract
     public function createModel(bool $detailed, string $action): ModelAbstract
     {
         /**
-         * @var ModelAbstract
+         * @var CommTemplateModel
          */
-        return $this->overloader->create(CommTemplateModel::class);
+        $model = $this->overloader->create(CommTemplateModel::class);
+        if (!$detailed) {
+            $model->applyBrowseSettings();
+        } else {
+            $model->applyDetailSettings();
+        }
+
+        return $model;
     }
 
     public function getCreateTitle(): string

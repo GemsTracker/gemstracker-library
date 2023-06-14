@@ -5,8 +5,8 @@ namespace Gems\Batch;
 use Gems\FullHtmlResponse;
 use Gems\Layout\LayoutRenderer;
 use Gems\Layout\LayoutSettings;
+use Gems\Task\TaskRunnerBatch;
 use Laminas\Diactoros\Response\JsonResponse;
-use MUtil\Batch\BatchAbstract;
 use MUtil\Batch\Progress;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,7 +21,8 @@ class BatchRunner
 
     protected string $formTitle = '';
 
-    public function __construct(protected BatchAbstract $batch,
+    public function __construct(
+        protected TaskRunnerBatch $batch,
         TranslatorInterface $translate,
         protected LayoutRenderer $layoutRenderer,
         protected LayoutSettings $layoutSettings,
@@ -64,13 +65,11 @@ class BatchRunner
         }
 
         $this->layoutSettings->addVue();
+        $attributes = $this->batch->getJsAttributes();
+        $attributes['title'] = $this->getTitle();
         $data = [
             'tag' => 'batch-runner',
-            'attributes' => [
-                'title' => $this->getTitle(),
-                'finish-url' => $this->batch->finishUrl,
-                'restart-redirect-url' => $this->batch->restartRedirectUrl,
-            ],
+            'attributes' => $attributes,
         ];
 
         return new FullHtmlResponse($this->layoutRenderer->render($this->layoutSettings, $request, $data));

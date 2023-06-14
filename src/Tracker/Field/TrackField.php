@@ -3,9 +3,8 @@
 
 namespace Gems\Tracker\Field;
 
-
-use Gems\Tracker\Field\FieldAbstract;
 use Gems\Util\Translated;
+use DateTimeInterface;
 
 class TrackField extends FieldAbstract
 {
@@ -121,8 +120,8 @@ class TrackField extends FieldAbstract
             foreach($respondentTracks as $respondentTrack) {
                 $name = $respondentTrack->getTrackName();
                 $startDate = $respondentTrack->getStartDate();
-                if ($startDate) {
-                    $name .= ' (' . $startDate->toString('dd-MM-yyyy') . ')';
+                if ($startDate instanceof DateTimeInterface) {
+                    $name .= ' (' . $startDate->format('d-m-Y') . ')';
                 }
                 $respondentTrackPairs[$respondentTrack->getRespondentTrackId()] = $name;
             }

@@ -157,7 +157,7 @@ class RequestPasswordResetHandler implements RequestHandlerInterface
         if ($templateId) {
             [
                 'subject' => $subjectTemplate,
-                'gctt_body' => $bodyTemplate
+                'body' => $bodyTemplate
             ] = $this->communicationRepository->getCommunicationTexts($templateId, $user->getLocale());
         } else {
             $subjectTemplate = $this->translator->trans('Password reset requested');
