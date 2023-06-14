@@ -16,7 +16,7 @@ use Gems\Legacy\CurrentUserRepository;
 use Gems\Pdf;
 use Gems\Project\ProjectSettings;
 use Gems\Repository\RespondentRepository;
-use Gems\Snippets\Vue\CreateEditSnippet;
+use Gems\Snippets\Respondent\TokenEmailSnippet;
 use Gems\Tracker;
 use Gems\Tracker\Model\RespondentTrackModel;
 use Gems\User\Mask\MaskRepository;
@@ -271,7 +271,7 @@ class TrackHandler extends RespondentChildHandlerAbstract
      *
      * @var mixed String or array of snippets name
      */
-    protected array $emailSnippets = [CreateEditSnippet::class];
+    protected array $emailSnippets = [TokenEmailSnippet::class];
 
     /**
      * The parameters used for the export track action.
