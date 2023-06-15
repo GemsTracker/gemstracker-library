@@ -695,34 +695,4 @@ class InsertSurveySnippet extends ModelFormSnippetAbstract
         // Communicate with the user
         return $changed;
     }
-
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return self
-     */
-    protected function setAfterSaveRoute()
-    {
-        // Default is just go to the index
-//        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-//            if (1 == count($this->tokens)) {
-//                $token = reset($this->tokens);
-//                $this->afterSaveRouteUrl = [
-//                    $this->request->getControllerKey() => 'track',
-//                    $this->request->getActionKey()     => $this->routeAction,
-//                    \MUtil\Model::REQUEST_ID           => $token->getTokenId(),
-//                    ];
-//            } else {
-//                // For multiple surveys
-//                $this->afterSaveRouteUrl = [
-//                    $this->request->getControllerKey() => 'respondent',
-//                    $this->request->getActionKey()     => 'show',
-//                    \MUtil\Model::REQUEST_ID1          => $this->respondent->getPatientNumber(),
-//                    \MUtil\Model::REQUEST_ID2          => $this->respondent->getOrganizationId(),
-//                ];
-//            }
-//        }
-
-        return $this;
-    }
 }
