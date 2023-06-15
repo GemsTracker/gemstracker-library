@@ -40,8 +40,6 @@ class TokenEmailSnippet extends CreateEditSnippet
         $tokenId = $params[Model::REQUEST_ID];
         $token = $this->tracker->getToken($tokenId);
 
-
-
         if ($token->getSurvey()->isTakenByStaff()) {
             $message = $this->translator->_('This token is intended for Staff');
             return Html::div($message);
@@ -64,13 +62,23 @@ class TokenEmailSnippet extends CreateEditSnippet
 
         if ($token->getEmail() === null) {
             $message = $this->translator->_('Respondent does not have an E-mail address');
-            if ($token->hasRelation()) {
+            if ($token->hasRelation() && $token->getRelation()->getEmail() === null) {
                 $message = $this->translator->_('Respondent relation does not have an E-mail address');
             }
             return Html::div($message);
         }
 
-        if (!$token->canBeEmailed()) {
+        if ($token->hasRelation() && !$token->getRelation()->isMailable()) {
+            $message = $this->translator->_('Respondent relation cannot be contacted');
+            return Html::div($message);
+        }
+
+        if (!$token->getRespondent()->isMailable()) {
+            $message = $this->translator->_('Respondent relation cannot be contacted');
+            return Html::div($message);
+        }
+
+        if (!$token->isMailable()) {
             $message = $this->translator->_('This token cannot be E-mailed');
             return Html::div($message);
         }
