@@ -832,14 +832,14 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected function openedRespondent(): self
     {
-        $queryParams = $this->request->getQueryParams();
+        $routeParams = $this->requestInfo->getRequestMatchedParams();
         $orgId = null;
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = $queryParams[\MUtil\Model::REQUEST_ID2];
+        if (isset($routeParams[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = $routeParams[\MUtil\Model::REQUEST_ID2];
         }
         $patientNr = null;
-        if (isset($queryParams[\MUtil\Model::REQUEST_ID1])) {
-            $patientNr = $queryParams[\MUtil\Model::REQUEST_ID1];
+        if (isset($routeParams[\MUtil\Model::REQUEST_ID1])) {
+            $patientNr = $routeParams[\MUtil\Model::REQUEST_ID1];
         }
 
         if ($patientNr && $orgId) {
