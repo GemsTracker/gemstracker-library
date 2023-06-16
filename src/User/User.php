@@ -1458,7 +1458,7 @@ class User extends \MUtil\Translate\TranslateableAbstract
         }
         $role = $this->getRole($current);
 
-        return $this->acl->isAllowed($role, null, $privilege);
+        return $this->acl->isAllowed($role, $privilege);
     }
 
     /**

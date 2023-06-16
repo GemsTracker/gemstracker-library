@@ -295,9 +295,9 @@ class Respondent extends TargetAbstract
     /**
      * Get Email address of respondent
      *
-     * @return string
+     * @return string|null
      */
-    public function getEmailAddress(): string
+    public function getEmailAddress(): ?string
     {
         return $this->_gemsData['gr2o_email'];
     }
