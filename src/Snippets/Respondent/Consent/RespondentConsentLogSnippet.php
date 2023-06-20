@@ -114,7 +114,7 @@ class RespondentConsentLogSnippet extends ModelTableSnippetAbstract
         ]);
         $model->set('glrc_created_by', [
             'label' => $this->_('Changed by'),
-            'multiOptions', $respModel->get('gr2o_changed_by', 'multiOptions'),
+            'multiOptions' => $respModel->get('gr2o_changed_by', 'multiOptions'),
         ]);
 
         if ($this->respondent && $this->respondent->exists) {
