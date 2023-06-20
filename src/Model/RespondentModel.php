@@ -290,7 +290,9 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
 
         if ($this->has('gr2o_id_organization') && $this->isMultiOrganization()) {
             // Add for sorting
-            $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
+            if ($this->checkJoinExists('gr2o_id_organization', 'gor_id_organization')) {
+                $this->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
+            }
 
             /*$this->setIfExists('gor_name', 'label', $this->translate->_('Organization'));*/
 

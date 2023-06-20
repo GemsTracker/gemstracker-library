@@ -751,6 +751,7 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                     if (! isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
                         unset($filter['gr2t_id_track']);
                     }
+                    $model->applyBrowseSettings();
 
             }
         }
