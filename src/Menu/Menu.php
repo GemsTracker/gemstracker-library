@@ -24,6 +24,7 @@ class Menu extends MenuNode
             $object = match($item['type']) {
                 'route', 'route-link-item' => new RouteLinkItem($item['name'], $item['label']),
                 'container' => new ContainerLinkItem($item['name'], $item['label']),
+                'alias' => new AliasItem($item['name'], $item['alias']),
                 default => throw new \Exception('Invalid type: ' . $item['type']),
             };
 
@@ -56,6 +57,10 @@ class Menu extends MenuNode
         return $this->items[$name] ?? throw new MenuItemNotFoundException($name);
     }
 
+    /**
+     * Make the menu item for this route and its parent items active.
+     * If the menu item is an alias, we open the aliased path instead.
+     */
     public function openRouteResult(RouteResult $routeResult): void
     {
         $name = $routeResult->getMatchedRouteName();
@@ -65,6 +70,12 @@ class Menu extends MenuNode
         }
 
         $item = $this->items[$name];
+        if ($item instanceof AliasItem) {
+            $alias = $item->alias;
+            if (isset($this->items[$alias])) {
+                $item = $this->items[$alias];
+            }
+        }
         $item->openPath($routeResult->getMatchedParams());
     }
 
