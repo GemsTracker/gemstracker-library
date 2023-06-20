@@ -1634,6 +1634,16 @@ class Menu
                     'label' => $this->translator->trans('Unsubscribe'),
                     'type' => 'route-link-item',
                 ],
+                [
+                    'name' => 'participate.subscribe-thanks',
+                    'type' => 'alias',
+                    'alias' => 'participate.subscribe',
+                ],
+                [
+                    'name' => 'participate.unsubscribe-thanks',
+                    'type' => 'alias',
+                    'alias' => 'participate.unsubscribe',
+                ],
             ],
         ];
     }
