@@ -28,7 +28,9 @@ class ExportFormSnippet extends FormSnippetAbstract
 {
     use DataReaderGenericModelTrait;
     use MessageTrait;
-    use ModelSnippetTrait;
+    use ModelSnippetTrait {
+        ModelSnippetTrait::getSort as traitGetSort;
+    }
     use ModelTextFilterTrait;
 
     protected ExportInterface $currentExport;
@@ -107,6 +109,10 @@ class ExportFormSnippet extends FormSnippetAbstract
 
     public function getFilter(MetaModelInterface $metaModel) : array
     {
+        if ($this->exportAction->batch->hasSessionVariable('modelFilter')) {
+            return $this->exportAction->batch->getSessionVariable('modelFilter');
+        }
+
         if (false !== $this->searchFilter) {
             $filter = $this->searchFilter;
         } else {
@@ -117,7 +123,9 @@ class ExportFormSnippet extends FormSnippetAbstract
         // Sinc the arrays can contian numeric keys we use array_merge to include those from all filters
         $filter = array_merge($this->_fixedFilter, $this->extraFilter, $this->cleanUpFilter($filter, $metaModel));
 
-        return $this->processTextFilter($filter, $metaModel, $this->searchFilter);
+        $output = $this->processTextFilter($filter, $metaModel, $this->searchFilter);
+        $this->exportAction->batch->setSessionVariable('modelFilter', $output);
+        return $output;
     }
 
     /**
@@ -128,6 +136,17 @@ class ExportFormSnippet extends FormSnippetAbstract
         $container = Html::div(array('id' => 'export-form'));
         $container->append(parent::getHtmlOutput());
         return $container;
+    }
+
+    public function getSort(MetaModelInterface $metaModel): array
+    {
+        if ($this->exportAction->batch->hasSessionVariable('modelSort')) {
+            return $this->exportAction->batch->getSessionVariable('modelSort');
+        }
+
+        $output = $this->traitGetSort($metaModel);
+        $this->exportAction->batch->setSessionVariable('modelSort', $output);
+        return $output;
     }
 
     public function hasHtmlOutput(): bool
