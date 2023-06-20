@@ -72,6 +72,7 @@ class Route
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
+                ...$this->getParticipateRoutes(),
             ]),
         ];
     }
@@ -309,6 +310,28 @@ class Route
                 postRoutes: [
                     ...$this->defaultPostRoutes,
                     'lost',
+                ]
+            ),
+        ];
+    }
+
+    public function getParticipateRoutes(): array
+    {
+        return [
+            ...$this->createSnippetRoutes(baseName: 'participate',
+                controllerClass: \Gems\Handlers\ParticipateHandler::class,
+                basePrivilege: false,
+                pages: [
+                    'index',
+                    'subscribe',
+                    'subscribe-thanks',
+                    'unsubscribe',
+                    'unsubscribe-thanks',
+                ],
+                postRoutes: [
+                    ...$this->defaultPostRoutes,
+                    'subscribe',
+                    'unsubscribe',
                 ]
             ),
         ];

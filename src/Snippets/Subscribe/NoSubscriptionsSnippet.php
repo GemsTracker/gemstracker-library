@@ -11,7 +11,15 @@
 
 namespace Gems\Snippets\Subscribe;
 
+use Gems\Menu\RouteHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\Message\MessengerInterface;
+use Zalt\SnippetsLoader\SnippetOptions;
+use Zalt\Snippets\MessageableSnippetAbstract;
+
 /**
+ * Snippet that is shown when there are no organizations to subscribe to.
  *
  * @package    Gems
  * @subpackage Snippets\Subscribe
@@ -19,39 +27,44 @@ namespace Gems\Snippets\Subscribe;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:08:54
  */
-class NoSubscriptionsSnippet extends \MUtil\Snippets\SnippetAbstract
+class NoSubscriptionsSnippet extends MessageableSnippetAbstract
 {
     /**
-     *
-     * @var \Gems\Menu
+     * @var \Gems\Menu\RouteHelper
      */
-    protected $menu;
+    protected $routeHelper;
+
+    public function __construct(SnippetOptions $snippetOptions,
+                                RequestInfo $requestInfo,
+                                TranslatorInterface $translate,
+                                MessengerInterface $messenger,
+                                RouteHelper $routeHelper)
+    {
+        $this->routeHelper = $routeHelper;
+
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+    }
 
     /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view = null)
+    public function getHtmlOutput()
     {
         $this->addMessage($this->_('Subscription not possible'));
 
         $html = $this->getHtmlSequence();
+
         $html->h2($this->_('No public subscriptions available'));
-        $p = $html->pInfo($this->_('Unfortunately no public subscriptions are available for this project.'));
+        $html->pInfo($this->_('Unfortunately no public subscriptions are available for this project.'));
 
-        $menu = $this->menu->findAllowedController('contact');
-        if ($menu) {
-            $p->append(' ');
-            $p->append($this->_('Please use our contact page if you want to participate.'));
-
-            $html->append($menu->toActionLink());
+        if ($this->routeHelper->hasAccessToRoute('contact.index')) {
+            $html->pInfo($this->_('Please use our contact page if you want to participate.'));
+            $html->actionLink($this->routeHelper->getRouteUrl('contact.index'), $this->_('Contact'));
         }
-
-
 
         return $html;
     }

@@ -50,7 +50,7 @@ class EmailOnlyUnsubscribe extends \MUtil\Translate\TranslateableAbstract implem
                     $this->_('Unsubscribe from surveys for %s'),
                     $this->currentUser->getCurrentOrganization()->getName()
                     ),
-            'routeAction' => 'unsubscribe-thanks',
+            'routeAction' => 'participate.unsubscribe-thanks',
             'saveLabel' => $this->_('Unsubscribe'),
         ];
     }
