@@ -180,12 +180,12 @@ class Menu
                                     'type' => 'route-link-item',
                                 ],
                                 [
-                                    'name' => 'respondent.tracks.show-track',
+                                    'name' => 'respondent.tracks.show',
                                     'label' => $this->translator->trans('Show track'),
                                     'type' => 'route-link-item',
                                     'children' => [
                                         [
-                                            'name' => 'respondent.tracks.edit-track',
+                                            'name' => 'respondent.tracks.edit',
                                             'label' => $this->translator->trans('Edit'),
                                             'type' => 'route-link-item',
                                         ],
@@ -205,46 +205,46 @@ class Menu
                                             'type' => 'route-link-item',
                                         ],
                                         [
-                                            'name' => 'respondent.tracks.export-track',
+                                            'name' => 'respondent.tracks.export',
                                             'label' => $this->translator->trans('Export track'),
                                             'type' => 'route-link-item',
                                         ],
-                                    ],
-                                ],
-                                [
-                                    'name' => 'respondent.tracks.show',
-                                    'label' => $this->translator->trans('Show'),
-                                    'type' => 'route-link-item',
-                                    'children' => [
                                         [
-                                            'name' => 'respondent.tracks.edit',
-                                            'label' => $this->translator->trans('Edit'),
+                                            'name' => 'respondent.tracks.token.show',
+                                            'label' => $this->translator->trans('Token'),
                                             'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.correct',
-                                            'label' => $this->translator->trans('Correct answers'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.answer',
-                                            'label' => $this->translator->trans('Answers'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.questions',
-                                            'label' => $this->translator->trans('Preview'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.check-token',
-                                            'label' => $this->translator->trans('Token check'),
-                                            'type' => 'route-link-item',
-                                        ],
-                                        [
-                                            'name' => 'respondent.tracks.check-token-answers',
-                                            'label' => $this->translator->trans('(Re)check answers'),
-                                            'type' => 'route-link-item',
+                                            'children' => [
+                                                [
+                                                    'name' => 'respondent.tracks.token.edit',
+                                                    'label' => $this->translator->trans('Edit'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.correct',
+                                                    'label' => $this->translator->trans('Correct answers'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.answer',
+                                                    'label' => $this->translator->trans('Answers'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.questions',
+                                                    'label' => $this->translator->trans('Preview'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.check-token',
+                                                    'label' => $this->translator->trans('Token check'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                                [
+                                                    'name' => 'respondent.tracks.token.check-token-answers',
+                                                    'label' => $this->translator->trans('(Re)check answers'),
+                                                    'type' => 'route-link-item',
+                                                ],
+                                            ],
                                         ],
                                     ],
                                 ],
