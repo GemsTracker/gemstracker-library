@@ -19,6 +19,7 @@ use Gems\Encryption\ValueEncryptor;
 use Gems\Locale\Locale;
 use Gems\Repository\OrganizationRepository;
 use Gems\Util\Translated;
+use Laminas\Permissions\Acl\Exception\InvalidArgumentException;
 use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Model;
 
@@ -1458,7 +1459,11 @@ class User extends \MUtil\Translate\TranslateableAbstract
         }
         $role = $this->getRole($current);
 
-        return $this->acl->isAllowed($role, $privilege);
+        try {
+            return $this->acl->isAllowed($role, $privilege);
+        } catch(InvalidArgumentException $e) {
+            return false;
+        }
     }
 
     /**
