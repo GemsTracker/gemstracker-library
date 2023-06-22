@@ -71,24 +71,25 @@ class MaskHandler extends BrowseChangeHandler
         ]);
         $metaModel->set('gm_id_order', [
             'label' => $this->_('Order'),
+            'description' => $this->_('The first mask (the one with the lowest Order) that covers the current user is used.'),
         ]);
         $metaModel->set('gm_groups', [
             'label' => $this->_('Groups'),
-            'description' => $this->_('No groups is the same as all groups.'),
+            'description' => $this->_('No group is the same as all groups.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->accessRepository->getGroups(false),
             'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
         $metaModel->set('gm_organizations', [
             'label' => $this->_('Organization'),
-            'description' => $this->_('No organizations is the same as all groups.'),
+            'description' => $this->_('No organization is the same as all organizations.'),
             'elementClass' => 'MultiCheckbox',
             'multiOptions' => $this->organizationRepository->getOrganizations(),
             'type' => new ConcatenatedType(':', $this->_(', '), true),
         ]);
         $metaModel->set('gm_mask_sticky', [
             'label' => $this->_('Enforce'),
-            'description' => $this->_('Enforce mask when switching group or user!'),
+            'description' => $this->_('Enforced masks are compared using both users base organization and group as well as their current organization and group.'),
             'type' => new YesNoType($this->translatedUtil->getYesNo()),
         ]);
         $metaModel->set('gm_mask_active', [
