@@ -44,16 +44,12 @@ class MailServerModel extends JoinModel
                 CommunicationRepository::MAIL_TLS => $this->_('TLS')
             ]
         );
-        $this->set(
-            'gms_port',
-            'label',
-            $this->_('Port'),
-            'required',
-            true,
-            'description',
-            $this->_('Normal values: 25 for TLS and no encryption, 465 for SSL'),
-            'validator',
-            'Digits'
+        $this->set('gms_port', [
+                'label' => $this->_('Port'),
+                'required' => true,
+                'description' => $this->_('Normal values: 25 for TLS and no encryption, 465 for SSL'),
+                'validator' => 'Digits',
+                ]
         );
         $this->set('gms_user', 'label', $this->_('User ID'), 'size', 20);
 

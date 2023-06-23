@@ -167,10 +167,10 @@ class LocationHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
 
         $model->setIfExists('glo_url',         'label', $this->_('Location url'),
                 'description', $this->_('Complete url for location: http://www.domain.etc'),
-                'validator', 'Url');
+                'validator', 'Uri');
         $model->setIfExists('glo_url_route',   'label', $this->_('Location route url'),
                 'description', $this->_('Complete url for route to location: http://www.domain.etc'),
-                'validator', 'Url');
+                'validator', 'Uri');
 
 
         $model->setIfExists('glo_address_1',   'label', $this->_('Street'));
