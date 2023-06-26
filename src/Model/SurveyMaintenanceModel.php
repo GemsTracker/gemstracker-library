@@ -24,7 +24,7 @@ use Gems\Util\Localized;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
 use MUtil\Model\Type\ConcatenatedRow;
-use MUtil\Validate\RequireOtherField;
+use MUtil\Validator\RequireOtherField;
 use Symfony\Component\Intl\Languages;
 use Symfony\Component\Intl\Locales;
 use Zalt\Html\Html;
@@ -420,7 +420,7 @@ class SurveyMaintenanceModel extends JoinModel
                         'extension', 'pdf',
                         'filename', $surveyId,
                         'required', false,
-                        'validators[pdf]', new \MUtil\Validate\Pdf()
+                        'validators[pdf]', 'Pdf'
                         );
 
         $this->modelLoader->addDatabaseTranslationEditFields($this);

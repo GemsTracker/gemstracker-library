@@ -88,10 +88,10 @@ class ChangePasswordHandler implements RequestHandlerInterface
             return new RedirectResponse($request->getUri());
         }
 
-        $repeatConfirmValidator = new \MUtil\Validate\IsConfirmed('new_password', $this->translator->trans('New password'));
+        $repeatConfirmValidator = new \MUtil\Validator\IsConfirmed('new_password', $this->translator->trans('New password'));
         $repeatConfirmValidator->setMessage(
             $this->translator->trans('Must be the same as %fieldDescription%.'),
-            \MUtil\Validate\IsConfirmed::NOT_SAME
+            \MUtil\Validator\IsConfirmed::NOT_SAME
         );
         if (!$repeatConfirmValidator->isValid($input['repeat_password'] ?? null, $input)) {
             $this->validationMessenger->addValidationErrors('repeat_password', $repeatConfirmValidator->getMessages());

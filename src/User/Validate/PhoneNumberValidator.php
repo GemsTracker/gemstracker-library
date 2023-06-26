@@ -2,7 +2,7 @@
 
 namespace Gems\User\Validate;
 
-use Gems\Validate\AbstractTranslatingValidator;
+use Gems\Validator\AbstractTranslatingValidator;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 

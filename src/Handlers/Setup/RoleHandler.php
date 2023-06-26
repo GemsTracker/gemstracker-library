@@ -21,6 +21,7 @@ use Laminas\Validator\Regex;
 use Mezzio\Helper\UrlHelper;
 use MUtil\Model\ModelAbstract;
 use MUtil\Model\NestedArrayModel;
+use MUtil\Validator\IsNot;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Message\MessageStatus;
 use Zalt\Message\StatusMessengerInterface;
@@ -160,7 +161,7 @@ class RoleHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
         if ($detailed) {
             $model->set('grl_name', [
                 'validators[unique]' => $model->createUniqueValidator('grl_name'),
-                'validators[nomaster]' => new \MUtil\Validate\IsNot(
+                'validators[nomaster]' => new IsNot(
                     'master',
                     $this->_('The name "master" is reserved')
                 ),

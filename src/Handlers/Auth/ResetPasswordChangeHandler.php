@@ -14,7 +14,7 @@ use Gems\User\Validate\NewPasswordValidator;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Helper\UrlHelper;
-use MUtil\Validate\IsConfirmed;
+use MUtil\Validator\IsConfirmed;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

@@ -9,7 +9,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Validate;
+namespace Gems\Validator;
 
 /**
  *

@@ -137,6 +137,7 @@ class AgendaActivityHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbst
         $model->set('gaa_name',                    'label', $this->_('Activity'),
                 'description', $this->_('An activity is a high level description about an appointment:
 e.g. consult, check-up, diet, operation, physiotherapy or other.'),
+                'minlength', 3,
                 'required', true
                 );
 

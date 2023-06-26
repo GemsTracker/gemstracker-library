@@ -12,9 +12,21 @@
 namespace Gems\Tracker\Snippets;
 
 use Gems\Cache\HelperAdapter;
+use Gems\Model\MetaModelLoader;
+use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Util\Translated;
+use Mezzio\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Zalt\Base\RequestInfo;
+use Zalt\File\File;
+use Zalt\Html\HrefArrayAttribute;
+use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
+use Zalt\Model\Ra\SessionModel;
+use Zalt\Model\Sql\SqlTableModel;
+use Zalt\Snippets\Zend\ZendFormSnippetTrait;
+use Zalt\SnippetsLoader\SnippetOptions;
 
 /**
  *
@@ -27,6 +39,8 @@ use Zalt\Model\Data\DataReaderInterface;
  */
 class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstract
 {
+    use ZendFormSnippetTrait;
+
     /**
      *
      * @var \Gems\Task\TaskRunnerBatch
@@ -67,26 +81,20 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      *
      * @var int
      */
-    protected $downloadWaitSeconds = 1;
+    protected int $downloadWaitSeconds = 1;
 
     /**
      *
-     * @var \MUtil\Model\ModelAbstract
+     * @var SessionModel
      */
-    protected $exportModel;
-
-    /**
-     *
-     * @var \Gems\Loader
-     */
-    protected $loader;
+    protected SessionModel $exportModel;
 
     /**
      * The name of the action to forward to after form completion
      *
      * @var string
      */
-    protected $routeAction = 'show';
+    protected string $routeAction = 'show';
 
     /**
      * Variable to either keep or throw away the request data
@@ -94,30 +102,32 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      *
      * @var boolean True then the route is reset
      */
-    public $resetRoute = true;
+    public bool $resetRoute = true;
 
     /**
      *
      * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
-    protected $trackEngine;
+    protected TrackEngineInterface $trackEngine;
 
-    /**
-     * @var Translated
-     */
-    protected $translatedUtil;
-
-    /**
-     *
-     * @var \Zend_View
-     */
-    protected $view;
+    public function __construct(
+        SnippetOptions $snippetOptions,
+        RequestInfo $requestInfo,
+        TranslatorInterface $translate,
+        MessengerInterface $messenger,
+        protected MetaModelLoader $metaModelLoader,
+        protected SessionInterface $session,
+        protected Translated $translatedUtil,
+    )
+    {
+        parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+    }
 
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      * @param int $step The current step
      */
     protected function addStepElementsFor(FormBridgeInterface $bridge, DataReaderInterface $model, $step)
@@ -147,8 +157,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      */
     protected function addStepExportCodes(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
@@ -163,7 +173,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $name  = 'survey__' . $sid;
 
             $surveyCodes[$name] = $name;
-            $model->set($name, 'validator', array('ValidateSurveyExportCode', true, array($sid, $this->db)));
+            $model->getMetaModel()->set($name, 'validator', array('ValidateSurveyExportCode', true, array($sid, $this->db)));
         }
         $this->addItems($bridge, $surveyCodes);
     }
@@ -171,8 +181,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      */
     protected function addStepExportSettings(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
@@ -184,8 +194,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      */
     protected function addStepGenerateExportFile(FormBridgeInterface $bridge, DataReaderInterface $model)
     {
@@ -204,7 +214,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        // \MUtil\Registry\Source::$verbose = true;
         if ($batch->run($this->requestInfo)) {
             exit;
         }
@@ -216,7 +225,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             $batch->autoStart   = false;
 
             // Keep the filename after $batch->getMessages(true) cleared the previous
-            $downloadName  = \MUtil\File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+            $downloadName  = File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
             $localFilename = $batch->getSessionVariable('filename');
 
             $this->addMessage($batch->getMessages(true));
@@ -247,19 +256,19 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                         );
                 $p->append(' ');
 
-                $href = new \MUtil\Html\HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
+                $href = new HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
                 $p->a(
                         $href,
                         $downloadName,
                         array('type' => 'application/download')
                         );
 
-                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render($this->view));
-                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
+//                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render());
+//                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
             }
 
         } else {
-            $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+            $element->setValue($batch->getPanel($batch->getProgressPercentage() . '%'));
 
         }
         $form->activateJQuery();
@@ -285,8 +294,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             }
 
             if ($saves) {
-                $sModel = new \MUtil\Model\TableModel('gems__surveys');
-                \Gems\Model::setChangeFieldsByPrefix($sModel, 'gus', $this->currentUser->getUserId());
+                $sModel = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__surveys');
+                $this->metaModelLoader->setChangeFields($sModel, 'gus');
                 $sModel->saveAll($saves);
 
                 $count = $sModel->getChanged();
@@ -337,14 +346,15 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Creates the model
      *
-     * @return \MUtil\Model\ModelAbstract
+     * @return \Zalt\Model\Data\DataReaderInterface
      */
     protected function createModel(): DataReaderInterface
     {
-        if (! $this->exportModel instanceof \MUtil\Model\ModelAbstract) {
+        if (! isset($this->exportModel)) {
             $yesNo = $this->translatedUtil->getYesNo();
 
-            $model = new \MUtil\Model\SessionModel('export_for_' . $this->requestInfo->getCurrentController());
+            $dataModel = $this->metaModelLoader->createModel(SessionModel::class, 'export_for_' . $this->requestInfo->getCurrentController(), $this->session);
+            $model = $dataModel->getMetaModel();
 
             $model->set('orgs', 'label', $this->_('Organization export'),
                     'default', 1,
@@ -407,7 +417,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                         );
             }
 
-            $this->exportModel = $model;
+            $this->exportModel = $dataModel;
         }
 
         return $this->exportModel;
@@ -416,11 +426,11 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Display a header
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(\MUtil\Model\Bridge\FormBridgeInterface $bridge, $header, $tagName = 'h2')
+    protected function displayHeader(FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
         static $count = 0;
 
@@ -434,8 +444,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     /**
      * Performs actual download
      *
-     * @param \MUtil\Model\Bridge\FormBridgeInterface $bridge
-     * @param \MUtil\Model\ModelAbstract $model
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
      */
     protected function downloadExportFile()
     {
@@ -473,7 +483,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         }
 
         if (! $this->_batch->isLoaded()) {
-            $filename = \MUtil\File::createTemporaryIn($this->config['rootDir'] . '/var/tmp/export/track');
+            $filename = File::createTemporaryIn($this->config['rootDir'] . '/var/tmp/export/track');
             $trackId  = $this->trackEngine->getTrackId();
             $this->_batch->setSessionVariable('filename', $filename);
 
@@ -486,7 +496,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                     );
 
             if (isset($this->formData['fields']) && is_array($this->formData['fields'])) {
-                // \MUtil\EchoOut\EchoOut::track($this->formData['fields']);
                 foreach ($this->formData['fields'] as $fieldId) {
                     $this->_batch->addTask(
                             'Tracker\\Export\\TrackFieldExportTask',
@@ -560,7 +569,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 $this->formData = $model->loadNew();
             }
         }
-        // \MUtil\EchoOut\EchoOut::track($this->formData);
         return $this->formData;
     }
 

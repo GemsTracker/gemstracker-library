@@ -191,7 +191,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'elementClass' => 'Textarea',
             'itemDisplay' => [$this, 'ipWrap'],
             'rows' => 4,
-            'validator' => new \Gems\Validate\IPRanges(),
+            'validator' => new \Gems\Validator\IPRanges(),
         ]);
         $model->setIfExists('ggp_no_2factor_ip_ranges', [
             'label' => $this->_('Two factor Optional IP Ranges'),
@@ -200,7 +200,7 @@ class GroupHandler extends \Gems\Handlers\ModelSnippetLegacyHandlerAbstract
             'elementClass' => 'Textarea',
             'itemDisplay' => [$this, 'ipWrap'],
             'rows' => 4,
-            'validator' => new \Gems\Validate\IPRanges(),
+            'validator' => new \Gems\Validator\IPRanges(),
         ]);
 
         $model->setIfExists('ggp_2factor_set', [

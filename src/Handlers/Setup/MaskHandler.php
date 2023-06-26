@@ -68,6 +68,7 @@ class MaskHandler extends BrowseChangeHandler
         $metaModel->set('gm_description', [
             'label' => $this->_('Description'),
             'required' => true,
+            'validators[unique]' => 'ModelUniqueValidator'
         ]);
         $metaModel->set('gm_id_order', [
             'label' => $this->_('Order'),
