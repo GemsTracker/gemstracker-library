@@ -167,5 +167,10 @@
     ],
     "suggest": {
         "phpoffice/phpword": "Add v0.16.* to allow export to Word"
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ]
     }
 }
