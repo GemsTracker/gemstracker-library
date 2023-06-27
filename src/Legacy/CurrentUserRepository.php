@@ -73,11 +73,22 @@ class CurrentUserRepository
 
     protected function getUserLoader(): UserLoader
     {
-        if (!$this->userLoader instanceof \Gems\User\UserLoader) {
+        if (!isset($this->userLoader) || !$this->userLoader instanceof \Gems\User\UserLoader) {
             $this->userLoader = $this->loader->create('User\\UserLoader', $this->loader, ['User']);
         }
 
         return $this->userLoader;
+    }
+
+    /**
+     * Returns the organization that is currently used by this user.
+     *
+     * @return \Gems\User\Organization
+     */
+    public function getCurrentOrganization()
+    {
+        $userLoader = $this->getUserLoader();
+        return $userLoader->getOrganization($this->getCurrentOrganizationId());
     }
 
     public function setCurrentUser(User $user): void
