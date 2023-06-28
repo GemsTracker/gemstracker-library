@@ -280,7 +280,7 @@ class TokenRepository
      */
     public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.answer')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.answer')) {
             //return null;
         }
 
@@ -342,10 +342,6 @@ class TokenRepository
      */
     public function getTokenAskButtonForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $forceButton = false, bool $keepCaps = false): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.ask.forward')) {
-            //return null;
-        }
-
         $url = $helper->getLateRouteUrl('ask.forward', [
             'id' => $bridge->getLate('gto_id_token'),
         ], $bridge);
@@ -515,7 +511,7 @@ class TokenRepository
      */
     public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): ?AElement
     {
-        if (! $this->currentUser->hasPrivilege('respondent.track.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
             //return null;
         }
 
@@ -590,7 +586,7 @@ class TokenRepository
      */
     public function getTokenStatusLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.track.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
             return $this->getTokenStatusShowForBridge($bridge, $helper);
         }
 
@@ -611,11 +607,11 @@ class TokenRepository
             Html::create('span'));
 
         $link->append($this->getStatusIcon($bridge->getLate('token_status')));
-        $link->title = Late::method($this, 'getTokenStatusTitle',
+        $link->setAttrib('title', Late::method($this, 'getTokenStatusTitle',
             $bridge->getLate('gto_id_token'), $bridge->getLate('token_status'),
             $bridge->getLate('gr2o_patient_nr'), $bridge->getLate('gto_round_description'),
             $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
-        );
+        ));
 
         return $link;
     }
