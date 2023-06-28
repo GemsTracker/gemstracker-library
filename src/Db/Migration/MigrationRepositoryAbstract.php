@@ -2,19 +2,22 @@
 
 namespace Gems\Db\Migration;
 
-use Db\Migration\TableRepositoryTest;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
-use GemsTest\TestData\Db\SeedRepository\TestPhpSeed;
-use Laminas\Db\Sql\Expression;
+use Gems\Model\IteratorModel;
+use Laminas\Db\Sql\Select;
+use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Zalt\Model\MetaModelInterface;
 
-class MigrationRepositoryAbstract
+abstract class MigrationRepositoryAbstract
 {
     protected string $defaultDatabase = 'gems';
 
     protected int $defaultOrder = 1000;
+
+    protected string $modelName = 'migrationModel';
 
     public function __construct(
         protected readonly array $config,
@@ -29,6 +32,8 @@ class MigrationRepositoryAbstract
         return array_column($configs, 'db');
     }
 
+    abstract public function getInfo(): array;
+
     protected function getLoggedResources(?string $resource = null): array
     {
         $adapter = $this->databases->getDefaultDatabase();
@@ -39,12 +44,73 @@ class MigrationRepositoryAbstract
             $select->where(['gml_type' => $resource]);
         }
 
-        $subSelect = $resultFetcher->getSelect('gems__migration_logs')
-            ->columns([new Expression('MAX(gml_created)')])
-            ->group(['gml_name']);
+        $subSelect = $resultFetcher->getSelect();
+        $subSelect->from(['ml1' => 'gems__migration_logs'])
+            ->columns(['gml_id_migration'])
+            ->join(['ml2' => 'gems__migration_logs'],
+                'ml1.gml_name = ml2.gml_name AND ml1.gml_created < ml2.gml_created',
+                [],
+                Select::JOIN_LEFT,
+            )->where->isNull('ml2.gml_created');
+
         $select->where->in('gml_id_migration', $subSelect);
 
-        return $resultFetcher->fetchAll($select);
+        $result = $resultFetcher->fetchAll($select);
+        return $result;
+    }
+
+    public function getModel(): ModelAbstract
+    {
+        $model = new IteratorModel($this->modelName, $this->getInfo());
+
+        $model->set('module', [
+            'maxlength', 40, 'type',
+            MetaModelInterface::TYPE_STRING,
+        ]);
+        $model->set('name', [
+            'key' => true,
+            'maxlength' => 40,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('type', [
+            'maxlength' => 40,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('order', [
+            'decimals' => 0,
+            'default' => 1000,
+            'maxlength' => 6,
+            'type' => MetaModelInterface::TYPE_NUMERIC
+        ]);
+        $model->set('description', [
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('data', [
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('sql', [
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('lastChanged', [
+            'type' => MetaModelInterface::TYPE_DATETIME
+        ]);
+        $model->set('location', [
+            'maxlength' => 12,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('db', [
+            'maxlength' => 32,
+            'type' => MetaModelInterface::TYPE_STRING
+        ]);
+        $model->set('status', [
+            'multiOptions' => [
+                'success' => $this->translator->_('Success'),
+                'error' => $this->translator->_('Error'),
+                'new' => $this->translator->_('New'),
+            ],
+        ]);
+
+        return $model;
     }
 
     protected function getResourceClasses(string $resource): array

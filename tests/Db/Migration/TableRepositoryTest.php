@@ -1,6 +1,6 @@
 <?php
 
-namespace Db\Migration;
+namespace GemsTest\Db\Migration;
 
 use Gems\Db\Databases;
 use Gems\Db\Dsn;
@@ -9,6 +9,8 @@ use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Translate\Translator;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -16,10 +18,18 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class TableRepositoryTest extends TestCase
+class TableRepositoryTest extends MigrationRepositoryTestAbstract
 {
-    use ProphecyTrait;
 
+    public function setUp(): void
+    {
+        $this->createLogTable();
+    }
+
+    public function tearDown(): void
+    {
+        $this->deleteLogTable();
+    }
     public function testGetDbConnectionNamesFromDirs()
     {
         $config = [
@@ -64,6 +74,7 @@ class TableRepositoryTest extends TestCase
             [
                 'db' => 'gems',
                 'path' => __DIR__ . '/../../TestData/Db/TableRepository',
+                'module' => 'gems',
             ],
             [
                 'db' => 'gemsData',
@@ -92,34 +103,36 @@ class TableRepositoryTest extends TestCase
 
         $repository = $this->getDatabaseRepository($config, $databases);
 
-        $tableInfo = $repository->getTableInfo();
+        $tableInfo = $repository->getInfo();
 
         $sql2 = file_get_contents(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql');
 
         $expected = [
             'test__other_table' => [
                 'name' => 'test__other_table',
-                'group' => 'test',
+                'module' => 'test',
                 'type' => 'table',
                 'description' => null,
                 'order' => 100,
+                'data' => '',
                 'sql' => '',
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
                 'db' => 'gemsTest',
-                'exists' => false,
+                'status' => 'new',
             ],
             'test__table' => [
                 'name' => 'test__table',
-                'group' => 'test',
+                'module' => 'test',
                 'type' => 'table',
                 'description' => 'This is a test tables description',
                 'order' => 1000,
+                'data' => $sql2,
                 'sql' => $sql2,
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
                 'db' => 'gemsTest',
-                'exists' => false,
+                'status' => 'new',
             ],
         ];
 
@@ -145,6 +158,11 @@ class TableRepositoryTest extends TestCase
 
         $tableInfo = $repository->getTableInfoFromDb();
 
+        // We expect the migration logs table from the setUp!
+        if (isset($tableInfo['gems__migration_logs'])) {
+            unset($tableInfo['gems__migration_logs']);
+        }
+
         $this->assertIsArray($tableInfo);
         $this->assertEmpty($tableInfo);
     }
@@ -167,10 +185,11 @@ class TableRepositoryTest extends TestCase
         $expected = [
             'test__other_table' => [
                 'name' => 'test__other_table',
-                'group' => 'test',
+                'module' => 'test',
                 'type' => 'table',
                 'description' => null,
                 'order' => 100,
+                'data' => '',
                 'sql' => '',
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
@@ -178,10 +197,11 @@ class TableRepositoryTest extends TestCase
             ],
             'test__table' => [
                 'name' => 'test__table',
-                'group' => 'test',
+                'module' => 'test',
                 'type' => 'table',
                 'description' => 'This is a test tables description',
                 'order' => 1000,
+                'data' => $sql2,
                 'sql' => $sql2,
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
@@ -214,10 +234,10 @@ class TableRepositoryTest extends TestCase
 
         $adapter = $databases->getDatabase('gemsTest');
 
-        $tableItems = $repository->getTableInfo();
+        $tableItems = $repository->getInfo();
 
         $exceptionCount = 0;
-        foreach($tableItems as $tableItem) {
+        foreach ($tableItems as $tableItem) {
             try {
                 $repository->createTable($tableItem);
             } catch (\Exception $e) {
@@ -226,7 +246,7 @@ class TableRepositoryTest extends TestCase
         }
 
         $resultFetcher = new ResultFetcher($adapter);
-        $result = $resultFetcher->fetchAll('DESCRIBE test_table');
+        $result = $resultFetcher->fetchAll('DESCRIBE test__table');
 
         $expected = [
             [
@@ -250,25 +270,61 @@ class TableRepositoryTest extends TestCase
         $this->assertEquals($expected, $result);
         $this->assertEquals(1, $exceptionCount);
 
-        $resultFetcher->query('DROP TABLE test_table');
+        $this->deleteTestTable();
     }
 
-    protected function getDatabases()
+    public function testCreateOnlyNewTables()
     {
-        $dbConfig = [
-            'driver'    => 'pdo_mysql',
-            'host'      => getenv('DB_HOST'),
-            'username'  => getenv('DB_USER'),
-            'password'  => getenv('DB_PASS'),
-            'database'  => 'gems_test',
+        $databases = $this->getDatabases();
+
+        $config = [
+            'migrations' => [
+                'tables' => [
+                    [
+                        'db' => 'gemsTest',
+                        'path' => __DIR__ . '/../../TestData/Db/TableRepository',
+                    ],
+                ],
+            ],
         ];
 
-        $adapter = new Adapter(new Pdo(new \Pdo(Dsn::fromConfig($dbConfig))));
-        $containerProphecy = $this->prophesize(ContainerInterface::class);
-        $containerProphecy->has(Databases::ALIAS_PREFIX . 'GemsTest')->willReturn(true);
-        $containerProphecy->get(Databases::ALIAS_PREFIX . 'GemsTest')->willReturn($adapter);
+        $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
+        $eventDispatcherProphecy->dispatch(Argument::type(CreateTableMigrationEvent::class))->shouldNotBeCalled();
 
-        return new Databases($containerProphecy->reveal());
+        $repository = $this->getDatabaseRepository($config, $databases, $eventDispatcherProphecy->reveal());
+
+        $adapter = $this->getTestDatabase();
+
+        $sql = file_get_contents(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql');
+
+        $table = new TableGateway('gems__migration_logs', $adapter);
+        $table->insert([
+            'gml_name' => 'test__table',
+            'gml_type' => 'table',
+            'gml_version' => 1,
+            'gml_module' => 'gems',
+            'gml_status' => 'success',
+            'gml_duration' => .1,
+            'gml_sql' => $sql,
+            'gml_created' => new Expression('NOW()'),
+        ]);
+
+        $model = $repository->getModel();
+
+        $tableItems = $model->load(['status' => 'new']);
+
+        $exceptionCount = 0;
+        foreach ($tableItems as $tableItem) {
+            try {
+                $repository->createTable($tableItem);
+            } catch (\Exception $e) {
+                $exceptionCount++;
+            }
+        }
+
+        $currentTables = $repository->getTableInfoFromDb();
+        $this->assertCount(1, $currentTables);
+        $this->assertEquals(1, $exceptionCount);
     }
 
     protected function getDatabaseRepository(array $config = [], ?Databases $databases = null, ?EventDispatcherInterface $eventDispatcher = null)
@@ -284,6 +340,7 @@ class TableRepositoryTest extends TestCase
         }
 
         $translatorProphecy = $this->prophesize(Translator::class);
+        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
         return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher);
     }

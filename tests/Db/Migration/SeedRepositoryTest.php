@@ -2,25 +2,32 @@
 
 namespace GemsTest\Db\Migration;
 
-use Gems\Config\App;
 use Gems\Db\Databases;
-use Gems\Db\Dsn;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Db\ResultFetcher;
+use Gems\Event\Application\RunSeedMigrationEvent;
 use GemsTest\Data\Db\SeedRepository\PhpSeed;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Driver\Pdo\Pdo;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Translate\Translator;
-use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Psr\Container\ContainerInterface;
+use Prophecy\Argument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
-use Zalt\Loader\ProjectOverloader;
 
-class SeedRepositoryTest extends TestCase
+class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
-    use ProphecyTrait;
+    public function setUp(): void
+    {
+        $this->createLogTable();
+        $this->createTestTable();
+    }
+
+    public function tearDown(): void
+    {
+        $this->deleteLogTable();
+        $this->deleteTestTable();
+    }
+
 
     public function testGetSeedDirectories()
     {
@@ -42,6 +49,7 @@ class SeedRepositoryTest extends TestCase
             [
                 'db' => 'gems',
                 'path' => __DIR__ . '/../../TestData/Db/SeedRepository',
+                'module' => 'gems',
             ],
             [
                 'db' => 'gemsData',
@@ -87,6 +95,7 @@ class SeedRepositoryTest extends TestCase
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
                 'db' => 'gems',
+                'module' => 'gems',
             ],
             'jsonTestSeed' => [
                 'name' => 'jsonTestSeed',
@@ -96,7 +105,7 @@ class SeedRepositoryTest extends TestCase
                 'data' => [
                     'test__table' => [
                         [
-                            'tt_id' => 20,
+                            'tt_id' => 21,
                             'tt_description' => 'hello json',
                         ],
                         [
@@ -107,6 +116,7 @@ class SeedRepositoryTest extends TestCase
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
                 'db' => 'gems',
+                'module' => 'gems',
             ],
             'testSeed' => [
                 'name' => 'testSeed',
@@ -120,9 +130,10 @@ class SeedRepositoryTest extends TestCase
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
+                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
                 'db' => 'gems',
+                'module' => 'gems',
             ],
         ];
 
@@ -149,7 +160,7 @@ class SeedRepositoryTest extends TestCase
         $seedInfo = $repository->getSeedsFromClasses();
 
         $expected = [
-            [
+            PhpSeed::class => [
                 'name' => PhpSeed::class,
                 'type' => 'seed',
                 'description' => null,
@@ -164,6 +175,7 @@ class SeedRepositoryTest extends TestCase
                 'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
                 'db' => 'gems',
+                'module' => 'gems',
             ],
         ];
 
@@ -171,6 +183,212 @@ class SeedRepositoryTest extends TestCase
     }
 
     public function testGetSeedInfo()
+    {
+        $repository = $this->getAllSeedsRepository();
+
+        $seedInfo = $repository->getInfo();
+
+        $expected = [
+            'anotherTestSeed' => [
+                'name' => 'anotherTestSeed',
+                'type' => 'seed',
+                'description' => null,
+                'order' => 1000,
+                'data' => [
+                    'test__table' => [
+                        [
+                            'tt_id' => 5,
+                            'tt_description' => 'hello yaml',
+                        ],
+                        [
+                            'tt_description' => 'hello another yaml',
+                        ],
+                    ],
+                ],
+                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
+                'db' => 'gems',
+                'module' => 'gems',
+                'status' => 'new',
+                'executed' => null,
+                'duration' => null,
+                'sql' => null,
+                'comment' => null,
+            ],
+            'jsonTestSeed' => [
+                'name' => 'jsonTestSeed',
+                'type' => 'seed',
+                'description' => null,
+                'order' => 1000,
+                'data' => [
+                    'test__table' => [
+                        [
+                            'tt_id' => 21,
+                            'tt_description' => 'hello json',
+                        ],
+                        [
+                            'tt_description' => 'hello another json',
+                        ],
+                    ],
+                ],
+                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
+                'db' => 'gems',
+                'module' => 'gems',
+                'status' => 'new',
+                'executed' => null,
+                'duration' => null,
+                'sql' => null,
+                'comment' => null,
+            ],
+            'testSeed' => [
+                'name' => 'testSeed',
+                'type' => 'seed',
+                'description' => null,
+                'order' => 1000,
+                'data' => [
+                    'test__table' => [
+                        [
+                            'tt_description' => 'hello yml',
+                        ],
+                    ],
+                ],
+                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
+                'db' => 'gems',
+                'module' => 'gems',
+                'status' => 'new',
+                'executed' => null,
+                'duration' => null,
+                'sql' => null,
+                'comment' => null,
+            ],
+            PhpSeed::class => [
+                'name' => PhpSeed::class,
+                'type' => 'seed',
+                'description' => null,
+                'order' => 1000,
+                'data' => [
+                    'test__table' => [
+                        [
+                            'tt_description' => 'hi php',
+                        ],
+                    ],
+                ],
+                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
+                'db' => 'gems',
+                'module' => 'gems',
+                'status' => 'new',
+                'executed' => null,
+                'duration' => null,
+                'sql' => null,
+                'comment' => null,
+            ],
+        ];
+
+        $this->assertEquals($expected, $seedInfo);
+    }
+
+    public function testRunSeed()
+    {
+        $repository = $this->getAllSeedsRepository(4);
+        $seedInfo = $repository->getInfo();
+
+        foreach($seedInfo as $seed) {
+            $repository->runSeed($seed);
+        }
+
+        $db = $this->getTestDatabase();
+        $resultFetcher = new ResultFetcher($db);
+        $result = $resultFetcher->fetchAll('SELECT * FROM test__table');
+
+        $expected = [
+            [
+                'tt_id' => 5,
+                'tt_description' => 'hello yaml',
+            ],
+            [
+                'tt_id' => 20,
+                'tt_description' => 'hello another yaml',
+            ],
+            [
+                'tt_id' => 21,
+                'tt_description' => 'hello json',
+            ],
+            [
+                'tt_id' => 22,
+                'tt_description' => 'hello another json',
+            ],
+            [
+                'tt_id' => 23,
+                'tt_description' => 'hello yml',
+            ],
+            [
+                'tt_id' => 24,
+                'tt_description' => 'hi php',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testRunOnlyNewSeeds()
+    {
+        $repository = $this->getAllSeedsRepository(3);
+
+        $db = $this->getTestDatabase();
+        $table = new TableGateway('gems__migration_logs', $db);
+        $table->insert([
+            'gml_name' => 'testSeed',
+            'gml_type' => 'seed',
+            'gml_version' => 1,
+            'gml_module' => 'gems',
+            'gml_status' => 'success',
+            'gml_duration' => .1,
+            'gml_sql' => "INSERT INTO `test__table` (`tt_description`) VALUES ('hello yml')",
+            'gml_created' => new Expression('NOW()'),
+        ]);
+
+        $model = $repository->getModel();
+
+        $seeds = $model->load(['status' => 'new']);
+
+        foreach($seeds as $seed) {
+            $repository->runSeed($seed);
+        }
+
+        $db = $this->getTestDatabase();
+        $resultFetcher = new ResultFetcher($db);
+        $result = $resultFetcher->fetchAll('SELECT * FROM test__table');
+
+        $expected = [
+            [
+                'tt_id' => 5,
+                'tt_description' => 'hello yaml',
+            ],
+            [
+                'tt_id' => 20,
+                'tt_description' => 'hello another yaml',
+            ],
+            [
+                'tt_id' => 21,
+                'tt_description' => 'hello json',
+            ],
+            [
+                'tt_id' => 22,
+                'tt_description' => 'hello another json',
+            ],
+            [
+                'tt_id' => 23,
+                'tt_description' => 'hi php',
+            ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    protected function getAllSeedsRepository(int $eventCalled = 0): SeedRepository
     {
         require_once(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php');
         $config = [
@@ -187,76 +405,12 @@ class SeedRepositoryTest extends TestCase
         $overloaderProphecy->create(PhpSeed::class)->willReturn($seed);
 
         $databases = $this->getDatabases();
-        $repository = $this->getRepository($config, $databases, null, $overloaderProphecy->reveal());
-        $this->createLogTable();
 
-        $seedInfo = $repository->getSeedInfo();
+        $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
+        $eventDispatcherProphecy->dispatch(Argument::type(RunSeedMigrationEvent::class))->shouldBeCalledTimes($eventCalled);
 
-        $expected = [
-            [
-                'name' => PhpSeed::class,
-                'type' => 'seed',
-                'description' => null,
-                'order' => 1000,
-                'data' => [
-                    'test__table' => [
-                        [
-                            'tt_description' => 'hi php',
-                        ],
-                    ],
-                ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
-                'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
-                'db' => 'gems',
-            ],
-        ];
-
-        $this->assertEquals($expected, $seedInfo);
+        return $this->getRepository($config, $databases, $eventDispatcherProphecy->reveal(), $overloaderProphecy->reveal());
     }
-
-
-    protected function getTestDatabase()
-    {
-        $dbConfig = [
-            'driver'    => 'pdo_mysql',
-            'host'      => getenv('DB_HOST'),
-            'username'  => getenv('DB_USER'),
-            'password'  => getenv('DB_PASS'),
-            'database'  => 'gems_test',
-        ];
-
-        return new Adapter(new Pdo(new \Pdo(Dsn::fromConfig($dbConfig))));
-    }
-
-    protected function getDatabases()
-    {
-        $adapter = $this->getTestDatabase();
-
-        $containerProphecy = $this->prophesize(ContainerInterface::class);
-        $containerProphecy->has(Adapter::class)->willReturn(true);
-        $containerProphecy->get(Adapter::class)->willReturn($adapter);
-        $containerProphecy->has(Databases::ALIAS_PREFIX . 'GemsTest')->willReturn(true);
-        $containerProphecy->get(Databases::ALIAS_PREFIX . 'GemsTest')->willReturn($adapter);
-
-        return new Databases($containerProphecy->reveal());
-    }
-
-    protected function createLogTable()
-    {
-        $tableSql = file_get_contents(__DIR__ . '/../../../configs/db/tables/gems__migration_logs.1.sql');
-        print_r($tableSql);
-        $adapter = $this->getTestDatabase();
-        $resultFetcher = new ResultFetcher($adapter);
-        $resultFetcher->query($tableSql);
-    }
-
-    protected function deleteLogTable()
-    {
-        $adapter = $this->getTestDatabase();
-        $resultFetcher = new ResultFetcher($adapter);
-        $resultFetcher->query('DELETE TABLE test_table');
-    }
-
 
     protected function getRepository(array $config = [],
         ?Databases $databases = null,
@@ -280,6 +434,7 @@ class SeedRepositoryTest extends TestCase
         }
 
         $translatorProphecy = $this->prophesize(Translator::class);
+        $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
         return new SeedRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $overloader);
     }
