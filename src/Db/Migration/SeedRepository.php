@@ -6,7 +6,6 @@ use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use MUtil\Translate\Translator;
 use PHPUnit\Exception;
@@ -18,6 +17,9 @@ use Zalt\Loader\ConstructorProjectOverloader;
 
 class SeedRepository extends MigrationRepositoryAbstract
 {
+
+    protected string $modelName = 'databaseTableModel';
+
     public function __construct(
         array $config,
         Databases $databases,
@@ -34,10 +36,14 @@ class SeedRepository extends MigrationRepositoryAbstract
         'json',
     ];
 
+    protected function resolveReferences(string $query, $generatedValues): string
+    {
+        return $query;
+    }
+
     protected function getSeedDataFromFile(SplFileInfo $file): array|null
     {
         $extension = $file->getExtension();
-
 
         if ($extension === 'yml' || $extension === 'yaml') {
             return Yaml::parse($file->getContents());
@@ -49,55 +55,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         return null;
     }
 
-    public function runSeed(array $seedInfo)
-    {
-        if (!isset($seedInfo['db'], $seedInfo['data']) || empty($seedInfo['data'])) {
-            throw new \Exception('Not enough info to run seed');
-        }
-        $adapter = $this->databases->getDatabase($seedInfo['db']);
-        if (!$adapter instanceof Adapter) {
-            throw new \Exception('Not enough info to run seed');
-        }
-
-        $resultFetcher = new ResultFetcher($adapter);
-        $sqlQueries = $this->getQueryFromData($adapter, $seedInfo['data']);
-
-        $start = microtime(true);
-
-        try {
-            foreach($sqlQueries as $sqlQuery) {
-                $resultFetcher->query($sqlQuery);
-            }
-
-            $event = new RunSeedMigrationEvent(
-                'seed',
-                $seedInfo['name'],
-                $seedInfo['module'],
-                $seedInfo['name'],
-                'sucess',
-                join("\n", $sqlQueries),
-                null,
-                $start,
-                microtime(true),
-            );
-            $this->eventDispatcher->dispatch($event);
-        } catch(Exception $e) {
-            $event = new RunSeedMigrationEvent(
-                'seed',
-                $seedInfo['name'],
-                $seedInfo['module'],
-                $seedInfo['name'],
-                'error',
-                join("\n", $sqlQueries),
-                $e->getMessage(),
-                $start,
-                microtime(true),
-            );
-            $this->eventDispatcher->dispatch($event);
-        }
-    }
-
-    protected function getQueryFromData(Adapter $adapter, array $data): array
+    protected function getQueriesFromData(Adapter $adapter, array $data): array
     {
         $sql = new Sql($adapter);
         $sqlStatements = [];
@@ -105,24 +63,25 @@ class SeedRepository extends MigrationRepositoryAbstract
             foreach($rows as $row) {
                 $insert = $sql->insert($table);
                 $insert->values($row);
-                $sqlStatements[] = $sql->buildSqlString($insert);
+                $sqlStatements[$table][] = $sql->buildSqlString($insert);
             }
         }
 
         return $sqlStatements;
     }
 
-    public function getSeedInfo(): array
+    public function getInfo(): array
     {
         $seedsFromFiles = $this->getSeedsFromFiles();
+
         $seedsFromClasses = $this->getSeedsFromClasses();
 
         $seedInfo = array_merge($seedsFromFiles,$seedsFromClasses);
 
-        $seedLogs = array_column($this->getLoggedResources('seeds'), null, 'gml_name');
+        $seedLogs = array_column($this->getLoggedResources('seed'), null, 'gml_name');
 
         foreach($seedInfo as $seedKey => $seedRow) {
-            $seedInfo[$seedKey]['status'] = null;
+            $seedInfo[$seedKey]['status'] = 'new';
             $seedInfo[$seedKey]['executed'] = null;
             $seedInfo[$seedKey]['duration'] = null;
             $seedInfo[$seedKey]['sql'] = null;
@@ -167,7 +126,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 'db' => $seedClassInfo['db'],
             ];
 
-            $seeds[] = $seed;
+            $seeds[$seedClassName] = $seed;
         }
         return $seeds;
     }
@@ -215,5 +174,61 @@ class SeedRepository extends MigrationRepositoryAbstract
     public function getSeedsDirectories(): array
     {
         return $this->getResourceDirectories('seeds');
+    }
+
+    public function runSeed(array $seedInfo)
+    {
+        if (!isset($seedInfo['db'], $seedInfo['data']) || empty($seedInfo['data'])) {
+            throw new \Exception('Not enough info to run seed');
+        }
+        $adapter = $this->databases->getDatabase($seedInfo['db']);
+        if (!$adapter instanceof Adapter) {
+            throw new \Exception('Not enough info to run seed');
+        }
+
+        $resultFetcher = new ResultFetcher($adapter);
+        $sqlQueriesPerTable = $this->getQueriesFromData($adapter, $seedInfo['data']);
+
+        $start = microtime(true);
+
+        $finalQueries = [];
+        $generatedValues = [];
+
+        try {
+            foreach($sqlQueriesPerTable as $table => $sqlQueries) {
+                foreach($sqlQueries as $index => $sqlQuery) {
+                    $sqlQuery = $this->resolveReferences($sqlQuery, $generatedValues);
+                    $resultFetcher->query($sqlQuery);
+                    $generatedValues[$table.'_'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
+                    $finalQueries[] = $sqlQuery;
+                }
+            }
+
+            $event = new RunSeedMigrationEvent(
+                'seed',
+                1,
+                $seedInfo['module'],
+                $seedInfo['name'],
+                'sucess',
+                join("\n", $finalQueries),
+                null,
+                $start,
+                microtime(true),
+            );
+            $this->eventDispatcher->dispatch($event);
+        } catch(Exception $e) {
+            $event = new RunSeedMigrationEvent(
+                'seed',
+                1,
+                $seedInfo['module'],
+                $seedInfo['name'],
+                'error',
+                join("\n", $finalQueries),
+                $e->getMessage(),
+                $start,
+                microtime(true),
+            );
+            $this->eventDispatcher->dispatch($event);
+        }
     }
 }
