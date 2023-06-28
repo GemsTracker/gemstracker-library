@@ -567,6 +567,10 @@ class ConfigProvider
             'seeds' => [
                 __DIR__ . '/../configs/db/seeds',
             ],
+            'patches' => [
+                __DIR__ . '/../configs/db/patches',
+            ],
+
         ];
     }
 
