@@ -2,23 +2,17 @@
 
 namespace Gems\Db\Migration;
 
-use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
-use Gems\Model\IteratorModel;
 use Laminas\Db\Adapter\Adapter;
-use MUtil\Model\ModelAbstract;
-use MUtil\Translate\Translator;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Finder;
-use Zalt\Model\MetaModelInterface;
 
 
 class TableRepository extends MigrationRepositoryAbstract
 {
     protected int $defaultOrder = 1000;
 
-
+    protected string $modelName = 'databaseTableModel';
 
     public function createTable(array $tableInfo): void
     {
@@ -35,10 +29,10 @@ class TableRepository extends MigrationRepositoryAbstract
             $resultFetcher->query($tableInfo['sql']);
             $event = new CreateTableMigrationEvent(
                 'table',
+                1,
+                $tableInfo['module'],
                 $tableInfo['name'],
-                $tableInfo['group'],
-                $tableInfo['name'],
-                'sucess',
+                'success',
                 $tableInfo['sql'],
                 null,
                 $start,
@@ -47,8 +41,8 @@ class TableRepository extends MigrationRepositoryAbstract
         } catch (\Exception $e) {
             $event = new CreateTableMigrationEvent(
                 'table',
-                $tableInfo['name'],
-                $tableInfo['group'],
+                1,
+                $tableInfo['module'],
                 $tableInfo['name'],
                 'error',
                 $tableInfo['sql'],
@@ -96,7 +90,7 @@ class TableRepository extends MigrationRepositoryAbstract
                 };
                 $table = [
                     'name' => $tableName,
-                    'group' => $this->getGroupName($tableName),
+                    'module' => $this->getGroupName($tableName),
                     'type' => $tableType,
                     'description' => null,
                     'order' => $this->defaultOrder,
@@ -117,75 +111,31 @@ class TableRepository extends MigrationRepositoryAbstract
      *
      * @return array
      */
-    public function getTableInfo(): array
+    public function getInfo(): array
     {
         $tableInfoFromFiles = $this->getTableInfoFromFiles();
         $tableInfoFromDb = $this->getTableInfoFromDb();
 
+        $tablesLog = array_column($this->getLoggedResources('table'), null, 'gml_name');
+
         $tables = [];
         foreach($tableInfoFromFiles as $tableName => $table) {
+            $tables[$tableName] = $table;
+            $tables[$tableName]['status'] = 'new';
             if (isset($tableInfoFromDb[$tableName])) {
                 $tables[$tableName] = $tableInfoFromDb[$tableName];
-                $tables[$tableName]['exists'] = true;
-                continue;
+                $tables[$tableName]['status'] = 'success';
             }
-            $tables[$tableName] = $table;
-            $tables[$tableName]['exists'] = false;
+            if (isset($tablesLog[$tableName])) {
+                $matchingLog = $tablesLog[$tableName];
+                $tables[$tableName]['status'] = $matchingLog['gml_status'];
+                $tables[$tableName]['executed'] = $matchingLog['gml_created'];
+                $tables[$tableName]['sql'] = $matchingLog['gml_sql'];
+                $tables[$tableName]['comment'] = $matchingLog['gml_comment'];
+            }
         }
 
         return $tables + $tableInfoFromFiles;
-    }
-
-    public function getDbTableModel(): ModelAbstract
-    {
-        $model = new IteratorModel('databaseTables', $this->getTableInfo());
-        $model->set('group', [
-            'maxlength', 40, 'type',
-            MetaModelInterface::TYPE_STRING,
-        ]);
-        $model->set('name', [
-            'key' => true,
-            'maxlength' => 40,
-            'type' => MetaModelInterface::TYPE_STRING
-        ]);
-        $model->set('type', [
-            'maxlength' => 40,
-            'type' => MetaModelInterface::TYPE_STRING
-        ]);
-        $model->set('order', [
-            'decimals' => 0,
-            'default' => 1000,
-            'maxlength' => 6,
-            'type' => MetaModelInterface::TYPE_NUMERIC
-        ]);
-        $model->set('defined', [
-            'type' => MetaModelInterface::TYPE_NUMERIC
-        ]);
-        $model->set('exists', [
-            'type' => MetaModelInterface::TYPE_NUMERIC
-        ]);
-        $model->set('state', [
-            'type' => MetaModelInterface::TYPE_NUMERIC
-        ]);
-        $model->set('sql', [
-            'type' => MetaModelInterface::TYPE_STRING
-        ]);
-        $model->set('lastChanged', [
-            'type' => MetaModelInterface::TYPE_DATETIME
-        ]);
-        $model->set('location', [
-            'maxlength' => 12,
-            'type' => MetaModelInterface::TYPE_STRING
-        ]);
-        $model->set('state', [
-            'multiOptions' => [
-                'created' => $this->translator->_('created'),
-                'notCreated' => $this->translator->_('not created'),
-                'unknown' => $this->translator->_('unknown'),
-            ],
-        ]);
-
-        return $model;
     }
 
     public function getTableInfoFromFiles(): array
@@ -209,10 +159,11 @@ class TableRepository extends MigrationRepositoryAbstract
 
                 $table = [
                     'name' => $name,
-                    'group' => $this->getGroupName($name),
+                    'module' => $this->getGroupName($name),
                     'type' => 'table',
                     'description' => $description,
                     'order' => $this->defaultOrder,
+                    'data' => $fileContent,
                     'sql' => $fileContent,
                     'lastChanged' => $file->getMTime(),
                     'location' => $file->getRealPath(),
