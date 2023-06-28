@@ -72,7 +72,6 @@ class Route
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
-                ...$this->getParticipateSubscribeRoutes(),
             ]),
         ];
     }
@@ -124,7 +123,7 @@ class Route
             [
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
-                ...$this->getParticipateUnsubscribeRoutes(),
+                ...$this->getParticipateRoutes(),
             ]),
 
 
@@ -316,23 +315,7 @@ class Route
         ];
     }
 
-    public function getParticipateSubscribeRoutes(): array
-    {
-        return [
-            ...$this->createSnippetRoutes(baseName: 'participate',
-                controllerClass: \Gems\Handlers\ParticipateHandler::class,
-                pages: [
-                    'subscribe',
-                    'subscribe-thanks',
-                ],
-                postRoutes: [
-                    'subscribe',
-                ]
-            ),
-        ];
-    }
-
-    public function getParticipateUnsubscribeRoutes(): array
+    public function getParticipateRoutes(): array
     {
         return [
             ...$this->createSnippetRoutes(baseName: 'participate',
@@ -340,10 +323,13 @@ class Route
                 basePrivilege: false,
                 pages: [
                     'index',
+                    'subscribe',
+                    'subscribe-thanks',
                     'unsubscribe',
                     'unsubscribe-thanks',
                 ],
                 postRoutes: [
+                    'subscribe',
                     'unsubscribe',
                 ]
             ),
