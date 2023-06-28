@@ -67,7 +67,7 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
         $this->currentUser = $currentUserRepository->getCurrentUser();
-        $this->currentOrganization = $this->currentUser->getCurrentOrganization();
+        $this->currentOrganization = $currentUserRepository->getCurrentOrganization();
     }
 
     /**
@@ -123,14 +123,13 @@ class EmailSubscribeSnippet extends FormSnippetAbstract
         // Use the second mailCode, the first is the no-mail code.
         next($mailCodes);
         $mailable = key($mailCodes);
-        // Roel FIXME: $mailable is 0 at this point, so we still cannot send mail to the subscriber.
         
         $values['grs_iso_lang']         = $this->locale->getLanguage();
         $values['gr2o_id_organization'] = $this->currentOrganization->getId();
         $values['gr2o_email']           = $this->formData['email'];
         $values['gr2o_mailable']        = $mailable;
         $values['gr2o_comments']        = $this->_('Created by subscription');
-        $values['gr2o_opened_by']       = $this->currentUser->getUserId();
+        $values['gr2o_opened_by']       = $this->currentUserRepository->getCurrentUserId();
 
         // \MUtil\EchoOut\EchoOut::track($userIds, $this->formData['email']);
         if ($userIds) {
