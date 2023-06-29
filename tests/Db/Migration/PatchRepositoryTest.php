@@ -6,6 +6,8 @@ use Gems\Db\Databases;
 use Gems\Db\Migration\PatchRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunPatchMigrationEvent;
+use Gems\Model\IteratorModel;
+use Gems\Model\MetaModelLoader;
 use GemsTest\TestData\Db\PatchRepository\PhpPatch;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
@@ -14,6 +16,7 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Model\MetaModel;
 
 class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 {
@@ -94,7 +97,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => [
                     'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -131,7 +134,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => [
                     "ALTER TABLE test__table\r\n    ADD tt_name varchar(255)",
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
                 'db' => 'gems',
             ],
@@ -160,7 +163,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => [
                     'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/PhpPatch.php'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -179,7 +182,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'sql' => [
                     "ALTER TABLE test__table\r\n    ADD tt_name varchar(255)",
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
                 'db' => 'gems',
                 'status' => 'new',
@@ -351,6 +354,10 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
         $translatorProphecy = $this->prophesize(Translator::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
-        return new PatchRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $overloader);
+        $metaModelLoader = $this->prophesize(MetaModelLoader::class);
+        $model = new IteratorModel(new MetaModel('databasePatchesModel', [], $metaModelLoader->reveal()));
+        $metaModelLoader->createModel(IteratorModel::class, 'databasePatchesModel')->willReturn($model);
+
+        return new PatchRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
     }
 }

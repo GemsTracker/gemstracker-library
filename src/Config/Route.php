@@ -20,6 +20,9 @@ use Gems\Handlers\ChangeOrganizationHandler;
 use Gems\Handlers\EmptyHandler;
 use Gems\Handlers\InfoHandler;
 use Gems\Handlers\Respondent\CalendarHandler;
+use Gems\Handlers\Setup\Database\PatchHandler;
+use Gems\Handlers\Setup\Database\SeedHandler;
+use Gems\Handlers\Setup\Database\TableHandler;
 use Gems\Middleware\AclMiddleware;
 use Gems\Middleware\AuditLogMiddleware;
 use Gems\Middleware\ClientIpMiddleware;
@@ -758,6 +761,25 @@ class Route
                 pages: [
                     'maintenance-mode',
                 ],
+            ),
+
+            [
+                'name' => 'setup.database',
+                'path' => '/setup/database',
+                'allowed_methods' => ['GET'],
+                'middleware' => [
+                    EmptyHandler::class,
+                ],
+            ],
+
+            ...$this->createHandlerRoute(baseName: 'setup.database.tables',
+                controllerClass: TableHandler::class,
+            ),
+            ...$this->createHandlerRoute(baseName: 'setup.database.patches',
+                controllerClass: PatchHandler::class,
+            ),
+            ...$this->createHandlerRoute(baseName: 'setup.database.seeds',
+                controllerClass: SeedHandler::class,
             ),
 
            /*...$this->createBrowseRoutes(baseName: 'setup.project-information.upgrade',

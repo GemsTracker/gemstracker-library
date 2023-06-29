@@ -7,6 +7,8 @@ use Gems\Db\Dsn;
 use Gems\Db\Migration\TableRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\CreateTableMigrationEvent;
+use Gems\Model\IteratorModel;
+use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Driver\Pdo\Pdo;
 use Laminas\Db\Sql\Expression;
@@ -17,6 +19,7 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Zalt\Model\MetaModel;
 
 class TableRepositoryTest extends MigrationRepositoryTestAbstract
 {
@@ -116,7 +119,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 100,
                 'data' => '',
                 'sql' => '',
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
                 'db' => 'gemsTest',
                 'status' => 'new',
@@ -129,7 +132,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 1000,
                 'data' => $sql2,
                 'sql' => $sql2,
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
                 'db' => 'gemsTest',
                 'status' => 'new',
@@ -191,7 +194,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 100,
                 'data' => '',
                 'sql' => '',
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__other_table.100.sql'),
                 'db' => 'gems',
             ],
@@ -203,7 +206,7 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 1000,
                 'data' => $sql2,
                 'sql' => $sql2,
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/TableRepository/test__table.sql'),
                 'db' => 'gems',
             ],
@@ -342,6 +345,10 @@ class TableRepositoryTest extends MigrationRepositoryTestAbstract
         $translatorProphecy = $this->prophesize(Translator::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
-        return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher);
+        $metaModelLoader = $this->prophesize(MetaModelLoader::class);
+        $model = new IteratorModel(new MetaModel('databaseTableModel', [], $metaModelLoader->reveal()));
+        $metaModelLoader->createModel(IteratorModel::class, 'databaseTableModel')->willReturn($model);
+
+        return new TableRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal());
     }
 }
