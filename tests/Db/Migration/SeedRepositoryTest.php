@@ -6,6 +6,8 @@ use Gems\Db\Databases;
 use Gems\Db\Migration\SeedRepository;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
+use Gems\Model\IteratorModel;
+use Gems\Model\MetaModelLoader;
 use GemsTest\Data\Db\SeedRepository\PhpSeed;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\TableGateway;
@@ -13,6 +15,7 @@ use MUtil\Translate\Translator;
 use Prophecy\Argument;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Zalt\Loader\ConstructorProjectOverloader;
+use Zalt\Model\MetaModel;
 
 class SeedRepositoryTest extends MigrationRepositoryTestAbstract
 {
@@ -92,7 +95,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -113,7 +116,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -130,7 +133,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -172,7 +175,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -205,7 +208,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/anotherTestSeed.100.yaml'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -231,7 +234,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/jsonTestSeed.json'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -253,7 +256,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/testSeed.yml'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -275,7 +278,7 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
                         ],
                     ],
                 ],
-                'lastChanged' => filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php')),
                 'location' => realpath(__DIR__ . '/../../TestData/Db/SeedRepository/PhpSeed.php'),
                 'db' => 'gems',
                 'module' => 'gems',
@@ -436,6 +439,10 @@ class SeedRepositoryTest extends MigrationRepositoryTestAbstract
         $translatorProphecy = $this->prophesize(Translator::class);
         $translatorProphecy->trans(Argument::type('string'), Argument::cetera())->willReturnArgument(0);
 
-        return new SeedRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $overloader);
+        $metaModelLoader = $this->prophesize(MetaModelLoader::class);
+        $model = new IteratorModel(new MetaModel('databaseSeedModel', [], $metaModelLoader->reveal()));
+        $metaModelLoader->createModel(IteratorModel::class, 'databaseSeedModel')->willReturn($model);
+
+        return new SeedRepository($config, $databases, $translatorProphecy->reveal(), $eventDispatcher, $metaModelLoader->reveal(), $overloader);
     }
 }
