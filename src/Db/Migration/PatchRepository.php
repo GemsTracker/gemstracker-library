@@ -5,6 +5,7 @@ namespace Gems\Db\Migration;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunPatchMigrationEvent;
+use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use MUtil\Parser\Sql\WordsParser;
 use MUtil\Translate\Translator;
@@ -22,9 +23,10 @@ class PatchRepository extends MigrationRepositoryAbstract
         Databases $databases,
         Translator $translator,
         EventDispatcherInterface $eventDispatcher,
+        MetaModelLoader $metaModelLoader,
         protected readonly ConstructorProjectOverloader $overloader,
     ) {
-        parent::__construct($config, $databases, $translator, $eventDispatcher);
+        parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
     }
 
     public function getPatchesFromClasses(): array
@@ -53,7 +55,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                 'order' => $order,
                 'data' => $data,
                 'sql' => $data,
-                'lastChanged' => filemtime($reflectionClass->getFileName()),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $patchInfo['db'],
             ];
@@ -103,7 +105,7 @@ class PatchRepository extends MigrationRepositoryAbstract
                     'order' => $order,
                     'data' => $fileContent,
                     'sql' => $sql,
-                    'lastChanged' => $file->getMTime(),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $patchesDirectory['db'],
                 ];

@@ -64,4 +64,20 @@ class DatabaseMigrationEvent extends Event
     {
         return $this->sql;
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
 }

@@ -5,6 +5,7 @@ namespace Gems\Db\Migration;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Event\Application\RunSeedMigrationEvent;
+use Gems\Model\MetaModelLoader;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use MUtil\Translate\Translator;
@@ -18,16 +19,17 @@ use Zalt\Loader\ConstructorProjectOverloader;
 class SeedRepository extends MigrationRepositoryAbstract
 {
 
-    protected string $modelName = 'databaseTableModel';
+    protected string $modelName = 'databaseSeedModel';
 
     public function __construct(
         array $config,
         Databases $databases,
         Translator $translator,
         EventDispatcherInterface $eventDispatcher,
+        MetaModelLoader $metaModelLoader,
         protected readonly ConstructorProjectOverloader $overloader,
     ) {
-        parent::__construct($config, $databases, $translator, $eventDispatcher);
+        parent::__construct($config, $databases, $translator, $eventDispatcher, $metaModelLoader);
     }
 
     protected $seedFileTypes = [
@@ -121,7 +123,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                 'description' => $description,
                 'order' => $this->defaultOrder,
                 'data' => $data,
-                'lastChanged' => filemtime($reflectionClass->getFileName()),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime($reflectionClass->getFileName())),
                 'location' => $reflectionClass->getFileName(),
                 'db' => $seedClassInfo['db'],
             ];
@@ -157,7 +159,7 @@ class SeedRepository extends MigrationRepositoryAbstract
                     'description' => $description,
                     'order' => $this->defaultOrder,
                     'data' => $data,
-                    'lastChanged' => $file->getMTime(),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $directory['db'],
                 ];
