@@ -5,10 +5,13 @@ namespace Gems\Db\Migration;
 use Gems\Db\Databases;
 use Gems\Db\ResultFetcher;
 use Gems\Model\IteratorModel;
+use Gems\Model\MetaModelLoader;
 use Laminas\Db\Sql\Select;
 use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
 abstract class MigrationRepositoryAbstract
@@ -24,8 +27,10 @@ abstract class MigrationRepositoryAbstract
         protected readonly Databases $databases,
         protected readonly Translator $translator,
         protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly MetaModelLoader $metaModelLoader,
     )
-    {}
+    {
+    }
 
     public function getDbNamesFromConfigs(array $configs): array
     {
@@ -59,50 +64,52 @@ abstract class MigrationRepositoryAbstract
         return $result;
     }
 
-    public function getModel(): ModelAbstract
+    public function getModel(): DataReaderInterface
     {
-        $model = new IteratorModel($this->modelName, $this->getInfo());
+        $model = $this->metaModelLoader->createModel(IteratorModel::class, $this->modelName);
+        $model->setData($this->getInfo());
+        $metaModel = $model->getMetaModel();
 
-        $model->set('module', [
-            'maxlength', 40, 'type',
-            MetaModelInterface::TYPE_STRING,
+        $metaModel->set('module', [
+            'maxlength' => 40,
+            'type' => MetaModelInterface::TYPE_STRING,
         ]);
-        $model->set('name', [
+        $metaModel->set('name', [
             'key' => true,
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('type', [
+        $metaModel->set('type', [
             'maxlength' => 40,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('order', [
+        $metaModel->set('order', [
             'decimals' => 0,
             'default' => 1000,
             'maxlength' => 6,
             'type' => MetaModelInterface::TYPE_NUMERIC
         ]);
-        $model->set('description', [
+        $metaModel->set('description', [
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('data', [
+        $metaModel->set('data', [
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('sql', [
+        $metaModel->set('sql', [
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('lastChanged', [
+        $metaModel->set('lastChanged', [
             'type' => MetaModelInterface::TYPE_DATETIME
         ]);
-        $model->set('location', [
+        $metaModel->set('location', [
             'maxlength' => 12,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('db', [
+        $metaModel->set('db', [
             'maxlength' => 32,
             'type' => MetaModelInterface::TYPE_STRING
         ]);
-        $model->set('status', [
+        $metaModel->set('status', [
             'multiOptions' => [
                 'success' => $this->translator->_('Success'),
                 'error' => $this->translator->_('Error'),

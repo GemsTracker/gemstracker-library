@@ -50,6 +50,7 @@ class TableRepository extends MigrationRepositoryAbstract
                 $start,
                 microtime(true),
             );
+            throw new MigrationException($e->getMessage());
         }
         $this->eventDispatcher->dispatch($event);
     }
@@ -124,6 +125,7 @@ class TableRepository extends MigrationRepositoryAbstract
             $tables[$tableName]['status'] = 'new';
             if (isset($tableInfoFromDb[$tableName])) {
                 $tables[$tableName] = $tableInfoFromDb[$tableName];
+                $tables[$tableName]['sql'] = $table['sql'];
                 $tables[$tableName]['status'] = 'success';
             }
             if (isset($tablesLog[$tableName])) {
@@ -165,7 +167,7 @@ class TableRepository extends MigrationRepositoryAbstract
                     'order' => $this->defaultOrder,
                     'data' => $fileContent,
                     'sql' => $fileContent,
-                    'lastChanged' => $file->getMTime(),
+                    'lastChanged' => \DateTimeImmutable::createFromFormat('U', $file->getMTime()),
                     'location' => $file->getRealPath(),
                     'db' => $tableDirectory['db'],
                 ];
