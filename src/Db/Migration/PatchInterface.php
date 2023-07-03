@@ -24,5 +24,7 @@ interface PatchInterface
      *
      * @return array
      */
-    public function __invoke(): array;
+    public function up(): array;
+
+    public function down(): ?array;
 }

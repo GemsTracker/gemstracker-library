@@ -121,7 +121,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 
         $result = $repository->getPatchesFromFiles();
 
-        $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql');
+        $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql');
 
         $expected = [
             'somePatch' => [
@@ -132,10 +132,10 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 123,
                 'data' => $data,
                 'sql' => [
-                    "ALTER TABLE test__table\r\n    ADD tt_name varchar(255)",
+                    "ALTER TABLE test__table\n    ADD tt_name varchar(255)",
                 ],
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql')),
-                'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql')),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql'),
                 'db' => 'gems',
             ],
         ];
@@ -149,7 +149,7 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
 
         $patchesInfo = $repository->getInfo();
 
-        $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql');
+        $data = file_get_contents(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql');
 
         $expected = [
             PhpPatch::class => [
@@ -180,10 +180,10 @@ class PatchRepositoryTest extends MigrationRepositoryTestAbstract
                 'order' => 123,
                 'data' => $data,
                 'sql' => [
-                    "ALTER TABLE test__table\r\n    ADD tt_name varchar(255)",
+                    "ALTER TABLE test__table\n    ADD tt_name varchar(255)",
                 ],
-                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql')),
-                'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.sql'),
+                'lastChanged' => \DateTimeImmutable::createFromFormat('U', filemtime(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql')),
+                'location' => realpath(__DIR__ . '/../../TestData/Db/PatchRepository/123.somePatch.up.sql'),
                 'db' => 'gems',
                 'status' => 'new',
                 'executed' => null,

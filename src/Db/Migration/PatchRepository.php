@@ -44,7 +44,7 @@ class PatchRepository extends MigrationRepositoryAbstract
             }
             $description = $patchClass->getDescription();
             $order = $patchClass->getOrder() ?? $this->defaultOrder;
-            $data = $patchClass();
+            $data = $patchClass->up();
             $reflectionClass = new \ReflectionClass($patchClassName);
 
             $patch = [
@@ -77,7 +77,7 @@ class PatchRepository extends MigrationRepositoryAbstract
 
         foreach($patchesDirectories as $patchesDirectory) {
             $finder = new Finder();
-            $files = $finder->files()->name('*.sql')->in($patchesDirectory['path']);
+            $files = $finder->files()->name('*.up.sql')->in($patchesDirectory['path']);
 
             foreach ($files as $file) {
                 $filenameParts = explode('.', $file->getFilenameWithoutExtension());

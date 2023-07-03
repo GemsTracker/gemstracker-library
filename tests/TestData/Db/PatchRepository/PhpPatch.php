@@ -16,7 +16,7 @@ class PhpPatch extends PatchAbstract
         return 100;
     }
 
-    public function __invoke(): array
+    public function up(): array
     {
         return [
             'ALTER TABLE test__table ADD tt_created timestamp not null default current_timestamp',
