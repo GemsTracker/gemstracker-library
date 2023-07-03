@@ -4,10 +4,10 @@ namespace Gems\Db\Migration;
 
 abstract class SeedAbstract implements SeedInterface
 {
-    public function getDependencies(): array|null
+    /*public function getDependencies(): array|null
     {
         return null;
-    }
+    }*/
 
     public function getDescription(): string|null
     {

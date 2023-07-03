@@ -38,9 +38,18 @@ class SeedRepository extends MigrationRepositoryAbstract
         'json',
     ];
 
-    protected function resolveReferences(string $query, $generatedValues): string
+    protected function resolveReferences(array $data, array $references): array
     {
-        return $query;
+        foreach($data as $rowKey => $row) {
+            foreach($row as $column => $value) {
+                foreach($references as $reference => $replacement) {
+                    if ($value === '{{' . $reference . '}}') {
+                        $data[$rowKey][$column] = $replacement;
+                    }
+                }
+            }
+        }
+        return $data;
     }
 
     protected function getSeedDataFromFile(SplFileInfo $file): array|null
@@ -57,7 +66,7 @@ class SeedRepository extends MigrationRepositoryAbstract
         return null;
     }
 
-    protected function getQueriesFromData(Adapter $adapter, array $data): array
+    /*protected function getQueriesFromData(Adapter $adapter, array $data): array
     {
         $sql = new Sql($adapter);
         $sqlStatements = [];
@@ -69,6 +78,18 @@ class SeedRepository extends MigrationRepositoryAbstract
             }
         }
 
+        return $sqlStatements;
+    }*/
+
+    protected function getQueriesFromRows(Adapter $adapter, string $table, array $rows): array
+    {
+        $sql = new Sql($adapter);
+        $sqlStatements = [];
+        foreach($rows as $row) {
+            $insert = $sql->insert($table);
+            $insert->values($row);
+            $sqlStatements[] = $sql->buildSqlString($insert);
+        }
         return $sqlStatements;
     }
 
@@ -189,7 +210,6 @@ class SeedRepository extends MigrationRepositoryAbstract
         }
 
         $resultFetcher = new ResultFetcher($adapter);
-        $sqlQueriesPerTable = $this->getQueriesFromData($adapter, $seedInfo['data']);
 
         $start = microtime(true);
 
@@ -197,14 +217,23 @@ class SeedRepository extends MigrationRepositoryAbstract
         $generatedValues = [];
 
         try {
-            foreach($sqlQueriesPerTable as $table => $sqlQueries) {
+            foreach($seedInfo['data'] as $seedTable => $seedRows) {
+                $sqlQueries = $this->getQueriesFromRows($adapter, $seedTable, $this->resolveReferences($seedRows, $generatedValues));
+                foreach($sqlQueries as $index => $sqlQuery) {
+                    $resultFetcher->query($sqlQuery);
+                    $generatedValues[$seedTable.'.'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
+                    $finalQueries[] = $sqlQuery;
+                }
+            }
+
+            /*foreach($sqlQueriesPerTable as $table => $sqlQueries) {
                 foreach($sqlQueries as $index => $sqlQuery) {
                     $sqlQuery = $this->resolveReferences($sqlQuery, $generatedValues);
                     $resultFetcher->query($sqlQuery);
                     $generatedValues[$table.'_'.$index] = $resultFetcher->getAdapter()->getDriver()->getLastGeneratedValue();
                     $finalQueries[] = $sqlQuery;
                 }
-            }
+            }*/
 
             $event = new RunSeedMigrationEvent(
                 'seed',
