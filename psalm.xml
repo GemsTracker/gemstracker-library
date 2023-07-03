@@ -9,7 +9,7 @@
     errorBaseline="psalm-refactor-baseline.xml"
 >
     <projectFiles>
-        <directory name="srv" />
+        <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
