@@ -576,21 +576,6 @@ parameters:
 			path: src/Handlers/AskHandler.php
 
 		-
-			message: "#^Access to undefined constant Gems\\\\Handlers\\\\NotFoundHandler\\:\\:LAYOUT_DEFAULT\\.$#"
-			count: 1
-			path: src/Handlers/NotFoundHandler.php
-
-		-
-			message: "#^Access to undefined constant Gems\\\\Handlers\\\\NotFoundHandler\\:\\:TEMPLATE_DEFAULT\\.$#"
-			count: 1
-			path: src/Handlers/NotFoundHandler.php
-
-		-
-			message: "#^Gems\\\\Handlers\\\\NotFoundHandler\\:\\:__construct\\(\\) calls parent\\:\\:__construct\\(\\) but Gems\\\\Handlers\\\\NotFoundHandler does not extend any class\\.$#"
-			count: 1
-			path: src/Handlers/NotFoundHandler.php
-
-		-
 			message: "#^Call to an undefined method Gems\\\\Handlers\\\\ParticipateHandler\\:\\:forward\\(\\)\\.$#"
 			count: 1
 			path: src/Handlers/ParticipateHandler.php
