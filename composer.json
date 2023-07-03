@@ -105,7 +105,8 @@
         "giggsey/libphonenumber-for-php": "^8.13.7",
         "laminas/laminas-config-aggregator": "1.14.x-dev",
         "guzzlehttp/guzzle": "^7.5@dev",
-        "laminas/laminas-stratigility": "^3.9.0"
+        "laminas/laminas-stratigility": "^3.9.0",
+        "mezzio/mezzio": "^3.16"
     },
     "require-dev": {
         "phing/phing": "^2.17.3",
