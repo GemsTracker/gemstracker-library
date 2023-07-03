@@ -14,4 +14,9 @@ abstract class PatchAbstract implements PatchInterface
     {
         return 1000;
     }
+
+    public function down(): ?array
+    {
+        return null;
+    }
 }

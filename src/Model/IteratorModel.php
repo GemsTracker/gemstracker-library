@@ -2,17 +2,27 @@
 
 namespace Gems\Model;
 
-use MUtil\Model\ArrayModelAbstract;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Ra\ArrayModelAbstract;
 
 class IteratorModel extends ArrayModelAbstract
 {
-    public function __construct(string $name, protected readonly iterable $data)
+    /*public function __construct(string $name, protected readonly iterable $data)
     {
         parent::__construct($name);
+    }*/
+    public function __construct(MetaModelInterface $metaModel, protected iterable $data = [])
+    {
+        parent::__construct($metaModel);
     }
 
-    protected function _loadAllTraversable()
+    protected function _loadAll(): iterable
     {
         return $this->data;
+    }
+
+    public function setData(iterable $data): void
+    {
+        $this->data = $data;
     }
 }

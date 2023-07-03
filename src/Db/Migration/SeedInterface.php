@@ -16,7 +16,7 @@ interface SeedInterface
      *
      * @return array|null
      */
-    public function getDependencies(): array|null;
+    /*public function getDependencies(): array|null;*/
 
     /**
      * Get order in which this seed should be run
