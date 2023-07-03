@@ -2,9 +2,9 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ "master", "2.x" ]
+    branches: [ "2.x" ]
   pull_request:
-    branches: [ "master", "2.x" ]
+    branches: [ "2.x" ]
 
 permissions:
   contents: read
@@ -27,7 +27,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: COMPOSER_ROOT_VERSION=2.x-dev composer install --prefer-dist --no-progress
 
     - name: Run test suite
       run: composer test
