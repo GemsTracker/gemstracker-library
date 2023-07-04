@@ -1003,6 +1003,22 @@ class LimeSurvey1m9FieldMap
     }
 
     /**
+     * Get the table structure of the token table
+     *
+     * @return array List of \Zend_DB Table metadata
+     */
+    public function getTokenTableStructure()
+    {
+        $tableName = $this->_getTokenTableName();
+
+        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
+        $info = $table->info();
+        $metaData = $info['metadata'];
+
+        return $metaData;
+    }
+
+    /**
      * Function to cast numbers as float, but leave null intact
      * @param  The number to cast to float
      * @return float

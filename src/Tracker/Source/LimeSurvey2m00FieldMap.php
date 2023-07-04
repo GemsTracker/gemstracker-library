@@ -24,22 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
 {
     /**
-     * Get the table structure of the token table
-     *
-     * @return array List of \Zend_DB Table metadata
-     */
-    public function getTokenTableStructure()
-    {
-        $tableName = $this->_getTokenTableName();
-
-        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
-        $info = $table->info();
-        $metaData = $info['metadata'];
-
-        return $metaData;
-    }
-
-    /**
      * Execute a Database query on the limesurvey Database
      *
      * @param $sql mixed SQL query to perform on the limesurvey database
