@@ -817,8 +817,10 @@ class LimeSurvey3m00FieldMap
         }
     }
 
-    protected function getDateFormats($fieldname, $type)
+    protected function getDateFormats($fieldname, $type): array
     {
+        $tmpres = [];
+
         if ($dataType = $this->getFieldTableDataType($fieldname)) {
             if ($dataType == 'datetime' || $dataType == 'timestamp') {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
