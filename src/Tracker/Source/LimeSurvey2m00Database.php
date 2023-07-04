@@ -24,12 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
-     *
-     * @var string class name for creating field maps
-     */
-    protected $fieldMapClass = '\\Gems\\Tracker\\Source\\LimeSurvey2m00FieldMap';
-
-    /**
      * Check a token table for any changes needed by this version.
      *
      * @param array $tokenTable

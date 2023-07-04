@@ -115,7 +115,7 @@ class LimeSurvey1m91Database extends SourceAbstract
      *
      * @var string class name for creating field maps
      */
-    protected $fieldMapClass = '\\Gems\\Tracker\\Source\\LimeSurvey1m9FieldMap';
+    protected $fieldMapClass = '\\Gems\\Tracker\\Source\\LimeSurvey2m00FieldMap';
 
     /**
      *
