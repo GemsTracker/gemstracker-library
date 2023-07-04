@@ -247,7 +247,7 @@ class TokenRepository
      * @param boolean $showAnswers
      * @return \Zalt\Html\AElement
      */
-    public function getTokenAnswerLink($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps = true, $showAnswers = true): ?AElement
+    public function getTokenAnswerLink($url, $tokenId, $tokenStatus): ?AElement
     {
         if ($url instanceof LateInterface) {
             try {
@@ -288,16 +288,13 @@ class TokenRepository
             Model::REQUEST_ID  => 'gto_id_token',
             Model::REQUEST_ID1 => 'gr2o_patient_nr',
             Model::REQUEST_ID2 => 'gto_id_organization',
+            \Gems\Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
         ], $bridge);
 
         return Late::method($this, 'getTokenAnswerLink',
             $url['url'],
-            $bridge->getLate('gr2o_patient_nr'),
-            $bridge->getLate('gto_id_organization'),
             $bridge->getLate('gto_id_token'),
             $bridge->getLate('token_status'),
-            $keepCaps,
-            $bridge->getLate('show_answers')
         );
     }
 
@@ -526,6 +523,7 @@ class TokenRepository
             Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
             Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
             Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+            \Gems\Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
         ]);
 
         if (isset($link['url'])) {
