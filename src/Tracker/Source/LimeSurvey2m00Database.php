@@ -24,34 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
-     * Returns the url that (should) start the survey for this token
-     *
-     * @param \Gems\Tracker\Token $token \Gems token object
-     * @param string $language
-     * @param int $surveyId \Gems Survey Id
-     * @param string $sourceSurveyId Optional Survey Id used by source
-     * @return string The url to start the survey
-     */
-    public function getTokenUrl(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId)
-    {
-        if (null === $sourceSurveyId) {
-            $sourceSurveyId = $this->_getSid($surveyId);
-        }
-        $tokenId = $this->_getToken($token->getTokenId());
-
-        if ($this->_isLanguage($sourceSurveyId, $language)) {
-            $langUrl = '/lang/' . $language;
-        } else {
-            $langUrl = '';
-        }
-
-        // <base>/index.php/survey/index/sid/834486/token/234/lang/en
-        $baseurl = $this->getBaseUrl();
-        $start = $this->config['survey']['limesurvey']['tokenUrlStart'] ?? 'index.php';
-        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
-    }
-
-    /**
      * Get the table structure of a survey table
      *
      * @param $sourceSurveyId int Limesurvey survey ID

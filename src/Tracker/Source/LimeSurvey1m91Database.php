@@ -1398,17 +1398,15 @@ class LimeSurvey1m91Database extends SourceAbstract
         $tokenId = $this->_getToken($token->getTokenId());
 
         if ($this->_isLanguage($sourceSurveyId, $language)) {
-            $langUrl = '&lang=' . $language;
+            $langUrl = '/lang/' . $language;
         } else {
             $langUrl = '';
         }
 
-        // mgzdev.erasmusmc.nl/incant/index.php?sid=1&token=o7l9_b8z2
+        // <base>/index.php/survey/index/sid/834486/token/234/lang/en
         $baseurl = $this->getBaseUrl();
-
         $start = $this->config['survey']['limesurvey']['tokenUrlStart'] ?? 'index.php';
-
-        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . $start .'?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
+        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl . '/newtest/Y';
     }
 
     /**
