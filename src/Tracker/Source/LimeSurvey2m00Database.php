@@ -19,7 +19,7 @@ use Gems\Log\LogHelper;
 use MUtil\Model;
 
 /**
- * LimeSurvey2m00Database is a Source interface that enables the use of LimeSurvey 2.x
+ * LimeSurvey3m00Database is a Source interface that enables the use of LimeSurvey 3.x
  * installation as survey/answer source for \Gems projects.
  *
  * @package    Gems
@@ -28,7 +28,7 @@ use MUtil\Model;
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class LimeSurvey2m00Database extends SourceAbstract
+class LimeSurvey3m00Database extends SourceAbstract
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
