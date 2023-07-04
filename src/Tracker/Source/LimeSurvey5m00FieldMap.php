@@ -367,7 +367,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
 
             $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
 
-            if (false === $attributes) {
+            if (null === $attributes) {
                 // If DB lookup failed, return the default
                 return $default;
             }
