@@ -24,19 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
-     * Check a token table for any changes needed by this version.
-     *
-     * @param array $tokenTable
-     * @return array Fieldname => change field commands
-     */
-    protected function _checkTokenTable(array $tokenTable)
-    {
-        $missingFields = parent::_checkTokenTable($tokenTable);
-
-        return self::addnewAttributeFields($tokenTable, $missingFields);
-    }
-
-    /**
      * Returns a list of field names that should be set in a newly inserted token.
      *
      * Adds the fields without default new in 2.00
@@ -64,25 +51,6 @@ class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
         $values['blacklisted']    = '';
 
         return $values;
-    }
-
-    /**
-     * Adds the fields without default new in 2.00
-     *
-     * @param array $tokenTable
-     * @param array $missingFields
-     * @return array Fieldname => change field commands
-     */
-    public static function addnewAttributeFields(array $tokenTable, array $missingFields)
-    {
-        if (! isset($tokenTable['participant_id'])) {
-            $missingFields['participant_id'] = "ADD participant_id varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL";
-        }
-        if (! isset($tokenTable['blacklisted'])) {
-            $missingFields['blacklisted'] = "ADD blacklisted varchar(17) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL";
-        }
-
-        return $missingFields;
     }
 
     /**

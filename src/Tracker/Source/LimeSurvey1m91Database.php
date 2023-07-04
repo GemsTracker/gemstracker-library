@@ -221,6 +221,14 @@ class LimeSurvey1m91Database extends SourceAbstract
             $missingFields['usesleft'] = "ADD `usesleft` INT( 11 ) NULL DEFAULT '1' AFTER `completed`";
         }
 
+        // Added in LS 2.00
+        if (! isset($tokenTable['participant_id'])) {
+            $missingFields['participant_id'] = "ADD participant_id varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL";
+        }
+        if (! isset($tokenTable['blacklisted'])) {
+            $missingFields['blacklisted'] = "ADD blacklisted varchar(17) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL";
+        }
+
         return $missingFields;
     }
 
