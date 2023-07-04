@@ -268,6 +268,11 @@ class LimeSurvey1m91Database extends SourceAbstract
         // Not really an attribute, but it is the best place to set this
         $values['usesleft'] = $token->isCompleted() ? 0 : 1;
 
+        // Added in LS 2.00
+        // Not really attributes, but they need a value
+        $values['participant_id'] = '';
+        $values['blacklisted']    = '';
+
         return $values;
     }
 

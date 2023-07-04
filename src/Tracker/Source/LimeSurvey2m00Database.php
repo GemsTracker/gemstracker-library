@@ -24,36 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
-     * Returns a list of field names that should be set in a newly inserted token.
-     *
-     * Adds the fields without default new in 2.00
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Of fieldname => value type
-     */
-    protected function _fillAttributeMap(\Gems\Tracker\Token $token)
-    {
-        $values = parent::_fillAttributeMap($token);
-
-        return self::addnewAttributeDefaults($values);
-    }
-
-    /**
-     * Adds the fields without default new in 2.00
-     *
-     * @param \Gems\Tracker\Token $token
-     * @return array Of fieldname => value type
-     */
-    public static function addnewAttributeDefaults(array $values)
-    {
-        // Not really attributes, but they need a value
-        $values['participant_id'] = '';
-        $values['blacklisted']    = '';
-
-        return $values;
-    }
-
-    /**
      * Returns the url that (should) start the survey for this token
      *
      * @param \Gems\Tracker\Token $token \Gems token object
