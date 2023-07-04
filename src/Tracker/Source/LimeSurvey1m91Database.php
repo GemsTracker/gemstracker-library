@@ -1627,4 +1627,17 @@ class LimeSurvey1m91Database extends SourceAbstract
 
         return 0;
     }
+
+    /**
+     * Get the table structure of a survey table
+     *
+     * @param $sourceSurveyId int Limesurvey survey ID
+     * @return array List of table structure
+     */
+    public function getSurveyTableStructure($sourceSurveyId)
+    {
+        $tableStructure = $this->_getFieldMap($sourceSurveyId)->getSurveyTableStructure();
+
+        return $tableStructure;
+    }
 }
