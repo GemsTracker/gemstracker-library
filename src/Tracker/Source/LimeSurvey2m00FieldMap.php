@@ -23,14 +23,5 @@ namespace Gems\Tracker\Source;
  */
 class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
 {
-    /**
-     * Execute a Database query on the limesurvey Database
-     *
-     * @param $sql mixed SQL query to perform on the limesurvey database
-     * @param array $bindValues optional bind values for the Query
-     */
-    public function lsDbQuery($sql, $bindValues=array())
-    {
-        $this->lsDb->query($sql, $bindValues);
-    }
+
 }

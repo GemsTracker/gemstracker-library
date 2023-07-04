@@ -1100,4 +1100,15 @@ class LimeSurvey1m9FieldMap
     {
         return trim(\MUtil\StringUtil\StringUtil::beforeChars(\MUtil\Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
     }
+
+    /**
+     * Execute a Database query on the limesurvey Database
+     *
+     * @param $sql mixed SQL query to perform on the limesurvey database
+     * @param array $bindValues optional bind values for the Query
+     */
+    public function lsDbQuery($sql, $bindValues=array())
+    {
+        $this->lsDb->query($sql, $bindValues);
+    }
 }
