@@ -6,7 +6,7 @@ use Gems\Db\Migration\TableRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Zalt\Model\Data\DataReaderInterface;
 
-#[AsCommand(name: 'db:tables', description: 'Show and create new Database tables')]
+#[AsCommand(name: 'db:table', description: 'Show and create new Database tables')]
 class RunTables extends RunMigrationAbstract
 {
     protected string $topic = 'table';
