@@ -97,7 +97,7 @@ class LimeSurvey3m00FieldMap
      * @param int $sourceSurveyId            Survey ID
      * @param string $language               (ISO) Language
      * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
-     * @param \Zend_Translate $translate      A translate object
+     * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Gems\Cache\HelperAdapter $cache
      */
@@ -1022,7 +1022,7 @@ class LimeSurvey3m00FieldMap
 
     /**
      * Function to cast numbers as float, but leave null intact
-     * @param  The number to cast to float
+     * @param $value The number to cast to float
      * @return float
      */
     public function handleFloat($value)

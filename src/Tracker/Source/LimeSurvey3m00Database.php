@@ -453,7 +453,7 @@ class LimeSurvey3m00Database extends SourceAbstract
     /**
      * Replaces hyphen with underscore so LimeSurvey won't choke on it
      *
-     * @param string $token
+     * @param string $tokenId
      * @param boolean $reverse  Reverse the action to go from limesurvey to GemsTracker token (default is false)
      * @return string
      */
@@ -1415,7 +1415,7 @@ class LimeSurvey3m00Database extends SourceAbstract
      * Get valid from/to dates to send to LimeSurvey depending on the dates of the token
      *
      * @param \Gems\Tracker\Token $token
-     * @return []
+     * @return array
      */
     public function getValidDates(\Gems\Tracker\Token $token)
     {
