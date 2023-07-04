@@ -39,36 +39,21 @@ class RunMigrations extends Command
 
     protected function configure()
     {
-        $this->addArgument('all', InputArgument::OPTIONAL, sprintf('use \'all\' Directy run all migrations'));
+        $this->addArgument('command', InputArgument::OPTIONAL, sprintf('use \'all\' Directy run all migrations'));
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $runAll = $input->getArgument('all');
+        $command = $input->getArgument('all');
 
-        if ($runAll !== 'all') {
-            $io = new SymfonyStyle($input, $output);
+        $result = match($command) {
+            'all', '~' => $this->runAll($input, $output),
+            'init', 'start' => $this->initDatabase($input, $output),
+            'show' => $this->showAll($input, $output),
+            default => $this->showAll($input, $output),
+        };
 
-            $tables = $this->getTables();
-            $this->showItems($tables, 'tables', $output, $io);
-
-            $patches = $this->getPatches();
-            $this->showItems($patches, 'patches', $output, $io);
-
-            $seeds = $this->getSeeds();
-            $this->showItems($seeds, 'seeds', $output, $io);
-
-            $result = $io->confirm('Run all migrations?', false);
-            if (!$result) {
-                return Command::SUCCESS;
-            }
-        }
-
-        $this->createTables($tables, $io);
-        $this->runPatches($patches, $io);
-        $this->runSeeds($seeds, $io);
-
-        return Command::SUCCESS;
+        return $result;
     }
 
     protected function createTables(array $tables, SymfonyStyle $io): void
@@ -81,6 +66,32 @@ class RunMigrations extends Command
                 $io->error(sprintf('%s %s failed.. %s', 'Table', $tableInfo['name'], $e->getMessage()));
             }
         }
+    }
+
+    protected function initDatabase(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $tables = $this->getTables();
+        $seeds = $this->getSeeds();
+
+        $this->createTables($tables, $io);
+        $this->patchRepository->setBaseline();
+
+        $this->runSeeds($seeds, $io);
+    }
+
+    protected function runAll(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $tables = $this->getTables();
+        $patches = $this->getPatches();
+        $seeds = $this->getSeeds();
+
+        $this->createTables($tables, $io);
+        $this->runPatches($patches, $io);
+        $this->runSeeds($seeds, $io);
     }
 
     protected function runPatches(array $patches, SymfonyStyle $io): void
@@ -105,6 +116,26 @@ class RunMigrations extends Command
                 $io->error(sprintf('%s %s failed.. %s', 'Seed', $seedInfo['name'], $e->getMessage()));
             }
         }
+    }
+
+    protected function showAll(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $tables = $this->getTables();
+        $this->showItems($tables, 'tables', $output, $io);
+
+        $patches = $this->getPatches();
+        $this->showItems($patches, 'patches', $output, $io);
+
+        $seeds = $this->getSeeds();
+        $this->showItems($seeds, 'seeds', $output, $io);
+
+        $result = $io->confirm('Run all migrations?', false);
+        if (!$result) {
+            return Command::SUCCESS;
+        }
+        return $this->runAll($input, $output);
     }
 
     protected function showItems(array $items, string $topic, OutputInterface $output, SymfonyStyle $io): void

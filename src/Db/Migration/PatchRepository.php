@@ -189,4 +189,32 @@ class PatchRepository extends MigrationRepositoryAbstract
         }
         $this->eventDispatcher->dispatch($event);
     }
+
+    public function setAsSkipped(array $patchInfo): void
+    {
+        $event = new RunPatchMigrationEvent(
+            'patch',
+            1,
+            $patchInfo['module'],
+            $patchInfo['name'],
+            'skipped',
+            join("\n", $patchInfo['sql']),
+            null,
+            null,
+            null,
+        );
+
+        $this->eventDispatcher->dispatch($event);
+    }
+
+    public function setBaseline(): void
+    {
+        $patchList = $this->getInfo();
+        foreach($patchList as $patch) {
+            if ($patch['status'] !== 'new') {
+                continue;
+            }
+            $this->setAsSkipped($patch);
+        }
+    }
 }
