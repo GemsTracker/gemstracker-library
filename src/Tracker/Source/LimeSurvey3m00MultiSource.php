@@ -10,7 +10,7 @@
 
 namespace Gems\Tracker\Source;
 
-use Gems\Tracker\Source\LimeSurvey2m00Database as LSSingleSource;
+use Gems\Tracker\Source\LimeSurvey3m00Database as LSSingleSource;
 
 /**
  * This source allows to share one LimeSurvey with multiple satellite GemsTracker installations.
@@ -30,7 +30,7 @@ use Gems\Tracker\Source\LimeSurvey2m00Database as LSSingleSource;
  * @license    New BSD License
  * @since      Class available since version 1.8.8
  */
-class LimeSurvey2m00MultiSource extends LSSingleSource {
+class LimeSurvey3m00MultiSource extends LSSingleSource {
 
     /**
      * A map containing attributename => databasefieldname mappings
