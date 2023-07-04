@@ -22,9 +22,9 @@ use MUtil\Translate\Translator;
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.7.0
  */
-class LimeSurvey1m9FieldMap
+class LimeSurvey2m00FieldMap
 {
     const ANSWERS_TABLE      = 'answers';
     const ATTRIBUTES_TABLE   = 'question_attributes';
