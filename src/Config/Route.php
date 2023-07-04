@@ -601,7 +601,7 @@ class Route
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks.token',
                 controllerClass: \Gems\Handlers\Respondent\TokenHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/track-tokens',
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/track/token',
                 pages: [
                     'answer',
                     'delete',

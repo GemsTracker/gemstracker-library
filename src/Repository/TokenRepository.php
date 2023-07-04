@@ -280,11 +280,11 @@ class TokenRepository
      */
     public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.answer')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.token.answer')) {
             //return null;
         }
 
-        $url = $helper->getLateRouteUrl('respondent.tracks.answer', [
+        $url = $helper->getLateRouteUrl('respondent.tracks.token.answer', [
             Model::REQUEST_ID  => 'gto_id_token',
             Model::REQUEST_ID1 => 'gr2o_patient_nr',
             Model::REQUEST_ID2 => 'gto_id_organization',
@@ -586,7 +586,7 @@ class TokenRepository
      */
     public function getTokenStatusLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
             return $this->getTokenStatusShowForBridge($bridge, $helper);
         }
 
@@ -597,7 +597,7 @@ class TokenRepository
             $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
         );*/
 
-        $url = $helper->getLateRouteUrl('respondent.tracks.show', [
+        $url = $helper->getLateRouteUrl('respondent.track.token.show', [
             'gto_id_token' => $bridge->getLate('gr2o_patient_nr'),
             \Gems\Model::ID_TYPE => 'token',
         ]);
