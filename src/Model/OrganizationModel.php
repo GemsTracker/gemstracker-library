@@ -406,7 +406,7 @@ class OrganizationModel extends \Gems\Model\JoinModel
         $this->setIfExists('gor_allowed_ip_ranges',
             'elementClass', 'Textarea',
             'rows', 4,
-            'validator', new \Gems\Validate\IPRanges()
+            'validator', new \Gems\Validator\IPRanges()
             );
         $this->setIfExists('gor_user_class');
 

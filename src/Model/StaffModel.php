@@ -20,8 +20,8 @@ use Gems\User\UserLoader;
 use Gems\User\Validate\PhoneNumberValidator;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\ValueSwitchDependency;
-use MUtil\Validate\NoScript;
-use MUtil\Validate\SimpleEmail;
+use MUtil\Validator\NoScript;
+use MUtil\Validator\SimpleEmail;
 use Zalt\Html\AElement;
 
 /**
@@ -400,7 +400,7 @@ class StaffModel extends JoinModel
             'description', $this->_('If checked the user will logoff when answering a survey.'),
             'elementClass', 'Checkbox',
             'multiOptions', $yesNo,
-            'validator', new \Gems\Validate\OneOf(
+            'validator', new \Gems\Validator\OneOf(
                 $this->get('gsf_is_embedded', 'label'),
                 'gsf_is_embedded',
                 $this->_('Logout on survey.')

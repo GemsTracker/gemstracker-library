@@ -7,7 +7,7 @@
  * @license    New BSD License
  */
 
-namespace Gems\Validate;
+namespace Gems\Validator;
 
 use IPLib\Factory as IpFactory;
 use IPLib\Range\RangeInterface;

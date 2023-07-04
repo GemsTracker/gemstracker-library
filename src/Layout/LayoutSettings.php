@@ -4,6 +4,8 @@ namespace Gems\Layout;
 
 class LayoutSettings
 {
+    protected array $layoutParams = [];
+
     /**
      * @var array Javascript (vite) resources
      */
@@ -20,6 +22,18 @@ class LayoutSettings
      * @var string template to show
      */
     protected string $template = 'gems::legacy-view';
+
+    public function addLayoutParameter(string $key, mixed $value)
+    {
+        $this->layoutParams[$key] = $value;
+        return $this;
+    }
+
+    public function addLayoutParameters(array $params)
+    {
+        $this->layoutParams = $params + $this->layoutParams;
+        return $this;
+    }
 
     /**
      * @param string $resource Javascript (vite) resource
@@ -44,6 +58,11 @@ class LayoutSettings
     public function disableMenu(): void
     {
         $this->showMenu = false;
+    }
+
+    public function getLayoutParameters(): array
+    {
+        return $this->layoutParams;
     }
 
     public function getResources(): array

@@ -19,7 +19,7 @@ use Laminas\Validator\GreaterThan;
 use Laminas\Validator\LessThan;
 use MUtil\Model;
 use MUtil\Model\Dependency\DependencyAbstract;
-use MUtil\Validate\IsNot;
+use MUtil\Validator\IsNot;
 use Zalt\Html\AElement;
 
 /**

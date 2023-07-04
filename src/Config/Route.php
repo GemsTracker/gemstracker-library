@@ -72,7 +72,6 @@ class Route
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
-                ...$this->getParticipateRoutes(),
             ]),
         ];
     }
@@ -124,6 +123,7 @@ class Route
             [
                 ...$this->getAskRoutes(),
                 ...$this->getContactRoutes(),
+                ...$this->getParticipateRoutes(),
             ]),
 
 
@@ -329,7 +329,6 @@ class Route
                     'unsubscribe-thanks',
                 ],
                 postRoutes: [
-                    ...$this->defaultPostRoutes,
                     'subscribe',
                     'unsubscribe',
                 ]

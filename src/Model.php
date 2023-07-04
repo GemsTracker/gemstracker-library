@@ -610,16 +610,14 @@ class Model
         $model->setOnSave($created_field, new CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
-        if (! $userid && self::$currentUserId) {
+        if (! $userid) {
             $userid = self::$currentUserId;
         }
 
-        if ($userid) {
-            $model->setOnSave($changed_by_field, $userid);
-            $model->setSaveOnChange($changed_by_field);
-            $model->setOnSave($created_by_field, $userid);
-            $model->setSaveWhenNew($created_by_field);
-        }
+        $model->setOnSave($changed_by_field, $userid);
+        $model->setSaveOnChange($changed_by_field);
+        $model->setOnSave($created_by_field, $userid);
+        $model->setSaveWhenNew($created_by_field);
     }
 
     /**

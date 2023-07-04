@@ -18,7 +18,7 @@ class IPRangesTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->validator = new \Gems\Validate\IPRanges();
+        $this->validator = new \Gems\Validator\IPRanges();
     }
 
     /**

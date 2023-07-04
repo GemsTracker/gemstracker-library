@@ -73,7 +73,7 @@ class OrganizationsListSnippet extends TranslatableSnippetAbstract
                 $html->pInfo()->sprintf(
                     $this->_('Please contact the %s if you have any questions regarding %s.'),
                     $organization['gor_name'],
-                    $this->getProjectName()
+                    $this->project->getName()
                 );
                 break;
 

@@ -18,7 +18,7 @@ use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
 use Gems\User\User;
-use Gems\Validate\SubscriptionThrottleValidator;
+use Gems\Validator\SubscriptionThrottleValidator;
 use Zalt\Loader\DependencyResolver\ConstructorDependencyParametersResolver;
 
 /**

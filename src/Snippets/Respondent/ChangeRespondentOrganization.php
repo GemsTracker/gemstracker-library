@@ -26,7 +26,7 @@ use Laminas\Db\TableGateway\TableGateway;
 use MUtil\Db\Expr\CurrentTimestamp;
 use MUtil\Model;
 use MUtil\StringUtil\StringUtil;
-use MUtil\Validate\IsNot;
+use MUtil\Validator\IsNot;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\Html\Html;

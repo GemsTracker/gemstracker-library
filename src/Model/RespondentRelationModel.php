@@ -15,7 +15,7 @@ namespace Gems\Model;
 use Gems\Communication\CommunicationRepository;
 use Gems\Repository\RespondentRepository;
 use Gems\Util\Translated;
-use MUtil\Validate\SimpleEmail;
+use MUtil\Validator\SimpleEmail;
 
 /**
  *
