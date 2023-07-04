@@ -16,8 +16,11 @@ class IteratorModel extends ArrayModelAbstract
         parent::__construct($metaModel);
     }
 
-    protected function _loadAll(): iterable
+    protected function _loadAll(): array
     {
+        if ($this->data instanceof \Traversable) {
+            return iterator_to_array($this->data);
+        }
         return $this->data;
     }
 
