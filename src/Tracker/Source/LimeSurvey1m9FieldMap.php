@@ -981,6 +981,18 @@ class LimeSurvey1m9FieldMap
     }
 
     /**
+     * Get the survey table structure (meta data)
+     *
+     * @return array Table meta data
+     */
+    public function getSurveyTableStructure()
+    {
+        $metaData = $this->loadTableMetaData();
+
+        return $metaData;
+    }
+
+    /**
      * Function to cast numbers as float, but leave null intact
      * @param  The number to cast to float
      * @return float

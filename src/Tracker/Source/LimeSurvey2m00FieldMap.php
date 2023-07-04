@@ -23,19 +23,6 @@ namespace Gems\Tracker\Source;
  */
 class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
 {
-
-    /**
-     * Get the survey table structure (meta data)
-     *
-     * @return array Table meta data
-     */
-    public function getSurveyTableStructure()
-    {
-        $metaData = $this->loadTableMetaData();
-
-        return $metaData;
-    }
-
     /**
      * There exists a survey table for each active survey. The table contains the answers to the survey
      *
