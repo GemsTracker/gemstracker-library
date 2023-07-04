@@ -33,13 +33,6 @@ abstract class SourceAbstract extends \MUtil\Translate\TranslateableAbstract
     public static $metaFields = [];
 
     /**
-     * Holds the current batch if there is any
-     *
-     * @var \Gems\Task\TaskRunnerBatch
-     * /
-    protected $_batch = null;
-
-    /**
      * The database connection to \Gems itself
      *
      * @var \Zend_Db_Adapter_Abstract

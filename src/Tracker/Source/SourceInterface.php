@@ -238,13 +238,6 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
     public function getTokenUrl(\Gems\Tracker\Token $token, $language, $surveyId, $sourceSurveyId);
 
     /**
-     * Returns true if a batch is set
-     *
-     * @return boolean
-     * /
-    public function hasBatch();
-
-    /**
      * Checks whether the token is in the source.
      *
      * @param \Gems\Tracker\Token $token \Gems token object
@@ -263,15 +256,6 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @return boolean True if the token has completed
      */
     public function isCompleted(\Gems\Tracker\Token $token, $surveyId, $sourceSurveyId = null);
-
-    /**
-     * Set the batch to be used by this source
-     *
-     * Use $this->hasBatch to check for existence
-     *
-     * @param \Gems\Task\TaskRunnerBatch $batch
-     * /
-    public function setBatch(\Gems\Task\TaskRunnerBatch $batch);
 
     /**
      * Sets the answers passed on.
@@ -302,14 +286,6 @@ interface SourceInterface extends \MUtil\Registry\TargetInterface
      * @return array Returns an array of messages
      */
     public function synchronizeSurveyBatch(\Gems\Task\TaskRunnerBatch $batch, $userId);
-
-    /**
-     * Updates the gems database with the latest information about the surveys in this source adapter
-     *
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @return array Returns an array of messages
-     * /
-    public function synchronizeSurveys($userId);
 
     /**
      * Updates the consent code of the the token in the source (if needed)
