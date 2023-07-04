@@ -24,7 +24,7 @@ use MUtil\Translate\Translator;
  * @license    New BSD License
  * @since      Class available since version 1.7.0
  */
-class LimeSurvey2m00FieldMap
+class LimeSurvey3m00FieldMap
 {
     const ANSWERS_TABLE      = 'answers';
     const ATTRIBUTES_TABLE   = 'question_attributes';
