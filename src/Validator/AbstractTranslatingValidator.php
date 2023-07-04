@@ -1,6 +1,6 @@
 <?php
 
-namespace Gems\Validate;
+namespace Gems\Validator;
 
 use Laminas\Validator\AbstractValidator;
 

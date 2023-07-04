@@ -27,6 +27,7 @@ use MUtil\Model\ModelAbstract;
 use MUtil\Translate\Translator;
 use Zalt\Message\StatusMessengerInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  * Controller for Source maintenance
@@ -217,14 +218,14 @@ class SourceHandler extends ModelSnippetLegacyHandlerAbstract
             'description', $this->_('E.g. the name of the project - for single source projects.'),
             'size', 15,
             'minlength', 4,
-        //'validator', $model->createUniqueValidator('gso_source_name')
+            'validators[unique]', ModelUniqueValidator::class
         );
         $model->set('gso_ls_url',      'label', $this->_('Source Url'),
             'default', 'http://',
             'description', $this->_('For creating token-survey url.'),
             'size', 50,
-        //'validators[unique]', $model->createUniqueValidator('gso_ls_url'),
-        //'validators[url]', new \MUtil_Validate_Url()
+            'validators[unique]', ModelUniqueValidator::class,
+            'validators[url]', 'Uri'
         );
 
         $sourceClasses = $tracker->getSourceClasses();

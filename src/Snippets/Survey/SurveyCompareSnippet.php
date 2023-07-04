@@ -3,7 +3,7 @@
 namespace Gems\Snippets\Survey;
 
 use Gems\Util\Translated;
-use MUtil\Validate\NotEqualTo;
+use MUtil\Validator\NotEqualTo;
 
 class SurveyCompareSnippet extends \MUtil\Snippets\WizardFormSnippetAbstract {
 

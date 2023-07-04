@@ -518,7 +518,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
                 'elementClass', 'Checkbox',
                 'required', true,
                 'order', $this->getOrder('gr2o_email') + 1,
-                'validator', new \Gems\Validate\OneOf(
+                'validator', new \Gems\Validator\OneOf(
                         $this->_('Respondent has no e-mail'),
                         'gr2o_email',
                         $this->get('gr2o_email', 'label')
@@ -558,7 +558,7 @@ class RespondentModel extends \Gems\Model\HiddenOrganizationModel
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 'elementClass', 'Date',
-                'validator', new \MUtil\Validate\Date\DateBefore()
+                'validator', new \MUtil\Validator\Date\DateBefore()
                 );
 
         $this->setIfExists('gr2o_treatment', 'size', 30);

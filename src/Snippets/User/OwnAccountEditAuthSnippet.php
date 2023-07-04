@@ -37,7 +37,7 @@ use MUtil\Bootstrap\Form\Element\Password;
 use MUtil\Bootstrap\Form\Element\Text;
 use MUtil\Model\TableModel;
 use MUtil\Ra;
-use MUtil\Validate\SimpleEmail;
+use MUtil\Validator\SimpleEmail;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Contracts\Translation\TranslatorInterface;

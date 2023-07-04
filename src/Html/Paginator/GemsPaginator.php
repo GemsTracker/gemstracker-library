@@ -55,8 +55,8 @@ class GemsPaginator extends \Zalt\Html\Paginator\LinkPaginator
 
     protected function getItems(): array
     {
-        $start = (($this->pageNumber - 1) * $this->pageItems) + 1;
-        $end   = min($this->pageNumber * $this->pageItems, $this->itemCount);
+        $start = $this->getFirstItem();
+        $end   = $this->getLastItem();
 
         return [
             sprintf($this->_('%d to '), $start),

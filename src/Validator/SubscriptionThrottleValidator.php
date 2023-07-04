@@ -9,7 +9,7 @@
  * @license    No free license, do not copy
  */
 
-namespace Gems\Validate;
+namespace Gems\Validator;
 
 use MUtil\Registry\TargetAbstract;
 

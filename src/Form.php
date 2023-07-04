@@ -45,7 +45,7 @@ class Form extends \MUtil\Form
 
         $this->addElementPrefixPath('Gems\Form_Decorator',  'Form/Decorator/',  \Zend_Form_Element::DECORATOR);
         $this->addElementPrefixPath('Gems_Filter',          'Filter/',          \Zend_Form_Element::FILTER);
-        $this->addElementPrefixPath('Gems_Validate',        'Validate/',        \Zend_Form_Element::VALIDATE);
+        $this->addElementPrefixPath('Gems_Validator',       'Validator/',       \Zend_Form_Element::VALIDATE);
 
         $this->setDisableTranslator(true);
 

@@ -19,6 +19,7 @@ use Gems\Tracker\Model\Dependency\TokenModelTimeDependency;
 use Gems\User\User;
 use Gems\Util\Translated;
 use MUtil\Model\Dependency\OffOnElementsDependency;
+use MUtil\Validator\Date\DateAfter;
 
 /**
  * The StandardTokenModel is the model used to display tokens
@@ -252,7 +253,7 @@ class StandardTokenModel extends \Gems\Model\HiddenOrganizationModel
         $this->addDependency(new OffOnElementsDependency('gto_valid_until_manual', 'gto_valid_until', 'readonly', $this));
 
         $this->set('gto_valid_until', 'validators[dateAfter]',
-              new \MUtil\Validate\Date\DateAfter('gto_valid_from')
+              new DateAfter('gto_valid_from')
               );
 
         return $this;
