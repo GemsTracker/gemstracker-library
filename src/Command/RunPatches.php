@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Zalt\Model\Data\DataReaderInterface;
 
-#[AsCommand(name: 'db:patches', description: 'Show and run Database patches')]
+#[AsCommand(name: 'db:patch', description: 'Show and run Database patches')]
 class RunPatches extends RunMigrationAbstract
 {
     protected string $topic = 'patch';
@@ -35,20 +35,27 @@ class RunPatches extends RunMigrationAbstract
         $name = $io->ask('Name:');
         $addDown = $io->confirm('Add revert file (down)', true);
 
-        $directories = $this->patchRepository->getPatchesDirectories();
-        $targetDir = $io->choice('Where should the patch be placed?', $directories);
+        $directories = array_column($this->patchRepository->getPatchesDirectories(), 'path');
+        $first = reset($directories);
+
+        $targetDir = $io->choice('Where should the patch be placed?', $directories, $first);
 
         $order = $this->createOrder();
 
-        $fileUp = $order . '.' . $name . '.up.sql';
-        $fileDown = $order . '.' . $name . '.down.sql';
+        $fileUp = $targetDir . DIRECTORY_SEPARATOR . $order . '.' . $name . '.up.sql';
+        $fileDown = $targetDir . DIRECTORY_SEPARATOR . $order . '.' . $name . '.down.sql';
 
-        $result = touch($targetDir . $fileUp);
+        $result = touch($fileUp);
         if ($addDown) {
-            touch($targetDir . $fileDown);
+            touch($fileDown);
         }
 
         if ($result) {
+            $message = sprintf('Patch %s created', realpath($fileUp));
+            if ($addDown) {
+                $message = sprintf('Patches %s created', join(', ', [realpath($fileUp), realpath($fileDown)]));
+            }
+            $io->success($message);
             return Command::SUCCESS;
         }
         return Command::FAILURE;
