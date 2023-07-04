@@ -913,6 +913,8 @@ class LimeSurvey3m00Database extends SourceAbstract
         if (isset($answers[$fieldName]) && $answers[$fieldName]) {
             return Model::getDateTimeInterface($answers[$fieldName], [self::LS_DB_DATETIME_FORMAT, self::LS_DB_DATE_FORMAT]);
         }
+
+        return null;
     }
 
     public function getAttributes()
