@@ -14,6 +14,7 @@ namespace Gems\Tracker\Model;
 
 use Gems\Tracker\TrackEvents;
 use Gems\Util\Translated;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  * Simple stub for track model, allows extension by projects and adds auto labelling
@@ -173,7 +174,7 @@ class TrackModel extends \MUtil\Model\TableModel
             $this->set('gtr_track_name',
                     'minlength', 4,
                     'size', 30,
-                    'validators[unique]', $this->createUniqueValidator('gtr_track_name')
+                    'validators[unique]', ModelUniqueValidator::class
                     );
         }
         if ($this->project->translateDatabaseFields()) {

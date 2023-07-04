@@ -18,6 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\Sql\SqlTableModel;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  *
@@ -78,8 +79,8 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
                     'multiOptions', $this->consentUtil->getConsentTypes(),
                     'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
         if ($detailed) {
-            // $metaModel->set('gco_description', 'validator', $model->createUniqueValidator('gco_description'));
-            // $metaModel->set('gco_order',       'validator', $model->createUniqueValidator('gco_order'));
+            $metaModel->set('gco_description', 'validator', ModelUniqueValidator::class);
+            $metaModel->set('gco_order',       'validator', ModelUniqueValidator::class);
         }
 
         if ('create' == $action || 'edit' == $action) {

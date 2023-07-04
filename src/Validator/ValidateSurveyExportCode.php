@@ -1,133 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- *
  * @package    Gems
- * @subpackage Validate
+ * @subpackage Validator\Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2015 Erasmus MC
- * @license    New BSD License
  */
 
 namespace Gems\Validator;
 
+use Laminas\Validator\AbstractValidator;
+use Zalt\Model\MetaModelInterface;
+use Zalt\Model\Sql\SqlTableModel;
+use Zalt\Model\Validator\NameAwareValidatorInterface;
+
 /**
- *
- *
  * @package    Gems
- * @subpackage Validate
- * @copyright  Copyright (c) 2015 Erasmus MC
- * @license    New BSD License
- * @since      Class available since version 1.7.2 Jan 12, 2016 12:28:01 PM
+ * @subpackage Validator\Model
+ * @since      Class available since version 1.0
  */
-class ValidateSurveyExportCode extends \Zend_Validate_Db_Abstract
+class ValidateSurveyExportCode extends AbstractValidator
+    implements NameAwareValidatorInterface
 {
-    /**
-     * Survey id
-     *
-     * @var int
-     */
-    private $_surveyId;
+    public const FOUND = 'found';
+
+    public const START_NAME = 'survey__';
 
     /**
+     * Validation failure message template definitions
      *
-     * @var array Of tested survey id's
+     * @var array<string, string>
      */
-    private $_tested;
+    protected $messageTemplates = [
+        self::FOUND => "A duplicate '%value%' export code was found.",
+    ];
 
-    /**
-     * @var array Message templates
-     */
-    protected $_messageTemplates = array(
-        self::ERROR_NO_RECORD_FOUND => 'No record matching %value% was found.',
-        self::ERROR_RECORD_FOUND    => 'A duplicate export code matching \'%value%\' was found.',
-    );
+    protected string $name;
 
-    /**
-     * Provides basic configuration for use with \Zend_Validate_Db Validators
-     * Setting $exclude allows a single record to be excluded from matching.
-     * The KeyFields are fields that occur as names in the context of the form and that
-     * identify the current row - that can have the value.
-     * A database adapter may optionally be supplied to avoid using the registered default adapter.
-     *
-     * @param int $surveyId Survey id for the current survey
-     * @param \Zend_Db_Adapter_Abstract $adapter An optional database adapter to use.
-     */
-    public function __construct($surveyId, \Zend_Db_Adapter_Abstract $adapter = null)
+    public function __construct(
+        protected int $surveyId,
+        protected SqlTableModel $surveyModel,
+        $options = null,
+    )
     {
-        $this->_surveyId = $surveyId;
-        $this->_tested[] = $surveyId;
-
-        if (! $adapter) {
-            $adapter = \Zend_Db_Table_Abstract::getDefaultAdapter();
-            if (null === $this->_adapter) {
-                throw new \Zend_Validate_Exception('No database adapter present');
-            }
-        }
-        $this->setAdapter($adapter);
+        parent::__construct($options);
     }
 
-    /**
-     * Gets the select object to be used by the validator.
-     * If no select object was supplied to the constructor,
-     * then it will auto-generate one from the given table,
-     * schema, field, and adapter options.
-     *
-     * @return \Zend_Db_Select The Select object which will be used
-     */
-    public function getSelect()
+    public function isValid($value, array $context = [])
     {
-        if (null === $this->_select) {
-            $db = $this->getAdapter();
-
-            /**
-             * Build select object
-             */
-            $select = new \Zend_Db_Select($db);
-            $select->from('gems__surveys', array('gsu_export_code'))
-                    ->where('gsu_export_code = ?')
-                    ->where('gsu_id_survey NOT IN (?)', implode(', ', $this->_tested))
-                    ->limit(1);
-
-            // \MUtil\EchoOut\EchoOut::track($select->__toString());
-            $this->_select = $select;
-        }
-        return $this->_select;
-    }
-
-    /**
-     * Returns true if and only if $value meets the validation requirements
-     *
-     * If $value fails validation, then this method returns false, and
-     * getMessages() will return an array of messages that explain why the
-     * validation failed.
-     *
-     * @param  mixed $value
-     * @param  array $context
-     * @return boolean
-     * @throws \Zend_Validate_Exception If validation of $value is impossible
-     */
-    public function isValid($value, $context = array())
-    {
-        $this->_setValue($value);
+        $this->setValue($value);
 
         foreach ($context as $field => $val) {
-            if (\MUtil\StringUtil\StringUtil::startsWith($field, 'survey__')) {
-                $sid = intval(substr($field, 8));
-                if (($sid !== $this->_surveyId) && ($value == $val)) {
-                    $this->_error(self::ERROR_RECORD_FOUND);
+            if (str_starts_with($field, self::START_NAME)) {
+                $sid = intval(substr($field, strlen(self::START_NAME)));
+                if (($sid !== $this->surveyId) && ($value == $val)) {
+                    $this->error(self::FOUND);
                     return false;
                 }
-                $this->_tested[] = $sid;
             }
         }
+        $filter['gsu_export_code'] = $value;
+        $filter[MetaModelInterface::FILTER_NOT]['gsu_id_survey'] = $this->surveyId;
 
-        $result = $this->_query($value);
-        if ($result) {
-            $this->_error(self::ERROR_RECORD_FOUND);
+//        dump($filter);
+        if ($this->surveyModel->loadCount($filter)) {
+            $this->error(self::FOUND);
             return false;
         }
 
         return true;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
     }
 }

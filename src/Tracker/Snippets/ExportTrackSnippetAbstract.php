@@ -11,15 +11,21 @@
 
 namespace Gems\Tracker\Snippets;
 
+use Gems\Batch\BatchRunnerLoader;
 use Gems\Cache\HelperAdapter;
 use Gems\Model\MetaModelLoader;
+use Gems\Task\TrackExportRunnerBatch;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Util\Translated;
+use Gems\Validator\ValidateSurveyExportCode;
 use Mezzio\Session\SessionInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Zalt\Base\RequestInfo;
 use Zalt\File\File;
-use Zalt\Html\HrefArrayAttribute;
+use Zalt\Loader\ProjectOverloader;
 use Zalt\Message\MessengerInterface;
 use Zalt\Model\Bridge\FormBridgeInterface;
 use Zalt\Model\Data\DataReaderInterface;
@@ -43,15 +49,15 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
     /**
      *
-     * @var \Gems\Task\TaskRunnerBatch
-     */
-    private $_batch;
+     * @var \Gems\Audit\AuditLog
+     * /
+    protected $accesslog;
 
     /**
      *
-     * @var \Gems\Audit\AuditLog
+     * @var \Gems\Task\TrackExportRunnerBatch
      */
-    protected $accesslog;
+    protected TrackExportRunnerBatch $batch;
 
     /**
      *
@@ -60,21 +66,10 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected $cache;
 
     /**
-     * @var array
-     */
-    protected $config;
-
-    /**
      *
      * @var \Gems\User\User
-     */
+     * /
     protected $currentUser;
-
-    /**
-     *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      * The number of seconds to wait before the file download starts
@@ -89,11 +84,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      */
     protected SessionModel $exportModel;
 
+    protected ?ResponseInterface $response;
+
     /**
      * The name of the action to forward to after form completion
      *
      * @var string
-     */
+     * /
     protected string $routeAction = 'show';
 
     /**
@@ -101,7 +98,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      * not specified in the route.
      *
      * @var boolean True then the route is reset
-     */
+     * /
     public bool $resetRoute = true;
 
     /**
@@ -115,12 +112,18 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         RequestInfo $requestInfo,
         TranslatorInterface $translate,
         MessengerInterface $messenger,
+        CacheItemPoolInterface $cache,
+        protected BatchRunnerLoader $batchRunnerLoader,
         protected MetaModelLoader $metaModelLoader,
+        protected ProjectOverloader $overloader,
+        protected ServerRequestInterface $request,
         protected SessionInterface $session,
         protected Translated $translatedUtil,
     )
     {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger);
+
+        $this->cache = $cache;
     }
 
     /**
@@ -132,11 +135,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      */
     protected function addStepElementsFor(FormBridgeInterface $bridge, DataReaderInterface $model, $step)
     {
-        $this->displayHeader($bridge, sprintf(
-                $this->_('%s track export. Step %d of %d.'),
-                $this->trackEngine->getTrackName(),
-                $step,
-                $this->getStepCount()), 'h2');
+        $this->displayHeader($bridge, $this->getTitleFor($step), 'h2');
 
         switch ($step) {
             case 2:
@@ -166,14 +165,17 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
         $rounds      = $this->formData['rounds'];
         $surveyCodes = array();
+        $surveyModel = $this->getSurveyTableModel();
 
         foreach ($rounds as $roundId) {
             $round = $this->trackEngine->getRound($roundId);
             $sid   = $round->getSurveyId();
-            $name  = 'survey__' . $sid;
+            $name  = ValidateSurveyExportCode::START_NAME . $sid;
 
             $surveyCodes[$name] = $name;
-            $model->getMetaModel()->set($name, 'validator', array('ValidateSurveyExportCode', true, array($sid, $this->db)));
+            $model->getMetaModel()->set($name, 'validator', new ValidateSurveyExportCode(
+                $sid, $surveyModel
+                ));
         }
         $this->addItems($bridge, $surveyCodes);
     }
@@ -209,70 +211,76 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         $this->nextDisabled = true;
 
         $batch = $this->getExportBatch();
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
         $form  = $bridge->getForm();
 
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-        if ($batch->run($this->requestInfo)) {
-            exit;
-        }
+//        if ($batch->run($this->requestInfo->getParams())) {
+//            exit;
+//        }
 
-        $element = $form->createElement('html', $batch->getId());
+//        $element = $form->createElement('html', $batch->getId());
 
         if ($batch->isFinished()) {
-            $this->nextDisabled = $batch->getCounter('export_errors');
-            $batch->autoStart   = false;
-
-            // Keep the filename after $batch->getMessages(true) cleared the previous
-            $downloadName  = File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
-            $localFilename = $batch->getSessionVariable('filename');
-
-            $this->addMessage($batch->getMessages(true));
-            $batch->setSessionVariable('downloadname', $downloadName);
-            $batch->setSessionVariable('filename', $localFilename);
-
-            // Log Export
-            $data = $this->formData;
-            // Remove unuseful data
-            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
-            // Add useful data
-            $data['localfile']    = '...' . substr($localFilename, -30);
-            $data['downloadname'] = $downloadName;
-            ksort($data);
-            $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
-
-            if ($this->nextDisabled) {
-                $element->pInfo($this->_('Export errors occurred.'));
-            } else {
-                $p = $element->pInfo($this->_('Export file generated.'), ' ');
-                $p->sprintf(
-                        $this->plural(
-                                'Click here if the download does not start automatically in %d second:',
-                                'Click here if the download does not start automatically in %d seconds:',
-                                $this->downloadWaitSeconds
-                                ),
-                        $this->downloadWaitSeconds
-                        );
-                $p->append(' ');
-
-                $href = new HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
-                $p->a(
-                        $href,
-                        $downloadName,
-                        array('type' => 'application/download')
-                        );
-
-//                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render());
-//                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
-            }
+//            $this->nextDisabled = $batch->getCounter('export_errors');
+//            $batch->autoStart   = false;
+//
+//            // Keep the filename after $batch->getMessages(true) cleared the previous
+//            $downloadName  = File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+//            $localFilename = $batch->getSessionVariable('filename');
+//
+//            $this->addMessage($batch->getMessages(true));
+//            $batch->setSessionVariable('downloadname', $downloadName);
+//            $batch->setSessionVariable('filename', $localFilename);
+//
+//            // Log Export
+//            $data = $this->formData;
+//            // Remove unuseful data
+//            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
+//            // Add useful data
+//            $data['localfile']    = '...' . substr($localFilename, -30);
+//            $data['downloadname'] = $downloadName;
+//            ksort($data);
+//            // $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
+//
+//            if ($this->nextDisabled) {
+//                $element->pInfo($this->_('Export errors occurred.'));
+//            } else {
+//                $p = $element->pInfo($this->_('Export file generated.'), ' ');
+//                $p->sprintf(
+//                        $this->plural(
+//                                'Click here if the download does not start automatically in %d second:',
+//                                'Click here if the download does not start automatically in %d seconds:',
+//                                $this->downloadWaitSeconds
+//                                ),
+//                        $this->downloadWaitSeconds
+//                        );
+//                $p->append(' ');
+//
+//                $href = new HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
+//                $p->a(
+//                        $href,
+//                        $downloadName,
+//                        array('type' => 'application/download')
+//                        );
+//
+////                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render());
+////                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
+//            }
 
         } else {
-            $element->setValue($batch->getPanel($batch->getProgressPercentage() . '%'));
+            $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
+            $batchRunner->setTitle($this->getTitleFor(3));
+            $batchRunner->setJobInfo([]);
+
+            $this->response = $batchRunner->getResponse($this->request);
+            // $element->setValue($batch->getPanel($batch->getProgressPercentage() . '%'));
 
         }
-        $form->activateJQuery();
-        $form->addElement($element);
+//        $form->activateJQuery();
+//        $form->addElement($element);
     }
 
     /**
@@ -285,18 +293,19 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function afterFormValidationFor($step)
     {
         if (2 == $step) {
-            $model = $this->getModel();
+            $metaModel = $this->exportModel->getMetaModel();
             $saves = array();
-            foreach ($model->getCol('surveyId') as $name => $sid) {
+            foreach ($metaModel->getCol('surveyId') as $name => $sid) {
                 if (isset($this->formData[$name]) && $this->formData[$name]) {
                     $saves[] = array('gsu_id_survey' => $sid, 'gsu_export_code' => $this->formData[$name]);
                 }
             }
 
             if ($saves) {
-                $sModel = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__surveys');
-                $this->metaModelLoader->setChangeFields($sModel, 'gus');
-                $sModel->saveAll($saves);
+                $sModel = $this->getSurveyTableModel();
+                foreach ($saves as $save) {
+                    $sModel->save($save);
+                }
 
                 $count = $sModel->getChanged();
 
@@ -393,7 +402,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
                     $survey = $round->getSurvey();
                     if ($survey) {
-                        $model->set('survey__' . $survey->getSurveyId(),
+                        $model->set(ValidateSurveyExportCode::START_NAME . $survey->getSurveyId(),
                                 'label', $survey->getName(),
                                 'default', $survey->getExportCode(),
                                 'description', $this->_('A unique code indentifying this survey during track import'),
@@ -472,24 +481,26 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
      */
     protected function getExportBatch($load = true)
     {
-        if ($this->_batch) {
-            return $this->_batch;
+        if (isset($this->batch)) {
+            return $this->batch;
         }
 
-        $this->_batch = $this->loader->getTaskRunnerBatch('track_export_' . $this->trackEngine->getTrackId());
+        $metaModel = $this->exportModel->getMetaModel();
+        // $this->batch = $this->loader->getTaskRunnerBatch('track_export_' . $this->trackEngine->getTrackId());
+        $this->batch = new TrackExportRunnerBatch('export_data_' . $metaModel->getName(), $this->overloader, $this->session);
 
-        if ((! $load) || $this->_batch->isFinished()) {
-            return $this->_batch;
+        if ((! $load) || $this->batch->isFinished()) {
+            return $this->batch;
         }
 
-        if (! $this->_batch->isLoaded()) {
-            $filename = File::createTemporaryIn($this->config['rootDir'] . '/var/tmp/export/track');
+        if (! $this->batch->isLoaded()) {
+            $filename = File::createTemporaryIn(); // $this->config['rootDir'] . '/var/tmp/export/track');
             $trackId  = $this->trackEngine->getTrackId();
-            $this->_batch->setSessionVariable('filename', $filename);
+            $this->batch->setSessionVariable('filename', $filename);
 
-            $this->_batch->addTask('Tracker\\Export\\ProjectVersionExportTask');
+            $this->batch->addTask('Tracker\\Export\\ProjectVersionExportTask');
 
-            $this->_batch->addTask(
+            $this->batch->addTask(
                     'Tracker\\Export\\MainTrackExportTask',
                     $this->trackEngine->getTrackId(),
                     $this->formData['orgs']
@@ -497,7 +508,7 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
 
             if (isset($this->formData['fields']) && is_array($this->formData['fields'])) {
                 foreach ($this->formData['fields'] as $fieldId) {
-                    $this->_batch->addTask(
+                    $this->batch->addTask(
                             'Tracker\\Export\\TrackFieldExportTask',
                             $trackId,
                             $fieldId
@@ -505,9 +516,8 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 }
             }
 
-            $model = $this->getModel();
-            foreach ($model->getCol('surveyId') as $surveyId) {
-                $this->_batch->addTask(
+            foreach ($metaModel->getCol('surveyId') as $surveyId) {
+                $this->batch->addTask(
                         'Tracker\\Export\\TrackSurveyExportTask',
                         $trackId,
                         $surveyId
@@ -515,13 +525,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             }
 
             if (isset($this->formData['rounds']) && is_array($this->formData['rounds'])) {
-                $this->_batch->addTask(
+                $this->batch->addTask(
                             'Tracker\\Export\\TrackRoundConditionExportTask',
                             $trackId
                             );
 
                 foreach ($this->formData['rounds'] as $roundId) {
-                    $this->_batch->addTask(
+                    $this->batch->addTask(
                             'Tracker\\Export\\TrackRoundExportTask',
                             $trackId,
                             $roundId
@@ -529,12 +539,27 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 }
             }
         } else {
-            $filename = $this->_batch->getSessionVariable('filename');
+            $filename = $this->batch->getSessionVariable('filename');
         }
 
-        $this->_batch->setVariable('file', fopen($filename, 'a'));
+        $this->batch->setVariable('file', fopen($filename, 'a'));
 
-        return $this->_batch;
+        return $this->batch;
+    }
+
+    public function getResponse(): ?ResponseInterface
+    {
+        return $this->response;
+    }
+
+    public function getTitleFor(int $step)
+    {
+        return sprintf(
+            $this->_('%s track export. Step %d of %d.'),
+            $this->trackEngine->getTrackName(),
+            $step,
+            $this->getStepCount(),
+            );
     }
 
     /**
@@ -545,6 +570,29 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected function getStepCount()
     {
         return 3;
+    }
+
+    public function getSurveyTableModel(): SqlTableModel
+    {
+        static $surveyModel;
+
+        if (! $surveyModel) {
+            $surveyModel = $this->metaModelLoader->createModel(SqlTableModel::class, 'gems__surveys');
+            $this->metaModelLoader->setChangeFields($surveyModel->getMetaModel(), 'gus');
+        }
+
+        return $surveyModel;
+    }
+
+    public function hasHtmlOutput(): bool
+    {
+        if (parent::hasHtmlOutput()) {
+            if (! isset($this->response)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -568,6 +616,12 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             if (! $this->formData)  {
                 $this->formData = $model->loadNew();
             }
+        }
+
+        // Step can be defined in get paramter
+        $step = $this->requestInfo->getParam($this->stepFieldName);
+        if ($step) {
+            $this->formData[$this->stepFieldName] = $step;
         }
         return $this->formData;
     }

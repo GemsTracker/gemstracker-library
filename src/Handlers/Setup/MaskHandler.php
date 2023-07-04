@@ -30,6 +30,7 @@ use Zalt\SnippetsActions\AbstractAction;
 use Zalt\SnippetsActions\BrowseTableAction;
 use Zalt\SnippetsActions\SnippetActionInterface;
 use Zalt\SnippetsLoader\SnippetResponderInterface;
+use Zalt\Validator\Model\ModelUniqueValidator;
 
 /**
  *
@@ -68,11 +69,12 @@ class MaskHandler extends BrowseChangeHandler
         $metaModel->set('gm_description', [
             'label' => $this->_('Description'),
             'required' => true,
-            'validators[unique]' => 'ModelUniqueValidator'
+            'validators[unique]' => ModelUniqueValidator::class
         ]);
         $metaModel->set('gm_id_order', [
             'label' => $this->_('Order'),
             'description' => $this->_('The first mask (the one with the lowest Order) that covers the current user is used.'),
+            'validators[unique]' => ModelUniqueValidator::class
         ]);
         $metaModel->set('gm_groups', [
             'label' => $this->_('Groups'),

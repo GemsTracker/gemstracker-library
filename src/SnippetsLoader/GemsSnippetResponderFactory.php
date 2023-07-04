@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gems\SnippetsLoader;
 
 use Gems\Layout\LayoutRenderer;
+use Gems\Layout\LayoutSettings;
 use Psr\Container\ContainerInterface;
 use Zalt\SnippetsLoader\SnippetLoader;
 
@@ -25,6 +26,6 @@ class GemsSnippetResponderFactory
 {
     public function __invoke(ContainerInterface $container): GemsSnippetResponder
     {
-        return new GemsSnippetResponder($container->get(SnippetLoader::class), $container->get(LayoutRenderer::class));
+        return new GemsSnippetResponder($container->get(SnippetLoader::class), $container->get(LayoutRenderer::class), $container->get(LayoutSettings::class));
     }
 }

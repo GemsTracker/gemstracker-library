@@ -81,6 +81,7 @@ class LayoutRenderer
 
     public function render(LayoutSettings $layoutSettings, ServerRequestInterface $request, array $params = []): string
     {
+        $params = $params + $layoutSettings->getLayoutParameters();
         $defaultParams = $this->getDefaultParams($request);
         if (!$layoutSettings->showMenu() && isset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE])) {
             unset($defaultParams[MenuMiddleware::MENU_ATTRIBUTE]);
