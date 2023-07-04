@@ -56,10 +56,11 @@ class LimeSurvey1m9Database extends SourceAbstract
     ];
 
     /**
+     * LS 1.91: The field private = y was changed to anonymized = y
      *
      * @var string The LS version dependent field name for anonymized surveys
      */
-    protected $_anonymizedField = 'private';
+    protected $_anonymizedField = 'anonymized';
 
     /**
      *
@@ -215,6 +216,11 @@ class LimeSurvey1m9Database extends SourceAbstract
             }
         }
 
+        // Added in LS 1.91
+        if (! isset($tokenTable['usesleft'])) {
+            $missingFields['usesleft'] = "ADD `usesleft` INT( 11 ) NULL DEFAULT '1' AFTER `completed`";
+        }
+
         return $missingFields;
     }
 
@@ -249,6 +255,10 @@ class LimeSurvey1m9Database extends SourceAbstract
                 substr($token->getConsentCode(), 0, $this->attributeSize);
         $values[$this->_attributeMap['resptrackid']]    =
                 substr($token->getRespondentTrackId(), 0, $this->attributeSize);
+
+        // Added in LS 1.91
+        // Not really an attribute, but it is the best place to set this
+        $values['usesleft'] = $token->isCompleted() ? 0 : 1;
 
         return $values;
     }
