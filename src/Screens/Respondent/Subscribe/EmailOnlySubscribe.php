@@ -24,11 +24,11 @@ use Gems\Screens\SubscribeScreenInterface;
 class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implements SubscribeScreenInterface
 {
     /**
-     * Use currentUser since currentOrganization may have changed by now
+     * Use currentUserRepository, we may not have a currentUser.
      *
-     * @var \Gems\User\User
+     * @var \Gems\Legacy\CurrentUserRepository
      */
-    protected $currentUser;
+    protected $currentUserRepository;
 
     /**
      *
@@ -41,7 +41,7 @@ class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implemen
      */
     public function generatePatientNumber()
     {
-        $org    = $this->currentUser->getCurrentOrganization();
+        $org    = $this->currentUserRepository->getCurrentOrganization();
         $orgId  = $org->getId();
         $prefix = 'subscr';
 
@@ -81,7 +81,7 @@ class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implemen
         return [
             'formTitle' => sprintf(
                     $this->_('Subscribe to surveys for %s'),
-                    $this->currentUser->getCurrentOrganization()->getName()
+                    $this->currentUserRepository->getCurrentOrganization()->getName()
                     ),
             'patientNrGenerator' => [$this, 'generatePatientNumber'],
             'routeAction' => 'participate.subscribe-thanks',

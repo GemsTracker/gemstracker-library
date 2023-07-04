@@ -53,8 +53,8 @@ class SiteUtil
     {
         $organizationsPerSite = $this->organizationRepository->getOrganizationsPerSite();
         foreach ($sitesArray as $key => $siteSettings) {
-            if (isset($siteSettings['url'], $organizationsPerSite[$siteSettings['url']])) {
-                $sitesArray[$key]['organizations'] = $organizationsPerSite[$siteSettings['url']];
+            if (isset($siteSettings['url'], $organizationsPerSite[$key])) {
+                $sitesArray[$key]['organizations'] = $organizationsPerSite[$key];
             }
         }
 

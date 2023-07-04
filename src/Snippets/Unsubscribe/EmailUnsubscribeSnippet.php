@@ -78,8 +78,7 @@ class EmailUnsubscribeSnippet extends FormSnippetAbstract
     ) {
         parent::__construct($snippetOptions, $requestInfo, $translate, $messenger, $menuHelper);
 
-        $this->currentUser = $currentUserRepository->getCurrentUser();
-        $this->currentOrganization = $this->currentUser->getCurrentOrganization();
+        $this->currentOrganization = $this->currentUserRepository->getCurrentOrganization();
     }
 
     /**
