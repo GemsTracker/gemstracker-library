@@ -6,7 +6,7 @@ use Gems\Db\Migration\SeedRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Zalt\Model\Data\DataReaderInterface;
 
-#[AsCommand(name: 'db:seeds', description: 'Show and run Database seeds')]
+#[AsCommand(name: 'db:seed', description: 'Show and run Database seeds')]
 class RunSeeds extends RunMigrationAbstract
 {
     protected string $topic = 'seed';
