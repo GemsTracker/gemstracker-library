@@ -83,7 +83,7 @@ class LimeSurvey2m00Database extends SourceAbstract
 
     /**
      *
-     * @var array of \Gems\Tracker\Source\LimeSurvey1m9FieldMap
+     * @var array of \Gems\Tracker\Source\LimeSurvey2m00FieldMap
      */
     private $_fieldMaps;
 
@@ -303,7 +303,7 @@ class LimeSurvey2m00Database extends SourceAbstract
      *
      * @param int $sourceSurveyId Survey ID
      * @param string $language      Optional (ISO) Language, uses default language for survey when null
-     * @return \Gems\Tracker\Source\LimeSurvey1m9FieldMap
+     * @return \Gems\Tracker\Source\LimeSurvey2m00FieldMap
      */
     protected function _getFieldMap($sourceSurveyId, $language = null)
     {
