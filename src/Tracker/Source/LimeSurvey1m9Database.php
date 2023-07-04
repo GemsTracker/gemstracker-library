@@ -19,16 +19,16 @@ use Gems\Log\LogHelper;
 use MUtil\Model;
 
 /**
- * LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
+ * LimeSurvey1m91Database is a Source interface that enables the use of LimeSurvey 1.9.x
  * installation as survey/answer source for \Gems projects.
  *
  * @package    Gems
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.1
  */
-class LimeSurvey1m9Database extends SourceAbstract
+class LimeSurvey1m91Database extends SourceAbstract
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
