@@ -24,16 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00FieldMap extends \Gems\Tracker\Source\LimeSurvey1m9FieldMap
 {
     /**
-     * There exists a survey table for each active survey. The table contains the answers to the survey
-     *
-     * @return string Name of survey table for this survey
-     */
-    protected function _getTokenTableName()
-    {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey1m9Database::TOKEN_TABLE . $this->sourceSurveyId;
-    }
-
-    /**
      * Get the table structure of the token table
      *
      * @return array List of \Zend_DB Table metadata
