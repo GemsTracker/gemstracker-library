@@ -53,6 +53,7 @@ class LimeSurvey2m00Database extends SourceAbstract
         'token',
         'datestamp',
         'startdate',
+        'seed',
     ];
 
     /**
