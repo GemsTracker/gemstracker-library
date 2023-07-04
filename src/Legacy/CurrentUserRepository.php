@@ -20,7 +20,7 @@ class CurrentUserRepository
 
     protected ?int $organizationId = null;
 
-    protected ?UserLoader $userLoader;
+    protected ?UserLoader $userLoader = null;
 
     public function __construct(ProjectOverloader $loader)
     {
@@ -73,7 +73,7 @@ class CurrentUserRepository
 
     protected function getUserLoader(): UserLoader
     {
-        if (!isset($this->userLoader) || !$this->userLoader instanceof \Gems\User\UserLoader) {
+        if (!$this->userLoader instanceof \Gems\User\UserLoader) {
             $this->userLoader = $this->loader->create('User\\UserLoader', $this->loader, ['User']);
         }
 
