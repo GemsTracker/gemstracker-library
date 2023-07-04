@@ -459,6 +459,7 @@ class LimeSurvey2m00Database extends SourceAbstract
      */
     protected function _getToken($tokenId, $reverse = false)
     {
+        $tokenId = strtolower($tokenId);
         if ($reverse) {
             return strtr($tokenId, '_', '-');
         } else {
