@@ -513,7 +513,7 @@ class LimeSurvey3m00Database extends SourceAbstract
         $tables    = array_map('strtolower', $sourceDb->listTables());
         $tableName = $this->addDatabasePrefix(self::SURVEYS_TABLE, false); // Get name without database prefix.
 
-        $active = strtolower(in_array($tableName, $tables));
+        $active = in_array($tableName, $tables);
 
         $values['gso_active'] = $active ? 1 : 0;
         $values['gso_status'] = $active ? 'Active' : 'Inactive';
