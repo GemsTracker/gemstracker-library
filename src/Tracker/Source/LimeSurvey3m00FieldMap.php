@@ -593,7 +593,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getSurveysTableName()
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey2m00Database::SURVEYS_TABLE;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEYS_TABLE;
     }
 
     /**
@@ -603,7 +603,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getSurveyTableName()
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey2m00Database::SURVEY_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEY_TABLE . $this->sourceSurveyId;
     }
 
     /**
@@ -613,7 +613,7 @@ class LimeSurvey3m00FieldMap
      */
     protected function _getTokenTableName()
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey2m00Database::TOKEN_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::TOKEN_TABLE . $this->sourceSurveyId;
     }
 
     /**
