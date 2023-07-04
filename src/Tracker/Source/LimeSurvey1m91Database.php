@@ -1640,4 +1640,17 @@ class LimeSurvey1m91Database extends SourceAbstract
 
         return $tableStructure;
     }
+
+    /**
+     * Get the table structure of a survey token table
+     *
+     * @param $sourceSurveyId int Limesurvey survey ID
+     * @return array List of table structure of survey token table
+     */
+    public function getTokenTableStructure($sourceSurveyId)
+    {
+        $tableStructure = $this->_getFieldMap($sourceSurveyId)->getTokenTableStructure();
+
+        return $tableStructure;
+    }
 }

@@ -24,19 +24,6 @@ namespace Gems\Tracker\Source;
 class LimeSurvey2m00Database extends \Gems\Tracker\Source\LimeSurvey1m91Database
 {
     /**
-     * Get the table structure of a survey token table
-     *
-     * @param $sourceSurveyId int Limesurvey survey ID
-     * @return array List of table structure of survey token table
-     */
-    public function getTokenTableStructure($sourceSurveyId)
-    {
-        $tableStructure = $this->_getFieldMap($sourceSurveyId)->getTokenTableStructure();
-
-        return $tableStructure;
-    }
-
-    /**
      * Execute a Database query on the limesurvey Database
      *
      * @param $sourceSurveyId int Limesurvey survey ID
