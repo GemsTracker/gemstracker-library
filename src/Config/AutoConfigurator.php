@@ -5,6 +5,7 @@ namespace Gems\Config;
 use ReflectionClass;
 use ReflectionException;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class AutoConfigurator
 {
@@ -13,6 +14,10 @@ class AutoConfigurator
     protected $autoconfigConfig = [];
 
     protected ?string $fileHash = null;
+
+    protected ?array $filePaths = null;
+    
+    protected ?array $sortedFilePaths = null;
 
     public function __construct(protected readonly array $config)
     {}
@@ -29,17 +34,13 @@ class AutoConfigurator
         }
 
         $finder = $this->getFinder();
-        foreach($finder as $file) {
 
-            $className = str_replace(
-                '\\\\',
-                '\\',
-                ('Gems\\' . str_replace(
-                        '/',
-                        '\\',
-                        $file->getRelativePath()
-                    ) . '\\' . $file->getFilenameWithoutExtension())
-            );
+        foreach($finder as $file) {
+            $className = $this->getClassnameFromFile($file);
+            if ($className === null) {
+                continue;
+            }
+
             try {
                 $fileReflector = new ReflectionClass($className);
                 $this->checkFileForAutoconfiguration($fileReflector);
@@ -88,24 +89,54 @@ class AutoConfigurator
         return $this->config['autoconfig']['cache_path'];
     }
 
+    protected function getClassnameFromFile(SplFileInfo $file): ?string
+    {
+        $filePathNamespaces = $this->getSortedFilePaths();
+
+        $namespace = null;
+        foreach($filePathNamespaces as $fileNameSpace => $filePath) {
+            if (str_starts_with($file->getPath(), $filePath)) {
+                $namespace = $fileNameSpace;
+            }
+        }
+
+        if ($namespace !== null) {
+            return str_replace(
+                '\\\\',
+                '\\',
+                ($namespace . '\\' . str_replace(
+                        '/',
+                        '\\',
+                        $file->getRelativePath()
+                    ) . '\\' . $file->getFilenameWithoutExtension())
+            );
+        }
+
+        return null;
+    }
+
     /**
      * @return array
      * @throws ReflectionException
      */
     protected function getFilePaths(): array
     {
-        $rootDir = $this->config['rootDir'] ?? '';
-        $moduleConfigProviders = require($rootDir.'/config/modules.php');
-        $filePaths = [];
+        if (!$this->filePaths) {
+            $rootDir = $this->config['rootDir'] ?? '';
+            $moduleConfigProviders = require($rootDir . '/config/modules.php');
+            $filePaths = [];
 
-        foreach($moduleConfigProviders as $configProvider) {
-            $reflector = new ReflectionClass($configProvider);
-            $path = dirname($reflector->getFileName());
-            if (!in_array($path, $filePaths)) {
-                $filePaths[] = $path;
+            foreach ($moduleConfigProviders as $configProvider) {
+                $reflector = new ReflectionClass($configProvider);
+                $path = dirname($reflector->getFileName());
+                $namespace = $reflector->getNamespaceName();
+                if (!in_array($path, $filePaths)) {
+                    $filePaths[$namespace] = $path;
+                }
             }
+            $this->filePaths = $filePaths;
         }
-        return $filePaths;
+        return $this->filePaths;
     }
 
     protected function getFinder(): Finder
@@ -137,6 +168,19 @@ class AutoConfigurator
     protected function getNewConfig(): array
     {
         return require $this->config['rootDir'] . '/config/config.php';
+    }
+
+    protected function getSortedFilePaths(): ?array
+    {
+        if (!$this->sortedFilePaths) {
+            $filePaths = $this->getFilePaths();
+            uksort($filePaths, function($a, $b) {
+                return -(strlen($a) - strlen($b));
+            });
+
+            $this->sortedFilePaths = $filePaths;
+        }
+        return $this->sortedFilePaths;
     }
 
     public function hasChangedFiles(string $currentChecksum): bool
