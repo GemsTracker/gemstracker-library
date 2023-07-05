@@ -640,13 +640,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         }
 
        // Default is just go to the index
-        if ($this->routeAction && ($this->requestInfo->getCurrentAction() !== $this->routeAction)) {
+//        if ($this->routeAction && ($this->requestInfo->getCurrentAction() !== $this->routeAction)) {
 //            $this->afterSaveRouteUrl = array(
 //                $this->request->getControllerKey() => $this->request->getControllerName(),
 //                $this->request->getActionKey()     => $this->routeAction,
 //                \MUtil\Model::REQUEST_ID           => $this->request->getParam(\MUtil\Model::REQUEST_ID),
 //                );
-        }
+//        }
 
         return $this;
     }

@@ -24,5 +24,6 @@ class ResultFetcherValidatorAbstract extends \Laminas\Validator\AbstractValidato
     public function isValid($value)
     {
         // TODO: Implement isValid() method.
+        return false;
     }
 }
