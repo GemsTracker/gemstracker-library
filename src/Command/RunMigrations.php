@@ -79,6 +79,8 @@ class RunMigrations extends Command
         $this->patchRepository->setBaseline();
 
         $this->runSeeds($seeds, $io);
+
+        return Command::SUCCESS;
     }
 
     protected function runAll(InputInterface $input, OutputInterface $output): int
@@ -92,6 +94,8 @@ class RunMigrations extends Command
         $this->createTables($tables, $io);
         $this->runPatches($patches, $io);
         $this->runSeeds($seeds, $io);
+
+        return Command::SUCCESS;
     }
 
     protected function runPatches(array $patches, SymfonyStyle $io): void

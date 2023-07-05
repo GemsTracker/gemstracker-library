@@ -23,7 +23,7 @@ class LaminasDbAdapterFactory implements FactoryInterface
             return $this->getDefaultAdapter($container, $profiler);
         }
 
-        if ($adapter = $this->getAdapterFromConfig($container, $requestedName)) {
+        if ($adapter = $this->getAdapterFromConfig($container, $requestedName, $profiler)) {
             return $adapter;
         }
 
