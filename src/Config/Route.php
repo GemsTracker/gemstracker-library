@@ -42,26 +42,43 @@ class Route
     use ModelSnippetActionRouteHelpers;
     use RouteGroupTrait;
 
+    public static array $loggedInMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        CsrfMiddleware::class,
+        LocaleMiddleware::class,
+        AuthenticationMiddleware::class,
+        MenuMiddleware::class,
+        AclMiddleware::class,
+        MaintenanceModeMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        AuditLogMiddleware::class,
+    ];
+
+    public static array $loggedOutMiddleware = [
+        SecurityHeadersMiddleware::class,
+        ClientIpMiddleware::class,
+        SessionMiddleware::class,
+        FlashMessageMiddleware::class,
+        CsrfMiddleware::class,
+        LocaleMiddleware::class,
+        MaybeAuthenticatedMiddleware::class,
+        MaintenanceModeMiddleware::class,
+        AclMiddleware::class,
+        CurrentOrganizationMiddleware::class,
+        AuditLogMiddleware::class,
+        MenuMiddleware::class,
+    ];
+
     public function __invoke(): array
     {
         return [
             ...$this->getLoggedOutRoutes(),
 
             ...$this->routeGroup([
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    LocaleMiddleware::class,
-                    AuthenticationMiddleware::class,
-                    MenuMiddleware::class,
-                    AclMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                ],
+                'middleware' => static::$loggedInMiddleware,
             ], [
                 ...$this->getGeneralRoutes(),
                 ...$this->getCalendarRoutes(),
@@ -72,6 +89,15 @@ class Route
                 ...$this->getTrackBuilderRoutes(),
                 ...$this->getOptionRoutes(),
                 ...$this->getApiRoutes(),
+            ]),
+
+
+            ...$this->routeGroup([
+                'middleware' => static::$loggedOutMiddleware,
+            ], [
+                ...$this->getAskRoutes(),
+                ...$this->getContactRoutes(),
+                ...$this->getParticipateRoutes(),
             ]),
         ];
     }
@@ -103,29 +129,6 @@ class Route
                     LoginHandler::class,
                 ],
             ],
-
-            ...$this->routeGroup([
-                'middleware' => [
-                    SecurityHeadersMiddleware::class,
-                    ClientIpMiddleware::class,
-                    SessionMiddleware::class,
-                    FlashMessageMiddleware::class,
-                    CsrfMiddleware::class,
-                    LocaleMiddleware::class,
-                    MaybeAuthenticatedMiddleware::class,
-                    MaintenanceModeMiddleware::class,
-                    AclMiddleware::class,
-                    CurrentOrganizationMiddleware::class,
-                    AuditLogMiddleware::class,
-                    MenuMiddleware::class,
-                ],
-            ],
-            [
-                ...$this->getAskRoutes(),
-                ...$this->getContactRoutes(),
-                ...$this->getParticipateRoutes(),
-            ]),
-
 
             [
                 'name' => 'tfa.login',

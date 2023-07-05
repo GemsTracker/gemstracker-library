@@ -16,7 +16,7 @@ class AutoConfigurator
     protected ?string $fileHash = null;
 
     protected ?array $filePaths = null;
-    
+
     protected ?array $sortedFilePaths = null;
 
     public function __construct(protected readonly array $config)

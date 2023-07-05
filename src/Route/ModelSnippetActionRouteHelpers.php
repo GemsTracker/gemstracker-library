@@ -42,6 +42,23 @@ trait ModelSnippetActionRouteHelpers
         LegacyController::class,
     ];
 
+    public function createRoute(
+        string $name,
+        string $path,
+        array $middleware = [],
+        array $methods = ['GET'],
+    )
+    {
+        return [
+            $name => [
+                'name' => $name,
+                'path' => $path,
+                'methods' => $methods,
+                'middleware' => $middleware,
+            ],
+        ];
+    }
+
     public function createBrowseRoutes(string $baseName,
                                        string $controllerClass,
                                        ?string $basePath = null,
@@ -234,5 +251,29 @@ trait ModelSnippetActionRouteHelpers
         }
         array_pop($middleware);
         return $middleware + $additionalMiddleware;
+    }
+
+    public function updateRoutes(
+        string $baseName,
+        ?string $controllerClass = null,
+        ?array $pages = null,
+    ): array
+    {
+        if ($pages === null) {
+            $pages = $this->defaultPages;
+        }
+        foreach($pages as $pageName) {
+            $route = [];
+            if ($controllerClass !== null) {
+                $route['middleware'] = [
+                    LegacyCurrentUserMiddleware::class,
+                    $controllerClass,
+                ];
+            }
+
+            $routes[$baseName . '.' . $pageName] = $route;
+        }
+
+        return $routes;
     }
 }
