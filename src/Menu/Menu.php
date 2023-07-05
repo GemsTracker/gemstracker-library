@@ -13,12 +13,12 @@ class Menu extends MenuNode
     public function __construct(
         public readonly TemplateRendererInterface $templateRenderer,
         public readonly RouteHelper $routeHelper,
-        \Gems\Config\Menu $menuConfig,
+        array $menuConfig,
     ) {
-        $this->addFromConfig($this, $menuConfig->getItems());
+        $this->addFromConfig($this, $menuConfig);
     }
 
-    private function addFromConfig(MenuNode $node, array $items)
+    public function addFromConfig(MenuNode $node, array $items)
     {
         foreach ($items as $item) {
             $object = match($item['type']) {
@@ -34,7 +34,9 @@ class Menu extends MenuNode
                 $parent = $node;
             }
 
-            $parent->add($object);
+            $position = $item['position'] ?? null;
+
+            $parent->add($object, $position);
 
             if (!empty($item['children'])) {
                 $this->addFromConfig($object, $item['children']);

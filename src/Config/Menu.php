@@ -10,18 +10,12 @@ class Menu
 {
     public function __construct(
         private readonly TranslatorInterface $translator,
-        private readonly EventDispatcher $eventDispatcher,
     ) {
     }
 
     public function getItems(): array
     {
-        $items = $this->buildItems();
-
-        $event  = new MenuBuildItemsEvent($items);
-        $this->eventDispatcher->dispatch($event);
-
-        return $event->getItems();
+        return $this->buildItems();
     }
 
     private function buildItems(): array

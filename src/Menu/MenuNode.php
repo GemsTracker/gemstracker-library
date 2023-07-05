@@ -11,10 +11,13 @@ abstract class MenuNode
 
     abstract public function renderNode(): string;
 
-    public function add(MenuItem $menuItem): void
+    public function add(MenuItem $menuItem, int|string|null $position = null): void
     {
         $menuItem->attachParent($this);
-        $this->children[] = $menuItem;
+
+        $index = $this->getAddPosition($position);
+        array_splice($this->children, $index, 0, [$menuItem]);
+
         $menuItem->register();
     }
 
@@ -24,5 +27,24 @@ abstract class MenuNode
     public function getChildren(): array
     {
         return $this->children;
+    }
+
+    private function getAddPosition(int|string|null $position = null): int
+    {
+        if ($position === null) {
+            return count($this->getChildren());
+        }
+        if (is_int($position)) {
+            return $position;
+        }
+
+
+        foreach(array_values($this->getChildren()) as $key => $child) {
+            if ($child->name === $position) {
+                return $key + 1;
+            }
+        }
+
+        return count($this->getChildren());
     }
 }
