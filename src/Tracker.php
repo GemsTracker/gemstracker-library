@@ -60,9 +60,6 @@ class Tracker extends \Gems\Loader\TargetLoaderAbstract implements \Gems\Tracker
      * @var array Of classname => description
      */
     protected $_sourceClasses = array(
-        'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
-        'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
-        'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB',
         'LimeSurvey3m00Database' => 'Lime Survey 3.00 DB',
         'LimeSurvey5m00Database' => 'Lime Survey 5.00 DB',
         );
