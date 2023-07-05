@@ -79,8 +79,8 @@ class ConsentHandler extends ModelSnippetLegacyHandlerAbstract
                     'multiOptions', $this->consentUtil->getConsentTypes(),
                     'description', $this->_('Internal code, not visible to users, copied with the token information to the source.'));
         if ($detailed) {
-            $metaModel->set('gco_description', 'validators[unique]', [ModelUniqueValidator::class, false, [['name'] => 'gco_description', 'with' => 'een veld']]);
-            $metaModel->set('gco_order',       'validator', new ModelUniqueValidator('gco_description', 'een veld'));
+            $metaModel->set('gco_description', 'validator', ModelUniqueValidator::class);
+            $metaModel->set('gco_order',       'validator', ModelUniqueValidator::class);
         }
 
         if ('create' == $action || 'edit' == $action) {

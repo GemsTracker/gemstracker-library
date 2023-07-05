@@ -481,7 +481,9 @@ class Loader extends LoaderAbstract
      */
     public function getVersions()
     {
-        return $this->_getClass('versions');
+        $config = $this->_overLoader->getContainer()->get('config');
+        return $this->_getClass('versions', 'Versions', [$config]);
+//        return $this->_getClass('versions');
     }
 
     protected function loadByDependency(string $class)

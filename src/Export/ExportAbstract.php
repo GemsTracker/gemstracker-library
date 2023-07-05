@@ -11,6 +11,7 @@
 namespace Gems\Export;
 
 use Mezzio\Session\SessionInterface;
+use Zalt\File\File;
 use Zalt\Model\Data\DataReaderInterface;
 use Zalt\Model\MetaModelInterface;
 
@@ -170,7 +171,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         $exportTempDir = $this->getExportTempDir();
 
         if (! is_dir($exportTempDir)) {
-            \MUtil\File::ensureDir($exportTempDir);
+            File::ensureDir($exportTempDir);
         }
 
         $tempFilename       = $exportTempDir . 'export-' . md5(time() . rand());
@@ -248,7 +249,7 @@ abstract class ExportAbstract extends \Zalt\Loader\Translate\TranslateableAbstra
         // Remove dot if it starts with one
         $filename = trim($filename, '.');
 
-        return \MUtil\File::cleanupName($filename);
+        return File::cleanupName($filename);
     }
 
     /**

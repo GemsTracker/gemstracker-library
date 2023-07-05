@@ -1,4 +1,3 @@
-/nbproject/
 /.idea/
 /vendor/
 /composer.lock
@@ -7,3 +6,4 @@
 /tests/data/upgrades/upgrades_new.ini
 /tests/data/import.xml
 /docs/setup/fssort.ini
+.phpunit.cache

@@ -18,6 +18,7 @@ use Gems\Task\TrackExportRunnerBatch;
 use Gems\Tracker\Engine\TrackEngineInterface;
 use Gems\Util\Translated;
 use Gems\Validator\ValidateSurveyExportCode;
+use Laminas\Diactoros\Response\TextResponse;
 use Mezzio\Session\SessionInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -87,21 +88,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
     protected ?ResponseInterface $response;
 
     /**
-     * The name of the action to forward to after form completion
-     *
-     * @var string
-     * /
-    protected string $routeAction = 'show';
-
-    /**
-     * Variable to either keep or throw away the request data
-     * not specified in the route.
-     *
-     * @var boolean True then the route is reset
-     * /
-    public bool $resetRoute = true;
-
-    /**
      *
      * @var \Gems\Tracker\Engine\TrackEngineInterface
      */
@@ -146,10 +132,63 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
                 $this->addStepGenerateExportFile($bridge, $model);
                 break;
 
+            case 4:
+                $this->addStepDownloadExportFile($bridge, $model);
+                break;
+
             default:
                 $this->addStepExportSettings($bridge, $model);
                 break;
 
+        }
+    }
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param \Zalt\Model\Bridge\FormBridgeInterface $bridge
+     * @param \Zalt\Model\Data\DataReaderInterface $model
+     */
+    protected function addStepDownloadExportFile(FormBridgeInterface $bridge, DataReaderInterface $model)
+    {
+        // Things go really wrong (at the session level) if we run this code
+        // while the finish button was pressed
+        if ($this->isFinishedClicked()) {
+            return;
+        }
+
+        $batch = $this->getExportBatch();
+        $batch->setBaseUrl($this->requestInfo->getBasePath());
+        if ($batch->isFinished()) {
+            $this->nextDisabled = $batch->getCounter('export_errors');
+            $batch->autoStart   = false;
+
+            // Keep the filename after $batch->getMessages(true) cleared the previous
+            $downloadName  = File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
+            $localFilename = $batch->getSessionVariable('filename');
+
+            $this->addMessage($batch->getMessages(true));
+            $batch->setSessionVariable('downloadname', $downloadName);
+            $batch->setSessionVariable('filename', $localFilename);
+
+            // Log Export
+            $data = $this->formData;
+            // Remove unuseful data
+            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
+            // Add useful data
+            $data['localfile']    = '...' . substr($localFilename, -30);
+            $data['downloadname'] = $downloadName;
+            ksort($data);
+            // $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
+
+            $headers['Content-Type'] = "application/download";
+            $headers['Content-Disposition'] = "attachment; filename=\"" . $downloadName . "\"";
+
+            $this->response = new TextResponse(
+                file_get_contents($localFilename),
+                200,
+                $headers
+            );
         }
     }
 
@@ -217,70 +256,13 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
         $batch->setFormId($form->getId());
         $batch->autoStart = true;
 
-//        if ($batch->run($this->requestInfo->getParams())) {
-//            exit;
-//        }
-
-//        $element = $form->createElement('html', $batch->getId());
-
-        if ($batch->isFinished()) {
-//            $this->nextDisabled = $batch->getCounter('export_errors');
-//            $batch->autoStart   = false;
-//
-//            // Keep the filename after $batch->getMessages(true) cleared the previous
-//            $downloadName  = File::cleanupName($this->trackEngine->getTrackName()) . '.track.txt';
-//            $localFilename = $batch->getSessionVariable('filename');
-//
-//            $this->addMessage($batch->getMessages(true));
-//            $batch->setSessionVariable('downloadname', $downloadName);
-//            $batch->setSessionVariable('filename', $localFilename);
-//
-//            // Log Export
-//            $data = $this->formData;
-//            // Remove unuseful data
-//            unset($data['button_spacer'], $data['current_step'], $data[$this->csrfId]);
-//            // Add useful data
-//            $data['localfile']    = '...' . substr($localFilename, -30);
-//            $data['downloadname'] = $downloadName;
-//            ksort($data);
-//            // $this->accesslog->logChange($this->requestInfo, null, array_filter($data));
-//
-//            if ($this->nextDisabled) {
-//                $element->pInfo($this->_('Export errors occurred.'));
-//            } else {
-//                $p = $element->pInfo($this->_('Export file generated.'), ' ');
-//                $p->sprintf(
-//                        $this->plural(
-//                                'Click here if the download does not start automatically in %d second:',
-//                                'Click here if the download does not start automatically in %d seconds:',
-//                                $this->downloadWaitSeconds
-//                                ),
-//                        $this->downloadWaitSeconds
-//                        );
-//                $p->append(' ');
-//
-//                $href = new HrefArrayAttribute(array('file' => 'go', $this->stepFieldName => 'download'));
-//                $p->a(
-//                        $href,
-//                        $downloadName,
-//                        array('type' => 'application/download')
-//                        );
-//
-////                $metaContent = sprintf('%d;url=%s', $this->downloadWaitSeconds, $href->render());
-////                $this->view->headMeta($metaContent, 'refresh', 'http-equiv');
-//            }
-
-        } else {
+        if (! $batch->isFinished()) {
             $batchRunner = $this->batchRunnerLoader->getBatchRunner($batch);
             $batchRunner->setTitle($this->getTitleFor(3));
             $batchRunner->setJobInfo([]);
 
             $this->response = $batchRunner->getResponse($this->request);
-            // $element->setValue($batch->getPanel($batch->getProgressPercentage() . '%'));
-
         }
-//        $form->activateJQuery();
-//        $form->addElement($element);
     }
 
     /**
@@ -638,15 +620,6 @@ class ExportTrackSnippetAbstract extends \Zalt\Snippets\WizardFormSnippetAbstrac
             // Now is a good moment to remove the temporary file
             @unlink($filename);
         }
-
-       // Default is just go to the index
-//        if ($this->routeAction && ($this->requestInfo->getCurrentAction() !== $this->routeAction)) {
-//            $this->afterSaveRouteUrl = array(
-//                $this->request->getControllerKey() => $this->request->getControllerName(),
-//                $this->request->getActionKey()     => $this->routeAction,
-//                \MUtil\Model::REQUEST_ID           => $this->request->getParam(\MUtil\Model::REQUEST_ID),
-//                );
-//        }
 
         return $this;
     }
