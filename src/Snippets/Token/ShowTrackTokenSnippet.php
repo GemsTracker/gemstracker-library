@@ -84,7 +84,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
 
         $items = [
             [
-                'route' => 'respondent.tracks.correct',
+                'route' => 'respondent.tracks.token.correct',
                 'label' => $this->_('Correct answers'),
                 'disabled' => !$this->token->isCompleted(),
             ],
@@ -92,12 +92,12 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
 
         if ($this->token->getReceptionCode()->isSuccess()) {
             $items[] = [
-                'route' => 'respondent.tracks.delete',
+                'route' => 'respondent.tracks.token.delete',
                 'label' => $this->_('Delete'),
             ];
         } else {
             $items[] = [
-                'route' => 'respondent.tracks.undelete',
+                'route' => 'respondent.tracks.token.undelete',
                 'label' => $this->_('Undelete'),
             ];
         }
@@ -134,7 +134,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     protected function addContactBlock(ThreeColumnTableBridge $bridge)
     {
         // E-MAIL
-        $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.email', $this->token->getMenuUrlParameters());
+        $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.email', $this->token->getMenuUrlParameters());
         $buttons = Html::actionLink($url, $this->_('E-mail now!'));
 
         $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $buttons);
@@ -159,7 +159,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
         $copiedFrom = $this->token->getCopiedFrom();
         if ($copiedFrom) {
             $urlParams[\MUtil\Model::REQUEST_ID] = $copiedFrom;
-            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
+            $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
 
             $bridge->tr();
             $bridge->tdh($this->_('Token copied from'));
@@ -173,7 +173,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
             $td = $bridge->td(array('colspan' => 2, 'skiprowclass' => true));
             foreach ($copiedTo as $copy) {
                 $urlParams[\MUtil\Model::REQUEST_ID] = $copy;
-                $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
+                $url = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.token.show', $urlParams);
 
                 $td->a($url, $copy);
                 $td->append(' ');
@@ -201,16 +201,16 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('PDF'),
             ],*/
             [
-                'route' => 'respondent.tracks.questions',
+                'route' => 'respondent.tracks.token.questions',
                 'label' => $this->_('Preview'),
             ],
             [
-                'route' => 'respondent.tracks.answer',
+                'route' => 'respondent.tracks.token.answer',
                 'label' => $this->_('Answers'),
                 'disabled' => !$this->token->isStarted(),
             ],
             [
-                'route' => 'respondent.tracks.answer-export',
+                'route' => 'respondent.tracks.token.answer-export',
                 'label' => $this->_('Answer export'),
                 'disabled' => !$this->token->isStarted(),
             ],
@@ -261,7 +261,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label' => $this->_('Show tracks'),
             ],
             [
-                'route' => 'respondent.tracks.show-track',
+                'route' => 'respondent.tracks.show',
                 'label' => $this->_('Show track'),
             ],
             /*[
@@ -270,11 +270,11 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
                 'label'
             ],*/
             [
-                'route' => 'respondent.tracks.check-token',
+                'route' => 'respondent.tracks.token.check-token',
                 'label' => $this->_('Token check'),
             ],
             [
-                'route' => 'respondent.tracks.check-token-answers',
+                'route' => 'respondent.tracks.token.check-token-answers',
                 'label' => $this->_('(Re)check answers'),
             ],
         ];
@@ -405,7 +405,7 @@ class ShowTrackTokenSnippet extends ShowTokenSnippetAbstract
     {
         $urlParams = $this->token->getMenuUrlParameters();
 
-        $href = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show-track', $urlParams);
+        $href = $this->menuSnippetHelper->getRouteUrl('respondent.tracks.show', $urlParams);
         $model->set('gtr_track_name', 'itemDisplay', \Zalt\Html\Html::create('a', $href));
 
         // ThreeColumnTableBridge->add()

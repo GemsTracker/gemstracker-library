@@ -63,7 +63,7 @@ class TracksSnippet extends \Gems\Snippets\ModelTableSnippetAbstract
      * If controller is numeric $menuActionController is used, otherwise
      * the key specifies the controller.
      */
-    public array $menuShowRoutes = ['respondent.tracks.show-track'];
+    public array $menuShowRoutes = ['respondent.tracks.show'];
 
     public function __construct(
         SnippetOptions $snippetOptions,

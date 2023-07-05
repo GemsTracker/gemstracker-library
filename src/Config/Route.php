@@ -546,7 +546,6 @@ class Route
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
-                    'index',
                     'create',
                     'view',
                 ],
@@ -563,27 +562,28 @@ class Route
                 ],
             ),
             ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
-                controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
+                controllerClass: \Gems\Handlers\Respondent\RespondentTrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [
-                    'show-track',
-                    'edit-track',
-                    'delete-track',
-                    'undelete-track',
+                    'index',
+                    'show',
+                    'edit',
+                    'delete',
+                    'undelete',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
-                    'export-track',
+                    'export',
                 ],
                 parameterRoutes: [
-                    'show-track',
-                    'edit-track',
-                    'delete-track',
-                    'undelete-track',
+                    'show',
+                    'edit',
+                    'delete',
+                    'undelete',
                     'check-track-answers',
                     'check-track',
                     'recalc-fields',
-                    'export-track',
+                    'export',
                 ],
                 parentParameters: [
                     'id1',
@@ -598,9 +598,9 @@ class Route
                     'edit-track',
                 ]
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
-                controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
-                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
+            ...$this->createSnippetRoutes(baseName: 'respondent.tracks.token',
+                controllerClass: \Gems\Handlers\Respondent\TokenHandler::class,
+                basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/track/{rt:\d+}/token',
                 pages: [
                     'answer',
                     'delete',
@@ -630,6 +630,7 @@ class Route
                 parentParameters: [
                     'id1',
                     'id2',
+                    'rt',
                 ],
                 parameters: [
                     'id' => '[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}',
@@ -637,7 +638,7 @@ class Route
                 postRoutes:
                     array_merge($this->defaultPostRoutes, ['correct', 'undelete']),
             ),
-            ...$this->createSnippetRoutes(baseName: 'respondent.tracks',
+            ...$this->createSnippetRoutes(baseName: 'respondent.tracks.survey',
                 controllerClass: \Gems\Handlers\Respondent\TrackHandler::class,
                 basePath: '/respondent/{id1:[a-zA-Z0-9-_]+}/{id2:\d+}/tracks',
                 pages: [

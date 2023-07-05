@@ -62,13 +62,13 @@ class TrackActionButtonRow extends CurrentButtonRowSnippet
             'respondent.show'              => $this->_('Show respondent'),
             'respondent.edit'              => $this->_('Edit respondent'),
             'respondent.tracks.index'      => $this->_('Show tracks'),
-            'respondent.tracks.edit-track' => $this->_('Edit track'),
+            'respondent.tracks.edit' => $this->_('Edit track'),
         ];
 
         if ($this->respondentTrack->hasSuccesCode()) {
-            $this->extraRoutesLabelled['respondent.tracks.delete-track'] = $this->_('Delete track');
+            $this->extraRoutesLabelled['respondent.tracks.delete'] = $this->_('Delete track');
         } else  {
-            $this->extraRoutesLabelled['respondent.tracks.undelete-track'] = $this->_('Undelete track');
+            $this->extraRoutesLabelled['respondent.tracks.undelete'] = $this->_('Undelete track');
         }
 
         return parent::getButtons();

@@ -247,7 +247,7 @@ class TokenRepository
      * @param boolean $showAnswers
      * @return \Zalt\Html\AElement
      */
-    public function getTokenAnswerLink($url, $patientNr, $organizationId, $tokenId, $tokenStatus, $keepCaps = true, $showAnswers = true): ?AElement
+    public function getTokenAnswerLink($url, $tokenId, $tokenStatus): ?AElement
     {
         if ($url instanceof LateInterface) {
             try {
@@ -280,24 +280,21 @@ class TokenRepository
      */
     public function getTokenAnswerLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $keepCaps = false): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.answer')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.token.answer')) {
             //return null;
         }
 
-        $url = $helper->getLateRouteUrl('respondent.tracks.answer', [
+        $url = $helper->getLateRouteUrl('respondent.tracks.token.answer', [
             Model::REQUEST_ID  => 'gto_id_token',
             Model::REQUEST_ID1 => 'gr2o_patient_nr',
             Model::REQUEST_ID2 => 'gto_id_organization',
+            \Gems\Model::RESPONDENT_TRACK => 'gto_id_respondent_track',
         ], $bridge);
 
         return Late::method($this, 'getTokenAnswerLink',
             $url['url'],
-            $bridge->getLate('gr2o_patient_nr'),
-            $bridge->getLate('gto_id_organization'),
             $bridge->getLate('gto_id_token'),
             $bridge->getLate('token_status'),
-            $keepCaps,
-            $bridge->getLate('show_answers')
         );
     }
 
@@ -511,11 +508,11 @@ class TokenRepository
      */
     public function getTokenShowLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper, bool $plusLabel = true): ?AElement
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
             //return null;
         }
 
-        $routeName = 'respondent.tracks.show';
+        $routeName = 'respondent.tracks.token.show';
         $label = $this->translator->_('Show');
 
         if ($plusLabel) {
@@ -526,6 +523,7 @@ class TokenRepository
             Model::REQUEST_ID1 => $bridge->getLate('gr2o_patient_nr'),
             Model::REQUEST_ID2 => $bridge->getLate('gto_id_organization'),
             Model::REQUEST_ID => $bridge->getLate('gto_id_token'),
+            \Gems\Model::RESPONDENT_TRACK => $bridge->getLate('gto_id_respondent_track'),
         ]);
 
         if (isset($link['url'])) {
@@ -586,7 +584,7 @@ class TokenRepository
      */
     public function getTokenStatusLinkForBridge(TableBridgeAbstract $bridge, MenuSnippetHelper $helper): LateCall
     {
-        if (! $this->currentUser->hasPrivilege('pr.respondent.tracks.show')) {
+        if (! $this->currentUser->hasPrivilege('pr.respondent.track.token.show')) {
             return $this->getTokenStatusShowForBridge($bridge, $helper);
         }
 
@@ -597,7 +595,7 @@ class TokenRepository
             $bridge->getLate('gsu_survey_name'), $bridge->getLate('gto_result')
         );*/
 
-        $url = $helper->getLateRouteUrl('respondent.tracks.show', [
+        $url = $helper->getLateRouteUrl('respondent.track.token.show', [
             'gto_id_token' => $bridge->getLate('gr2o_patient_nr'),
             \Gems\Model::ID_TYPE => 'token',
         ]);
