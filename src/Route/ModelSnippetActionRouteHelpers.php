@@ -262,6 +262,7 @@ trait ModelSnippetActionRouteHelpers
         if ($pages === null) {
             $pages = $this->defaultPages;
         }
+        $routes = [];
         foreach($pages as $pageName) {
             $route = [];
             if ($controllerClass !== null) {

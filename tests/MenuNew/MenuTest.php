@@ -28,9 +28,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
         $template = new TwigRenderer(null, 'html.twig');
         $template->addPath(__DIR__ . '/../../templates/menu', 'menu');
 
-        $menuConfig = $this->createMock(\Gems\Config\Menu::class);
-        $menuConfig->method('getItems')->willReturn($menu);
-
         $acl = $this->createMock(Acl::class);
 
         $config = [
@@ -55,7 +52,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
 
         $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), null, $config);
 
-        return new Menu($template, $routeHelper, $menuConfig);
+        return new Menu($template, $routeHelper, $menu);
     }
 
     public function testCanRenderEmptyMenu()
@@ -567,9 +564,6 @@ class MenuTest extends \PHPUnit\Framework\TestCase
 
         $template = $this->createMock(TemplateRendererInterface::class);
 
-        $menuConfig = $this->createMock(\Gems\Config\Menu::class);
-        $menuConfig->method('getItems')->willReturn($menu);
-
         $acl = new Acl();
         $acl->addResource('privilege-b');
         $acl->addResource('privilege-c');
@@ -584,7 +578,7 @@ class MenuTest extends \PHPUnit\Framework\TestCase
 
         $routeHelper = new RouteHelper($acl, $this->createMock(UrlHelper::class), $userRole, $config);
 
-        return new Menu($template, $routeHelper, $menuConfig);
+        return new Menu($template, $routeHelper, $menu);
     }
 
     public static function dataProviderPermissionRoutes()
