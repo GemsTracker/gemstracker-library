@@ -14,9 +14,7 @@ class MenuConfigTest extends \PHPUnit\Framework\TestCase
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')->will($this->returnCallback(fn($x) => 'TRANS' . $x));
 
-        $dispatcher = $this->createMock(EventDispatcher::class);
-
-        $menu = new Menu($translator, $dispatcher);
+        $menu = new Menu($translator);
 
         $this->assertStringStartsWith('TRANS', $menu->getItems()[0]['label']);
     }
