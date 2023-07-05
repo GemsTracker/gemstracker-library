@@ -4,7 +4,7 @@
 namespace Gems\Tracker\Source;
 
 
-class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
+class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey3m00FieldMap
 {
     const ANSWERS_TRANSLATE_TABLE   = 'answer_l10ns';
     const GROUPS_TRANSLATE_TABLE   = 'group_l10ns';
@@ -367,7 +367,7 @@ class LimeSurvey5m00FieldMap extends \Gems\Tracker\Source\LimeSurvey2m00FieldMap
 
             $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
 
-            if (false === $attributes) {
+            if (null === $attributes) {
                 // If DB lookup failed, return the default
                 return $default;
             }

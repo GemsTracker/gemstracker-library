@@ -22,9 +22,9 @@ use MUtil\Translate\Translator;
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.7.0
  */
-class LimeSurvey1m9FieldMap
+class LimeSurvey3m00FieldMap
 {
     const ANSWERS_TABLE      = 'answers';
     const ATTRIBUTES_TABLE   = 'question_attributes';
@@ -97,7 +97,7 @@ class LimeSurvey1m9FieldMap
      * @param int $sourceSurveyId            Survey ID
      * @param string $language               (ISO) Language
      * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
-     * @param \Zend_Translate $translate      A translate object
+     * @param Translator $translate           A translate object
      * @param string $tablePrefix              The prefix to use for all LS tables (in this installation)
      * @param \Gems\Cache\HelperAdapter $cache
      */
@@ -537,7 +537,7 @@ class LimeSurvey1m9FieldMap
 
             $attributes = $this->lsDb->fetchAll($sql, $this->sourceSurveyId);
 
-            if (false === $attributes) {
+            if (null === $attributes) {
                 // If DB lookup failed, return the default
                 return $default;
             }
@@ -593,7 +593,7 @@ class LimeSurvey1m9FieldMap
      */
     protected function _getSurveysTableName()
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey1m9Database::SURVEYS_TABLE;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEYS_TABLE;
     }
 
     /**
@@ -603,7 +603,17 @@ class LimeSurvey1m9FieldMap
      */
     protected function _getSurveyTableName()
     {
-        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey1m9Database::SURVEY_TABLE . $this->sourceSurveyId;
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::SURVEY_TABLE . $this->sourceSurveyId;
+    }
+
+    /**
+     * There exists a survey table for each active survey. The table contains the answers to the survey
+     *
+     * @return string Name of survey table for this survey
+     */
+    protected function _getTokenTableName()
+    {
+        return $this->tablePrefix . \Gems\Tracker\Source\LimeSurvey3m00Database::TOKEN_TABLE . $this->sourceSurveyId;
     }
 
     /**
@@ -807,8 +817,10 @@ class LimeSurvey1m9FieldMap
         }
     }
 
-    protected function getDateFormats($fieldname, $type)
+    protected function getDateFormats($fieldname, $type): array
     {
+        $tmpres = [];
+
         if ($dataType = $this->getFieldTableDataType($fieldname)) {
             if ($dataType == 'datetime' || $dataType == 'timestamp') {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
@@ -981,8 +993,36 @@ class LimeSurvey1m9FieldMap
     }
 
     /**
+     * Get the survey table structure (meta data)
+     *
+     * @return array Table meta data
+     */
+    public function getSurveyTableStructure()
+    {
+        $metaData = $this->loadTableMetaData();
+
+        return $metaData;
+    }
+
+    /**
+     * Get the table structure of the token table
+     *
+     * @return array List of \Zend_DB Table metadata
+     */
+    public function getTokenTableStructure()
+    {
+        $tableName = $this->_getTokenTableName();
+
+        $table = new \Zend_Db_Table(['name' => $tableName, 'db' => $this->lsDb]);
+        $info = $table->info();
+        $metaData = $info['metadata'];
+
+        return $metaData;
+    }
+
+    /**
      * Function to cast numbers as float, but leave null intact
-     * @param  The number to cast to float
+     * @param $value The number to cast to float
      * @return float
      */
     public function handleFloat($value)
@@ -1061,5 +1101,16 @@ class LimeSurvey1m9FieldMap
     public function removeMarkup($text)
     {
         return trim(\MUtil\StringUtil\StringUtil::beforeChars(\MUtil\Html::removeMarkup($text, 'b|i|u|em|strong'), '{'));
+    }
+
+    /**
+     * Execute a Database query on the limesurvey Database
+     *
+     * @param $sql mixed SQL query to perform on the limesurvey database
+     * @param array $bindValues optional bind values for the Query
+     */
+    public function lsDbQuery($sql, $bindValues=array())
+    {
+        $this->lsDb->query($sql, $bindValues);
     }
 }
