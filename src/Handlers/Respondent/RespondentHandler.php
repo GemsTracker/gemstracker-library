@@ -751,7 +751,6 @@ class RespondentHandler extends RespondentChildHandlerAbstract
                     if (! isset($filter['__active_tracks'], $filter['__active_tracks'][$filter['gr2t_id_track']])) {
                         unset($filter['gr2t_id_track']);
                     }
-                    $model->applyBrowseSettings();
 
             }
         }
@@ -833,14 +832,14 @@ class RespondentHandler extends RespondentChildHandlerAbstract
      */
     protected function openedRespondent(): self
     {
-        $routeParams = $this->requestInfo->getRequestMatchedParams();
+        $queryParams = $this->request->getQueryParams();
         $orgId = null;
-        if (isset($routeParams[\MUtil\Model::REQUEST_ID2])) {
-            $orgId = $routeParams[\MUtil\Model::REQUEST_ID2];
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID2])) {
+            $orgId = $queryParams[\MUtil\Model::REQUEST_ID2];
         }
         $patientNr = null;
-        if (isset($routeParams[\MUtil\Model::REQUEST_ID1])) {
-            $patientNr = $routeParams[\MUtil\Model::REQUEST_ID1];
+        if (isset($queryParams[\MUtil\Model::REQUEST_ID1])) {
+            $patientNr = $queryParams[\MUtil\Model::REQUEST_ID1];
         }
 
         if ($patientNr && $orgId) {

@@ -69,35 +69,14 @@ class RespondentRelationModel extends JoinModel
     public function applyBrowseSettings()
     {
         $this->addFilter(['grr_active'=>1]);
-        $this->set('grr_type', [
-            'label' => $this->_('Relation type'),
-            'description' => $this->_('Father, mother, etc.'),
-        ]);
-        $this->set('grr_gender', [
-            'label' => $this->_('Gender'),
-            'elementClass' => 'radio',
-            'separator' => '',
-            'multiOptions' => $this->translatedUtil->getGenders(),
-        ]);
-        $this->set('grr_first_name', [
-            'label' => $this->_('First name'),
-        ]);
-        $this->set('grr_last_name', [
-            'label' => $this->_('Last name'),
-        ]);
-        $this->set('grr_birthdate', [
-            'label' => $this->_('Birthday'),
-            'dateFormat' => 'd-m-Y',
-            'elementClass' => 'Date',
-        ]);
-        $this->set('grr_email', [
-            'label' => $this->_('E-Mail'),
-            'validator' => new SimpleEmail(),
-        ]);
-        $this->set('grr_mailable', [
-            'label' => $this->_('May be mailed'),
-            'multiOptions' => $this->communicationRepository->getRespondentMailCodes(),
-        ]);
+        $this->set('grr_type',
+                'label', $this->_('Relation type'), 'description', $this->_('Father, mother, etc.'));
+        $this->set('grr_gender', 'label', $this->_('Gender'), 'elementClass', 'radio', 'separator', '', 'multiOptions', $this->translatedUtil->getGenders());
+        $this->set('grr_first_name', 'label', $this->_('First name'));
+        $this->set('grr_last_name', 'label', $this->_('Last name'));
+        $this->set('grr_birthdate', 'label', $this->_('Birthday'), 'dateFormat', 'd-m-Y', 'elementClass', 'Date');
+        $this->set('grr_email', 'label', $this->_('E-Mail'), 'validator', SimpleEmail::class);
+        $this->set('grr_mailable', 'label', $this->_('May be mailed'), 'multiOptions', $this->communicationRepository->getRespondentMailCodes());
     }
 
     public function applyDetailSettings()

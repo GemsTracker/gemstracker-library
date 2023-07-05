@@ -11,8 +11,6 @@
 
 namespace Gems\Snippets\Organization;
 
-use Zalt\Snippets\TranslatableSnippetAbstract;
-
 /**
  *
  * @package    Gems
@@ -21,7 +19,7 @@ use Zalt\Snippets\TranslatableSnippetAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.8.6 19-Mar-2019 12:27:58
  */
-class ChooseListedOrganizationSnippet extends TranslatableSnippetAbstract
+class ChooseListedOrganizationSnippet extends \MUtil\Snippets\SnippetAbstract
 {
     /**
      *
@@ -42,22 +40,39 @@ class ChooseListedOrganizationSnippet extends TranslatableSnippetAbstract
     protected $orgs;
 
     /**
+     * Required
+     *
+     * @var \Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return (boolean) $this->orgs && $this->request;
+    }
+
+    /**
      * Create the snippets content
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
+     * @param \Zend_View_Abstract $view Just in case it is needed here
      * @return \MUtil\Html\HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput()
+    public function getHtmlOutput(\Zend_View_Abstract $view = null)
     {
         $html = $this->getHtmlSequence();
 
         $html->h3($this->_('Choose an organization'));
 
-        $url = [
-            $this->requestInfo->getBasePath(),
-            'action' => $this->action,
-        ];
+        $url[$this->request->getControllerKey()] = $this->request->getControllerName();
+        $url[$this->request->getActionKey()]     = $this->action;
 
         if ($this->info) {
             $html->pInfo($this->info);

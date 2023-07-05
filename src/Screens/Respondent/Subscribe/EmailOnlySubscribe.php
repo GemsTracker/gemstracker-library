@@ -84,7 +84,7 @@ class EmailOnlySubscribe extends \MUtil\Translate\TranslateableAbstract implemen
                     $this->currentUserRepository->getCurrentOrganization()->getName()
                     ),
             'patientNrGenerator' => [$this, 'generatePatientNumber'],
-            'routeAction' => 'participate.subscribe-thanks',
+            'routeAction' => 'subscribe-thanks',
             'saveLabel' => $this->_('Subscribe'),
         ];
     }

@@ -13,7 +13,6 @@ namespace Gems;
 
 use Gems\Agenda\Agenda;
 use Gems\Loader\LoaderAbstract;
-use Gems\Screens\ScreenLoader;
 use Gems\Tracker\TrackEvents;
 use Gems\User\Embed\EmbedLoader;
 use Gems\User\Mask\MaskRepository;
@@ -364,7 +363,7 @@ class Loader extends LoaderAbstract
      */
     public function getScreenLoader()
     {
-        return $this->loadByDependency(ScreenLoader::class);
+        return $this->_getClass('screenLoader', 'Screens\ScreenLoader');
     }
 
     /**

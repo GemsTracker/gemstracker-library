@@ -11,7 +11,6 @@
 
 namespace Gems\Validator;
 
-use Laminas\Validator\ValidatorInterface;
 use MUtil\Registry\TargetAbstract;
 
 /**
@@ -22,7 +21,7 @@ use MUtil\Registry\TargetAbstract;
  * @license    No free license, do not copy
  * @since      Class available since version 1.8.8 Jan 9, 2020 1:05:35 PM
  */
-class SubscriptionThrottleValidator extends TargetAbstract implements \Laminas\Validator\ValidatorInterface
+class SubscriptionThrottleValidator extends TargetAbstract implements \Zend_Validate_Interface
 {
     /**
      *
@@ -119,10 +118,6 @@ class SubscriptionThrottleValidator extends TargetAbstract implements \Laminas\V
     {
         if (isset($this->config['survey']['ask'], $this->config['survey']['ask']['askThrottle'])) {
             $throttleSettings = $this->config['survey']['ask']['askThrottle'];
-            // Allow either of the values 'threshold' or 'maxAttempts'.
-            if (!isset($throttleSettings['threshold']) && isset($throttleSettings['maxAttempts'])) {
-                $throttleSettings['threshold'] = $throttleSettings['maxAttempts'];
-            }
 
             // Prune the database for (very) old attempts
             $where = $this->db->quoteInto(

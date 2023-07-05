@@ -43,7 +43,6 @@ class DateTimeInput extends Text
         }
 
         $this->setAttrib('data-date-format', $this->dateFormat);
-        $this->setAttrib('autocomplete', 'off');
 
         return parent::getDecorators();
     }
